@@ -6,6 +6,7 @@
 package com.junbo.oauth.spec.endpoint;
 
 import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
@@ -33,12 +34,6 @@ public interface EmailVerifyEndpoint {
     @POST
     Promise<Response> sendVerifyEmail(@FormParam("locale") String locale,
                                       @FormParam("country") String country,
-                                      @FormParam("userId") UserId userId);
-
-    @POST
-    @Path("/target-email")
-    Promise<Response> sendVerifyEmail(@FormParam("locale")String locale,
-                                     @FormParam("country")String country,
-                                     @FormParam("userId")UserId userId,
-                                     @FormParam("targetMail")String targetMail);
+                                      @FormParam("userId") UserId userId,
+                                      @FormParam("tml") UserPersonalInfoId targetMail);
 }

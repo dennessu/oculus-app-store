@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppError
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
@@ -26,8 +27,10 @@ import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
+import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
+import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -48,6 +51,7 @@ import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.browse.*
 import com.junbo.store.spec.model.iap.*
 import com.junbo.store.spec.model.identity.*
+import com.junbo.store.spec.model.profile.UpdateProfileState
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.model.token.Token
 import com.junbo.store.spec.resource.StoreResource
@@ -76,6 +80,9 @@ class StoreResourceImpl implements StoreResource {
     public static final String ACTION_STATUS_SUCCESS = "SUCCEED"
 
     public static final String FREE_PURCHASE_CURRENCY = "USD"
+
+    public static final String CREATE_USER_TITLE = "createUser_Tos"
+    public static final String PURCHASE_TOS_TITLE = "purchase_Tos"
 
     private static final int PAGE_SIZE = 100
 
@@ -135,7 +142,7 @@ class StoreResourceImpl implements StoreResource {
     @Override
     Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request) {
         return identityUtils.getActiveUserFromToken().then { User user->
-            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId()).then {
+            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), null).then {
                 return Promise.pure(new VerifyEmailResponse(
                         emailSent: true
                 ))
@@ -164,8 +171,6 @@ class StoreResourceImpl implements StoreResource {
             ErrorContext errorContext = new ErrorContext()
             return identityUtils.getVerifiedUserFromToken().syncThen { User u ->
                 user = u
-            }.then {
-
             }.then {
                 updateUserCredential(user.getId(), request, errorContext)
             }.then {
@@ -477,8 +482,8 @@ class StoreResourceImpl implements StoreResource {
         Item hostItem
         User user
         CurrencyId currencyId
-        boolean askChallenge
         PurchaseState purchaseState
+        String potentialChallengeType
         PreparePurchaseResponse response = new PreparePurchaseResponse()
         PaymentInstrumentId selectedInstrument
 
@@ -527,22 +532,17 @@ class StoreResourceImpl implements StoreResource {
             }
             return validateInstrumentForPreparePurchase(user, request)
         }.then {
-            return isPurchaseChallengeNeeded(user.getId(), request.challengeAnswer?.pin).then { Boolean purchaseChallengeNeeded ->
-                if (purchaseState.prepareChallengePassed && !purchaseChallengeNeeded) {
-                    askChallenge = false
-                    return Promise.pure(null)
-                }
+            return getPurchaseChallengeType(user.getId(), request).then { String challengeType ->
+                potentialChallengeType = challengeType
 
-                purchaseState.prepareChallengePassed = true
-                askChallenge = true
                 return Promise.pure(null)
             }
         }.then {
-            if (askChallenge) {
+            if (StringUtils.isEmpty(potentialChallengeType)) {
                 return tokenProcessor.toTokenString(purchaseState).then { String token ->
                     return Promise.pure(
                             new PreparePurchaseResponse(
-                                    challenge : new Challenge(type: Constants.ChallengeType.PIN),
+                                    challenge : new Challenge(type: potentialChallengeType),
                                     purchaseToken: token
                             )
                     )
@@ -604,20 +604,18 @@ class StoreResourceImpl implements StoreResource {
         }.then {
             requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest)
         }.then {
-            return isPurchaseChallengeNeeded(user.getId(), null).then { Boolean purchaseChallengeNeeded ->
+            return isPurchasePINChallengeNeeded(user.getId(), null).then { Boolean purchaseChallengeNeeded ->
                 askChallenge = purchaseChallengeNeeded
                 return Promise.pure(null)
             }
         }.then {
             tokenProcessor.toTokenObject(commitPurchaseRequest.purchaseToken, PurchaseState).then { PurchaseState e ->
                 purchaseState = e
-                if (!purchaseState.prepareChallengePassed) {
-                    throw AppErrors.INSTANCE.invalidPurchaseToken([new com.junbo.common.error.ErrorDetail(reason: 'Challenge_Required')] as com.junbo.common.error.ErrorDetail[]).exception()
-                }
                 if (purchaseState.order == null) {
                     throw AppErrors.INSTANCE.invalidPurchaseToken([new com.junbo.common.error.ErrorDetail(reason: 'OrderId_Invalid')] as com.junbo.common.error.ErrorDetail[]).exception()
                 }
-                return Promise.pure(null)
+
+                return requestValidator.validatePurchaseToken(commitPurchaseRequest.purchaseToken, 'purchaseToken')
             }
         }.then {
             if (askChallenge) {
@@ -1127,27 +1125,17 @@ class StoreResourceImpl implements StoreResource {
             return Promise.pure(false)
         }
 
-        return resourceContainer.userPersonalInfoResource.create(new UserPersonalInfo(
-                userId: user.getId(),
-                type: 'EMAIL',
-                value: ObjectMapperProvider.instance().valueToTree(new Email(
-                        info: request.userProfile.email.value
-                ))
-        )).recover { Throwable ex ->
-            appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
-            throw ex
-        }.then { UserPersonalInfo emailUserPersonalInfo ->
+        return tokenProcessor.toTokenObject(request.userProfileUpdateToken, UpdateProfileState).then { UpdateProfileState state ->
             if (user.emails == null) {
                 user.emails = [] as List
             }
-
             def defaultLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
             if (defaultLink != null) {
                 user.emails.remove(defaultLink)
             }
 
             user.emails.add(new UserPersonalInfoLink(
-                    value: emailUserPersonalInfo.getId(),
+                    value: state.emailPIIId,
                     isDefault: true
             ))
 
@@ -1181,7 +1169,7 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<Boolean> isPurchaseChallengeNeeded(UserId userId, String pinCode) {
+    private Promise<Boolean> isPurchasePINChallengeNeeded(UserId userId, String pinCode) {
         if (userId == null) {
             throw new IllegalArgumentException('userId can\'t be null')
         }
@@ -1232,6 +1220,59 @@ class StoreResourceImpl implements StoreResource {
                 return tokenRepository.create(token).then {
                     return Promise.pure(askChallenge)
                 }
+            }
+        }
+    }
+
+    private Promise<Boolean> isPurchaseTosChallengeNeeded(UserId userId, PreparePurchaseRequest request) {
+        if (request?.challengeAnswer?.type != null && request?.challengeAnswer?.type != Constants.ChallengeType.TOS_ACCEPTANCE) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('challengeAnswer.type').exception()
+        }
+
+        return resourceContainer.tosResource.list(new TosListOptions(title: PURCHASE_TOS_TITLE)).then { Results<Tos> toses ->
+            if (toses == null || CollectionUtils.isEmpty(toses.items)) {
+                if (request?.challengeAnswer?.type == Constants.ChallengeType.TOS_ACCEPTANCE && request?.challengeAnswer?.tosAcceptable) {
+                    return Promise.pure(false)
+                }
+                return Promise.pure(true)
+            }
+
+            Tos tos = toses.items.get(0)
+            return resourceContainer.userTosAgreementResource.list(new UserTosAgreementListOptions(
+                    userId: userId,
+                    tosId: tos.getId()
+            )).then { Results<UserTosAgreement> tosAgreementResults ->
+                if (tosAgreementResults == null || CollectionUtils.isEmpty(tosAgreementResults.items)) {
+                    if (request?.challengeAnswer?.type == Constants.ChallengeType.TOS_ACCEPTANCE && request?.challengeAnswer?.tosAcceptable) {
+                        return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(
+                                userId: userId,
+                                tosId: tos.getId(),
+                                agreementTime: new Date()
+                        )).then {
+                            return Promise.pure(false)
+                        }
+                    }
+
+                    return Promise.pure(true)
+                }
+
+                return Promise.pure(false)
+            }
+        }
+    }
+
+    private Promise<String> getPurchaseChallengeType(UserId userId, PreparePurchaseRequest request) {
+        return isPurchasePINChallengeNeeded(userId, request?.challengeAnswer?.pin).then { Boolean pinChallengeNeeded ->
+            if (pinChallengeNeeded) {
+                return Promise.pure(Constants.ChallengeType.PIN)
+            }
+
+            return isPurchaseTosChallengeNeeded(userId, request).then { Boolean tosChallengeNeeded ->
+                if (tosChallengeNeeded) {
+                    return Promise.pure(Constants.ChallengeType.TOS_ACCEPTANCE)
+                }
+
+                return Promise.pure(null)
             }
         }
     }

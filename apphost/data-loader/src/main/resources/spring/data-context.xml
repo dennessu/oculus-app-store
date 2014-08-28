@@ -84,6 +84,10 @@
         <property name="offerRevisionResource" ref="defaultOfferRevisionResource"/>
     </bean>
 
+    <bean id="tosDataHandler" class="com.junbo.data.handler.TosDataHandler" parent="baseDataHandler">
+        <property name="tosResource" ref="defaultTosResource" />
+    </bean>
+
     <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
         <property name="handlers">
             <map>
@@ -100,6 +104,7 @@
                 <entry key="group" value-ref="groupDataHandler" />
                 <entry key="user-group" value-ref="userGroupDataHandler" />
                 <entry key="catalog" value-ref="catalogDataHandler" />
+                <entry key="tos" value-ref="tosDataHandler" />
             </map>
         </property>
         <property name="dataList">
@@ -117,6 +122,7 @@
                 <value>group</value>
                 <value>user-group</value>
                 <value>catalog</value>
+                <value>tos</value>
             </list>
         </property>
         <property name="serialDataList">

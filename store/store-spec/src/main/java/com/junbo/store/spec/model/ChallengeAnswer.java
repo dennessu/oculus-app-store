@@ -16,6 +16,8 @@ public class ChallengeAnswer {
 
     private String password;
 
+    private Boolean tosAcceptable;
+
     public String getType() {
         return type;
     }
@@ -38,5 +40,13 @@ public class ChallengeAnswer {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getTosAcceptable() {
+        return tosAcceptable;
+    }
+
+    public void setTosAcceptable(Boolean tosAcceptable) {
+        this.tosAcceptable = tosAcceptable;
     }
 }

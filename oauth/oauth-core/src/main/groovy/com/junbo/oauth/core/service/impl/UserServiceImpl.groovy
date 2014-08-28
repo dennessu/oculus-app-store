@@ -10,6 +10,7 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ClientId
 import com.junbo.common.id.EmailTemplateId
 import com.junbo.common.id.UserId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.email.spec.model.Email
@@ -253,45 +254,44 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<String> sendVerifyEmail(UserId userId, String locale, String country, String email, Boolean welcome) {
-        if (email == null) {
-            throw AppErrors.INSTANCE.missingDefaultUserEmail().exception()
-        }
-
-        EmailVerifyCode code = new EmailVerifyCode(
-                userId: userId.value,
-                email: email)
-
-        emailVerifyCodeRepository.save(code)
-
-        UriBuilder uriBuilder = UriBuilder.fromUri(emailLinkBaseUri)
-        uriBuilder.path(EMAIL_VERIFY_PATH)
-        uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
-        uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
-
-        QueryParam queryParam
-        if (welcome == null || !welcome) {
-            queryParam = new QueryParam(
-                    source: EMAIL_SOURCE,
-                    action: VERIFY_EMAIL_ACTION,
-                    locale: locale
-            )
-        }
-        else {
-            queryParam = new QueryParam(
-                    source: EMAIL_SOURCE,
-                    action: WELCOME_ACTION,
-                    locale: locale
-            )
-        }
-
-        String link = uriBuilder.build().toString()
+    Promise<String> sendVerifyEmail(UserId userId, String locale, String country, UserPersonalInfoId emailId, Boolean welcome) {
         return userResource.get(userId, new UserGetOptions()).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.errorCallingIdentity().exception()
             }
+            return getMail(user, emailId).then { String email ->
+                EmailVerifyCode code = new EmailVerifyCode(
+                        userId: userId.value,
+                        email: email,
+                        targetMailId: emailId == null ? null : emailId.value
+                )
 
-            return this.sendEmail(queryParam, user, email, link)
+                emailVerifyCodeRepository.save(code)
+
+                UriBuilder uriBuilder = UriBuilder.fromUri(emailLinkBaseUri)
+                uriBuilder.path(EMAIL_VERIFY_PATH)
+                uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
+                uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
+
+                QueryParam queryParam
+                if (welcome == null || !welcome) {
+                    queryParam = new QueryParam(
+                            source: EMAIL_SOURCE,
+                            action: VERIFY_EMAIL_ACTION,
+                            locale: locale
+                    )
+                }
+                else {
+                    queryParam = new QueryParam(
+                            source: EMAIL_SOURCE,
+                            action: WELCOME_ACTION,
+                            locale: locale
+                    )
+                }
+
+                String link = uriBuilder.build().toString()
+                return this.sendEmail(queryParam, user, email, link)
+            }
         }
     }
 
@@ -307,9 +307,7 @@ class UserServiceImpl implements UserService {
                 throw AppErrors.INSTANCE.errorCallingIdentity().exception()
             }
 
-            return this.getDefaultUserEmail(user).then { String email ->
-                return sendVerifyEmail(userId, locale, country, email, welcome)
-            }
+            return sendVerifyEmail(userId, locale, country, null, welcome)
         }
     }
 
@@ -395,6 +393,29 @@ class UserServiceImpl implements UserService {
         }
 
         return Promise.pure(null)
+    }
+
+    private Promise<String> getMail(User user, UserPersonalInfoId mail) {
+        if (mail == null) {
+            return getDefaultUserEmail(user)
+        } else {
+            return userPersonalInfoResource.get(mail, new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
+                if (info == null) {
+                    return Promise.pure(new UserInfo(sub: user.id.toString(), name: getName(user).get(), email: ''))
+                }
+
+                String userEmail
+                try {
+                    com.junbo.identity.spec.v1.model.Email email = ObjectMapperProvider.instance().treeToValue(info.value, com.junbo.identity.spec.v1.model.Email)
+                    userEmail = email.info
+                }
+                catch (Exception e) {
+                    return Promise.pure(null)
+                }
+
+                return Promise.pure(userEmail)
+            }
+        }
     }
 
     private Promise<String> sendEmail(QueryParam queryParam, User user, String email, String uri) {

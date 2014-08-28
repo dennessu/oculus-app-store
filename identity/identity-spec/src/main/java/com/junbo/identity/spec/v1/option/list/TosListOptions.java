@@ -16,11 +16,22 @@ public class TosListOptions extends PagingGetOptions {
     @QueryParam("properties")
     private String properties;
 
+    @QueryParam("title")
+    private String title;
+
     public String getProperties() {
         return properties;
     }
 
     public void setProperties(String properties) {
         this.properties = properties;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

@@ -35,4 +35,9 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
     Promise<List<Tos>> searchAll(Integer limit, Integer offset) {
         return cloudantGetAll(limit, offset, false)
     }
+
+    @Override
+    Promise<List<Tos>> searchByTitle(String title, Integer limit, Integer offset) {
+        return super.queryView('by_title', title, limit, offset, false)
+    }
 }

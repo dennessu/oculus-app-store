@@ -86,4 +86,10 @@ class ResourceContainer {
 
     @Resource(name='store.localeClientProxy')
     LocaleResource localeResource
+
+    @Resource(name = 'store.tosResourceClientProxy')
+    TosResource tosResource
+
+    @Resource(name = 'store.userTosAgreementResourceClientProxy')
+    UserTosAgreementResource userTosAgreementResource
 }

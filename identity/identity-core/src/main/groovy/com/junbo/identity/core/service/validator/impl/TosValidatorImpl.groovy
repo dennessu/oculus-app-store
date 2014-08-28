@@ -143,6 +143,8 @@ class TosValidatorImpl implements TosValidator {
 
                 return Promise.pure(null)
             }
+        }.then {
+            return Promise.pure(null)
         }
     }
 
