@@ -18,4 +18,6 @@ interface EmailVerifyCodeRepository {
     void save(EmailVerifyCode emailVerifyCode)
 
     void removeByUserIdEmail(Long userId, String email)
+
+    List<EmailVerifyCode> getByUserIdEmail(Long userId, String email)
 }

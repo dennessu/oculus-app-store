@@ -55,6 +55,11 @@ class EmailVerifyCodeRepositoryImpl implements EmailVerifyCodeRepository {
 
     }
 
+    @Override
+    List<String> getByUserIdEmail(Long userId, String email) {
+        return new ArrayList<String>()
+    }
+
     private static EmailVerifyCode wrap(EmailVerifyCodeEntity entity) {
         if (entity == null) {
             return null

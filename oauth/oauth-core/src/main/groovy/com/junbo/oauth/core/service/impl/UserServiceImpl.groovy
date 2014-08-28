@@ -254,6 +254,17 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
+    Promise<String> buildResponseLink(EmailVerifyCode emailVerifyCode) {
+        UriBuilder uriBuilder = UriBuilder.fromUri(emailLinkBaseUri)
+        uriBuilder.path(EMAIL_VERIFY_PATH)
+        uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, emailVerifyCode.code)
+        uriBuilder.queryParam(OAuthParameters.LOCALE, 'en_US')
+        String link = uriBuilder.build().toString()
+
+        return Promise.pure(link)
+    }
+
+    @Override
     Promise<String> sendVerifyEmail(UserId userId, String locale, String country, UserPersonalInfoId emailId, Boolean welcome) {
         return userResource.get(userId, new UserGetOptions()).then { User user ->
             if (user == null) {

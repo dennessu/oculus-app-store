@@ -33,6 +33,7 @@ import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -168,6 +169,29 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
                     return Promise.pure(responseBuilder.build())
                 }
             }
+        }
+    }
+
+    @Override
+    Promise<List<String>> getVerifyEmailLink(UserId userId, String locale, String email) {
+
+
+        List<String> links = new ArrayList<>();
+        List<EmailVerifyCode> verifyCodeList = emailVerifyCodeRepository.getByUserIdEmail(userId.value, email)
+        if (CollectionUtils.isEmpty(verifyCodeList)) {
+            return Promise.pure(links)
+        }
+
+        return Promise.each(verifyCodeList) { EmailVerifyCode code ->
+            return userService.buildResponseLink(code).then { String link ->
+                if (!StringUtils.isEmpty(link)) {
+                    links.add(link)
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(links)
         }
     }
 

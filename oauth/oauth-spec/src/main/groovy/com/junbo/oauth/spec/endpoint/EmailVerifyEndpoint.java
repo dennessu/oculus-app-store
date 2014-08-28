@@ -16,6 +16,7 @@ import com.wordnik.swagger.annotations.Api;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * EmailVerifyEndpoint.
@@ -36,4 +37,10 @@ public interface EmailVerifyEndpoint {
                                       @FormParam("country") String country,
                                       @FormParam("userId") UserId userId,
                                       @FormParam("tml") UserPersonalInfoId targetMail);
+
+    @GET
+    @Path("/test")
+    Promise<List<String>> getVerifyEmailLink(@QueryParam("userId") UserId userId,
+                                       @QueryParam("locale") String locale,
+                                       @QueryParam("email") String email);
 }

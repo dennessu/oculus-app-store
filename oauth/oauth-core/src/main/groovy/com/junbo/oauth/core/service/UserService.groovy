@@ -11,6 +11,7 @@ import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.UserInfo
 import groovy.transform.CompileStatic
 
@@ -44,4 +45,5 @@ interface UserService {
 
     Promise<String> sendResetPassword(UserId userId, String locale, String country)
 
+    Promise<String> buildResponseLink(EmailVerifyCode emailVerifyCode)
 }
