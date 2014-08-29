@@ -50,4 +50,8 @@ public interface OrderRepositoryFacade {
     List<BillingHistory> getBillingHistories(Long orderId);
 
     List<FulfillmentHistory> getFulfillmentHistories(Long orderItemId);
+
+    OfferSnapshot createOfferSnapshot(OfferSnapshot offerSnapshot);
+
+    List<OfferSnapshot> getSnapshot(Long orderId);
 }

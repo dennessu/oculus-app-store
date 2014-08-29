@@ -184,6 +184,20 @@
         }
       }
     },
+    "order_offer_snapshot": {
+      "views": {
+        "by_order": {
+          "map": "function(doc) {if (doc.orderId) {emit(doc.orderId, doc._id)}}"
+        }
+      }
+    },
+    "order_item_snapshot": {
+      "views": {
+        "by_snapshot": {
+          "map": "function(doc) {if (doc.offerSnapshotId) {emit(doc.offerSnapshotId, doc._id)}}"
+        }
+      }
+    },
     "organization": {
       "views": {
         "by_canonical_name": {

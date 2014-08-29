@@ -82,9 +82,4 @@ class OrderEventResourceImpl implements OrderEventResource {
             }
         }
     }
-
-    @Override
-    Promise<OrderEvent> getOrderEvent(@PathParam('orderEventId') OrderEventId orderEventId) {
-        return null
-    }
 }

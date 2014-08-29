@@ -274,6 +274,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.getId().value))
+        // orderSnapshot
+        order.setOrderSnapshot(orderRepository.getSnapshot(order.getId().value))
         // tax
         return orderServiceContextBuilder.refreshBalances(orderServiceContext).then { List<Balance> balances ->
             if (CollectionUtils.isEmpty(balances) && !CoreUtils.isFreeOrder(order)) {
@@ -351,6 +353,20 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 order.billingHistories.add(savedHistory)
             }
         }
+    }
+
+    @Transactional
+    void persistOrderSnapshot(Order order) {
+        if (CollectionUtils.isEmpty(order.orderSnapshot)) {
+            return
+        }
+        def offerSnapshots = []
+        order.orderSnapshot.each { OfferSnapshot snapshot ->
+            snapshot.orderId = order.getId().value
+            def savedOfferSnapshot = orderRepository.createOfferSnapshot(snapshot)
+            offerSnapshots << savedOfferSnapshot
+        }
+        order.orderSnapshot = offerSnapshots
     }
 
     @Override

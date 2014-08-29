@@ -385,6 +385,54 @@ public class CommonMapper {
         return offerId.getValue().toString();
     }
 
+    public OfferRevisionId fromStringToOfferRevisionId(String offerRevisionId) {
+        if (offerRevisionId == null) {
+            return null;
+        }
+
+        return new OfferRevisionId(offerRevisionId);
+    }
+
+    public String fromOfferRevisionIdToString(OfferRevisionId offerRevisionId) {
+        if (offerRevisionId == null) {
+            return null;
+        }
+
+        return offerRevisionId.getValue().toString();
+    }
+
+    public ItemId fromStringToItemId(String itemId) {
+        if (itemId == null) {
+            return null;
+        }
+
+        return new ItemId(itemId);
+    }
+
+    public String fromItemIdToString(ItemId itemId) {
+        if (itemId == null) {
+            return null;
+        }
+
+        return itemId.getValue().toString();
+    }
+
+    public ItemRevisionId fromStringToItemRevisionId(String itemRevisionId) {
+        if (itemRevisionId == null) {
+            return null;
+        }
+
+        return new ItemRevisionId(itemRevisionId);
+    }
+
+    public String fromItemRevisionIdToString(ItemRevisionId itemRevisionId) {
+        if (itemRevisionId == null) {
+            return null;
+        }
+
+        return itemRevisionId.getValue().toString();
+    }
+
     public PaymentInstrumentId fromStringToPaymentInstrumentId(String paymentInstrumentId) {
         if (paymentInstrumentId == null) {
             return null;

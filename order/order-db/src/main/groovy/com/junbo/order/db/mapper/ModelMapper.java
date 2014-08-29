@@ -113,6 +113,38 @@ public interface ModelMapper {
                                              MappingContext context);
 
     @Mappings({
+            @Mapping(source = "id", target = "offerSnapshotId", excluded = false, bidirectional = false),
+            @Mapping(source = "offer", target = "offerId", excluded = false, bidirectional = false),
+            @Mapping(source = "offerRevision", target = "offerRevisionId", excluded = false, bidirectional = false)
+    })
+    OrderOfferSnapshotEntity toOrderOfferSnapshotEntity(OfferSnapshot offerSnapshot,
+                                                                          MappingContext context);
+
+    @Mappings({
+            @Mapping(source = "offerSnapshotId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "offerId", target = "offer", excluded = false, bidirectional = false),
+            @Mapping(source = "offerRevisionId", target = "offerRevision", excluded = false, bidirectional = false)
+    })
+    OfferSnapshot toOfferSnapshotModel(OrderOfferSnapshotEntity orderOfferSnapshotEntity,
+                                                 MappingContext context);
+
+    @Mappings({
+            @Mapping(source = "id", target = "itemSnapshotId", excluded = false, bidirectional = false),
+            @Mapping(source = "item", target = "itemId", excluded = false, bidirectional = false),
+            @Mapping(source = "itemRevision", target = "itemRevisionId", excluded = false, bidirectional = false)
+    })
+    OrderOfferItemSnapshotEntity toOrderOfferItemSnapshotEntity(ItemSnapshot itemSnapshot,
+                                                        MappingContext context);
+
+    @Mappings({
+            @Mapping(source = "itemSnapshotId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "itemId", target = "item", excluded = false, bidirectional = false),
+            @Mapping(source = "itemRevisionId", target = "itemRevision", excluded = false, bidirectional = false)
+    })
+    ItemSnapshot toItemSnapshotModel(OrderOfferItemSnapshotEntity orderOfferItemSnapshotEntity,
+                                       MappingContext context);
+
+    @Mappings({
             @Mapping(source = "id", target = "historyId", excluded = false, bidirectional = false),
             @Mapping(source = "billingEvent", target = "billingEventId", excluded = false, bidirectional = false),
     })

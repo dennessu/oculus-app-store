@@ -140,6 +140,12 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     @HateoasLink("/order-events?orderId={id}")
     private Link orderEvents;
 
+    @ApiModelProperty(required = true, position = 180, value = "[Client Immutable] The snapshot of offers within the order, " +
+            "including the offer id, offer-revision id, corresponding sub-offer id, " +
+            "sub-offer offer Revision Id, item id, item-revision id. ")
+    @CloudantIgnore
+    private List<OfferSnapshot> orderSnapshot;
+
     @ApiModelProperty(required = true, position = 300, value = "[Client Immutable] The billing histories of the order. ")
     private List<BillingHistory> billingHistories;
 
@@ -432,5 +438,13 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public List<OfferSnapshot> getOrderSnapshot() {
+        return orderSnapshot;
+    }
+
+    public void setOrderSnapshot(List<OfferSnapshot> orderSnapshot) {
+        this.orderSnapshot = orderSnapshot;
     }
 }
