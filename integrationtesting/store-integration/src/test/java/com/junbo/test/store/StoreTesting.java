@@ -341,7 +341,4 @@ public class StoreTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
     }
 
-
-
-
 }

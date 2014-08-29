@@ -59,6 +59,7 @@ class LoginResourceImpl implements LoginResource {
         requestValidator.validateUserNameCheckRequest(userNameCheckRequest)
         UserNameCheckResponse response
         ErrorContext errorContext = new ErrorContext()
+
         Promise.pure().then {
             if (!StringUtils.isEmpty(userNameCheckRequest.email)) {
                 errorContext.fieldName = 'email'
@@ -67,7 +68,7 @@ class LoginResourceImpl implements LoginResource {
             errorContext.fieldName = 'username'
             return resourceContainer.userResource.checkUsername(userNameCheckRequest.username)
         }.recover { Throwable ex ->
-            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate)) {
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.InvalidField)) {
                 response = new UserNameCheckResponse(isAvailable : false)
                 return Promise.pure()
             }

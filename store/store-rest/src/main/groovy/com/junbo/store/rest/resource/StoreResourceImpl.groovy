@@ -257,9 +257,7 @@ class StoreResourceImpl implements StoreResource {
                         value: email.info,
                         isValidated: personalInfo.isValidated
                 )
-
-                return Promise.pure(null)
-            }
+           }
         }.then {
             return resourceContainer.userCredentialResource.list(user.getId(), new UserCredentialListOptions(
                     type: 'PASSWORD',
