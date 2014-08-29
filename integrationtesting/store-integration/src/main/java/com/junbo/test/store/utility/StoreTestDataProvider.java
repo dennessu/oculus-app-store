@@ -42,7 +42,6 @@ import com.junbo.test.store.apihelper.LoginService;
 import com.junbo.test.store.apihelper.StoreService;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -105,6 +104,12 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public UserNameCheckResponse CheckUserName(String userName) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setUsername(userName);
+        return loginClient.CheckUserName(request);
+    }
+
+    public UserNameCheckResponse CheckEmail(String email) throws Exception {
+        UserNameCheckRequest request = new UserNameCheckRequest();
+        request.setEmail(email);
         return loginClient.CheckUserName(request);
     }
 
@@ -237,7 +242,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public UserProfileGetResponse getUserProfile() throws Exception {
-        return storeClient.getUserProfile();
+        return getUserProfile(200);
+    }
+
+    public UserProfileGetResponse getUserProfile(int expectedResponseCode) throws Exception {
+        return storeClient.getUserProfile(expectedResponseCode);
     }
 
     public EntitlementsGetResponse getEntitlement() throws Exception {

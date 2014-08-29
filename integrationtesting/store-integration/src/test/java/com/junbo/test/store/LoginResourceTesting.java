@@ -5,22 +5,31 @@
  */
 package com.junbo.test.store;
 
+import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.login.UserNameCheckResponse;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 /**
  * Created by liangfu on 8/29/14.
  */
 public class LoginResourceTesting extends BaseTestClass {
 
+    OAuthService oAuthClient = OAuthServiceImpl.getInstance();
     @Property(
             priority = Priority.Dailies,
             features = "Store",
@@ -28,7 +37,7 @@ public class LoginResourceTesting extends BaseTestClass {
             owner = "ZhaoYunlong",
             status = Status.Enable,
             steps = {
-                    "Check username with "
+                    "Check username"
             }
     )
     @Test
@@ -52,5 +61,56 @@ public class LoginResourceTesting extends BaseTestClass {
 
         userNameCheckResponse = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15));
         Validator.Validate("Validate random character username", userNameCheckResponse.getIsAvailable(), true);
+    }
+
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check email"
+            }
+    )
+    @Test
+    public void testCheckEmail() throws Exception {
+        String invalidEmail = "123Test";
+        UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckEmail(invalidEmail);
+        Validator.Validate("Validate invalid email", userNameCheckResponse.getIsAvailable(), false);
+
+        invalidEmail = "###1212@silkcloud.com";
+        userNameCheckResponse = testDataProvider.CheckEmail(invalidEmail);
+        Validator.Validate("Validate invalid email", userNameCheckResponse.getIsAvailable(), false);
+
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        userNameCheckResponse = testDataProvider.CheckEmail(createUserRequest.getEmail());
+        Validator.Validate("Validate valid username", userNameCheckResponse.getIsAvailable(), true);
+
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+        Validator.Validate("validate authtoken response username correct", createUserRequest.getUsername(), authTokenResponse.getUsername());
+        UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile(412);
+        assert userProfileGetResponse == null;
+
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
+        assert links != null;
+        for(String link : links) {
+            oAuthClient.accessEmailVerifyLink(link);
+        }
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        Validator.Validate("validate authtoken response name correct", createUserRequest.getUsername(), userProfileGetResponse.getUserProfile().getUsername());
+        Validator.Validate("validate authtoken response email correct", createUserRequest.getEmail(), userProfileGetResponse.getUserProfile().getEmail().getValue());
+
+        userNameCheckResponse = testDataProvider.CheckEmail(invalidEmail);
+        Validator.Validate("Validate invalid email", userNameCheckResponse.getIsAvailable(), false);
+
+        userNameCheckResponse = testDataProvider.CheckEmail(createUserRequest.getEmail());
+        Validator.Validate("Validate duplicate email", userNameCheckResponse.getIsAvailable(), false);
+
+        userNameCheckResponse = testDataProvider.CheckEmail(RandomHelper.randomEmail());
+        Validator.Validate("Validate random character email", userNameCheckResponse.getIsAvailable(), true);
     }
 }
