@@ -9,8 +9,10 @@ package com.junbo.test.store.utility;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.order.spec.model.PaymentInfo;
 import com.junbo.store.spec.model.Entitlement;
 import com.junbo.store.spec.model.billing.BillingProfile;
+import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
@@ -20,6 +22,8 @@ import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
@@ -72,6 +76,16 @@ public class StoreValidationHelper extends BaseValidationHelper {
         verifyEqual(userProfile.getUsername(), createResponse.getUsername(), "verify user name");
         verifyEqual(userProfile.getPassword(), "******", "verify password");
         verifyEqual(userProfile.getPin(), "****", "verify pin");
+    }
+
+    public void verifyEWallet(InstrumentUpdateResponse response){
+        BillingProfile billingProfile = response.getBillingProfile();
+        if (billingProfile.getInstruments().size() <= 0) {
+            throw new TestException("missing payment instrument");
+        }
+        Instrument instrument = billingProfile.getInstruments().get(0); //verify the first item
+        verifyEqual(instrument.getType(), "STOREDVALUE", "verify payment type");
+        verifyEqual(instrument.getStoredValueCurrency(), "USD", "verify stored value currency");
     }
 
 }

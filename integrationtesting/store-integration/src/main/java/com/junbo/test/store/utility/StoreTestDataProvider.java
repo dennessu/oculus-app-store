@@ -17,9 +17,7 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
-import com.junbo.store.spec.model.billing.Instrument;
-import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
-import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
@@ -143,10 +141,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
-    public InstrumentUpdateResponse CreateStoredValue(String uid) throws Exception {
+    public InstrumentUpdateResponse CreateStoredValue() throws Exception {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
-        instrument.setBillingAddress(getBillingAddress());
+        //instrument.setBillingAddress(getBillingAddress());
         instrument.setType("STOREDVALUE");
         instrument.setStoredValueCurrency("USD");
 
@@ -248,6 +246,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         AuthTokenRequest request = new AuthTokenRequest();
         request.setRefreshToken(refreshToken);
         return loginClient.getToken(request);
+    }
+
+    public BillingProfileGetResponse getBillingProfile(String offerId, Country country, String locale) throws Exception{
+        BillingProfileGetRequest request = new BillingProfileGetRequest();
+        request.setCountry(new CountryId(country.toString()));
+        request.setLocale(new LocaleId(locale));
+        request.setOffer(new OfferId(offerId));
+        return storeClient.getBillingProfile(request);
     }
 
 }

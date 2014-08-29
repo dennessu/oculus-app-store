@@ -18,6 +18,7 @@ import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.store.apihelper.StoreService;
 
 //import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
@@ -96,8 +97,9 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request, int expectedResponseCode) throws Exception {
-        //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/billing-profile", expectedResponseCode);
+        String url = String.format(storeUrl + "/billing-profile?offerId=%s&country=%s&locale=%s",
+                IdConverter.idToHexString(request.getOffer()), request.getCountry(), request.getLocale());
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             BillingProfileGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<BillingProfileGetResponse>() {
             }, responseBody);

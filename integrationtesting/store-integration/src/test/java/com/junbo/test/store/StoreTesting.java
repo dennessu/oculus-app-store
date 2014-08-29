@@ -253,7 +253,7 @@ public class StoreTesting extends BaseTestClass {
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
 
-        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateStoredValue(uid);
+        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateStoredValue();
         testDataProvider.CreditStoredValue(uid, new BigDecimal(100));
 
         //get payment id in billing profile
