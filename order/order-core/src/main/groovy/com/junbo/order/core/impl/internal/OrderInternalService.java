@@ -47,6 +47,8 @@ public interface OrderInternalService {
 
     Promise<List<PaymentInstrument>> validatePayments(OrderServiceContext orderServiceContext);
 
+    Promise<PaymentInstrument> validateRefundPaymentInstrument(OrderServiceContext orderServiceContext);
+
     Promise<UserPersonalInfo> validateUserPersonalInfo(OrderServiceContext context);
 
     Promise<Order> validateDuplicatePurchase(Order order, Offer offer);

@@ -453,23 +453,20 @@ class OrderInternalServiceImpl implements OrderInternalService {
             // TODO: need double confirm whether this is the way to validate pi
             // TODO: validate pi after the pi status design is locked down.
             pis.each { PaymentInstrument pi ->
-                if (pi.userId != null && orderServiceContext.order.user.value != pi.userId) {
-                    throw AppCommonErrors.INSTANCE.fieldInvalid(
-                            'payments', 'do not belong to this user').exception()
-                }
-                if (PIType.get(pi.type) == PIType.CREDITCARD) {
-                    String expDate = pi.typeSpecificDetails.expireDate
-                    assert (expDate != null)
-                    Date expireDate = CoreBuilder.buildDate(expDate)
-                    Date now = new Date()
-                    if (expireDate.before(now)) {
-                        throw AppCommonErrors.INSTANCE.fieldInvalid(
-                                'payments', 'PI expired').exception()
-                    }
-                }
-
+                orderValidator.validatePaymentInstrument(pi, orderServiceContext.order)
             }
             return Promise.pure(pis)
+        }
+    }
+
+    Promise<PaymentInstrument> validateRefundPaymentInstrument(OrderServiceContext orderServiceContext) {
+        if (orderServiceContext.order.refundPaymentInstrument == null) {
+            return Promise.pure(null)
+        }
+        Long piId = orderServiceContext.order.refundPaymentInstrument.value
+        return facadeContainer.paymentFacade.getPaymentInstrument(piId).syncThen { PaymentInstrument pi ->
+            orderValidator.validatePaymentInstrument(pi, orderServiceContext.order)
+            return pi
         }
     }
 

@@ -32,9 +32,11 @@ class RefundOrderAction extends BaseOrderEventAwareAction {
         def order = context.orderServiceContext.order
 
         assert(order != null)
-        return orderInternalService.refundOrCancelOrder(order, context.orderServiceContext).syncThen { Order o ->
-            context.orderServiceContext.order = o
-            return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.PENDING)
+        return orderInternalService.validateRefundPaymentInstrument(context.orderServiceContext).then {
+            return orderInternalService.refundOrCancelOrder(order, context.orderServiceContext).syncThen { Order o ->
+                context.orderServiceContext.order = o
+                return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.PENDING)
+            }
         }
     }
 }
