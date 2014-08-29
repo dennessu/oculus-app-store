@@ -5,8 +5,6 @@
  */
 package com.junbo.store.spec.model.purchase;
 
-import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OfferId;
 
 /**
@@ -16,10 +14,6 @@ public class MakeFreePurchaseRequest {
 
     private OfferId offer;
 
-    private CountryId country;
-
-    private LocaleId locale;
-
     public OfferId getOffer() {
         return offer;
     }
@@ -28,19 +22,4 @@ public class MakeFreePurchaseRequest {
         this.offer = offer;
     }
 
-    public CountryId getCountry() {
-        return country;
-    }
-
-    public void setCountry(CountryId country) {
-        this.country = country;
-    }
-
-    public LocaleId getLocale() {
-        return locale;
-    }
-
-    public void setLocale(LocaleId locale) {
-        this.locale = locale;
-    }
 }

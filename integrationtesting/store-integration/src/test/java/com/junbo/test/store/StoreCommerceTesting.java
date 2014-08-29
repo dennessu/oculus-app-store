@@ -7,7 +7,6 @@ import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
-import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
@@ -94,9 +93,9 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
 
-        BillingProfileGetResponse response = testDataProvider.getBillingProfile(null, Country.DEFAULT, "en_US");
+        BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
         //TODO Error response validate
-        response = testDataProvider.getBillingProfile("123", Country.DEFAULT, "en_US");
+        response = testDataProvider.getBillingProfile("123");
         //TODO Error response validate
     }
 
@@ -126,11 +125,11 @@ public class StoreCommerceTesting extends BaseTestClass {
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
-        BillingProfileGetResponse response = testDataProvider.getBillingProfile(null, Country.DEFAULT, "en_US");
+        BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
         assert response.getBillingProfile().getInstruments().size() == 0;
 
         testDataProvider.CreateCreditCard(uid);
-        response = testDataProvider.getBillingProfile(offerId, Country.DEFAULT, "en_US");
+        response = testDataProvider.getBillingProfile(offerId);
         assert response.getBillingProfile().getInstruments().size() == 1;
         assert response.getBillingProfile().getInstruments().get(0).getType().equals("CREDITCARD");
 
@@ -151,7 +150,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        response = testDataProvider.getBillingProfile(offerId, Country.DEFAULT, "en_US");
+        response = testDataProvider.getBillingProfile(offerId);
         assert response.getBillingProfile().getInstruments().size() == 1;
         assert response.getBillingProfile().getInstruments().get(0).getType().equals("STOREDVALUE");
     }

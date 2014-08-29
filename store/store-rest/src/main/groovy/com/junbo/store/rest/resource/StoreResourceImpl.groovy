@@ -1,5 +1,4 @@
 package com.junbo.store.rest.resource.raw
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
@@ -30,10 +29,8 @@ import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
-import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.client.PathParamTranscoder
-import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
@@ -41,9 +38,8 @@ import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
-import com.junbo.store.db.repo.TokenRepository
-import com.junbo.store.rest.browse.BrowseContext
 import com.junbo.store.rest.browse.BrowseService
+import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.rest.purchase.TokenProcessor
@@ -130,6 +126,9 @@ class StoreResourceImpl implements StoreResource {
     @Resource(name = 'storeChallengeHelper')
     private ChallengeHelper challengeHelper
 
+    @Resource(name = 'storeContextBuilder')
+    private ApiContextBuilder apiContextBuilder
+
     private List<com.junbo.identity.spec.v1.model.PIType> piTypes
 
     @Resource(name = 'storeAppErrorUtils')
@@ -153,6 +152,7 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request) {
+        requestValidator.validateRequiredApiHeaders()
         return identityUtils.getActiveUserFromToken().then { User user->
             return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), null).then {
                 return Promise.pure(new VerifyEmailResponse(
@@ -164,6 +164,7 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<UserProfileGetResponse> getUserProfile() {
+        requestValidator.validateRequiredApiHeaders()
         return innerGetUserProfile().syncThen { StoreUserProfile userProfile ->
             return new UserProfileGetResponse(userProfile: userProfile)
         }
@@ -171,6 +172,7 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<UserProfileUpdateResponse> updateUserProfile(UserProfileUpdateRequest request) {
+        requestValidator.validateRequiredApiHeaders()
         return requestValidator.validateUserProfileUpdateRequest(request).then { UserProfileUpdateResponse response ->
             if (response != null) {
                 return Promise.pure(response)
@@ -289,52 +291,49 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest request) {
+        ApiContext apiContext
         User user
         BillingProfileGetResponse response = new BillingProfileGetResponse()
-
+        requestValidator.validateRequiredApiHeaders()
         Promise.pure().then {
             identityUtils.getVerifiedUserFromToken().then { User u ->
                 user = u
                 return Promise.pure()
-            }
-        }.then {
-            requestValidator.validateBillingProfileGetRequest(request).then {
-                requestValidator.validateAndGetCountry(request.country).then { Country country ->
-                    requestValidator.validateAndGetLocale(country, request.locale).then { Locale locale ->
-                        request.locale = locale.getId()
-                        return Promise.pure()
-                    }
+            }.then {
+                apiContextBuilder.buildApiContext().then { ApiContext ac ->
+                    apiContext = ac
+                    return Promise.pure()
                 }
             }
         }.then {
-            return innerGetBillingProfile(user, request.locale, request.country, request.offer).syncThen { BillingProfile billingProfile ->
+            return innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), request.offer).then { BillingProfile billingProfile ->
                 response.billingProfile = billingProfile
-                return response
+                return Promise.pure(response)
             }
         }
     }
 
     @Override
     Promise<InstrumentUpdateResponse> updateInstrument(InstrumentUpdateRequest request) {
+        ApiContext apiContext
         User user
+        requestValidator.validateRequiredApiHeaders()
         Promise.pure().then {
-            requestValidator.validateInstrumentUpdateRequest(request).then {
-                requestValidator.validateAndGetCountry(request.country).then { Country country ->
-                    requestValidator.validateAndGetLocale(country, request.locale).then { Locale locale ->
-                        request.locale = locale.getId()
-                        return Promise.pure()
-                    }
-                }
-            }
+            requestValidator.validateInstrumentUpdateRequest(request)
         }.then {
             identityUtils.getVerifiedUserFromToken().then { User u ->
                 user = u
                 return Promise.pure()
+            }.then {
+                apiContextBuilder.buildApiContext().then { ApiContext ac ->
+                    apiContext = ac
+                    return Promise.pure()
+                }
             }
         }.then {
             instrumentUtils.updateInstrument(user, request)
         }.then {
-            innerGetBillingProfile(user, request.locale, request.country, null as OfferId).then { BillingProfile billingProfile ->
+            innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), null as OfferId).then { BillingProfile billingProfile ->
                 InstrumentUpdateResponse response = new InstrumentUpdateResponse(
                         billingProfile: billingProfile
                 )
@@ -345,6 +344,7 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<EntitlementsGetResponse> getEntitlements(PageParam pageParam) {
+        requestValidator.validateRequiredApiHeaders()
         return innerGetEntitlements(new EntitlementsGetRequest(), false, pageParam).then { Results<Entitlement> entitlementResults ->
             return Promise.pure(new EntitlementsGetResponse(
                     entitlements : entitlementResults.items
@@ -354,6 +354,7 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<IAPEntitlementGetResponse> iapGetEntitlements(IAPEntitlementGetRequest iapEntitlementGetRequest, PageParam pageParam) {
+        requestValidator.validateRequiredApiHeaders()
         return identityUtils.getVerifiedUserFromToken().then {
             EntitlementsGetRequest request = new EntitlementsGetRequest(packageName: iapEntitlementGetRequest.packageName)
             return innerGetEntitlements(request, true, pageParam).then { Results<Entitlement> entitlementResults ->
@@ -451,26 +452,24 @@ class StoreResourceImpl implements StoreResource {
     @Override
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest request) {
         User user
+        ApiContext apiContext
+        requestValidator.validateRequiredApiHeaders()
         identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
-            return Promise.pure(null)
+            apiContextBuilder.buildApiContext().then { ApiContext ac ->
+                apiContext = ac
+                return Promise.pure(null)
+            }
         }.then {
             requestValidator.validateMakeFreePurchaseRequest(request).then {
-                requestValidator.validateAndGetCountry(request.country).then { Country country ->
-                    requestValidator.validateAndGetLocale(country, request.locale).then { Locale locale ->
-                        request.locale = locale.getId()
-                        return Promise.pure()
-                    }
-                }
-            }.then {
-                requestValidator.validateOfferForPurchase(request.offer, request.country, request.locale, true)
+                requestValidator.validateOfferForPurchase(request.offer, apiContext.country.getId(), apiContext.locale.getId(), true)
             }
         }.then {
             Order order = new Order(
                     user: user.getId(),
-                    country: request.country,
+                    country: apiContext.country.getId(),
                     currency: new CurrencyId(FREE_PURCHASE_CURRENCY),
-                    locale: request.locale,
+                    locale: apiContext.locale.getId(),
                     tentative: true,
                     orderItems: [new OrderItem(offer: request.offer, quantity: 1)]
             )
@@ -496,25 +495,23 @@ class StoreResourceImpl implements StoreResource {
         OfferId offerId = request.offer
         Item hostItem
         User user
+        ApiContext apiContext
         CurrencyId currencyId
         PurchaseState purchaseState
         Challenge potentialChallenge
         PreparePurchaseResponse response = new PreparePurchaseResponse()
         PaymentInstrumentId selectedInstrument
 
-        return identityUtils.getVerifiedUserFromToken().then { User u ->
+        requestValidator.validateRequiredApiHeaders()
+        identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
-            return Promise.pure(null)
+            apiContextBuilder.buildApiContext().then { ApiContext ac ->
+                apiContext = ac
+                return Promise.pure()
+            }
         }.then {
             requestValidator.validatePreparePurchaseRequest(request).then {
-                requestValidator.validateAndGetCountry(request.country).then { Country country ->
-                    requestValidator.validateAndGetLocale(country, request.locale).then { Locale locale ->
-                        request.locale = locale.getId()
-                        return Promise.pure()
-                    }
-                }
-            }.then {
-                requestValidator.validateOfferForPurchase(request.offer, request.country, request.locale, false)
+                requestValidator.validateOfferForPurchase(request.offer, apiContext.country.getId(), apiContext.locale.getId(), false)
             }
         }.then {
             if (request.purchaseToken == null) {
@@ -526,10 +523,10 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure(null)
             }
         }.then {
-            fillPurchaseState(purchaseState, request)
+            fillPurchaseState(purchaseState, request, apiContext)
             return Promise.pure(null)
         }.then {
-            resourceContainer.countryResource.get(request.country, new CountryGetOptions()).then { Country country ->
+            resourceContainer.countryResource.get(apiContext.country.getId(), new CountryGetOptions()).then { Country country ->
                 currencyId = country.defaultCurrency
                 return Promise.pure(null)
             }
@@ -566,9 +563,9 @@ class StoreResourceImpl implements StoreResource {
 
             Order order = new Order(
                     user: user.getId(),
-                    country: request.country,
+                    country: apiContext.country.getId(),
                     currency: currencyId,
-                    locale: request.locale,
+                    locale: apiContext.locale.getId(),
                     tentative: true,
                     orderItems: [new OrderItem(offer: request.offer, quantity: 1)]
             )
@@ -613,6 +610,7 @@ class StoreResourceImpl implements StoreResource {
         PurchaseState purchaseState
         User user
         boolean askChallenge = false
+        requestValidator.validateRequiredApiHeaders()
         return identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
             return Promise.pure()
@@ -676,6 +674,7 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<IAPOfferGetResponse> iapGetOffers(IAPOfferGetRequest iapOfferGetRequest) {
+        requestValidator.validateRequiredApiHeaders()
         return identityUtils.getVerifiedUserFromToken().then {
             return getItemByPackageName(iapOfferGetRequest.packageName).then { Item hostItem ->
                 return getInAppOffers(hostItem, iapOfferGetRequest).then { List<Offer> offers ->
@@ -741,15 +740,16 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<TocResponse> getToc() {
-        buildBrowseContext().then { BrowseContext browseContext ->
-            return browseService.getToc(browseContext)
+        requestValidator.validateRequiredApiHeaders()
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.getToc(apiContext)
         }
     }
 
     @Override
     Promise<AcceptTosResponse> acceptTos(AcceptTosRequest request) {
         User user
-        requestValidator.validateAcceptTosRequest(request)
+        requestValidator.validateRequiredApiHeaders().validateAcceptTosRequest(request)
         return identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
             return Promise.pure()
@@ -763,45 +763,51 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<SectionLayoutResponse> getSectionLayout(@BeanParam SectionLayoutRequest request) {
-        buildBrowseContext().then { BrowseContext browseContext ->
-            return browseService.getSectionLayout(request, browseContext)
+        requestValidator.validateRequiredApiHeaders()
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.getSectionLayout(request, apiContext)
         }
     }
 
     @Override
     Promise<ListResponse> getList(ListRequest request) {
-        buildBrowseContext().then { BrowseContext browseContext ->
-            return browseService.getList(request, browseContext)
+        requestValidator.validateRequiredApiHeaders()
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.getList(request, apiContext)
         }
     }
 
     @Override
     Promise<LibraryResponse> getLibrary() {
-        buildBrowseContext().then { BrowseContext browseContext ->
-            return browseService.getLibrary(browseContext)
+        requestValidator.validateRequiredApiHeaders()
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.getLibrary(apiContext)
         }
     }
 
     @Override
     Promise<DetailsResponse> getDetails(DetailsRequest request) {
-        requestValidator.validateDetailsRequest(request)
-        buildBrowseContext().then { BrowseContext browseContext ->
-            return browseService.getLibrary(browseContext)
+        requestValidator.validateRequiredApiHeaders().validateDetailsRequest(request)
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.getLibrary(apiContext)
         }
     }
 
     @Override
     Promise<ReviewsResponse> getReviews(ReviewsRequest request) {
+        requestValidator.validateRequiredApiHeaders()
         return null
     }
 
     @Override
     Promise<AddReviewResponse> addReview(AddReviewRequest request) {
+        requestValidator.validateRequiredApiHeaders()
         return null
     }
 
     @Override
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request) {
+        requestValidator.validateRequiredApiHeaders()
         return null
     }
 
@@ -1187,12 +1193,12 @@ class StoreResourceImpl implements StoreResource {
         return Promise.pure(null) // todo valid pi
     }
 
-    private void fillPurchaseState(PurchaseState purchaseState, PreparePurchaseRequest request) {
+    private void fillPurchaseState(PurchaseState purchaseState, PreparePurchaseRequest request, ApiContext apiContext) {
         if (purchaseState.country == null) {
-            purchaseState.country = request.country
+            purchaseState.country = apiContext.country
         }
         if (purchaseState.locale == null) {
-            purchaseState.locale = request.locale
+            purchaseState.locale = apiContext.locale
         }
         if (purchaseState.offer == null) {
             purchaseState.offer = request.offer.value
@@ -1307,28 +1313,9 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<BrowseContext> buildBrowseContext() {
-        BrowseContext result = new BrowseContext()
-        identityUtils.getVerifiedUserFromToken().then { User u ->
-            result.user = u
-            return Promise.pure()
-        }.then {
-            resourceContainer.countryResource.get(new CountryId('US'), new CountryGetOptions()).then { Country country ->
-                result.country = country
-                return Promise.pure()
-            }
-        }.then {
-            resourceContainer.localeResource.get(new LocaleId(JunboHttpContext.requestHeaders.getFirst(CommonHeaders.ACCEPT_LANGUAGE.value)), new LocaleGetOptions()).then { Locale locale ->
-                result.locale = locale
-                return Promise.pure()
-            }
-        }.then {
-            resourceContainer.currencyResource.get(result.country.defaultCurrency, new CurrencyGetOptions()).then { Currency currency ->
-                result.currency = currency
-                return Promise.pure()
-            }
-        }.then {
-            return Promise.pure(result)
+    private Promise<ApiContext> prepareBrowse() {
+        identityUtils.getVerifiedUserFromToken().then {
+            return apiContextBuilder.buildApiContext()
         }
     }
 }

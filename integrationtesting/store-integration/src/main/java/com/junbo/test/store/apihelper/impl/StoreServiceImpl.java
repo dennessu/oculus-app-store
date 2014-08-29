@@ -20,6 +20,10 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.store.apihelper.StoreService;
+import com.ning.http.client.FluentCaseInsensitiveStringsMap;
+import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.Collections;
 
 //import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
 //import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
@@ -31,6 +35,16 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     private static String storeUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/horizon-api";
 
     private static StoreService instance;
+
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
+        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
+        headers.put("X-ANDROID-ID", Collections.singletonList(RandomStringUtils.randomAlphabetic(10)));
+        headers.put("Accept-Language", Collections.singletonList("en_US"));
+        headers.put("X-MCCMNC", Collections.singletonList("INT_TEST"));
+
+        //for further header, we can set dynamic value from properties here
+        return headers;
+    }
 
     public static synchronized StoreService getInstance() {
         if (instance == null) {
@@ -97,8 +111,8 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request, int expectedResponseCode) throws Exception {
-        String url = String.format(storeUrl + "/billing-profile?offerId=%s&country=%s&locale=%s",
-                IdConverter.idToHexString(request.getOffer()), request.getCountry(), request.getLocale());
+        String url = String.format(storeUrl + "/billing-profile?offerId=%s",
+                IdConverter.idToHexString(request.getOffer()));
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             BillingProfileGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<BillingProfileGetResponse>() {

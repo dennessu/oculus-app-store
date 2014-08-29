@@ -13,6 +13,10 @@ import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.store.apihelper.LoginService;
+import com.ning.http.client.FluentCaseInsensitiveStringsMap;
+import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.Collections;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -28,6 +32,16 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
             instance = new LoginServiceImpl();
         }
         return instance;
+    }
+
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
+        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
+        headers.put("X-ANDROID-ID", Collections.singletonList(RandomStringUtils.randomAlphabetic(10)));
+        headers.put("Accept-Language", Collections.singletonList("en_US"));
+        headers.put("X-MCCMNC", Collections.singletonList("INT_TEST"));
+
+        //for further header, we can set dynamic value from properties here
+        return headers;
     }
 
     @Override

@@ -9,17 +9,16 @@ import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.common.utils.CommonUtils
-import com.junbo.store.rest.browse.BrowseContext
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.SectionInfo
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
-import com.junbo.store.spec.model.browse.document.Tos
 import groovy.transform.CompileStatic
 import org.apache.http.NameValuePair
 import org.apache.http.client.utils.URLEncodedUtils
@@ -90,19 +89,19 @@ class BrowseServiceImpl implements BrowseService {
     ]
 
     @Override
-    Promise<Item> getItem(String itemId, BrowseContext browseContext) {
+    Promise<Item> getItem(String itemId, ApiContext apiContext) {
         resourceContainer.itemResource.getItem(itemId).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
             Item item = new Item()
-            browseDataBuilder.buildItemFromCatalogItem(catalogItem, browseContext, item).then {
+            browseDataBuilder.buildItemFromCatalogItem(catalogItem, apiContext, item).then {
                 return Promise.pure(item)
             }
         }
     }
 
     @Override
-    Promise<TocResponse> getToc(BrowseContext browseContext) {
+    Promise<TocResponse> getToc(ApiContext apiContext) {
         TocResponse result = new TocResponse()
-        challengeHelper.checkTosChallenge(browseContext.user.getId(), storeBrowseTos, null).then { Challenge challenge ->
+        challengeHelper.checkTosChallenge(apiContext.user, storeBrowseTos, null).then { Challenge challenge ->
             if (challenge != null) {
                 return new TocResponse(challenge: challenge)
             }
@@ -113,7 +112,7 @@ class BrowseServiceImpl implements BrowseService {
     }
 
     @Override
-    Promise<SectionLayoutResponse> getSectionLayout(SectionLayoutRequest request, BrowseContext browseContext) {
+    Promise<SectionLayoutResponse> getSectionLayout(SectionLayoutRequest request, ApiContext apiContext) {
         SectionLayoutResponse result = new SectionLayoutResponse()
         Stack<SectionInfo> parents = new Stack<>()
         SectionInfoNode sectionInfoNode = getSectionInfoNode(request.category, request.criteria, sections, parents)
@@ -126,7 +125,7 @@ class BrowseServiceImpl implements BrowseService {
         result.title = sectionInfoNode.name
         result.ordered = sectionInfoNode.ordered == null ? false : sectionInfoNode.ordered
 
-        return innerGetList(sectionInfoNode, null, defaultPageSize, browseContext).then { ListResponse response ->
+        return innerGetList(sectionInfoNode, null, defaultPageSize, apiContext).then { ListResponse response ->
             result.items = response.items
             result.next = response.next
             return Promise.pure(result)
@@ -134,22 +133,22 @@ class BrowseServiceImpl implements BrowseService {
     }
 
     @Override
-    Promise<ListResponse> getList(ListRequest request, BrowseContext browseContext) {
+    Promise<ListResponse> getList(ListRequest request, ApiContext apiContext) {
         Stack<SectionInfo> parents = new Stack<>()
         SectionInfoNode sectionInfoNode = getSectionInfoNode(request.category, request.criteria, sections, parents)
         if (sectionInfoNode == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
 
-        return innerGetList(sectionInfoNode, null, defaultPageSize, browseContext)
+        return innerGetList(sectionInfoNode, null, defaultPageSize, apiContext)
     }
 
     @Override
-    Promise<LibraryResponse> getLibrary(BrowseContext browseContext) {
+    Promise<LibraryResponse> getLibrary(ApiContext apiContext) {
         LibraryResponse result = new LibraryResponse(items: [])
         Set<String> itemIdSet = [] as Set
         PageMetadata pageMetadata = new PageMetadata()
-        EntitlementSearchParam searchParam = new EntitlementSearchParam(userId: browseContext.user.getId(), type: EntitlementType.DOWNLOAD.name(), isActive: true)
+        EntitlementSearchParam searchParam = new EntitlementSearchParam(userId: apiContext.user, type: EntitlementType.DOWNLOAD.name(), isActive: true)
         CommonUtils.loop {
             resourceContainer.entitlementResource.searchEntitlements(searchParam, pageMetadata).then { Results<Entitlement> results ->
                 if (results.items.isEmpty() || results.next?.href == null) {
@@ -161,7 +160,7 @@ class BrowseServiceImpl implements BrowseService {
                         return Promise.pure()
                     }
                     itemIdSet << entitlement.itemId
-                    getAppItemFromEntitlement(entitlement, browseContext).then { Item item ->
+                    getAppItemFromEntitlement(entitlement, apiContext).then { Item item ->
                         if (item != null) {
                             result.items << item
                         }
@@ -182,12 +181,7 @@ class BrowseServiceImpl implements BrowseService {
         }
     }
 
-    Promise<Tos> getTosForToc(BrowseContext browseContext) {
-        // todo implement this
-        return Promise.pure(null)
-    }
-
-    Promise<ListResponse> innerGetList(SectionInfoNode sectionInfoNode, String cursor, Integer count, BrowseContext browseContext) {
+    Promise<ListResponse> innerGetList(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext) {
         ListResponse result = new ListResponse()
         ItemsGetOptions itemsGetOptions = new ItemsGetOptions(cursor: cursor, size: count, type: ItemType.APP.name())
         resourceContainer.itemResource.getItems(itemsGetOptions).then { Results<com.junbo.catalog.spec.model.item.Item> itemResults ->
@@ -195,7 +189,7 @@ class BrowseServiceImpl implements BrowseService {
             Promise.each(itemResults.items) { com.junbo.catalog.spec.model.item.Item catalogItem ->
                 Item item = new Item()
                 result.items << item
-                browseDataBuilder.buildItemFromCatalogItem(catalogItem, browseContext, item)
+                browseDataBuilder.buildItemFromCatalogItem(catalogItem, apiContext, item)
             }
         }.then {
             result.next = new ListResponse.NextOption(
@@ -228,13 +222,13 @@ class BrowseServiceImpl implements BrowseService {
         return null
     }
 
-    private Promise<Item> getAppItemFromEntitlement(Entitlement entitlement, BrowseContext browseContext) {
+    private Promise<Item> getAppItemFromEntitlement(Entitlement entitlement, ApiContext apiContext) {
         resourceContainer.itemResource.getItem(entitlement.itemId).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
             if (catalogItem.type != ItemType.APP.name()) {
                 return Promise.pure(null)
             }
             Item result = new Item()
-            browseDataBuilder.buildItemFromCatalogItem(catalogItem, browseContext, result).then {
+            browseDataBuilder.buildItemFromCatalogItem(catalogItem, apiContext, result).then {
                 return Promise.pure(result)
             }
         }

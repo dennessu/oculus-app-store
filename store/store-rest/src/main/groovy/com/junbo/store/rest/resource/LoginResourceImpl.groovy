@@ -56,7 +56,7 @@ class LoginResourceImpl implements LoginResource {
 
     @Override
     Promise<UserNameCheckResponse> checkUserName(UserNameCheckRequest userNameCheckRequest) {
-        requestValidator.validateUserNameCheckRequest(userNameCheckRequest)
+        requestValidator.validateRequiredApiHeaders().validateUserNameCheckRequest(userNameCheckRequest)
         UserNameCheckResponse response
         ErrorContext errorContext = new ErrorContext()
 
@@ -84,7 +84,7 @@ class LoginResourceImpl implements LoginResource {
 
     @Override
     Promise<UserCredentialRateResponse> rateUserCredential(UserCredentialRateRequest request) {
-        requestValidator.validateUserCredentialRateRequest(request)
+        requestValidator.validateRequiredApiHeaders().validateUserCredentialRateRequest(request)
 
         return resourceContainer.userCredentialResource.rateCredential(new RateUserCredentialRequest(
                 type: request.userCredential.type,
@@ -101,7 +101,7 @@ class LoginResourceImpl implements LoginResource {
 
     @Override
     Promise<AuthTokenResponse> createUser(CreateUserRequest request) {
-        requestValidator.validateCreateUserRequest(request)
+        requestValidator.validateRequiredApiHeaders().validateCreateUserRequest(request)
         ApiContext apiContext = new ApiContext()
         ErrorContext errorContext = new ErrorContext()
 
@@ -143,7 +143,7 @@ class LoginResourceImpl implements LoginResource {
 
     @Override
     Promise<AuthTokenResponse> signIn(UserSignInRequest userSignInRequest) {
-        requestValidator.validateUserSignInRequest(userSignInRequest)
+        requestValidator.validateRequiredApiHeaders().validateUserSignInRequest(userSignInRequest)
 
         return innerSignIn(userSignInRequest.username, userSignInRequest.userCredential.value).recover { Throwable ex ->
             if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {
@@ -155,7 +155,7 @@ class LoginResourceImpl implements LoginResource {
 
     @Override
     Promise<AuthTokenResponse> getAuthToken(AuthTokenRequest tokenRequest) {
-        requestValidator.validateAuthTokenRequest(tokenRequest)
+        requestValidator.validateRequiredApiHeaders().validateAuthTokenRequest(tokenRequest)
 
         return resourceContainer.tokenEndpoint.postToken(
                 new AccessTokenRequest(

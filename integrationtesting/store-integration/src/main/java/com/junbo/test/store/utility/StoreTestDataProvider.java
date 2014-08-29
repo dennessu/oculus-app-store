@@ -9,8 +9,6 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
@@ -162,8 +160,6 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         instrument.setType("CREDITCARD");
         instrument.setIsDefault(false);
         instrumentUpdateRequest.setInstrument(instrument);
-        instrumentUpdateRequest.setLocale(new LocaleId("en_US"));
-        instrumentUpdateRequest.setCountry(new CountryId("US"));
         return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
@@ -172,8 +168,6 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         Instrument instrument = response.getBillingProfile().getInstruments().get(1);
         instrument.setIsDefault(isDefault);
         instrumentUpdateRequest.setInstrument(instrument);
-        instrumentUpdateRequest.setLocale(new LocaleId("en_US"));
-        instrumentUpdateRequest.setCountry(new CountryId("US"));
         return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
@@ -185,8 +179,6 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         instrument.setStoredValueCurrency("USD");
 
         instrumentUpdateRequest.setInstrument(instrument);
-        instrumentUpdateRequest.setCountry(new CountryId("US"));
-        instrumentUpdateRequest.setLocale(new LocaleId("en_US"));
         return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
@@ -196,8 +188,6 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, TosId tosAcceptanceId) throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
-        request.setLocale(new LocaleId("en_US"));
-        request.setCountry(new CountryId(Country.DEFAULT.toString()));
         request.setPurchaseToken(token);
         request.setInstrument(piid);
         request.setOffer(new OfferId(offerId));
@@ -254,8 +244,6 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public MakeFreePurchaseResponse makeFreePurchase(String offerId, Country country) throws Exception {
         MakeFreePurchaseRequest request = new MakeFreePurchaseRequest();
-        request.setLocale(new LocaleId("en_US"));
-        request.setCountry(new CountryId(country.toString()));
         request.setOffer(new OfferId(offerId));
         return storeClient.makeFreePurchase(request);
     }
@@ -300,10 +288,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return getToken(refreshToken, 200);
     }
 
-    public BillingProfileGetResponse getBillingProfile(String offerId, Country country, String locale) throws Exception{
+    public BillingProfileGetResponse getBillingProfile(String offerId) throws Exception{
         BillingProfileGetRequest request = new BillingProfileGetRequest();
-        request.setCountry(new CountryId(country.toString()));
-        request.setLocale(new LocaleId(locale));
         request.setOffer(new OfferId(offerId));
         return storeClient.getBillingProfile(request);
     }

@@ -7,9 +7,9 @@ package com.junbo.store.spec.model;
 
 
 /**
- * The CommonHeaders class.
+ * The StoreApiHeader class.
  */
-public enum  CommonHeaders {
+public enum StoreApiHeader {
 
     ANDROID_ID("X-ANDROID-ID"),
 
@@ -21,7 +21,7 @@ public enum  CommonHeaders {
 
     private final String value;
 
-    private CommonHeaders(String value) {
+    private StoreApiHeader(String value) {
         this.value = value;
     }
 

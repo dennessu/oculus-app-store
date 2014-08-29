@@ -12,13 +12,14 @@ import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
-import com.junbo.store.spec.model.billing.BillingProfileGetRequest
+import com.junbo.store.spec.model.StoreApiHeader
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
 import com.junbo.store.spec.model.browse.AcceptTosRequest
 import com.junbo.store.spec.model.browse.DetailsRequest
@@ -64,7 +65,12 @@ class RequestValidator {
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
 
-    void validateUserNameCheckRequest(UserNameCheckRequest request) {
+    RequestValidator validateRequiredApiHeaders() {
+        validateHeader(StoreApiHeader.ANDROID_ID, StoreApiHeader.USER_AGENT, StoreApiHeader.ACCEPT_LANGUAGE, StoreApiHeader.MCCMNC)
+        return this
+    }
+
+    RequestValidator validateUserNameCheckRequest(UserNameCheckRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -76,9 +82,10 @@ class RequestValidator {
         if (!StringUtils.isEmpty(request.email) && !StringUtils.isEmpty(request.username)) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('email or username', 'only one of the fields [email, username] could be specified at a time').exception()
         }
+        return this
     }
 
-    void validateUserCredentialRateRequest(UserCredentialRateRequest request) {
+    RequestValidator validateUserCredentialRateRequest(UserCredentialRateRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -89,9 +96,10 @@ class RequestValidator {
 
         notEmpty(request.userCredential.type, 'userCredential.type')
         notEmpty(request.userCredential.value, 'userCredential.value')
+        return this
     }
 
-    void validateCreateUserRequest(CreateUserRequest request) {
+    RequestValidator validateCreateUserRequest(CreateUserRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -108,9 +116,10 @@ class RequestValidator {
             notEmpty(request.firstName, 'firstName')
             notEmpty(request.lastName, 'lastName')
         }
+        return this
     }
 
-    void validateUserSignInRequest(UserSignInRequest request) {
+    RequestValidator validateUserSignInRequest(UserSignInRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -123,14 +132,16 @@ class RequestValidator {
         if (!'PASSWORD'.equalsIgnoreCase(request.userCredential.type)) { //
             throw AppCommonErrors.INSTANCE.fieldInvalid('userCredential.type', 'type must be PASSWORD ').exception()
         }
+        return this
     }
 
-    void validateAuthTokenRequest(AuthTokenRequest request) {
+    RequestValidator validateAuthTokenRequest(AuthTokenRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         notEmpty(request.refreshToken, 'refreshToken')
+        return this
     }
 
     private Challenge ensurePasswordChallenge(ChallengeAnswer challengeAnswer) {
@@ -304,11 +315,6 @@ class RequestValidator {
         }
     }
 
-    Promise validateBillingProfileGetRequest(BillingProfileGetRequest request) {
-        notEmpty(request.country, 'country')
-        return Promise.pure(null)
-    }
-
     Promise<Country> validateAndGetCountry(CountryId country) {
         resourceContainer.countryResource.get(country, new CountryGetOptions())
     }
@@ -333,7 +339,6 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         notEmpty(request.instrument, 'instrument')
-        notEmpty(request.country, 'country')
         if (request.instrument.self == null) { // validate for create
             notEmpty(request.instrument.type, 'instrument.type')
             PIType piType
@@ -358,7 +363,6 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         notEmpty(request.offer, 'offer')
-        notEmpty(request.country, 'country')
         return Promise.pure(null)
     }
 
@@ -367,7 +371,6 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         notEmpty(request.offer, 'offerId')
-        notEmpty(request.country, 'country')
         if (request.iapParams != null) {
             notEmpty(request.iapParams.packageName, 'iapParams.packageName')
             notEmpty(request.iapParams.packageSignatureHash, 'iapParams.packageSignatureHash')
@@ -443,6 +446,14 @@ class RequestValidator {
         notEmpty(request.itemId, 'itemId')
     }
 
+    public void validateHeader(StoreApiHeader... headers) {
+        for (StoreApiHeader header: headers) {
+            String value = JunboHttpContext.requestHeaders.getFirst(header.value)
+            if (StringUtils.isEmpty(value)) {
+                throw AppCommonErrors.INSTANCE.headerRequired(header.value).exception()
+            }
+        }
+    }
 
     private Promise<Boolean> isMailChanged(UserProfileUpdateRequest request, User currentUser) {
         if (StringUtils.isEmpty(request.userProfile?.email?.value)) {
