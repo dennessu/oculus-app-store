@@ -5,6 +5,7 @@
  */
 package com.junbo.test.store;
 
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
@@ -20,8 +21,12 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import com.ning.http.util.DateUtil;
+import org.apache.commons.lang3.time.DateUtils;
 import org.testng.annotations.Test;
 
+import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -112,5 +117,66 @@ public class LoginResourceTesting extends BaseTestClass {
 
         userNameCheckResponse = testDataProvider.CheckEmail(RandomHelper.randomEmail());
         Validator.Validate("Validate random character email", userNameCheckResponse.getIsAvailable(), true);
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check create user successful"
+            }
+    )
+    @Test
+    public void testCreateUser() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        String invalidUsername = "123yunlong";
+        String oldUsername = createUserRequest.getUsername();
+        createUserRequest.setUsername(invalidUsername);
+        AuthTokenResponse createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
+        assert createUserResponse == null;
+
+        createUserRequest.setUsername(oldUsername);
+        String oldEmail = createUserRequest.getEmail();
+        createUserRequest.setEmail("##1234@silkcloud.com");
+        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
+        assert createUserResponse == null;
+
+        createUserRequest.setEmail(oldEmail);
+        String oldNickName = createUserRequest.getNickName();
+        // nick name should not be the same as username
+        createUserRequest.setNickName(createUserRequest.getUsername());
+        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
+        assert createUserResponse == null;
+
+        createUserRequest.setNickName(oldNickName);
+        String oldPassword = createUserRequest.getPassword();
+        createUserRequest.setPassword(createUserRequest.getUsername() + "gggg");
+        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
+        assert createUserResponse == null;
+
+        createUserRequest.setPassword(oldPassword);
+        String oldPin = createUserRequest.getPin();
+        createUserRequest.setPin("abcd");
+        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
+        assert createUserResponse == null;
+
+        createUserRequest.setPin(oldPin);
+        Date oldDob = createUserRequest.getDob();
+        createUserRequest.setDob(DateUtils.addYears(new Date(), 100));
+        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
+        assert createUserResponse == null;
+
+        createUserRequest.setDob(oldDob);
+        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 200);
+        Validator.Validate("Validate username created successfully", createUserRequest.getUsername(), createUserResponse.getUsername());
+
+        UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+
+        Validator.Validate("Validate username in userProfile", createUserRequest.getUsername(), userProfileGetResponse.getUserProfile().getUsername());
+        Validator.Validate("Validate nickName in userProfile", createUserRequest.getNickName(), userProfileGetResponse.getUserProfile().getNickName());
     }
 }

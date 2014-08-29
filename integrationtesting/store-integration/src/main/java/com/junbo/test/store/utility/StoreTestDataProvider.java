@@ -86,10 +86,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return createUserRequest;
     }
 
-    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
-        AuthTokenResponse response = loginClient.CreateUser(createUserRequest);
+    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode) throws Exception {
+        AuthTokenResponse response = loginClient.CreateUser(createUserRequest, expectedResponseCode);
 
-        if (needVerifyEmail) {
+        if (needVerifyEmail && expectedResponseCode == 200) {
             oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
             List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()), createUserRequest.getEmail());
             assert links != null;
@@ -99,6 +99,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         }
 
         return response;
+    }
+
+    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
+        return CreateUser(createUserRequest, needVerifyEmail, 200);
     }
 
     public UserNameCheckResponse CheckUserName(String userName) throws Exception {

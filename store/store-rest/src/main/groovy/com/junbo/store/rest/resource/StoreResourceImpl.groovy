@@ -41,9 +41,9 @@ import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
+import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.browse.BrowseContext
 import com.junbo.store.rest.browse.BrowseService
-import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.rest.purchase.TokenProcessor
@@ -239,6 +239,7 @@ class StoreResourceImpl implements StoreResource {
             user = u;
             userProfile = new StoreUserProfile(
                     userId: u.getId(),
+                    nickName: user.nickName,
                     headline: user.profile?.headline,
                     avatar: user.profile?.avatar?.href
             )
