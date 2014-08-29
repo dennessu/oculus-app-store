@@ -280,10 +280,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getEntitlement();
     }
 
-    public AuthTokenResponse getToken(String refreshToken) throws Exception {
+    public AuthTokenResponse getToken(String refreshToken, int expectedCode) throws Exception {
         AuthTokenRequest request = new AuthTokenRequest();
         request.setRefreshToken(refreshToken);
-        return loginClient.getToken(request);
+        return loginClient.getToken(request, expectedCode);
+    }
+
+    public AuthTokenResponse getToken(String refreshToken) throws Exception {
+        return getToken(refreshToken, 200);
     }
 
     public BillingProfileGetResponse getBillingProfile(String offerId, Country country, String locale) throws Exception{

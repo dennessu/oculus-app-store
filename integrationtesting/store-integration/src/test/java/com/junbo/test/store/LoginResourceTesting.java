@@ -28,6 +28,7 @@ import com.junbo.test.common.property.Status;
 import org.apache.commons.lang3.time.DateUtils;
 import org.testng.annotations.Test;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -284,5 +285,27 @@ public class LoginResourceTesting extends BaseTestClass {
 
         signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), newPassword);
         Validator.Validate("validate signIn token equals to current user with username login", createUserRequest.getUsername(), signInResponse.getUsername());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check create user successful"
+            }
+    )
+    @Test
+    public void testRefreshToken() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+
+        AuthTokenResponse response = testDataProvider.getToken(authTokenResponse.getRefreshToken());
+        Validator.Validate("Validate refreshToken works", response.getUsername(), authTokenResponse.getUsername());
+
+        response = testDataProvider.getToken(authTokenResponse.getAccessToken(), 400);
+        assert response == null;
     }
 }

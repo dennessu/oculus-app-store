@@ -103,7 +103,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public AuthTokenResponse getToken(AuthTokenRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/token", request);
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/token", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);
