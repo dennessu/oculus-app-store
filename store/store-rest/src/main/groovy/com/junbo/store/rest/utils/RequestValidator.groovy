@@ -1,5 +1,4 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -9,7 +8,6 @@ import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
@@ -38,7 +36,6 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
-
 /**
  * The RequestValidator class.
  */
@@ -380,7 +377,7 @@ class RequestValidator {
             if (request.challengeAnswer.type == Constants.ChallengeType.PIN) {
                 notEmpty(request.challengeAnswer.pin, 'challengeAnswer.pin')
             } else if (request.challengeAnswer.type == Constants.ChallengeType.TOS_ACCEPTANCE) {
-                notEmpty(request.challengeAnswer.tosAcceptable, 'challengeAnswer.tosAcceptable')
+                notEmpty(request.challengeAnswer.acceptedTos, 'challengeAnswer.acceptedTos')
             } else if (request.challengeAnswer.type == Constants.ChallengeType.PASSWORD) {
                 notEmpty(request.challengeAnswer.password, 'challengeAnswer.password')
             } else if (request.challengeAnswer.type != Constants.ChallengeType.EMAIL_VERIFICATION) {

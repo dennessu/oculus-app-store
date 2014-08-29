@@ -16,7 +16,7 @@ public interface BrowseService {
 
     Promise<Item> getItem(String itemId, BrowseContext browseContext);
 
-    Promise<TocResponse> getTocResponse(BrowseContext browseContext);
+    Promise<TocResponse> getToc(BrowseContext browseContext);
 
     Promise<SectionLayoutResponse> getSectionLayout(SectionLayoutRequest request, BrowseContext browseContext);
 
