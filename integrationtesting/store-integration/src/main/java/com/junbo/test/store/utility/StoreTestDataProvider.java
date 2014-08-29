@@ -155,7 +155,17 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         instrument.setAccountNum(encryptedString);
         instrument.setBillingAddress(getBillingAddress());
         instrument.setType("CREDITCARD");
-        instrument.setIsDefault(true);
+        instrument.setIsDefault(false);
+        instrumentUpdateRequest.setInstrument(instrument);
+        instrumentUpdateRequest.setLocale(new LocaleId("en_US"));
+        instrumentUpdateRequest.setCountry(new CountryId("US"));
+        return storeClient.updateInstrument(instrumentUpdateRequest);
+    }
+
+    public InstrumentUpdateResponse UpdateCreditCard(InstrumentUpdateResponse response, boolean isDefault) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
+        Instrument instrument = response.getBillingProfile().getInstruments().get(1);
+        instrument.setIsDefault(isDefault);
         instrumentUpdateRequest.setInstrument(instrument);
         instrumentUpdateRequest.setLocale(new LocaleId("en_US"));
         instrumentUpdateRequest.setCountry(new CountryId("US"));

@@ -20,7 +20,6 @@ import org.testng.annotations.Test;
  */
 public class StoreCommerceTesting extends BaseTestClass {
 
-
     @Property(
             priority = Priority.BVT,
             features = "Store commerce",
@@ -43,6 +42,37 @@ public class StoreCommerceTesting extends BaseTestClass {
         InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
         //verify decrypted credit card info
         validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
+    }
+
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test update credit card ",
+            steps = {
+                    "1. Create user",
+                    "2. Add credit card into billing profile",
+                    "3. Add another credit card into billing profile",
+                    "3. Update the second credit card as default payment",
+                    "3. verify response the second cc is default pi",
+            }
+    )
+    @Test
+    public void testUpdateCreditCard() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+
+        InstrumentUpdateResponse instrumentUpdateResponse1 = testDataProvider.CreateCreditCard(uid);
+        //verify decrypted credit card info
+        InstrumentUpdateResponse instrumentUpdateResponse2 = testDataProvider.CreateCreditCard(uid);
+
+        InstrumentUpdateResponse instrumentUpdateResponse3 = testDataProvider.UpdateCreditCard(instrumentUpdateResponse2, true);
+
+        assert instrumentUpdateResponse3.getBillingProfile().getInstruments().get(1).getIsDefault().equals(true);
     }
 
     @Property(
@@ -113,7 +143,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null, true);
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+                preparePurchaseResponse.getChallenge().getTos().getTosId());
 
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
