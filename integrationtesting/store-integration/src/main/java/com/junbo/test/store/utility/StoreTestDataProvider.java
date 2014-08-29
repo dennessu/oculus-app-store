@@ -22,6 +22,8 @@ import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
+import com.junbo.store.spec.model.identity.UserProfileUpdateRequest;
+import com.junbo.store.spec.model.identity.UserProfileUpdateResponse;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.catalog.OfferService;
@@ -116,18 +118,21 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return loginClient.CheckUserName(request);
     }
 
-    public AuthTokenResponse SignIn(String userName, String password) throws Exception {
+    public AuthTokenResponse SignIn(String username, String password, int expectedCode) throws Exception {
         UserSignInRequest userSignInRequest = new UserSignInRequest();
-        userSignInRequest.setUsername(userName);
+        userSignInRequest.setUsername(username);
         UserCredential userCredential = new UserCredential();
         userCredential.setType("PASSWORD");
         userCredential.setValue(password);
         userSignInRequest.setUserCredential(userCredential);
-        return loginClient.signIn(userSignInRequest);
+        return loginClient.signIn(userSignInRequest, expectedCode);
+    }
+
+    public AuthTokenResponse SignIn(String userName, String password) throws Exception {
+        return SignIn(userName, password, 200);
     }
 
     public UserCredentialRateResponse RateUserCredential(String password, String username) throws Exception {
-        UserCredentialRateRequest request = new UserCredentialRateRequest();
         UserCredentialRateRequest userCredentialRateRequest = new UserCredentialRateRequest();
         UserCredential userCredential = new UserCredential();
         userCredential.setType("PASSWORD");
@@ -273,14 +278,26 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getUserProfile(expectedResponseCode);
     }
 
+    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest, int expectedResponseCode) throws Exception {
+        return storeClient.updateUserProfile(userProfileUpdateRequest, expectedResponseCode);
+    }
+
+    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest) throws Exception {
+        return updateUserProfile(userProfileUpdateRequest, 200);
+    }
+
     public EntitlementsGetResponse getEntitlement() throws Exception {
         return storeClient.getEntitlement();
     }
 
-    public AuthTokenResponse getToken(String refreshToken) throws Exception {
+    public AuthTokenResponse getToken(String refreshToken, int expectedCode) throws Exception {
         AuthTokenRequest request = new AuthTokenRequest();
         request.setRefreshToken(refreshToken);
-        return loginClient.getToken(request);
+        return loginClient.getToken(request, expectedCode);
+    }
+
+    public AuthTokenResponse getToken(String refreshToken) throws Exception {
+        return getToken(refreshToken, 200);
     }
 
     public BillingProfileGetResponse getBillingProfile(String offerId, Country country, String locale) throws Exception{

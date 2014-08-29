@@ -68,12 +68,17 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     public AuthTokenResponse signIn(UserSignInRequest userSignInRequest, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/sign-in", userSignInRequest, expectedResponseCode);
 
-        AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
-        }, responseBody);
-        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
-        Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
-        Master.getInstance().setCurrentUid(uid);
-        return authTokenResponse;
+        if (expectedResponseCode == 200) {
+            AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
+            }, responseBody);
+            String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+            Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
+            Master.getInstance().setCurrentUid(uid);
+
+            return authTokenResponse;
+        }
+
+        return null;
     }
 
     @Override
@@ -98,7 +103,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public AuthTokenResponse getToken(AuthTokenRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/token", request);
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/token", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);
