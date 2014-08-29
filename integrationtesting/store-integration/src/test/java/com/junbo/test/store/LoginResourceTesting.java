@@ -5,8 +5,11 @@
  */
 package com.junbo.test.store;
 
-import com.junbo.identity.spec.v1.model.User;
+import com.junbo.store.spec.model.ChallengeAnswer;
+import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
+import com.junbo.store.spec.model.identity.UserProfileUpdateRequest;
+import com.junbo.store.spec.model.identity.UserProfileUpdateResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.login.UserCredentialRateResponse;
@@ -22,11 +25,9 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import com.ning.http.util.DateUtil;
 import org.apache.commons.lang3.time.DateUtils;
 import org.testng.annotations.Test;
 
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +38,8 @@ public class LoginResourceTesting extends BaseTestClass {
 
     public static String CREDENTIAL_STRENGTH_INVALID = "INVALID";
     public static String CREDENTIAL_STRENGTH_WEAK = "WEAK";
-
+    public static String CREDENTIAL_STRENGTH_FAIR = "FAIR";
+    public static String CREDENTIAL_STRENGTH_STRONG = "STRONG";
 
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
     @Property(
@@ -199,6 +201,88 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testRateCredential() throws Exception {
         String password = "123456";
         UserCredentialRateResponse response = testDataProvider.RateUserCredential(password);
-        Validator.Validate("validate invalid password", response.getStrength(), "INVALID");
+        Validator.Validate("validate invalid password", response.getStrength(), CREDENTIAL_STRENGTH_INVALID);
+
+        password = "12345678";
+        response = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate weak character password", response.getStrength(), CREDENTIAL_STRENGTH_WEAK);
+
+        password = "ABCDEFGHIJK";
+        response = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate weak character password", response.getStrength(), CREDENTIAL_STRENGTH_WEAK);
+
+        password = "abcdefghijklmn";
+        response = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate weak character password", response.getStrength(), CREDENTIAL_STRENGTH_WEAK);
+
+        password = "abcdEFGH#";
+        response = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate fair character password", response.getStrength(), CREDENTIAL_STRENGTH_FAIR);
+
+        password = "abcdEFG#$1223";
+        response = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate strong character password", response.getStrength(), CREDENTIAL_STRENGTH_STRONG);
+
+        String username = "abcdefg";
+        response = testDataProvider.RateUserCredential(password, username);
+        Validator.Validate("validate invalid character password", response.getStrength(), CREDENTIAL_STRENGTH_INVALID);
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check create user successful"
+            }
+    )
+    @Test
+    public void testLogin() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+
+        assert authTokenResponse.getUsername() != null;
+        AuthTokenResponse signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        Validator.Validate("validate createdToken equals to signIn token", authTokenResponse.getUsername(), signInResponse.getUsername());
+
+        signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), RandomHelper.randomAlphabetic(15), 412);
+        assert signInResponse == null;
+
+        signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        Validator.Validate("validate createdToken equals to signIn token", authTokenResponse.getUsername(), signInResponse.getUsername());
+
+        signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        Validator.Validate("validate createdToken equals to signIn token through email login", authTokenResponse.getUsername(), signInResponse.getUsername());
+
+        signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), RandomHelper.randomAlphabetic(15), 412);
+        assert signInResponse == null;
+
+        signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        Validator.Validate("validate createdToken equals to signIn token through email login", authTokenResponse.getUsername(), signInResponse.getUsername());
+
+        UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
+        StoreUserProfile storeUserProfile = new StoreUserProfile();
+        String newPassword = RandomHelper.randomAlphabetic(6) + RandomHelper.randomNumeric(5);
+        storeUserProfile.setPassword(newPassword);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+
+        UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getChallenge() != null;
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
+
+        ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+        challengeAnswer.setType("PASSWORD");
+        challengeAnswer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(challengeAnswer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+
+        signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), newPassword);
+        Validator.Validate("validate signIn token equals to the current user", createUserRequest.getUsername(), signInResponse.getUsername());
+
+        signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), newPassword);
+        Validator.Validate("validate signIn token equals to current user with username login", createUserRequest.getUsername(), signInResponse.getUsername());
     }
 }
