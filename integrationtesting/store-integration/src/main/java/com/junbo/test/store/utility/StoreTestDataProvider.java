@@ -14,6 +14,7 @@ import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.id.TosId;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -127,13 +128,24 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return loginClient.signIn(userSignInRequest);
     }
 
-    public UserCredentialRateResponse RateUserCredential(String password) throws Exception {
+    public UserCredentialRateResponse RateUserCredential(String password, String username) throws Exception {
+        UserCredentialRateRequest request = new UserCredentialRateRequest();
         UserCredentialRateRequest userCredentialRateRequest = new UserCredentialRateRequest();
         UserCredential userCredential = new UserCredential();
         userCredential.setType("PASSWORD");
         userCredential.setValue(password);
         userCredentialRateRequest.setUserCredential(userCredential);
+
+        if (!StringUtils.isEmpty(username)) {
+            UserCredentialRateContext context = new UserCredentialRateContext();
+            context.setUsername(username);
+            userCredentialRateRequest.setContext(context);
+        }
         return loginClient.rateUserCredential(userCredentialRateRequest);
+    }
+
+    public UserCredentialRateResponse RateUserCredential(String password) throws Exception {
+        return RateUserCredential(password, null);
     }
 
     public InstrumentUpdateResponse CreateCreditCard(String uid) throws Exception {
@@ -169,7 +181,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         paymentProvider.creditWallet(uid, amount);
     }
 
-    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, Boolean tosAcceptance) throws Exception {
+    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, TosId tosAcceptanceId) throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
         request.setLocale(new LocaleId("en_US"));
         request.setCountry(new CountryId(Country.DEFAULT.toString()));
@@ -183,10 +195,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             challengeAnswer.setPin(pin);
             request.setChallengeAnswer(challengeAnswer);
         }
-        if (tosAcceptance != null && tosAcceptance) {
+        if (tosAcceptanceId != null) {
             ChallengeAnswer challengeAnswer = new ChallengeAnswer();
             challengeAnswer.setType("TOS_ACCEPTANCE");
-            challengeAnswer.setTosAcceptable(true);
+            challengeAnswer.setAcceptedTos(tosAcceptanceId);
             request.setChallengeAnswer(challengeAnswer);
         }
         return storeClient.preparePurchase(request);

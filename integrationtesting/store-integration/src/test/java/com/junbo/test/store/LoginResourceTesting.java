@@ -9,6 +9,7 @@ import com.junbo.identity.spec.v1.model.User;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
+import com.junbo.store.spec.model.login.UserCredentialRateResponse;
 import com.junbo.store.spec.model.login.UserNameCheckResponse;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.RandomHelper;
@@ -33,6 +34,10 @@ import java.util.List;
  * Created by liangfu on 8/29/14.
  */
 public class LoginResourceTesting extends BaseTestClass {
+
+    public static String CREDENTIAL_STRENGTH_INVALID = "INVALID";
+    public static String CREDENTIAL_STRENGTH_WEAK = "WEAK";
+
 
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
     @Property(
@@ -178,5 +183,22 @@ public class LoginResourceTesting extends BaseTestClass {
 
         Validator.Validate("Validate username in userProfile", createUserRequest.getUsername(), userProfileGetResponse.getUserProfile().getUsername());
         Validator.Validate("Validate nickName in userProfile", createUserRequest.getNickName(), userProfileGetResponse.getUserProfile().getNickName());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check rate credential"
+            }
+    )
+    @Test
+    public void testRateCredential() throws Exception {
+        String password = "123456";
+        UserCredentialRateResponse response = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate invalid password", response.getStrength(), "INVALID");
     }
 }

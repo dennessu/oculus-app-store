@@ -154,7 +154,7 @@ class DataConverter {
             title: tos.title,
             content: tos.content,
             accepted: userTosAgreement != null,
-            acceptedDate: userTosAgreement.agreementTime
+            acceptedDate: userTosAgreement?.agreementTime
         )
     }
 }
