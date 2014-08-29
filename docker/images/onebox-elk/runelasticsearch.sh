@@ -1,2 +1,2 @@
 #!/bin/bash
-/var/elk/elasticsearch/bin/elasticsearch
+cd /var/elk/elasticsearch && /var/elk/elasticsearch/bin/elasticsearch

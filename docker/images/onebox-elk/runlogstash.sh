@@ -1,2 +1,2 @@
 #!/bin/bash
-/var/elk/logstash/bin/logstash agent -f /config/logstash.conf
+cd /var/elk/logstash && /var/elk/logstash/bin/logstash agent -f /config/logstash.conf
