@@ -8,14 +8,15 @@ package com.junbo.test.store.apihelper;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
-//import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
-//import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
+
+//import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+//import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -38,9 +39,9 @@ public interface StoreService {
 
     BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request, int expectedResponseCode) throws Exception;
 
-    BillingProfileUpdateResponse updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest) throws Exception;
+    InstrumentUpdateResponse updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest) throws Exception;
 
-    BillingProfileUpdateResponse updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest, int expectedResponseCode) throws Exception;
+    InstrumentUpdateResponse updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest, int expectedResponseCode) throws Exception;
 
     PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest) throws Exception;
 

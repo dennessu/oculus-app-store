@@ -11,7 +11,6 @@ import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppError
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
@@ -550,7 +549,7 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure(null)
             }
         }.then {
-            if (StringUtils.isEmpty(potentialChallengeType)) {
+            if (!StringUtils.isEmpty(potentialChallengeType)) {
                 return tokenProcessor.toTokenString(purchaseState).then { String token ->
                     return Promise.pure(
                             new PreparePurchaseResponse(
@@ -627,7 +626,7 @@ class StoreResourceImpl implements StoreResource {
                     throw AppErrors.INSTANCE.invalidPurchaseToken([new com.junbo.common.error.ErrorDetail(reason: 'OrderId_Invalid')] as com.junbo.common.error.ErrorDetail[]).exception()
                 }
 
-                return requestValidator.validatePurchaseToken(commitPurchaseRequest.purchaseToken, 'purchaseToken')
+                return requestValidator.validateOrderValid(purchaseState.order)
             }
         }.then {
             if (askChallenge) {
@@ -1212,7 +1211,7 @@ class StoreResourceImpl implements StoreResource {
             return tokenRepository.searchByUserIdAndType(userId, Constants.ChallengeType.PIN, 1, 0).then { List<Token> tokenList ->
                 if (CollectionUtils.isEmpty(tokenList)) {
                     askChallenge = true
-                    return Promise.pure(null)
+                    return Promise.pure(askChallenge)
                 }
 
                 Token validToken = tokenList.find { Token token ->
@@ -1220,7 +1219,7 @@ class StoreResourceImpl implements StoreResource {
                 }
 
                 askChallenge = validToken == null
-                return Promise.pure(null)
+                return Promise.pure(askChallenge)
             }.then {
                 return Promise.pure(askChallenge)
             }
@@ -1259,7 +1258,7 @@ class StoreResourceImpl implements StoreResource {
 
     private Promise<Boolean> isPurchaseTosChallengeNeeded(UserId userId, PreparePurchaseRequest request) {
         if (request?.challengeAnswer?.type != null && request?.challengeAnswer?.type != Constants.ChallengeType.TOS_ACCEPTANCE) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('challengeAnswer.type').exception()
+            return Promise.pure(true)
         }
 
         return resourceContainer.tosResource.list(new TosListOptions(title: PURCHASE_TOS_TITLE)).then { Results<Tos> toses ->

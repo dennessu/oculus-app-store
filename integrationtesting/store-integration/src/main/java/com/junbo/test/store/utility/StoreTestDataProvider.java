@@ -14,13 +14,12 @@ import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.common.id.UserId;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 import com.junbo.store.spec.model.billing.Instrument;
+import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
@@ -43,6 +42,8 @@ import com.junbo.test.store.apihelper.LoginService;
 import com.junbo.test.store.apihelper.StoreService;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -126,8 +127,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return loginClient.rateUserCredential(userCredentialRateRequest);
     }
 
-    public BillingProfileUpdateResponse CreateCreditCard(String uid) throws Exception {
-        BillingProfileUpdateRequest billingProfileUpdateRequest = new BillingProfileUpdateRequest();
+    public InstrumentUpdateResponse CreateCreditCard(String uid) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
@@ -135,32 +136,31 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         instrument.setAccountNum(encryptedString);
         instrument.setBillingAddress(getBillingAddress());
         instrument.setType("CREDITCARD");
-        billingProfileUpdateRequest.setInstrument(instrument);
-        billingProfileUpdateRequest.setAction("ADD_PI");
-        billingProfileUpdateRequest.setUserId(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
-        billingProfileUpdateRequest.setLocale(new LocaleId("en_US"));
-        return storeClient.updateBillingProfile(billingProfileUpdateRequest);
+        instrument.setIsDefault(true);
+        instrumentUpdateRequest.setInstrument(instrument);
+        instrumentUpdateRequest.setLocale(new LocaleId("en_US"));
+        instrumentUpdateRequest.setCountry(new CountryId("US"));
+        return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
-    public BillingProfileUpdateResponse CreateStoredValue(String uid) throws Exception {
-        BillingProfileUpdateRequest billingProfileUpdateRequest = new BillingProfileUpdateRequest();
+    public InstrumentUpdateResponse CreateStoredValue(String uid) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
         instrument.setBillingAddress(getBillingAddress());
         instrument.setType("STOREDVALUE");
         instrument.setStoredValueCurrency("USD");
 
-        billingProfileUpdateRequest.setInstrument(instrument);
-        billingProfileUpdateRequest.setAction("ADD_PI");
-        billingProfileUpdateRequest.setUserId(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
-        billingProfileUpdateRequest.setLocale(new LocaleId("en_US"));
-        return storeClient.updateBillingProfile(billingProfileUpdateRequest);
+        instrumentUpdateRequest.setInstrument(instrument);
+        instrumentUpdateRequest.setCountry(new CountryId("US"));
+        instrumentUpdateRequest.setLocale(new LocaleId("en_US"));
+        return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
     public void CreditStoredValue(String uid, BigDecimal amount) throws Exception {
         paymentProvider.creditWallet(uid, amount);
     }
 
-    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin) throws Exception {
+    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, Boolean tosAcceptance) throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
         request.setLocale(new LocaleId("en_US"));
         request.setCountry(new CountryId(Country.DEFAULT.toString()));
@@ -168,10 +168,18 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         request.setInstrument(piid);
         request.setOffer(new OfferId(offerId));
 
-        ChallengeAnswer challengeAnswer = new ChallengeAnswer();
-        challengeAnswer.setType("PIN");
-        challengeAnswer.setPin(pin);
-        //request.setIapParams();
+        if (!StringUtils.isEmpty(pin)) {
+            ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+            challengeAnswer.setType("PIN");
+            challengeAnswer.setPin(pin);
+            request.setChallengeAnswer(challengeAnswer);
+        }
+        if (tosAcceptance != null && tosAcceptance) {
+            ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+            challengeAnswer.setType("TOS_ACCEPTANCE");
+            challengeAnswer.setTosAcceptable(true);
+            request.setChallengeAnswer(challengeAnswer);
+        }
         return storeClient.preparePurchase(request);
     }
 

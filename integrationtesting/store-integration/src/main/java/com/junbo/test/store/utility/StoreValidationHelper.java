@@ -11,8 +11,8 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.store.spec.model.Entitlement;
 import com.junbo.store.spec.model.billing.BillingProfile;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 import com.junbo.store.spec.model.billing.Instrument;
+import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -31,8 +31,7 @@ import com.junbo.test.common.libs.IdConverter;
 public class StoreValidationHelper extends BaseValidationHelper {
     OfferService offerClient = OfferServiceImpl.instance();
 
-    public void verifyAddNewCreditCard(BillingProfileUpdateResponse response) {
-        verifyEqual(response.getStatus(), String.format("SUCCESS"), "verify status");
+    public void verifyAddNewCreditCard(InstrumentUpdateResponse response) {
         BillingProfile billingProfile = response.getBillingProfile();
         if (billingProfile.getInstruments().size() <= 0) {
             throw new TestException("missing payment instrument");

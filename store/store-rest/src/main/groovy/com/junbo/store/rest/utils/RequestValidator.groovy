@@ -377,8 +377,13 @@ class RequestValidator {
             notEmpty(request.iapParams.packageVersion, 'iapParams.packageVersion')
         }
         if (request.challengeAnswer != null) {
-            notEmpty(request.challengeAnswer.pin, 'challengeAnswer.pin')
-            if (request.challengeAnswer.pin != Constants.ChallengeType.PIN) {
+            if (request.challengeAnswer.type == Constants.ChallengeType.PIN) {
+                notEmpty(request.challengeAnswer.pin, 'challengeAnswer.pin')
+            } else if (request.challengeAnswer.type == Constants.ChallengeType.TOS_ACCEPTANCE) {
+                notEmpty(request.challengeAnswer.tosAcceptable, 'challengeAnswer.tosAcceptable')
+            } else if (request.challengeAnswer.type == Constants.ChallengeType.PASSWORD) {
+                notEmpty(request.challengeAnswer.password, 'challengeAnswer.password')
+            } else if (request.challengeAnswer.type != Constants.ChallengeType.EMAIL_VERIFICATION) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('challengeAnswer.type').exception()
             }
         }
@@ -403,11 +408,11 @@ class RequestValidator {
         }
     }
 
-    Promise validatePurchaseToken(String purchaseToken, String fieldName) {
+    Promise validateOrderValid(OrderId orderId) {
         Promise.pure(null).then {
-            resourceContainer.orderResource.getOrderByOrderId(new OrderId(IdFormatter.decodeId(OrderId, purchaseToken)))
+            resourceContainer.orderResource.getOrderByOrderId(orderId)
         }.recover {
-            throw AppCommonErrors.INSTANCE.fieldInvalid(fieldName).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
         }
     }
 

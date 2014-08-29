@@ -8,11 +8,8 @@ package com.junbo.test.store;
 
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.oauth.spec.endpoint.AccessTokenResource;
-import com.junbo.oauth.spec.model.AccessToken;
-import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
+import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -38,7 +35,6 @@ import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.testng.annotations.Test;
 
-import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -76,21 +72,27 @@ public class StoreTesting extends BaseTestClass {
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
 
-        BillingProfileUpdateResponse billingProfileUpdateResponse = testDataProvider.CreateCreditCard(uid);
+        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
         //verify decrypted credit card info
-        validationHelper.verifyAddNewCreditCard(billingProfileUpdateResponse);
+        validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
 
         //get payment id in billing profile
-        PaymentInstrumentId paymentId = billingProfileUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
+        PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
 
-        String offerId = testDataProvider.getOfferIdByName(offer_iap_free);
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
         //post order without set payment instrument
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
         assert preparePurchaseResponse.getChallenge() != null;
+        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "1234");
+                offerId, paymentId, "1234", null);
+
+        assert preparePurchaseResponse.getChallenge() != null;
+        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
+
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null, true);
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);
@@ -100,8 +102,9 @@ public class StoreTesting extends BaseTestClass {
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
-        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offer_iap_normal);
+        // todo:    Need to call entitlement
+        //EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
+        //IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offer_iap_normal);
 
     }
 
@@ -250,20 +253,20 @@ public class StoreTesting extends BaseTestClass {
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
 
-        BillingProfileUpdateResponse billingProfileUpdateResponse = testDataProvider.CreateStoredValue(uid);
+        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateStoredValue(uid);
         testDataProvider.CreditStoredValue(uid, new BigDecimal(100));
 
         //get payment id in billing profile
-        PaymentInstrumentId paymentId = billingProfileUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
+        PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
 
         String offerId = testDataProvider.getOfferIdByName(offer_iap_normal);
         //post order without set payment instrument
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
         assert preparePurchaseResponse.getChallenge() != null;
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "1234");
+                offerId, paymentId, "1234", null);
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);

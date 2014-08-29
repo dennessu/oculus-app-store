@@ -10,10 +10,8 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
-//import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
-//import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
@@ -21,6 +19,9 @@ import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.store.apihelper.StoreService;
+
+//import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+//import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -107,18 +108,18 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     }
 
     @Override
-    public BillingProfileUpdateResponse updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest) throws Exception {
-        return updateBillingProfile(billingProfileUpdateRequest, 200);
+    public InstrumentUpdateResponse updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest) throws Exception {
+        return updateInstrument(instrumentUpdateRequest, 200);
     }
 
     @Override
-    public BillingProfileUpdateResponse updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/billing-profile", billingProfileUpdateRequest, expectedResponseCode);
+    public InstrumentUpdateResponse updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/billing-profile/instruments", instrumentUpdateRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
-            BillingProfileUpdateResponse billingProfileUpdateResponse = new JsonMessageTranscoder().decode(new TypeReference<BillingProfileUpdateResponse>() {
+            InstrumentUpdateResponse instrumentUpdateResponse = new JsonMessageTranscoder().decode(new TypeReference<InstrumentUpdateResponse>() {
             }, responseBody);
 
-            return billingProfileUpdateResponse;
+            return instrumentUpdateResponse;
         }
         return null;
     }
