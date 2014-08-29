@@ -220,10 +220,13 @@ class StoreResourceImpl implements StoreResource {
                 userPendingUpdate = true
                 return Promise.pure()
             }.then {
+                if (!StringUtils.isEmpty(request?.userProfile?.nickName)) {
+                    user.nickName = request?.userProfile?.nickName
+                    userPendingUpdate = true
+                }
                 if (!userPendingUpdate) {
                     return Promise.pure()
                 }
-
                 return resourceContainer.userResource.put(user.getId(), user)
             }.then {
                 return innerGetUserProfile().syncThen { StoreUserProfile userProfileResponse ->

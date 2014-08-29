@@ -6,10 +6,7 @@
 package com.junbo.test.store;
 
 import com.junbo.store.spec.model.ChallengeAnswer;
-import com.junbo.store.spec.model.identity.StoreUserProfile;
-import com.junbo.store.spec.model.identity.UserProfileGetResponse;
-import com.junbo.store.spec.model.identity.UserProfileUpdateRequest;
-import com.junbo.store.spec.model.identity.UserProfileUpdateResponse;
+import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.login.UserCredentialRateResponse;
@@ -75,7 +72,6 @@ public class LoginResourceTesting extends BaseTestClass {
         userNameCheckResponse = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15));
         Validator.Validate("Validate random character username", userNameCheckResponse.getIsAvailable(), true);
     }
-
 
     @Property(
             priority = Priority.Dailies,
@@ -294,7 +290,7 @@ public class LoginResourceTesting extends BaseTestClass {
             owner = "ZhaoYunlong",
             status = Status.Enable,
             steps = {
-                    "Check create user successful"
+                    "Check refresh token works"
             }
     )
     @Test
@@ -307,5 +303,210 @@ public class LoginResourceTesting extends BaseTestClass {
 
         response = testDataProvider.getToken(authTokenResponse.getAccessToken(), 400);
         assert response == null;
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check update email works"
+            }
+    )
+    @Test
+    public void testUpdateEmail() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+
+        UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
+        StoreUserProfile storeUserProfile = new StoreUserProfile();
+        StoreUserEmail storeUserEmail = new StoreUserEmail();
+        String newEmail = RandomHelper.randomEmail();
+        storeUserEmail.setValue(newEmail);
+        storeUserProfile.setEmail(storeUserEmail);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+        UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getChallenge() != null;
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("EMAIL_VERIFICATION");
+
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        for(String link : links) {
+            oAuthClient.accessEmailVerifyLink(link);
+        }
+
+        ChallengeAnswer answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateRequest.setUserProfileUpdateToken(userProfileUpdateResponse.getUserProfileUpdateToken());
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getChallenge() != null;
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
+
+        answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateRequest.setUserProfileUpdateToken(userProfileUpdateResponse.getUserProfileUpdateToken());
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+
+        UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+
+        AuthTokenResponse response = testDataProvider.SignIn(newEmail, createUserRequest.getPassword());
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check update email works"
+            }
+    )
+    @Test
+    public void testUpdatePin() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
+        StoreUserProfile storeUserProfile = new StoreUserProfile();
+        String newPin = "5678";
+        storeUserProfile.setPin(newPin);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+
+        UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getChallenge() != null;
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
+
+        ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+        challengeAnswer.setType("PASSWORD");
+        challengeAnswer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(challengeAnswer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check update other fields except email, pin and password"
+            }
+    )
+    @Test
+    public void testUpdateNoncriticalFields() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
+        StoreUserProfile storeUserProfile = new StoreUserProfile();
+        String newNickName = RandomHelper.randomAlphabetic(10);
+        storeUserProfile.setNickName(newNickName);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+        UserProfileUpdateResponse response = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert response.getUserProfile().getNickName().equalsIgnoreCase(newNickName);
+
+        UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse.getUserProfile().getNickName().equalsIgnoreCase(newNickName);
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check update headline and avatar"
+            }
+    )
+    @Test
+    public void testHeadLineAndAvator() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
+        StoreUserProfile storeUserProfile = new StoreUserProfile();
+        storeUserProfile.setHeadline(RandomHelper.randomAlphabetic(15));
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+        UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getUserProfile().getHeadline().equalsIgnoreCase(storeUserProfile.getHeadline());
+
+        String newHeadLine = RandomHelper.randomNumeric(10);
+        storeUserProfile.setHeadline(newHeadLine);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getUserProfile().getHeadline().equalsIgnoreCase(newHeadLine);
+
+        storeUserProfile.setHeadline(null);
+        storeUserProfile.setAvatar(RandomHelper.randomAlphabetic(15));
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getUserProfile().getAvatar().equalsIgnoreCase(storeUserProfile.getAvatar());
+        assert userProfileUpdateResponse.getUserProfile().getHeadline().equalsIgnoreCase(newHeadLine);
+
+        String newAvatar = RandomHelper.randomNumeric(20);
+        storeUserProfile.setAvatar(newAvatar);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getUserProfile().getAvatar().equalsIgnoreCase(storeUserProfile.getAvatar());
+        assert userProfileUpdateResponse.getUserProfile().getHeadline().equalsIgnoreCase(newHeadLine);
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check multiple mail send"
+            }
+    )
+    @Test
+    public void testMultipleVerificationMail() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
+        assert links != null;
+        assert links.size() == 1;
+
+        VerifyEmailResponse response = testDataProvider.verifyEmail(new VerifyEmailRequest());
+        assert response != null;
+        assert response.getEmailSent();
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
+        assert links != null;
+        assert links.size() == 2;
+        for(String link : links) {
+            try {
+                oAuthClient.accessEmailVerifyLink(link);
+            } catch (Exception e) {
+                // do nothing here
+            }
+        }
+
+        response = testDataProvider.verifyEmail(new VerifyEmailRequest());
+        assert response != null;
+        assert response.getEmailSent();
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
+        assert links != null;
+        assert links.size() == 1;
     }
 }

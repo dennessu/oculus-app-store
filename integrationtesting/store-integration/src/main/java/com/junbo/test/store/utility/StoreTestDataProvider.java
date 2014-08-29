@@ -23,9 +23,7 @@ import com.junbo.store.spec.model.browse.LibraryResponse;
 import com.junbo.store.spec.model.browse.TocResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
-import com.junbo.store.spec.model.identity.UserProfileGetResponse;
-import com.junbo.store.spec.model.identity.UserProfileUpdateRequest;
-import com.junbo.store.spec.model.identity.UserProfileUpdateResponse;
+import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.catalog.OfferService;
@@ -276,6 +274,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest) throws Exception {
         return updateUserProfile(userProfileUpdateRequest, 200);
+    }
+
+    public VerifyEmailResponse verifyEmail(VerifyEmailRequest verifyEmailRequest) throws Exception {
+        return verifyEmail(verifyEmailRequest, 200);
+    }
+
+    public VerifyEmailResponse verifyEmail(VerifyEmailRequest verifyEmailRequest, int exceptedResponseCode) throws Exception {
+        return storeClient.verifyEmail(verifyEmailRequest, exceptedResponseCode);
     }
 
     public EntitlementsGetResponse getEntitlement() throws Exception {

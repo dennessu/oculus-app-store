@@ -160,13 +160,17 @@ class RequestValidator {
         // todo:    Need to add locale, country and etc
         // check whether updateProfileToken has token
         return isEmailPIICreated(request).then { Boolean mailPIICreated ->
-            if (mailPIICreated) {
+            if (!mailPIICreated) {
                 return Promise.pure(new Challenge(type: Constants.ChallengeType.EMAIL_VERIFICATION))
             } else {
-                // todo:    Need to take tokenProcess as one single object
+                // check this mail is verified and can be replaced
                 return tokenProcessor.toTokenObject(request.userProfileUpdateToken, UpdateProfileState).then { UpdateProfileState state ->
-                    // Need to resolve this locale and country? to User's preferredLocale or COR?
-                    return resourceContainer.emailVerifyEndpoint.sendVerifyEmail('en_US', 'US', user.getId(), state.emailPIIId).then {
+                    return resourceContainer.userPersonalInfoResource.get(state.getEmailPIIId(), new UserPersonalInfoGetOptions()).then {
+                        UserPersonalInfo userPersonalInfo ->
+                        if (userPersonalInfo.lastValidateTime != null) {
+                            return Promise.pure(null)
+                        }
+
                         return Promise.pure(new Challenge(type: Constants.ChallengeType.EMAIL_VERIFICATION))
                     }
                 }
@@ -234,38 +238,57 @@ class RequestValidator {
                 }
             }.then { UserProfileUpdateResponse response ->
                 if (response != null) {
-                    UpdateProfileState updateProfileState = new UpdateProfileState(
-                            userId: AuthorizeContext.currentUserId,
-                            timeStamp: new Date()
-                    )
+                    if (!StringUtils.isEmpty(request.getUserProfileUpdateToken())) {
+                        return tokenProcessor.toTokenObject(request.getUserProfileUpdateToken(), UpdateProfileState).then { UpdateProfileState state ->
+                            UpdateProfileState updateProfileState = new UpdateProfileState(
+                                    userId: AuthorizeContext.currentUserId,
+                                    emailPIIId: state.emailPIIId,
+                                    timeStamp: new Date()
+                            )
 
-                    return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
-                        response.setUserProfileUpdateToken(userProfileUpdateToken)
-                        return Promise.pure(response)
-                    }
-                }
-
-                return getUsername(user).then { String username ->
-                    return resourceContainer.userCredentialVerifyAttemptResource.create(new UserCredentialVerifyAttempt(
-                            username: username,
-                            value: request.challengeAnswer.password,
-                            type: Constants.CredentialType.PASSWORD
-                    )).recover { Throwable t ->
-                        if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidPassword)) {
-                           throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-                        }
-                        if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
-                            AppError appError = (AppError)t
-                            if (appError.error().message.contains('User reaches maximum allowed retry count')) {
-                                throw AppErrors.INSTANCE.maximumAttemptReached().exception()
+                            return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
+                                response.setUserProfileUpdateToken(userProfileUpdateToken)
+                                return Promise.pure(response)
                             }
                         }
+                    } else {
+                        UpdateProfileState updateProfileState = new UpdateProfileState(
+                                userId: AuthorizeContext.currentUserId,
+                                timeStamp: new Date()
+                        )
 
-                        appErrorUtils.throwUnknownError('updateUserProfile', t)
-                    }.then {
-                        return Promise.pure(null)
+                        return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
+                            response.setUserProfileUpdateToken(userProfileUpdateToken)
+                            return Promise.pure(response)
+                        }
                     }
                 }
+
+                if (request?.challengeAnswer?.password != null && request?.challengeAnswer?.type == Constants.ChallengeType.PASSWORD) {
+                    return getUsername(user).then { String username ->
+                        return resourceContainer.userCredentialVerifyAttemptResource.create(new UserCredentialVerifyAttempt(
+                                username: username,
+                                value: request.challengeAnswer.password,
+                                type: Constants.CredentialType.PASSWORD
+                        )).recover { Throwable t ->
+                            if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidPassword)) {
+                               throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
+                            }
+                            if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
+                                AppError appError = (AppError)t
+                                if (appError.error().message.contains('User reaches maximum allowed retry count')) {
+                                    throw AppErrors.INSTANCE.maximumAttemptReached().exception()
+                                }
+                            }
+
+                            appErrorUtils.throwUnknownError('updateUserProfile', t)
+                        }.then {
+                            return Promise.pure(null)
+                        }
+                    }
+                }
+
+                return Promise.pure(null)
             }
         }
     }
@@ -275,6 +298,9 @@ class RequestValidator {
             return askUserProfileUpdateEmailVerificationChallenge(request, user).then { Boolean askChallenge ->
                 if (askChallenge) {
                     return ensureEmailVerificationChallenge(request, user).then { Challenge challenge ->
+                        if (challenge == null) {
+                            return Promise.pure(null)
+                        }
                         return Promise.pure(new UserProfileUpdateResponse(challenge: challenge))
                     }
                 } else {
@@ -302,9 +328,11 @@ class RequestValidator {
                                     timeStamp: new Date()
                             )
 
-                            return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
-                                response.setUserProfileUpdateToken(userProfileUpdateToken)
-                                return Promise.pure(response)
+                            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail('en_US', 'US', user.getId(), created.getId()).then {
+                                return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
+                                    response.setUserProfileUpdateToken(userProfileUpdateToken)
+                                    return Promise.pure(response)
+                                }
                             }
                         }
                     }
@@ -471,7 +499,7 @@ class RequestValidator {
         }
 
         return resourceContainer.userPersonalInfoResource.get(defaultLink.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
-            if (userPersonalInfo == null || userPersonalInfo.lastValidateTime != null) {
+            if (userPersonalInfo == null || userPersonalInfo.lastValidateTime == null) {
                 return Promise.pure(false)
             }   
 
@@ -489,7 +517,7 @@ class RequestValidator {
                     throw AppErrors.INSTANCE.invalidUpdateProfileToken().exception()
                 }
 
-                return Promise.pure(false)
+                return Promise.pure(true)
             }
         }
     }
