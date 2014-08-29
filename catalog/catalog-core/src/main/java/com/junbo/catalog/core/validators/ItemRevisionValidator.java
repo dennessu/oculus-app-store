@@ -27,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ public class ItemRevisionValidator extends ValidationSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationSupport.class);
     private ItemRepository itemRepo;
     private ItemRevisionRepository itemRevisionRepo;
+    private static final List<String> ALL_STATUS = Arrays.asList("DRAFT", "PENDING_REVIEW", "APPROVED", "REJECTED");
 
     @Required
     public void setItemRepo(ItemRepository itemRepo) {
@@ -124,6 +126,15 @@ public class ItemRevisionValidator extends ValidationSupport {
             LOGGER.error("Error updating item-revision. ", exception);
             throw exception;
         }
+    }
+
+    @Override
+    protected boolean validateStatus(String status, List<AppError> errors) {
+        if (status == null || !ALL_STATUS.contains(status)) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("status", Joiner.on(',').join(ALL_STATUS)));
+            return false;
+        }
+        return true;
     }
 
     private void validateItem(ItemRevision revision, List<AppError> errors) {

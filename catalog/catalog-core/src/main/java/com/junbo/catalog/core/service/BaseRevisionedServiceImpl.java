@@ -75,7 +75,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
     public void deleteRevision(String revisionId) {
         T existingRevision = getRevisionRepo().get(revisionId);
         checkEntityNotNull(revisionId, existingRevision, getRevisionType());
-        if (Status.APPROVED.is(existingRevision.getStatus())) {
+        if (Status.APPROVED.is(existingRevision.getStatus()) || Status.OBSOLETE.is(existingRevision.getStatus())) {
             AppErrorException exception =
                     AppCommonErrors.INSTANCE.invalidOperation("Cannot delete an approved revision.").exception();
             LOGGER.error("Error updating " + getRevisionType() + " " + revisionId, exception);
