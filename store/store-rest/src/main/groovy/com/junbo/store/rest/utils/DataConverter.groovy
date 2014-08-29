@@ -1,6 +1,9 @@
 package com.junbo.store.rest.utils
+
+import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.id.ItemId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -10,6 +13,11 @@ import com.junbo.payment.spec.model.TypeSpecificDetails
 import com.junbo.store.spec.model.Address
 import com.junbo.store.spec.model.billing.Instrument
 import com.junbo.store.spec.model.billing.PaymentOption
+import com.junbo.store.spec.model.browse.ImageGalleryEntry
+import com.junbo.store.spec.model.browse.Images
+import com.junbo.store.spec.model.browse.document.AppDetails
+import com.junbo.store.spec.model.browse.document.Image
+import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.identity.PersonalInfo
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
@@ -92,6 +100,48 @@ class DataConverter {
                 value: userPersonalInfo.value,
                 isDefault: link == null ? false : link.isDefault,
                 type: userPersonalInfo.type
+        )
+    }
+
+    Item toStoreItem(com.junbo.catalog.spec.model.item.Item item, ItemRevision itemRevision, String locale) {
+        return new Item(
+                self: new ItemId(item.getId()),
+                itemType: item.type,
+                title: itemRevision.locales[locale].shortDescription,
+                descriptionHtml: itemRevision.locales[locale].longDescription,
+                images: toStoreImages(itemRevision.locales[locale].images),
+                appDetails: new AppDetails(
+                        genres: item.genres,
+                        packageName: itemRevision.packageName,
+                        versionCode: itemRevision.binaries['ANDROID'].version,
+                        versionString: itemRevision.binaries['ANDROID'].version,
+                        installationSize: itemRevision.binaries['ANDROID'].size,
+
+                )
+        )
+    }
+
+    Images toStoreImages(com.junbo.catalog.spec.model.common.Images images) {
+        return new Images(
+                main: toStoreImage(images.main),
+                halfMain: toStoreImage(images.halfMain),
+                thumbnail: toStoreImage(images.thumbnail),
+                halfThumbnail: toStoreImage(images.halfThumbnail),
+                background: toStoreImage(images.background),
+                featured: toStoreImage(images.featured),
+                gallery: images.gallery.collect { com.junbo.catalog.spec.model.common.ImageGalleryEntry entry ->
+                    return new ImageGalleryEntry(
+                            thumbnail: toStoreImage(entry.thumbnail),
+                            full: toStoreImage(entry.full)
+                    )
+                }
+        )
+    }
+
+    Image toStoreImage(com.junbo.catalog.spec.model.common.Image image) {
+        return new Image(
+                imageUrl: image.href,
+                altText: image.altText
         )
     }
 }
