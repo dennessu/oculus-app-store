@@ -14,6 +14,7 @@ import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.id.TosId;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -40,7 +41,6 @@ import com.junbo.test.store.apihelper.LoginService;
 import com.junbo.test.store.apihelper.StoreService;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -85,10 +85,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return createUserRequest;
     }
 
-    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
-        AuthTokenResponse response = loginClient.CreateUser(createUserRequest);
+    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode) throws Exception {
+        AuthTokenResponse response = loginClient.CreateUser(createUserRequest, expectedResponseCode);
 
-        if (needVerifyEmail) {
+        if (needVerifyEmail && expectedResponseCode == 200) {
             oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
             List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()), createUserRequest.getEmail());
             assert links != null;
@@ -100,9 +100,19 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return response;
     }
 
+    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
+        return CreateUser(createUserRequest, needVerifyEmail, 200);
+    }
+
     public UserNameCheckResponse CheckUserName(String userName) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setUsername(userName);
+        return loginClient.CheckUserName(request);
+    }
+
+    public UserNameCheckResponse CheckEmail(String email) throws Exception {
+        UserNameCheckRequest request = new UserNameCheckRequest();
+        request.setEmail(email);
         return loginClient.CheckUserName(request);
     }
 
@@ -116,13 +126,24 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return loginClient.signIn(userSignInRequest);
     }
 
-    public UserCredentialRateResponse RateUserCredential(String password) throws Exception {
+    public UserCredentialRateResponse RateUserCredential(String password, String username) throws Exception {
+        UserCredentialRateRequest request = new UserCredentialRateRequest();
         UserCredentialRateRequest userCredentialRateRequest = new UserCredentialRateRequest();
         UserCredential userCredential = new UserCredential();
         userCredential.setType("PASSWORD");
         userCredential.setValue(password);
         userCredentialRateRequest.setUserCredential(userCredential);
+
+        if (!StringUtils.isEmpty(username)) {
+            UserCredentialRateContext context = new UserCredentialRateContext();
+            context.setUsername(username);
+            userCredentialRateRequest.setContext(context);
+        }
         return loginClient.rateUserCredential(userCredentialRateRequest);
+    }
+
+    public UserCredentialRateResponse RateUserCredential(String password) throws Exception {
+        return RateUserCredential(password, null);
     }
 
     public InstrumentUpdateResponse CreateCreditCard(String uid) throws Exception {
@@ -158,7 +179,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         paymentProvider.creditWallet(uid, amount);
     }
 
-    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, Boolean tosAcceptance) throws Exception {
+    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, TosId tosAcceptanceId) throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
         request.setLocale(new LocaleId("en_US"));
         request.setCountry(new CountryId(Country.DEFAULT.toString()));
@@ -172,10 +193,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             challengeAnswer.setPin(pin);
             request.setChallengeAnswer(challengeAnswer);
         }
-        if (tosAcceptance != null && tosAcceptance) {
+        if (tosAcceptanceId != null) {
             ChallengeAnswer challengeAnswer = new ChallengeAnswer();
             challengeAnswer.setType("TOS_ACCEPTANCE");
-            challengeAnswer.setTosAcceptable(true);
+            challengeAnswer.setAcceptedTos(tosAcceptanceId);
             request.setChallengeAnswer(challengeAnswer);
         }
         return storeClient.preparePurchase(request);
@@ -235,7 +256,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public UserProfileGetResponse getUserProfile() throws Exception {
-        return storeClient.getUserProfile();
+        return getUserProfile(200);
+    }
+
+    public UserProfileGetResponse getUserProfile(int expectedResponseCode) throws Exception {
+        return storeClient.getUserProfile(expectedResponseCode);
     }
 
     public EntitlementsGetResponse getEntitlement() throws Exception {

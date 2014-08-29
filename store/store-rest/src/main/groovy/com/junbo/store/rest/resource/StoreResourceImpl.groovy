@@ -26,10 +26,8 @@ import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
-import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
-import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
@@ -43,9 +41,10 @@ import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
+import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.browse.BrowseContext
 import com.junbo.store.rest.browse.BrowseService
-import com.junbo.store.db.repo.TokenRepository
+import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.rest.utils.*
@@ -85,12 +84,15 @@ class StoreResourceImpl implements StoreResource {
 
     public static final String FREE_PURCHASE_CURRENCY = "USD"
 
-    public static final String CREATE_USER_TITLE = "createUser_Tos"
-    public static final String PURCHASE_TOS_TITLE = "purchase_Tos"
-
     private static final int PAGE_SIZE = 100
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StoreResourceImpl)
+
+    @Value('${store.tos.createuser}')
+    private String tosCreateUser
+
+    @Value('${store.tos.purchase}')
+    private String tosPurchase
 
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
@@ -124,6 +126,9 @@ class StoreResourceImpl implements StoreResource {
 
     @Resource(name = 'storeTokenProcessor')
     private TokenProcessor tokenProcessor
+
+    @Resource(name = 'storeChallengeHelper')
+    private ChallengeHelper challengeHelper
 
     private List<com.junbo.identity.spec.v1.model.PIType> piTypes
 
@@ -234,6 +239,7 @@ class StoreResourceImpl implements StoreResource {
             user = u;
             userProfile = new StoreUserProfile(
                     userId: u.getId(),
+                    nickName: user.nickName,
                     headline: user.profile?.headline,
                     avatar: user.profile?.avatar?.href
             )
@@ -257,9 +263,7 @@ class StoreResourceImpl implements StoreResource {
                         value: email.info,
                         isValidated: personalInfo.isValidated
                 )
-
-                return Promise.pure(null)
-            }
+           }
         }.then {
             return resourceContainer.userCredentialResource.list(user.getId(), new UserCredentialListOptions(
                     type: 'PASSWORD',
@@ -494,7 +498,7 @@ class StoreResourceImpl implements StoreResource {
         User user
         CurrencyId currencyId
         PurchaseState purchaseState
-        String potentialChallengeType
+        Challenge potentialChallenge
         PreparePurchaseResponse response = new PreparePurchaseResponse()
         PaymentInstrumentId selectedInstrument
 
@@ -543,17 +547,17 @@ class StoreResourceImpl implements StoreResource {
             }
             return validateInstrumentForPreparePurchase(user, request)
         }.then {
-            return getPurchaseChallengeType(user.getId(), request).then { String challengeType ->
-                potentialChallengeType = challengeType
+            return getPurchaseChallenge(user.getId(), request).then { Challenge challenge ->
+                potentialChallenge = challenge
 
                 return Promise.pure(null)
             }
         }.then {
-            if (!StringUtils.isEmpty(potentialChallengeType)) {
+            if (potentialChallenge != null) {
                 return tokenProcessor.toTokenString(purchaseState).then { String token ->
                     return Promise.pure(
                             new PreparePurchaseResponse(
-                                    challenge : new Challenge(type: potentialChallengeType),
+                                    challenge : potentialChallenge,
                                     purchaseToken: token
                             )
                     )
@@ -738,7 +742,7 @@ class StoreResourceImpl implements StoreResource {
     @Override
     Promise<TocResponse> getToc() {
         buildBrowseContext().then { BrowseContext browseContext ->
-            return browseService.getTocResponse(browseContext)
+            return browseService.getToc(browseContext)
         }
     }
 
@@ -1256,6 +1260,7 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
+    /**
     private Promise<Boolean> isPurchaseTosChallengeNeeded(UserId userId, PreparePurchaseRequest request) {
         if (request?.challengeAnswer?.type != null && request?.challengeAnswer?.type != Constants.ChallengeType.TOS_ACCEPTANCE) {
             return Promise.pure(true)
@@ -1291,21 +1296,14 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure(false)
             }
         }
-    }
+    }*/
 
-    private Promise<String> getPurchaseChallengeType(UserId userId, PreparePurchaseRequest request) {
+    private Promise<Challenge> getPurchaseChallenge(UserId userId, PreparePurchaseRequest request) {
         return isPurchasePINChallengeNeeded(userId, request?.challengeAnswer?.pin).then { Boolean pinChallengeNeeded ->
             if (pinChallengeNeeded) {
-                return Promise.pure(Constants.ChallengeType.PIN)
+                return Promise.pure(new Challenge(type:  Constants.ChallengeType.PIN))
             }
-
-            return isPurchaseTosChallengeNeeded(userId, request).then { Boolean tosChallengeNeeded ->
-                if (tosChallengeNeeded) {
-                    return Promise.pure(Constants.ChallengeType.TOS_ACCEPTANCE)
-                }
-
-                return Promise.pure(null)
-            }
+            return challengeHelper.checkTosChallenge(userId, tosPurchase, request.challengeAnswer)
         }
     }
 

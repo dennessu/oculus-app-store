@@ -5,6 +5,8 @@
  */
 package com.junbo.store.spec.model;
 
+import com.junbo.common.id.TosId;
+
 /**
  * The ChallengeAnswer class.
  */
@@ -16,7 +18,7 @@ public class ChallengeAnswer {
 
     private String password;
 
-    private Boolean tosAcceptable;
+    private TosId acceptedTos;
 
     public String getType() {
         return type;
@@ -42,11 +44,11 @@ public class ChallengeAnswer {
         this.password = password;
     }
 
-    public Boolean getTosAcceptable() {
-        return tosAcceptable;
+    public TosId getAcceptedTos() {
+        return acceptedTos;
     }
 
-    public void setTosAcceptable(Boolean tosAcceptable) {
-        this.tosAcceptable = tosAcceptable;
+    public void setAcceptedTos(TosId acceptedTos) {
+        this.acceptedTos = acceptedTos;
     }
 }

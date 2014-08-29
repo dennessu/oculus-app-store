@@ -11,8 +11,10 @@ import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.browse.BrowseContext
 import com.junbo.store.rest.browse.BrowseService
+import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.SectionInfo
@@ -23,6 +25,7 @@ import org.apache.http.NameValuePair
 import org.apache.http.client.utils.URLEncodedUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
@@ -37,9 +40,10 @@ class BrowseServiceImpl implements BrowseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BrowseServiceImpl)
 
-    private String tocTosTitle = ''
-
     private int defaultPageSize = 10
+
+    @Value('${store.tos.browse}')
+    private String storeBrowseTos
 
     @Resource(name = 'storeFacadeContainer')
     private FacadeContainer facadeContainer
@@ -49,6 +53,9 @@ class BrowseServiceImpl implements BrowseService {
 
     @Resource(name = 'storeBrowseDataBuilder')
     private BrowseDataBuilder browseDataBuilder
+
+    @Resource(name = 'storeChallengeHelper')
+    private ChallengeHelper challengeHelper
 
     // hard coded sections
     private List<SectionInfoNode> sections = [
@@ -93,12 +100,13 @@ class BrowseServiceImpl implements BrowseService {
     }
 
     @Override
-    Promise<TocResponse> getTocResponse(BrowseContext browseContext) {
+    Promise<TocResponse> getToc(BrowseContext browseContext) {
         TocResponse result = new TocResponse()
-        getTosForToc(browseContext).then { Tos tos ->
-            result.tos = tos
-            return Promise.pure()
-        }.then {
+        challengeHelper.checkTosChallenge(browseContext.user.getId(), storeBrowseTos, null).then { Challenge challenge ->
+            if (challenge != null) {
+                return new TocResponse(challenge: challenge)
+            }
+
             result.sections = sections
             return Promise.pure(result)
         }

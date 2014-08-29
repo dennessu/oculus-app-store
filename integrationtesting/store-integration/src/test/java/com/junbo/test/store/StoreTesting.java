@@ -91,8 +91,10 @@ public class StoreTesting extends BaseTestClass {
 
         assert preparePurchaseResponse.getChallenge() != null;
         assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
+        assert preparePurchaseResponse.getChallenge().getTos() != null;
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null, true);
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+                preparePurchaseResponse.getChallenge().getTos().getTosId());
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);
@@ -340,8 +342,5 @@ public class StoreTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
     }
-
-
-
 
 }

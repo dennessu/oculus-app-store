@@ -177,4 +177,5 @@ class IdentityUtils {
         set.addAll(list.collect {UserPersonalInfoLink link -> link.value})
         assert set.size() == list.size() : 'duplicates found in user personal info'
     }
+
 }

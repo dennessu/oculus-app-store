@@ -1,0 +1,10 @@
+{
+    "title": "browseStore_Tos",
+    "version":"1.0",
+    "content": "browseStore_Tos_Content.......",
+    "type": "TOS",
+    "countries": [
+        "US",
+        "CN"
+    ]
+}

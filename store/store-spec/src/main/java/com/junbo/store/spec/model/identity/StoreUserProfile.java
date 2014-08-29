@@ -22,6 +22,8 @@ public class StoreUserProfile {
 
     private String password;
 
+    private String nickName;
+
     private String pin;
 
     private Boolean tfaEnabled;
@@ -112,5 +114,13 @@ public class StoreUserProfile {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 }
