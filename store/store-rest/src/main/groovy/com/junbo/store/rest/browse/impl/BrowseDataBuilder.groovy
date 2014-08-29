@@ -1,4 +1,5 @@
 package com.junbo.store.rest.browse.impl
+
 import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
@@ -7,10 +8,7 @@ import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties
-import com.junbo.catalog.spec.model.offer.Offer
-import com.junbo.catalog.spec.model.offer.OfferRevision
-import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.catalog.spec.model.offer.*
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.model.Results
@@ -33,6 +31,7 @@ import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
+
 /**
  * The BrowseDataBuilder class.
  */
@@ -90,6 +89,7 @@ class BrowseDataBuilder {
         item.title = localeProperties?.name
         item.descriptionHtml = localeProperties.longDescription
         item.images = buildImages(localeProperties.images)
+        item.supportedLocales = itemRevision.supportedLocales
 
         resourceContainer.organizationResource.get(catalogItem.ownerId, new OrganizationGetOptions()).then { Organization organization ->
             item.creator = organization.name
@@ -118,6 +118,11 @@ class BrowseDataBuilder {
         result.installationSize = binary?.size
         result.versionCode = binary?.version
         result.versionString = binary?.version
+
+        // item revision attribute
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = itemRevision.locales[apiContext.locale.getId().value]
+        result.website = itemRevisionLocaleProperties?.website
+        result.forumUrl = itemRevisionLocaleProperties?.communityForumLink
 
         Promise.each(offer.categories) { String categoryId -> // get categories
             resourceContainer.offerAttributeResource.getAttribute(categoryId).then { OfferAttribute offerAttribute ->

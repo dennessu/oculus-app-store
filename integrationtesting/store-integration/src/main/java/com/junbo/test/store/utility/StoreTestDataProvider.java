@@ -300,7 +300,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public BillingProfileGetResponse getBillingProfile(String offerId) throws Exception{
         BillingProfileGetRequest request = new BillingProfileGetRequest();
-        request.setOffer(new OfferId(offerId));
+        request.setOffer(offerId == null ? null : new OfferId(offerId));
         return storeClient.getBillingProfile(request);
     }
 

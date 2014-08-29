@@ -794,7 +794,9 @@ class StoreResourceImpl implements StoreResource {
     Promise<DetailsResponse> getDetails(DetailsRequest request) {
         requestValidator.validateRequiredApiHeaders().validateDetailsRequest(request)
         prepareBrowse().then { ApiContext apiContext ->
-            return browseService.getLibrary(apiContext)
+            return browseService.getItem(request.itemId.value, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
+                return Promise.pure(new DetailsResponse(item: item))
+            }
         }
     }
 

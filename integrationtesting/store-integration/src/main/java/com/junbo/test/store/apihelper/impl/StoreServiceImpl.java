@@ -111,8 +111,11 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request, int expectedResponseCode) throws Exception {
-        String url = String.format(storeUrl + "/billing-profile?offerId=%s",
-                IdConverter.idToHexString(request.getOffer()));
+        String url = storeUrl + "/billing-profile";
+        if (request.getOffer() != null) {
+            url += String.format("?offerId=%s", IdConverter.idToHexString(request.getOffer()));
+        }
+
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             BillingProfileGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<BillingProfileGetResponse>() {
