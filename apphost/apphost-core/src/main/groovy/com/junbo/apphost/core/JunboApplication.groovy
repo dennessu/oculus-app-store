@@ -88,6 +88,7 @@ class JunboApplication {
 
         JunboApplicationContext(String[] configLocations, boolean refresh) throws BeansException {
             super(configLocations, refresh)
+            setValidating(false)
         }
 
         @Override

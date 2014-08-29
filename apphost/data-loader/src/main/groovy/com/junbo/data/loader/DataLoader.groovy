@@ -175,8 +175,11 @@ class DataLoader {
                                     }
                                 } catch (Exception ex) {
                                     LOGGER.error("error handling resource: " + data + " " + resource.filename, ex)
+                                } catch (Throwable ex) {
+                                    LOGGER.error("caught throwable handling resource: " + data + " " + resource.filename, ex)
+                                } finally {
+                                    latch.countDown()
                                 }
-                                latch.countDown()
                             }
                         })
                     }
