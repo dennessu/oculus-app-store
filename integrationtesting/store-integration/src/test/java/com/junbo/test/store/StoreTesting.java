@@ -20,7 +20,6 @@ import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
@@ -215,7 +214,7 @@ public class StoreTesting extends BaseTestClass {
             offerId = offer_digital_free;
         }
 
-        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, Country.DEFAULT);
+        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId);
 
         //String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
 

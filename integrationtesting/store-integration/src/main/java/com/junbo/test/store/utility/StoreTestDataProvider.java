@@ -17,6 +17,10 @@ import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.*;
+import com.junbo.store.spec.model.browse.AcceptTosRequest;
+import com.junbo.store.spec.model.browse.AcceptTosResponse;
+import com.junbo.store.spec.model.browse.LibraryResponse;
+import com.junbo.store.spec.model.browse.TocResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
@@ -242,7 +246,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return address;
     }
 
-    public MakeFreePurchaseResponse makeFreePurchase(String offerId, Country country) throws Exception {
+    public MakeFreePurchaseResponse makeFreePurchase(String offerId) throws Exception {
         MakeFreePurchaseRequest request = new MakeFreePurchaseRequest();
         request.setOffer(new OfferId(offerId));
         return storeClient.makeFreePurchase(request);
@@ -294,4 +298,17 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getBillingProfile(request);
     }
 
+    public LibraryResponse getLibrary() throws Exception {
+        return storeClient.getLibrary();
+    }
+
+    public TocResponse getToc() throws Exception {
+        return storeClient.getTOC();
+    }
+
+    public AcceptTosResponse acceptTos(TosId tosId) throws Exception {
+        AcceptTosRequest request = new AcceptTosRequest();
+        request.setTosId(tosId);
+        return storeClient.acceptTos(request);
+    }
 }

@@ -103,7 +103,7 @@ class BrowseServiceImpl implements BrowseService {
         TocResponse result = new TocResponse()
         challengeHelper.checkTosChallenge(apiContext.user, storeBrowseTos, null).then { Challenge challenge ->
             if (challenge != null) {
-                return new TocResponse(challenge: challenge)
+                return Promise.pure(new TocResponse(challenge: challenge))
             }
 
             result.sections = sections
@@ -121,7 +121,7 @@ class BrowseServiceImpl implements BrowseService {
         }
 
         result.breadcrumbs = parents
-        result.children = sectionInfoNode.children?.collect {SectionInfoNode s -> s.getSectionInfo()}
+        result.children = sectionInfoNode.children?.collect {SectionInfoNode s -> s.toSectionInfo()}
         result.title = sectionInfoNode.name
         result.ordered = sectionInfoNode.ordered == null ? false : sectionInfoNode.ordered
 
@@ -210,7 +210,7 @@ class BrowseServiceImpl implements BrowseService {
             }
 
             if (!CollectionUtils.isEmpty(sectionInfoNode.children)) {
-                parents.push(sectionInfoNode.getSectionInfo())
+                parents.push(sectionInfoNode.toSectionInfo())
                 def result = getSectionInfoNode(category, criteria, sectionInfoNode.children, parents)
                 if (result != null) {
                     return result

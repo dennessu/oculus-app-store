@@ -754,11 +754,13 @@ class StoreResourceImpl implements StoreResource {
             user = u
             return Promise.pure()
         }.then {
-            resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: user.getId(), tosId: request.tosId))
-        }.then {
-            return Promise.pure(new AcceptTosResponse())
+            resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: user.getId(), tosId: request.tosId, agreementTime: new Date())).then { UserTosAgreement userTosAgreement ->
+                return Promise.pure(new AcceptTosResponse(
+                    tos: userTosAgreement.tosId,
+                    acceptedTime: userTosAgreement.agreementTime
+                ))
+            }
         }
-
     }
 
     @Override
