@@ -22,6 +22,7 @@ import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.StoreApiHeader
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
 import com.junbo.store.spec.model.browse.AcceptTosRequest
+import com.junbo.store.spec.model.browse.DeliveryRequest
 import com.junbo.store.spec.model.browse.DetailsRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
@@ -481,6 +482,10 @@ class RequestValidator {
                 throw AppCommonErrors.INSTANCE.headerRequired(header.value).exception()
             }
         }
+    }
+
+    public void validateDeliveryRequest(DeliveryRequest request) {
+        notEmpty(request.itemId, 'itemId')
     }
 
     private Promise<Boolean> isMailChanged(UserProfileUpdateRequest request, User currentUser) {

@@ -33,7 +33,7 @@ public class AppDetails {
     private String publisherWebsite;
 
     private String packageName;
-    private String versionCode;
+    private Integer versionCode;
     private String versionString;
 
     private Long installationSize;
@@ -144,11 +144,11 @@ public class AppDetails {
         this.packageName = packageName;
     }
 
-    public String getVersionCode() {
+    public Integer getVersionCode() {
         return versionCode;
     }
 
-    public void setVersionCode(String versionCode) {
+    public void setVersionCode(Integer versionCode) {
         this.versionCode = versionCode;
     }
 

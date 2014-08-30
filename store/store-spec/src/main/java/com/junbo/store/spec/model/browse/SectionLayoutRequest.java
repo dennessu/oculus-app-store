@@ -18,6 +18,9 @@ public class SectionLayoutRequest {
     @QueryParam("criteria")
     private String criteria;
 
+    @QueryParam("count")
+    private Integer count;
+
     public String getCategory() {
         return category;
     }
@@ -32,5 +35,13 @@ public class SectionLayoutRequest {
 
     public void setCriteria(String criteria) {
         this.criteria = criteria;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

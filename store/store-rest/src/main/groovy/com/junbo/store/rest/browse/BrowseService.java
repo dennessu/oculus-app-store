@@ -5,6 +5,7 @@
  */
 package com.junbo.store.rest.browse;
 
+import com.junbo.common.id.ItemId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
 import com.junbo.store.spec.model.browse.*;
@@ -15,7 +16,7 @@ import com.junbo.store.spec.model.browse.document.Item;
  */
 public interface BrowseService {
 
-    Promise<Item> getItem(String itemId, ApiContext apiContext);
+    Promise<Item> getItemDetails(ItemId itemId, ApiContext apiContext);
 
     Promise<TocResponse> getToc(ApiContext apiContext);
 
@@ -24,4 +25,6 @@ public interface BrowseService {
     Promise<ListResponse> getList(ListRequest request, ApiContext apiContext);
 
     Promise<LibraryResponse> getLibrary(ApiContext apiContext);
+
+    Promise<DeliveryResponse> getDelivery(DeliveryRequest request, ApiContext apiContext);
 }

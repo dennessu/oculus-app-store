@@ -9,6 +9,7 @@ import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.spec.model.ApiContext
+import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.StoreApiHeader
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
@@ -29,6 +30,7 @@ class ApiContextBuilder {
 
     Promise<ApiContext> buildApiContext() {
         ApiContext result = new ApiContext()
+        result.platform = Platform.ANDROID
         result.userAgent = getHeader(StoreApiHeader.USER_AGENT)
         result.androidId = getHeader(StoreApiHeader.ANDROID_ID)
         result.user = (AuthorizeContext.currentUserId?.value == null || AuthorizeContext.currentUserId?.value == 0) ? null : AuthorizeContext.currentUserId

@@ -114,7 +114,7 @@ class DataConverter {
                 appDetails: new AppDetails(
                         genres: item.genres,
                         packageName: itemRevision.packageName,
-                        versionCode: itemRevision.binaries['ANDROID'].version,
+                        versionCode: null as Integer, // todo set version code
                         versionString: itemRevision.binaries['ANDROID'].version,
                         installationSize: itemRevision.binaries['ANDROID'].size,
 

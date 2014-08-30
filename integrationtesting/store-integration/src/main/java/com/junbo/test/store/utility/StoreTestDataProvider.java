@@ -9,18 +9,12 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.id.EntitlementId;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.common.id.TosId;
+import com.junbo.common.id.*;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.*;
-import com.junbo.store.spec.model.browse.AcceptTosRequest;
-import com.junbo.store.spec.model.browse.AcceptTosResponse;
-import com.junbo.store.spec.model.browse.LibraryResponse;
-import com.junbo.store.spec.model.browse.TocResponse;
+import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.*;
@@ -250,6 +244,12 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.makeFreePurchase(request);
     }
 
+    public DetailsResponse getItemDetails(String itemId) throws Exception {
+        DetailsRequest request = new DetailsRequest();
+        request.setItemId(new ItemId(itemId));
+        return storeClient.getDetails(request);
+    }
+
     public AuthTokenResponse signIn(String userName) throws Exception {
         UserSignInRequest request = new UserSignInRequest();
         request.setUsername(userName);
@@ -312,9 +312,27 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getTOC();
     }
 
+    public ListResponse getList(ListRequest request) throws Exception {
+        return storeClient.getList(request);
+    }
+
+    public SectionLayoutResponse getLayout(String category, String criteria, Integer count) throws Exception {
+        SectionLayoutRequest request = new SectionLayoutRequest();
+        request.setCategory(category);
+        request.setCriteria(criteria);
+        request.setCount(count);
+        return storeClient.getSectionLayout(request);
+    }
+
     public AcceptTosResponse acceptTos(TosId tosId) throws Exception {
         AcceptTosRequest request = new AcceptTosRequest();
         request.setTosId(tosId);
         return storeClient.acceptTos(request);
+    }
+
+    public DeliveryResponse getDelivery(ItemId itemId) throws Exception {
+        DeliveryRequest request = new DeliveryRequest();
+        request.setItemId(itemId);
+        return storeClient.getDelivery(request);
     }
 }

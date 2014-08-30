@@ -306,7 +306,11 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public SectionLayoutResponse getSectionLayout(SectionLayoutRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/section-layout", expectedResponseCode);
+        String url = storeUrl + "/section-layout?";
+        url = appendQuery(url, "category", request.getCategory());
+        url = appendQuery(url, "criteria", request.getCriteria());
+        url = appendQuery(url, "count", request.getCount());
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             SectionLayoutResponse response = new JsonMessageTranscoder().decode(new TypeReference<SectionLayoutResponse>() {
             }, responseBody);
@@ -318,13 +322,18 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public ListResponse getList(ListRequest request) throws Exception {
-        return null;
+        return getList(request, 200);
     }
 
     @Override
     public ListResponse getList(ListRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/section-list", expectedResponseCode);
+        String url = storeUrl + "/section-list?";
+        url = appendQuery(url, "category", request.getCategory());
+        url = appendQuery(url, "criteria", request.getCriteria());
+        url = appendQuery(url, "count", request.getCount());
+        url = appendQuery(url, "cursor", request.getCursor());
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             ListResponse response = new JsonMessageTranscoder().decode(new TypeReference<ListResponse>() {
             }, responseBody);
@@ -360,7 +369,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public DetailsResponse getDetails(DetailsRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/details", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/details?itemId=" + request.getItemId().getValue() , expectedResponseCode);
         if (expectedResponseCode == 200) {
             DetailsResponse response = new JsonMessageTranscoder().decode(new TypeReference<DetailsResponse>() {
             }, responseBody);
@@ -413,7 +422,11 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public DeliveryResponse getDelivery(DeliveryRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/delivery", expectedResponseCode);
+        String url = storeUrl + "/delivery?";
+        url = appendQuery(url, "itemId", request.getItemId());
+        url = appendQuery(url, "currentVersionCode", request.getCurrentVersionCode());
+        url = appendQuery(url, "desiredVersionCode", request.getDesiredVersionCode());
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             DeliveryResponse response = new JsonMessageTranscoder().decode(new TypeReference<DeliveryResponse>() {
             }, responseBody);
@@ -421,5 +434,12 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
             return response;
         }
         return null;
+    }
+
+    private String appendQuery(String url, String name, Object val) {
+        if (val != null) {
+            return url + "&" + name + "=" + val.toString();
+        }
+        return url;
     }
 }

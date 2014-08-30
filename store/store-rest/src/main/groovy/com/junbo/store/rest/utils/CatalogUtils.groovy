@@ -5,7 +5,9 @@
  */
 package com.junbo.store.rest.utils
 
+import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemsGetOptions
+import com.junbo.common.id.ItemId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.spec.model.browse.document.Item

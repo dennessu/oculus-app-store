@@ -48,6 +48,7 @@ import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.*
 import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.browse.*
+import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.iap.*
 import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.profile.UpdateProfileState
@@ -794,7 +795,7 @@ class StoreResourceImpl implements StoreResource {
     Promise<DetailsResponse> getDetails(DetailsRequest request) {
         requestValidator.validateRequiredApiHeaders().validateDetailsRequest(request)
         prepareBrowse().then { ApiContext apiContext ->
-            return browseService.getItem(request.itemId.value, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
+            return browseService.getItemDetails(request.itemId, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
                 return Promise.pure(new DetailsResponse(item: item))
             }
         }
@@ -802,20 +803,33 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<ReviewsResponse> getReviews(ReviewsRequest request) {
-        requestValidator.validateRequiredApiHeaders()
-        return null
+        requestValidator.validateRequiredApiHeaders() // todo replace the dummy implementation
+        ReviewsResponse response = new ReviewsResponse(reviews: [])
+        return Promise.pure(response)
     }
 
     @Override
     Promise<AddReviewResponse> addReview(AddReviewRequest request) {
-        requestValidator.validateRequiredApiHeaders()
-        return null
+        requestValidator.validateRequiredApiHeaders() // todo replace the dummy implementation
+        return Promise.pure(new AddReviewResponse(
+                review: new Review(
+                        reviewId: UUID.randomUUID().toString(),
+                        authorName: 'test',
+                        deviceName: 'Nexus 5',
+                        title: request.title,
+                        content: request.content,
+                        starRating: request.starRating,
+                        timestamp: new Date()
+                )
+        ))
     }
 
     @Override
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request) {
-        requestValidator.validateRequiredApiHeaders()
-        return null
+        requestValidator.validateRequiredApiHeaders().validateDeliveryRequest(request)
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.getDelivery(request, apiContext)
+        }
     }
 
     private Promise<BillingProfile> innerGetBillingProfile(User user, LocaleId locale, CountryId country, OfferId offerId) {

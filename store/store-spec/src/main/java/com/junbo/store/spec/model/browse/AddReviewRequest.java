@@ -20,6 +20,8 @@ public class AddReviewRequest {
 
     private String content;
 
+    private String deviceName;
+
     private Integer starRating;
 
     public ItemId getItemId() {
@@ -44,6 +46,14 @@ public class AddReviewRequest {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 
     public Integer getStarRating() {
