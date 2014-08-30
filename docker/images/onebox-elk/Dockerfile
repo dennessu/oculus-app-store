@@ -35,7 +35,6 @@ RUN /usr/sbin/enable_insecure_key
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 
-# memcached public variable
 ENV KIBANA_PORT 9000
 
 ADD bootcheck.sh /etc/my_init.d/bootcheck.sh
@@ -50,8 +49,6 @@ RUN chmod +x /etc/service/nginx/run
 
 ADD kibana_site.conf /etc/nginx/sites-enabled/kibana_site.conf
 ADD default_logstash.conf /config/logstash.conf
-
-EXPOSE 9000 9200
 
 # Expose data and log (to improve performance)
 VOLUME ["/var/elk/elasticsearch/logs", "/var/elk/logstash/data", "/var/elk/elasticsearch/data", "/var/log/nginx"]
