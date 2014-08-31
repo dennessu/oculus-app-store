@@ -87,6 +87,9 @@ class BrowseDataBuilder {
     }
 
     private Images buildImages(com.junbo.catalog.spec.model.common.Images catalogImages) {
+        if (catalogImages == null) {
+            return null
+        }
         return new Images(
                 main: buildImage(catalogImages.main),
                 halfMain: buildImage(catalogImages.halfMain),

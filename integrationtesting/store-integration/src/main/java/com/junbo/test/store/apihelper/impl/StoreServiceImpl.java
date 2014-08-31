@@ -39,7 +39,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
         FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
         headers.put("X-ANDROID-ID", Collections.singletonList(RandomStringUtils.randomAlphabetic(10)));
-        headers.put("Accept-Language", Collections.singletonList("en_US"));
+        headers.put("Accept-Language", Collections.singletonList("en-US"));
         headers.put("X-MCCMNC", Collections.singletonList("INT_TEST"));
 
         //for further header, we can set dynamic value from properties here

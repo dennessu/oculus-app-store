@@ -1,4 +1,5 @@
 package com.junbo.langur.core.adapter
+
 import com.google.common.base.Function
 import com.junbo.langur.core.IpUtil
 import com.junbo.langur.core.context.JunboHttpContext
@@ -9,6 +10,7 @@ import org.glassfish.jersey.server.internal.process.RespondingContext
 
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.Context
+
 /**
  * Created by kg on 5/23/2014.
  */
@@ -29,7 +31,8 @@ abstract class AbstractRestAdapter {
         def httpContextData = new JunboHttpContext.JunboHttpContextData(
                 requestMethod: httpRequestContext.method,
                 requestUri: httpRequestContext.uriInfo.absolutePath,
-                requestHandler: requestHandler
+                requestHandler: requestHandler,
+                acceptableLanguages: httpRequestContext.acceptableLanguages
         )
 
         for (Map.Entry<String, List<String>> entry : httpRequestContext.headers.entrySet()) {

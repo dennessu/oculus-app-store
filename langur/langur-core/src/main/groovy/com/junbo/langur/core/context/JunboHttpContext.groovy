@@ -33,6 +33,8 @@ class JunboHttpContext {
 
         Map<String, Object> properties
 
+        List<Locale> acceptableLanguages
+
         JunboHttpContextData() {
 
             requestHeaders = new StringKeyIgnoreCaseMultivaluedMap<>()
@@ -123,6 +125,15 @@ class JunboHttpContext {
         }
 
         return data.properties
+    }
+
+    static List<Locale> getAcceptableLanguages() {
+        def data = CURRENT_DATA.get()
+        if (data == null) {
+            throw new IllegalStateException('Current JunboHttpContextData is null')
+        }
+
+        return data.acceptableLanguages
     }
 
     static JunboHttpContextData getData() {
