@@ -238,9 +238,15 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return address;
     }
 
-    public MakeFreePurchaseResponse makeFreePurchase(String offerId) throws Exception {
+    public MakeFreePurchaseResponse makeFreePurchase(String offerId, TosId tosId) throws Exception {
         MakeFreePurchaseRequest request = new MakeFreePurchaseRequest();
         request.setOffer(new OfferId(offerId));
+        if (tosId != null) {
+            ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+            challengeAnswer.setType("TOS_ACCEPTANCE");
+            challengeAnswer.setAcceptedTos(tosId);
+            request.setChallengeAnswer(challengeAnswer);
+        }
         return storeClient.makeFreePurchase(request);
     }
 

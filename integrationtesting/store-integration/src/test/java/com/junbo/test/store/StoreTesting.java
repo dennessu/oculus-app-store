@@ -214,9 +214,11 @@ public class StoreTesting extends BaseTestClass {
             offerId = offer_digital_free;
         }
 
-        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId);
+        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
 
         //String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
+
+        freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
 
         EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
         Master.getInstance().setCurrentUid(null);

@@ -1,4 +1,5 @@
 package com.junbo.store.rest.resource.raw
+
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
@@ -38,8 +39,8 @@ import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
-import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.db.repo.TokenRepository
+import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.rest.purchase.TokenProcessor
@@ -90,6 +91,9 @@ class StoreResourceImpl implements StoreResource {
 
     @Value('${store.tos.purchase}')
     private String tosPurchase
+
+    @Value('${store.tos.freepurchase.enable}')
+    private Boolean tosFreepurchaseEnable
 
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
@@ -457,6 +461,7 @@ class StoreResourceImpl implements StoreResource {
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest request) {
         User user
         ApiContext apiContext
+        Challenge challenge
         requestValidator.validateRequiredApiHeaders()
         identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
@@ -469,6 +474,23 @@ class StoreResourceImpl implements StoreResource {
                 requestValidator.validateOfferForPurchase(request.offer, apiContext.country.getId(), apiContext.locale.getId(), true)
             }
         }.then {
+            if (tosFreepurchaseEnable) {
+                return challengeHelper.checkTosChallenge(user.getId(), tosPurchase, request.challengeAnswer).then { Challenge tosChallenge ->
+                    challenge = tosChallenge
+                    return Promise.pure(null)
+                }
+            } else {
+                challenge = null
+                return Promise.pure(null)
+            }
+        }.then {
+            if (challenge != null) {
+                return Promise.pure(
+                        new MakeFreePurchaseResponse(
+                                challenge : challenge
+                        )
+                )
+            }
             Order order = new Order(
                     user: user.getId(),
                     country: apiContext.country.getId(),

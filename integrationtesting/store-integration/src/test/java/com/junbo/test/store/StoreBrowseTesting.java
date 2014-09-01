@@ -60,7 +60,9 @@ public class StoreBrowseTesting extends BaseTestClass {
         } else {
             offerId = offer_digital_free;
         }
-        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId);
+        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
+
+        freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
         assert libraryResponse.getItems().size() == 1; // todo add more verifications
@@ -85,7 +87,8 @@ public class StoreBrowseTesting extends BaseTestClass {
         } else {
             offerId = offer_digital_free;
         }
-        testDataProvider.makeFreePurchase(offerId);
+        MakeFreePurchaseResponse response = testDataProvider.makeFreePurchase(offerId, null);
+        response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
         assert libraryResponse.getItems().size() == 1; // todo add more verifications

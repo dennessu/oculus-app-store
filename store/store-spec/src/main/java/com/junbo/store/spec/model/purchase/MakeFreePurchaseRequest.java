@@ -6,11 +6,14 @@
 package com.junbo.store.spec.model.purchase;
 
 import com.junbo.common.id.OfferId;
+import com.junbo.store.spec.model.ChallengeAnswer;
 
 /**
  * The MakeFreePurchaseRequest class.
  */
 public class MakeFreePurchaseRequest {
+
+    private ChallengeAnswer challengeAnswer;
 
     private OfferId offer;
 
@@ -22,4 +25,11 @@ public class MakeFreePurchaseRequest {
         this.offer = offer;
     }
 
+    public ChallengeAnswer getChallengeAnswer() {
+        return challengeAnswer;
+    }
+
+    public void setChallengeAnswer(ChallengeAnswer challengeAnswer) {
+        this.challengeAnswer = challengeAnswer;
+    }
 }
