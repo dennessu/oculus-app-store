@@ -304,11 +304,16 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return getToken(refreshToken, 200);
     }
 
-    public BillingProfileGetResponse getBillingProfile(String offerId) throws Exception{
+    public BillingProfileGetResponse getBillingProfile(String offerId) throws Exception {
+        return getBillingProfile(offerId, 200);
+    }
+
+    public BillingProfileGetResponse getBillingProfile(String offerId, int expectedCode) throws Exception{
         BillingProfileGetRequest request = new BillingProfileGetRequest();
         request.setOffer(offerId == null ? null : new OfferId(offerId));
-        return storeClient.getBillingProfile(request);
+        return storeClient.getBillingProfile(request, expectedCode);
     }
+
 
     public LibraryResponse getLibrary() throws Exception {
         return storeClient.getLibrary();

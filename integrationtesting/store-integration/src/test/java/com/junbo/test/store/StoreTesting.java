@@ -249,7 +249,7 @@ public class StoreTesting extends BaseTestClass {
                     "10. Verify entitlement response"
             }
     )
-    @Test
+    @Test(enabled = false)
     public void testIAPCheckoutByWallet() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);

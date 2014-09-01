@@ -94,9 +94,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
 
         BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
-        //TODO Error response validate
-        response = testDataProvider.getBillingProfile("123");
-        //TODO Error response validate
+        response = testDataProvider.getBillingProfile("123", 404);
+        assert response == null;
     }
 
 
