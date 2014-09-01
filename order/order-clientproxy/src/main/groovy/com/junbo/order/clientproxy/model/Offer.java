@@ -19,11 +19,14 @@ import java.util.Map;
  */
 public class Offer {
     private String id;
+    private String revisionId;
     private Organization owner;
     private ItemType type;
     private Map<String, Date> countryReleaseDates;
     private Map<String, OfferLocale> locales;
     private List<Item> items;
+    private Map<String, String> itemIds;
+    private List<Offer> subOffers;
 
     public String getId() {
         return id;
@@ -31,6 +34,14 @@ public class Offer {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getRevisionId() {
+        return revisionId;
+    }
+
+    public void setRevisionId(String revisionId) {
+        this.revisionId = revisionId;
     }
 
     public Organization getOwner() {
@@ -65,11 +76,27 @@ public class Offer {
         this.locales = locales;
     }
 
+    public Map<String, String> getItemIds() {
+        return itemIds;
+    }
+
+    public void setItemIds(Map<String, String> itemIds) {
+        this.itemIds = itemIds;
+    }
+
     public List<Item> getItems() {
         return items;
     }
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public List<Offer> getSubOffers() {
+        return subOffers;
+    }
+
+    public void setSubOffers(List<Offer> subOffers) {
+        this.subOffers = subOffers;
     }
 }

@@ -362,4 +362,37 @@
                 ]]>
         </sql>
     </changeSet>
+
+    <changeSet author="chriszhu" id = "1.4" context="PREDEPLOY">
+        <sql><![CDATA[
+                create table order_offer_snapshot (
+                    offer_snapshot_id bigint not null,
+                    order_id bigint not null,
+                    offer_id varchar(128) not null,
+                    offer_revision_id varchar(128) not null,
+					resource_age bigint not null,
+                    created_time timestamp not null,
+                    created_by bigint not null,
+                    updated_time timestamp not null,
+                    updated_by bigint not null,
+                    primary key (offer_snapshot_id)
+                );
+                create unique index offer_snapshot_index on order_offer_snapshot (offer_snapshot_id, order_id);
+
+                create table order_offer_item_snapshot (
+                    item_snapshot_id bigint not null,
+                    offer_snapshot_id bigint not null,
+                    item_id varchar(128) not null,
+                    item_revision_id varchar(128) not null,
+					resource_age bigint not null,
+                    created_time timestamp not null,
+                    created_by bigint not null,
+                    updated_time timestamp not null,
+                    updated_by bigint not null,
+                    primary key (offer_snapshot_id)
+                );
+                create unique index item_snapshot_index on order_offer_item_snapshot (item_snapshot_id, offer_snapshot_id);
+                ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>

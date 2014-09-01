@@ -7,6 +7,8 @@
 package com.junbo.order.clientproxy.catalog.impl
 
 import com.junbo.catalog.spec.model.item.Item
+import com.junbo.catalog.spec.model.item.ItemRevision
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions
@@ -91,6 +93,7 @@ class CatalogFacadeImpl implements CatalogFacade {
             assert (or != null)
             def offer = new Offer(
                     id: or.offerId,
+                    revisionId: or.id,
                     countryReleaseDates: new HashMap<String, Date>(),
                     locales: new HashMap<String, OfferLocale>()
             )
@@ -106,18 +109,35 @@ class CatalogFacadeImpl implements CatalogFacade {
                 ))
             }
             def items = []
+            HashMap itemMap = new HashMap<String, String>()
             return Promise.each(or.items) { ItemEntry ie ->
                 return itemResource.getItem(ie.itemId).syncRecover { Throwable throwable ->
                     LOGGER.error('name=CatalogFacadeImpl_Get_Offer_Item_Error. itemId: {}, timestamp: {}',
                             ie.itemId, honoredTime, throwable)
                     throw convertError(throwable).exception()
-                }.syncThen { Item item ->
+                }.then { Item item ->
                     assert item != null
+                    def itemRevisionGetOption = new ItemRevisionsGetOptions(
+                            timestamp: honoredTime.time,
+                            itemIds: [ie.itemId] as Set
+                    )
                     items << item
+                    return itemRevisionResource.getItemRevisions(itemRevisionGetOption).syncRecover {
+                        Throwable throwable ->
+                        LOGGER.error('CatalogFacadeImpl_Get_Item_Revision_Error, itemId: {}', ie.itemId, throwable)
+                        throw convertError(throwable).exception()
+                    }.syncThen { Results<ItemRevision> itemRevisionResults ->
+                        List<ItemRevision> itemRevisions = itemRevisionResults?.items
+                        ItemRevision itemRevision = itemRevisions?.get(0)
+                        if (itemRevision != null) {
+                            itemMap.put(ie.itemId, itemRevision.revisionId)
+                        }
+                    }
                 }
             }.then {
                 offer.type = getType(items)
                 offer.items = items
+                offer.itemIds = itemMap
                 return identityFacade.getOrganization(or.ownerId?.value).syncRecover {
                     /* organization is not required, return offer directly if the organization is unavailable.*/
                     LOGGER.error('CatalogFacadeImpl_Get_Organization_Error, offerId: {}', offerId)
