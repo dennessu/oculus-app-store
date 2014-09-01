@@ -15,10 +15,12 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -201,13 +203,14 @@ public class postCredentialAttempts {
 
         response.close();
 
+        Thread.sleep(2000);
         password = IdentityModel.DefaultPassword();
         response = Identity.UserCredentialPostDefault(postedUser.getId(), null, password);
         response.close();
 
         Boolean success = false;
-        for (int i = 0; i < 2; i++) {
-            Thread.sleep(i * 2 * 1000);
+        for (int i = 0; i < 12; i++) {
+            Thread.sleep(i * 2 * 100);
             response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password, false);
             if (response.getStatusLine().getStatusCode() == 201) {
                 success = true;
