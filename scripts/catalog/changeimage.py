@@ -21,7 +21,7 @@ headers = {
 DESIGN_PREFIX = '_design/'
 
 def getRevisions(revision_type):
-    url = urlparse.urljoin(BASE_URL, PREFIX + revision_type + '/_all_docs?include_docs=true')
+    url = urlparse.urljoin(BASE_URL, PREFIX + revision_type + '/_all_docs?include_docs=true&limit=200')
     r = requests.get(url, headers=headers)
     return json.loads(r.text)
 
@@ -62,8 +62,9 @@ def changeImages(revision, revision_type):
         changeImage(images, 'background')
         changeImage(images, 'featured')
         if 'gallery' in images:
-            changeImage(images['gallery'], 'full')
-            changeImage(images['gallery'], 'thumbnail')
+            for gallery in images['gallery']:
+                changeImage(gallery, 'full')
+                changeImage(gallery, 'thumbnail')
 
         images.pop('halfMain', None)
         images.pop('halfThumbnail', None)
