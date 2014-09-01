@@ -420,7 +420,22 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         return providerService.processNotify(request)
                 .then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
-            public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+            public Promise<PaymentTransaction> apply(PaymentTransaction payment) {
+                if(payment == null){
+                    return Promise.pure(null);
+                }
+                if(CommonUtil.isNullOrEmpty(payment.getStatus())){
+                    return Promise.pure(null);
+                }
+                PaymentTransaction existingTrx = paymentRepositoryFacade.getByPaymentId(payment.getId());
+                if(existingTrx == null){
+                    //Credit Card Auth use PIID as reference so no transaction would be found:
+                    LOGGER.warn("cannot find payment transaction:" + payment.getId());
+                    return Promise.pure(null);
+                }
+                PaymentEvent reportEvent = createPaymentEvent(payment
+                        , PaymentEventType.NOTIFY, PaymentStatus.valueOf(payment.getStatus()), SUCCESS_EVENT_RESPONSE);
+                reportPaymentEvent(reportEvent, payment, null);
                 return Promise.pure(null);
             }
         });

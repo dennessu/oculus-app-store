@@ -19,7 +19,6 @@ import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
-import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.Platform;
@@ -49,10 +48,8 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
     @Override
     public void afterPropertiesSet(){
         try{
-            service = new PaymentLocator().getPaymentHttpPort(
-                new java.net.URL(paymentURL));
-            recurService = new RecurringLocator().getRecurringHttpPort(
-                new java.net.URL(recurringURL));
+            service = new PaymentLocator().getPaymentHttpPort(new java.net.URL(paymentURL));
+            recurService = new RecurringLocator().getRecurringHttpPort(new java.net.URL(recurringURL));
         }catch (Exception ex){
             LOGGER.error("error set up adyen service");
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "setup service").exception();
@@ -399,16 +396,17 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         checkAuthorization();
         //TODO: save to DB and check redundant notification. Log it first
         LOGGER.info("receive notification from ayden:" + request);
-        //
+
+        PaymentTransaction transaction = null;
         try{
-            process(request);
+            transaction = process(request);
         }catch (Exception ex){
             LOGGER.error("process adyen notification error:" + ex.toString());
         }
-        return Promise.pure(null);
+        return Promise.pure(transaction);
     }
 
-    private void process(String request) {
+    private PaymentTransaction process(String request) {
         //get results
         Map<String, String> notifies = new HashMap<>();
         String[] requests = request.split("&");
@@ -421,38 +419,29 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         AdyenNotifyRequest notify = CommonUtil.parseJson(CommonUtil.toJson(notifies, null), AdyenNotifyRequest.class);
         if(notify.getPspReference() == null){
             LOGGER.warn("no psp reference available");
-            return ;
+            return null;
+        }
+        String merchantAccount = notify.getMerchantAccountCode();
+        if(!notify.getSuccess().equalsIgnoreCase("true") || !merchantAccount.equalsIgnoreCase(this.merchantAccount)){
+            LOGGER.warn("notify failed or merchant account not match!");
+            return null;
         }
         Long paymentId = CommonUtil.decode(notify.getMerchantReference());
-        String merchantAccount = notify.getMerchantAccountCode();
-        PaymentTransaction transaction = paymentRepositoryFacade.getByPaymentId(paymentId);
-        if(transaction == null){
-            //Credit Card Auth use PIID as reference so no transaction would be found:
-            LOGGER.warn("cannot find payment transaction:" + paymentId);
-            return ;
+        PaymentTransaction transaction = new PaymentTransaction();
+        transaction.setId(paymentId);
+        transaction.setExternalToken(notify.getPspReference());
+        if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.AUTHORISATION.name())){
+            transaction.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CANCELLATION.name())){
+            transaction.setStatus(PaymentStatus.REVERSED.toString());
+        }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND.name())){
+            transaction.setStatus(PaymentStatus.REFUNDED.toString());
+        }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CAPTURE_FAILED.name())){
+            transaction.setStatus(PaymentStatus.SETTLE_DECLINED.toString());
+        }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND_FAILED.name())){
+            transaction.setStatus(PaymentStatus.REFUND_DECLINED.toString());
         }
-        String externalToken = notify.getPspReference();
-        if(notify.getSuccess().equalsIgnoreCase("true") && merchantAccount.equalsIgnoreCase(this.merchantAccount)){
-            if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.AUTHORISATION.name())){
-                //Ignore of Credit Card Auth as CC use API call directly
-                if(!transaction.getPaymentProvider().equalsIgnoreCase(PaymentProvider.AdyenCC.toString())){
-                    paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                            PaymentStatus.SETTLEMENT_SUBMITTED.toString()), externalToken);
-                }
-            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CANCELLATION.name())){
-                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.REVERSED.toString()), externalToken);
-            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND.name())){
-                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.REFUNDED.toString()), externalToken);
-            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CAPTURE_FAILED.name())){
-                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.SETTLE_DECLINED.toString()), externalToken);
-            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND_FAILED.name())){
-                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.REFUND_DECLINED.toString()), externalToken);
-            }
-        }
+        return transaction;
     }
 
     private void checkAuthorization() {
