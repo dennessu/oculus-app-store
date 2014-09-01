@@ -6,6 +6,7 @@
 package com.junbo.store.spec.model.purchase;
 
 import com.junbo.common.id.OrderId;
+import com.junbo.common.id.UserId;
 
 import java.util.Date;
 
@@ -13,6 +14,7 @@ import java.util.Date;
  * The PurchaseState class.
  */
 public class PurchaseState {
+    private UserId user;
 
     private OrderId order;
 
@@ -23,6 +25,14 @@ public class PurchaseState {
     private String offer;
 
     private Date timestamp;
+
+    public UserId getUser() {
+        return user;
+    }
+
+    public void setUser(UserId user) {
+        this.user = user;
+    }
 
     public OrderId getOrder() {
         return order;

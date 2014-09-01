@@ -299,7 +299,7 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest request) {
+    Promise<BillingProfileGetResponse> getBillingProfile(BillingProfileGetRequest request) {
         ApiContext apiContext
         User user
         BillingProfileGetResponse response = new BillingProfileGetResponse()
@@ -542,7 +542,9 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             if (request.purchaseToken == null) {
-                purchaseState = new PurchaseState(timestamp: new Date())
+                purchaseState = new PurchaseState(
+                        timestamp: new Date(),
+                        user: user.getId())
                 return Promise.pure(null)
             }
             tokenProcessor.toTokenObject(request.purchaseToken, PurchaseState).then { PurchaseState ps ->
@@ -651,6 +653,9 @@ class StoreResourceImpl implements StoreResource {
         }.then {
             tokenProcessor.toTokenObject(commitPurchaseRequest.purchaseToken, PurchaseState).then { PurchaseState e ->
                 purchaseState = e
+                if (purchaseState.user != AuthorizeContext.currentUserId) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
+                }
                 if (purchaseState.order == null) {
                     throw AppErrors.INSTANCE.invalidPurchaseToken([new com.junbo.common.error.ErrorDetail(reason: 'OrderId_Invalid')] as com.junbo.common.error.ErrorDetail[]).exception()
                 }
@@ -1238,6 +1243,9 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private void fillPurchaseState(PurchaseState purchaseState, PreparePurchaseRequest request, ApiContext apiContext) {
+        if (purchaseState.user != AuthorizeContext.currentUserId) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
+        }
         if (purchaseState.country == null) {
             purchaseState.country = apiContext.country.getCountryCode()
         } else if (purchaseState.country != apiContext.country.getCountryCode()) {

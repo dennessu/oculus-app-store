@@ -14,6 +14,7 @@ import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
+import com.junbo.order.spec.model.Order
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.spec.error.AppErrors
@@ -439,7 +440,12 @@ class RequestValidator {
 
     Promise validateOrderValid(OrderId orderId) {
         Promise.pure(null).then {
-            resourceContainer.orderResource.getOrderByOrderId(orderId)
+            resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
+                if (order.user == null || order.user != AuthorizeContext.currentUserId) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
+                }
+                return Promise.pure(null)
+            }
         }.recover {
             throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
         }
