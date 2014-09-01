@@ -74,6 +74,12 @@
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
+    <bean id="store.downloadUrlClient"
+          class="com.junbo.entitlement.spec.resource.proxy.DownloadUrlResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.entitlement.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
     <bean id="store.paymentInstrumentClient"
           class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.payment.url}"/>
@@ -188,6 +194,7 @@
     <bean id="store.caseyClientProxy"
           class="com.junbo.store.spec.resource.external.proxy.CaseyResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.casey.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
 </beans>

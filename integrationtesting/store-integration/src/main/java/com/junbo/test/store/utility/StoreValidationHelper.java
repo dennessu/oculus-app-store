@@ -9,10 +9,12 @@ package com.junbo.test.store.utility;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.Entitlement;
 import com.junbo.store.spec.model.billing.BillingProfile;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 import com.junbo.store.spec.model.billing.Instrument;
+import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.browse.TocResponse;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -24,6 +26,7 @@ import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
+import org.testng.Assert;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -31,8 +34,7 @@ import com.junbo.test.common.libs.IdConverter;
 public class StoreValidationHelper extends BaseValidationHelper {
     OfferService offerClient = OfferServiceImpl.instance();
 
-    public void verifyAddNewCreditCard(BillingProfileUpdateResponse response) {
-        verifyEqual(response.getStatus(), String.format("SUCCESS"), "verify status");
+    public void verifyAddNewCreditCard(InstrumentUpdateResponse response) {
         BillingProfile billingProfile = response.getBillingProfile();
         if (billingProfile.getInstruments().size() <= 0) {
             throw new TestException("missing payment instrument");
@@ -75,4 +77,30 @@ public class StoreValidationHelper extends BaseValidationHelper {
         verifyEqual(userProfile.getPin(), "****", "verify pin");
     }
 
+    public void verifyEWallet(InstrumentUpdateResponse response){
+        BillingProfile billingProfile = response.getBillingProfile();
+        if (billingProfile.getInstruments().size() <= 0) {
+            throw new TestException("missing payment instrument");
+        }
+        Instrument instrument = billingProfile.getInstruments().get(0); //verify the first item
+        verifyEqual(instrument.getType(), "STOREDVALUE", "verify payment type");
+        verifyEqual(instrument.getStoredValueCurrency(), "USD", "verify stored value currency");
+    }
+
+    public void verifyTocTosChallenge(Challenge challenge) {
+        Assert.assertNotNull(challenge);
+        Assert.assertEquals(challenge.getType(), "TOS_ACCEPTANCE");
+        Assert.assertNotNull(challenge.getTos());
+        Assert.assertFalse(challenge.getTos().getAccepted());
+        Assert.assertNotNull(challenge.getTos().getContent());
+        Assert.assertNotNull(challenge.getTos().getTitle());
+        Assert.assertNotNull(challenge.getTos().getVersion());
+        Assert.assertEquals(challenge.getTos().getType(), "TOS");
+    }
+
+    public void verifyToc(TocResponse tocResponse) {
+        Assert.assertNull(tocResponse.getChallenge());
+        Assert.assertEquals(tocResponse.getSections().size(), 4); // current 3 sections will be returned.
+    }
 }
+

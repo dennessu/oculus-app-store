@@ -13,6 +13,10 @@ import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.store.apihelper.LoginService;
+import com.ning.http.client.FluentCaseInsensitiveStringsMap;
+import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.Collections;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -30,6 +34,16 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         return instance;
     }
 
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
+        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
+        headers.put("X-ANDROID-ID", Collections.singletonList(RandomStringUtils.randomAlphabetic(10)));
+        headers.put("Accept-Language", Collections.singletonList("en-US"));
+        headers.put("X-MCCMNC", Collections.singletonList("INT_TEST"));
+
+        //for further header, we can set dynamic value from properties here
+        return headers;
+    }
+
     @Override
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest) throws Exception {
         return CreateUser(createUserRequest, 200);
@@ -37,7 +51,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/create", createUserRequest);
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/create", createUserRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);
@@ -68,12 +82,17 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     public AuthTokenResponse signIn(UserSignInRequest userSignInRequest, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/sign-in", userSignInRequest, expectedResponseCode);
 
-        AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
-        }, responseBody);
-        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
-        Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
-        Master.getInstance().setCurrentUid(uid);
-        return authTokenResponse;
+        if (expectedResponseCode == 200) {
+            AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
+            }, responseBody);
+            String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+            Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
+            Master.getInstance().setCurrentUid(uid);
+
+            return authTokenResponse;
+        }
+
+        return null;
     }
 
     @Override
@@ -98,7 +117,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public AuthTokenResponse getToken(AuthTokenRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/token", request);
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/token", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);

@@ -5,8 +5,6 @@
  */
 package com.junbo.store.spec.model.purchase;
 
-import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.ChallengeAnswer;
@@ -21,10 +19,6 @@ public class PreparePurchaseRequest {
     private String purchaseToken;
 
     private OfferId offer;
-
-    private CountryId country;
-
-    private LocaleId locale;
 
     private IAPParams iapParams;
 
@@ -44,22 +38,6 @@ public class PreparePurchaseRequest {
 
     public void setOffer(OfferId offer) {
         this.offer = offer;
-    }
-
-    public CountryId getCountry() {
-        return country;
-    }
-
-    public void setCountry(CountryId country) {
-        this.country = country;
-    }
-
-    public LocaleId getLocale() {
-        return locale;
-    }
-
-    public void setLocale(LocaleId locale) {
-        this.locale = locale;
     }
 
     public String getPurchaseToken() {

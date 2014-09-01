@@ -14,4 +14,25 @@
     <bean id="defaultStoreResourceRouter" parent="routingRouterBase" />
     <bean id="defaultStoreResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreResourceClientProxyFactory"/>
 
+    <bean id="storeCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation">
+            <value>ehcache/store_ehcache.xml</value>
+        </property>
+    </bean>
+    <bean id="storeCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="storeCacheManagerFactory"/>
+    </bean>
+
+    <bean id="storeItemDataCache" class="com.junbo.store.common.cache.impl.SimpleCache">
+        <property name="cacheEnabled" value="${store.cache.enabled}"/>
+        <property name="cacheManager" ref="storeCacheManager"/>
+        <property name="cacheName" value="store.itemdata.cache"/>
+    </bean>
+
+    <bean id="storeItemPriceCache" class="com.junbo.store.common.cache.impl.SimpleCache">
+        <property name="cacheEnabled" value="${store.cache.enabled}"/>
+        <property name="cacheManager" ref="storeCacheManager"/>
+        <property name="cacheName" value="store.item.price.cache"/>
+    </bean>
+
 </beans>

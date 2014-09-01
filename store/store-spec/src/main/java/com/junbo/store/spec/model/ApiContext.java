@@ -3,18 +3,17 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.store.rest.browse;
+package com.junbo.store.spec.model;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.Locale;
-import com.junbo.identity.spec.v1.model.User;
-import com.junbo.store.spec.model.Platform;
 
 /**
- * The BrowseContext class.
+ * The ApiContext class.
  */
-public class BrowseContext {
+public class ApiContext {
 
     private Platform platform;
 
@@ -24,7 +23,11 @@ public class BrowseContext {
 
     private Currency currency;
 
-    private User user;
+    private String androidId;
+
+    private String userAgent;
+
+    private UserId user;
 
     public Platform getPlatform() {
         return platform;
@@ -58,11 +61,27 @@ public class BrowseContext {
         this.currency = currency;
     }
 
-    public User getUser() {
+    public String getAndroidId() {
+        return androidId;
+    }
+
+    public void setAndroidId(String androidId) {
+        this.androidId = androidId;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public UserId getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserId user) {
         this.user = user;
     }
 }

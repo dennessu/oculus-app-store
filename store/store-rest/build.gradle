@@ -13,7 +13,6 @@ dependencies {
     compile (libraries.spring_expression)
     compile (libraries.spring_tx)
     compile (libraries.spring_web)
-    compile (libraries.apache_httpclient)
 
     compile (libraries.asyncclient)
     processor junboProject(':oom-processor')

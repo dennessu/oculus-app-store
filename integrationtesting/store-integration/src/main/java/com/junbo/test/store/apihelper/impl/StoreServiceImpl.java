@@ -10,17 +10,23 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
-//import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
-//import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.store.apihelper.StoreService;
+import com.ning.http.client.FluentCaseInsensitiveStringsMap;
+import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.Collections;
+
+//import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+//import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -29,6 +35,16 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     private static String storeUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/horizon-api";
 
     private static StoreService instance;
+
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
+        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
+        headers.put("X-ANDROID-ID", Collections.singletonList(RandomStringUtils.randomAlphabetic(10)));
+        headers.put("Accept-Language", Collections.singletonList("en-US"));
+        headers.put("X-MCCMNC", Collections.singletonList("INT_TEST"));
+
+        //for further header, we can set dynamic value from properties here
+        return headers;
+    }
 
     public static synchronized StoreService getInstance() {
         if (instance == null) {
@@ -95,8 +111,12 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request, int expectedResponseCode) throws Exception {
-        //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/billing-profile", expectedResponseCode);
+        String url = storeUrl + "/billing-profile";
+        if (request.getOffer() != null) {
+            url += String.format("?offerId=%s", IdConverter.idToHexString(request.getOffer()));
+        }
+
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             BillingProfileGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<BillingProfileGetResponse>() {
             }, responseBody);
@@ -107,18 +127,18 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     }
 
     @Override
-    public BillingProfileUpdateResponse updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest) throws Exception {
-        return updateBillingProfile(billingProfileUpdateRequest, 200);
+    public InstrumentUpdateResponse updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest) throws Exception {
+        return updateInstrument(instrumentUpdateRequest, 200);
     }
 
     @Override
-    public BillingProfileUpdateResponse updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/billing-profile", billingProfileUpdateRequest, expectedResponseCode);
+    public InstrumentUpdateResponse updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/billing-profile/instruments", instrumentUpdateRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
-            BillingProfileUpdateResponse billingProfileUpdateResponse = new JsonMessageTranscoder().decode(new TypeReference<BillingProfileUpdateResponse>() {
+            InstrumentUpdateResponse instrumentUpdateResponse = new JsonMessageTranscoder().decode(new TypeReference<InstrumentUpdateResponse>() {
             }, responseBody);
 
-            return billingProfileUpdateResponse;
+            return instrumentUpdateResponse;
         }
         return null;
     }
@@ -286,7 +306,11 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public SectionLayoutResponse getSectionLayout(SectionLayoutRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/section-layout", expectedResponseCode);
+        String url = storeUrl + "/section-layout?";
+        url = appendQuery(url, "category", request.getCategory());
+        url = appendQuery(url, "criteria", request.getCriteria());
+        url = appendQuery(url, "count", request.getCount());
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             SectionLayoutResponse response = new JsonMessageTranscoder().decode(new TypeReference<SectionLayoutResponse>() {
             }, responseBody);
@@ -298,13 +322,18 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public ListResponse getList(ListRequest request) throws Exception {
-        return null;
+        return getList(request, 200);
     }
 
     @Override
     public ListResponse getList(ListRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/section-list", expectedResponseCode);
+        String url = storeUrl + "/section-list?";
+        url = appendQuery(url, "category", request.getCategory());
+        url = appendQuery(url, "criteria", request.getCriteria());
+        url = appendQuery(url, "count", request.getCount());
+        url = appendQuery(url, "cursor", request.getCursor());
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             ListResponse response = new JsonMessageTranscoder().decode(new TypeReference<ListResponse>() {
             }, responseBody);
@@ -340,7 +369,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public DetailsResponse getDetails(DetailsRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/details", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/details?itemId=" + request.getItemId().getValue() , expectedResponseCode);
         if (expectedResponseCode == 200) {
             DetailsResponse response = new JsonMessageTranscoder().decode(new TypeReference<DetailsResponse>() {
             }, responseBody);
@@ -393,7 +422,11 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public DeliveryResponse getDelivery(DeliveryRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/delivery", expectedResponseCode);
+        String url = storeUrl + "/delivery?";
+        url = appendQuery(url, "itemId", request.getItemId());
+        url = appendQuery(url, "currentVersionCode", request.getCurrentVersionCode());
+        url = appendQuery(url, "desiredVersionCode", request.getDesiredVersionCode());
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             DeliveryResponse response = new JsonMessageTranscoder().decode(new TypeReference<DeliveryResponse>() {
             }, responseBody);
@@ -401,5 +434,12 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
             return response;
         }
         return null;
+    }
+
+    private String appendQuery(String url, String name, Object val) {
+        if (val != null) {
+            return url + "&" + name + "=" + val.toString();
+        }
+        return url;
     }
 }

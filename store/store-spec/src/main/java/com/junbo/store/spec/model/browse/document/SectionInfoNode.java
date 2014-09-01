@@ -65,7 +65,7 @@ public class SectionInfoNode {
         this.ordered = ordered;
     }
 
-    public SectionInfo getSectionInfo() {
+    public SectionInfo toSectionInfo() {
         SectionInfo sectionInfo = new SectionInfo();
         sectionInfo.setCategory(category);
         sectionInfo.setCriteria(criteria);

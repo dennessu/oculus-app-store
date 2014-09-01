@@ -20,6 +20,7 @@ public abstract class BaseTestClass {
     protected String offer_physical_free;
     protected String offer_iap_normal;
     protected String offer_iap_free;
+    protected String offer_storedValue_normal;
 
     public BaseTestClass () {
         super();
@@ -39,6 +40,7 @@ public abstract class BaseTestClass {
         offer_physical_free = ConfigHelper.getSetting("testdata.offer.physical.free");
         offer_iap_normal = ConfigHelper.getSetting("testdata.offer.iap.normal");
         offer_iap_free = ConfigHelper.getSetting("testdata.offer.iap.free");
+        offer_storedValue_normal = ConfigHelper.getSetting("testdata.offer.storedvalue.normal");
 
     }
 

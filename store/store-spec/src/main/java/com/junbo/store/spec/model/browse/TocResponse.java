@@ -5,8 +5,8 @@
  */
 package com.junbo.store.spec.model.browse;
 
+import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.browse.document.SectionInfoNode;
-import com.junbo.store.spec.model.browse.document.Tos;
 
 import java.util.List;
 
@@ -15,16 +15,16 @@ import java.util.List;
  */
 public class TocResponse {
 
-    private Tos tos;
+    private Challenge challenge;
 
     private List<SectionInfoNode> sections;
 
-    public Tos getTos() {
-        return tos;
+    public Challenge getChallenge() {
+        return challenge;
     }
 
-    public void setTos(Tos tos) {
-        this.tos = tos;
+    public void setChallenge(Challenge challenge) {
+        this.challenge = challenge;
     }
 
     public List<SectionInfoNode> getSections() {

@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class RevisionNote {
 
-    private String versionCode;
+    private Integer versionCode;
 
     private String versionString;
 
@@ -22,11 +22,11 @@ public class RevisionNote {
 
     private String description;
 
-    public String getVersionCode() {
+    public Integer getVersionCode() {
         return versionCode;
     }
 
-    public void setVersionCode(String versionCode) {
+    public void setVersionCode(Integer versionCode) {
         this.versionCode = versionCode;
     }
 

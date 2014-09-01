@@ -1,5 +1,4 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -8,6 +7,7 @@ import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
+import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.TypeSpecificDetails
 import com.junbo.store.spec.model.Address
@@ -18,6 +18,7 @@ import com.junbo.store.spec.model.browse.Images
 import com.junbo.store.spec.model.browse.document.AppDetails
 import com.junbo.store.spec.model.browse.document.Image
 import com.junbo.store.spec.model.browse.document.Item
+import com.junbo.store.spec.model.browse.document.Tos
 import com.junbo.store.spec.model.identity.PersonalInfo
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
@@ -113,7 +114,7 @@ class DataConverter {
                 appDetails: new AppDetails(
                         genres: item.genres,
                         packageName: itemRevision.packageName,
-                        versionCode: itemRevision.binaries['ANDROID'].version,
+                        versionCode: null as Integer, // todo set version code
                         versionString: itemRevision.binaries['ANDROID'].version,
                         installationSize: itemRevision.binaries['ANDROID'].size,
 
@@ -142,6 +143,18 @@ class DataConverter {
         return new Image(
                 imageUrl: image.href,
                 altText: image.altText
+        )
+    }
+
+    Tos toStoreTos(com.junbo.identity.spec.v1.model.Tos tos, UserTosAgreement userTosAgreement) {
+        return new Tos(
+            tosId: tos.getId(),
+            type: tos.type,
+            version: tos.version,
+            title: tos.title,
+            content: tos.content,
+            accepted: userTosAgreement != null,
+            acceptedDate: userTosAgreement?.agreementTime
         )
     }
 }

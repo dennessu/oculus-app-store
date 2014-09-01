@@ -18,10 +18,10 @@ public class DeliveryRequest {
     private ItemId itemId;
 
     @QueryParam("desiredVersionCode")
-    private String desiredVersionCode;
+    private Integer desiredVersionCode;
 
     @QueryParam("currentVersionCode")
-    private String currentVersionCode;
+    private Integer currentVersionCode;
 
     public ItemId getItemId() {
         return itemId;
@@ -31,19 +31,19 @@ public class DeliveryRequest {
         this.itemId = itemId;
     }
 
-    public String getDesiredVersionCode() {
+    public Integer getDesiredVersionCode() {
         return desiredVersionCode;
     }
 
-    public void setDesiredVersionCode(String desiredVersionCode) {
+    public void setDesiredVersionCode(Integer desiredVersionCode) {
         this.desiredVersionCode = desiredVersionCode;
     }
 
-    public String getCurrentVersionCode() {
+    public Integer getCurrentVersionCode() {
         return currentVersionCode;
     }
 
-    public void setCurrentVersionCode(String currentVersionCode) {
+    public void setCurrentVersionCode(Integer currentVersionCode) {
         this.currentVersionCode = currentVersionCode;
     }
 }
