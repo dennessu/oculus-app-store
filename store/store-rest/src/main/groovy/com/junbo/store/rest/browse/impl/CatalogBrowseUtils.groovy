@@ -1,6 +1,5 @@
 package com.junbo.store.rest.browse.impl
 
-import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.enums.Status
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
@@ -11,10 +10,10 @@ import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
+import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.ItemId
-import com.junbo.common.id.ItemRevisionId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.util.IdUtil
@@ -62,6 +61,9 @@ import javax.annotation.Resource
 class CatalogBrowseUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogBrowseUtils)
+
+    @Resource(name = 'storeLocaleUtils')
+    private LocaleUtils localeUtils
 
     @Resource(name = 'storeItemDataCache')
     private Cache<ItemId, ItemData> storeItemDataCache
@@ -144,7 +146,8 @@ class CatalogBrowseUtils {
         }
         result.self = new OfferId(offerData.offer.getId())
         result.currency = apiContext.currency.getId()
-        result.formattedDescription = offerData.offerRevision?.locales?.get(apiContext.locale.getId().value)?.shortDescription
+        OfferRevisionLocaleProperties localeProperties = localeUtils.getLocaleProperties(offerData.offerRevision?.locales, apiContext.locale , 'offerRevision', offerData.offerRevision?.getId(), 'locales') as OfferRevisionLocaleProperties
+        result.formattedDescription = localeProperties?.shortDescription
         result.isFree = offerData.offerRevision?.price?.priceType == PriceType.FREE.name()
         resourceContainer.ratingResource.priceRating(new RatingRequest(
                 includeCrossOfferPromos: false,
