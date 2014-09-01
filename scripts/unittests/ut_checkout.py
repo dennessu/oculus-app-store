@@ -327,22 +327,18 @@ class CheckoutTests(ut.TestBase):
                     "videos": [],
                     "images": {
                         "main": {
-                            "20x20":{
                             "y": 15,
                             "x": 20,
                             "href": "http://www.google.com",
                             "id": "id of image",
                             "size": 300
-                            }
                         },
                         "thumbnail": {
-                            "20x20":{
                             "y": 10,
                             "x": 20,
                             "href": "http://www.google.com",
                             "id": "id of image",
                             "size": 200
-                            }
                         }
                     },
                     "recommendedSystemRequirements": {
@@ -440,13 +436,11 @@ class CheckoutTests(ut.TestBase):
                     "images": {
                         "main": {},
                         "thumbnail": {
-                            "20x20":{
                             "y": 10,
                             "x": 20,
                             "href": "http://www.google.com",
                             "id": "id of image",
                             "size": 200
-                            }
                         }
                     },
                     "shortDescription": "short description",

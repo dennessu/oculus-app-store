@@ -19,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -98,6 +99,18 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
             offers = Utils.getDocs(queryResult.getRows());
             options.setNextCursor(null);
             options.setTotal(queryResult.getTotalRows());
+        }
+
+        return offers;
+    }
+
+    public List<Offer> getOffers(Collection<String> offerIds) {
+        List<Offer> offers = new ArrayList<>();
+        for (String offerId : offerIds) {
+            Offer offer = get(offerId);
+            if (offer != null) {
+                offers.add(offer);
+            }
         }
 
         return offers;
