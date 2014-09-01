@@ -297,6 +297,9 @@ class CatalogBrowseUtils {
                     result.reviewsResponse = reviews
                 }
             }
+        }.recover { Throwable throwable ->
+            LOGGER.error('name=Get_Casey_Fail', throwable)
+            return Promise.pure()
         }.then {
             return Promise.pure(result)
         }
