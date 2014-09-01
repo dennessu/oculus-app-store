@@ -8,8 +8,7 @@ package com.junbo.store.spec.resource.external;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.store.spec.model.external.casey.CaseyResults;
-import com.junbo.store.spec.model.external.casey.OfferSearchParams;
+import com.junbo.store.spec.model.external.casey.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,4 +26,11 @@ public interface CaseyResource {
     @Path("/search")
     Promise<CaseyResults<JsonNode>> searchOffers(@BeanParam OfferSearchParams params);
 
+    @GET
+    @Path("/ratings/item/{itemId}")
+    Promise<CaseyResults<CaseyAggregateRating>> getRatingByItemId(@PathParam("itemId") String itemId);
+
+    @GET
+    @Path("/reviews")
+    Promise<CaseyResults<CaseyReview>> getReviews(@BeanParam ReviewSearchParams params);
 }

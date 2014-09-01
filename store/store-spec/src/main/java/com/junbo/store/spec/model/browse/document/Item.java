@@ -12,6 +12,8 @@ import com.junbo.store.spec.model.browse.ReviewsResponse;
 
 import java.util.Map;
 
+import java.util.List;
+
 /**
  * The Item class.
  */
@@ -25,7 +27,7 @@ public class Item {
 
     private String descriptionHtml;
 
-    private AggregatedRatings aggregatedRatings;
+    private List<AggregatedRatings> aggregatedRatings;
 
     private String creator;
 
@@ -75,11 +77,11 @@ public class Item {
         this.descriptionHtml = descriptionHtml;
     }
 
-    public AggregatedRatings getAggregatedRatings() {
+    public List<AggregatedRatings> getAggregatedRatings() {
         return aggregatedRatings;
     }
 
-    public void setAggregatedRatings(AggregatedRatings aggregatedRatings) {
+    public void setAggregatedRatings(List<AggregatedRatings> aggregatedRatings) {
         this.aggregatedRatings = aggregatedRatings;
     }
 

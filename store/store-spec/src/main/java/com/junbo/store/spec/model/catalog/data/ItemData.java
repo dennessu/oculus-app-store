@@ -29,6 +29,8 @@ public class ItemData {
 
     private Organization developer;
 
+    private CaseyData caseyData;
+
     public OfferData getOffer() {
         return offer;
     }
@@ -75,5 +77,13 @@ public class ItemData {
 
     public void setDeveloper(Organization developer) {
         this.developer = developer;
+    }
+
+    public CaseyData getCaseyData() {
+        return caseyData;
+    }
+
+    public void setCaseyData(CaseyData caseyData) {
+        this.caseyData = caseyData;
     }
 }

@@ -836,12 +836,12 @@ class StoreResourceImpl implements StoreResource {
         requestValidator.validateRequiredApiHeaders() // todo replace the dummy implementation
         return Promise.pure(new AddReviewResponse(
                 review: new Review(
-                        reviewId: UUID.randomUUID().toString(),
+                        //reviewId: UUID.randomUUID().toString(),
                         authorName: 'test',
                         deviceName: 'Nexus 5',
                         title: request.title,
                         content: request.content,
-                        starRating: request.starRating,
+                        //starRating: request.starRating,
                         timestamp: new Date()
                 )
         ))

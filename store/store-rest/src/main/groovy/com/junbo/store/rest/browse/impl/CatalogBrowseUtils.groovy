@@ -12,16 +12,21 @@ import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.ItemRevisionId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
+import com.junbo.common.id.util.IdUtil
+import com.junbo.common.model.Link
 import com.junbo.common.model.Results
 import com.junbo.entitlement.spec.model.Entitlement
 import com.junbo.entitlement.spec.model.EntitlementSearchParam
 import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.identity.spec.v1.model.Organization
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.priceRating.RatingItem
 import com.junbo.rating.spec.model.priceRating.RatingRequest
@@ -29,9 +34,17 @@ import com.junbo.store.common.cache.Cache
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.model.ApiContext
+import com.junbo.store.spec.model.browse.ReviewsResponse
+import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.browse.document.Offer
+import com.junbo.store.spec.model.browse.document.Review
+import com.junbo.store.spec.model.catalog.data.CaseyData
 import com.junbo.store.spec.model.catalog.data.ItemData
 import com.junbo.store.spec.model.catalog.data.OfferData
+import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
+import com.junbo.store.spec.model.external.casey.CaseyResults
+import com.junbo.store.spec.model.external.casey.CaseyReview
+import com.junbo.store.spec.model.external.casey.ReviewSearchParams
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -103,6 +116,11 @@ class CatalogBrowseUtils {
                     result.offer = offerData
                     return Promise.pure()
                 }
+            }
+        }.then {
+            return getCaseyData(catalogItem.getId()).then { CaseyData caseyData ->
+                result.caseyData = caseyData
+                return Promise.pure()
             }
         }.then {
             storeItemDataCache.put(new ItemId(catalogItem.getItemId()), result)
@@ -212,6 +230,72 @@ class CatalogBrowseUtils {
         }.then {
             results = results.sort { ItemRevision e -> e.updatedTime }.reverse()
             return Promise.pure(results)
+        }
+    }
+
+    private Promise<CaseyData> getCaseyData(String itemId) {
+        CaseyData result = new CaseyData()
+        resourceContainer.caseyResource.getRatingByItemId(itemId).then { CaseyResults<CaseyAggregateRating> results ->
+            result.aggregatedRatings = results.items.collect { CaseyAggregateRating rating ->
+                AggregatedRatings aggregatedRatings = new AggregatedRatings(
+                        type: rating.type,
+                        averageRating: rating.average,
+                        ratingsCount: rating.count,
+                )
+
+                Map<Integer, Long> histogram = new HashMap<>()
+                for (int i = 0; i < rating.histogram.length; i++) {
+                    histogram.put(i, rating.histogram[i])
+                }
+                aggregatedRatings.ratingsHistogram = histogram
+
+                return aggregatedRatings
+            }
+        }.then {
+            resourceContainer.caseyResource.getReviews(new ReviewSearchParams(resourceType: 'item', resourceId: itemId))
+                    .then { CaseyResults<CaseyReview> results ->
+                ReviewsResponse reviews = new ReviewsResponse()
+                reviews.next = new ReviewsResponse.NextOption(
+                        itemId: new ItemId(itemId),
+                        cursor: results.cursor,
+                        count: results.count
+                )
+
+                reviews.reviews = []
+                Promise.each(results.items) { CaseyReview caseyReview ->
+                    Review review = new Review(
+                            self: new Link(id: caseyReview.self.id, href: caseyReview.self.href),
+                            title: caseyReview.reviewTitle,
+                            content: caseyReview.review,
+                            timestamp: caseyReview.postedDate
+                    )
+                    review.starRatings = [:] as Map<String, Integer>
+                    for (CaseyReview.Rating rating : caseyReview.ratings) {
+                        review.starRatings[rating.type] = rating.score
+                    }
+
+                    return resourceContainer.userResource.get(IdUtil.fromLink(new Link(id: caseyReview.user.id,
+                            href: caseyReview.user.href)) as UserId, new UserGetOptions()).recover { Throwable e ->
+                        if (e instanceof AppErrorException) {
+                            return Promise.pure(null)
+                        } else {
+                            LOGGER.error('Exception happened while calling identity', e)
+                            return Promise.pure(null)
+                        }
+                    }.then { User user ->
+                        if (user != null) {
+                            review.authorName = user.nickName
+                        }
+
+                        reviews.reviews << review
+                        return Promise.pure()
+                    }
+                }.then {
+                    result.reviewsResponse = reviews
+                }
+            }
+        }.then {
+            return Promise.pure(result)
         }
     }
 }

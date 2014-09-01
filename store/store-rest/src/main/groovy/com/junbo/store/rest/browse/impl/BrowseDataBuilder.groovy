@@ -6,15 +6,34 @@ import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties
 import com.junbo.common.id.ItemId
+import com.junbo.common.id.OfferId
+import com.junbo.common.id.UserId
+import com.junbo.common.id.util.IdUtil
+import com.junbo.common.model.Link
+import com.junbo.common.model.Results
+import com.junbo.identity.spec.v1.model.Organization
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.langur.core.promise.Promise
+import com.junbo.rating.spec.model.priceRating.RatingItem
+import com.junbo.rating.spec.model.priceRating.RatingRequest
 import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.browse.Images
+import com.junbo.store.spec.model.browse.ReviewsResponse
+import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.browse.document.AppDetails
 import com.junbo.store.spec.model.browse.document.Image
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.RevisionNote
 import com.junbo.store.spec.model.catalog.data.ItemData
+import com.junbo.store.spec.model.browse.document.Review
+import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
+import com.junbo.store.spec.model.external.casey.CaseyResults
+import com.junbo.store.spec.model.external.casey.CaseyReview
+import com.junbo.store.spec.model.external.casey.ReviewSearchParams
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -46,6 +65,8 @@ class BrowseDataBuilder {
 
         item.creator = itemData.developer?.name
         item.appDetails = buildAppDetails(itemData, apiContext)
+        item.aggregatedRatings = itemData.caseyData.aggregatedRatings
+        item.reviews = itemData.caseyData.reviewsResponse
         return item
     }
 
