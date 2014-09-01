@@ -66,6 +66,7 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
 
     @Override
     public Results<OrderEvent> getOrderEventsByOrderId(String orderId, int expectedResponseCode) throws Exception {
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
         String responseBody = restApiCall(HTTPMethod.GET, orderEventUrl + "?orderId=" + orderId, expectedResponseCode,
                 isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<Results<OrderEvent>>() {
