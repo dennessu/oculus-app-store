@@ -21,7 +21,7 @@ echo "[PURGE][SLAVE] remove backup data"
 rm -rf $SLAVE_BACKUP_PATH
 
 echo "[PURGE][SLAVE] remove archive data"
-rm -rf $SLAVE_ARCHIVE_PATH
+rm -rf $ARCHIVE_PATH
 
 echo "[PURGE][SLAVE] remove pgbouncer data"
 rm -rf $PGBOUNCER_PATH

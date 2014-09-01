@@ -14,8 +14,8 @@ createDir $BCP_DATA_PATH
 echo "[SETUP][BCP] create database backup folder $BCP_BACKUP_PATH"
 createDir $BCP_BACKUP_PATH
 
-echo "[SETUP][BCP] create database archive folder $BCP_ARCHIVE_PATH"
-createDir $BCP_ARCHIVE_PATH
+echo "[SETUP][BCP] create database archive folder $ARCHIVE_PATH"
+createDir $ARCHIVE_PATH
 
 echo "[SETUP][BCP] create database archive folder $BCP_LOG_PATH"
 createDir $BCP_LOG_PATH
@@ -29,7 +29,7 @@ rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOS
 echo "[SETUP][BCP] configure recovery.conf"
 cat > $BCP_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
-restore_command = 'cp $BCP_ARCHIVE_PATH/%f %p'
+restore_command = $RESTORE_COMMAND
 standby_mode = 'on'
 primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=prefer sslcompression=1 krbsrvname=$PGUSER'
 trigger_file = '$PROMOTE_TRIGGER_FILE'
@@ -37,7 +37,7 @@ EOF
 
 echo "[SETUP][BCP] configure postgres.conf"
 cat >> $BCP_DATA_PATH/postgresql.conf <<EOF
-archive_command = 'cp %p $BCP_ARCHIVE_PATH/%f'
+archive_command = $ARCHIVE_COMMAND
 port = $BCP_DB_PORT
 EOF
 
