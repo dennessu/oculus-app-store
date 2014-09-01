@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppError
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
@@ -1238,13 +1239,19 @@ class StoreResourceImpl implements StoreResource {
 
     private void fillPurchaseState(PurchaseState purchaseState, PreparePurchaseRequest request, ApiContext apiContext) {
         if (purchaseState.country == null) {
-            purchaseState.country = apiContext.country
+            purchaseState.country = apiContext.country.getCountryCode()
+        } else if (purchaseState.country != apiContext.country.getCountryCode()) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('country', 'Input country isn\'t consistent with token').exception()
         }
         if (purchaseState.locale == null) {
-            purchaseState.locale = apiContext.locale
+            purchaseState.locale = apiContext.locale.localeCode
+        } else if (purchaseState.locale != apiContext.locale.localeCode) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('locale', 'Input locale isn\'t consistent with token').exception()
         }
         if (purchaseState.offer == null) {
             purchaseState.offer = request.offer.value
+        } else if (purchaseState.offer != request.offer.value) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('offer', 'Input offer isn\'t consistent with token').exception()
         }
     }
 

@@ -24,8 +24,6 @@ public class PurchaseState {
 
     private Date timestamp;
 
-    private Boolean tosAccept;
-
     public OrderId getOrder() {
         return order;
     }
@@ -64,13 +62,5 @@ public class PurchaseState {
 
     public void setOffer(String offer) {
         this.offer = offer;
-    }
-
-    public Boolean getTosAccept() {
-        return tosAccept;
-    }
-
-    public void setTosAccept(Boolean tosAccept) {
-        this.tosAccept = tosAccept;
     }
 }
