@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.Utility;
 
+import com.junbo.test.common.blueprint.Master;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
@@ -20,6 +21,7 @@ public class TestClass {
         SLF4JBridgeHandler.install();
         System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.SLF4JLogger");
         System.setProperty("logback.configurationFile", "logback-test.xml");
+        Master.getInstance().initializeMaster();
     }
 
 }

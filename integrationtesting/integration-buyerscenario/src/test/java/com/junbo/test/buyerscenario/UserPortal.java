@@ -34,7 +34,7 @@ public class UserPortal extends TestClass {
             features = "CustomerScenarios",
             component = Component.Identity,
             owner = "JasonFu",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test post user",
             steps = {
                     "1. Post a user and get its user ID",

@@ -70,10 +70,6 @@ public class Master {
 
     private String userPassword;
 
-
-
-
-
     private String currentUid;
 
     public void initializeMaster() {
@@ -92,6 +88,7 @@ public class Master {
         this.initializeFulfilmentItems();
         this.initializeUserAccessTokens();
         this.initializeServiceAccessTokens();
+        this.currentUid = new String();
     }
 
     public void initializeUsers() {
