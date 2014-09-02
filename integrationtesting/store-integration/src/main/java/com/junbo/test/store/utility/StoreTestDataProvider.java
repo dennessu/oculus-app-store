@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.*;
+import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -182,7 +183,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         paymentProvider.creditWallet(uid, amount);
     }
 
-    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, TosId tosAcceptanceId) throws Exception {
+    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, TosId tosAcceptanceId, int expectedCode) throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
         request.setPurchaseToken(token);
         request.setInstrument(piid);
@@ -200,7 +201,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             challengeAnswer.setAcceptedTos(tosAcceptanceId);
             request.setChallengeAnswer(challengeAnswer);
         }
-        return storeClient.preparePurchase(request);
+        return storeClient.preparePurchase(request, expectedCode);
+    }
+
+    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, TosId tosAcceptanceId) throws Exception {
+        return preparePurchase(token, offerId, piid, pin, tosAcceptanceId, 200);
     }
 
     public String getOfferIdByName(String offerName) throws Exception {

@@ -472,7 +472,7 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             requestValidator.validateMakeFreePurchaseRequest(request).then {
-                requestValidator.validateOfferForPurchase(request.offer, apiContext.country.getId(), apiContext.locale.getId(), true)
+                requestValidator.validateOfferForPurchase(user.getId(), request.offer, apiContext.country.getId(), apiContext.locale.getId(), true)
             }
         }.then {
             if (tosFreepurchaseEnable) {
@@ -538,7 +538,7 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             requestValidator.validatePreparePurchaseRequest(request).then {
-                requestValidator.validateOfferForPurchase(request.offer, apiContext.country.getId(), apiContext.locale.getId(), false)
+                requestValidator.validateOfferForPurchase(user.getId(), request.offer, apiContext.country.getId(), apiContext.locale.getId(), false)
             }
         }.then {
             if (request.purchaseToken == null) {

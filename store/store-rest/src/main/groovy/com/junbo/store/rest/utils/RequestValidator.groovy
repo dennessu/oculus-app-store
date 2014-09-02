@@ -1,4 +1,5 @@
 package com.junbo.store.rest.utils
+
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -7,7 +8,9 @@ import com.junbo.common.error.AppError
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
+import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
@@ -15,6 +18,9 @@ import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
+import com.junbo.payment.spec.model.PageMetaData
+import com.junbo.payment.spec.model.PaymentInstrument
+import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.spec.error.AppErrors
@@ -39,6 +45,7 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
+
 /**
  * The RequestValidator class.
  */
@@ -374,15 +381,21 @@ class RequestValidator {
             PIType piType
             try {
                 piType = PIType.valueOf(request.instrument.type)
-                if (piType != PIType.CREDITCARD) {
+                if (piType != PIType.CREDITCARD && piType != PIType.STOREDVALUE) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('instrument.type', 'Unsupported instrument type.').exception()
                 }
             } catch (IllegalArgumentException ex) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('instrument.type', 'Invalid instrument type.').exception()
             }
-            notEmpty(request.instrument.accountName, 'instrument.accountName')
-            notEmpty(request.instrument.accountNum, 'instrument.accountNum')
-            notEmpty(request.instrument.billingAddress, 'instrument.billingAddress')
+            if (piType == PIType.CREDITCARD) {
+                notEmpty(request.instrument.accountName, 'instrument.accountName')
+                notEmpty(request.instrument.accountNum, 'instrument.accountNum')
+                notEmpty(request.instrument.billingAddress, 'instrument.billingAddress')
+            } else if (piType == PIType.STOREDVALUE) {
+                notEmpty(request.instrument.storedValueCurrency, 'instrument.storedValueCurrency')
+            } else {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('instrument.type', 'Invalid instruent type.').exception()
+            }
         }
         return Promise.pure(null)
     }
@@ -451,7 +464,7 @@ class RequestValidator {
         }
     }
 
-    public Promise validateOfferForPurchase(OfferId offerId, CountryId countryId, LocaleId locale, boolean free) {
+    public Promise validateOfferForPurchase(UserId userId, OfferId offerId, CountryId countryId, LocaleId locale, boolean free) {
         return facadeContainer.catalogFacade.getOffer(offerId.value, locale).then { com.junbo.store.spec.model.catalog.Offer offer ->
             // todo:    Here we may need to call rating to determine whether this is free or not
             if (offer.hasPhysicalItem) {
@@ -462,6 +475,18 @@ class RequestValidator {
             }
             if (!free && offer.isFree) {
                 throw AppErrors.INSTANCE.invalidOffer('Offer is free.').exception()
+            }
+            if (offer.hasStoreValueItem) {
+                return resourceContainer.paymentInstrumentResource.searchPaymentInstrument(new PaymentInstrumentSearchParam(
+                        userId: userId,
+                        type: PIType.STOREDVALUE.toString()
+                ), new PageMetaData()).then { Results<PaymentInstrument> results ->
+                    if (results == null || CollectionUtils.isEmpty(results.items)) {
+                        throw AppErrors.INSTANCE.invalidOffer('StoreValue is not exists.').exception()
+                    }
+
+                    return Promise.pure(null)
+                }
             }
             return Promise.pure()
         }

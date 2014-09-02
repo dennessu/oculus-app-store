@@ -1,18 +1,25 @@
 package com.junbo.test.store;
 
+import com.junbo.catalog.spec.model.offer.Action;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
+import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 /**
  * Created by weiyu_000 on 8/29/14.
@@ -136,6 +143,9 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         PaymentInstrumentId paymentId = response.getBillingProfile().getInstruments().get(0).getSelf();
 
+        testDataProvider.preparePurchase(null, offerId, null, null, null, 412);
+        testDataProvider.CreateStoredValue();
+
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
@@ -147,12 +157,29 @@ public class StoreCommerceTesting extends BaseTestClass {
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
-        validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        response = testDataProvider.getBillingProfile(offerId);
-        assert response.getBillingProfile().getInstruments().size() == 1;
-        assert response.getBillingProfile().getInstruments().get(0).getType().equals("STOREDVALUE");
+        response = testDataProvider.getBillingProfile(null);
+        assert response.getBillingProfile().getInstruments().size() == 2;
+        Instrument instrument = null;
+        for (int index = 0; index < response.getBillingProfile().getInstruments().size(); index ++) {
+            if (response.getBillingProfile().getInstruments().get(index).getType().equalsIgnoreCase("STOREDVALUE")) {
+                instrument = response.getBillingProfile().getInstruments().get(index);
+            }
+        }
+        assert instrument != null;
+
+        Offer offer = Master.getInstance().getOffer(offerId);
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
+        List<Action> actionList = offerRevision.getEventActions().get("PURCHASE");
+        Action action = null;
+        for(int index = 0; index < actionList.size(); index ++) {
+            if (actionList.get(index).getType().equalsIgnoreCase("CREDIT_WALLET")) {
+                action = actionList.get(index);
+            }
+        }
+        assert action != null;
+
+        assert instrument.getStoredValueBalance().equals(action.getStoredValueAmount());
+        assert instrument.getStoredValueCurrency().equalsIgnoreCase(action.getStoredValueCurrency());
     }
-
-
 }
