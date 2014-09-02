@@ -6,6 +6,7 @@
 package com.junbo.store.spec.model.purchase;
 
 import com.junbo.common.id.OrderId;
+import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.Entitlement;
 
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.List;
  * The MakeFreePurchaseResponse class.
  */
 public class MakeFreePurchaseResponse {
+
+    private Challenge challenge;
 
     private OrderId order;
 
@@ -33,5 +36,13 @@ public class MakeFreePurchaseResponse {
 
     public void setEntitlements(List<Entitlement> entitlements) {
         this.entitlements = entitlements;
+    }
+
+    public Challenge getChallenge() {
+        return challenge;
+    }
+
+    public void setChallenge(Challenge challenge) {
+        this.challenge = challenge;
     }
 }

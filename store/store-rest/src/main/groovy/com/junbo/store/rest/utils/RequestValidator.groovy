@@ -1,5 +1,4 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -9,20 +8,22 @@ import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
+import com.junbo.order.spec.model.Order
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
-import com.junbo.store.spec.model.billing.BillingProfileGetRequest
+import com.junbo.store.spec.model.StoreApiHeader
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
 import com.junbo.store.spec.model.browse.AcceptTosRequest
+import com.junbo.store.spec.model.browse.DeliveryRequest
 import com.junbo.store.spec.model.browse.DetailsRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
@@ -38,7 +39,6 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
-
 /**
  * The RequestValidator class.
  */
@@ -67,7 +67,12 @@ class RequestValidator {
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
 
-    void validateUserNameCheckRequest(UserNameCheckRequest request) {
+    RequestValidator validateRequiredApiHeaders() {
+        validateHeader(StoreApiHeader.ANDROID_ID, StoreApiHeader.USER_AGENT, StoreApiHeader.ACCEPT_LANGUAGE, StoreApiHeader.MCCMNC)
+        return this
+    }
+
+    RequestValidator validateUserNameCheckRequest(UserNameCheckRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -79,9 +84,10 @@ class RequestValidator {
         if (!StringUtils.isEmpty(request.email) && !StringUtils.isEmpty(request.username)) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('email or username', 'only one of the fields [email, username] could be specified at a time').exception()
         }
+        return this
     }
 
-    void validateUserCredentialRateRequest(UserCredentialRateRequest request) {
+    RequestValidator validateUserCredentialRateRequest(UserCredentialRateRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -92,9 +98,10 @@ class RequestValidator {
 
         notEmpty(request.userCredential.type, 'userCredential.type')
         notEmpty(request.userCredential.value, 'userCredential.value')
+        return this
     }
 
-    void validateCreateUserRequest(CreateUserRequest request) {
+    RequestValidator validateCreateUserRequest(CreateUserRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -111,9 +118,10 @@ class RequestValidator {
             notEmpty(request.firstName, 'firstName')
             notEmpty(request.lastName, 'lastName')
         }
+        return this
     }
 
-    void validateUserSignInRequest(UserSignInRequest request) {
+    RequestValidator validateUserSignInRequest(UserSignInRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -126,14 +134,16 @@ class RequestValidator {
         if (!'PASSWORD'.equalsIgnoreCase(request.userCredential.type)) { //
             throw AppCommonErrors.INSTANCE.fieldInvalid('userCredential.type', 'type must be PASSWORD ').exception()
         }
+        return this
     }
 
-    void validateAuthTokenRequest(AuthTokenRequest request) {
+    RequestValidator validateAuthTokenRequest(AuthTokenRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         notEmpty(request.refreshToken, 'refreshToken')
+        return this
     }
 
     private Challenge ensurePasswordChallenge(ChallengeAnswer challengeAnswer) {
@@ -152,13 +162,17 @@ class RequestValidator {
         // todo:    Need to add locale, country and etc
         // check whether updateProfileToken has token
         return isEmailPIICreated(request).then { Boolean mailPIICreated ->
-            if (mailPIICreated) {
+            if (!mailPIICreated) {
                 return Promise.pure(new Challenge(type: Constants.ChallengeType.EMAIL_VERIFICATION))
             } else {
-                // todo:    Need to take tokenProcess as one single object
+                // check this mail is verified and can be replaced
                 return tokenProcessor.toTokenObject(request.userProfileUpdateToken, UpdateProfileState).then { UpdateProfileState state ->
-                    // Need to resolve this locale and country? to User's preferredLocale or COR?
-                    return resourceContainer.emailVerifyEndpoint.sendVerifyEmail('en_US', 'US', user.getId(), state.emailPIIId).then {
+                    return resourceContainer.userPersonalInfoResource.get(state.getEmailPIIId(), new UserPersonalInfoGetOptions()).then {
+                        UserPersonalInfo userPersonalInfo ->
+                        if (userPersonalInfo.lastValidateTime != null) {
+                            return Promise.pure(null)
+                        }
+
                         return Promise.pure(new Challenge(type: Constants.ChallengeType.EMAIL_VERIFICATION))
                     }
                 }
@@ -226,38 +240,57 @@ class RequestValidator {
                 }
             }.then { UserProfileUpdateResponse response ->
                 if (response != null) {
-                    UpdateProfileState updateProfileState = new UpdateProfileState(
-                            userId: AuthorizeContext.currentUserId,
-                            timeStamp: new Date()
-                    )
+                    if (!StringUtils.isEmpty(request.getUserProfileUpdateToken())) {
+                        return tokenProcessor.toTokenObject(request.getUserProfileUpdateToken(), UpdateProfileState).then { UpdateProfileState state ->
+                            UpdateProfileState updateProfileState = new UpdateProfileState(
+                                    userId: AuthorizeContext.currentUserId,
+                                    emailPIIId: state.emailPIIId,
+                                    timeStamp: new Date()
+                            )
 
-                    return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
-                        response.setUserProfileUpdateToken(userProfileUpdateToken)
-                        return Promise.pure(response)
-                    }
-                }
-
-                return getUsername(user).then { String username ->
-                    return resourceContainer.userCredentialVerifyAttemptResource.create(new UserCredentialVerifyAttempt(
-                            username: username,
-                            value: request.challengeAnswer.password,
-                            type: Constants.CredentialType.PASSWORD
-                    )).recover { Throwable t ->
-                        if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidPassword)) {
-                           throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-                        }
-                        if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
-                            AppError appError = (AppError)t
-                            if (appError.error().message.contains('User reaches maximum allowed retry count')) {
-                                throw AppErrors.INSTANCE.maximumAttemptReached().exception()
+                            return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
+                                response.setUserProfileUpdateToken(userProfileUpdateToken)
+                                return Promise.pure(response)
                             }
                         }
+                    } else {
+                        UpdateProfileState updateProfileState = new UpdateProfileState(
+                                userId: AuthorizeContext.currentUserId,
+                                timeStamp: new Date()
+                        )
 
-                        appErrorUtils.throwUnknownError('updateUserProfile', t)
-                    }.then {
-                        return Promise.pure(null)
+                        return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
+                            response.setUserProfileUpdateToken(userProfileUpdateToken)
+                            return Promise.pure(response)
+                        }
                     }
                 }
+
+                if (request?.challengeAnswer?.password != null && request?.challengeAnswer?.type == Constants.ChallengeType.PASSWORD) {
+                    return getUsername(user).then { String username ->
+                        return resourceContainer.userCredentialVerifyAttemptResource.create(new UserCredentialVerifyAttempt(
+                                username: username,
+                                value: request.challengeAnswer.password,
+                                type: Constants.CredentialType.PASSWORD
+                        )).recover { Throwable t ->
+                            if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidPassword)) {
+                               throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
+                            }
+                            if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
+                                AppError appError = (AppError)t
+                                if (appError.error().message.contains('User reaches maximum allowed retry count')) {
+                                    throw AppErrors.INSTANCE.maximumAttemptReached().exception()
+                                }
+                            }
+
+                            appErrorUtils.throwUnknownError('updateUserProfile', t)
+                        }.then {
+                            return Promise.pure(null)
+                        }
+                    }
+                }
+
+                return Promise.pure(null)
             }
         }
     }
@@ -267,6 +300,9 @@ class RequestValidator {
             return askUserProfileUpdateEmailVerificationChallenge(request, user).then { Boolean askChallenge ->
                 if (askChallenge) {
                     return ensureEmailVerificationChallenge(request, user).then { Challenge challenge ->
+                        if (challenge == null) {
+                            return Promise.pure(null)
+                        }
                         return Promise.pure(new UserProfileUpdateResponse(challenge: challenge))
                     }
                 } else {
@@ -294,9 +330,11 @@ class RequestValidator {
                                     timeStamp: new Date()
                             )
 
-                            return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
-                                response.setUserProfileUpdateToken(userProfileUpdateToken)
-                                return Promise.pure(response)
+                            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail('en_US', 'US', user.getId(), created.getId()).then {
+                                return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
+                                    response.setUserProfileUpdateToken(userProfileUpdateToken)
+                                    return Promise.pure(response)
+                                }
                             }
                         }
                     }
@@ -305,11 +343,6 @@ class RequestValidator {
                 return Promise.pure(null)
             }
         }
-    }
-
-    Promise validateBillingProfileGetRequest(BillingProfileGetRequest request) {
-        notEmpty(request.country, 'country')
-        return Promise.pure(null)
     }
 
     Promise<Country> validateAndGetCountry(CountryId country) {
@@ -336,7 +369,6 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         notEmpty(request.instrument, 'instrument')
-        notEmpty(request.country, 'country')
         if (request.instrument.self == null) { // validate for create
             notEmpty(request.instrument.type, 'instrument.type')
             PIType piType
@@ -361,7 +393,6 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         notEmpty(request.offer, 'offer')
-        notEmpty(request.country, 'country')
         return Promise.pure(null)
     }
 
@@ -370,15 +401,19 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         notEmpty(request.offer, 'offerId')
-        notEmpty(request.country, 'country')
         if (request.iapParams != null) {
             notEmpty(request.iapParams.packageName, 'iapParams.packageName')
             notEmpty(request.iapParams.packageSignatureHash, 'iapParams.packageSignatureHash')
             notEmpty(request.iapParams.packageVersion, 'iapParams.packageVersion')
         }
         if (request.challengeAnswer != null) {
-            notEmpty(request.challengeAnswer.pin, 'challengeAnswer.pin')
-            if (request.challengeAnswer.pin != Constants.ChallengeType.PIN) {
+            if (request.challengeAnswer.type == Constants.ChallengeType.PIN) {
+                notEmpty(request.challengeAnswer.pin, 'challengeAnswer.pin')
+            } else if (request.challengeAnswer.type == Constants.ChallengeType.TOS_ACCEPTANCE) {
+                notEmpty(request.challengeAnswer.acceptedTos, 'challengeAnswer.acceptedTos')
+            } else if (request.challengeAnswer.type == Constants.ChallengeType.PASSWORD) {
+                notEmpty(request.challengeAnswer.password, 'challengeAnswer.password')
+            } else if (request.challengeAnswer.type != Constants.ChallengeType.EMAIL_VERIFICATION) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('challengeAnswer.type').exception()
             }
         }
@@ -403,11 +438,16 @@ class RequestValidator {
         }
     }
 
-    Promise validatePurchaseToken(String purchaseToken, String fieldName) {
+    Promise validateOrderValid(OrderId orderId) {
         Promise.pure(null).then {
-            resourceContainer.orderResource.getOrderByOrderId(new OrderId(IdFormatter.decodeId(OrderId, purchaseToken)))
+            resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
+                if (order.user == null || order.user != AuthorizeContext.currentUserId) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
+                }
+                return Promise.pure(null)
+            }
         }.recover {
-            throw AppCommonErrors.INSTANCE.fieldInvalid(fieldName).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
         }
     }
 
@@ -441,6 +481,18 @@ class RequestValidator {
         notEmpty(request.itemId, 'itemId')
     }
 
+    public void validateHeader(StoreApiHeader... headers) {
+        for (StoreApiHeader header: headers) {
+            String value = JunboHttpContext.requestHeaders.getFirst(header.value)
+            if (StringUtils.isEmpty(value)) {
+                throw AppCommonErrors.INSTANCE.headerRequired(header.value).exception()
+            }
+        }
+    }
+
+    public void validateDeliveryRequest(DeliveryRequest request) {
+        notEmpty(request.itemId, 'itemId')
+    }
 
     private Promise<Boolean> isMailChanged(UserProfileUpdateRequest request, User currentUser) {
         if (StringUtils.isEmpty(request.userProfile?.email?.value)) {
@@ -458,7 +510,7 @@ class RequestValidator {
         }
 
         return resourceContainer.userPersonalInfoResource.get(defaultLink.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
-            if (userPersonalInfo == null || userPersonalInfo.lastValidateTime != null) {
+            if (userPersonalInfo == null || userPersonalInfo.lastValidateTime == null) {
                 return Promise.pure(false)
             }   
 
@@ -476,7 +528,7 @@ class RequestValidator {
                     throw AppErrors.INSTANCE.invalidUpdateProfileToken().exception()
                 }
 
-                return Promise.pure(false)
+                return Promise.pure(true)
             }
         }
     }

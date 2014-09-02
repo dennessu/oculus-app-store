@@ -3,6 +3,7 @@ package com.junbo.store.rest.utils
 import com.junbo.catalog.spec.resource.*
 import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.crypto.spec.resource.ItemCryptoResource
+import com.junbo.entitlement.spec.resource.DownloadUrlResource
 import com.junbo.entitlement.spec.resource.EntitlementResource
 import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.identity.spec.v1.resource.*
@@ -39,6 +40,9 @@ class ResourceContainer {
 
     @Resource(name='store.entitlementClient')
     EntitlementResource entitlementResource
+
+    @Resource(name='store.downloadUrlClient')
+    DownloadUrlResource downloadUrlResource
 
     @Resource(name='store.fulfilmentClient')
     FulfilmentResource fulfilmentResource

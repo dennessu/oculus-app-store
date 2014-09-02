@@ -149,7 +149,7 @@ public class OrderTesting extends BaseOrderTestClass {
             features = "Get /orders/{key}",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test get order by invalid order id",
             steps = {
                     "1. Post a new user",
@@ -159,7 +159,7 @@ public class OrderTesting extends BaseOrderTestClass {
             }
     )
     @Test
-    public void testGetOrderByInvalidOrderId0() throws Exception {
+    public void testGetOrderByInvalidOrderId() throws Exception {
         testDataProvider.getOrder("0", 404);
         //TODO verify response
     }

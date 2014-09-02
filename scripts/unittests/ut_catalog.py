@@ -132,6 +132,7 @@ class CatalogTests(ut.TestBase):
     def testPublishOffer(self):
         user, organization = self.createDevOrgnization()
         adminToken = oauth.getServiceAccessToken('catalog.admin')
+        print 'adminToken: ', adminToken
         item = curlJson('POST', ut.test_uri, '/v1/items', headers = {
             "Authorization": "Bearer " + user.access_token
         }, data = {
@@ -153,6 +154,7 @@ class CatalogTests(ut.TestBase):
             "currentRevision": None,
             "categories": []
         })
+        print 'user token', user.access_token
 
         # publish offer with no currentRevision
         offer['isPublished'] = True
@@ -498,18 +500,22 @@ class CatalogTests(ut.TestBase):
                     "videos": [],
                     "images": {
                         "main": {
+                            "20x20":{
                             "y": 15,
                             "x": 20,
                             "href": "http://www.google.com",
                             "id": "id of image",
                             "size": 300
+                            }
                         },
                         "thumbnail": {
+                            "20x20":{
                             "y": 10,
                             "x": 20,
                             "href": "http://www.google.com",
                             "id": "id of image",
                             "size": 200
+                            }
                         }
                     },
                     "recommendedSystemRequirements": {
@@ -607,11 +613,13 @@ class CatalogTests(ut.TestBase):
                     "images": {
                         "main": {},
                         "thumbnail": {
+                            "20x20":{
                             "y": 10,
                             "x": 20,
                             "href": "http://www.google.com",
                             "id": "id of image",
                             "size": 200
+                            }
                         }
                     },
                     "shortDescription": "short description",

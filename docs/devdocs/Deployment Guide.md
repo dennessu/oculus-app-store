@@ -114,8 +114,6 @@ sudo chown -R silkcloud:silkcloud /etc/silkcloud
 sudo chmod 700 /etc/silkcloud
 ```
 
-1. Configure upstart scripts
-TODO: upstart scripts for DB servers
 
 1. Install other packages
 ```
@@ -180,6 +178,31 @@ sudo chmod 700 /etc/silkcloud
   Allow silkcloud to start/stop the service by:
   ```
   sudo bash -c 'echo "silkcloud ALL = NOPASSWD: /sbin/start silkcloud-apphost, /sbin/stop silkcloud-apphost, /sbin/initctl status silkcloud-apphost" >> /etc/sudoers'
+  ```
+
+  Run the following commands on app servers to create startup script for docs.
+  ```
+sudo bash -c 'cat << EOF > /etc/init/silkcloud-docs.conf
+description "silkcloud docs"
+
+start on runlevel [2345]
+stop on runlevel [^2345]
+
+console none
+chdir /var/silkcloud/docs-bundle
+setuid silkcloud
+setgid silkcloud
+
+respawn
+respawn limit 10 600
+
+kill timeout 30
+
+exec ./startup.sh
+
+EOF
+'
+sudo bash -c 'echo "silkcloud ALL = NOPASSWD: /sbin/start silkcloud-docs, /sbin/stop silkcloud-docs, /sbin/initctl status silkcloud-docs" >> /etc/sudoers'
   ```
 
 1. Install other packages

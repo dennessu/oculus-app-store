@@ -7,28 +7,30 @@ package com.junbo.store.spec.model.browse;
 
 import com.junbo.store.spec.model.browse.document.Image;
 
+import java.util.Map;
+
 /**
  * The ImageGalleryEntry class.
  */
 public class ImageGalleryEntry {
 
-    private Image thumbnail;
+    private Map<String, Image> thumbnail;
 
-    private Image full;
+    private Map<String, Image> full;
 
-    public Image getThumbnail() {
+    public Map<String, Image> getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(Image thumbnail) {
+    public void setThumbnail(Map<String, Image> thumbnail) {
         this.thumbnail = thumbnail;
     }
 
-    public Image getFull() {
+    public Map<String, Image> getFull() {
         return full;
     }
 
-    public void setFull(Image full) {
+    public void setFull(Map<String, Image> full) {
         this.full = full;
     }
 }

@@ -346,8 +346,10 @@ public class OrderTestDataProvider {
                 new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
         orderInfo.getBillingHistories().add(billingHistory);
 
+        /*
         billingHistory.setBillingAction(BillingAction.REFUND);
         orderInfo.getBillingHistories().add(billingHistory);
+        */
 
         orderInfo.setOrderStatus(OrderStatus.REFUNDED);
         return orderInfo;

@@ -105,7 +105,7 @@ public class UAT extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test digital good checkout",
             steps = {
                     "1. UAT Scenarios",
@@ -149,7 +149,7 @@ public class UAT extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test digital good checkout",
             steps = {
                     "1. UAT Scenarios",
@@ -194,7 +194,7 @@ public class UAT extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test digital good checkout",
             steps = {
                     "1. UAT Scenarios",

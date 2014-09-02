@@ -28,6 +28,7 @@ import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -284,10 +285,15 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         return getActiveCredentialCreatedTime(user, userLoginAttempt).then { Date passwordActiveTime ->
             Long timeInterval = passwordActiveTime.getTime()
 
-            return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount, 0).then {
-                    List<UserCredentialVerifyAttempt> attemptList ->
-                if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
+            return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount + 1, 0).then {
+                    List<UserCredentialVerifyAttempt> attemptListTemp ->
+                if (CollectionUtils.isEmpty(attemptListTemp) || attemptListTemp.size() < maxRetryCount) {
                     return Promise.pure(null)
+                }
+
+                List<UserCredentialVerifyAttempt> attemptList = new ArrayList<>()
+                for (int index = 0; index < maxRetryCount; index ++) {
+                    attemptList.add(attemptListTemp.get(index))
                 }
 
                 UserCredentialVerifyAttempt successAttempt = attemptList.find { UserCredentialVerifyAttempt attempt ->
@@ -297,7 +303,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     return Promise.pure(null)
                 }
 
-                return sendMaximumRetryReachedNotification(user, userLoginAttempt).recover { Throwable throwable ->
+                return sendMaximumRetryReachedNotification(user, userLoginAttempt, attemptListTemp).recover { Throwable throwable ->
                     LOGGER.error("Error sending Maximum retry reachable Notification")
                     return Promise.pure(null)
                 }.then {
@@ -307,7 +313,17 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         }
     }
 
-    private Promise<Void> sendMaximumRetryReachedNotification(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+    private Promise<Void> sendMaximumRetryReachedNotification(User user, UserCredentialVerifyAttempt userLoginAttempt, List<UserCredentialVerifyAttempt> attemptList) {
+        if (attemptList.size() < maxRetryCount + 1) {
+            return Promise.pure(null)
+        }
+
+        UserCredentialVerifyAttempt userCredentialVerifyAttempt = attemptList.get(maxRetryCount);
+        // One day can send only one user lock mail
+        if (!userCredentialVerifyAttempt.succeeded && userCredentialVerifyAttempt.createdTime.after(DateUtils.addDays(new Date(), -1))) {
+            return Promise.pure(null)
+        }
+
         // todo:    can remove this later due to mailenable is set to
         if (!Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue("identity.conf.mailEnable"))) {
             return Promise.pure(null)

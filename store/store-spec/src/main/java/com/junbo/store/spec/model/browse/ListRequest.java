@@ -19,7 +19,7 @@ public class ListRequest {
     private String criteria;
 
     @QueryParam("cursor")
-    private Integer cursor;
+    private String cursor;
 
     @QueryParam("count")
     private Integer count;
@@ -40,11 +40,11 @@ public class ListRequest {
         this.criteria = criteria;
     }
 
-    public Integer getCursor() {
+    public String getCursor() {
         return cursor;
     }
 
-    public void setCursor(Integer cursor) {
+    public void setCursor(String cursor) {
         this.cursor = cursor;
     }
 

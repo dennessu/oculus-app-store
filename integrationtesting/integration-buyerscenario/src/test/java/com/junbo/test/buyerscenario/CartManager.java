@@ -45,7 +45,7 @@ public class CartManager extends TestClass {
             features = "BuyerScenarios",
             component = Component.Cart,
             owner = "JieFeng",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "get primary cart then add/remove items in cart",
             steps = {
                     "1. Create an user" +
@@ -118,7 +118,7 @@ public class CartManager extends TestClass {
             features = "BuyerScenarios",
             component = Component.Cart,
             owner = "JieFeng",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "test cart merge",
             steps = {
                     "1. Create two users" +

@@ -7,7 +7,7 @@
     <context:component-scan base-package="com.junbo.store.clientproxy"/>
 
     <bean id="storeAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service email.service payment.service order.service fulfilment.service entitlement.service"/>
+        <property name="scope" value="identity.service email.service payment.service order.service fulfilment.service entitlement.service catalog"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${store.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${store.clientproxy.service.clientId}"/>
@@ -70,6 +70,12 @@
 
     <bean id="store.entitlementClient"
           class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.entitlement.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
+    <bean id="store.downloadUrlClient"
+          class="com.junbo.entitlement.spec.resource.proxy.DownloadUrlResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.entitlement.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
@@ -188,6 +194,7 @@
     <bean id="store.caseyClientProxy"
           class="com.junbo.store.spec.resource.external.proxy.CaseyResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.casey.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
 </beans>

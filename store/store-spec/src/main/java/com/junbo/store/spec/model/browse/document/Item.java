@@ -5,9 +5,14 @@
  */
 package com.junbo.store.spec.model.browse.document;
 
+import com.junbo.catalog.spec.model.item.SupportedLocale;
 import com.junbo.common.id.ItemId;
 import com.junbo.store.spec.model.browse.Images;
 import com.junbo.store.spec.model.browse.ReviewsResponse;
+
+import java.util.Map;
+
+import java.util.List;
 
 /**
  * The Item class.
@@ -22,7 +27,7 @@ public class Item {
 
     private String descriptionHtml;
 
-    private AggregatedRatings aggregatedRatings;
+    private List<AggregatedRatings> aggregatedRatings;
 
     private String creator;
 
@@ -37,6 +42,8 @@ public class Item {
     private Boolean ownedByCurrentUser;
 
     private Review currentUserReview; // only appears in getLibrary response, or in getDetails response.
+
+    private Map<String, SupportedLocale> supportedLocales;
 
     public ItemId getSelf() {
         return self;
@@ -70,11 +77,11 @@ public class Item {
         this.descriptionHtml = descriptionHtml;
     }
 
-    public AggregatedRatings getAggregatedRatings() {
+    public List<AggregatedRatings> getAggregatedRatings() {
         return aggregatedRatings;
     }
 
-    public void setAggregatedRatings(AggregatedRatings aggregatedRatings) {
+    public void setAggregatedRatings(List<AggregatedRatings> aggregatedRatings) {
         this.aggregatedRatings = aggregatedRatings;
     }
 
@@ -134,4 +141,11 @@ public class Item {
         this.ownedByCurrentUser = ownedByCurrentUser;
     }
 
+    public Map<String, SupportedLocale> getSupportedLocales() {
+        return supportedLocales;
+    }
+
+    public void setSupportedLocales(Map<String, SupportedLocale> supportedLocales) {
+        this.supportedLocales = supportedLocales;
+    }
 }

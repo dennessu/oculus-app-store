@@ -5,14 +5,17 @@
  */
 package com.junbo.store.spec.model.browse.document;
 
+import com.junbo.common.model.Link;
+
 import java.util.Date;
+import java.util.Map;
 
 /**
  * The Review class.
  */
 public class Review {
 
-    private String reviewId; // todo: make it "self"
+    private Link self;
 
     private String authorName;
 
@@ -22,16 +25,16 @@ public class Review {
 
     private String content;
 
-    private Integer starRating;
+    private Map<String, Integer> starRatings;
 
     private Date timestamp;
 
-    public String getReviewId() {
-        return reviewId;
+    public Link getSelf() {
+        return self;
     }
 
-    public void setReviewId(String reviewId) {
-        this.reviewId = reviewId;
+    public void setSelf(Link self) {
+        this.self = self;
     }
 
     public String getAuthorName() {
@@ -66,12 +69,12 @@ public class Review {
         this.content = content;
     }
 
-    public Integer getStarRating() {
-        return starRating;
+    public Map<String, Integer> getStarRatings() {
+        return starRatings;
     }
 
-    public void setStarRating(Integer starRating) {
-        this.starRating = starRating;
+    public void setStarRatings(Map<String, Integer> starRatings) {
+        this.starRatings = starRatings;
     }
 
     public Date getTimestamp() {

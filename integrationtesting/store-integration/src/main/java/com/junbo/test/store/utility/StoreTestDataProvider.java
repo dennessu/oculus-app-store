@@ -9,21 +9,15 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.id.EntitlementId;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.*;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
-import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
-import com.junbo.store.spec.model.billing.Instrument;
+import com.junbo.store.spec.model.billing.*;
+import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
-import com.junbo.store.spec.model.identity.UserProfileGetResponse;
+import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.catalog.OfferService;
@@ -43,6 +37,7 @@ import com.junbo.test.store.apihelper.LoginService;
 import com.junbo.test.store.apihelper.StoreService;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -86,10 +81,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return createUserRequest;
     }
 
-    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
-        AuthTokenResponse response = loginClient.CreateUser(createUserRequest);
+    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode) throws Exception {
+        AuthTokenResponse response = loginClient.CreateUser(createUserRequest, expectedResponseCode);
 
-        if (needVerifyEmail) {
+        if (needVerifyEmail && expectedResponseCode == 200) {
             oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
             List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()), createUserRequest.getEmail());
             assert links != null;
@@ -101,33 +96,57 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return response;
     }
 
+    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
+        return CreateUser(createUserRequest, needVerifyEmail, 200);
+    }
+
     public UserNameCheckResponse CheckUserName(String userName) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setUsername(userName);
         return loginClient.CheckUserName(request);
     }
 
-    public AuthTokenResponse SignIn(String userName, String password) throws Exception {
+    public UserNameCheckResponse CheckEmail(String email) throws Exception {
+        UserNameCheckRequest request = new UserNameCheckRequest();
+        request.setEmail(email);
+        return loginClient.CheckUserName(request);
+    }
+
+    public AuthTokenResponse SignIn(String username, String password, int expectedCode) throws Exception {
         UserSignInRequest userSignInRequest = new UserSignInRequest();
-        userSignInRequest.setUsername(userName);
+        userSignInRequest.setUsername(username);
         UserCredential userCredential = new UserCredential();
         userCredential.setType("PASSWORD");
         userCredential.setValue(password);
         userSignInRequest.setUserCredential(userCredential);
-        return loginClient.signIn(userSignInRequest);
+        return loginClient.signIn(userSignInRequest, expectedCode);
     }
 
-    public UserCredentialRateResponse RateUserCredential(String password) throws Exception {
+    public AuthTokenResponse SignIn(String userName, String password) throws Exception {
+        return SignIn(userName, password, 200);
+    }
+
+    public UserCredentialRateResponse RateUserCredential(String password, String username) throws Exception {
         UserCredentialRateRequest userCredentialRateRequest = new UserCredentialRateRequest();
         UserCredential userCredential = new UserCredential();
         userCredential.setType("PASSWORD");
         userCredential.setValue(password);
         userCredentialRateRequest.setUserCredential(userCredential);
+
+        if (!StringUtils.isEmpty(username)) {
+            UserCredentialRateContext context = new UserCredentialRateContext();
+            context.setUsername(username);
+            userCredentialRateRequest.setContext(context);
+        }
         return loginClient.rateUserCredential(userCredentialRateRequest);
     }
 
-    public BillingProfileUpdateResponse CreateCreditCard(String uid) throws Exception {
-        BillingProfileUpdateRequest billingProfileUpdateRequest = new BillingProfileUpdateRequest();
+    public UserCredentialRateResponse RateUserCredential(String password) throws Exception {
+        return RateUserCredential(password, null);
+    }
+
+    public InstrumentUpdateResponse CreateCreditCard(String uid) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
@@ -135,43 +154,52 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         instrument.setAccountNum(encryptedString);
         instrument.setBillingAddress(getBillingAddress());
         instrument.setType("CREDITCARD");
-        billingProfileUpdateRequest.setInstrument(instrument);
-        billingProfileUpdateRequest.setAction("ADD_PI");
-        billingProfileUpdateRequest.setUserId(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
-        billingProfileUpdateRequest.setLocale(new LocaleId("en_US"));
-        return storeClient.updateBillingProfile(billingProfileUpdateRequest);
+        instrument.setIsDefault(false);
+        instrumentUpdateRequest.setInstrument(instrument);
+        return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
-    public BillingProfileUpdateResponse CreateStoredValue(String uid) throws Exception {
-        BillingProfileUpdateRequest billingProfileUpdateRequest = new BillingProfileUpdateRequest();
+    public InstrumentUpdateResponse UpdateCreditCard(InstrumentUpdateResponse response, boolean isDefault) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
+        Instrument instrument = response.getBillingProfile().getInstruments().get(1);
+        instrument.setIsDefault(isDefault);
+        instrumentUpdateRequest.setInstrument(instrument);
+        return storeClient.updateInstrument(instrumentUpdateRequest);
+    }
+
+    public InstrumentUpdateResponse CreateStoredValue() throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
-        instrument.setBillingAddress(getBillingAddress());
+        //instrument.setBillingAddress(getBillingAddress());
         instrument.setType("STOREDVALUE");
         instrument.setStoredValueCurrency("USD");
 
-        billingProfileUpdateRequest.setInstrument(instrument);
-        billingProfileUpdateRequest.setAction("ADD_PI");
-        billingProfileUpdateRequest.setUserId(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
-        billingProfileUpdateRequest.setLocale(new LocaleId("en_US"));
-        return storeClient.updateBillingProfile(billingProfileUpdateRequest);
+        instrumentUpdateRequest.setInstrument(instrument);
+        return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
     public void CreditStoredValue(String uid, BigDecimal amount) throws Exception {
         paymentProvider.creditWallet(uid, amount);
     }
 
-    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin) throws Exception {
+    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, TosId tosAcceptanceId) throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
-        request.setLocale(new LocaleId("en_US"));
-        request.setCountry(new CountryId(Country.DEFAULT.toString()));
         request.setPurchaseToken(token);
         request.setInstrument(piid);
         request.setOffer(new OfferId(offerId));
 
-        ChallengeAnswer challengeAnswer = new ChallengeAnswer();
-        challengeAnswer.setType("PIN");
-        challengeAnswer.setPin(pin);
-        //request.setIapParams();
+        if (!StringUtils.isEmpty(pin)) {
+            ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+            challengeAnswer.setType("PIN");
+            challengeAnswer.setPin(pin);
+            request.setChallengeAnswer(challengeAnswer);
+        }
+        if (tosAcceptanceId != null) {
+            ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+            challengeAnswer.setType("TOS_ACCEPTANCE");
+            challengeAnswer.setAcceptedTos(tosAcceptanceId);
+            request.setChallengeAnswer(challengeAnswer);
+        }
         return storeClient.preparePurchase(request);
     }
 
@@ -210,12 +238,22 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return address;
     }
 
-    public MakeFreePurchaseResponse makeFreePurchase(String offerId, Country country) throws Exception {
+    public MakeFreePurchaseResponse makeFreePurchase(String offerId, TosId tosId) throws Exception {
         MakeFreePurchaseRequest request = new MakeFreePurchaseRequest();
-        request.setLocale(new LocaleId("en_US"));
-        request.setCountry(new CountryId(country.toString()));
         request.setOffer(new OfferId(offerId));
+        if (tosId != null) {
+            ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+            challengeAnswer.setType("TOS_ACCEPTANCE");
+            challengeAnswer.setAcceptedTos(tosId);
+            request.setChallengeAnswer(challengeAnswer);
+        }
         return storeClient.makeFreePurchase(request);
+    }
+
+    public DetailsResponse getItemDetails(String itemId) throws Exception {
+        DetailsRequest request = new DetailsRequest();
+        request.setItemId(new ItemId(itemId));
+        return storeClient.getDetails(request);
     }
 
     public AuthTokenResponse signIn(String userName) throws Exception {
@@ -229,17 +267,83 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public UserProfileGetResponse getUserProfile() throws Exception {
-        return storeClient.getUserProfile();
+        return getUserProfile(200);
+    }
+
+    public UserProfileGetResponse getUserProfile(int expectedResponseCode) throws Exception {
+        return storeClient.getUserProfile(expectedResponseCode);
+    }
+
+    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest, int expectedResponseCode) throws Exception {
+        return storeClient.updateUserProfile(userProfileUpdateRequest, expectedResponseCode);
+    }
+
+    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest) throws Exception {
+        return updateUserProfile(userProfileUpdateRequest, 200);
+    }
+
+    public VerifyEmailResponse verifyEmail(VerifyEmailRequest verifyEmailRequest) throws Exception {
+        return verifyEmail(verifyEmailRequest, 200);
+    }
+
+    public VerifyEmailResponse verifyEmail(VerifyEmailRequest verifyEmailRequest, int exceptedResponseCode) throws Exception {
+        return storeClient.verifyEmail(verifyEmailRequest, exceptedResponseCode);
     }
 
     public EntitlementsGetResponse getEntitlement() throws Exception {
         return storeClient.getEntitlement();
     }
 
-    public AuthTokenResponse getToken(String refreshToken) throws Exception {
+    public AuthTokenResponse getToken(String refreshToken, int expectedCode) throws Exception {
         AuthTokenRequest request = new AuthTokenRequest();
         request.setRefreshToken(refreshToken);
-        return loginClient.getToken(request);
+        return loginClient.getToken(request, expectedCode);
     }
 
+    public AuthTokenResponse getToken(String refreshToken) throws Exception {
+        return getToken(refreshToken, 200);
+    }
+
+    public BillingProfileGetResponse getBillingProfile(String offerId) throws Exception {
+        return getBillingProfile(offerId, 200);
+    }
+
+    public BillingProfileGetResponse getBillingProfile(String offerId, int expectedCode) throws Exception{
+        BillingProfileGetRequest request = new BillingProfileGetRequest();
+        request.setOffer(offerId == null ? null : new OfferId(offerId));
+        return storeClient.getBillingProfile(request, expectedCode);
+    }
+
+
+    public LibraryResponse getLibrary() throws Exception {
+        return storeClient.getLibrary();
+    }
+
+    public TocResponse getToc() throws Exception {
+        return storeClient.getTOC();
+    }
+
+    public ListResponse getList(ListRequest request) throws Exception {
+        return storeClient.getList(request);
+    }
+
+    public SectionLayoutResponse getLayout(String category, String criteria, Integer count) throws Exception {
+        SectionLayoutRequest request = new SectionLayoutRequest();
+        request.setCategory(category);
+        request.setCriteria(criteria);
+        request.setCount(count);
+        return storeClient.getSectionLayout(request);
+    }
+
+    public AcceptTosResponse acceptTos(TosId tosId) throws Exception {
+        AcceptTosRequest request = new AcceptTosRequest();
+        request.setTosId(tosId);
+        return storeClient.acceptTos(request);
+    }
+
+    public DeliveryResponse getDelivery(ItemId itemId) throws Exception {
+        DeliveryRequest request = new DeliveryRequest();
+        request.setItemId(itemId);
+        return storeClient.getDelivery(request);
+    }
 }
