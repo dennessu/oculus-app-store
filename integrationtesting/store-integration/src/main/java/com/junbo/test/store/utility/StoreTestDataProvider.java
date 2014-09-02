@@ -5,12 +5,13 @@
  */
 package com.junbo.test.store.utility;
 
+
+// CHECKSTYLE:OFF
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.*;
-import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -49,7 +50,9 @@ import java.util.UUID;
 /**
  * Created by weiyu_000 on 8/6/14.
  */
+
 public class StoreTestDataProvider extends BaseTestDataProvider {
+
 
     LoginService loginClient = LoginServiceImpl.getInstance();
     StoreService storeClient = StoreServiceImpl.getInstance();
@@ -59,10 +62,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
     public CreateUserRequest CreateUserRequest() throws Exception {
-       return CreateUserRequest(RandomFactory.getRandomStringOfAlphabet(6));
+        return CreateUserRequest(RandomFactory.getRandomStringOfAlphabet(6));
     }
 
-    public CreateUserRequest CreateUserRequest(String username) throws Exception{
+    public CreateUserRequest CreateUserRequest(String username) throws Exception {
         CreateUserRequest createUserRequest = new CreateUserRequest();
         String dateString = "1990-01-01";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -82,14 +85,16 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return createUserRequest;
     }
 
-    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode) throws Exception {
+    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail,
+                                        int expectedResponseCode) throws Exception {
         AuthTokenResponse response = loginClient.CreateUser(createUserRequest, expectedResponseCode);
 
         if (needVerifyEmail && expectedResponseCode == 200) {
             oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
-            List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()), createUserRequest.getEmail());
+            List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()),
+                    createUserRequest.getEmail());
             assert links != null;
-            for(String link : links) {
+            for (String link : links) {
                 oAuthClient.accessEmailVerifyLink(link);
             }
         }
@@ -160,7 +165,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
-    public InstrumentUpdateResponse UpdateCreditCard(InstrumentUpdateResponse response, boolean isDefault) throws Exception {
+    public InstrumentUpdateResponse UpdateCreditCard(InstrumentUpdateResponse response,
+                                                     boolean isDefault) throws Exception {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = response.getBillingProfile().getInstruments().get(1);
         instrument.setIsDefault(isDefault);
@@ -183,10 +189,12 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         paymentProvider.creditWallet(uid, amount);
     }
 
-    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, TosId tosAcceptanceId, int expectedCode) throws Exception {
+    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId pid,
+                                                   String pin, TosId tosAcceptanceId, int expectedCode)
+            throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
         request.setPurchaseToken(token);
-        request.setInstrument(piid);
+        request.setInstrument(pid);
         request.setOffer(new OfferId(offerId));
 
         if (!StringUtils.isEmpty(pin)) {
@@ -204,7 +212,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.preparePurchase(request, expectedCode);
     }
 
-    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, TosId tosAcceptanceId) throws Exception {
+    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid,
+                                                   String pin, TosId tosAcceptanceId) throws Exception {
         return preparePurchase(token, offerId, piid, pin, tosAcceptanceId, 200);
     }
 
@@ -219,7 +228,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.commitPurchase(commitPurchaseRequest);
     }
 
-    public IAPEntitlementConsumeResponse iapConsumeEntitlement(EntitlementId entitlementId, String offerId) throws Exception {
+    public IAPEntitlementConsumeResponse iapConsumeEntitlement(EntitlementId entitlementId, String offerId)
+            throws Exception {
         IAPEntitlementConsumeRequest request = new IAPEntitlementConsumeRequest();
         request.setTrackingGuid(UUID.randomUUID().toString());
         request.setEntitlement(entitlementId);
@@ -279,11 +289,13 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getUserProfile(expectedResponseCode);
     }
 
-    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest, int expectedResponseCode) throws Exception {
+    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest,
+                                                       int expectedResponseCode) throws Exception {
         return storeClient.updateUserProfile(userProfileUpdateRequest, expectedResponseCode);
     }
 
-    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest) throws Exception {
+    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest)
+            throws Exception {
         return updateUserProfile(userProfileUpdateRequest, 200);
     }
 
@@ -291,7 +303,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return verifyEmail(verifyEmailRequest, 200);
     }
 
-    public VerifyEmailResponse verifyEmail(VerifyEmailRequest verifyEmailRequest, int exceptedResponseCode) throws Exception {
+    public VerifyEmailResponse verifyEmail(VerifyEmailRequest verifyEmailRequest, int exceptedResponseCode)
+            throws Exception {
         return storeClient.verifyEmail(verifyEmailRequest, exceptedResponseCode);
     }
 
@@ -313,7 +326,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return getBillingProfile(offerId, 200);
     }
 
-    public BillingProfileGetResponse getBillingProfile(String offerId, int expectedCode) throws Exception{
+    public BillingProfileGetResponse getBillingProfile(String offerId, int expectedCode) throws Exception {
         BillingProfileGetRequest request = new BillingProfileGetRequest();
         request.setOffer(offerId == null ? null : new OfferId(offerId));
         return storeClient.getBillingProfile(request, expectedCode);

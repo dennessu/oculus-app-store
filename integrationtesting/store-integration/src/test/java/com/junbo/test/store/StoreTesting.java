@@ -249,7 +249,7 @@ public class StoreTesting extends BaseTestClass {
                     "10. Verify entitlement response"
             }
     )
-    @Test(enabled = false)
+    @Test
     public void testIAPCheckoutByWallet() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
@@ -264,12 +264,17 @@ public class StoreTesting extends BaseTestClass {
 
         String offerId = testDataProvider.getOfferIdByName(offer_iap_normal);
         //post order without set payment instrument
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
+               PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
         assert preparePurchaseResponse.getChallenge() != null;
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
+
+        assert preparePurchaseResponse.getChallenge().getTos() != null;
+
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+                preparePurchaseResponse.getChallenge().getTos().getTosId());
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);
