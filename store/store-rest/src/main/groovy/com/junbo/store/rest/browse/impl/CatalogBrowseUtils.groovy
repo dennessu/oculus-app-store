@@ -1,9 +1,11 @@
 package com.junbo.store.rest.browse.impl
 
+import com.junbo.catalog.spec.enums.OfferAttributeType
 import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.enums.Status
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
+import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
@@ -16,6 +18,7 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
@@ -74,16 +77,22 @@ class CatalogBrowseUtils {
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
-    Promise<ItemData> getItemData(com.junbo.catalog.spec.model.item.Item catalogItem) {
-        ItemData result = storeItemDataCache.get(new ItemId(catalogItem.getItemId()))
+    Promise<ItemData> getItemData(ItemId itemId) {
+        ItemData result = storeItemDataCache.get(itemId)
+        Item catalogItem
         if (result != null) {
             return Promise.pure(result)
         }
 
         result = new ItemData()
-        result.item = catalogItem
         result.genres = []
-        Promise.pure().then { // get developer
+        Promise.pure().then {
+            resourceContainer.itemResource.getItem(itemId.value).then { Item e ->
+                catalogItem = e
+                result.item = e
+                return Promise.pure()
+            }
+        }.then { // get developer
             resourceContainer.organizationResource.get(result.item.ownerId, new OrganizationGetOptions()).then { Organization organization ->
                 result.developer = organization
                 return Promise.pure()
@@ -127,6 +136,23 @@ class CatalogBrowseUtils {
         }.then {
             storeItemDataCache.put(new ItemId(catalogItem.getItemId()), result)
             return Promise.pure(result)
+        }
+    }
+
+    Promise<ItemData> getItemData(OfferId offerId) {
+        Promise.pure().then {
+            resourceContainer.offerResource.getOffer(offerId.value).then { com.junbo.catalog.spec.model.offer.Offer catalogOffer ->
+                return resourceContainer.offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions()).then { OfferRevision offerRevision ->
+                    if (CollectionUtils.isEmpty(offerRevision.items)) {
+                        LOGGER.error('name=Store_Items_Empty, offer={}, offerRevision={}', catalogOffer.getOfferId(), offerRevision.getOfferId())
+                        return Promise.pure()
+                    }
+                    if (offerRevision.items.size() > 1) {
+                        LOGGER.error('name=Store_Items_Multiple, offer={}, offerRevision={}', catalogOffer.getOfferId(), offerRevision.getOfferId())
+                    }
+                    return getItemData(new ItemId(offerRevision.items[0].itemId))
+                }
+            }
         }
     }
 
@@ -182,6 +208,29 @@ class CatalogBrowseUtils {
                 isActive: true
         ), new PageMetadata()).then { Results<Entitlement> results ->
             return Promise.pure(!results.items.isEmpty())
+        }
+    }
+
+    Promise<OfferAttribute> getOfferCategoryByName(String name, LocaleId locale) {
+        String cursor
+        OfferAttribute result
+        CommonUtils.loop {
+            resourceContainer.offerAttributeResource.getAttributes(new OfferAttributesGetOptions(attributeType: OfferAttributeType.CATEGORY.name(), cursor: cursor)).then { Results<OfferAttribute> results ->
+                result = results.items.find { OfferAttribute offerAttribute ->
+                    return offerAttribute.locales?.get(locale.value)?.name == name
+                }
+                if (result != null) {
+                    return Promise.pure(Promise.BREAK)
+                }
+
+                cursor = CommonUtils.getQueryParam(results.next?.href, 'cursor')
+                if (results.items.isEmpty() || StringUtils.isEmpty(cursor)) {
+                    return Promise.pure(Promise.BREAK)
+                }
+                return Promise.pure()
+            }
+        }.then {
+            return Promise.pure(result)
         }
     }
 

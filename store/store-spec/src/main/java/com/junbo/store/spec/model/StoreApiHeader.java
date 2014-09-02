@@ -15,9 +15,7 @@ public enum StoreApiHeader {
 
     ACCEPT_LANGUAGE("Accept-Language"),
 
-    USER_AGENT("User-Agent"),
-
-    MCCMNC("X-MCCMNC");
+    USER_AGENT("User-Agent");
 
     private final String value;
 

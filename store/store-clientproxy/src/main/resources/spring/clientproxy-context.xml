@@ -7,7 +7,7 @@
     <context:component-scan base-package="com.junbo.store.clientproxy"/>
 
     <bean id="storeAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service email.service payment.service order.service fulfilment.service entitlement.service catalog"/>
+        <property name="scope" value="identity.service email.service payment.service order.service fulfilment.service entitlement.service cms.service catalog"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${store.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${store.clientproxy.service.clientId}"/>

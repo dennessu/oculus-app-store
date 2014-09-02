@@ -12,10 +12,12 @@ import com.junbo.common.model.Results
 import com.junbo.entitlement.spec.model.*
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.entitlement.spec.model.*
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.browse.BrowseService
+import com.junbo.store.rest.browse.SectionHandler
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
@@ -65,25 +67,8 @@ class BrowseServiceImpl implements BrowseService {
     @Resource(name = 'storeCatalogBrowseUtils')
     private CatalogBrowseUtils catalogBrowseUtils
 
-    // hard coded sections
-    private List<SectionInfoNode> sections = [
-            new SectionInfoNode(
-                    name: 'Featured', criteria: 'featured',
-                    children: [
-                            new SectionInfoNode(name: 'All', category: 'all', criteria: 'featured'),
-                            new SectionInfoNode(name: 'SAMSUNG', category: 'samsung', criteria: 'featured')
-                    ] as List
-            ),
-            new SectionInfoNode(
-                    name: 'Games', category: 'Game'
-            ),
-            new SectionInfoNode(
-                    name: 'Apps', category: 'App'
-            ),
-            new SectionInfoNode(
-                    name: 'Experiences', category: 'Experience'
-            ),
-    ]
+    @Resource(name = 'storeSectionHandlers')
+    private List<SectionHandler> sectionHandlers
 
     @Override
     Promise<Item> getItemDetails(ItemId itemId, ApiContext apiContext) {
@@ -111,41 +96,35 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.pure(new TocResponse(challenge: challenge))
             }
 
-            result.sections = sections
-            return Promise.pure(result)
+            result.sections = []
+            Promise.each(sectionHandlers) { SectionHandler sectionHandler ->
+                sectionHandler.getTopLevelSectionInfoNode(apiContext).then { List<SectionInfoNode> list ->
+                    result.sections.addAll(list)
+                    return Promise.pure()
+                }
+            }.then {
+                return Promise.pure(result)
+            }
+
         }
     }
 
     @Override
     Promise<SectionLayoutResponse> getSectionLayout(SectionLayoutRequest request, ApiContext apiContext) {
-        SectionLayoutResponse result = new SectionLayoutResponse()
-        Stack<SectionInfo> parents = new Stack<>()
-        SectionInfoNode sectionInfoNode = getSectionInfoNode(request.category, request.criteria, sections, parents)
-        if (sectionInfoNode == null) {
+        SectionHandler sectionHandler = findSectionHandler(request.category, request.criteria, apiContext)
+        if (sectionHandler == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
-
-        result.breadcrumbs = parents
-        result.children = sectionInfoNode.children?.collect { SectionInfoNode s -> s.toSectionInfo() }
-        result.title = sectionInfoNode.name
-        result.ordered = sectionInfoNode.ordered == null ? false : sectionInfoNode.ordered
-
-        return innerGetList(sectionInfoNode, null, request.count == null ? defaultPageSize : request.count, apiContext).then { ListResponse response ->
-            result.items = response.items
-            result.next = response.next
-            return Promise.pure(result)
-        }
+        return sectionHandler.getSectionLayout(request, apiContext)
     }
 
     @Override
     Promise<ListResponse> getList(ListRequest request, ApiContext apiContext) {
-        Stack<SectionInfo> parents = new Stack<>()
-        SectionInfoNode sectionInfoNode = getSectionInfoNode(request.category, request.criteria, sections, parents)
-        if (sectionInfoNode == null) {
+        SectionHandler sectionHandler = findSectionHandler(request.category, request.criteria, apiContext)
+        if (sectionHandler == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
-
-        return innerGetList(sectionInfoNode, request.cursor, request.count == null ? defaultPageSize : request.count, apiContext)
+        return sectionHandler.getSectionList(request, apiContext)
     }
 
     @Override
@@ -291,7 +270,7 @@ class BrowseServiceImpl implements BrowseService {
     private Promise<Item> getItem(com.junbo.catalog.spec.model.item.Item catalogItem, ApiContext apiContext) {
         ItemData itemData
         Item result = new Item()
-        catalogBrowseUtils.getItemData(catalogItem).then { ItemData e ->
+        catalogBrowseUtils.getItemData(new ItemId(catalogItem.getId())).then { ItemData e ->
             itemData = e
             browseDataBuilder.buildItemFromItemData(itemData, apiContext, result)
             return Promise.pure()
@@ -302,6 +281,12 @@ class BrowseServiceImpl implements BrowseService {
             }
         }.then {
             return Promise.pure(result)
+        }
+    }
+
+    private SectionHandler findSectionHandler(String category, String criteria, ApiContext apiContext) {
+        return sectionHandlers.find { SectionHandler sectionHandler ->
+            sectionHandler.canHandle(category, criteria, apiContext)
         }
     }
 }

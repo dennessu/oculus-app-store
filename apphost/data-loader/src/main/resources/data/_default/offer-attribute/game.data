@@ -1,0 +1,10 @@
+{
+    "type": "CATEGORY",
+        "locales": {
+            "en_US": {
+                "name": "Game",
+                "description": ""
+            }
+    },
+    "parent": null
+}

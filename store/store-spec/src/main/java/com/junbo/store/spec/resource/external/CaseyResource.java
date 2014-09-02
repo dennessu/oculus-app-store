@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.external.casey.*;
+import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
+import com.junbo.store.spec.model.external.casey.cms.CmsContent;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -37,4 +39,12 @@ public interface CaseyResource {
     @POST
     @Path("reviews")
     Promise<CaseyReview> addReview(CaseyReview review);
+
+    @GET
+    @Path("cms-campaigns")
+    Promise<CaseyResults<CmsCampaign>> getCmsCampaigns();
+
+    @GET
+    @Path("cms-contents/{contentId}")
+    Promise<CmsContent> getCmsContent(@PathParam("contentId") String contentId);
 }

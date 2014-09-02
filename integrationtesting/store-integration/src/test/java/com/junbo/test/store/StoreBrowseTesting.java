@@ -107,7 +107,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     public void testGetDetails() throws Exception {
         // get the first item in the first section
         TocResponse response = gotoToc();
-        SectionInfoNode sectionInfo = response.getSections().get(0);
+        SectionInfoNode sectionInfo = response.getSections().get(1);
         ItemId itemId = testDataProvider.getLayout(sectionInfo.getCategory(), sectionInfo.getCriteria(), null).getItems().get(0).getSelf();
 
         // get the item details
@@ -155,11 +155,11 @@ public class StoreBrowseTesting extends BaseTestClass {
         // get layout
         int pageSize = 2;
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(category, criteria, pageSize);
-        Assert.assertEquals(category, sectionLayoutResponse.getNext().getCategory());
-        Assert.assertEquals(criteria, sectionLayoutResponse.getNext().getCriteria());
-
-        // get rest of the items by get list
-        listAllItems(category, criteria, pageSize, sectionLayoutResponse.getNext().getCursor());
+        if (sectionLayoutResponse.getNext() != null) { // get rest of the items by get list
+            Assert.assertEquals(category, sectionLayoutResponse.getNext().getCategory());
+            Assert.assertEquals(criteria, sectionLayoutResponse.getNext().getCriteria());
+            listAllItems(category, criteria, pageSize, sectionLayoutResponse.getNext().getCursor());
+        }
 
         // explore sub section
         if (!CollectionUtils.isEmpty(sectionLayoutResponse.getChildren())) {

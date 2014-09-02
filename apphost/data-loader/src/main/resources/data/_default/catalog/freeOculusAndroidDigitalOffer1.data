@@ -1,7 +1,7 @@
 {
    "item": {
         "type":"APP",
-        "genres":[],
+        "genres":[{"id" : "Shooter"}],
         "defaultOffer":null,
         "rev": null,
         "currentRevision": null,
@@ -218,7 +218,7 @@
         "publisherRevenueRatio": 0.7,
         "rev": null,
         "currentRevision": null,
-        "categories": []
+        "categories": [{"id" : "Game"}]
      },
      "offerRevision": {
         "status": "DRAFT",

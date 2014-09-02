@@ -78,7 +78,7 @@ class RequestValidator {
     private AppErrorUtils appErrorUtils
 
     RequestValidator validateRequiredApiHeaders() {
-        validateHeader(StoreApiHeader.ANDROID_ID, StoreApiHeader.USER_AGENT, StoreApiHeader.ACCEPT_LANGUAGE, StoreApiHeader.MCCMNC)
+        validateHeader(StoreApiHeader.ANDROID_ID, StoreApiHeader.USER_AGENT, StoreApiHeader.ACCEPT_LANGUAGE)
         return this
     }
 

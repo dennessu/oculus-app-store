@@ -5,8 +5,7 @@ apply plugin: 'application'
 
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 applicationDefaultJvmArgs = ["-Xmx2048m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility",
-    "-Xdebug", "-Xrunjdwp:server=y,transport=dt_socket,address=9401,suspend=n",
-    "-Dcom.sun.management.jmxremote.port=9070", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false"]
+    "-Xdebug", "-Dcom.sun.management.jmxremote.port=9070", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false"]
 
 dependencies {
     // add sub apps, so we can bundle everything in one zip
