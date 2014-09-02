@@ -29,8 +29,10 @@ import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.StoreApiHeader
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
 import com.junbo.store.spec.model.browse.AcceptTosRequest
+import com.junbo.store.spec.model.browse.AddReviewRequest
 import com.junbo.store.spec.model.browse.DeliveryRequest
 import com.junbo.store.spec.model.browse.DetailsRequest
+import com.junbo.store.spec.model.browse.ReviewsRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
 import com.junbo.store.spec.model.login.*
@@ -517,6 +519,15 @@ class RequestValidator {
     }
 
     public void validateDeliveryRequest(DeliveryRequest request) {
+        notEmpty(request.itemId, 'itemId')
+    }
+
+    public void validateAddReviewRequest(AddReviewRequest request) {
+        notEmpty(request.itemId, 'itemId')
+        notEmpty(request.title, 'title')
+    }
+
+    public void validateReviewsRequest(ReviewsRequest request) {
         notEmpty(request.itemId, 'itemId')
     }
 

@@ -41,6 +41,9 @@ class LoginResourceImpl implements LoginResource {
     @Value('${store.oauth.clientSecret}')
     private String clientSecret
 
+    @Value('${store.oauth.defaultScopes}')
+    private String defaultScopes
+
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
@@ -161,7 +164,7 @@ class LoginResourceImpl implements LoginResource {
                 new AccessTokenRequest(
                         refreshToken: tokenRequest.refreshToken,
                         grantType: 'refresh_token',
-                        scope: 'offline storeapi entitlement',
+                        scope: defaultScopes,
                         clientId: clientId,
                         clientSecret: clientSecret
                 )
@@ -194,7 +197,7 @@ class LoginResourceImpl implements LoginResource {
                         clientId: clientId,
                         clientSecret: clientSecret,
                         grantType: 'password',
-                        scope: 'offline storeapi entitlement'
+                        scope: defaultScopes
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
             def response = fromAuthTokenResponse(accessTokenResponse)

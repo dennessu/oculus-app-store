@@ -8,6 +8,8 @@ package com.junbo.store.spec.model.browse;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.ItemId;
 
+import java.util.Map;
+
 /**
  * The AddReviewRequest class.
  */
@@ -22,7 +24,7 @@ public class AddReviewRequest {
 
     private String deviceName;
 
-    private Integer starRating;
+    private Map<String, Integer> starRatings;
 
     public ItemId getItemId() {
         return itemId;
@@ -56,11 +58,11 @@ public class AddReviewRequest {
         this.deviceName = deviceName;
     }
 
-    public Integer getStarRating() {
-        return starRating;
+    public Map<String, Integer> getStarRatings() {
+        return starRatings;
     }
 
-    public void setStarRating(Integer starRating) {
-        this.starRating = starRating;
+    public void setStarRatings(Map<String, Integer> starRatings) {
+        this.starRatings = starRatings;
     }
 }

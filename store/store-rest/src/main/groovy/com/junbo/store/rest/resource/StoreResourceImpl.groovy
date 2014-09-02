@@ -50,7 +50,6 @@ import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.*
 import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.iap.*
 import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.profile.UpdateProfileState
@@ -831,25 +830,18 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<ReviewsResponse> getReviews(ReviewsRequest request) {
-        requestValidator.validateRequiredApiHeaders() // todo replace the dummy implementation
-        ReviewsResponse response = new ReviewsResponse(reviews: [])
-        return Promise.pure(response)
+        requestValidator.validateRequiredApiHeaders().validateReviewsRequest(request)
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.getReviews(request, apiContext)
+        }
     }
 
     @Override
     Promise<AddReviewResponse> addReview(AddReviewRequest request) {
-        requestValidator.validateRequiredApiHeaders() // todo replace the dummy implementation
-        return Promise.pure(new AddReviewResponse(
-                review: new Review(
-                        //reviewId: UUID.randomUUID().toString(),
-                        authorName: 'test',
-                        deviceName: 'Nexus 5',
-                        title: request.title,
-                        content: request.content,
-                        //starRating: request.starRating,
-                        timestamp: new Date()
-                )
-        ))
+        requestValidator.validateRequiredApiHeaders().validateAddReviewRequest(request)
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.addReview(request, apiContext)
+        }
     }
 
     @Override

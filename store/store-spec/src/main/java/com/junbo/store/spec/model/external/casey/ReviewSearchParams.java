@@ -10,45 +10,12 @@ import javax.ws.rs.QueryParam;
 /**
  * ReviewSearchParams.
  */
-public class ReviewSearchParams {
-    @QueryParam("cursor")
-    private String cursor;
-
-    @QueryParam("count")
-    private Integer count;
-
-    @QueryParam("locale")
-    private String locale;
-
+public class ReviewSearchParams extends CaseySearchParams {
     @QueryParam("resourceType")
     private String resourceType;
 
     @QueryParam("resourceId")
     private String resourceId;
-
-    public String getCursor() {
-        return cursor;
-    }
-
-    public void setCursor(String cursor) {
-        this.cursor = cursor;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
 
     public String getResourceType() {
         return resourceType;

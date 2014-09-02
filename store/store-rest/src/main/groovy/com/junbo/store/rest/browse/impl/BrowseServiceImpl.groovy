@@ -1,49 +1,31 @@
 package com.junbo.store.rest.browse.impl
+
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
-import com.junbo.catalog.spec.enums.PriceType
-import com.junbo.catalog.spec.enums.Status
-import com.junbo.catalog.spec.model.attribute.ItemAttribute
-import com.junbo.catalog.spec.model.attribute.OfferAttribute
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
-import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.model.item.ItemsGetOptions
-import com.junbo.catalog.spec.model.offer.OfferRevision
-import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.id.ItemId
-import com.junbo.common.id.ItemRevisionId
-import com.junbo.common.id.OfferId
+import com.junbo.common.id.util.IdUtil
+import com.junbo.common.model.Link
 import com.junbo.common.model.Results
-import com.junbo.entitlement.spec.model.DownloadUrlGetOptions
-import com.junbo.entitlement.spec.model.DownloadUrlResponse
-import com.junbo.entitlement.spec.model.Entitlement
-import com.junbo.entitlement.spec.model.EntitlementSearchParam
-import com.junbo.entitlement.spec.model.PageMetadata
-import com.junbo.identity.spec.v1.model.Organization
-import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
+import com.junbo.entitlement.spec.model.*
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.rating.spec.model.priceRating.RatingItem
-import com.junbo.rating.spec.model.priceRating.RatingRequest
 import com.junbo.store.clientproxy.FacadeContainer
-import com.junbo.store.common.cache.Cache
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.challenge.ChallengeHelper
-import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.Item
-import com.junbo.store.spec.model.browse.document.Offer
-import com.junbo.store.spec.model.browse.document.SectionInfo
-import com.junbo.store.spec.model.browse.document.SectionInfoNode
+import com.junbo.store.spec.model.browse.document.*
 import com.junbo.store.spec.model.catalog.data.ItemData
-import com.junbo.store.spec.model.catalog.data.OfferData
+import com.junbo.store.spec.model.external.casey.CaseyLink
+import com.junbo.store.spec.model.external.casey.CaseyReview
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -53,6 +35,7 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
+
 /**
  * The BrowseServiceImpl class.
  */
@@ -87,8 +70,8 @@ class BrowseServiceImpl implements BrowseService {
             new SectionInfoNode(
                     name: 'Featured', criteria: 'featured',
                     children: [
-                        new SectionInfoNode(name: 'All', category: 'all', criteria: 'featured'),
-                        new SectionInfoNode(name: 'SAMSUNG', category: 'samsung', criteria: 'featured')
+                            new SectionInfoNode(name: 'All', category: 'all', criteria: 'featured'),
+                            new SectionInfoNode(name: 'SAMSUNG', category: 'samsung', criteria: 'featured')
                     ] as List
             ),
             new SectionInfoNode(
@@ -143,7 +126,7 @@ class BrowseServiceImpl implements BrowseService {
         }
 
         result.breadcrumbs = parents
-        result.children = sectionInfoNode.children?.collect {SectionInfoNode s -> s.toSectionInfo()}
+        result.children = sectionInfoNode.children?.collect { SectionInfoNode s -> s.toSectionInfo() }
         result.title = sectionInfoNode.name
         result.ordered = sectionInfoNode.ordered == null ? false : sectionInfoNode.ordered
 
@@ -215,6 +198,45 @@ class BrowseServiceImpl implements BrowseService {
         }
     }
 
+    @Override
+    Promise<ReviewsResponse> getReviews(ReviewsRequest request, ApiContext apiContext) {
+        return catalogBrowseUtils.getReviews(request.itemId.value, request.cursor, request.count)
+    }
+
+    @Override
+    Promise<AddReviewResponse> addReview(AddReviewRequest request, ApiContext apiContext) {
+        CaseyReview review = new CaseyReview(
+                reviewTitle: request.title,
+                review: request.content,
+                resourceType: 'item',
+                resource: new CaseyLink(
+                        id: request.itemId.value,
+                        href: IdUtil.toHref(request.itemId)
+                )
+        )
+
+        review.ratings = []
+        for (String type : request.starRatings.keySet()) {
+            review.ratings << new CaseyReview.Rating(type: type, score: request.starRatings[type])
+        }
+
+        return resourceContainer.caseyResource.addReview(review).then { CaseyReview newReview ->
+            return resourceContainer.userResource.get(apiContext.user, new UserGetOptions()).then { User user ->
+                return new AddReviewResponse(
+                        review: new Review(
+                                self: new Link(id: newReview.self.id, href: newReview.self.href),
+                                authorName: user.nickName,
+                                deviceName: apiContext.androidId,
+                                title: newReview.reviewTitle,
+                                content: newReview.review,
+                                starRatings: request.starRatings,
+                                timestamp: newReview.postedDate
+                        )
+                )
+            }
+        }
+    }
+
     Promise<ListResponse> innerGetList(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext) {
         ListResponse result = new ListResponse()
         ItemsGetOptions itemsGetOptions = new ItemsGetOptions(cursor: cursor, size: count, type: ItemType.APP.name())
@@ -238,7 +260,7 @@ class BrowseServiceImpl implements BrowseService {
     }
 
     private SectionInfoNode getSectionInfoNode(String category, String criteria, List<SectionInfoNode> sections, Stack<SectionInfo> parents) {
-        for (SectionInfoNode sectionInfoNode: sections) {
+        for (SectionInfoNode sectionInfoNode : sections) {
 
             if (sectionInfoNode.category == category && sectionInfoNode.criteria == criteria) {
                 return sectionInfoNode

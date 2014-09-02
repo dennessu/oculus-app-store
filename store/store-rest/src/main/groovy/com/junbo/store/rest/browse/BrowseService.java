@@ -27,4 +27,8 @@ public interface BrowseService {
     Promise<LibraryResponse> getLibrary(ApiContext apiContext);
 
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request, ApiContext apiContext);
+
+    Promise<ReviewsResponse> getReviews(ReviewsRequest request, ApiContext apiContext);
+
+    Promise<AddReviewResponse> addReview(AddReviewRequest request, ApiContext apiContext);
 }

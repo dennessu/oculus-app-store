@@ -185,6 +185,57 @@ class CatalogBrowseUtils {
         }
     }
 
+    Promise<ReviewsResponse> getReviews(String itemId, String cursor, Integer count) {
+        ReviewSearchParams params = new ReviewSearchParams(
+                resourceType: 'item',
+                resourceId: itemId,
+                cursor: cursor,
+                count: count
+        )
+
+        return resourceContainer.caseyResource.getReviews(params).then { CaseyResults<CaseyReview> results ->
+            ReviewsResponse reviews = new ReviewsResponse()
+            reviews.next = new ReviewsResponse.NextOption(
+                    itemId: new ItemId(itemId),
+                    cursor: results.cursor,
+                    count: results.count
+            )
+
+            reviews.reviews = []
+            Promise.each(results.items) { CaseyReview caseyReview ->
+                Review review = new Review(
+                        self: new Link(id: caseyReview.self.id, href: caseyReview.self.href),
+                        title: caseyReview.reviewTitle,
+                        content: caseyReview.review,
+                        timestamp: caseyReview.postedDate
+                )
+                review.starRatings = [:] as Map<String, Integer>
+                for (CaseyReview.Rating rating : caseyReview.ratings) {
+                    review.starRatings[rating.type] = rating.score
+                }
+
+                return resourceContainer.userResource.get(IdUtil.fromLink(new Link(id: caseyReview.user.id,
+                        href: caseyReview.user.href)) as UserId, new UserGetOptions()).recover { Throwable e ->
+                    if (e instanceof AppErrorException) {
+                        return Promise.pure(null)
+                    } else {
+                        LOGGER.error('Exception happened while calling identity', e)
+                        return Promise.pure(null)
+                    }
+                }.then { User user ->
+                    if (user != null) {
+                        review.authorName = user.nickName
+                    }
+
+                    reviews.reviews << review
+                    return Promise.pure()
+                }
+            }.then {
+                return reviews
+            }
+        }
+    }
+
     private Promise<OfferData> getOfferData(com.junbo.catalog.spec.model.offer.Offer catalogOffer) {
         OfferData result = new OfferData()
         result.offer = catalogOffer
@@ -255,47 +306,8 @@ class CatalogBrowseUtils {
                 return aggregatedRatings
             }
         }.then {
-            resourceContainer.caseyResource.getReviews(new ReviewSearchParams(resourceType: 'item', resourceId: itemId))
-                    .then { CaseyResults<CaseyReview> results ->
-                ReviewsResponse reviews = new ReviewsResponse()
-                reviews.next = new ReviewsResponse.NextOption(
-                        itemId: new ItemId(itemId),
-                        cursor: results.cursor,
-                        count: results.count
-                )
-
-                reviews.reviews = []
-                Promise.each(results.items) { CaseyReview caseyReview ->
-                    Review review = new Review(
-                            self: new Link(id: caseyReview.self.id, href: caseyReview.self.href),
-                            title: caseyReview.reviewTitle,
-                            content: caseyReview.review,
-                            timestamp: caseyReview.postedDate
-                    )
-                    review.starRatings = [:] as Map<String, Integer>
-                    for (CaseyReview.Rating rating : caseyReview.ratings) {
-                        review.starRatings[rating.type] = rating.score
-                    }
-
-                    return resourceContainer.userResource.get(IdUtil.fromLink(new Link(id: caseyReview.user.id,
-                            href: caseyReview.user.href)) as UserId, new UserGetOptions()).recover { Throwable e ->
-                        if (e instanceof AppErrorException) {
-                            return Promise.pure(null)
-                        } else {
-                            LOGGER.error('Exception happened while calling identity', e)
-                            return Promise.pure(null)
-                        }
-                    }.then { User user ->
-                        if (user != null) {
-                            review.authorName = user.nickName
-                        }
-
-                        reviews.reviews << review
-                        return Promise.pure()
-                    }
-                }.then {
-                    result.reviewsResponse = reviews
-                }
+            return getReviews(itemId, null, null).then { ReviewsResponse reviewsResponse ->
+                result.reviewsResponse = reviewsResponse
             }
         }.recover { Throwable throwable ->
             LOGGER.error('name=Get_Casey_Fail', throwable)

@@ -33,4 +33,8 @@ public interface CaseyResource {
     @GET
     @Path("reviews")
     Promise<CaseyResults<CaseyReview>> getReviews(@BeanParam ReviewSearchParams params);
+
+    @POST
+    @Path("reviews")
+    Promise<CaseyReview> addReview(CaseyReview review);
 }
