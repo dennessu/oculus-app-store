@@ -143,7 +143,7 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         PaymentInstrumentId paymentId = response.getBillingProfile().getInstruments().get(0).getSelf();
 
-        testDataProvider.preparePurchase(null, offerId, null, null, null, 412);
+        testDataProvider.preparePurchase(null, offerId, null, null, null, false, 412);
         testDataProvider.CreateStoredValue();
 
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);

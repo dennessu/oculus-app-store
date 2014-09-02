@@ -986,7 +986,7 @@ class StoreResourceImpl implements StoreResource {
         return promise.then {
             return Promise.each(entitlementIds) { String entitlementId ->
                 return resourceContainer.entitlementResource.getEntitlement(new EntitlementId(entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
-                    if (catalogEntitlement.type != EntitlementType.DOWNLOAD.name()) {
+                    if (StringUtils.isEmpty(hostPackageName) && catalogEntitlement.type != EntitlementType.DOWNLOAD.name()) {
                         return Promise.pure(null)
                     }
                     return convertEntitlement(catalogEntitlement, hostPackageName).then { Entitlement e ->

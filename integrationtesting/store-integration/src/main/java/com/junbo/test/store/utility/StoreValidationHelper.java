@@ -20,10 +20,15 @@ import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
+import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Utility.BaseValidationHelper;
-import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import org.testng.Assert;
@@ -33,6 +38,9 @@ import org.testng.Assert;
  */
 public class StoreValidationHelper extends BaseValidationHelper {
     OfferService offerClient = OfferServiceImpl.instance();
+    OfferRevisionService offerRevisionClient = OfferRevisionServiceImpl.instance();
+    ItemService itemClient = ItemServiceImpl.instance();
+    ItemRevisionService itemRevisionClient = ItemRevisionServiceImpl.instance();
 
     public void verifyAddNewCreditCard(InstrumentUpdateResponse response) {
         BillingProfile billingProfile = response.getBillingProfile();
@@ -53,9 +61,9 @@ public class StoreValidationHelper extends BaseValidationHelper {
     }
 
     public void verifyCommitPurchase(CommitPurchaseResponse response, String offerId) throws Exception {
-        Offer offer = Master.getInstance().getOffer(offerId);
-        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
-        Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
+        Offer offer = offerClient.getOffer(offerId);
+        OfferRevision offerRevision = offerRevisionClient.getOfferRevision(offer.getCurrentRevisionId());
+        Item item = itemClient.getItem(offerRevision.getItems().get(0).getItemId());
         Entitlement entitlement = response.getEntitlements().get(0);
 
         verifyEqual(entitlement.getItemType(), item.getType(), "verify item type");

@@ -393,6 +393,7 @@ class RequestValidator {
                 notEmpty(request.instrument.billingAddress, 'instrument.billingAddress')
             } else if (piType == PIType.STOREDVALUE) {
                 notEmpty(request.instrument.storedValueCurrency, 'instrument.storedValueCurrency')
+                notEmpty(request.instrument.billingAddress, 'instrument.billingAddress')
             } else {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('instrument.type', 'Invalid instruent type.').exception()
             }

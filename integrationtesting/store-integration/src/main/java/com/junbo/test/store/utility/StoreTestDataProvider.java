@@ -22,7 +22,13 @@ import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
+import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
@@ -57,6 +63,9 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     LoginService loginClient = LoginServiceImpl.getInstance();
     StoreService storeClient = StoreServiceImpl.getInstance();
     OfferService offerClient = OfferServiceImpl.instance();
+    OfferRevisionService offerRevisionClient = OfferRevisionServiceImpl.instance();
+    ItemService itemClient = ItemServiceImpl.instance();
+    ItemRevisionService itemRevisionClient = ItemRevisionServiceImpl.instance();
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
@@ -180,6 +189,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         //instrument.setBillingAddress(getBillingAddress());
         instrument.setType("STOREDVALUE");
         instrument.setStoredValueCurrency("USD");
+        instrument.setBillingAddress(getBillingAddress());
 
         instrumentUpdateRequest.setInstrument(instrument);
         return storeClient.updateInstrument(instrumentUpdateRequest);
@@ -190,7 +200,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId pid,
-                                                   String pin, TosId tosAcceptanceId, int expectedCode)
+                                                   String pin, TosId tosAcceptanceId, boolean isIAP, int expectedCode)
             throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
         request.setPurchaseToken(token);
@@ -209,12 +219,26 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             challengeAnswer.setAcceptedTos(tosAcceptanceId);
             request.setChallengeAnswer(challengeAnswer);
         }
+        if (isIAP) {
+            Offer offer = Master.getInstance().getOffer(offerId);
+            OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
+            Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
+            ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
+            Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
+            ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
+            IAPParams params = new IAPParams();
+            params.setPackageName(hostItemRevision.getPackageName());
+            // Todo:    This value is workaround
+            params.setPackageSignatureHash(UUID.randomUUID().toString());
+            params.setPackageVersion(UUID.randomUUID().toString());
+            request.setIapParams(params);
+        }
         return storeClient.preparePurchase(request, expectedCode);
     }
 
     public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid,
                                                    String pin, TosId tosAcceptanceId) throws Exception {
-        return preparePurchase(token, offerId, piid, pin, tosAcceptanceId, 200);
+        return preparePurchase(token, offerId, piid, pin, tosAcceptanceId, false, 200);
     }
 
     public String getOfferIdByName(String offerName) throws Exception {
@@ -234,10 +258,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         request.setTrackingGuid(UUID.randomUUID().toString());
         request.setEntitlement(entitlementId);
         request.setUseCountConsumed(1);
-        Offer offer = Master.getInstance().getOffer(offerId);
-        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
-        Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
-        ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
+        Offer offer = offerClient.getOffer(offerId);
+        OfferRevision offerRevision = offerRevisionClient.getOfferRevision(offer.getCurrentRevisionId());
+        Item item = itemClient.getItem(offerRevision.getItems().get(0).getItemId());
+        ItemRevision itemRevision = itemRevisionClient.getItemRevision(item.getCurrentRevisionId());
         String packageName = itemRevision.getPackageName();
         request.setPackageName(packageName);
         return storeClient.iapConsumeEntitlement(request);

@@ -264,17 +264,17 @@ public class StoreTesting extends BaseTestClass {
 
         String offerId = testDataProvider.getOfferIdByName(offer_iap_normal);
         //post order without set payment instrument
-               PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
+               PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null, true, 200);
 
         assert preparePurchaseResponse.getChallenge() != null;
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "1234", null);
+                offerId, paymentId, "1234", null, true, 200);
 
         assert preparePurchaseResponse.getChallenge().getTos() != null;
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
+                preparePurchaseResponse.getChallenge().getTos().getTosId(), true, 200);
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);
@@ -285,7 +285,7 @@ public class StoreTesting extends BaseTestClass {
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
         EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
-        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offer_iap_normal);
+        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
 
         //TODO validation
 
