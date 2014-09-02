@@ -158,6 +158,10 @@ public abstract class HttpClientBase {
                     Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
                 }
 
+                if(expectedResponseCode != 200){
+                    Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
+                }
+
                 return nettyResponse.getResponseBody();
             }
             case GET: {
@@ -209,6 +213,10 @@ public abstract class HttpClientBase {
                     Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
                 }
 
+                if(expectedResponseCode != 200){
+                    Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
+                }
+
                 return nettyResponse.getResponseBody();
             }
             case DELETE: {
@@ -225,6 +233,10 @@ public abstract class HttpClientBase {
                 logger.LogResponse(nettyResponse);
                 if (expectedResponseCode != 0) {
                     Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
+                }
+
+                if(expectedResponseCode != 200){
+                    Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
                 }
 
                 return nettyResponse.getResponseBody();
