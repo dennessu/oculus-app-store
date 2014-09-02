@@ -229,22 +229,7 @@ Note: If you don't want to change the coreutils preference, you can create anoth
 
 #### Install CouchDB
 
-1. Open Terminal and run the following commands:
-
-    ```bash
-    brew install couchdb
-    brew switch erlang R16B03-1
-    ```
-
-    Refer to the [CouchDB Installation Guide](http://docs.couchdb.org/en/latest/install/mac.html) if there is any issue installing couchdb.
-
-1. Configure CouchDB to run as a daemon and start CouchDB
-
-    ```bash
-    sudo launchctl load /usr/local/Library/LaunchDaemons/org.apache.couchdb.plist
-    sudo launchctl start org.apache.couchdb
-    ```
-
+1. Download and run couchdb from [Official Site](http://couchdb.apache.org).
 1. Verify CouchDB is running by accessing [http://localhost:5984/\_utils](http://localhost:5984/_utils). It should show the "Apache CouchDB - Futon" page.
 
 #### Install Memcached

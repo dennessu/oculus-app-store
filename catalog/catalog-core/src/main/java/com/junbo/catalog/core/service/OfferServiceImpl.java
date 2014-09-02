@@ -104,7 +104,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public List<Offer> getOffers(OffersGetOptions options) {
         List<Offer> offers;
         if (options.getItemId() != null) {
-            offers = getOffersByItemId(options.getItemId());
+            offers = getOffersByItemId(options.getItemId(), options);
             options.setTotal(Long.valueOf(offers.size()));
         } else {
             offers = offerRepo.getOffers(options);
@@ -263,7 +263,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
     }
 
-    private List<Offer> getOffersByItemId(String itemId) {
+    private List<Offer> getOffersByItemId(String itemId, OffersGetOptions options) {
         List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisions(itemId);
         if (CollectionUtils.isEmpty(offerRevisions)) {
             return Collections.emptyList();
@@ -274,8 +274,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         for (String offerId : tempOfferIds) {
             findOfferIdsBySubOfferId(offerId, resultOfferIds);
         }
-
-        return offerRepo.getOffers(resultOfferIds);
+        options.setOfferIds(resultOfferIds);
+        return offerRepo.getOffers(options);
     }
 
     private Set<String> filterOfferIds(List<OfferRevision> revisions) {

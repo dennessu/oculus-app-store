@@ -8,71 +8,52 @@ package com.junbo.store.spec.model.browse;
 import com.junbo.store.spec.model.browse.document.Image;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Images class.
  */
 public class Images {
 
-    private Image main;
+    private Map<String, Image> main;
 
-    private Image halfMain;
+    private Map<String, Image> thumbnail;
 
-    private Image thumbnail;
+    private Map<String, Image> background;
 
-    private Image halfThumbnail;
-
-    private Image background;
-
-    private Image featured;
+    private Map<String, Image> featured;
 
     private List<ImageGalleryEntry> gallery;
 
-    public Image getMain() {
+    public Map<String, Image> getMain() {
         return main;
     }
 
-    public void setMain(Image main) {
+    public void setMain(Map<String, Image> main) {
         this.main = main;
     }
 
-    public Image getHalfMain() {
-        return halfMain;
-    }
-
-    public void setHalfMain(Image halfMain) {
-        this.halfMain = halfMain;
-    }
-
-    public Image getThumbnail() {
+    public Map<String, Image> getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(Image thumbnail) {
+    public void setThumbnail(Map<String, Image> thumbnail) {
         this.thumbnail = thumbnail;
     }
 
-    public Image getHalfThumbnail() {
-        return halfThumbnail;
-    }
-
-    public void setHalfThumbnail(Image halfThumbnail) {
-        this.halfThumbnail = halfThumbnail;
-    }
-
-    public Image getBackground() {
+    public Map<String, Image> getBackground() {
         return background;
     }
 
-    public void setBackground(Image background) {
+    public void setBackground(Map<String, Image> background) {
         this.background = background;
     }
 
-    public Image getFeatured() {
+    public Map<String, Image> getFeatured() {
         return featured;
     }
 
-    public void setFeatured(Image featured) {
+    public void setFeatured(Map<String, Image> featured) {
         this.featured = featured;
     }
 

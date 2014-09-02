@@ -5,7 +5,6 @@
  */
 package com.junbo.order.spec.resource;
 
-import com.junbo.common.id.OrderEventId;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
@@ -33,12 +32,6 @@ public interface OrderEventResource {
     @GET
     @RouteBy("orderId")
     Promise<Results<OrderEvent>> getOrderEvents(@QueryParam("orderId") OrderId orderId, @BeanParam PageParam pageParam);
-
-    @ApiOperation("Get order event by id")
-    @Path("/{orderEventId}")
-    @GET
-    @RouteBy("orderEventId")
-    Promise<OrderEvent> getOrderEvent(@PathParam("orderEventId") OrderEventId orderEventId);
 
     @ApiOperation("Create an order event")
     @POST

@@ -8,28 +8,30 @@ package com.junbo.catalog.spec.model.common;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.util.Map;
+
 /**
  * Gallery entry.
  */
 public class ImageGalleryEntry {
     @ApiModelProperty(position = 1, required = true, value = "Thumbnail image")
-    private Image thumbnail;
+    private Map<String, Image> thumbnail;
     @ApiModelProperty(position = 2, required = true, value = "Full image")
-    private Image full;
+    private Map<String, Image> full;
 
-    public Image getThumbnail() {
+    public Map<String, Image> getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(Image thumbnail) {
+    public void setThumbnail(Map<String, Image> thumbnail) {
         this.thumbnail = thumbnail;
     }
 
-    public Image getFull() {
+    public Map<String, Image> getFull() {
         return full;
     }
 
-    public void setFull(Image full) {
+    public void setFull(Map<String, Image> full) {
         this.full = full;
     }
 }

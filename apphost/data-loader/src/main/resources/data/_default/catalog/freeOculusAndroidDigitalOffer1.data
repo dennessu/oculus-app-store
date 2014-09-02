@@ -116,71 +116,55 @@
                 "manualDocument": null,
                 "communityForumLink": null,
                 "images": {
-                    "main": {
+                    "main": {"15x20":{
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
                         "size": 23012,
                         "altText": null,
                         "x": 641,
                         "y": 530
-                    },
-                    "halfMain": {
-                        "id": null,
-                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
-                        "size": 23012,
-                        "altText": null,
-                        "x": 641,
-                        "y": 530
-                    },
-                    "thumbnail": {
+                    }},
+                    "thumbnail": {"15x20":{
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200907958.jpg",
                         "size": 23012,
                         "altText": null,
                         "x": 641,
                         "y": 530
-                    },
-                    "halfThumbnail": {
-                        "id": null,
-                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200907958.jpg",
-                        "size": 23012,
-                        "altText": null,
-                        "x": 641,
-                        "y": 530
-                    },
-                    "background": {
+                    }},
+                    "background": {"15x20":{
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
                         "size": 23012,
                         "altText": null,
                         "x": 641,
                         "y": 530
-                    },
-                    "featured": {
+                    }},
+                    "featured": {"15x20":{
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
                         "size": 23012,
                         "altText": null,
                         "x": 641,
                         "y": 530
-                    },
+                    }},
                     "gallery": [{
-                        "thumbnail": {
+                        "thumbnail": {"15x20":{
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200913457.jpg",
                             "size": 31111,
                             "altText": null,
                             "x": 500,
                             "y": 333
-                        },
-                        "full": {
+                        }},
+                        "full": {"15x20":{
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200913457.jpg",
                             "size": 31111,
                             "altText": null,
                             "x": 500,
                             "y": 333
-                        }
+                        }}
                     }]
                 },
                 "videos": [{
@@ -279,71 +263,55 @@
                 "longDescription": "Right now, this is just a small test build of the mechanics for the engine and network play ability . We&apos;re looking for feedback on the interface, controls, and any motion sickness encountered. Please send all feedback to corneriastudios@gmail.com.",
                 "shortDescription": "This is an alpha build of a futuristic flight simulation called Seven Stars.",
                 "images": {
-                    "main": {
+                    "main": {"15x20":{
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
                         "size": 23012,
                         "altText": null,
                         "x": 641,
                         "y": 530
-                    },
-                    "halfMain": {
-                        "id": null,
-                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
-                        "size": 23012,
-                        "altText": null,
-                        "x": 641,
-                        "y": 530
-                    },
-                    "thumbnail": {
+                    }},
+                    "thumbnail": {"15x20":{
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200907958.jpg",
                         "size": 23012,
                         "altText": null,
                         "x": 641,
                         "y": 530
-                    },
-                    "halfThumbnail": {
-                        "id": null,
-                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200907958.jpg",
-                        "size": 23012,
-                        "altText": null,
-                        "x": 641,
-                        "y": 530
-                    },
-                    "background": {
+                    }},
+                    "background": {"15x20":{
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
                         "size": 23012,
                         "altText": null,
                         "x": 641,
                         "y": 530
-                    },
-                    "featured": {
+                    }},
+                    "featured": {"15x20":{
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
                         "size": 23012,
                         "altText": null,
                         "x": 641,
                         "y": 530
-                    },
+                    }},
                     "gallery": [{
-                        "thumbnail": {
+                        "thumbnail": {"15x20":{
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200913457.jpg",
                             "size": 31111,
                             "altText": null,
                             "x": 500,
                             "y": 333
-                        },
-                        "full": {
+                        }},
+                        "full": {"15x20":{
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200913457.jpg",
                             "size": 31111,
                             "altText": null,
                             "x": 500,
                             "y": 333
-                        }
+                        }}
                     }]
                 },
                 "videos": [{

@@ -85,6 +85,14 @@
         <property name="dbName" value="order_fulfillment_history"/>
     </bean>
 
+    <bean id="cloudantOfferSnapshotRepository" class="com.junbo.order.db.repo.cloudant.OfferSnapshotRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order_offer_snapshot"/>
+    </bean>
+
+    <bean id="cloudantItemSnapshotRepository" class="com.junbo.order.db.repo.cloudant.ItemSnapshotRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order_item_snapshot"/>
+    </bean>
+
     <bean id="cloudantOrderEventRepository" class="com.junbo.order.db.repo.cloudant.OrderEventRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="order_event"/>
     </bean>
@@ -127,6 +135,18 @@
         <property name="repositoryInterface" value="com.junbo.order.db.repo.FulfillmentHistoryRepository"/>
         <property name="cloudantRepositoryImpl" ref="cloudantFulfillmentHistoryRepository" />
         <property name="sqlRepositoryImpl" ref="sqlFulfillmentHistoryRepository" />
+    </bean>
+
+    <bean id="offerSnapshotRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.OfferSnapshotRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantOfferSnapshotRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlOfferSnapshotRepository" />
+    </bean>
+
+    <bean id="itemSnapshotRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.ItemSnapshotRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantItemSnapshotRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlItemSnapshotRepository" />
     </bean>
 
     <bean id="orderEventRepository" parent="baseRepository">

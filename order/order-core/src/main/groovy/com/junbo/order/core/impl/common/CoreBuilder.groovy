@@ -5,10 +5,15 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.billing.spec.model.TaxItem
+import com.junbo.common.id.ItemId
+import com.junbo.common.id.ItemRevisionId
+import com.junbo.common.id.OfferId
+import com.junbo.common.id.OfferRevisionId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.PromotionId
 import com.junbo.langur.core.webflow.action.ActionResult
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
@@ -434,5 +439,20 @@ class CoreBuilder {
         else {
             return DATE_FORMATTER2.get().parse(date)
         }
+    }
+
+    static OfferSnapshot buildOfferSnapshot(Offer offer) {
+        OfferSnapshot offerSnapshot = new OfferSnapshot()
+        offerSnapshot.offer = new OfferId(offer.id)
+        offerSnapshot.offerRevision = new OfferRevisionId(offer.revisionId)
+        def itemSnapshots = []
+        offer.itemIds?.keySet().each { String key ->
+            itemSnapshots.add(new ItemSnapshot(
+                    item: new ItemId(key),
+                    itemRevision: new ItemRevisionId(offer.itemIds.get(key))
+            ))
+        }
+        offerSnapshot.itemSnapshots = itemSnapshots
+        return offerSnapshot
     }
 }

@@ -8,6 +8,8 @@ package com.junbo.order.core.impl.order
 
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.OfferId
+import com.junbo.common.id.OfferRevisionId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
@@ -15,6 +17,7 @@ import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
+import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.common.TransactionHelper
@@ -341,14 +344,18 @@ class OrderServiceImpl implements OrderService {
     }
 
     private Promise<Void> validateDuplicatePurchase(Order order, OrderServiceContext context) {
+        def orderSnapshot = []
         return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
             return orderServiceContextBuilder.getOffer(item.offer, context).then { Offer offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
+                orderSnapshot << CoreBuilder.buildOfferSnapshot(offer)
                 return orderInternalService.validateDuplicatePurchase(order, offer)
             }
         }.syncThen {
+            order.orderSnapshot = orderSnapshot
+            orderInternalService.persistOrderSnapshot(order)
             return null
         }
     }

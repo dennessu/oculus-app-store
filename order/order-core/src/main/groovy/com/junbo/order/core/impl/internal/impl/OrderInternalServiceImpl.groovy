@@ -35,6 +35,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -59,6 +60,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
     OrderValidator orderValidator
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder orderServiceContextBuilder
+
+    @Value('${order.store.offer.snapshot}')
+    Boolean storeSnapshot
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderInternalServiceImpl)
 
@@ -274,6 +278,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.getId().value))
+        // orderSnapshot
+        order.setOrderSnapshot(orderRepository.getSnapshot(order.getId().value))
         // tax
         return orderServiceContextBuilder.refreshBalances(orderServiceContext).then { List<Balance> balances ->
             if (CollectionUtils.isEmpty(balances) && !CoreUtils.isFreeOrder(order)) {
@@ -351,6 +357,20 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 order.billingHistories.add(savedHistory)
             }
         }
+    }
+
+    @Transactional
+    void persistOrderSnapshot(Order order) {
+        if (!storeSnapshot || CollectionUtils.isEmpty(order.orderSnapshot)) {
+            return
+        }
+        def offerSnapshots = []
+        order.orderSnapshot.each { OfferSnapshot snapshot ->
+            snapshot.orderId = order.getId().value
+            def savedOfferSnapshot = orderRepository.createOfferSnapshot(snapshot)
+            offerSnapshots << savedOfferSnapshot
+        }
+        order.orderSnapshot = offerSnapshots
     }
 
     @Override

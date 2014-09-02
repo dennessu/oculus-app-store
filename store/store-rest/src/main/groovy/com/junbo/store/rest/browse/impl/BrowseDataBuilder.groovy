@@ -98,19 +98,28 @@ class BrowseDataBuilder {
             return null
         }
         return new Images(
-                main: buildImage(catalogImages.main),
-                halfMain: buildImage(catalogImages.halfMain),
-                thumbnail: buildImage(catalogImages.thumbnail),
-                halfThumbnail: buildImage(catalogImages.halfThumbnail),
-                background: buildImage(catalogImages.background),
-                featured: buildImage(catalogImages.featured),
+                main: buildImageMap(catalogImages.main),
+                thumbnail: buildImageMap(catalogImages.thumbnail),
+                background: buildImageMap(catalogImages.background),
+                featured: buildImageMap(catalogImages.featured),
                 gallery: catalogImages.gallery == null ? null : catalogImages.gallery.collect { com.junbo.catalog.spec.model.common.ImageGalleryEntry entry ->
                     return new com.junbo.store.spec.model.browse.ImageGalleryEntry(
-                            thumbnail: buildImage(entry.thumbnail),
-                            full: buildImage(entry.full)
+                            thumbnail: buildImageMap(entry.thumbnail),
+                            full: buildImageMap(entry.full)
                     )
                 }
         )
+    }
+
+    private Map<String, Image> buildImageMap(Map<String, com.junbo.catalog.spec.model.common.Image> catalogImageMap) {
+        if (catalogImageMap == null) {
+            return null
+        }
+        Map<String, Image> result = new HashMap<>()
+        catalogImageMap.each { Map.Entry<String, com.junbo.catalog.spec.model.common.Image> entry ->
+            result.put(entry.key, buildImage(entry.getValue()))
+        }
+        return result
     }
 
     private Image buildImage(com.junbo.catalog.spec.model.common.Image catalogImage) {

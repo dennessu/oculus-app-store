@@ -23,14 +23,14 @@ import javax.ws.rs.core.MediaType;
 public interface CaseyResource {
 
     @GET
-    @Path("/search")
+    @Path("search")
     Promise<CaseyResults<JsonNode>> searchOffers(@BeanParam OfferSearchParams params);
 
     @GET
-    @Path("/ratings/item/{itemId}")
+    @Path("ratings/item/{itemId}")
     Promise<CaseyResults<CaseyAggregateRating>> getRatingByItemId(@PathParam("itemId") String itemId);
 
     @GET
-    @Path("/reviews")
+    @Path("reviews")
     Promise<CaseyResults<CaseyReview>> getReviews(@BeanParam ReviewSearchParams params);
 }

@@ -62,6 +62,14 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     private PreorderInfoRepository preorderInfoRepository;
 
     @Autowired
+    @Qualifier('offerSnapshotRepository')
+    private OfferSnapshotRepository offerSnapshotRepository;
+
+    @Autowired
+    @Qualifier('itemSnapshotRepository')
+    private ItemSnapshotRepository itemSnapshotRepository;
+
+    @Autowired
     @Qualifier('oculus48IdGenerator')
     private IdGenerator idGenerator
 
@@ -228,6 +236,28 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     @Override
     List<FulfillmentHistory> getFulfillmentHistories(Long orderItemId) {
         return fulfillmentHistoryRepository.getByOrderItemId(orderItemId).get();
+    }
+
+    @Override
+    OfferSnapshot createOfferSnapshot(OfferSnapshot offerSnapshot) {
+        OfferSnapshot savedOfferSnapshot = offerSnapshotRepository.create(offerSnapshot).get()
+        def itemSnapshots = []
+        offerSnapshot.itemSnapshots.each { ItemSnapshot itemSnapshot ->
+            itemSnapshot.offerSnapshotId = savedOfferSnapshot.getId()
+            ItemSnapshot savedItemSnapshot = itemSnapshotRepository.create(itemSnapshot).get()
+            itemSnapshots << savedItemSnapshot
+        }
+        savedOfferSnapshot.itemSnapshots = itemSnapshots
+        return savedOfferSnapshot
+    }
+
+    @Override
+    List<OfferSnapshot> getSnapshot(Long orderId) {
+        def orderSnapshot = offerSnapshotRepository.getByOrderId(orderId).get()
+        orderSnapshot.each { OfferSnapshot offerSnapshot ->
+            offerSnapshot.itemSnapshots = itemSnapshotRepository.getByOfferSnapshotId(offerSnapshot.getId()).get()
+        }
+        return orderSnapshot
     }
 
     private Promise<Void> saveOrderItems(OrderId orderId, List<OrderItem> orderItems,
