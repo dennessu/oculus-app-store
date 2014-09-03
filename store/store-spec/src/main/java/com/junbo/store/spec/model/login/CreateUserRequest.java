@@ -5,12 +5,9 @@
  */
 package com.junbo.store.spec.model.login;
 
-import com.junbo.common.id.CommunicationId;
-import com.junbo.common.id.TosId;
 import com.junbo.store.spec.model.ChallengeAnswer;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * The CreateUserRequest class.
@@ -41,9 +38,9 @@ public class CreateUserRequest {
 
     private Date dob;
 
-    private List<TosId> tosAgreed;
+    private Boolean tosAgreed;
 
-    private List<CommunicationId> newsPromotionsAgreed;
+    private Boolean newsPromotionsAgreed;
 
     public ChallengeAnswer getChallengeAnswer() {
         return challengeAnswer;
@@ -141,19 +138,19 @@ public class CreateUserRequest {
         this.dob = dob;
     }
 
-    public List<TosId> getTosAgreed() {
+    public Boolean getTosAgreed() {
         return tosAgreed;
     }
 
-    public void setTosAgreed(List<TosId> tosAgreed) {
+    public void setTosAgreed(Boolean tosAgreed) {
         this.tosAgreed = tosAgreed;
     }
 
-    public List<CommunicationId> getNewsPromotionsAgreed() {
+    public Boolean getNewsPromotionsAgreed() {
         return newsPromotionsAgreed;
     }
 
-    public void setNewsPromotionsAgreed(List<CommunicationId> newsPromotionsAgreed) {
+    public void setNewsPromotionsAgreed(Boolean newsPromotionsAgreed) {
         this.newsPromotionsAgreed = newsPromotionsAgreed;
     }
 }
