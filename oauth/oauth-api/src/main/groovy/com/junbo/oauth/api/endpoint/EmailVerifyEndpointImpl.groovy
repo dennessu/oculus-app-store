@@ -7,6 +7,7 @@ package com.junbo.oauth.api.endpoint
 
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppError
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
@@ -21,6 +22,7 @@ import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.UserService
@@ -31,6 +33,7 @@ import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.spec.endpoint.EmailVerifyEndpoint
 import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.LoginState
+import com.junbo.oauth.spec.model.ViewModel
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
@@ -40,6 +43,7 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriBuilder
 
@@ -101,74 +105,56 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
     @Override
     Promise<Response> verifyEmail(String code, String locale) {
-        if (StringUtils.isEmpty(locale)) {
+        if (StringUtils.isEmpty(locale) || !ValidatorUtil.isValidLocale(locale)) {
             locale = 'en-US'
         }
 
-        if (!StringUtils.isEmpty(locale)) {
-            if (ValidatorUtil.isValidLocale(locale)) {
-                this.failedRedirectUri = this.failedRedirectUri.replaceFirst('/locale', '/' + locale)
-                this.successRedirectUri = this.successRedirectUri.replaceFirst('/locale', '/' + locale)
-            }
+        String failedUri = this.failedRedirectUri.replaceFirst('/locale', '/' + locale)
+        String successUri = this.successRedirectUri.replaceFirst('/locale', '/' + locale)
 
-            locale = locale.replace('-', '_')
-            String[] parts = locale.split('_')
-            switch (parts.length) {
-                case 3: case 2:
-                    this.failedRedirectUri = this.failedRedirectUri.replaceFirst('/country', '/' + parts[1])
-                    this.successRedirectUri = this.successRedirectUri.replaceFirst('/country', '/' + parts[1])
-                default:
-                    break
-            }
-        }
+        locale = locale.replace('-', '_')
+        String[] parts = locale.split('_')
+        assert parts.length == 2 : 'locale should consist of 2 parts'
+        failedUri = failedUri.replaceFirst('/country', '/' + parts[1])
+        successUri = successUri.replaceFirst('/country', '/' + parts[1])
 
         if (StringUtils.isEmpty(code)) {
-            LOGGER.warn(AppCommonErrors.INSTANCE.fieldRequired('evc').toString())
-            Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
-                    .location(UriBuilder.fromUri(failedRedirectUri).build())
-            return Promise.pure(responseBuilder.build())
+            return Promise.pure(response(failedUri, false, locale, AppCommonErrors.INSTANCE.fieldRequired('evc')).build())
         }
 
         EmailVerifyCode emailVerifyCode = emailVerifyCodeRepository.getAndRemove(code)
 
         if (emailVerifyCode == null) {
-            LOGGER.warn(AppErrors.INSTANCE.invalidEmailVerifyCode().toString())
-            Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
-                    .location(UriBuilder.fromUri(failedRedirectUri).build())
-            return Promise.pure(responseBuilder.build())
+            return Promise.pure(response(failedUri, false, locale, AppCommonErrors.INSTANCE.fieldInvalid('evc')).build())
         }
 
         emailVerifyCodeRepository.removeByUserIdEmail(emailVerifyCode.userId, emailVerifyCode.email)
 
-        return userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).recover { Throwable e ->
-            return handleException(e)
-        }.then { User user ->
-            return getTargetValidMailPII(user, emailVerifyCode).then { UserPersonalInfo emailPii ->
-                Email email = ObjectMapperProvider.instance().treeToValue(emailPii.value, Email)
+        try {
+            User user = userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).get()
 
-                emailPii.lastValidateTime = new Date()
-                emailPii.value = ObjectMapperProvider.instance().valueToTree(email)
-                return userPersonalInfoResource.put(emailPii.id as UserPersonalInfoId, emailPii)
-                        .recover { Throwable e ->
-                    return handleException(e)
-                }.then { UserPersonalInfo updatedPersonalInfo ->
-                    LoginState loginState = new LoginState(
-                            userId: emailVerifyCode.userId,
-                            lastAuthDate: new Date()
-                    )
+            UserPersonalInfo emailPii = getEmailPii(user, emailVerifyCode)
+            Email email = ObjectMapperProvider.instance().treeToValue(emailPii.value, Email)
 
-                    loginStateRepository.save(loginState)
+            emailPii.lastValidateTime = new Date()
+            emailPii.value = ObjectMapperProvider.instance().valueToTree(email)
+            userPersonalInfoResource.put(emailPii.getId(), emailPii).get()
 
-                    Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
-                            .location(UriBuilder.fromUri(successRedirectUri).build())
+            LoginState loginState = new LoginState(
+                    userId: emailVerifyCode.userId,
+                    lastAuthDate: new Date()
+            )
 
-                    CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.getId(), -1)
-                    CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
-                            loginState.sessionId, -1, false)
+            loginStateRepository.save(loginState)
+            def responseBuilder = response(successUri, true, locale, null)
+            CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.getId(), -1)
+            CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
+                    loginState.sessionId, -1, false)
 
-                    return Promise.pure(responseBuilder.build())
-                }
-            }
+            return Promise.pure(responseBuilder.build())
+        } catch (Exception e) {
+            LOGGER.error('Error calling the identity service', e)
+            return Promise.pure(response(failedUri, false, locale, AppErrors.INSTANCE.errorCallingIdentity()).build())
         }
     }
 
@@ -202,13 +188,6 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         }
     }
 
-    private Promise<Response> handleException(Throwable throwable) {
-        LOGGER.error('Error calling the identity service', throwable)
-        Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
-                .location(UriBuilder.fromUri(failedRedirectUri).build())
-        return Promise.pure(responseBuilder.build())
-    }
-
     private void csrActionAudit(UserId userId) {
         if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
             String email = userService.getUserEmailByUserId(userId).get()
@@ -216,30 +195,17 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         }
     }
 
-    private Promise<UserPersonalInfo> getTargetValidMailPII(User user, EmailVerifyCode verifyCode) {
+    private UserPersonalInfo getEmailPii(User user, EmailVerifyCode verifyCode) {
         if (verifyCode.targetMailId == null) {
-            // Need to load default email and check whether this is the same as verifyCode's email
             UserPersonalInfoLink emailLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
             Assert.notNull(emailLink, 'emailLink is null')
-
-            return userPersonalInfoResource.get(emailLink.value as UserPersonalInfoId,
-                    new UserPersonalInfoGetOptions()).recover { Throwable e ->
-                return handleException(e)
-            }.then { UserPersonalInfo userPersonalInfo ->
-                checkMailValid(userPersonalInfo, verifyCode.email)
-
-                return Promise.pure(userPersonalInfo)
-            }
-        } else {
-            // Need to load target email and check whether this is consistent with verifyCode's email
-            return userPersonalInfoResource.get(new UserPersonalInfoId(verifyCode.targetMailId), new UserPersonalInfoGetOptions()).recover { Throwable e ->
-                return handleException(e)
-            }.then { UserPersonalInfo userPersonalInfo ->
-                checkMailValid(userPersonalInfo, verifyCode.email)
-
-                return Promise.pure(userPersonalInfo)
-            }
+            verifyCode.targetMailId = emailLink.getValue().getValue()
         }
+
+        UserPersonalInfo userPersonalInfo = userPersonalInfoResource.get(new UserPersonalInfoId(verifyCode.targetMailId),
+                new UserPersonalInfoGetOptions()).get()
+        checkMailValid(userPersonalInfo, verifyCode.email)
+        return userPersonalInfo
     }
 
     private void checkMailValid(UserPersonalInfo mailPII, String email) {
@@ -250,5 +216,25 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         if (emailObj.info != email) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('userId').exception()
         }
+    }
+
+    private
+    static Response.ResponseBuilder response(String redirectUri, boolean success, String locale, AppError error) {
+        String accept = JunboHttpContext.requestHeaders.getFirst('Accept')
+        if (!StringUtils.isEmpty(accept) && accept.contains(MediaType.APPLICATION_JSON)) {
+            ViewModel response = new ViewModel(
+                    view: 'emailVerify',
+                    model: ['verifyResult': success, 'locale': locale] as Map,
+                    errors: []
+            )
+
+            if (error != null) {
+                response.errors << error.error()
+            }
+
+            return Response.ok(response)
+        }
+
+        return Response.status(Response.Status.FOUND).location(UriBuilder.fromUri(redirectUri).build())
     }
 }
