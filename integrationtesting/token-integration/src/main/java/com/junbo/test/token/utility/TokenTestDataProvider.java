@@ -5,12 +5,15 @@
  */
 package com.junbo.test.token.utility;
 
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.UserId;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.crypto.apihelper.CryptoService;
 import com.junbo.test.crypto.apihelper.impl.CryptoServiceImpl;
@@ -34,18 +37,22 @@ public class TokenTestDataProvider extends BaseTestDataProvider {
         return identityClient.PostUser();
     }
 
-    public TokenRequest PostTokenRquest(String offerName) throws Exception {
+    public TokenRequest PostTokenRequest(String offerName) throws Exception {
         TokenRequest tokenRequest = new TokenRequest();
         tokenRequest.setActivation("yes");
         tokenRequest.setCreateMethod("GENERATION");
         tokenRequest.setDescription("ut");
         tokenRequest.setGenerationLength("LEN16");
         ProductDetail productDetail = new ProductDetail();
-        productDetail.setDefaultOffer(offerClient.getOfferIdByName(offerName));
+        String offerId = offerClient.getOfferIdByName(offerName);
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(Master.getInstance().getOffer(offerId).getCurrentRevisionId());
+        Long organizationId = offerRevision.getOwnerId().getValue();
+        productDetail.setDefaultOffer(offerId);
         tokenRequest.setProductDetail(productDetail);
         tokenRequest.setProductType("OFFER");
         tokenRequest.setQuantity(1L);
         tokenRequest.setUsageLimit("1");
+        tokenRequest.setOrganizationId(organizationId);
         return tokenClient.postTokenRequest(tokenRequest);
     }
 
