@@ -14,7 +14,12 @@ import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.Platform;
-import com.junbo.payment.spec.model.*;
+import com.junbo.payment.spec.internal.CallbackParams;
+import com.junbo.payment.spec.internal.PayPalCallbackParams;
+import com.junbo.payment.spec.model.Item;
+import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.WebPaymentInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -183,7 +188,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     }
 
     @Override
-    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentCallbackParams properties){
+    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, CallbackParams properties){
         return Promise.pure(payment);
     }
 
@@ -235,8 +240,13 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
             @Override
             public PaymentTransaction call() throws Exception {
                 String token = request.getExternalToken();
-                if(CommonUtil.isNullOrEmpty(token) && request.getPaymentCallbackParams() != null){
-                    token = request.getPaymentCallbackParams().getToken();
+                if(CommonUtil.isNullOrEmpty(token) && request.getCallbackParams() != null){
+                    if(request.getCallbackParams() instanceof PayPalCallbackParams){
+                        PayPalCallbackParams callbackParams = (PayPalCallbackParams)request.getCallbackParams();
+                        token = callbackParams.getToken();
+                    }else{
+                        return null;
+                    }
                 }
                 if(CommonUtil.isNullOrEmpty(token)){
                     return null;
@@ -282,10 +292,16 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
             public PaymentTransaction call() throws Exception {
-                PaymentCallbackParams properties = paymentRequest.getPaymentCallbackParams();
+                PayPalCallbackParams callbackParams;
+                CallbackParams properties = paymentRequest.getCallbackParams();
+                if(properties instanceof PayPalCallbackParams){
+                    callbackParams = (PayPalCallbackParams)properties;
+                }else{
+                    throw AppServerExceptions.INSTANCE.providerNotFound(properties == null ? "" : properties.toString()).exception();
+                }
                 if(properties != null){
-                    paymentRequest.getWebPaymentInfo().setToken(properties.getToken());
-                    paymentRequest.getWebPaymentInfo().setPayerId(properties.getPayerID());
+                    paymentRequest.getWebPaymentInfo().setToken(callbackParams.getToken());
+                    paymentRequest.getWebPaymentInfo().setPayerId(callbackParams.getPayerID());
                 }
                 PaymentDetailsType paymentDetail = new PaymentDetailsType();
                 paymentDetail.setNotifyURL(notifyURL);
@@ -343,7 +359,8 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
     private String getFullReturnUrl(PaymentTransaction transaction){
         String returnURL = transaction.getWebPaymentInfo().getReturnURL();
-        String transactionDetail = "paymentId=" + CommonUtil.encode(transaction.getId()) +
+        String transactionDetail = "provider=" + getProviderName() +
+                "&paymentId=" + CommonUtil.encode(transaction.getId()) +
                 "&billingId=" + CommonUtil.encode(transaction.getBillingRefId());
         if(returnURL.contains("?")){
             return returnURL + "&" + transactionDetail;

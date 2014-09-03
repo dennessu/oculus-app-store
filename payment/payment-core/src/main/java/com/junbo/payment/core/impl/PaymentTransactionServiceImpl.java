@@ -18,7 +18,7 @@ import com.junbo.payment.spec.enums.PaymentAPI;
 import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.PaymentType;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
+import com.junbo.payment.spec.internal.CallbackParams;
 import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -182,8 +182,8 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
                 api, PaymentStatus.SETTLE_CREATED, false);
         final PaymentProviderService provider = getProviderByName(existedTransaction.getPaymentProvider());
-        PaymentCallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
-        request.setPaymentCallbackParams(properties);
+        CallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
+        request.setCallbackParams(properties);
         return provider.confirm(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
                     @Override
@@ -368,9 +368,9 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         PaymentTransaction payment = paymentRepositoryFacade.getByPaymentId(paymentId);
         String externalToken = payment.getExternalToken();
         if(CommonUtil.isNullOrEmpty(externalToken)){
-            PaymentCallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
+            CallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
             if(properties != null){
-                payment.setPaymentCallbackParams(properties);
+                payment.setCallbackParams(properties);
             }
         }
         final PaymentProviderService provider = getProviderByName(payment.getPaymentProvider());
@@ -389,7 +389,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
 
     @Override
     public Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentTransaction paymentNew,
-                                                          PaymentCallbackParams paymentCallbackParams) {
+                                                          CallbackParams paymentCallbackParams) {
         if(event.getPaymentId() == null){
             LOGGER.error("the payment id is missing for the event.");
             throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound("null paymentId").exception();

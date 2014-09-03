@@ -27,7 +27,7 @@ public class ProxyExceptionResponse {
         if(CommonUtil.isNullOrEmpty(body)){
             return ERROR_CODE;
         }
-        return String.format(ERROR_CODE, body);
+        return body;
     }
 
     public ProxyExceptionResponse(Throwable throwable){
@@ -35,7 +35,7 @@ public class ProxyExceptionResponse {
             AppErrorException appException = ((AppErrorException)throwable);
             try {
                 status = appException.getError().getHttpStatusCode();
-                body = appException.getError().error().getMessage();
+                body = String.format(ERROR_CODE, appException.getError().error().getMessage());
             }catch (Exception e) {
 
             }

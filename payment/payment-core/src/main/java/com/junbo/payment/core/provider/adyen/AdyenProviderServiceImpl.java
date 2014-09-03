@@ -22,7 +22,8 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.Platform;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
+import com.junbo.payment.spec.internal.AdyenCallbackParams;
+import com.junbo.payment.spec.internal.CallbackParams;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.model.WebPaymentInfo;
@@ -328,12 +329,18 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
     }
 
     @Override
-    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentCallbackParams properties){
+    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, CallbackParams properties){
         //validate signature: authResult + pspReference + merchantReference + skinCode + merchantReturnData
-        if(!CommonUtil.isNullOrEmpty(properties.getPspReference()) && !CommonUtil.isNullOrEmpty(properties.getAuthResult())){
-            String strToSign = properties.getAuthResult() + properties.getPspReference() +
-                    properties.getMerchantReference() + properties.getSkinCode() + properties.getMerchantReturnData();
-            if(!CommonUtil.calHMCASHA1(strToSign, skinSecret).equals(properties.getMerchantSig())){
+        AdyenCallbackParams callbackParams;
+        if(properties instanceof AdyenCallbackParams){
+            callbackParams = (AdyenCallbackParams)properties;
+        }else{
+            throw AppServerExceptions.INSTANCE.providerNotFound(properties.toString()).exception();
+        }
+        if(!CommonUtil.isNullOrEmpty(callbackParams.getPspReference()) && !CommonUtil.isNullOrEmpty(callbackParams.getAuthResult())){
+            String strToSign = callbackParams.getAuthResult() + callbackParams.getPspReference() +
+                    callbackParams.getMerchantReference() + callbackParams.getSkinCode() + callbackParams.getMerchantReturnData();
+            if(!CommonUtil.calHMCASHA1(strToSign, skinSecret).equals(callbackParams.getMerchantSig())){
                 LOGGER.error("Signature is not matched for:" + strToSign);
                 throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
             }
@@ -341,17 +348,17 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
             LOGGER.error("invalid callback: Info is empty or not enough.");
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "invalid callback").exception();
         }
-        if(properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
-            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString()), properties.getPspReference());
+        if(callbackParams.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
+            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString()), callbackParams.getPspReference());
             payment.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
-            payment.setExternalToken(properties.getPspReference());
+            payment.setExternalToken(callbackParams.getPspReference());
             //get the recurring info and save it back as pi external token:
             RecurringDetail recurringReference = getRecurringReference(payment.getPaymentInstrumentId());
             updatePIInfo(payment.getPaymentInstrumentId(), recurringReference);
         }else{
-            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.UNCONFIRMED.toString()), properties.getPspReference());
+            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.UNCONFIRMED.toString()), callbackParams.getPspReference());
             payment.setStatus(PaymentStatus.UNCONFIRMED.toString());
-            payment.setExternalToken(properties.getPspReference());
+            payment.setExternalToken(callbackParams.getPspReference());
         }
         return Promise.pure(payment);
     }

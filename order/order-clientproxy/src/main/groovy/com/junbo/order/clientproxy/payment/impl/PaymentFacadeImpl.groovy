@@ -5,15 +5,12 @@
  */
 
 package com.junbo.order.clientproxy.payment.impl
-
 import com.junbo.common.error.AppError
-import com.junbo.common.id.PaymentId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.error.ErrorUtils
-import com.junbo.payment.spec.model.PaymentCallbackParams
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.resource.PaymentCallbackResource
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
@@ -55,8 +52,8 @@ class PaymentFacadeImpl implements PaymentFacade {
     }
 
     @Override
-    Promise<Response> postPaymentProperties(Long paymentId, PaymentCallbackParams properties) {
-        return paymentCallbackResource.postPaymentProperties(new PaymentId(paymentId), properties)
+    Promise<Response> postPaymentProperties(String request) {
+        return paymentCallbackResource.postPaymentProperties(request)
     }
 
     private AppError convertError(Throwable error, Long paymentInstrumentId) {
