@@ -77,6 +77,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     // This is to check More than maxSameIPRetryCount login attempts from the same IP address for different user account within sameIPRetryInterval timeframe
     private Integer maxSameIPRetryCount
+    private List<String> ip4WhiteList
     private Integer sameIPRetryInterval
 
     private NormalizeService normalizeService
@@ -444,7 +445,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumSameIPAttemptCount(UserCredentialVerifyAttempt userLoginAttempt) {
-        if (StringUtils.isEmpty(userLoginAttempt.ipAddress)) {
+        if (StringUtils.isEmpty(userLoginAttempt.ipAddress) || isInIP4WhiteList(userLoginAttempt.ipAddress)) {
             return Promise.pure(null)
         }
 
@@ -458,6 +459,30 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
             throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
         }
+    }
+
+    private boolean isInIP4WhiteList(String ipAddress) {
+        String[] ipAddressArray = ipAddress.split("\\.")
+        if (ipAddressArray.length != 4) {
+            return false
+        }
+
+        boolean flag = true
+        ip4WhiteList.each { String whiteList ->
+            if (!flag) {
+                return
+            }
+            String[] ipRange = whiteList.split("\\.")
+            for (int index = 0; index < 4; index ++ ) {
+                String range = ipRange[index]
+                if (range != '*' && range != ipAddressArray[index]) {
+                    flag = false
+                    break
+                }
+            }
+        }
+
+        return flag
     }
 
     private void checkBasicUserLoginAttemptInfo(UserCredentialVerifyAttempt userLoginAttempt) {
@@ -582,6 +607,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setMaxSameIPRetryCount(Integer maxSameIPRetryCount) {
         this.maxSameIPRetryCount = maxSameIPRetryCount
+    }
+
+    @Required
+    void setIp4WhiteList(String ip4WhiteList) {
+        this.ip4WhiteList = ip4WhiteList.split(';') as List
+        this.ip4WhiteList.each { String ip ->
+            if (StringUtils.isEmpty(ip)) {
+                throw new IllegalArgumentException('configuration ip4whiteList can\'t have empty ip')
+            }
+            String[] ipFieldList = ip.split('\\.')
+            if (ipFieldList.length != 4) {
+                throw new IllegalArgumentException('configuration ip4WhiteList must be xx.xx.xx.xx;xx.xx.xx.xx ' + ip + ipFieldList.length)
+            }
+        }
     }
 
     @Required

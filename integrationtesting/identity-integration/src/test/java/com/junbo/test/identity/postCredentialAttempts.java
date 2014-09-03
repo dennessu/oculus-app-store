@@ -15,10 +15,12 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -102,6 +104,59 @@ public class postCredentialAttempts {
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
+
+        ip = "0.0.0.0";
+        for (int i = 0; i<101; i++) {
+            response = Identity.UserCredentialAttemptesPostDefault(
+                    RandomHelper.randomAlphabetic(15), IdentityModel.DefaultPassword(), ip, false);
+            if (i < 100) {
+                Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
+            }
+            response.close();
+        }
+
+        response = Identity.UserCredentialAttemptesPostDefault(
+                RandomHelper.randomAlphabetic(15), IdentityModel.DefaultPassword(), ip, false);
+        errorMessage = "User Name Not Found";
+        Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
+        Validator.Validate("validate response error message", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void postUserCredentialAttempsExistingUserMaxRetrySameIP() throws Exception {
+        String ip = RandomHelper.randomIP();
+        String email = RandomHelper.randomEmail();
+        User user = Identity.UserPostDefaultWithMail(15, email);
+        String password = RandomHelper.randomAlphabetic(10);
+        CloseableHttpResponse response = Identity.UserCredentialPostDefault(user.getId(), null, password);
+        response.close();
+
+        for (int i = 0; i < 105; i++) {
+            email = RandomHelper.randomEmail();
+            user = Identity.UserPostDefaultWithMail(15, email);
+            response = Identity.UserCredentialPostDefault(user.getId(), null, password);
+            response.close();
+            boolean flag = (i < 100);
+            response = Identity.UserCredentialAttemptesPostDefault(email, password, ip, flag);
+            response.close();
+        }
+        response = Identity.UserCredentialAttemptesPostDefault(email, password, ip, false);
+        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
+        String errorMessage = "User reaches maximum login attempt";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        ip = "0.0.0.0";
+        for (int i = 0; i < 200; i++) {
+            email = RandomHelper.randomEmail();
+            user = Identity.UserPostDefaultWithMail(15, email);
+            response = Identity.UserCredentialPostDefault(user.getId(), null, password);
+            response.close();
+            response = Identity.UserCredentialAttemptesPostDefault(email, password, ip, true);
+            response.close();
+        }
     }
 
     @Test(groups = "dailies")
@@ -200,6 +255,7 @@ public class postCredentialAttempts {
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
 
         response.close();
+        Thread.sleep(1000);
 
         password = IdentityModel.DefaultPassword();
         response = Identity.UserCredentialPostDefault(postedUser.getId(), null, password);
