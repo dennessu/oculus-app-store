@@ -43,15 +43,15 @@ import org.testng.annotations.Test;
 
 import javax.ws.rs.WebApplicationException;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
+import java.net.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Entitlement service test.
@@ -178,63 +178,64 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     //make sure the url and key info are valid and just check whether the url generated is valid
     public void testGenerateUrl() throws IOException, URISyntaxException, InvalidKeySpecException {
 //           String url = "http://static.oculusvr.com/uploads%2F14013776640911fhvo9od2t9-pc.zip";
-        String url = "https://d1aifagf6hhneo.cloudfront.net/binaries%2Fsr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
-//        url = URLEncoder.encode(url, "utf-8");
-//        String url = "https://d3q6nt0as236wo.cloudfront.net/test";
+//        String url = "https://d1aifagf6hhneo.cloudfront.net/binaries%2Fsr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
+        String url = "https://s3.amazonaws.com/ovr_ink_uploader/binaries/NmOPHrojTKjt0rTm2vCQ_SpotifyInstaller.zip";
         String result = generatePreSignedDownloadUrl(url, "xx", "1.0", "PC");
         System.out.println(result);
     }
 
-    private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws IOException, URISyntaxException, InvalidKeySpecException {
-        URL url = new URL(URLDecoder.decode(urlString, "utf-8"));
-        String domainName = url.getHost();
-        String objectKey = url.getPath().substring(1);
-        String extension = getExtension(objectKey);
+    private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
+        try {
+            urlString = URLDecoder.decode(urlString, "utf-8");
+        } catch (UnsupportedEncodingException ignore) {
+        }
 
-        java.util.Date expiration = new java.util.Date();
-        long milliSeconds = expiration.getTime();
-        milliSeconds += 1000 * 30; // Add 30 seconds.
-        expiration.setTime(milliSeconds);
-
-        String finalFilename = null;
-        if (!StringUtils.isEmpty(filename)) {
-            if (!StringUtils.isEmpty(version)) {
-                filename = filename + "_" + version;
+        String bucketName = parseS3BucketName(urlString);
+        if (bucketName != null) {
+            Pattern s3Pattern = Pattern.compile(".*" + bucketName + "/(.*)");
+            Matcher s3Matcher = s3Pattern.matcher(urlString);
+            if (s3Matcher.matches()) {
+                String objectKey = s3Matcher.group(1);
+                return generateS3Url(bucketName, objectKey,
+                        generateFilename(objectKey, filename, version, platform), generateExpirationDate());
             }
-            filename = filename + "_" + platform;
-            finalFilename = extension == null ? filename : filename + "." + extension;
-        }
-
-        if (domainName.equalsIgnoreCase("static.oculusvr.com")) {
-            return generateS3Url(domainName, objectKey, finalFilename, expiration);
-        }
-
-        if (domainName.endsWith("cloudfront.net")) {
-            String bucketName = "ovr_ink_uploader";
-//            return generateCloudantFrontUrl(urlString, finalFilename, expiration);
-            return generateS3Url(bucketName, objectKey, finalFilename, expiration);
+        } else if (isCloudFront(urlString)){
+            //TODO: work around for cloudfront
+            URL url = new URL(urlString);
+            bucketName = EntitlementServiceImpl.getBucketMap().get(url.getHost());
+            String objectKey = url.getPath().substring(1);
+            return generateS3Url(bucketName, objectKey,
+                    generateFilename(objectKey, filename, version, platform), generateExpirationDate());
         }
 
         return urlString;
     }
 
-    private String generateCloudantFrontUrl(String urlString, String filename, Date expiration) throws InvalidKeySpecException, IOException {
-        return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
-                urlString + (filename == null ? "" : ("?" + "response-content-disposition=attachment;" + URLEncoder.encode("filename=\"" + filename + "\"", "UTF-8"))),
-                EntitlementServiceImpl.getPrivateKeyId(), EntitlementServiceImpl.getPrivateKey(), expiration);
+    private String parseS3BucketName(String url) {
+        for (String allowedBucketName : EntitlementServiceImpl.getBucketNames()) {
+            if (url.contains(allowedBucketName)) {
+                return allowedBucketName;
+            }
+        }
+        return null;
     }
 
-    private String generateS3Url(String bucketName, String objectKey, String filename, Date expiration) {
-        GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                new GeneratePresignedUrlRequest(bucketName, objectKey);
-        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
-        generatePresignedUrlRequest.setExpiration(expiration);
+    private Boolean isCloudFront(String url) {
+        return url.contains("cloudfront.net");
+    }
+
+    private String generateFilename(String objectKey, String filename, String version, String platform) {
+        String extension = getExtension(objectKey);
+
         if (!StringUtils.isEmpty(filename)) {
-            generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
-                    "attachment;filename=\"" + filename + "\"");
+            if (!StringUtils.isEmpty(version)) {
+                filename = filename + "_" + version;
+            }
+            filename = filename + "_" + platform;
+            return extension == null ? filename : filename + "." + extension;
         }
-        URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
-        return downloadUrl.toString();
+
+        return null;
     }
 
     private String getExtension(String objectKey) {
@@ -249,5 +250,36 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         }
 
         return lastPart;
+    }
+
+    private Date generateExpirationDate() {
+        java.util.Date expiration = new java.util.Date();
+        long milliSeconds = expiration.getTime();
+        milliSeconds += 1000 * EntitlementServiceImpl.getExpirationTime();
+        expiration.setTime(milliSeconds);
+        return expiration;
+    }
+
+    private String generateCloudantFrontUrl(String urlString, String filename, Date expiration) {
+        try {
+            return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
+                    urlString + (filename == null ? "" : ("?" + "response-content-disposition=attachment;" + URLEncoder.encode("filename=\"" + filename + "\"", "UTF-8"))),
+                    EntitlementServiceImpl.getPrivateKeyId(), EntitlementServiceImpl.getPrivateKey(), expiration);
+        } catch (UnsupportedEncodingException ignore) {
+            return null;
+        }
+    }
+
+    private String generateS3Url(String bucketName, String objectKey, String filename, Date expiration) {
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucketName, objectKey);
+        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
+        generatePresignedUrlRequest.setExpiration(expiration);
+        if (!StringUtils.isEmpty(filename)) {
+            generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
+                    "attachment;filename=\"" + filename + "\"");
+        }
+        URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
+        return downloadUrl.toString();
     }
 }

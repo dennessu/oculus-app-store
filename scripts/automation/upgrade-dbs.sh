@@ -24,6 +24,7 @@ echo copying apphost to $LIQUIBASE_SETUP_SERVER
 scp /home/silkcloud/$APP_NAME.zip $LIQUIBASE_SETUP_SERVER:/var/silkcloud
 
 ssh $LIQUIBASE_SETUP_SERVER << EOF
+set -e
 cd /var/silkcloud
 rm -rf $APP_NAME
 unzip -o $APP_NAME.zip
@@ -37,6 +38,7 @@ echo pause
 
 echo Running liquibase
 ssh $LIQUIBASE_SETUP_SERVER << EOF
+set -e
 cd /var/silkcloud/apphost/dbsetup/liquibase
 ./createdb.sh -env:${ENV_BASE}.replica -key:$CRYPTO_KEY
 ./updatedb.sh -env:${ENV_BASE}.replica -key:$CRYPTO_KEY
