@@ -78,6 +78,7 @@
 
     <bean id="grantTokenByRefreshToken" class="com.junbo.oauth.core.action.GrantTokenByRefreshToken">
         <property name="tokenService" ref="tokenService"/>
+        <property name="scopeRepository" ref="scopeRepository"/>
     </bean>
 
     <bean id="validateGrantType" class="com.junbo.oauth.core.action.ValidateGrantType"/>
