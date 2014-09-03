@@ -86,7 +86,7 @@
                 <entry key="UserTFAAttemptResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserTFABackupCodeAttemptResource.create" value="identity.service"/>
                 <entry key="UserTFABackupCodeAttemptResource" value="identity identity.service identity.pii csr"/>
-                <entry key="UserTFABackupCodeResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTFABackupCodeResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFAResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserTosAgreementResource" value="identity identity.service identity.pii csr"/>
                 <!-- oauth -->

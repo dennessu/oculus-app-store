@@ -90,7 +90,6 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
         }
     }
 
-    @Override
     Promise<UserTosAgreement> patch(UserTosAgreementId userTosAgreementId, UserTosAgreement userTos) {
         if (userTosAgreementId == null) {
             throw new IllegalArgumentException('userTosId is null')
@@ -124,7 +123,6 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
         }
     }
 
-    @Override
     Promise<UserTosAgreement> put(UserTosAgreementId userTosAgreementId, UserTosAgreement userTos) {
         if (userTosAgreementId == null) {
             throw new IllegalArgumentException('userTosId is null')
@@ -157,7 +155,6 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
         }
     }
 
-    @Override
     Promise<Void> delete(UserTosAgreementId userTosAgreementId) {
         return userTosValidator.validateForGet(userTosAgreementId).then { UserTosAgreement userTos ->
             def callback = authorizeCallbackFactory.create(userTos.userId)
