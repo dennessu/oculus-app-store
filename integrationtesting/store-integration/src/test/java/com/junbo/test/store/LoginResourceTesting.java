@@ -216,6 +216,10 @@ public class LoginResourceTesting extends BaseTestClass {
         response = testDataProvider.RateUserCredential(password);
         Validator.Validate("validate fair character password", response.getStrength(), CREDENTIAL_STRENGTH_FAIR);
 
+        password = RandomHelper.randomAlphabetic(1000) + RandomHelper.randomNumeric(1000);
+        response = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate strong character password", response.getStrength(), CREDENTIAL_STRENGTH_STRONG);
+
         password = "abcdEFG#$1223";
         response = testDataProvider.RateUserCredential(password);
         Validator.Validate("validate strong character password", response.getStrength(), CREDENTIAL_STRENGTH_STRONG);
