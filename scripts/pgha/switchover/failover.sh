@@ -33,7 +33,7 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
 ENDSSH
 
 echo "[FAILOVER][SLAVE] copy unarchived log files"
-rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_ARCHIVE_PATH
+rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $ARCHIVE_PATH
 
 echo "[FAILOVER][SLAVE] waiting for slave catching up with master"
 while [ `psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
@@ -60,7 +60,7 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     echo "[FAILOVER][MASTER] configure recovery.conf for master"
     cat > $MASTER_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
-restore_command = 'cp $MASTER_ARCHIVE_PATH/%f %p'
+restore_command = $RESTORE_COMMAND
 standby_mode = 'on'
 primary_conninfo = 'user=$PGUSER host=$SLAVE_HOST port=$SLAVE_DB_PORT sslmode=prefer sslcompression=1 krbsrvname=$PGUSER'
 trigger_file = '$PROMOTE_TRIGGER_FILE'

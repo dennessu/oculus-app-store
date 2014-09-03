@@ -39,22 +39,6 @@ public interface UserTosAgreementResource {
     Promise<UserTosAgreement> get(@PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId,
                                   @BeanParam UserTosAgreementGetOptions getOptions);
 
-    @POST
-    @Path("/{tosAgreementId}")
-    Promise<UserTosAgreement> patch(@PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId,
-                                    UserTosAgreement userTosAgreement);
-
-    @ApiOperation("Update one user tos agreement")
-    @PUT
-    @Path("/{tosAgreementId}")
-    Promise<UserTosAgreement> put(@PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId,
-                                  UserTosAgreement userTosAgreement);
-
-    @ApiOperation("Delete one user tos agreement")
-    @DELETE
-    @Path("/{tosAgreementId}")
-    Promise<Void> delete(@PathParam("tosAgreementId") UserTosAgreementId userTosAgreementId);
-
     @ApiOperation("Search user tos agreements")
     @GET
     Promise<Results<UserTosAgreement>> list(@BeanParam UserTosAgreementListOptions listOptions);

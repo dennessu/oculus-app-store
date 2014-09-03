@@ -35,7 +35,7 @@ public class TokenTesting extends BaseTokenTestClass {
     )
     @Test
     public void testPostTokenRequest() throws Exception {
-        TokenRequest tokenRequestResult = testDataProvider.PostTokenRquest(offer_digital_normal1);
+        TokenRequest tokenRequestResult = testDataProvider.PostTokenRequest(offer_digital_normal1);
         //TODO verify token response
     }
 
@@ -54,7 +54,7 @@ public class TokenTesting extends BaseTokenTestClass {
     )
     @Test
     public void testGetTokenRequestByTokenId() throws Exception {
-        TokenRequest tokenRequestResult = testDataProvider.PostTokenRquest(offer_digital_normal1);
+        TokenRequest tokenRequestResult = testDataProvider.PostTokenRequest(offer_digital_normal1);
         testDataProvider.GetTokenRequest(tokenRequestResult.getId());
 
         //TODO verify token response
@@ -76,7 +76,7 @@ public class TokenTesting extends BaseTokenTestClass {
     @Test
     public void testPostTokenConsumption() throws Exception {
         String uid = testDataProvider.CreateUser();
-        TokenRequest tokenRequestResult = testDataProvider.PostTokenRquest(offer_digital_normal1);
+        TokenRequest tokenRequestResult = testDataProvider.PostTokenRequest(offer_digital_normal1);
         testDataProvider.postTokenConsumption(uid, offer_digital_normal1,
                 tokenRequestResult.getTokenItems().get(0).getEncryptedString());
 
@@ -98,7 +98,7 @@ public class TokenTesting extends BaseTokenTestClass {
     )
     @Test
     public void testGetTokenItem() throws Exception {
-        TokenRequest tokenRequestResult = testDataProvider.PostTokenRquest(offer_digital_normal1);
+        TokenRequest tokenRequestResult = testDataProvider.PostTokenRequest(offer_digital_normal1);
 
         testDataProvider.getTokenItem(tokenRequestResult.getTokenItems().get(0).getEncryptedString());
 
@@ -120,7 +120,7 @@ public class TokenTesting extends BaseTokenTestClass {
     )
     @Test
     public void testUpdateTokenItem() throws Exception {
-        TokenRequest tokenRequestResult = testDataProvider.PostTokenRquest(offer_digital_normal1);
+        TokenRequest tokenRequestResult = testDataProvider.PostTokenRequest(offer_digital_normal1);
 
         TokenItem tokenItem = testDataProvider.getTokenItem(tokenRequestResult.getTokenItems()
                 .get(0).getEncryptedString());

@@ -87,6 +87,7 @@
         <property name="emailResource" ref="identityEmailResource" />
         <property name="emailTemplateResource" ref="identityEmailTemplateResource" />
         <property name="transactionManager" ref="transactionManager" />
+        <property name="ip4WhiteList" value="${identity.conf.ipWhiteList}" />
     </bean>
 
     <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">

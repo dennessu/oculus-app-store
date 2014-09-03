@@ -97,3 +97,8 @@ if [[ ($in_recovery -ne 0) && ($role = "SLAVE") ]] ; then
     echo "[REMEDY][$role] pgbouncer -> master"
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 fi
+
+if [[ $role = "REPLICA" ]] ; then
+    echo "[REMEDY][$role] pgbouncer -> replica"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_replica.sh
+fi

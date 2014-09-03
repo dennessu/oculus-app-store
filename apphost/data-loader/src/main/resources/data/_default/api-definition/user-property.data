@@ -8,7 +8,7 @@
         }],
         "identity.service": [{
             "precondition": "true",
-            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete"],
+            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete", "admin"],
             "scriptType": "SPEL"
         }],
         "identity.pii": [{
@@ -18,7 +18,7 @@
         }],
         "csr": [{
             "precondition": "true",
-            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete"],
+            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete", "admin"],
             "scriptType": "SPEL"
         }]
     }

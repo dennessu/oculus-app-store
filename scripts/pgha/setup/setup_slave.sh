@@ -14,8 +14,8 @@ createDir $SLAVE_DATA_PATH
 echo "[SETUP][SLAVE] create database backup folder $SLAVE_BACKUP_PATH"
 createDir $SLAVE_BACKUP_PATH
 
-echo "[SETUP][SLAVE] create database archive folder $SLAVE_ARCHIVE_PATH"
-createDir $SLAVE_ARCHIVE_PATH
+echo "[SETUP][SLAVE] create database archive folder $ARCHIVE_PATH"
+createDir $ARCHIVE_PATH
 
 echo "[SETUP][SLAVE] create database archive folder $SLAVE_LOG_PATH"
 createDir $SLAVE_LOG_PATH
@@ -29,7 +29,7 @@ rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOS
 echo "[SETUP][SLAVE] configure recovery.conf"
 cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
-restore_command = 'cp $SLAVE_ARCHIVE_PATH/%f %p'
+restore_command = $RESTORE_COMMAND
 standby_mode = 'on'
 primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=prefer sslcompression=1 krbsrvname=$PGUSER'
 trigger_file = '$PROMOTE_TRIGGER_FILE'
@@ -37,7 +37,7 @@ EOF
 
 echo "[SETUP][SLAVE] configure postgres.conf"
 cat >> $SLAVE_DATA_PATH/postgresql.conf <<EOF
-archive_command = 'cp %p $SLAVE_ARCHIVE_PATH/%f'
+archive_command = $ARCHIVE_COMMAND
 port = $SLAVE_DB_PORT
 EOF
 

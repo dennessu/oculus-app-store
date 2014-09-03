@@ -29,7 +29,7 @@ echo "[LONDISTE][REPLICA] kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
 #echo "[LONDISTE][REPLICA] copy unarchived log files"
-#rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $REPLICA_ARCHIVE_PATH
+#rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $ARCHIVE_PATH
 
 xlog_location=`psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
 echo "[LONDISTE][REPLICA] current xlog location is [$xlog_location]"

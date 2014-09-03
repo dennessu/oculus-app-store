@@ -75,6 +75,10 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
+            if (StringUtils.isEmpty(userCredential.currentPassword) && !AuthorizeContext.hasRights('admin')) {
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
+            }
+
             userCredential = userCredentialFilter.filterForCreate(userCredential)
 
             return userCredentialValidator.validateForCreate(userId, userCredential).then { Object obj ->

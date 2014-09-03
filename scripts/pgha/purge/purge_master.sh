@@ -21,7 +21,7 @@ echo "[PURGE][MASTER] remove backup data"
 rm -rf $MASTER_BACKUP_PATH
 
 echo "[PURGE][MASTER] remove archive data"
-rm -rf $MASTER_ARCHIVE_PATH
+rm -rf $ARCHIVE_PATH
 
 echo "[PURGE][MASTER] remove pgbouncer data"
 rm -rf $PGBOUNCER_PATH
