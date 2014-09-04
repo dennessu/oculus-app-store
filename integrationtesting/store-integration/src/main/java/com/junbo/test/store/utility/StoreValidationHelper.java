@@ -68,7 +68,6 @@ public class StoreValidationHelper extends BaseValidationHelper {
 
         verifyEqual(entitlement.getItemType(), item.getType(), "verify item type");
         verifyEqual(IdConverter.idToHexString(entitlement.getItem()), item.getId(), "verify item id");
-
     }
 
     public void verifySignInResponse(AuthTokenResponse createResponse, AuthTokenResponse signInResponse) {

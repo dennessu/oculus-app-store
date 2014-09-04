@@ -7,9 +7,11 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
+import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -187,7 +189,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store commerce",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "Test free purchase with invalid offer id",
             steps = {
                     "1. Create user",
@@ -197,6 +199,30 @@ public class StoreCommerceTesting extends BaseTestClass {
     )
     @Test
     public void testFreePurchaseWithInvalidOfferId() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+
+        AuthTokenResponse signInResponse = testDataProvider.signIn(userName);
+
+        validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+
+        UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
+
+        validationHelper.verifyUserProfile(userProfileResponse, authTokenResponse);
+
+        String offerId;
+        if (offer_iap_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+
+        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase("123", null, 404);
+
+        assert Master.getInstance().getApiErrorMsg().contains("offer 123 is not found");
+        assert Master.getInstance().getApiErrorMsg().contains("123.004");
+
 
     }
 
@@ -206,7 +232,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store commerce",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "Test add instrument without billing address",
             steps = {
                     "1. Create user",
@@ -216,6 +242,15 @@ public class StoreCommerceTesting extends BaseTestClass {
     )
     @Test
     public void testFreePurchaseWithoutBillingAddress() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+
+        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCardWithoutBillingAddress(uid);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Field is required");
+        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+        assert Master.getInstance().getApiErrorMsg().contains("Input Error");
 
     }
 
@@ -224,7 +259,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "Test prepare purchase with invalid offer id",
             steps = {
                     "1. Create user",
@@ -236,9 +271,11 @@ public class StoreCommerceTesting extends BaseTestClass {
     public void testPreparePurchaseWithInvalidOfferId() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
-        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
 
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, "123", null, null, null);
+        testDataProvider.preparePurchase(null, "123", null, null, null, false, 404);
+
+        assert Master.getInstance().getApiErrorMsg().contains("offer 123 is not found");
+        assert Master.getInstance().getApiErrorMsg().contains("123.004");
 
     }
 
@@ -247,7 +284,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "Test change payment via prepare purchase",
             steps = {
                     "1. Create user",
@@ -268,27 +305,24 @@ public class StoreCommerceTesting extends BaseTestClass {
         //add new credit card to user
 
         InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
-        //verify decrypted credit card info
-        validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
-
         //get payment id in billing profile
         PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
+
+        InstrumentUpdateResponse instrumentUpdateResponse2 = testDataProvider.CreateCreditCard(uid);
+        //get payment id in billing profile
+        PaymentInstrumentId paymentId2 = instrumentUpdateResponse2.getBillingProfile().getInstruments().get(1).getSelf();
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
         //post order without set payment instrument
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
-
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
-        assert preparePurchaseResponse.getChallenge().getTos() != null;
+        testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+                preparePurchaseResponse.getChallenge().getTos().getTosId());
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId2, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId());
 
         //verify formatted price
@@ -296,7 +330,9 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
-        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
+        testDataProvider.commitPurchase(uid, purchaseToken);
+
+        //TODO Get order to verify payment id
 
     }
 
@@ -305,7 +341,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "Test checkout with invalid payment id",
             steps = {
                     "1. Create user",
@@ -320,14 +356,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
-        //add new credit card to user
 
-        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
-        //verify decrypted credit card info
-        validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
-
-        //get payment id in billing profile
-        PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
+        PaymentInstrumentId paymentId = new PaymentInstrumentId(123L);
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
         //post order without set payment instrument
@@ -344,23 +374,18 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert preparePurchaseResponse.getChallenge().getTos() != null;
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
+                preparePurchaseResponse.getChallenge().getTos().getTosId(),false ,400);
 
-        //verify formatted price
-        validationHelper.verifyPreparePurchase(preparePurchaseResponse);
-
-        String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
-
-        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
+        assert Master.getInstance().getApiErrorMsg().contains("not found");
 
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.Comprehensive,
             features = "Store checkout",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "Test commit purchase with invalid purchase token",
             steps = {
                     "1. Create user",
@@ -376,17 +401,13 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
-        //add new credit card to user
 
         InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
-        //verify decrypted credit card info
-        validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
 
-        //get payment id in billing profile
         PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
-        //post order without set payment instrument
+
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
         assert preparePurchaseResponse.getChallenge() != null;
@@ -395,29 +416,42 @@ public class StoreCommerceTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
-        assert preparePurchaseResponse.getChallenge().getTos() != null;
-
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId());
 
-        //verify formatted price
-        validationHelper.verifyPreparePurchase(preparePurchaseResponse);
+        String purchaseToken = preparePurchaseResponse.getPurchaseToken();
 
-        String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
+        CreateUserRequest createUserRequest2 = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse2 = testDataProvider.CreateUser(createUserRequest2, true);
+        String uid2 = IdConverter.idToHexString(authTokenResponse2.getUserId());
 
-        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
+        InstrumentUpdateResponse instrumentUpdateResponse2 = testDataProvider.CreateCreditCard(uid2);
+
+        PaymentInstrumentId paymentId2 = instrumentUpdateResponse2.getBillingProfile().getInstruments().get(0).getSelf();
+
+        PreparePurchaseResponse preparePurchaseResponse2 = testDataProvider.preparePurchase(null, offerId, null, null, null);
+
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse2.getPurchaseToken(),
+                offerId, paymentId, "1234", null);
+
+        testDataProvider.preparePurchase(preparePurchaseResponse2.getPurchaseToken(), offerId, paymentId2, null,
+                preparePurchaseResponse.getChallenge().getTos().getTosId());
+
+        testDataProvider.commitPurchase(uid, purchaseToken, 400);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
+        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+        assert Master.getInstance().getApiErrorMsg().contains("purchaseToken");
 
     }
 
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.Comprehensive,
             features = "Store checkout",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "Test commit purchase with another purchase token",
             steps = {
                     "1. Create user",
@@ -436,38 +470,29 @@ public class StoreCommerceTesting extends BaseTestClass {
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
 
-        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
+        CreateUserRequest createUserRequest2 = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse2 = testDataProvider.CreateUser(createUserRequest2, true);
+        String uid2 = IdConverter.idToHexString(authTokenResponse2.getUserId());
+        //add new credit card to user
+        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid2);
         //verify decrypted credit card info
-        validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
-
-        //get payment id in billing profile
         PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
+
+        Master.getInstance().setCurrentUid(uid);
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
         //post order without set payment instrument
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
-
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
-        assert preparePurchaseResponse.getChallenge().getTos() != null;
+        testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+                preparePurchaseResponse.getChallenge().getTos().getTosId(), false, 400);
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
-
-        //verify formatted price
-        validationHelper.verifyPreparePurchase(preparePurchaseResponse);
-
-        String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
-
-        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
+        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid. do not belong to this user");
+        assert Master.getInstance().getApiErrorMsg().contains("133.001");
 
     }
-
 
 }

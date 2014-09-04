@@ -193,6 +193,20 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
+    public InstrumentUpdateResponse CreateCreditCardWithoutBillingAddress(String uid) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
+        Instrument instrument = new Instrument();
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        instrument.setAccountName(creditCardInfo.getAccountName());
+        instrument.setAccountNum(encryptedString);
+        instrument.setType("CREDITCARD");
+        instrument.setIsDefault(false);
+        instrumentUpdateRequest.setInstrument(instrument);
+        return storeClient.updateInstrument(instrumentUpdateRequest, 400);
+    }
+
+
     public InstrumentUpdateResponse UpdateCreditCard(InstrumentUpdateResponse response,
                                                      boolean isDefault) throws Exception {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
@@ -261,7 +275,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public com.junbo.common.error.Error preparePurchaseWithException(String token, String offerId, PaymentInstrumentId piid,
-                                                          String pin, TosId tosAcceptanceId, boolean isIAP, int expectedResponseCode, String errorCode) throws Exception {
+                                                                     String pin, TosId tosAcceptanceId, boolean isIAP, int expectedResponseCode, String errorCode) throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
         request.setPurchaseToken(token);
         request.setInstrument(piid);
@@ -301,10 +315,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken) throws Exception {
+        return commitPurchase(uid, purchaseToken, 200);
+    }
+
+    public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken, int expectedResponseCode) throws Exception {
         CommitPurchaseRequest commitPurchaseRequest = new CommitPurchaseRequest();
         commitPurchaseRequest.setPurchaseToken(purchaseToken);
         //commitPurchaseRequest.setChallengeSolution();
-        return storeClient.commitPurchase(commitPurchaseRequest);
+        return storeClient.commitPurchase(commitPurchaseRequest, expectedResponseCode);
     }
 
     public IAPEntitlementConsumeResponse iapConsumeEntitlement(EntitlementId entitlementId, String offerId)
@@ -333,6 +351,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public MakeFreePurchaseResponse makeFreePurchase(String offerId, TosId tosId) throws Exception {
+        return makeFreePurchase(offerId, tosId, 200);
+    }
+
+    public MakeFreePurchaseResponse makeFreePurchase(String offerId, TosId tosId, int expectedResponseCode) throws Exception {
         MakeFreePurchaseRequest request = new MakeFreePurchaseRequest();
         request.setOffer(new OfferId(offerId));
         if (tosId != null) {
@@ -341,7 +363,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             challengeAnswer.setAcceptedTos(tosId);
             request.setChallengeAnswer(challengeAnswer);
         }
-        return storeClient.makeFreePurchase(request);
+        return storeClient.makeFreePurchase(request, expectedResponseCode);
     }
 
     public DetailsResponse getItemDetails(String itemId) throws Exception {
