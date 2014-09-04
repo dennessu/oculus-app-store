@@ -7,7 +7,6 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.payment.common.CommonUtil
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
@@ -52,10 +51,10 @@ class WebPaymentCallbackAction extends BaseOrderEventAwareAction {
                     orderRepository.updateOrder(order, true, false, null)
                 }
 
-                if (eventMap.containsKey('paymentId')) {
-                    Long paymentId = CommonUtil.decode(eventMap.get('paymentId'));
+                if (eventMap.containsKey('callbackData')) {
+                    String data = eventMap.get('callbackData');
 
-                    return facadeContainer.paymentFacade.postPaymentProperties(orderEvent.properties).recover {
+                    return facadeContainer.paymentFacade.postPaymentProperties(data).recover {
                         Throwable throwable ->
                             LOGGER.error('name=Post_Payment_Callback_Error', throwable)
                             throw AppErrors.INSTANCE.paymentConnectionError().exception()
