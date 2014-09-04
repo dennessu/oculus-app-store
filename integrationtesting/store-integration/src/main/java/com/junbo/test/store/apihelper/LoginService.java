@@ -17,6 +17,8 @@ public interface LoginService {
 
     UserNameCheckResponse CheckUserName(UserNameCheckRequest userNameCheckRequest) throws Exception;
 
+    com.junbo.common.error.Error CheckUserNameWithError(UserNameCheckRequest userNameCheckRequest, int expectedResponseCode, String errorCode) throws Exception;
+
     AuthTokenResponse signIn(UserSignInRequest userSignInRequest) throws Exception;
 
     AuthTokenResponse signIn(UserSignInRequest userSignInRequest, int expectedResponseCode) throws Exception;

@@ -5,6 +5,8 @@
  */
 package com.junbo.test.store.apihelper.impl;
 
+import com.junbo.common.error.*;
+import com.junbo.common.error.Error;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.store.spec.model.login.*;
@@ -71,6 +73,16 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
                 new TypeReference<UserNameCheckResponse>() {
                 }, responseBody);
         return userNameCheckResponse;
+    }
+
+    @Override
+    public com.junbo.common.error.Error CheckUserNameWithError(UserNameCheckRequest userNameCheckRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/name-check", userNameCheckRequest, expectedResponseCode);
+        Error error = new JsonMessageTranscoder().decode(
+                new TypeReference<Error>() {
+                }, responseBody);
+        assert error.getCode().equalsIgnoreCase(errorCode);
+        return error;
     }
 
     @Override

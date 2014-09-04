@@ -5,8 +5,7 @@
  */
 package com.junbo.test.store;
 
-import com.junbo.common.error.AppError;
-import com.junbo.common.error.AppErrorException;
+import com.junbo.common.error.*;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -27,7 +26,6 @@ import com.junbo.test.common.property.Status;
 import org.apache.commons.lang3.time.DateUtils;
 import org.testng.annotations.Test;
 
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -73,6 +71,12 @@ public class LoginResourceTesting extends BaseTestClass {
 
         userNameCheckResponse = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15));
         Validator.Validate("Validate random character username", userNameCheckResponse.getIsAvailable(), true);
+
+        com.junbo.common.error.Error error = testDataProvider.CheckUserNameWithError(null, 400, "130.001");
+        Validator.Validate("Validate null username error response", true, error != null);
+
+        error = testDataProvider.CheckUserNameWithError("", 400, "130.001");
+        Validator.Validate("Validate empty username error response", true, error != null);
     }
 
     @Property(
@@ -123,6 +127,12 @@ public class LoginResourceTesting extends BaseTestClass {
 
         userNameCheckResponse = testDataProvider.CheckEmail(RandomHelper.randomEmail());
         Validator.Validate("Validate random character email", userNameCheckResponse.getIsAvailable(), true);
+
+        com.junbo.common.error.Error error = testDataProvider.CheckEmailWithError(null, 400, "130.001");
+        assert error != null;
+
+        error = testDataProvider.CheckEmailWithError("", 400, "130.001");
+        assert error != null;
     }
 
     @Property(

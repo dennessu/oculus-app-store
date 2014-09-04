@@ -12,7 +12,8 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.error.AppErrorException;
+import com.junbo.common.error.*;
+import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.store.spec.model.Address;
@@ -124,10 +125,22 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return loginClient.CheckUserName(request);
     }
 
+    public com.junbo.common.error.Error CheckUserNameWithError(String userName, int expectedResponseCode, String errorCode) throws Exception {
+        UserNameCheckRequest request = new UserNameCheckRequest();
+        request.setUsername(userName);
+        return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
+    }
+
     public UserNameCheckResponse CheckEmail(String email) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setEmail(email);
         return loginClient.CheckUserName(request);
+    }
+
+    public Error CheckEmailWithError(String email, int expectedResponseCode, String errorCode) throws Exception {
+        UserNameCheckRequest request = new UserNameCheckRequest();
+        request.setEmail(email);
+        return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
     }
 
     public AuthTokenResponse SignIn(String username, String password, int expectedCode) throws Exception {
