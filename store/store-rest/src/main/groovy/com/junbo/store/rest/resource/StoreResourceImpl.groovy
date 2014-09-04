@@ -12,7 +12,7 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppError
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
@@ -1296,9 +1296,11 @@ class StoreResourceImpl implements StoreResource {
                 }
 
                 if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
-                    AppError appError = (AppError)t
-                    if (appError.error().message.contains('User reaches maximum allowed retry count')) {
-                        throw AppErrors.INSTANCE.maximumAttemptReached().exception()
+                    AppErrorException appError = (AppErrorException)t
+                    if (!CollectionUtils.isEmpty(appError.error.error().getDetails())
+                     && !org.springframework.util.StringUtils.isEmpty(appError.error.error().getDetails().get(0).getReason())
+                     && appError.error.error().getDetails().get(0).getReason().contains('User reaches maximum allowed retry count')) {
+                        throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                     }
                 }
 

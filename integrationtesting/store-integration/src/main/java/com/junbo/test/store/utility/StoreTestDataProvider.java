@@ -7,11 +7,14 @@ package com.junbo.test.store.utility;
 
 
 // CHECKSTYLE:OFF
+
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.*;
+import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -241,6 +244,42 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return preparePurchase(token, offerId, piid, pin, tosAcceptanceId, false, 200);
     }
 
+    public com.junbo.common.error.Error preparePurchaseWithException(String token, String offerId, PaymentInstrumentId piid,
+                                                          String pin, TosId tosAcceptanceId, boolean isIAP, int expectedResponseCode, String errorCode) throws Exception {
+        PreparePurchaseRequest request = new PreparePurchaseRequest();
+        request.setPurchaseToken(token);
+        request.setInstrument(piid);
+        request.setOffer(new OfferId(offerId));
+
+        if (!StringUtils.isEmpty(pin)) {
+            ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+            challengeAnswer.setType("PIN");
+            challengeAnswer.setPin(pin);
+            request.setChallengeAnswer(challengeAnswer);
+        }
+        if (tosAcceptanceId != null) {
+            ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+            challengeAnswer.setType("TOS_ACCEPTANCE");
+            challengeAnswer.setAcceptedTos(tosAcceptanceId);
+            request.setChallengeAnswer(challengeAnswer);
+        }
+        if (isIAP) {
+            Offer offer = Master.getInstance().getOffer(offerId);
+            OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
+            Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
+            ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
+            Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
+            ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
+            IAPParams params = new IAPParams();
+            params.setPackageName(hostItemRevision.getPackageName());
+            // Todo:    This value is workaround
+            params.setPackageSignatureHash(UUID.randomUUID().toString());
+            params.setPackageVersion(UUID.randomUUID().toString());
+            request.setIapParams(params);
+        }
+        return storeClient.preparePurchaseWithException(request, expectedResponseCode, errorCode);
+    }
+
     public String getOfferIdByName(String offerName) throws Exception {
         return offerClient.getOfferIdByName(offerName);
     }
@@ -311,6 +350,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public UserProfileGetResponse getUserProfile(int expectedResponseCode) throws Exception {
         return storeClient.getUserProfile(expectedResponseCode);
+    }
+
+    public com.junbo.common.error.Error updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest, int expectedResponseCode, String errorCode) throws Exception {
+        return storeClient.updateUserProfileReturnError(userProfileUpdateRequest, expectedResponseCode, errorCode);
     }
 
     public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest,
