@@ -37,6 +37,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
+import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
@@ -52,7 +53,6 @@ import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.browse.*
 import com.junbo.store.spec.model.iap.*
 import com.junbo.store.spec.model.identity.*
-import com.junbo.store.spec.model.profile.UpdateProfileState
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.model.token.Token
 import com.junbo.store.spec.resource.StoreResource
@@ -192,11 +192,6 @@ class StoreResourceImpl implements StoreResource {
                 user = u
             }.then {
                 updateUserCredential(user.getId(), request, errorContext)
-            }.then {
-                updateUserEmail(user, request, errorContext).then { Boolean changed ->
-                    userPendingUpdate = (userPendingUpdate || changed)
-                    return Promise.pure()
-                }
             }.then {
                 if (StringUtils.isEmpty(userProfile.headline)) {
                     return Promise.pure(null)
@@ -1203,35 +1198,18 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<Boolean> updateUserEmail(User user, UserProfileUpdateRequest request, ErrorContext errorContext) {
-        if (StringUtils.isEmpty(request.userProfile.email?.value)) {
-            return Promise.pure(false)
-        }
-
-        return tokenProcessor.toTokenObject(request.userProfileUpdateToken, UpdateProfileState).then { UpdateProfileState state ->
-            if (user.emails == null) {
-                user.emails = [] as List
-            }
-            def defaultLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
-            if (defaultLink != null) {
-                user.emails.remove(defaultLink)
-            }
-
-            user.emails.add(new UserPersonalInfoLink(
-                    value: state.emailPIIId,
-                    isDefault: true
-            ))
-
-            return Promise.pure(true)
-        }
-    }
-
     private String getPlatformName() {
         return 'ANDROID'
     }
 
     private Promise validateInstrumentForPreparePurchase(User user, PreparePurchaseRequest preparePurchaseRequest) {
-        return Promise.pure(null) // todo valid pi
+        return resourceContainer.paymentInstrumentResource.getById(preparePurchaseRequest.getInstrument()).then { PaymentInstrument pi ->
+            if (pi == null || pi.userId != user.getId().getValue()) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('instrument').exception()
+            }
+
+            return Promise.pure(null)
+        }
     }
 
     private void fillPurchaseState(PurchaseState purchaseState, PreparePurchaseRequest request, ApiContext apiContext) {

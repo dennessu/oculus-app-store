@@ -5,7 +5,6 @@
  */
 package com.junbo.test.store;
 
-import com.junbo.common.error.*;
 import com.junbo.common.error.Error;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.identity.*;
@@ -357,9 +356,18 @@ public class LoginResourceTesting extends BaseTestClass {
         storeUserEmail.setValue(newEmail);
         storeUserProfile.setEmail(storeUserEmail);
         userProfileUpdateRequest.setUserProfile(storeUserProfile);
+
         UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
         assert userProfileUpdateResponse.getChallenge() != null;
-        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("EMAIL_VERIFICATION");
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
+
+        ChallengeAnswer answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
 
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
@@ -367,23 +375,6 @@ public class LoginResourceTesting extends BaseTestClass {
         for(String link : links) {
             oAuthClient.accessEmailVerifyLink(link);
         }
-
-        ChallengeAnswer answer = new ChallengeAnswer();
-        answer.setType(userProfileUpdateResponse.getChallenge().getType());
-        userProfileUpdateRequest.setChallengeAnswer(answer);
-        userProfileUpdateRequest.setUserProfileUpdateToken(userProfileUpdateResponse.getUserProfileUpdateToken());
-        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
-        assert userProfileUpdateResponse.getChallenge() != null;
-        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
-
-        answer = new ChallengeAnswer();
-        answer.setType(userProfileUpdateResponse.getChallenge().getType());
-        answer.setPassword(createUserRequest.getPassword());
-        userProfileUpdateRequest.setChallengeAnswer(answer);
-        userProfileUpdateRequest.setUserProfileUpdateToken(userProfileUpdateResponse.getUserProfileUpdateToken());
-        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
-        assert userProfileUpdateResponse != null;
-        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
 
         UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
@@ -399,11 +390,118 @@ public class LoginResourceTesting extends BaseTestClass {
             owner = "ZhaoYunlong",
             status = Status.Enable,
             steps = {
+                    "Check update email in invalid situation, all those steps should be done after password input",
+                    "1. check if the update link is not clicked, email cannot be updated",
+                    "2. check if the update link is not clicked, update again, it will generate two emails",
+                    "3. check if the update link is clicked, the primary email is updated",
+                    "4. check if there is no default validated email, the primary email can be updated with new email, should throw exception"
+            }
+    )
+    @Test
+    public void testUpdateEmailInvalidCases() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+
+        // Without password, there should be new mail sent
+        UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
+        StoreUserProfile storeUserProfile = new StoreUserProfile();
+        StoreUserEmail storeUserEmail = new StoreUserEmail();
+        String newEmail = RandomHelper.randomEmail();
+        storeUserEmail.setValue(newEmail);
+        storeUserProfile.setEmail(storeUserEmail);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+        UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getChallenge() != null;
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
+
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 0;
+
+        // Scenario 1:
+        ChallengeAnswer answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 1;
+
+        UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        // Scenario 2:
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 2;
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        // Scenario 3:
+        oAuthClient.accessEmailVerifyLink(links.get(0));
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+
+        // Scenario 4:
+        createUserRequest = testDataProvider.CreateUserRequest();
+        authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+
+        newEmail = RandomHelper.randomEmail();
+        userProfileUpdateRequest.getUserProfile().getEmail().setValue(newEmail);
+        userProfileUpdateRequest.setChallengeAnswer(null);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest, 412);
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
+        assert links != null;
+        assert links.size() == 1;
+        oAuthClient.accessEmailVerifyLink(links.get(0));
+
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+
+        answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 1;
+        oAuthClient.accessEmailVerifyLink(links.get(0));
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
                     "Check update email works with invalid password"
             }
     )
     @Test
-    public void testUpdateEmailWithInvalidPasswor() throws Exception {
+    public void testUpdateEmailWithInvalidPassword() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
 
@@ -416,7 +514,7 @@ public class LoginResourceTesting extends BaseTestClass {
         userProfileUpdateRequest.setUserProfile(storeUserProfile);
         UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
         assert userProfileUpdateResponse.getChallenge() != null;
-        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("EMAIL_VERIFICATION");
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
 
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
@@ -425,20 +523,11 @@ public class LoginResourceTesting extends BaseTestClass {
             oAuthClient.accessEmailVerifyLink(link);
         }
 
-        ChallengeAnswer answer = new ChallengeAnswer();
-        answer.setType(userProfileUpdateResponse.getChallenge().getType());
-        userProfileUpdateRequest.setChallengeAnswer(answer);
-        userProfileUpdateRequest.setUserProfileUpdateToken(userProfileUpdateResponse.getUserProfileUpdateToken());
-        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
-        assert userProfileUpdateResponse.getChallenge() != null;
-        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
-
         for (int i = 0; i < 3; i++) {
-            answer = new ChallengeAnswer();
+            ChallengeAnswer answer = new ChallengeAnswer();
             answer.setType(userProfileUpdateResponse.getChallenge().getType());
             answer.setPassword(RandomHelper.randomAlphabetic(10));
             userProfileUpdateRequest.setChallengeAnswer(answer);
-            userProfileUpdateRequest.setUserProfileUpdateToken(userProfileUpdateResponse.getUserProfileUpdateToken());
             com.junbo.common.error.Error appError = testDataProvider.updateUserProfile(userProfileUpdateRequest, 400, "130.108");
             assert appError != null;
         }

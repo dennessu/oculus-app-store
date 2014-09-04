@@ -357,7 +357,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
 
-        PaymentInstrumentId paymentId = new PaymentInstrumentId(123L);
+        // Don't use any fake value because it may introduce some internal error
+        PaymentInstrumentId paymentId = new PaymentInstrumentId(authTokenResponse.getUserId().getValue());
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
         //post order without set payment instrument
@@ -366,18 +367,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert preparePurchaseResponse.getChallenge() != null;
         assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "1234", null);
-
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
-        assert preparePurchaseResponse.getChallenge().getTos() != null;
-
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId(),false ,400);
-
-        assert Master.getInstance().getApiErrorMsg().contains("not found");
-
+        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false ,412);
+        assert preparePurchaseResponse == null;
     }
 
     @Property(
@@ -432,16 +423,11 @@ public class StoreCommerceTesting extends BaseTestClass {
         PreparePurchaseResponse preparePurchaseResponse2 = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse2.getPurchaseToken(),
-                offerId, paymentId, "1234", null);
-
-        testDataProvider.preparePurchase(preparePurchaseResponse2.getPurchaseToken(), offerId, paymentId2, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
-
-        testDataProvider.commitPurchase(uid, purchaseToken, 400);
+                offerId, paymentId, "1234", null, false, 400);
 
         assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
         assert Master.getInstance().getApiErrorMsg().contains("130.001");
-        assert Master.getInstance().getApiErrorMsg().contains("purchaseToken");
+        assert Master.getInstance().getApiErrorMsg().contains("instrument");
 
     }
 
@@ -485,13 +471,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "1234", null);
+                offerId, paymentId, "1234", null, false, 400);
 
-        testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId(), false, 400);
-
-        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid. do not belong to this user");
-        assert Master.getInstance().getApiErrorMsg().contains("133.001");
+        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
+        assert Master.getInstance().getApiErrorMsg().contains("130.001");
 
     }
 

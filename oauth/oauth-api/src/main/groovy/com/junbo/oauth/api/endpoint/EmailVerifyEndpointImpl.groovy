@@ -151,7 +151,26 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
                 return userPersonalInfoResource.put(emailPii.id as UserPersonalInfoId, emailPii)
                         .recover { Throwable e ->
                     return handleException(e)
-                }.then { UserPersonalInfo updatedPersonalInfo ->
+                }.then {
+                    if (isUpdatePrimaryMailRequired(user, emailVerifyCode)) {
+                        return userResource.get(user.getId(), new UserGetOptions()).then { User existing ->
+                            UserPersonalInfoLink defaultLink = existing.emails.find { UserPersonalInfoLink link ->
+                                return link.isDefault
+                            }
+                            if (defaultLink == null) {
+                                defaultLink = new UserPersonalInfoLink()
+                                defaultLink.isDefault = true
+                                defaultLink.value = new UserPersonalInfoId(emailVerifyCode.targetMailId)
+                                existing.emails.add(defaultLink)
+                            } else {
+                                defaultLink.value = new UserPersonalInfoId(emailVerifyCode.targetMailId)
+                            }
+
+                            return userResource.put(user.getId(), existing)
+                        }
+                    }
+                    return Promise.pure(null)
+                }.then {
                     LoginState loginState = new LoginState(
                             userId: emailVerifyCode.userId,
                             lastAuthDate: new Date()
@@ -214,6 +233,26 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             String email = userService.getUserEmailByUserId(userId).get()
             csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.VerificationEmailSent, property: email)).get()
         }
+    }
+
+    private Boolean isUpdatePrimaryMailRequired(User user, EmailVerifyCode verifyCode) {
+        if (verifyCode.targetMailId == null) {
+            return false
+        }
+
+        if (CollectionUtils.isEmpty(user.emails)) {
+            return false
+        }
+
+        UserPersonalInfoLink defaultLink = user.emails.find { UserPersonalInfoLink link ->
+            return link.isDefault
+        }
+
+        if (defaultLink != null && defaultLink.value.value != verifyCode.targetMailId) {
+            return true
+        }
+
+        return false
     }
 
     private Promise<UserPersonalInfo> getTargetValidMailPII(User user, EmailVerifyCode verifyCode) {

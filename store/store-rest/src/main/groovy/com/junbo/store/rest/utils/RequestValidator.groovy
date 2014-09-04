@@ -4,7 +4,6 @@ import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppError
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
@@ -29,15 +28,10 @@ import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.StoreApiHeader
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
-import com.junbo.store.spec.model.browse.AcceptTosRequest
-import com.junbo.store.spec.model.browse.AddReviewRequest
-import com.junbo.store.spec.model.browse.DeliveryRequest
-import com.junbo.store.spec.model.browse.DetailsRequest
-import com.junbo.store.spec.model.browse.ReviewsRequest
+import com.junbo.store.spec.model.browse.*
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
 import com.junbo.store.spec.model.login.*
-import com.junbo.store.spec.model.profile.UpdateProfileState
 import com.junbo.store.spec.model.purchase.CommitPurchaseRequest
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseRequest
 import com.junbo.store.spec.model.purchase.PreparePurchaseRequest
@@ -168,70 +162,21 @@ class RequestValidator {
         return null
     }
 
-    private Promise<Challenge> ensureEmailVerificationChallenge(UserProfileUpdateRequest request, User user) {
-        // todo:    Need to add locale, country and etc
-        // check whether updateProfileToken has token
-        return isEmailPIICreated(request).then { Boolean mailPIICreated ->
-            if (!mailPIICreated) {
-                return Promise.pure(new Challenge(type: Constants.ChallengeType.EMAIL_VERIFICATION))
-            } else {
-                // check this mail is verified and can be replaced
-                return tokenProcessor.toTokenObject(request.userProfileUpdateToken, UpdateProfileState).then { UpdateProfileState state ->
-                    return resourceContainer.userPersonalInfoResource.get(state.getEmailPIIId(), new UserPersonalInfoGetOptions()).then {
-                        UserPersonalInfo userPersonalInfo ->
-                        if (userPersonalInfo.lastValidateTime != null) {
-                            return Promise.pure(null)
-                        }
-
-                        return Promise.pure(new Challenge(type: Constants.ChallengeType.EMAIL_VERIFICATION))
-                    }
-                }
-            }
-        }
-    }
-
-    private Promise<Boolean> isEmailPIICreated(UserProfileUpdateRequest request) {
-        if (StringUtils.isEmpty(request.userProfileUpdateToken)) {
-            return Promise.pure(false)
-        } else {
-            return tokenProcessor.toTokenObject(request.userProfileUpdateToken, UpdateProfileState).then { UpdateProfileState state ->
-                if (state.emailPIIId != null) {
-                    return Promise.pure(true)
-                }
-
-                return Promise.pure(false)
-            }
-        }
-    }
-
     Promise<UserProfileUpdateResponse> validateUserProfileUpdateRequest(UserProfileUpdateRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         notEmpty(request.userProfile, 'userProfile')
-        if (!StringUtils.isEmpty(request.userProfileUpdateToken)) {
-            return tokenProcessor.toTokenObject(request.userProfileUpdateToken, UpdateProfileState).then { UpdateProfileState state ->
-                if (state.userId != AuthorizeContext.currentUserId) {
-                    throw AppErrors.INSTANCE.invalidUpdateProfileToken().exception()
-                }
 
-                return  getUserProfileUpdateEmailVerificationChallenge(request).then { UserProfileUpdateResponse response ->
-                    if (response != null) {
-                        return Promise.pure(response)
-                    }
-
-                    return getUserProfileUpdatePasswordChallenge(request)
-                }
-            }
-        }
-
-        return getUserProfileUpdateEmailVerificationChallenge(request).then { UserProfileUpdateResponse response ->
+        return getUserProfileUpdatePasswordChallenge(request).then { UserProfileUpdateResponse response ->
             if (response != null) {
                 return Promise.pure(response)
             }
 
-            return getUserProfileUpdatePasswordChallenge(request)
+            return userProfileUpdateEmailVerification(request).then {
+                return Promise.pure(null)
+            }
         }
     }
 
@@ -250,30 +195,7 @@ class RequestValidator {
                 }
             }.then { UserProfileUpdateResponse response ->
                 if (response != null) {
-                    if (!StringUtils.isEmpty(request.getUserProfileUpdateToken())) {
-                        return tokenProcessor.toTokenObject(request.getUserProfileUpdateToken(), UpdateProfileState).then { UpdateProfileState state ->
-                            UpdateProfileState updateProfileState = new UpdateProfileState(
-                                    userId: AuthorizeContext.currentUserId,
-                                    emailPIIId: state.emailPIIId,
-                                    timeStamp: new Date()
-                            )
-
-                            return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
-                                response.setUserProfileUpdateToken(userProfileUpdateToken)
-                                return Promise.pure(response)
-                            }
-                        }
-                    } else {
-                        UpdateProfileState updateProfileState = new UpdateProfileState(
-                                userId: AuthorizeContext.currentUserId,
-                                timeStamp: new Date()
-                        )
-
-                        return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
-                            response.setUserProfileUpdateToken(userProfileUpdateToken)
-                            return Promise.pure(response)
-                        }
-                    }
+                    return Promise.pure(response)
                 }
 
                 if (request?.challengeAnswer?.password != null && request?.challengeAnswer?.type == Constants.ChallengeType.PASSWORD) {
@@ -307,47 +229,21 @@ class RequestValidator {
         }
     }
 
-    Promise<UserProfileUpdateResponse> getUserProfileUpdateEmailVerificationChallenge(UserProfileUpdateRequest request) {
+    Promise<Void> userProfileUpdateEmailVerification(UserProfileUpdateRequest request) {
         return identityUtils.getVerifiedUserFromToken().then { User user ->
-            return askUserProfileUpdateEmailVerificationChallenge(request, user).then { Boolean askChallenge ->
-                if (askChallenge) {
-                    return ensureEmailVerificationChallenge(request, user).then { Challenge challenge ->
-                        if (challenge == null) {
+            return isMailChanged(request, user).then { Boolean mailChanged ->
+                if (mailChanged) {
+                    Email email = new Email(
+                            info: request.userProfile?.email?.value
+                    )
+                    UserPersonalInfo emailPii = new UserPersonalInfo(
+                            userId: user.getId(),
+                            type: 'EMAIL',
+                            value: ObjectMapperProvider.instance().valueToTree(email)
+                    )
+                    return resourceContainer.userPersonalInfoResource.create(emailPii).then { UserPersonalInfo userPersonalInfo ->
+                        return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), userPersonalInfo.getId()).then {
                             return Promise.pure(null)
-                        }
-                        return Promise.pure(new UserProfileUpdateResponse(challenge: challenge))
-                    }
-                } else {
-                    return Promise.pure(null)
-                }
-            }.then { UserProfileUpdateResponse response ->
-                if (response != null) {
-                    return isEmailPIICreated(request).then { Boolean mailPIICreated ->
-                        if (mailPIICreated) {
-                            return Promise.pure(response)
-                        }
-
-                        Email email = new Email(
-                                info: request.userProfile?.email?.value
-                        )
-                        UserPersonalInfo emailPii = new UserPersonalInfo(
-                                userId: user.getId(),
-                                type: 'EMAIL',
-                                value: ObjectMapperProvider.instance().valueToTree(email)
-                        )
-                        return resourceContainer.userPersonalInfoResource.create(emailPii).then { UserPersonalInfo created ->
-                            UpdateProfileState updateProfileState = new UpdateProfileState(
-                                    userId: user.getId(),
-                                    emailPIIId: created.getId(),
-                                    timeStamp: new Date()
-                            )
-
-                            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail('en_US', 'US', user.getId(), created.getId()).then {
-                                return tokenProcessor.toTokenString(updateProfileState).then { String userProfileUpdateToken ->
-                                    response.setUserProfileUpdateToken(userProfileUpdateToken)
-                                    return Promise.pure(response)
-                                }
-                            }
                         }
                     }
                 }
@@ -432,8 +328,6 @@ class RequestValidator {
                 notEmpty(request.challengeAnswer.acceptedTos, 'challengeAnswer.acceptedTos')
             } else if (request.challengeAnswer.type == Constants.ChallengeType.PASSWORD) {
                 notEmpty(request.challengeAnswer.password, 'challengeAnswer.password')
-            } else if (request.challengeAnswer.type != Constants.ChallengeType.EMAIL_VERIFICATION) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('challengeAnswer.type').exception()
             }
         }
         return Promise.pure(null)
@@ -559,42 +453,7 @@ class RequestValidator {
                 return Promise.pure(false)
             }
 
-            return getCreatedVerifiedEmail(request).then { Email mail ->
-                if (mail == null) {
-                    return Promise.pure(true)
-                }
-
-                if (mail.info != request.userProfile?.email?.value) {
-                    throw AppErrors.INSTANCE.invalidUpdateProfileToken().exception()
-                }
-
-                return Promise.pure(true)
-            }
-        }
-    }
-
-    private Promise<Email> getCreatedVerifiedEmail(UserProfileUpdateRequest request) {
-        if (StringUtils.isEmpty(request.userProfileUpdateToken)) {
-            return Promise.pure(null)
-        }
-
-        return tokenProcessor.toTokenObject(request.userProfileUpdateToken, UpdateProfileState).then { UpdateProfileState state ->
-            if (state.emailPIIId == null) {
-                return Promise.pure(null)
-            }
-
-            return resourceContainer.userPersonalInfoResource.get(state.emailPIIId, new UserPersonalInfoGetOptions()).then { UserPersonalInfo mailPII ->
-                if (mailPII == null) {
-                    return Promise.pure(null)
-                }
-
-                if (mailPII.lastValidateTime == null) {
-                    return Promise.pure(null)
-                }
-
-                Email email = (Email)ObjectMapperProvider.instance().treeToValue(mailPII.value, Email)
-                return Promise.pure(email)
-            }
+            return Promise.pure(true)
         }
     }
 
@@ -627,10 +486,6 @@ class RequestValidator {
             return Promise.pure(askChallenge)
         }
 
-        return isMailChanged(request, currentUser)
-    }
-
-    private Promise<Boolean> askUserProfileUpdateEmailVerificationChallenge(UserProfileUpdateRequest request, User currentUser) {
         return isMailChanged(request, currentUser)
     }
 }
