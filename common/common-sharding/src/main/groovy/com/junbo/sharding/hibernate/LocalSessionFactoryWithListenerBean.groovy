@@ -41,6 +41,15 @@ class LocalSessionFactoryWithListenerBean extends LocalSessionFactoryBean {
 
         EventListenerRegistry registry = sessionFactory.serviceRegistry.getService(EventListenerRegistry)
 
+        registry.appendListeners(EventType.PRE_INSERT, new ProfileEventListeners.preInsert())
+        registry.appendListeners(EventType.POST_INSERT, new ProfileEventListeners.postInsert())
+        registry.appendListeners(EventType.PRE_UPDATE, new ProfileEventListeners.preUpdate())
+        registry.appendListeners(EventType.POST_UPDATE, new ProfileEventListeners.postUpdate())
+        registry.appendListeners(EventType.PRE_LOAD, new ProfileEventListeners.preLoad())
+        registry.appendListeners(EventType.POST_LOAD, new ProfileEventListeners.postLoad())
+        registry.appendListeners(EventType.PRE_DELETE, new ProfileEventListeners.preDelete())
+        registry.appendListeners(EventType.POST_DELETE, new ProfileEventListeners.postDelete())
+
         if (postInsertEventListeners != null) {
             registry.appendListeners(EventType.POST_INSERT, postInsertEventListeners)
         }
