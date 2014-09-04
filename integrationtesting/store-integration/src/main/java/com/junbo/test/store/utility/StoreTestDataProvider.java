@@ -12,10 +12,8 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.error.*;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
-import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -113,6 +111,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         }
 
         return response;
+    }
+
+    public Error CreateUserWithError(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode, String errorCode) throws Exception {
+        Error error = loginClient.CreateUserWithError(createUserRequest, expectedResponseCode, errorCode);
+        return error;
     }
 
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {

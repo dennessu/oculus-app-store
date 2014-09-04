@@ -15,6 +15,8 @@ public interface LoginService {
 
     AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, int expectedResponseCode) throws Exception;
 
+    com.junbo.common.error.Error CreateUserWithError(CreateUserRequest createUserRequest, int expectedResponseCode, String errorCode) throws Exception;
+
     UserNameCheckResponse CheckUserName(UserNameCheckRequest userNameCheckRequest) throws Exception;
 
     com.junbo.common.error.Error CheckUserNameWithError(UserNameCheckRequest userNameCheckRequest, int expectedResponseCode, String errorCode) throws Exception;

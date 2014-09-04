@@ -5,7 +5,6 @@
  */
 package com.junbo.test.store.apihelper.impl;
 
-import com.junbo.common.error.*;
 import com.junbo.common.error.Error;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
@@ -63,7 +62,16 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
             return authTokenResponse;
         }
         return null;
+    }
 
+    @Override
+    public com.junbo.common.error.Error CreateUserWithError(CreateUserRequest createUserRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/create", createUserRequest, expectedResponseCode);
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+        assert error.getCode().equalsIgnoreCase(errorCode);
+
+        return error;
     }
 
     @Override

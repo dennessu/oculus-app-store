@@ -6,6 +6,7 @@
 package com.junbo.test.store;
 
 import com.junbo.common.error.*;
+import com.junbo.common.error.Error;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -147,43 +148,56 @@ public class LoginResourceTesting extends BaseTestClass {
     )
     @Test
     public void testCreateUser() throws Exception {
+        AuthTokenResponse createUserResponse = null;
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         String invalidUsername = "123yunlong";
         String oldUsername = createUserRequest.getUsername();
         createUserRequest.setUsername(invalidUsername);
-        AuthTokenResponse createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        Error error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("username");
 
         createUserRequest.setUsername(oldUsername);
         String oldEmail = createUserRequest.getEmail();
         createUserRequest.setEmail("##1234@silkcloud.com");
-        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("email");
+
+        createUserRequest.setUsername(null);
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("username");
+        createUserRequest.setUsername(oldUsername);
 
         createUserRequest.setEmail(oldEmail);
         String oldNickName = createUserRequest.getNickName();
         // nick name should not be the same as username
         createUserRequest.setNickName(createUserRequest.getUsername());
-        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("username");
 
         createUserRequest.setNickName(oldNickName);
         String oldPassword = createUserRequest.getPassword();
         createUserRequest.setPassword(createUserRequest.getUsername() + "gggg");
-        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("password");
 
         createUserRequest.setPassword(oldPassword);
         String oldPin = createUserRequest.getPin();
         createUserRequest.setPin("abcd");
-        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("pin");
 
         createUserRequest.setPin(oldPin);
         Date oldDob = createUserRequest.getDob();
         createUserRequest.setDob(DateUtils.addYears(new Date(), 100));
-        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("dob");
 
         createUserRequest.setDob(oldDob);
         createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 200);

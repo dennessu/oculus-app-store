@@ -24,6 +24,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author dw
@@ -286,6 +287,26 @@ public class postUser {
         response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testCheckUserNameAndEmail() throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomAlphabetic(15) + "@gmail.com",
+                "", HttpclientHelper.HttpRequestType.post, null);
+        Validator.Validate("Validate email verification", response.getStatusLine().getStatusCode(), 200);
+        response.close();
+
+        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(15),
+                "", HttpclientHelper.HttpRequestType.post, null);
+        Validator.Validate("Validate usernmae verification", response.getStatusLine().getStatusCode(), 200);
+        response.close();
+
+        User user = Identity.UserPostDefault();
+
+        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
+                "", HttpclientHelper.HttpRequestType.get, null);
+        Validator.Validate("Validate usernmae verification", response.getStatusLine().getStatusCode(), 403);
         response.close();
     }
 
