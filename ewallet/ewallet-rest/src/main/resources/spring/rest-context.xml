@@ -10,6 +10,4 @@
     <bean id="defaultWalletResource" class="com.junbo.ewallet.rest.resource.WalletResourceImpl"/>
 
     <bean id="defaultWalletResourceClientFactory" class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxyFactory"/>
-
-    <bean id="defaultWalletResourceRouter" parent="routingRouterBase" />
 </beans>

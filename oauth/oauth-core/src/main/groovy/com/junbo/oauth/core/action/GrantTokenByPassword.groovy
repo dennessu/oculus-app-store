@@ -47,7 +47,7 @@ class GrantTokenByPassword implements Action {
         Boolean ipRestrictionRequired = Boolean.parseBoolean(ipRestriction);
 
         AccessToken accessToken = tokenService.generateAccessToken(client,
-                loginState.userId, oauthInfo.scopes, ipRestrictionRequired)
+                loginState.userId, oauthInfo.scopes, ipRestrictionRequired, contextWrapper.overrideExpiration)
 
         contextWrapper.accessToken = accessToken
 

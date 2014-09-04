@@ -71,6 +71,7 @@ class ValidateScopeAfterLogin implements Action {
 
         boolean tfaRequired = false
         boolean validationConditionRequired = false
+        Long overrideExpiration = null
         scopes.each { Scope scope ->
             if (scope.tfaRequired) {
                 tfaRequired = true
@@ -79,6 +80,18 @@ class ValidateScopeAfterLogin implements Action {
             if (StringUtils.hasText(scope.validationCondition)) {
                 validationConditionRequired = true
             }
+
+            if (scope.overrideExpiration != null) {
+                if (overrideExpiration == null) {
+                    overrideExpiration = scope.overrideExpiration
+                } else if (overrideExpiration > scope.overrideExpiration) {
+                    overrideExpiration = scope.overrideExpiration
+                }
+            }
+        }
+
+        if (overrideExpiration != null) {
+            contextWrapper.overrideExpiration = overrideExpiration
         }
 
         if (validationConditionRequired) {

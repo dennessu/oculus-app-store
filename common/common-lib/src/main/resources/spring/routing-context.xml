@@ -21,8 +21,8 @@
         </property>
     </bean>
 
-    <bean id="routingRouterBase" class="com.junbo.common.routing.RouterImpl">
-        <property name="topology" ref="routingTopologyBase" />
+    <bean id="routingDefaultRouter" class="com.junbo.common.routing.RouterImpl">
+        <property name="topology" ref="routingDefaultTopology" />
         <property name="crossDcRoutingEnabled" value="${common.routing.crossDcRoutingEnabled}" />
         <property name="inDcRoutingEnabled" value="${common.routing.inDcRoutingEnabled}" />
         <property name="defaultPolicy" value="${common.routing.defaultPolicy}" />
@@ -31,7 +31,7 @@
         <property name="maxRoutingHops" value="${common.routing.maxRoutingHops}" />
     </bean>
 
-    <bean id="routingTopologyBase" class="com.junbo.configuration.topo.Topology">
+    <bean id="routingDefaultTopology" class="com.junbo.configuration.topo.Topology">
         <property name="appHostUrl" value="${apphost.server.uri}"/>
         <property name="appUrlTemplateConfig" value="[common.topo.appurltemplate]"/>
         <property name="appServersConfig" value="[common.topo.appservers]"/>

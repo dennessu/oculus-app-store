@@ -8,5 +8,4 @@
     </bean>
 
     <bean id="defaultDrmResourceClientFactory" class="com.junbo.drm.spec.resource.proxy.DrmResourceClientProxyFactory"/>
-    <bean id="defaultDrmResourceRouter" parent="routingRouterBase" />
 </beans>

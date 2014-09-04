@@ -48,10 +48,4 @@
     <bean id="defaultCsrActionEndpointClientFactory" class="com.junbo.csr.spec.endpoint.proxy.CsrActionEndpointClientProxyFactory" />
     <bean id="defaultCsrGroupResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrGroupResourceClientProxyFactory" />
     <bean id="defaultCsrUserResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrUserResourceClientProxyFactory" />
-
-    <bean id="defaultCsrUpdateResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultCsrLogResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultCsrActionEndpointRouter" parent="routingRouterBase" />
-    <bean id="defaultCsrGroupResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultCsrUserResourceRouter" parent="routingRouterBase" />
 </beans>

@@ -100,6 +100,20 @@ class RepositoryProxy implements InvocationHandler {
             }
         }
 
+        DataAccessStrategy result = getStrategyByPolicy(policy);
+        if (result == null) {
+            // fallback again
+            policy = DataAccessPolicies.instance().getDataAccessPolicy(action, repositoryInterface);
+            result = getStrategyByPolicy(policy);
+
+            if (result == null) {
+                throw new RuntimeException("Execution policy ${Context.get().dataAccessPolicy} is not supported in current Repository ${repositoryInterface.name}");
+            }
+        }
+        return result;
+    }
+
+    private DataAccessStrategy getStrategyByPolicy(DataAccessPolicy policy) {
         DataAccessStrategy result;
         switch (policy) {
             case DataAccessPolicy.CLOUDANT_ONLY:
@@ -112,9 +126,6 @@ class RepositoryProxy implements InvocationHandler {
             case DataAccessPolicy.SQL_ONLY:
                 result = sqlOnlyStrategy;
                 break;
-        }
-        if (result == null) {
-            throw new RuntimeException("Execution policy ${Context.get().dataAccessPolicy} is not supported in current Repository ${repositoryInterface.name}");
         }
         return result;
     }

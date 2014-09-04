@@ -59,6 +59,7 @@ class ActionContextWrapper {
     public static final String SUB_FLOW_NAME = 'sub_flow_name'
     public static final String USER_DEFAULT_EMAIL = 'default_email'
     public static final String EMAIL_VERIFY_LINK = 'email_verify_link'
+    public static final String OVERRIDE_EXPIRATION = 'override_expiration'
 
     @Delegate
     private final ActionContext actionContext
@@ -400,5 +401,13 @@ class ActionContextWrapper {
 
     void setUserTFA(UserTFA tfa) {
         actionContext.flowScope[USER_TFA] = tfa
+    }
+
+    Long getOverrideExpiration() {
+        return actionContext.flowScope[OVERRIDE_EXPIRATION] as Long
+    }
+
+    void setOverrideExpiration(Long overrideExpiration) {
+        actionContext.flowScope[OVERRIDE_EXPIRATION] = overrideExpiration
     }
 }

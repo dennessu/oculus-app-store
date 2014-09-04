@@ -25,10 +25,6 @@ public class ${className} extends com.junbo.langur.core.adapter.AbstractRestAdap
     private ClientProxyFactory<${adapteeType}> __clientFactory;
 
     @org.springframework.beans.factory.annotation.Autowired(required = false)
-    @org.springframework.beans.factory.annotation.Qualifier("default${adapteeName}Router")
-    private Router __router;
-
-    @org.springframework.beans.factory.annotation.Autowired(required = false)
     @org.springframework.beans.factory.annotation.Qualifier("defaultAfterInvocationFilter")
     private AfterInvocationFilter __afterInvocationFilter;
 
@@ -57,14 +53,6 @@ public class ${className} extends com.junbo.langur.core.adapter.AbstractRestAdap
 
     public void setClientFactory(ClientProxyFactory<${adapteeType}> clientFactory) {
         __clientFactory = clientFactory;
-    }
-
-    public Router getRouter() {
-        return __router;
-    }
-
-    public void setRouter(Router router) {
-        __router = router;
     }
 
     public AfterInvocationFilter getAfterInvocationFilter() {

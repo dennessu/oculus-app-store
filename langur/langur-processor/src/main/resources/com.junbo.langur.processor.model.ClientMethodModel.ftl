@@ -72,6 +72,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
         return com.junbo.langur.core.context.JunboHttpContextScope.with(__httpContextData, __junboHttpContextScopeListeners, new Promise.Func0<Promise<${returnType}>>() {
             @Override
             public Promise<${returnType}> apply() {
+                __router.resolveDataAccessPolicy(${interfaceType}.class);
                 return __service.${methodName}([#list parameters as parameter]${parameter.paramName}[#if parameter_has_next], [/#if][/#list]).then(new Promise.Func<${returnType}, Promise<${returnType}>>() {
                     @Override
                     public Promise<${returnType}> apply(${returnType} __result) {

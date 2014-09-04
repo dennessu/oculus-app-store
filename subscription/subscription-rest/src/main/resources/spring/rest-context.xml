@@ -9,6 +9,4 @@
     <bean id="defaultSubscriptionResource" class="com.junbo.subscription.rest.resource.SubscriptionResourceImpl"/>
 
     <bean id="defaultSubscriptionResourceClientFactory" class="com.junbo.subscription.spec.resource.proxy.SubscriptionResourceClientProxyFactory"/>
-
-    <bean id="defaultSubscriptionResourceRouter" parent="routingRouterBase" />
 </beans>

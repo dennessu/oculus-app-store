@@ -82,14 +82,15 @@ class GrantTokenByClientCredentials implements Action {
                 }
             }.then { User user ->
                 AccessToken accessToken = tokenService.generateAccessToken(client, user.getId().value, oauthInfo.scopes,
-                        ipRestrictionRequired)
+                        ipRestrictionRequired, contextWrapper.overrideExpiration)
 
                 contextWrapper.accessToken = accessToken
 
                 return Promise.pure(null)
             }
         } else {
-            AccessToken accessToken = tokenService.generateAccessToken(client, 0L, oauthInfo.scopes, ipRestrictionRequired)
+            AccessToken accessToken = tokenService.generateAccessToken(client, 0L, oauthInfo.scopes, ipRestrictionRequired,
+                    contextWrapper.overrideExpiration)
 
             contextWrapper.accessToken = accessToken
 

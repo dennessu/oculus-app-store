@@ -18,12 +18,4 @@
     <!--bean id="defaultPaymentInstrumentTypeResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentTypeResourceClientProxyFactory"/-->
     <bean id="defaultPaymentCallbackResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentCallbackResourceClientProxyFactory"/>
     <bean id="defaultPaymentNotificationResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentNotificationResourceClientProxyFactory"/>
-
-    <bean id="defaultPaymentInstrumentResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultPaymentTransactionResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultBrainTreeResourceRouter" parent="routingRouterBase" />
-    <!--alias alias="defaultPaymentInstrumentTypeResourceRouter" name="routingRouter" /-->
-    <bean id="defaultPaymentCallbackResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultPaymentNotificationResourceRouter" parent="routingRouterBase" />
-
 </beans>

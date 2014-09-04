@@ -1,5 +1,6 @@
 {
     "name": "identity.pii",
     "description": "Scope to get the identity pii information.",
-    "tfaRequired": true
+    "tfaRequired": true,
+    "overrideExpiration": 600
 }

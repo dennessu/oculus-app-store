@@ -12,6 +12,4 @@
     <bean id="defaultRestrictionResource" class="com.junbo.restriction.rest.resource.RestrictionResourceImpl" />
 
     <bean id="defaultRestrictionResourceClientFactory" class="com.junbo.restriction.spec.resource.proxy.RestrictionResource"/>
-
-    <bean id="defaultRestrictionResourceRouter" parent="routingRouterBase" />
 </beans>
