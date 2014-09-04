@@ -6,6 +6,7 @@
 package com.junbo.store.spec.resource.external;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.external.casey.*;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
+@AuthorizationNotRequired
 public interface CaseyResource {
 
     @GET
