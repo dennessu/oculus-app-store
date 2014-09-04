@@ -25,16 +25,4 @@
     <bean id="defaultItemAttributeResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemAttributeResourceClientProxyFactory"/>
     <bean id="defaultOfferAttributeResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.OfferAttributeResourceClientProxyFactory"/>
     <bean id="defaultPriceTierResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxyFactory"/>
-
-    <bean id="defaultItemResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultItemRevisionResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultOfferResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultOfferRevisionResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultPromotionResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultPromotionRevisionResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultItemAttributeResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultOfferAttributeResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultEntitlementDefinitionResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultPriceTierResourceRouter" parent="routingRouterBase" />
-
 </beans>

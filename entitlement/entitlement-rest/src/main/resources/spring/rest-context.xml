@@ -15,8 +15,4 @@
 
     <bean id="defaultDownloadUrlResourceClientFactory"
           class="com.junbo.entitlement.spec.resource.proxy.DownloadUrlResourceClientProxyFactory"/>
-
-    <bean id="defaultEntitlementResourceRouter" parent="routingRouterBase"/>
-
-    <bean id="defaultDownloadUrlResourceRouter" parent="routingRouterBase"/>
 </beans>

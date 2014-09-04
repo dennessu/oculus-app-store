@@ -13,7 +13,4 @@
 
     <bean id="defaultEmailResourceClientFactory" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxyFactory"/>
     <bean id="defaultEmailTemplateResourceClientFactory" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxyFactory"/>
-
-    <bean id="defaultEmailResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultEmailTemplateResourceRouter" parent="routingRouterBase" />
 </beans>

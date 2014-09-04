@@ -62,33 +62,4 @@
     <bean id="defaultOrganizationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxyFactory" />
     <bean id="defaultErrorInfoResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.ErrorInfoResourceClientProxyFactory" />
     <bean id="defaultMigrationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.MigrationResourceClientProxyFactory" />
-
-    <bean id="defaultAuthenticatorResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserCommunicationResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserCredentialResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserCredentialVerifyAttemptResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultGroupResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserPersonalInfoResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultDeviceResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultTosResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserGroupMembershipResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserSecurityQuestionResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserSecurityQuestionVerifyAttemptResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserTosAgreementResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultCountryResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultCurrencyResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultLocaleResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultPITypeResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultDeviceTypeResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultCommunicationResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserTFAResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserTFAAttemptResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserTFABackupCodeResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserTFABackupCodeAttemptResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultOrganizationResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultErrorInfoResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultMigrationResourceRouter" parent="routingRouterBase" />
-
-
 </beans>

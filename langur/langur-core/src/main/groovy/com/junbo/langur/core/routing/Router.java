@@ -16,4 +16,9 @@ public interface Router {
      * @return The target URL for the request to be forwarded. Returns null if the request can be handled locally.
      */
     String getTargetUrl(Class<?> resourceClass, Object[] routingParams);
+
+    /**
+     * Method to determine the data access policy to the API request in case of in-proc calls.
+     */
+    void resolveDataAccessPolicy(Class<?> resourceClass);
 }

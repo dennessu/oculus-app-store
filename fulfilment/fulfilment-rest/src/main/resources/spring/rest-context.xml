@@ -12,6 +12,4 @@
           class="com.junbo.fulfilment.rest.resource.FulfilmentResourceImpl"/>
 
     <bean id="defaultFulfilmentResourceClientFactory" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxyFactory"/>
-
-    <bean id="defaultFulfilmentResourceRouter" parent="routingRouterBase" />
 </beans>

@@ -80,17 +80,56 @@ public class RouterImpl implements Router {
         return result;
     }
 
+    @Override
+    public void resolveDataAccessPolicy(Class<?> resourceClass) {
+        DataAccessPolicy policy = null;
+
+        MultivaluedMap<String, String> requestHeaders = JunboHttpContext.getRequestHeaders();
+        if (requestHeaders != null) {
+            String dataAccessMode = requestHeaders.getFirst(X_DATAACCESS_MODE);
+            if (dataAccessMode != null && dataAccessMode.length() != 0) {
+                policy = Enum.valueOf(DataAccessPolicy.class, dataAccessMode);
+                logger.debug("Forcing data access policy in call. url: {}, policy: {}", JunboHttpContext.getRequestUri(), policy);
+            }
+        }
+
+        if (policy == null) {
+            policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(JunboHttpContext.getRequestMethod(), resourceClass);
+        }
+
+        if (policy == DataAccessPolicy.CLOUDANT_FIRST && "GET".equalsIgnoreCase(JunboHttpContext.getRequestMethod())) {
+            String cacheControl = requestHeaders.getFirst(CACHE_CONTROL);
+            // if the header is passed and it is Get method, will read sql first
+            if (!StringUtils.isEmpty(cacheControl) && cacheControl.equalsIgnoreCase(CACHE_CONTROL_NO_CACHE)) {
+                policy = DataAccessPolicy.SQL_FIRST;
+            }
+        }
+
+        if (policy == null) {
+            policy = defaultPolicy;
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Setting effective dataAccessPolicy in call. url: {}, policy: {}", JunboHttpContext.getRequestUri(), policy);
+        }
+        Context.get().setDataAccessPolicy(policy);
+        if (policy == DataAccessPolicy.SQL_FIRST || policy == DataAccessPolicy.SQL_ONLY) {
+            // if the current mode is no-cache, don't allow cache calling sub resources.
+            requestHeaders.add(CACHE_CONTROL, CACHE_CONTROL_NO_CACHE);
+        }
+    }
+
     private String getTargetUrlInternal(Class<?> resourceClass, Object[] routingParams) {
         boolean isFirstRoute = setRoutingPath();
 
-        DataAccessPolicy policy = resolveDataAccessPolicy(resourceClass);
+        resolveDataAccessPolicy(resourceClass);
+        DataAccessPolicy policy = Context.get().getDataAccessPolicy();
 
         if (policy == null || policy == DataAccessPolicy.CLOUDANT_ONLY) {
-            return getDefault(false);
+            return getDefault(policy, false);
         }
 
         if (routingParams == null || routingParams.length == 0) {
-            return getDefault(false);
+            return getDefault(policy, false);
         }
 
         if (isFirstRoute && forceRoute) {
@@ -100,11 +139,11 @@ public class RouterImpl implements Router {
 
         for (Object routingParam : routingParams) {
             if (routingParam != null) {
-                return resolveRotingAddress(routingParam);
+                return resolveRotingAddress(policy, routingParam);
             }
         }
 
-        return getDefault(false);
+        return getDefault(policy, false);
     }
 
     private boolean setRoutingPath() {
@@ -142,47 +181,12 @@ public class RouterImpl implements Router {
         }
     }
 
-    private DataAccessPolicy resolveDataAccessPolicy(Class<?> resourceClass) {
-        DataAccessPolicy policy = null;
-
-        MultivaluedMap<String, String> requestHeaders = JunboHttpContext.getRequestHeaders();
-        if (requestHeaders != null) {
-            String dataAccessMode = requestHeaders.getFirst(X_DATAACCESS_MODE);
-            if (dataAccessMode != null && dataAccessMode.length() != 0) {
-                policy = Enum.valueOf(DataAccessPolicy.class, dataAccessMode);
-                logger.debug("Forcing data access policy in call. url: {}, policy: {}", JunboHttpContext.getRequestUri(), policy);
-            }
-        }
-
-        if (policy == null) {
-            policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(JunboHttpContext.getRequestMethod(), resourceClass);
-        }
-
-        if (policy == DataAccessPolicy.CLOUDANT_FIRST && "GET".equalsIgnoreCase(JunboHttpContext.getRequestMethod())) {
-            String cacheControl = requestHeaders.getFirst(CACHE_CONTROL);
-            // if the header is passed and it is Get method, will read sql first
-            if (!StringUtils.isEmpty(cacheControl) && cacheControl.equalsIgnoreCase(CACHE_CONTROL_NO_CACHE)) {
-                policy = DataAccessPolicy.SQL_FIRST;
-            }
-        }
-
-        if (policy == null) {
-            policy = defaultPolicy;
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Setting effective dataAccessPolicy in call. url: {}, policy: {}", JunboHttpContext.getRequestUri(), policy);
-        }
-        Context.get().setDataAccessPolicy(policy);
-        return policy;
-    }
-
-    private String resolveRotingAddress(Object routingParam) {
+    private String resolveRotingAddress(DataAccessPolicy policy, Object routingParam) {
         resolveShard(routingParam);
-        return doRouting(false);
+        return doRouting(policy, false);
     }
 
-    private String doRouting(boolean inGetDefault) {
-        DataAccessPolicy policy = Context.get().getDataAccessPolicy();
+    private String doRouting(DataAccessPolicy policy, boolean inGetDefault) {
         if (crossDcRoutingEnabled) {
             // route across data center
             DataCenters dcs = DataCenters.instance();
@@ -201,7 +205,7 @@ public class RouterImpl implements Router {
         }
 
         // can be handled by current server
-        return getDefault(inGetDefault);
+        return getDefault(policy, inGetDefault);
     }
 
     private void resolveShard(Object routingParam) {
@@ -216,7 +220,7 @@ public class RouterImpl implements Router {
         Context.get().setTopology(topology);
     }
 
-    private String getDefault(boolean inGetDefault) {
+    private String getDefault(DataAccessPolicy policy, boolean inGetDefault) {
         if (inGetDefault) {
             return null;
         }
@@ -240,7 +244,7 @@ public class RouterImpl implements Router {
             Context.get().setShardId(shard);
             Context.get().setTopology(topology);
 
-            return doRouting(true);
+            return doRouting(policy, true);
         }
 
         return null;

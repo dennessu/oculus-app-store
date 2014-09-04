@@ -4,8 +4,10 @@ package com.junbo.langur.core.client;
 import com.junbo.langur.core.async.JunboAsyncHttpClient;
 import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.context.JunboHttpContextScopeListener;
+import com.junbo.langur.core.routing.Router;
 import groovy.transform.CompileStatic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -42,6 +44,10 @@ public abstract class AbstractClientProxy {
 
     @Autowired(required = false)
     protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
+
+    @Autowired(required = false)
+    @Qualifier("routingDefaultRouter")
+    protected Router __router;
 
     @Required
     public void setClient(JunboAsyncHttpClient __client) {
@@ -95,6 +101,10 @@ public abstract class AbstractClientProxy {
 
     public void setJunboHttpContextScopeListeners(List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners) {
         this.__junboHttpContextScopeListeners = __junboHttpContextScopeListeners;
+    }
+
+    public void setRouter(Router router) {
+        this.__router = router;
     }
 
     protected JunboHttpContext.JunboHttpContextData __createJunboHttpContextData(com.ning.http.client.Request request, Class handler) {

@@ -11,6 +11,4 @@
     <bean id="defaultRatingResource" class="com.junbo.rating.rest.resource.RatingResourceImpl"/>
 
     <bean id="defaultRatingResourceClientFactory" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxyFactory"/>
-
-    <bean id="defaultRatingResourceRouter" parent="routingRouterBase" />
 </beans>

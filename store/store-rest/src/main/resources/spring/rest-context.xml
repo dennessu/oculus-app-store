@@ -9,9 +9,7 @@
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.store.spec.resource.adapter" />
     <context:component-scan base-package="com.junbo.store.rest" />
-    <bean id="defaultLoginResourceRouter" parent="routingRouterBase" />
     <bean id="defaultLoginResourceClientFactory" class="com.junbo.store.spec.resource.proxy.LoginResourceClientProxyFactory"/>
-    <bean id="defaultStoreResourceRouter" parent="routingRouterBase" />
     <bean id="defaultStoreResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreResourceClientProxyFactory"/>
 
     <bean id="storeCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">

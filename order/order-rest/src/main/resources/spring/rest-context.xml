@@ -9,12 +9,8 @@
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.order.spec.resource.adapter" />
     <context:component-scan base-package="com.junbo.order.rest.resource" />
-    <bean id="defaultOrderResourceRouter" parent="routingRouterBase" />
     <bean id="defaultOrderResourceClientFactory" class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxyFactory"/>
-    <bean id="defaultOrderEventResourceRouter" parent="routingRouterBase" />
     <bean id="defaultOrderEventResourceClientFactory" class="com.junbo.order.spec.resource.proxy.OrderEventResourceClientProxyFactory"/>
-    <bean id="defaultSubledgerResourceRouter" parent="routingRouterBase" />
     <bean id="defaultSubledgerResourceClientFactory" class="com.junbo.order.spec.resource.proxy.SubledgerResourceClientProxyFactory"/>
-    <bean id="defaultSubledgerItemResourceRouter" parent="routingRouterBase" />
     <bean id="defaultSubledgerItemResourceClientFactory" class="com.junbo.order.spec.resource.proxy.SubledgerItemResourceClientProxyFactory"/>
 </beans>
