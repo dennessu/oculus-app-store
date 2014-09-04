@@ -79,15 +79,15 @@
                 <entry key="UserGroupMembershipResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserPersonalInfoResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserResource" value="identity identity.service identity.pii csr"/>
-                <entry key="UserSecurityQuestionResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserSecurityQuestionResource" value="identity.service identity.pii csr"/>
                 <entry key="UserSecurityQuestionVerifyAttemptResource.create" value="identity.service"/>
-                <entry key="UserSecurityQuestionVerifyAttemptResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserSecurityQuestionVerifyAttemptResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFAAttemptResource.create" value="identity.service"/>
-                <entry key="UserTFAAttemptResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTFAAttemptResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFABackupCodeAttemptResource.create" value="identity.service"/>
-                <entry key="UserTFABackupCodeAttemptResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTFABackupCodeAttemptResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFABackupCodeResource" value="identity.service identity.pii csr"/>
-                <entry key="UserTFAResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTFAResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTosAgreementResource" value="identity identity.service identity.pii csr"/>
                 <!-- oauth -->
                 <entry key="ClientEndpoint" value="client.register"/>
