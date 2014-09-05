@@ -223,7 +223,8 @@ class TransactionServiceImpl implements TransactionService {
             if (throwable instanceof AppErrorException) {
                 // check whether is insufficient fund
                 def appException = (AppErrorException)throwable
-                if (appException.error.error().message == "Insufficient Fund") {
+                if (appException.error.error().code != null
+                 && appException.error.error().code.equalsIgnoreCase("135.109")) {
                     throw AppErrors.INSTANCE.paymentInsufficientFund(balance.piId).exception()
                 }
                 throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()

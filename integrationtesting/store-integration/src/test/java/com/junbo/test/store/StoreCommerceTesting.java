@@ -555,9 +555,9 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
-        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, 409);
+        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, 412);
 
-        assert Master.getInstance().getApiErrorMsg().contains("insufficient");
+        assert Master.getInstance().getApiErrorMsg().contains("Billing Insufficient Fund");
 
     }
 
