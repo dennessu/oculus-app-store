@@ -207,6 +207,8 @@ public class authorizeUser {
         Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoDob());
         Map<String, UserVAT> vatMap = new HashMap<>();
         vatMap.put(IdentityModel.DefaultUserVat().getVatNumber().substring(0, 2), IdentityModel.DefaultUserVat());
+        storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
+        storedUser.setNickName(RandomHelper.randomName());
         storedUser.setVat(vatMap);
         Identity.UserPut(storedUser);
     }
