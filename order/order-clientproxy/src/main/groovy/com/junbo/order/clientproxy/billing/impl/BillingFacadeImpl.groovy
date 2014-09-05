@@ -28,8 +28,7 @@ class BillingFacadeImpl implements BillingFacade {
     BalanceResource balanceResource
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BillingFacadeImpl)
-    private static final String PAYMENT_INSUFFICIENT_BALANCE = '135.109'
-    private static final String BILLING_PAYMENT_INSUFFICIENT_FUND = '121.117'
+    private static final String PAYMENT_INSUFFICIENT_FUND = '121.117'
 
 
     @Override
@@ -135,7 +134,7 @@ class BillingFacadeImpl implements BillingFacade {
     @Override
     AppError convertError(Throwable error) {
         AppError e = ErrorUtils.toAppError(error)
-        if (e != null &&  isInsufficientFundErrorCode(e.error().code)) {
+        if (e != null &&  e.error().code == PAYMENT_INSUFFICIENT_FUND) {
             return AppErrors.INSTANCE.billingInsufficientFund()
         }
         if (e != null) {
@@ -150,9 +149,5 @@ class BillingFacadeImpl implements BillingFacade {
             return AppErrors.INSTANCE.calculateTaxError(e)
         }
         return AppErrors.INSTANCE.calculateTaxError(error.message)
-    }
-
-    private Boolean isInsufficientFundErrorCode(String code) {
-        return code == BILLING_PAYMENT_INSUFFICIENT_FUND || code == PAYMENT_INSUFFICIENT_BALANCE
     }
 }
