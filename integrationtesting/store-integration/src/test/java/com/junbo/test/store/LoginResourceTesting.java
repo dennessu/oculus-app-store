@@ -199,8 +199,21 @@ public class LoginResourceTesting extends BaseTestClass {
         assert error.getDetails().get(0).getField().contains("dob");
 
         createUserRequest.setDob(oldDob);
+        oldPassword = createUserRequest.getPassword();
+        createUserRequest.setPassword(null);
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("password");
+        createUserRequest.setPassword(oldPassword);
+
         createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 200);
         Validator.Validate("Validate username created successfully", createUserRequest.getUsername(), createUserResponse.getUsername());
+
+        // validate create with same username failure
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 409, "131.002");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("username");
+        assert error.getDetails().get(0).getReason().contains("Field value is duplicate");
 
         UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse != null;
@@ -252,6 +265,18 @@ public class LoginResourceTesting extends BaseTestClass {
         String username = "abcdefg";
         response = testDataProvider.RateUserCredential(password, username);
         Validator.Validate("validate invalid character password", response.getStrength(), CREDENTIAL_STRENGTH_INVALID);
+
+        password = null;
+        Error error = testDataProvider.RateUserCredentialWithError(password, RandomHelper.randomAlphabetic(10), 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("userCredential.value");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
+
+        password = "";
+        error = testDataProvider.RateUserCredentialWithError(password, RandomHelper.randomAlphabetic(10), 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("userCredential.value");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
     }
 
     @Property(
@@ -310,6 +335,45 @@ public class LoginResourceTesting extends BaseTestClass {
 
         signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), newPassword);
         Validator.Validate("validate signIn token equals to current user with username login", createUserRequest.getUsername(), signInResponse.getUsername());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check login negative case"
+            }
+    )
+    @Test
+    public void testLoginInvalid() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse !=  null;
+
+        Error error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PIN", "1234", 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("userCredential.type");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid. type must be PASSWORD");
+
+        error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PASSWORD", RandomHelper.randomAlphabetic(10), 412, "132.103");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("password");
+
+        error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(10), "PASSWORD", createUserRequest.getPassword(), 412, "132.103");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("username");
+
+        error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PASSWORD", null, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("userCredential.value");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
+
+        authTokenResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        assert authTokenResponse != null;
+        assert authTokenResponse.getUsername().equals(createUserRequest.getUsername());
     }
 
     @Property(

@@ -116,6 +116,17 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     }
 
     @Override
+    public Error signInWithError(UserSignInRequest userSignInRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/sign-in", userSignInRequest, expectedResponseCode);
+
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+
+        assert error.getCode().equalsIgnoreCase(errorCode);
+        return error;
+    }
+
+    @Override
     public UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/rate-credential", userCredentialCheckRequest);
 
@@ -126,8 +137,15 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     }
 
     @Override
-    public UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest, int expectedResponseCode) throws Exception {
-        return null;
+    public Error rateUserCredentialWithError(UserCredentialRateRequest userCredentialRateRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/rate-credential", userCredentialRateRequest, expectedResponseCode);
+
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+
+        assert error.getCode().equalsIgnoreCase(errorCode);
+
+        return error;
     }
 
     @Override

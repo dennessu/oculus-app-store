@@ -5,6 +5,8 @@
  */
 package com.junbo.test.store.apihelper;
 
+import com.junbo.common.error.*;
+import com.junbo.common.error.Error;
 import com.junbo.store.spec.model.login.*;
 
 /**
@@ -25,9 +27,11 @@ public interface LoginService {
 
     AuthTokenResponse signIn(UserSignInRequest userSignInRequest, int expectedResponseCode) throws Exception;
 
+    Error signInWithError(UserSignInRequest userSignInRequest, int expectedResponseCode, String errorCode) throws Exception;
+
     UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest) throws Exception;
 
-    UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest, int expectedResponseCode) throws Exception;
+    com.junbo.common.error.Error rateUserCredentialWithError(UserCredentialRateRequest userCredentialRateRequest, int expectedResponseCode, String errorCode) throws Exception;
 
     AuthTokenResponse getToken(AuthTokenRequest request) throws Exception;
 

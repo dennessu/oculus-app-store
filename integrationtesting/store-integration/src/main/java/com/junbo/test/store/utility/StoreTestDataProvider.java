@@ -146,6 +146,16 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
     }
 
+    public Error SignInWithError(String username, String type, String password, int expectedCode, String errorCode) throws Exception {
+        UserSignInRequest userSignInRequest = new UserSignInRequest();
+        userSignInRequest.setUsername(username);
+        UserCredential userCredential = new UserCredential();
+        userCredential.setType(type);
+        userCredential.setValue(password);
+        userSignInRequest.setUserCredential(userCredential);
+        return loginClient.signInWithError(userSignInRequest, expectedCode, errorCode);
+    }
+
     public AuthTokenResponse SignIn(String username, String password, int expectedCode) throws Exception {
         UserSignInRequest userSignInRequest = new UserSignInRequest();
         userSignInRequest.setUsername(username);
@@ -158,6 +168,22 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public AuthTokenResponse SignIn(String userName, String password) throws Exception {
         return SignIn(userName, password, 200);
+    }
+
+    public Error RateUserCredentialWithError(String password, String username, int expectedErrorCode, String errorCode) throws Exception {
+        UserCredentialRateRequest userCredentialRateRequest = new UserCredentialRateRequest();
+        UserCredential userCredential = new UserCredential();
+        userCredential.setType("PASSWORD");
+        userCredential.setValue(password);
+        userCredentialRateRequest.setUserCredential(userCredential);
+
+        if (!StringUtils.isEmpty(username)) {
+            UserCredentialRateContext context = new UserCredentialRateContext();
+            context.setUsername(username);
+            userCredentialRateRequest.setContext(context);
+        }
+
+        return loginClient.rateUserCredentialWithError(userCredentialRateRequest, expectedErrorCode, errorCode);
     }
 
     public UserCredentialRateResponse RateUserCredential(String password, String username) throws Exception {
