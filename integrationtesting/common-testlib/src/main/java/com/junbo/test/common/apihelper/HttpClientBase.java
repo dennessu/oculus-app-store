@@ -201,7 +201,7 @@ public abstract class HttpClientBase {
                         logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
 
                         String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
-                        if (redirectUrl.contains("cid") || redirectUrl.contains("email-verify-success")) {
+                        if (redirectUrl.contains("cid") || redirectUrl.contains("email-verify") ) {
                             return redirectUrl;
                         }
                         req = new RequestBuilder("GET")
