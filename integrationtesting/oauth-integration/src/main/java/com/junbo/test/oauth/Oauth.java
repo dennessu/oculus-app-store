@@ -184,7 +184,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNUserName, userName));
         nvps.add(new BasicNameValuePair(DefaultFNPassword, DefaultUserPwd));
         nvps.add(new BasicNameValuePair(DefaultFNEmail, email));
-        nvps.add(new BasicNameValuePair(DefaultFNNickName, RandomHelper.randomAlphabetic(15)));
+        nvps.add(new BasicNameValuePair(DefaultFNNickName, RandomHelper.randomName()));
         nvps.add(new BasicNameValuePair(DefaultFNFirstName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNLastName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNGender, "male"));
