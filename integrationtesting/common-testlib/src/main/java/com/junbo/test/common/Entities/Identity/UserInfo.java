@@ -171,7 +171,7 @@ public class UserInfo {
 
     public static UserInfo getRandomUserInfo() throws Exception {
         UserInfo userInfo = new UserInfo();
-        userInfo.setNickName(RandomFactory.getRandomStringOfAlphabet(5));
+        userInfo.setNickName(String.format("SCTest_%s",RandomFactory.getRandomStringOfAlphabet(5)));
         userInfo.setFirstName(RandomFactory.getRandomStringOfAlphabet(5));
         userInfo.setLastName(RandomFactory.getRandomStringOfAlphabet(5));
         SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd");

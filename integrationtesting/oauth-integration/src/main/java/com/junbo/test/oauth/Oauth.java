@@ -67,7 +67,7 @@ public class Oauth {
     public static final String DefaultFNLocale = "locale";
     public static final String DefaultFNLogin = "login";
     public static final String DefaultFNLoginState = "ls";
-    public static final String DefaultFNNickName = "nickname";
+    //public static final String DefaultFNNickName = "nickname";
     public static final String DefaultFNPassword = "password";
     public static final String DefaultFNPin = "pin";
     public static final String DefaultFNRedirectURI = "redirect_uri";
@@ -184,7 +184,6 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNUserName, userName));
         nvps.add(new BasicNameValuePair(DefaultFNPassword, DefaultUserPwd));
         nvps.add(new BasicNameValuePair(DefaultFNEmail, email));
-        nvps.add(new BasicNameValuePair(DefaultFNNickName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNFirstName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNLastName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNGender, "male"));

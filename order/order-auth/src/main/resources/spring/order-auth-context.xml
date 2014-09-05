@@ -13,10 +13,10 @@
     </bean>
 
     <bean id="order.authAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="order.service subledger.service"/>
+        <property name="scope" value="order.service subledger.service payment.service identity.service"/>
         <property name="deflectionInSeconds" value="300"/>
-        <property name="clientSecret" value="secret"/>
-        <property name="clientId" value="service"/>
+        <property name="clientSecret" value="${order.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${order.clientproxy.service.clientId}"/>
         <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
 

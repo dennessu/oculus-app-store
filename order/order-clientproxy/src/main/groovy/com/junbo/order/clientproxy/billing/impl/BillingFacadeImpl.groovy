@@ -28,7 +28,7 @@ class BillingFacadeImpl implements BillingFacade {
     BalanceResource balanceResource
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BillingFacadeImpl)
-    private static final String PAYMENT_INSUFFICIENT_FUND = '117'
+    private static final String PAYMENT_INSUFFICIENT_FUND = '121.117'
 
 
     @Override

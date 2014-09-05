@@ -114,6 +114,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
         String responseBody = restApiCall(HTTPMethod.POST, paymentInstrumentUrl +
                 "/wallets/credit", creditRequest, 200, true);
+        componentType = ComponentType.PAYMENT;
     }
 
     @Override
