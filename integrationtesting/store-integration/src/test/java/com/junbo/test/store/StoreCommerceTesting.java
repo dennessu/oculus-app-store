@@ -21,6 +21,7 @@ import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -162,7 +163,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         response = testDataProvider.getBillingProfile(null);
         assert response.getBillingProfile().getInstruments().size() == 2;
         Instrument instrument = null;
-        for (int index = 0; index < response.getBillingProfile().getInstruments().size(); index ++) {
+        for (int index = 0; index < response.getBillingProfile().getInstruments().size(); index++) {
             if (response.getBillingProfile().getInstruments().get(index).getType().equalsIgnoreCase("STOREDVALUE")) {
                 instrument = response.getBillingProfile().getInstruments().get(index);
             }
@@ -173,7 +174,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
         List<Action> actionList = offerRevision.getEventActions().get("PURCHASE");
         Action action = null;
-        for(int index = 0; index < actionList.size(); index ++) {
+        for (int index = 0; index < actionList.size(); index++) {
             if (actionList.get(index).getType().equalsIgnoreCase("CREDIT_WALLET")) {
                 action = actionList.get(index);
             }
@@ -372,6 +373,42 @@ public class StoreCommerceTesting extends BaseTestClass {
     }
 
     @Property(
+            priority = Priority.Dailies,
+            features = "Store checkout",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test put prepare purchase with invalid pin code",
+            steps = {
+                    "1. Create user",
+                    "2. Post prepare purchase",
+                    "3. Put prepare purchase with invalid pin",
+                    "4. Verify error response",
+            }
+    )
+    @Test
+    public void testPreparePurchaseWithInvalidPin() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        PaymentInstrumentId paymentId = new PaymentInstrumentId(123L);
+
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
+
+        assert preparePurchaseResponse.getChallenge() != null;
+        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
+
+        testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
+                offerId, paymentId, "123", null, false, 400);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Invalid Challenge Answer");
+        assert Master.getInstance().getApiErrorMsg().contains("130.108");
+
+    }
+
+
+    @Property(
             priority = Priority.Comprehensive,
             features = "Store checkout",
             component = Component.Order,
@@ -477,5 +514,54 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert Master.getInstance().getApiErrorMsg().contains("130.001");
 
     }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test check out with insufficient stored value",
+            steps = {
+                    "1. Create user",
+                    "2. Post ewallet account and credit insufficient stored value",
+                    "3. Attempt to checkout with ewallet",
+                    "4. Verify error code",
+            }
+    )
+    @Test
+    public void testCheckoutWithInsufficientStoredValue() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
+
+        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateStoredValue();
+        testDataProvider.CreditStoredValue(uid, new BigDecimal(5));
+
+        //get payment id in billing profile
+        PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
+
+        testDataProvider.preparePurchase(null, offerId, null, null, null);
+
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
+
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
+                offerId, paymentId, "1234", null);
+
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+                preparePurchaseResponse.getChallenge().getTos().getTosId());
+
+        String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
+
+        CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, 409);
+
+        assert Master.getInstance().getApiErrorMsg().contains("insufficient");
+
+    }
+
+
+
 
 }
