@@ -5,7 +5,6 @@
  */
 package com.junbo.test.token.utility;
 
-import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.UserId;
 import com.junbo.test.catalog.OfferService;

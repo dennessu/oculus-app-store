@@ -5,6 +5,8 @@
  */
 package com.junbo.test.store.utility;
 
+// CHECKSTYLE:OFF
+
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;

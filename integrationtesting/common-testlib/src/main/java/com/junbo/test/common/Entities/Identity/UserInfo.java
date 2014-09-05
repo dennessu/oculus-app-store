@@ -171,12 +171,12 @@ public class UserInfo {
 
     public static UserInfo getRandomUserInfo() throws Exception {
         UserInfo userInfo = new UserInfo();
-        userInfo.setNickName(RandomFactory.getRandomStringOfAlphabet(5));
+        userInfo.setNickName(String.format("Test%s",RandomFactory.getRandomStringOfAlphabet(5)));
         userInfo.setFirstName(RandomFactory.getRandomStringOfAlphabet(5));
         userInfo.setLastName(RandomFactory.getRandomStringOfAlphabet(5));
         SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd");
         userInfo.setDob(format.format(RandomFactory.nextDate().getTime()));
-        userInfo.setUserName(RandomFactory.getRandomStringOfAlphabet(6));
+        userInfo.setUserName(String.format("Test%s",RandomFactory.getRandomStringOfAlphabet(6)));
         userInfo.setPassword(pwd);
         userInfo.setPin(RandomFactory.getRandomStringOfNumeric(4));
         userInfo.setCountry(Country.DEFAULT);

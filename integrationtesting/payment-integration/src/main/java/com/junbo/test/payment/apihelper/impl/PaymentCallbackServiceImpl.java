@@ -7,7 +7,7 @@ package com.junbo.test.payment.apihelper.impl;
 
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.payment.apihelper.PaymentCallbackService;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
+//import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.libs.LogHelper;
 
@@ -33,6 +33,7 @@ public class PaymentCallbackServiceImpl extends HttpClientBase implements Paymen
 
     private PaymentCallbackServiceImpl() {
     }
+    /*
 
     public void postPaymentProperties(String paymentId, PaymentCallbackParams properties) throws Exception {
         this.postPaymentProperties(paymentId, properties, 200);
@@ -42,5 +43,6 @@ public class PaymentCallbackServiceImpl extends HttpClientBase implements Paymen
         String url = paymentCallbackUrl + "/" + paymentId + "/properties";
         restApiCall(HTTPMethod.POST, url, properties, expectedResponseCode);
     }
+    */
 
 }
