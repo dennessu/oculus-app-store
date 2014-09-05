@@ -13,6 +13,8 @@
     <bean id="defaultLoginResourceClientFactory" class="com.junbo.store.spec.resource.proxy.LoginResourceClientProxyFactory"/>
     <bean id="defaultStoreResourceRouter" parent="routingRouterBase" />
     <bean id="defaultStoreResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreResourceClientProxyFactory"/>
+    <bean id="defaultStoreConfigResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultStoreConfigResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreConfigResourceClientProxyFactory"/>
 
     <bean id="storeCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation">
@@ -33,6 +35,12 @@
         <property name="cacheEnabled" value="${store.cache.enabled}"/>
         <property name="cacheManager" ref="storeCacheManager"/>
         <property name="cacheName" value="store.item.price.cache"/>
+    </bean>
+
+    <bean id="storeOfferToItemCache" class="com.junbo.store.common.cache.impl.SimpleCache">
+        <property name="cacheEnabled" value="${store.cache.enabled}"/>
+        <property name="cacheManager" ref="storeCacheManager"/>
+        <property name="cacheName" value="store.item.offerlookup"/>
     </bean>
 
     <util:list id="storeSectionHandlers">

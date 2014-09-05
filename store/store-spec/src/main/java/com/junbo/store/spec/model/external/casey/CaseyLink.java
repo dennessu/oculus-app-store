@@ -13,6 +13,14 @@ public class CaseyLink extends BaseCaseyModel {
     private String href;
     private String rev;
 
+    public CaseyLink() {
+
+    }
+
+    public CaseyLink(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }

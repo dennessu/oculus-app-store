@@ -14,11 +14,14 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
+import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
+import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.casey.CaseyReview;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.*;
@@ -43,9 +46,13 @@ import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.payment.utility.PaymentTestDataProvider;
+import com.junbo.test.store.apihelper.CaseyEmulatorService;
 import com.junbo.test.store.apihelper.LoginService;
+import com.junbo.test.store.apihelper.StoreConfigService;
 import com.junbo.test.store.apihelper.StoreService;
+import com.junbo.test.store.apihelper.impl.CaseyEmulatorServiceImpl;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
+import com.junbo.test.store.apihelper.impl.StoreConfigServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
 import org.springframework.util.StringUtils;
 
@@ -69,6 +76,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     ItemService itemClient = ItemServiceImpl.instance();
     ItemRevisionService itemRevisionClient = ItemRevisionServiceImpl.instance();
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
+    CaseyEmulatorService caseyEmulatorClient = CaseyEmulatorServiceImpl.getInstance();
+    StoreConfigService storeConfigService = StoreConfigServiceImpl.getInstance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
@@ -486,6 +495,15 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getList(request);
     }
 
+    public ListResponse getList(String category, String criteria, String cursor, Integer count) throws Exception {
+        ListRequest listRequest = new ListRequest();
+        listRequest.setCategory(category);
+        listRequest.setCriteria(criteria);
+        listRequest.setCursor(cursor);
+        listRequest.setCount(count);
+        return storeClient.getList(listRequest);
+    }
+
     public SectionLayoutResponse getLayout(String category, String criteria, Integer count) throws Exception {
         SectionLayoutRequest request = new SectionLayoutRequest();
         request.setCategory(category);
@@ -504,5 +522,28 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         DeliveryRequest request = new DeliveryRequest();
         request.setItemId(itemId);
         return storeClient.getDelivery(request);
+    }
+
+    public ReviewsResponse getReviews(ItemId itemId, String cursor, Integer count) throws Exception {
+        ReviewsRequest reviewsRequest = new ReviewsRequest();
+        reviewsRequest.setItemId(itemId);
+        reviewsRequest.setCursor(cursor);
+        reviewsRequest.setCount(count);
+        return storeClient.getReviews(reviewsRequest);
+    }
+
+    public CaseyEmulatorData postCaseyEmulatorData(CaseyEmulatorData data) throws Exception {
+        return caseyEmulatorClient.postEmulatorData(data);
+    }
+
+    public CaseyEmulatorData postCaseyEmulatorData(List<CaseyReview> caseyReviewList, List<CaseyAggregateRating> ratingList) throws Exception {
+        CaseyEmulatorData data = new CaseyEmulatorData();
+        data.setCaseyAggregateRatings(ratingList);
+        data.setCaseyReviews(caseyReviewList);
+        return caseyEmulatorClient.postEmulatorData(data);
+    }
+
+    public void clearCache() throws Exception {
+        storeConfigService.clearCache();
     }
 }

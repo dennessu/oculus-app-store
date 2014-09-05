@@ -4,6 +4,9 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.store.utility.StoreTestDataProvider;
 import com.junbo.test.store.utility.StoreValidationHelper;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by weiyu_000 on 8/6/14.
  */
@@ -21,6 +24,15 @@ public abstract class BaseTestClass {
     protected String offer_iap_normal;
     protected String offer_iap_free;
     protected String offer_storedValue_normal;
+    protected String item_digital_normal1;
+    protected String item_digital_normal2;
+    protected String item_digital_free;
+    protected String item_digital_oclus_free1;
+    protected String item_digital_oclus_free2;
+
+    protected String featureRootCriteria = "featureRoot";
+    protected List<String> itemsInFeaturedOffer;
+    protected List<String> itemsInFeaturedItem;
 
     public BaseTestClass () {
         super();
@@ -41,7 +53,14 @@ public abstract class BaseTestClass {
         offer_iap_normal = ConfigHelper.getSetting("testdata.offer.iap.normal");
         offer_iap_free = ConfigHelper.getSetting("testdata.offer.iap.free");
         offer_storedValue_normal = ConfigHelper.getSetting("testdata.offer.storedvalue.normal");
+        item_digital_normal1 = ConfigHelper.getSetting("testdata.item.digital.normal1");
+        item_digital_normal2 = ConfigHelper.getSetting("testdata.item.digital.normal2");
+        item_digital_free = ConfigHelper.getSetting("testdata.item.digital.free");
+        item_digital_oclus_free1 = ConfigHelper.getSetting("testdata.item.digital.oculus.free1");
+        item_digital_oclus_free2 = ConfigHelper.getSetting("testdata.item.digital.oculus.free2");
 
+        itemsInFeaturedOffer = Arrays.asList(ConfigHelper.getSetting("testdata.items.featuredoffer").split(","));
+        itemsInFeaturedItem = Arrays.asList(ConfigHelper.getSetting("testdata.items.featureditem").split(","));
     }
 
     StoreTestDataProvider testDataProvider = new StoreTestDataProvider();

@@ -219,8 +219,9 @@ class FeaturedSectionHandler implements SectionHandler {
             return null
         }
         SectionInfoNode sectionInfoNode = new SectionInfoNode()
-        sectionInfoNode.name = placement.contentData.description
+        sectionInfoNode.name = placement.contentData.label
         sectionInfoNode.criteria = placement.contentData.label
+        sectionInfoNode.children = []
         return sectionInfoNode
     }
 

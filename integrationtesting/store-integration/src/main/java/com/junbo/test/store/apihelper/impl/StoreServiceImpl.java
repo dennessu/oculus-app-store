@@ -407,7 +407,12 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public ReviewsResponse getReviews(ReviewsRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/reviews", expectedResponseCode);
+        String url = storeUrl + "/reviews?";
+        url = appendQuery(url, "itemId", request.getItemId());
+        url = appendQuery(url, "count", request.getCount());
+        url = appendQuery(url, "cursor", request.getCursor());
+
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             ReviewsResponse response = new JsonMessageTranscoder().decode(new TypeReference<ReviewsResponse>() {
             }, responseBody);

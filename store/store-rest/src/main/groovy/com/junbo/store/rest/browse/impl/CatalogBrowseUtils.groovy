@@ -1,5 +1,4 @@
 package com.junbo.store.rest.browse.impl
-
 import com.junbo.catalog.spec.enums.OfferAttributeType
 import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.enums.Status
@@ -14,17 +13,15 @@ import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
-import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
-import com.junbo.entitlement.spec.model.Entitlement
-import com.junbo.entitlement.spec.model.EntitlementSearchParam
-import com.junbo.entitlement.spec.model.PageMetadata
+import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
@@ -55,7 +52,6 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
-
 /**
  * The CatalogServiceUtils class.
  */
@@ -67,6 +63,9 @@ class CatalogBrowseUtils {
 
     @Resource(name = 'storeLocaleUtils')
     private LocaleUtils localeUtils
+
+    @Resource(name = 'storeOfferToItemCache')
+    private Cache<OfferId, ItemId> storeOfferToItemCache
 
     @Resource(name = 'storeItemDataCache')
     private Cache<ItemId, ItemData> storeItemDataCache
@@ -139,7 +138,11 @@ class CatalogBrowseUtils {
         }
     }
 
-    Promise<ItemData> getItemData(OfferId offerId) {
+    Promise<ItemId> lookupItemId(OfferId offerId) {
+        ItemId itemId = storeOfferToItemCache.get(offerId)
+        if (itemId != null) {
+            return Promise.pure(itemId)
+        }
         Promise.pure().then {
             resourceContainer.offerResource.getOffer(offerId.value).then { com.junbo.catalog.spec.model.offer.Offer catalogOffer ->
                 return resourceContainer.offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions()).then { OfferRevision offerRevision ->
@@ -150,8 +153,18 @@ class CatalogBrowseUtils {
                     if (offerRevision.items.size() > 1) {
                         LOGGER.error('name=Store_Items_Multiple, offer={}, offerRevision={}', catalogOffer.getOfferId(), offerRevision.getOfferId())
                     }
-                    return getItemData(new ItemId(offerRevision.items[0].itemId))
+                    itemId = new ItemId(offerRevision.items[0].itemId)
+                    storeOfferToItemCache.put(offerId, itemId)
+                    return Promise.pure(itemId)
                 }
+            }
+        }
+    }
+
+    Promise<ItemData> getItemData(OfferId offerId) {
+        Promise.pure().then {
+            lookupItemId(offerId).then { ItemId itemId ->
+                return getItemData(itemId)
             }
         }
     }
@@ -201,16 +214,6 @@ class CatalogBrowseUtils {
         }
     }
 
-    Promise<Boolean> checkItemOwnedByUser(ItemId itemId, UserId userId) {
-        return resourceContainer.entitlementResource.searchEntitlements(new EntitlementSearchParam(
-                userId: userId,
-                itemIds: [itemId] as Set,
-                isActive: true
-        ), new PageMetadata()).then { Results<Entitlement> results ->
-            return Promise.pure(!results.items.isEmpty())
-        }
-    }
-
     Promise<OfferAttribute> getOfferCategoryByName(String name, LocaleId locale) {
         String cursor
         OfferAttribute result
@@ -234,21 +237,33 @@ class CatalogBrowseUtils {
         }
     }
 
-    Promise<ReviewsResponse> getReviews(String itemId, String cursor, Integer count) {
+    Promise<ReviewsResponse> getReviews(String itemId, UserId userId, String cursor, Integer count) {
         ReviewSearchParams params = new ReviewSearchParams(
                 resourceType: 'item',
                 resourceId: itemId,
+                userId: userId,
                 cursor: cursor,
                 count: count
         )
 
-        return resourceContainer.caseyResource.getReviews(params).then { CaseyResults<CaseyReview> results ->
+        return resourceContainer.caseyResource.getReviews(params).recover { Throwable ex ->
+            LOGGER.error('name=Get_Casey_Review_Fail', ex)
+            return Promise.pure()
+        }.then { CaseyResults<CaseyReview> results ->
+            if (results == null) {
+                return Promise.pure(new ReviewsResponse(
+                    reviews: []
+                ))
+            }
+
             ReviewsResponse reviews = new ReviewsResponse()
-            reviews.next = new ReviewsResponse.NextOption(
-                    itemId: new ItemId(itemId),
-                    cursor: results.cursor,
-                    count: results.count
-            )
+            if (!StringUtils.isEmpty(results.cursor)) {
+                reviews.next = new ReviewsResponse.NextOption(
+                        itemId: new ItemId(itemId),
+                        cursor: results.cursor,
+                        count: results.count
+                )
+            }
 
             reviews.reviews = []
             Promise.each(results.items) { CaseyReview caseyReview ->
@@ -263,8 +278,7 @@ class CatalogBrowseUtils {
                     review.starRatings[rating.type] = rating.score
                 }
 
-                return resourceContainer.userResource.get(IdUtil.fromLink(new Link(id: caseyReview.user.id,
-                        href: caseyReview.user.href)) as UserId, new UserGetOptions()).recover { Throwable e ->
+                return resourceContainer.userResource.get(new UserId(IdFormatter.decodeId(UserId, caseyReview.user.getId())), new UserGetOptions()).recover { Throwable e ->
                     if (e instanceof AppErrorException) {
                         return Promise.pure(null)
                     } else {
@@ -280,7 +294,7 @@ class CatalogBrowseUtils {
                     return Promise.pure()
                 }
             }.then {
-                return reviews
+                return Promise.pure(reviews)
             }
         }
     }
@@ -354,10 +368,7 @@ class CatalogBrowseUtils {
 
                 return aggregatedRatings
             }
-        }.then {
-            return getReviews(itemId, null, null).then { ReviewsResponse reviewsResponse ->
-                result.reviewsResponse = reviewsResponse
-            }
+            return Promise.pure()
         }.recover { Throwable throwable ->
             LOGGER.error('name=Get_Casey_Fail', throwable)
             return Promise.pure()

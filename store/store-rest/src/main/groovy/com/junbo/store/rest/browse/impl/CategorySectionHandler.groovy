@@ -102,6 +102,7 @@ class CategorySectionHandler implements SectionHandler {
             response.children = []
             response.breadcrumbs = []
             response.name = simpleLocaleProperties?.name
+            response.ordered = false
 
             innerGetList(category.getId(), new ListRequest(category: request.category, criteria: request.criteria, count: request.count), apiContext).then { ListResponse listResponse ->
                 response.items = listResponse.items

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
+import com.junbo.store.spec.model.browse.document.Item;
 import com.junbo.store.spec.model.iap.IAPEntitlement;
 
 /**
@@ -26,6 +27,8 @@ public class Entitlement {
     private ItemId item;
 
     private String itemType;
+
+    private Item itemDetails;
 
     private IAPEntitlement iapEntitlement;
 
@@ -59,6 +62,14 @@ public class Entitlement {
 
     public void setItemType(String itemType) {
         this.itemType = itemType;
+    }
+
+    public Item getItemDetails() {
+        return itemDetails;
+    }
+
+    public void setItemDetails(Item itemDetails) {
+        this.itemDetails = itemDetails;
     }
 
     public String getEntitlementType() {

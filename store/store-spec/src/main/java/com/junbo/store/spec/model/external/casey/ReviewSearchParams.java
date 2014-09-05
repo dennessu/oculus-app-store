@@ -5,6 +5,8 @@
  */
 package com.junbo.store.spec.model.external.casey;
 
+import com.junbo.common.id.UserId;
+
 import javax.ws.rs.QueryParam;
 
 /**
@@ -16,6 +18,9 @@ public class ReviewSearchParams extends CaseySearchParams {
 
     @QueryParam("resourceId")
     private String resourceId;
+
+    @QueryParam("userId")
+    private UserId userId;
 
     public String getResourceType() {
         return resourceType;
@@ -31,5 +36,13 @@ public class ReviewSearchParams extends CaseySearchParams {
 
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }
