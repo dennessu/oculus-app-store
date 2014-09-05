@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import org.apache.http.client.HttpResponseException;
 import org.testng.Assert;
 
 import java.util.List;
@@ -142,104 +143,124 @@ public abstract class HttpClientBase {
         switch (httpMethod) {
             case PUT:
             case POST: {
-                Request req = new RequestBuilder(httpMethod.getHttpMethod())
-                        .setUrl(restUrl)
-                        .setHeaders(getHeader(isServiceScope))
-                        .setBody(requestBody)
-                        .build();
+                try {
+                    asyncClient = new AsyncHttpClient();
+                    Request req = new RequestBuilder(httpMethod.getHttpMethod())
+                            .setUrl(restUrl)
+                            .setHeaders(getHeader(isServiceScope))
+                            .setBody(requestBody)
+                            .build();
 
-                logger.LogRequest(req);
+                    logger.LogRequest(req);
 
-                Future future = asyncClient.prepareRequest(req).execute();
-                NettyResponse nettyResponse = (NettyResponse) future.get();
+                    Future future = asyncClient.prepareRequest(req).execute();
+                    NettyResponse nettyResponse = (NettyResponse) future.get();
 
-                logger.LogResponse(nettyResponse);
-                if (expectedResponseCode != 0) {
-                    Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
+                    logger.LogResponse(nettyResponse);
+                    if (expectedResponseCode != 0) {
+                        Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
+                    }
+
+                    if (expectedResponseCode != 200) {
+                        Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
+                    }
+                    return nettyResponse.getResponseBody();
+                } catch (HttpResponseException ex) {
+                    throw new TestException(ex.getMessage().toString());
+                } finally {
+                    asyncClient.close();
                 }
-
-                if(expectedResponseCode != 200){
-                    Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
-                }
-
-                return nettyResponse.getResponseBody();
             }
             case GET: {
-                //append URL paras for http get method
-                if (httpParameters != null && !httpParameters.isEmpty()) {
-                    restUrl = restUrl.concat("?");
-                    for (String key : httpParameters.keySet()) {
-                        List<String> strValues = httpParameters.get(key);
-                        for (int i = 0; i < strValues.size(); i++) {
-                            restUrl = restUrl.concat(String.format("%s=%s", key, strValues.get(i)));
-                            restUrl = restUrl.concat("&");
+                try {
+                    asyncClient = new AsyncHttpClient();
+                    if (httpParameters != null && !httpParameters.isEmpty()) {
+                        restUrl = restUrl.concat("?");
+                        for (String key : httpParameters.keySet()) {
+                            List<String> strValues = httpParameters.get(key);
+                            for (int i = 0; i < strValues.size(); i++) {
+                                restUrl = restUrl.concat(String.format("%s=%s", key, strValues.get(i)));
+                                restUrl = restUrl.concat("&");
+                            }
                         }
+                        //Remove the last "&" character
+                        restUrl = restUrl.substring(0, restUrl.length() - 1);
                     }
-                    //Remove the last "&" character
-                    restUrl = restUrl.substring(0, restUrl.length() - 1);
-                }
 
-                Request req = new RequestBuilder("GET")
-                        .setUrl(restUrl)
-                        .setHeaders(getHeader(isServiceScope))
-                        .build();
-
-                logger.LogRequest(req);
-
-                Future future = asyncClient.prepareRequest(req).execute();
-                NettyResponse nettyResponse = (NettyResponse) future.get();
-                //handle redirect url logic for getPrimaryCart etc.
-                if (nettyResponse.getStatusCode() == 302) {
-                    logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
-
-                    String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
-                    if (redirectUrl.contains("cid") || redirectUrl.contains("email-verify-success")) {
-                        return redirectUrl;
-                    }
-                    req = new RequestBuilder("GET")
-                            .setUrl(redirectUrl)
+                    Request req = new RequestBuilder("GET")
+                            .setUrl(restUrl)
                             .setHeaders(getHeader(isServiceScope))
                             .build();
 
                     logger.LogRequest(req);
 
-                    future = asyncClient.prepareRequest(req).execute();
-                    nettyResponse = (NettyResponse) future.get();
-                    expectedResponseCode = nettyResponse.getStatusCode();
+                    Future future = asyncClient.prepareRequest(req).execute();
+                    NettyResponse nettyResponse = (NettyResponse) future.get();
+                    //handle redirect url logic for getPrimaryCart etc.
+                    if (nettyResponse.getStatusCode() == 302) {
+                        logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
+
+                        String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
+                        if (redirectUrl.contains("cid") || redirectUrl.contains("email-verify-success")) {
+                            return redirectUrl;
+                        }
+                        req = new RequestBuilder("GET")
+                                .setUrl(redirectUrl)
+                                .setHeaders(getHeader(isServiceScope))
+                                .build();
+
+                        logger.LogRequest(req);
+
+                        future = asyncClient.prepareRequest(req).execute();
+                        nettyResponse = (NettyResponse) future.get();
+                        expectedResponseCode = nettyResponse.getStatusCode();
+                    }
+
+                    logger.LogResponse(nettyResponse);
+                    if (expectedResponseCode != 0) {
+                        Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
+                    }
+
+                    if (expectedResponseCode != 200) {
+                        Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
+                    }
+
+                    return nettyResponse.getResponseBody();
+                } catch (HttpResponseException ex) {
+                    throw new TestException(ex.getMessage().toString());
+                } finally {
+                    asyncClient.close();
                 }
 
-                logger.LogResponse(nettyResponse);
-                if (expectedResponseCode != 0) {
-                    Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
-                }
-
-                if(expectedResponseCode != 200){
-                    Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
-                }
-
-                return nettyResponse.getResponseBody();
             }
             case DELETE: {
-                Request req = new RequestBuilder(httpMethod.getHttpMethod())
-                        .setUrl(restUrl)
-                        .setHeaders(getHeader(isServiceScope))
-                        .build();
+                try {
+                    asyncClient = new AsyncHttpClient();
+                    Request req = new RequestBuilder(httpMethod.getHttpMethod())
+                            .setUrl(restUrl)
+                            .setHeaders(getHeader(isServiceScope))
+                            .build();
 
-                logger.LogRequest(req);
+                    logger.LogRequest(req);
 
-                Future future = asyncClient.prepareRequest(req).execute();
-                NettyResponse nettyResponse = (NettyResponse) future.get();
+                    Future future = asyncClient.prepareRequest(req).execute();
+                    NettyResponse nettyResponse = (NettyResponse) future.get();
 
-                logger.LogResponse(nettyResponse);
-                if (expectedResponseCode != 0) {
-                    Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
+                    logger.LogResponse(nettyResponse);
+                    if (expectedResponseCode != 0) {
+                        Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
+                    }
+
+                    if (expectedResponseCode != 200) {
+                        Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
+                    }
+
+                    return nettyResponse.getResponseBody();
+                } catch (HttpResponseException ex) {
+                    throw new TestException(ex.getMessage().toString());
+                } finally {
+                    asyncClient.close();
                 }
-
-                if(expectedResponseCode != 200){
-                    Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
-                }
-
-                return nettyResponse.getResponseBody();
             }
             case OPTIONS:
                 //TODO
