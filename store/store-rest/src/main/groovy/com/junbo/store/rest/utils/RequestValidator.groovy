@@ -349,6 +349,13 @@ class RequestValidator {
         if (StringUtils.isEmpty(val)) {
             throw AppCommonErrors.INSTANCE.fieldRequired(fieldName).exception()
         }
+
+        if (val instanceof String) {
+            String value = (String)val;
+            if (StringUtils.isEmpty(value.trim())) {
+                throw AppCommonErrors.INSTANCE.fieldRequired(fieldName).exception()
+            }
+        }
     }
 
     Promise validateOrderValid(OrderId orderId) {

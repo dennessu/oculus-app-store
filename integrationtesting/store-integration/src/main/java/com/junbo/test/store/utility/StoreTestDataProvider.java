@@ -425,6 +425,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.updateUserProfile(userProfileUpdateRequest, expectedResponseCode);
     }
 
+    public Error updateUserProfileWithError(UserProfileUpdateRequest userProfileUpdateRequest, int expectedResponseCode, String errorCode) throws Exception {
+        return storeClient.updateUserProfileReturnError(userProfileUpdateRequest, expectedResponseCode, errorCode);
+    }
+
     public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest)
             throws Exception {
         return updateUserProfile(userProfileUpdateRequest, 200);
@@ -441,6 +445,12 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public EntitlementsGetResponse getEntitlement() throws Exception {
         return storeClient.getEntitlement();
+    }
+
+    public Error getTokenWithError(String refreshToken, int expectedCode, String errorCode) throws Exception {
+        AuthTokenRequest request = new AuthTokenRequest();
+        request.setRefreshToken(refreshToken);
+        return loginClient.getTokenWithError(request, expectedCode, errorCode);
     }
 
     public AuthTokenResponse getToken(String refreshToken, int expectedCode) throws Exception {

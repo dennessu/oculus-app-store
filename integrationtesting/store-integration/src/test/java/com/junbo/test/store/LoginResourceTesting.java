@@ -394,8 +394,30 @@ public class LoginResourceTesting extends BaseTestClass {
         AuthTokenResponse response = testDataProvider.getToken(authTokenResponse.getRefreshToken());
         Validator.Validate("Validate refreshToken works", response.getUsername(), authTokenResponse.getUsername());
 
-        response = testDataProvider.getToken(authTokenResponse.getAccessToken(), 400);
-        assert response == null;
+        Error error = testDataProvider.getTokenWithError(authTokenResponse.getAccessToken(), 400, "132.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("refresh_token");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
+
+        error = testDataProvider.getTokenWithError(null, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("refreshToken");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
+
+        error = testDataProvider.getTokenWithError("", 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("refreshToken");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
+
+        error = testDataProvider.getTokenWithError("       ", 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("refreshToken");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
+
+        error = testDataProvider.getTokenWithError(authTokenResponse.getRefreshToken(), 400, "132.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("refresh_token");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
     }
 
     @Property(
@@ -458,7 +480,8 @@ public class LoginResourceTesting extends BaseTestClass {
                     "1. check if the update link is not clicked, email cannot be updated",
                     "2. check if the update link is not clicked, update again, it will generate two emails",
                     "3. check if the update link is clicked, the primary email is updated",
-                    "4. check if there is no default validated email, the primary email can be updated with new email, should throw exception"
+                    "4. check if there is no default validated email, the primary email can be updated with new email, should throw exception",
+                    "5. check if the password isn't correct, link mail isn't sent and there is no "
             }
     )
     @Test
@@ -552,6 +575,59 @@ public class LoginResourceTesting extends BaseTestClass {
         userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse != null;
         assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+
+        // Scenario 5:
+        createUserRequest = testDataProvider.CreateUserRequest();
+        authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+
+        newEmail = RandomHelper.randomEmail();
+        userProfileUpdateRequest.getUserProfile().getEmail().setValue(newEmail);
+        userProfileUpdateRequest.setChallengeAnswer(null);
+        String newHeadLine = RandomHelper.randomNumeric(100);
+        userProfileUpdateRequest.getUserProfile().setHeadline(newHeadLine);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest, 200);
+
+        answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(RandomHelper.randomAlphabetic(100));
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        Error error = testDataProvider.updateUserProfileWithError(userProfileUpdateRequest, 400, "130.108");
+        assert error != null;
+        assert error.getMessage().equalsIgnoreCase("Invalid Challenge Answer.");
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 0;
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+        assert userProfileGetResponse.getUserProfile().getHeadline() == null;
+
+        answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getHeadline().equalsIgnoreCase(newHeadLine);
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getHeadline().equalsIgnoreCase(newHeadLine);
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 1;
+        oAuthClient.accessEmailVerifyLink(links.get(0));
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getHeadline().equalsIgnoreCase(newHeadLine);
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+        assert userProfileGetResponse.getUserProfile().getEmail().getIsValidated();
     }
 
     @Property(

@@ -46,11 +46,6 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     }
 
     @Override
-    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest) throws Exception {
-        return CreateUser(createUserRequest, 200);
-    }
-
-    @Override
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/create", createUserRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
@@ -149,11 +144,6 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     }
 
     @Override
-    public AuthTokenResponse getToken(AuthTokenRequest request) throws Exception {
-        return getToken(request, 200);
-    }
-
-    @Override
     public AuthTokenResponse getToken(AuthTokenRequest request, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/token", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
@@ -167,4 +157,13 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         return null;
     }
 
+    @Override
+    public Error getTokenWithError(AuthTokenRequest request, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/token", request, expectedResponseCode);
+
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+        assert error.getCode().equalsIgnoreCase(errorCode);
+        return error;
+    }
 }

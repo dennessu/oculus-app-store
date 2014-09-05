@@ -13,8 +13,6 @@ import com.junbo.store.spec.model.login.*;
  * Created by weiyu_000 on 8/6/14.
  */
 public interface LoginService {
-    AuthTokenResponse CreateUser(CreateUserRequest createUserRequest) throws Exception;
-
     AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, int expectedResponseCode) throws Exception;
 
     com.junbo.common.error.Error CreateUserWithError(CreateUserRequest createUserRequest, int expectedResponseCode, String errorCode) throws Exception;
@@ -33,8 +31,7 @@ public interface LoginService {
 
     com.junbo.common.error.Error rateUserCredentialWithError(UserCredentialRateRequest userCredentialRateRequest, int expectedResponseCode, String errorCode) throws Exception;
 
-    AuthTokenResponse getToken(AuthTokenRequest request) throws Exception;
-
     AuthTokenResponse getToken(AuthTokenRequest request, int expectedResponseCode) throws Exception;
 
+    Error getTokenWithError(AuthTokenRequest request, int expectedResponseCode, String errorCode) throws Exception;
 }
