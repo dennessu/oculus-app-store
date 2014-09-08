@@ -1,13 +1,12 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.test.store.apihelper.impl;
 
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.store.apihelper.LoginService;
 import com.junbo.test.store.apihelper.StoreConfigService;
 
 /**
