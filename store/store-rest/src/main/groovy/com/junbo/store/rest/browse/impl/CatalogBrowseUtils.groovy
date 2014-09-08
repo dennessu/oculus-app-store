@@ -108,6 +108,9 @@ class CatalogBrowseUtils {
                 result.revisions = list
                 return Promise.pure()
             }.then {
+                if (catalogItem.currentRevisionId == null) {
+                    return Promise.pure()
+                }
                 resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision e ->
                     result.currentRevision = e
                     return Promise.pure()
