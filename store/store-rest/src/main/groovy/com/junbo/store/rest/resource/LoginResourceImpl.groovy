@@ -71,7 +71,7 @@ class LoginResourceImpl implements LoginResource {
             errorContext.fieldName = 'username'
             return resourceContainer.userResource.checkUsername(userNameCheckRequest.username)
         }.recover { Throwable ex ->
-            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.InvalidField)) {
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate)) {
                 response = new UserNameCheckResponse(isAvailable : false)
                 return Promise.pure()
             }

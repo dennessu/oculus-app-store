@@ -5,6 +5,8 @@
  */
 package com.junbo.test.common.apihelper;
 
+// CHECKSTYLE:OFF
+
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.blueprint.Master;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;

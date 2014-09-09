@@ -53,8 +53,11 @@ public class LoginResourceTesting extends BaseTestClass {
     @Test
     public void testCheckUsername() throws Exception {
         String invalidUsername = "123Test";
-        UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckUserName(invalidUsername);
-        Validator.Validate("Validate invalid username", userNameCheckResponse.getIsAvailable(), false);
+        UserNameCheckResponse userNameCheckResponse = null;
+        Error error = testDataProvider.CheckUserNameWithError(invalidUsername, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("username");
+        assert error.getDetails().get(0).getReason().equalsIgnoreCase("Field value is invalid.");
 
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername());
@@ -63,8 +66,10 @@ public class LoginResourceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
         Validator.Validate("validate authtoken response correct", createUserRequest.getUsername(), authTokenResponse.getUsername());
 
-        userNameCheckResponse = testDataProvider.CheckUserName(invalidUsername);
-        Validator.Validate("Validate invalid username", userNameCheckResponse.getIsAvailable(), false);
+        error = testDataProvider.CheckUserNameWithError(invalidUsername, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("username");
+        assert error.getDetails().get(0).getReason().equalsIgnoreCase("Field value is invalid.");
 
         userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername());
         Validator.Validate("Validate duplicate username", userNameCheckResponse.getIsAvailable(), false);
@@ -72,7 +77,7 @@ public class LoginResourceTesting extends BaseTestClass {
         userNameCheckResponse = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15));
         Validator.Validate("Validate random character username", userNameCheckResponse.getIsAvailable(), true);
 
-        com.junbo.common.error.Error error = testDataProvider.CheckUserNameWithError(null, 400, "130.001");
+        error = testDataProvider.CheckUserNameWithError(null, 400, "130.001");
         Validator.Validate("Validate null username error response", true, error != null);
 
         error = testDataProvider.CheckUserNameWithError("", 400, "130.001");
@@ -92,12 +97,16 @@ public class LoginResourceTesting extends BaseTestClass {
     @Test
     public void testCheckEmail() throws Exception {
         String invalidEmail = "123Test";
-        UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckEmail(invalidEmail);
-        Validator.Validate("Validate invalid email", userNameCheckResponse.getIsAvailable(), false);
+        UserNameCheckResponse userNameCheckResponse =null;
+        Error error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
         invalidEmail = "###1212@silkcloud.com";
-        userNameCheckResponse = testDataProvider.CheckEmail(invalidEmail);
-        Validator.Validate("Validate invalid email", userNameCheckResponse.getIsAvailable(), false);
+        error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         userNameCheckResponse = testDataProvider.CheckEmail(createUserRequest.getEmail());
@@ -119,8 +128,10 @@ public class LoginResourceTesting extends BaseTestClass {
         Validator.Validate("validate authtoken response name correct", createUserRequest.getUsername(), userProfileGetResponse.getUserProfile().getUsername());
         Validator.Validate("validate authtoken response email correct", createUserRequest.getEmail(), userProfileGetResponse.getUserProfile().getEmail().getValue());
 
-        userNameCheckResponse = testDataProvider.CheckEmail(invalidEmail);
-        Validator.Validate("Validate invalid email", userNameCheckResponse.getIsAvailable(), false);
+        error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
         userNameCheckResponse = testDataProvider.CheckEmail(createUserRequest.getEmail());
         Validator.Validate("Validate duplicate email", userNameCheckResponse.getIsAvailable(), false);
@@ -128,7 +139,7 @@ public class LoginResourceTesting extends BaseTestClass {
         userNameCheckResponse = testDataProvider.CheckEmail(RandomHelper.randomEmail());
         Validator.Validate("Validate random character email", userNameCheckResponse.getIsAvailable(), true);
 
-        com.junbo.common.error.Error error = testDataProvider.CheckEmailWithError(null, 400, "130.001");
+        error = testDataProvider.CheckEmailWithError(null, 400, "130.001");
         assert error != null;
 
         error = testDataProvider.CheckEmailWithError("", 400, "130.001");
