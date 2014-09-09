@@ -27,6 +27,7 @@ import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
@@ -107,6 +108,63 @@ public class StoreTesting extends BaseTestClass {
         // todo:    Need to call entitlement
         //EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
         //IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offer_iap_normal);
+
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store checkout",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            environment = "release",
+            description = "Test prepare purchase digital good offer",
+            steps = {
+                    "1. Create user",
+                    "2. Add credit card into billing profile",
+                    "3. Post prepare purchase",
+                    "4. Verify price response",
+                    "5. Select payment instrument for purchase",
+                    "6. Verify response"
+            }
+    )
+    @Test
+    public void testPreparePurchaseDigitalGood() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+        //add new credit card to user
+
+        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
+        //verify decrypted credit card info
+        validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
+
+        //get payment id in billing profile
+        PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
+
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
+        //post order without set payment instrument
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
+
+        assert preparePurchaseResponse.getChallenge() != null;
+        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
+
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
+                offerId, paymentId, "1234", null);
+
+        assert preparePurchaseResponse.getChallenge() != null;
+        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
+        assert preparePurchaseResponse.getChallenge().getTos() != null;
+
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+                preparePurchaseResponse.getChallenge().getTos().getTosId());
+
+        //verify formatted price
+        //validationHelper.verifyPreparePurchase(preparePurchaseResponse);
+
+        if (preparePurchaseResponse.getPurchaseToken() == null || preparePurchaseResponse.getPurchaseToken().isEmpty()) {
+            throw new TestException("missing purchase token in prepare purchase response");
+        }
 
     }
 
