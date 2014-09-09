@@ -189,7 +189,7 @@ public class CloudantSniffer {
         }
 
         try {
-            return Promise.wrap(asGuavaFuture(requestBuilder.execute()))
+            return requestBuilder.execute()
                     .recover(new Promise.Func<Throwable, Promise<Response>>() {
                         public Promise<Response> apply(Throwable e) {
                             throw new CloudantConnectException("Error occurred while executing request to cloudant DB", e);

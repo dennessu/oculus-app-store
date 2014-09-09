@@ -181,6 +181,9 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
             authheader = "Basic %s" % base64String
             headers['Authorization'] = authheader
 
+        # enable profiling
+        headers['X-Enable-Profiling'] = 'true'
+
         # process cookies
         request = HttpRequest(protocol, host, port, path, headers)
         cookies.add_cookie_header(request)
@@ -198,12 +201,24 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
         resp = conn.getresponse()
         body = resp.read()
         verbose("[resp] %d %s" % (resp.status, resp.reason))
+        profileInfo = None
         for k, v in resp.getheaders():
-            verbose("[resp][headers] %s: %s" % (k, v))
+            if k.lower() == "x-oculus-profile-info":
+                profileInfo = v
+            else:
+                verbose("[resp][headers] %s: %s" % (k, v))
 
         if body:
             verbose("[resp][body] " + body)
         verbose("")
+
+        if profileInfo:
+            indent = 0
+            for p in profileInfo.split('|'):
+                if p == "]": indent -= 1
+                verbose("[resp][profile] " + (" " * indent * 4) + p)
+                if p == "[": indent += 1
+            verbose("")
         
         if resp.status >= 400 and raiseOnError:
             raise Exception('%s %s in %s %s\n%s' % (resp.status, resp.reason, method, url, body))

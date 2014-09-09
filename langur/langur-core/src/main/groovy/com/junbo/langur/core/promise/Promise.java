@@ -9,7 +9,6 @@ package com.junbo.langur.core.promise;
 
 import com.google.common.util.concurrent.*;
 import groovy.lang.Closure;
-import org.jboss.netty.util.Timeout;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -61,7 +60,6 @@ public class Promise<T> {
     public static interface Func<A, R> {
         public R apply(A a);
     }
-
 
     private static final Timer timer = new Timer();
 
@@ -172,7 +170,7 @@ public class Promise<T> {
     public Promise<T> recover(final Func<Throwable, Promise<T>> func) {
         return wrap(Futures.withFallback(future, new FutureFallback<T>() {
             @Override
-            public ListenableFuture<T> create(Throwable t) {
+            public ListenableFuture<T> create(Throwable t) throws Exception {
                 Promise<T> result = func.apply(t);
                 if (result == null) {
                     throw new RuntimeException("func " + funcToString(func) + " returns null");

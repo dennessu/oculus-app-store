@@ -99,7 +99,4 @@
             </bean>
         </property>
     </bean>
-
-    <bean id="tokenInfoParserFilter" class="com.junbo.authorization.TokenInfoParserFilter"/>
-    <bean id="userTracker" class="com.junbo.authorization.track.UserTrackerImpl" />
 </beans>

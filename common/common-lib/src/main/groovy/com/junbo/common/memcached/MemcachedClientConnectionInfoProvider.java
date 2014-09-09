@@ -6,7 +6,6 @@
 package com.junbo.common.memcached;
 
 import com.junbo.apphost.core.health.ConnectionInfoProvider;
-import net.spy.memcached.MemcachedClientIF;
 import net.spy.memcached.MemcachedNode;
 
 import java.util.HashMap;
@@ -20,7 +19,7 @@ public class MemcachedClientConnectionInfoProvider implements ConnectionInfoProv
     @Override
     public Map getConnectionInfo() {
         Map<String, String> result = new HashMap<>();
-        MemcachedClientIF memcachedClient = JunboMemcachedClient.instance();
+        JunboMemcachedClient memcachedClient = JunboMemcachedClient.instance();
         int i = 0;
         for (MemcachedNode memcachedNode : memcachedClient.getNodeLocator().getAll()) {
             result.put("node " + i++, "(" + (memcachedNode.isActive() ? "active) " : "inactive) ")

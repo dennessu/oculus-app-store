@@ -1,8 +1,11 @@
 package com.junbo.authorization
 
+import com.junbo.langur.core.profiling.ProfilingHelper
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Created by Shenhua on 5/14/2014.
@@ -10,6 +13,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 @SuppressWarnings(['CatchThrowable', 'CloseWithoutCloseable'])
 class TokenInfoScope implements AutoCloseable {
+    private static final Logger logger = LoggerFactory.getLogger(TokenInfoScope)
 
     static <T> T withNull(Closure<T> closure) {
         return with(null, closure)
@@ -78,6 +82,8 @@ class TokenInfoScope implements AutoCloseable {
     TokenInfoScope(TokenInfo tokenInfo) {
         oldTokenInfo = AuthorizeContext.currentTokenInfo
         AuthorizeContext.currentTokenInfo = tokenInfo
+
+        ProfilingHelper.appendRow(logger, "Parsed access token. user: %d client: %s scopes: %s", tokenInfo?.sub?.value, tokenInfo?.clientId, tokenInfo?.scopes)
     }
 
     @Override

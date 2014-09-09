@@ -5,8 +5,11 @@
  */
 package com.junbo.common.filter;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.configuration.ConfigServiceManager;
+import com.junbo.langur.core.profiling.ProfilingHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Priority;
@@ -19,6 +22,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.List;
 
 /**
  * Response filter.
@@ -34,6 +38,7 @@ public class ResponseFilter implements ContainerResponseFilter {
     private static final String ACCESS_CONTROL_ALLOW_METHODS_NAME = "common.accesscontrol.allowMethods";
 
     private static final String CACHE_CONTROL_KEY = "X-Oculus-Cache-Public";
+    private static final String PROFILE_OUTPUT_KEY = ProfilingHelper.PROFILE_OUTPUT_KEY;
 
     private final String allowOrigin;
     private final String allowHeader;
@@ -76,6 +81,15 @@ public class ResponseFilter implements ContainerResponseFilter {
                     break;
                 }
             }
+        }
+
+        if (ProfilingHelper.hasProfileOutput()) {
+            // keep header line small
+            String data = ProfilingHelper.dumpProfileData();
+            Iterable<String> chunks = Splitter.fixedLength(8000).split(data);
+            headers.put(PROFILE_OUTPUT_KEY, (List)Lists.newArrayList(chunks));
+
+            ProfilingHelper.clear();
         }
     }
 }

@@ -23,7 +23,7 @@ class JunboHttpContextScope implements AutoCloseable {
     }
 
     static <T> T with(JunboHttpContext.JunboHttpContextData data,
-                      List<JunboHttpContextScopeListener> listeners, Closure<T> closure) {
+                      JunboHttpContextScopeListeners listeners, Closure<T> closure) {
         def scope = new JunboHttpContextScope(data, listeners)
 
         Object result
@@ -55,7 +55,7 @@ class JunboHttpContextScope implements AutoCloseable {
     }
 
     static <T> Promise<T> with(JunboHttpContext.JunboHttpContextData data,
-                      List<JunboHttpContextScopeListener> listeners, Promise.Func0<Promise<T>> closure) {
+                      JunboHttpContextScopeListeners listeners, Promise.Func0<Promise<T>> closure) {
         def scope = new JunboHttpContextScope(data, listeners)
 
         Object result
@@ -93,14 +93,14 @@ class JunboHttpContextScope implements AutoCloseable {
         this(data, null)
     }
 
-    JunboHttpContextScope(JunboHttpContext.JunboHttpContextData data, List<JunboHttpContextScopeListener> listeners) {
+    JunboHttpContextScope(JunboHttpContext.JunboHttpContextData data, JunboHttpContextScopeListeners listeners) {
         oldData = JunboHttpContext.data
         JunboHttpContext.data = data
 
         this.listeners = []
 
         if (listeners != null) {
-            for (def listener : listeners) {
+            for (def listener : listeners.list) {
                 listener.begin()
 
                 this.listeners.add(listener)
@@ -111,7 +111,7 @@ class JunboHttpContextScope implements AutoCloseable {
     @Override
     void close() {
 
-        for (def listener : listeners.reverse()) {
+        for (def listener in listeners.reverse()) {
             try {
                 listener.end()
             } catch (Exception ex) {

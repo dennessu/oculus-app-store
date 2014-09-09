@@ -1,5 +1,4 @@
 package com.junbo.authorization
-
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
-
 /**
  * Created by Shenhua on 5/14/2014.
  */
