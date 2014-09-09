@@ -83,6 +83,9 @@ class BrowseDataBuilder {
     }
 
     private RevisionNote buildRevisionNote(ItemRevision itemRevision, ItemRevisionLocaleProperties itemRevisionLocaleProperties, ApiContext apiContext) {
+        if (itemRevision?.binaries == null) {
+            return null
+        }
         Binary binary = itemRevision.binaries[apiContext.platform.value]
         return new RevisionNote(
             versionCode: null as Integer, // todo fill version code
