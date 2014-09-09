@@ -208,7 +208,9 @@ class CatalogBrowseUtils {
                     review.starRatings[rating.type] = rating.score
                 }
 
-                return resourceContainer.userResource.get(new UserId(IdFormatter.decodeId(UserId, caseyReview.user.getId())), new UserGetOptions()).recover { Throwable e ->
+                Promise.pure().then {
+                    resourceContainer.userResource.get(new UserId(IdFormatter.decodeId(UserId, caseyReview.user.getId())), new UserGetOptions())
+                }.recover { Throwable e ->
                     if (e instanceof AppErrorException) {
                         return Promise.pure(null)
                     } else {
