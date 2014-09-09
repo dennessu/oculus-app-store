@@ -25,7 +25,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "101", message = "Invalid Password", field = "password", reason = "{0}")
     AppError invalidPassword(String errorMessage);
 
-    @ErrorDef(httpStatusCode = 412, code = "102", message = "User Not Found",
+    @ErrorDef(httpStatusCode = 404, code = "102", message = "User Not Found",
             field = "user", reason = "User with ID {0} is not found")
     AppError userNotFound(UserId id);
 
