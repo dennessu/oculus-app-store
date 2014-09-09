@@ -6,11 +6,11 @@
 package com.junbo.test.store;
 
 
-import com.junbo.common.error.*;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.browse.DeliveryResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -23,6 +23,7 @@ import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
+import com.junbo.test.common.apihelper.common.HttpClientHelper;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
@@ -105,10 +106,13 @@ public class StoreTesting extends BaseTestClass {
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        // todo:    Need to call entitlement
-        //EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
-        //IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offer_iap_normal);
+        EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
+        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
 
+        DeliveryResponse deliveryResponse = testDataProvider.getDeliveryByOfferId(offerId);
+        String downloadLink = deliveryResponse.getDownloadUrl();
+
+        HttpClientHelper.validateURLAccessibility(downloadLink, 200);
     }
 
     @Property(
