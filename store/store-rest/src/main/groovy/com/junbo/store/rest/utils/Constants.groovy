@@ -22,7 +22,6 @@ class Constants {
     public static class ChallengeType {
         public static final String PASSWORD = 'PASSWORD'
         public static final String PIN = 'PIN'
-        public static final String EMAIL_VERIFICATION = 'EMAIL_VERIFICATION'
         public static final String TOS_ACCEPTANCE = 'TOS_ACCEPTANCE'
     }
 

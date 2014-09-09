@@ -7,7 +7,6 @@ package com.junbo.common.job.cache;
 
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.memcached.JunboMemcachedClient;
-import net.spy.memcached.MemcachedClientIF;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ import java.util.concurrent.*;
 public class CacheSnifferJob implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheSnifferJob.class);
 
-    private static MemcachedClientIF memcachedClient = JunboMemcachedClient.instance();
+    private static JunboMemcachedClient memcachedClient = JunboMemcachedClient.instance();
 
     private static final String FEED_SEPARATOR = "\r\n";
     private static final String SEQ_KEY = "seq";

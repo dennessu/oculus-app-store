@@ -23,7 +23,6 @@ public class CipherHelper {
     // Only support English password Only
 
     private static final Integer MIN_LENGTH = 8;
-    private static final Integer MAX_LENGTH = 16;
 
     // private final static String STAR = "*";
     private static final String ANY_STRING_PATTERN = ".*";
@@ -43,7 +42,7 @@ public class CipherHelper {
 
         if(!isValidLength(password)) {
             throw AppErrors.INSTANCE.
-                    invalidPassword("Password should be between " + MIN_LENGTH + " and " + MAX_LENGTH).exception();
+                    invalidPassword("Password length should be larger than " + MIN_LENGTH).exception();
         }
 
         if(isNotAllowedContain(password)) {
@@ -60,7 +59,7 @@ public class CipherHelper {
     }
 
     public static String calcPwdStrength(String s) {
-        if(s.length() < MIN_LENGTH || s.length() > MAX_LENGTH) {
+        if(s.length() < MIN_LENGTH) {
             return UserPasswordStrength.WEAK.toString();
         }
 
@@ -97,7 +96,7 @@ public class CipherHelper {
     }
 
     private static boolean isValidLength(String s) {
-        if(s.length() >= MIN_LENGTH && s.length() <= MAX_LENGTH) {
+        if(s.length() >= MIN_LENGTH) {
             return true;
         }
         return false;

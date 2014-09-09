@@ -5,6 +5,7 @@
  */
 package com.junbo.test.store.apihelper.impl;
 
+import com.junbo.common.error.Error;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.store.spec.model.login.*;
@@ -45,11 +46,6 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     }
 
     @Override
-    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest) throws Exception {
-        return CreateUser(createUserRequest, 200);
-    }
-
-    @Override
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/create", createUserRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
@@ -61,7 +57,16 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
             return authTokenResponse;
         }
         return null;
+    }
 
+    @Override
+    public com.junbo.common.error.Error CreateUserWithError(CreateUserRequest createUserRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/create", createUserRequest, expectedResponseCode);
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+        assert error.getCode().equalsIgnoreCase(errorCode);
+
+        return error;
     }
 
     @Override
@@ -71,6 +76,16 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
                 new TypeReference<UserNameCheckResponse>() {
                 }, responseBody);
         return userNameCheckResponse;
+    }
+
+    @Override
+    public com.junbo.common.error.Error CheckUserNameWithError(UserNameCheckRequest userNameCheckRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/name-check", userNameCheckRequest, expectedResponseCode);
+        Error error = new JsonMessageTranscoder().decode(
+                new TypeReference<Error>() {
+                }, responseBody);
+        assert error.getCode().equalsIgnoreCase(errorCode);
+        return error;
     }
 
     @Override
@@ -96,6 +111,17 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     }
 
     @Override
+    public Error signInWithError(UserSignInRequest userSignInRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/sign-in", userSignInRequest, expectedResponseCode);
+
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+
+        assert error.getCode().equalsIgnoreCase(errorCode);
+        return error;
+    }
+
+    @Override
     public UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/rate-credential", userCredentialCheckRequest);
 
@@ -106,13 +132,15 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     }
 
     @Override
-    public UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest, int expectedResponseCode) throws Exception {
-        return null;
-    }
+    public Error rateUserCredentialWithError(UserCredentialRateRequest userCredentialRateRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/rate-credential", userCredentialRateRequest, expectedResponseCode);
 
-    @Override
-    public AuthTokenResponse getToken(AuthTokenRequest request) throws Exception {
-        return getToken(request, 200);
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+
+        assert error.getCode().equalsIgnoreCase(errorCode);
+
+        return error;
     }
 
     @Override
@@ -129,4 +157,13 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         return null;
     }
 
+    @Override
+    public Error getTokenWithError(AuthTokenRequest request, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/token", request, expectedResponseCode);
+
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+        assert error.getCode().equalsIgnoreCase(errorCode);
+        return error;
+    }
 }

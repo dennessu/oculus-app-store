@@ -25,6 +25,15 @@ public class SectionInfoNode {
 
     private List<SectionInfoNode> children;
 
+    public SectionInfoNode() {
+    }
+
+    public SectionInfoNode(SectionInfo sectionInfo) {
+        name = sectionInfo.getName();
+        category = sectionInfo.getCategory();
+        criteria = sectionInfo.getCriteria();
+    }
+
     public String getName() {
         return name;
     }

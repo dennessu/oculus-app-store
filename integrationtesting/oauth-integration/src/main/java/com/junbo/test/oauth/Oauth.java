@@ -172,12 +172,12 @@ public class Oauth {
 
     // pass in userName for validation purpose only
     public static String PostRegisterUser(String cid, String userName, String email) throws Exception {
-        return PostRegisterUser(cid, userName, email, true);
+        return PostRegisterUser(cid, userName, email, true, false);
     }
 
     // pass in userName for validation purpose only
-    public static String PostRegisterUser(String cid, String userName, String email, Boolean verifyEmail)
-            throws Exception {
+    public static String PostRegisterUser(String cid, String userName, String email,
+                                          Boolean verifyEmail, Boolean doubleVerifyEmail) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
@@ -197,7 +197,7 @@ public class Oauth {
             return responseString;
         } finally {
             response.close();
-            if (verifyEmail) RunPostRegistrationWithEmailVerification(cid);
+            if (verifyEmail) RunPostRegistrationWithEmailVerification(cid, doubleVerifyEmail);
         }
     }
 
@@ -233,7 +233,8 @@ public class Oauth {
         }
     }
 
-    private static void RunPostRegistrationWithEmailVerification(String cid) throws Exception {
+    private static void RunPostRegistrationWithEmailVerification(String cid, Boolean doubleVerifyEmail)
+            throws Exception {
         // get payment method view
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
         response.close();
@@ -253,7 +254,8 @@ public class Oauth {
         response.close();
         String emailLink = viewModelResponse.getModel().get("link").toString();
         emailLink = URLProtocolAuthorityReplace(emailLink, DefaultOauthEndpoint);
-        VerifyEmail(emailLink);
+        VerifyEmail(emailLink, false);
+        if (doubleVerifyEmail) VerifyEmail(emailLink, true);
         // goto next
         nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
@@ -368,13 +370,20 @@ public class Oauth {
         }
     }
 
-    public static void VerifyEmail(String link) throws Exception {
+    public static void VerifyEmail(String link, Boolean validateUsedToken) throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(link, false);
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
                 if (h.toString().startsWith(tarHeader)) {
-                    Validator.Validate("validate email verify success", true, h.toString().contains("email-verify-success"));
+                    Validator.Validate(
+                            validateUsedToken ?
+                                    "validate email verify fail" :
+                                    "validate email verify success",
+                            true,
+                            validateUsedToken ?
+                                    h.toString().contains("email-verify-fail") :
+                                    h.toString().contains("email-verify-success"));
                     return;
                 }
             }

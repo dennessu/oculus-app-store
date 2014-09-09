@@ -260,6 +260,10 @@ public class Identity {
                 JsonHelper.JsonSerializer(user), User.class);
     }
 
+    public static void UserDelete(User user) throws Exception {
+        IdentityDelete(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()));
+    }
+
     public static User UserGetByUserId(UserId userId) throws Exception {
         return (User) IdentityGet(IdentityV1UserURI + "/" + IdFormatter.encodeId(userId), User.class);
     }
@@ -472,6 +476,27 @@ public class Identity {
         } else {
             return "?translation=" + translation;
         }
+    }
+
+    public static List<UserCredentialVerifyAttempt> UserCredentialAttemptList(UserId userId, String credentialType) throws Exception {
+        List<UserCredentialVerifyAttempt> attempts = new ArrayList<>();
+        for (Object obj : IdentityGet(
+                IdentityV1UserCredentialAttemptsURI + "?userId=" + GetHexLongId(userId.getValue()) + "&credentialType=" + credentialType, (Results.class)).getItems()) {
+            attempts.add((UserCredentialVerifyAttempt) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    UserCredentialVerifyAttempt.class)
+            );
+        }
+        return attempts;
+    }
+
+    public static List<UserCredential> UserCredentialList(UserId userId, String credentialType) throws Exception {
+        List<UserCredential> credentials = new ArrayList<>();
+        for (Object obj : IdentityGet(
+                IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) + "/credentials?credentialType=" + credentialType, (Results.class)).getItems()) {
+            credentials.add((UserCredential) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserCredential.class)
+            );
+        }
+        return credentials;
     }
 
     public static CloseableHttpResponse UserCredentialPostDefault(UserId userId, String oldPassword, String password) throws Exception {

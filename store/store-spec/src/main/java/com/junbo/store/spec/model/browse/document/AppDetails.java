@@ -12,9 +12,9 @@ import java.util.List;
  */
 public class AppDetails {
 
-    private List<String> categories;
+    private List<CategoryInfo> categories;
 
-    private List<String> genres;
+    private List<GenreInfo> genres;
 
     private Long contentRating;
 
@@ -40,19 +40,19 @@ public class AppDetails {
 
     private List<RevisionNote> revisionNotes;
 
-    public List<String> getCategories() {
+    public List<CategoryInfo> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<String> categories) {
+    public void setCategories(List<CategoryInfo> categories) {
         this.categories = categories;
     }
 
-    public List<String> getGenres() {
+    public List<GenreInfo> getGenres() {
         return genres;
     }
 
-    public void setGenres(List<String> genres) {
+    public void setGenres(List<GenreInfo> genres) {
         this.genres = genres;
     }
 

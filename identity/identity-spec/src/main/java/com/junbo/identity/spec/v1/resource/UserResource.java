@@ -67,10 +67,12 @@ public interface UserResource {
     @RouteBy("userId")
     Promise<Void> delete(@PathParam("userId") UserId userId);
 
+    @ApiOperation("Check whether username is valid")
     @POST
     @Path("/check-username/{username}")
     Promise<Void> checkUsername(@PathParam("username") String username);
 
+    @ApiOperation("Check whether email is valid")
     @POST
     @Path("/check-email/{email}")
     Promise<Void> checkEmail(@PathParam("email") String email);

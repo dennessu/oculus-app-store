@@ -2,15 +2,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.store.spec.resource.adapter" />
     <context:component-scan base-package="com.junbo.store.rest" />
     <bean id="defaultLoginResourceClientFactory" class="com.junbo.store.spec.resource.proxy.LoginResourceClientProxyFactory"/>
     <bean id="defaultStoreResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreResourceClientProxyFactory"/>
+    <bean id="defaultStoreConfigResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreConfigResourceClientProxyFactory"/>
 
     <bean id="storeCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation">
@@ -32,5 +33,16 @@
         <property name="cacheManager" ref="storeCacheManager"/>
         <property name="cacheName" value="store.item.price.cache"/>
     </bean>
+
+    <bean id="storeOfferToItemCache" class="com.junbo.store.common.cache.impl.SimpleCache">
+        <property name="cacheEnabled" value="${store.cache.enabled}"/>
+        <property name="cacheManager" ref="storeCacheManager"/>
+        <property name="cacheName" value="store.item.offerlookup"/>
+    </bean>
+
+    <util:list id="storeSectionHandlers">
+        <ref bean="store.featureSectionHandler"/>
+        <ref bean="store.categorySectionHandler"/>
+    </util:list>
 
 </beans>

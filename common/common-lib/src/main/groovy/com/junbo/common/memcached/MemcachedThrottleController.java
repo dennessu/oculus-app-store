@@ -9,7 +9,6 @@ import com.junbo.common.error.AppCommonErrors;
 import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.rest.ThrottleController;
 import groovy.transform.CompileStatic;
-import net.spy.memcached.MemcachedClientIF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -24,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 public class MemcachedThrottleController implements ThrottleController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MemcachedThrottleController.class);
 
-    private MemcachedClientIF memcachedClient;
+    private JunboMemcachedClient memcachedClient;
 
     private boolean enabled;
 

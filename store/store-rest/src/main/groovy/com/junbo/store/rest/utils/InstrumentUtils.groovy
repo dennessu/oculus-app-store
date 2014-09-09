@@ -112,7 +112,7 @@ class InstrumentUtils {
         Promise promise = Promise.pure(null)
         dataConvertor.toPaymentInstrument(instrument, paymentInstrument)
 
-        if (instrument.type != PIType.CREDITCARD.name()) {
+        if (instrument.type != PIType.CREDITCARD.name() && instrument.type != PIType.STOREDVALUE.name()) {
             throw AppCommonErrors.INSTANCE.invalidOperation("Direct instrument creation not allowed for instrument type ${instrument.type}.").exception()
         }
 

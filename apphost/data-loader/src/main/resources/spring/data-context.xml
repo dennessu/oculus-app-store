@@ -14,6 +14,11 @@
 
     <context:component-scan base-package="com.junbo.identity.rest.resource" />
 
+    <bean id="dataLoaderCatalogUtils" class="com.junbo.data.handler.utils.CatalogUtils">
+        <property name="itemAttributeResource" ref="defaultItemAttributeResource"/>
+        <property name="offerAttributeResource" ref="defaultOfferAttributeResource"/>
+    </bean>
+
     <bean id="baseDataHandler" class="com.junbo.data.handler.BaseDataHandler" abstract="true">
         <property name="transcoder" ref="commonTranscoder"/>
         <property name="alwaysOverwrite" value="${data.loader.alwaysOverwrite}"/>
@@ -86,6 +91,21 @@
         <property name="itemRevisionResource" ref="defaultItemRevisionResource"/>
         <property name="offerResource" ref="defaultOfferResource"/>
         <property name="offerRevisionResource" ref="defaultOfferRevisionResource"/>
+        <property name="catalogUtils" ref="dataLoaderCatalogUtils"/>
+    </bean>
+
+    <bean id="baseAttributeDataHandler" class="com.junbo.data.handler.BaseAttributeDataHandler" parent="baseDataHandler" abstract="true"/>
+
+    <bean id="itemAttributeDataHandler" class="com.junbo.data.handler.ItemAttributeDataHandler" parent="baseAttributeDataHandler">
+        <property name="attributeType" value="Item Attribute"/>
+        <property name="catalogUtils" ref="dataLoaderCatalogUtils"/>
+        <property name="itemAttributeResource" ref="defaultItemAttributeResource"/>
+    </bean>
+
+    <bean id="offerAttributeDataHandler" class="com.junbo.data.handler.OfferAttributeDataHandler" parent="baseAttributeDataHandler">
+        <property name="attributeType" value="Offer Attribute"/>
+        <property name="catalogUtils" ref="dataLoaderCatalogUtils"/>
+        <property name="offerAttributeResource" ref="defaultOfferAttributeResource"/>
     </bean>
 
     <bean id="tosDataHandler" class="com.junbo.data.handler.TosDataHandler" parent="baseDataHandler">
@@ -108,6 +128,8 @@
                 <entry key="organization" value-ref="organizationDataHandler" />
                 <entry key="group" value-ref="groupDataHandler" />
                 <entry key="user-group" value-ref="userGroupDataHandler" />
+                <entry key="offer-attribute" value-ref="offerAttributeDataHandler" />
+                <entry key="item-attribute" value-ref="itemAttributeDataHandler" />
                 <entry key="catalog" value-ref="catalogDataHandler" />
                 <entry key="tos" value-ref="tosDataHandler" />
             </map>
@@ -127,6 +149,8 @@
                 <value>organization</value>
                 <value>group</value>
                 <value>user-group</value>
+                <value>offer-attribute</value>
+                <value>item-attribute</value>
                 <value>catalog</value>
                 <value>tos</value>
             </list>
@@ -134,6 +158,8 @@
         <property name="serialDataList">
             <set>
                 <value>locale</value>
+                <value>offer-attribute</value>
+                <value>item-attribute</value>
             </set>
         </property>
     </bean>

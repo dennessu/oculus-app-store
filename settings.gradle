@@ -24,6 +24,7 @@ includeDir 'apphost'
 includeDir 'crypto'
 //includeDir 'store'
 includeDir 'token'
+//includeDir 'casey-emulator'
 
 def includeDir(String dir) {
     new File(rootDir, "$dir/settings.gradle").eachLine { line ->

@@ -15,4 +15,6 @@ public interface Cache<K, V> {
     V get(K key);
 
     String getCacheName();
+
+    void evictAll();
 }

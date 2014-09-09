@@ -27,8 +27,6 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
-
-import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 /**
  * CloudantClientImpl.
  */
@@ -323,7 +321,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         }
 
         try {
-            return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable e ->
+            return requestBuilder.execute().recover { Throwable e ->
                 throw new CloudantConnectException('Exception happened while executing request to cloudant DB', e)
             }
         } catch (IOException e) {

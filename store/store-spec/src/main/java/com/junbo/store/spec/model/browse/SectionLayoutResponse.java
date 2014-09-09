@@ -19,7 +19,7 @@ public class SectionLayoutResponse {
 
     private List<SectionInfo> children;
 
-    private String title;
+    private String name;
 
     private Boolean ordered;
 
@@ -43,12 +43,12 @@ public class SectionLayoutResponse {
         this.children = children;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Boolean getOrdered() {

@@ -26,13 +26,13 @@
             "longDescription": "long description",
             "shortDescription": "short description",
             "images":{
-                "thumbnail": {
+                "thumbnail": {"15x20":{
                     "id": "id of image",
                     "href": "http://www.google.com",
                     "size": 200,
                     "x": 20,
                     "y": 10
-                },
+                }},
                 "main": {}
             },
             "videos":[

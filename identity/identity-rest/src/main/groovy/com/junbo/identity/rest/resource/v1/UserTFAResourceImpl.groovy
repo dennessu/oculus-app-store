@@ -1,5 +1,4 @@
 package com.junbo.identity.rest.resource.v1
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
@@ -8,7 +7,6 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
-import com.junbo.configuration.ConfigServiceManager
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.QueryParam
@@ -33,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
-
 /**
  * Created by liangfu on 4/24/14.
  */
@@ -98,9 +95,7 @@ class UserTFAResourceImpl implements UserTFAResource {
                         Created201Marker.mark(newUserTeleCode.getId())
 
                         newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
-                        if (!StringUtils.isEmpty(newUserTeleCode.verifyCode)
-                         && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))
-                         && !Boolean.TRUE.equals(AuthorizeContext.debugEnabled)) {
+                        if (!StringUtils.isEmpty(newUserTeleCode.verifyCode) && !AuthorizeContext.debugEnabled) {
                             newUserTeleCode.verifyCode = null
                         }
                         return Promise.pure(newUserTeleCode)
@@ -130,8 +125,7 @@ class UserTFAResourceImpl implements UserTFAResource {
                 newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode,
                         getOptions.properties?.split(',') as List<String>)
 
-                if (!StringUtils.isEmpty(newUserTeleCode.verifyCode)
-                  && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))) {
+                if (!StringUtils.isEmpty(newUserTeleCode.verifyCode) && !AuthorizeContext.debugEnabled) {
                     newUserTeleCode.verifyCode = null
                 }
                 return Promise.pure(newUserTeleCode)
@@ -172,8 +166,7 @@ class UserTFAResourceImpl implements UserTFAResource {
 
                     return userTFAPhoneRepository.update(userTFA, oldUserTeleCode).then { UserTFA newUserTele ->
                         newUserTele = userTFAFilter.filterForGet(newUserTele, null)
-                        if (!StringUtils.isEmpty(newUserTele.verifyCode)
-                                && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))) {
+                        if (!StringUtils.isEmpty(newUserTele.verifyCode) && !AuthorizeContext.debugEnabled) {
                             newUserTele.verifyCode = null
                         }
                         return Promise.pure(newUserTele)
@@ -215,8 +208,7 @@ class UserTFAResourceImpl implements UserTFAResource {
                 return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
                     return userTFAPhoneRepository.update(userTFA, oldUserTeleCode).then { UserTFA newUserTeleCode ->
                         newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
-                        if (!StringUtils.isEmpty(newUserTeleCode.verifyCode)
-                         && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))) {
+                        if (!StringUtils.isEmpty(newUserTeleCode.verifyCode) && !AuthorizeContext.debugEnabled) {
                             newUserTeleCode.verifyCode = null
                         }
                         return Promise.pure(newUserTeleCode)
@@ -270,8 +262,7 @@ class UserTFAResourceImpl implements UserTFAResource {
                             newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode,
                                     listOptions.properties?.split(',') as List<String>)
 
-                            if (!StringUtils.isEmpty(newUserTeleCode.verifyCode)
-                                    && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))) {
+                            if (!StringUtils.isEmpty(newUserTeleCode.verifyCode) && !AuthorizeContext.debugEnabled) {
                                 newUserTeleCode.verifyCode = null
                             }
 

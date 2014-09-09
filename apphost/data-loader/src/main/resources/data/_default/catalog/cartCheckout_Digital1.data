@@ -1,6 +1,6 @@
 {
     "item": {
-        "genres": [], 
+        "genres": [{"id" : "Shooter"}],
         "defaultOffer": null, 
         "rev": null,
         "currentRevision": null, 
@@ -146,7 +146,7 @@
         "isPublished": false, 
         "environment": "DEV", 
         "currentRevision": null, 
-        "categories": []
+        "categories": [{"id" : "Game"}]
     },
     "offerRevision": {
             "status": "DRAFT",

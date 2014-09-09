@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:component-scan base-package="com.junbo.store.clientproxy"/>
 
     <bean id="storeAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service email.service payment.service order.service fulfilment.service entitlement.service catalog"/>
+        <property name="scope" value="identity.service email.service payment.service order.service fulfilment.service entitlement.service cms.service catalog crypto.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${store.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${store.clientproxy.service.clientId}"/>
@@ -194,7 +194,6 @@
     <bean id="store.caseyClientProxy"
           class="com.junbo.store.spec.resource.external.proxy.CaseyResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.casey.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
 </beans>

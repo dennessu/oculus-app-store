@@ -1,9 +1,7 @@
 package com.junbo.authorization
-
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.context.JunboHttpContextScopeListener
 import org.springframework.beans.factory.annotation.Autowired
-
 /**
  * Created by kg on 5/18/2014.
  */

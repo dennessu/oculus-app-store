@@ -60,20 +60,20 @@
             "size": "small",
             "supportEmail": "jasonfu@silkcloud.com",
             "images":{
-                "thumbnail": {
+                "thumbnail": {"15x20": {
                     "id": "id of image",
-                    "href":"http://www.google.com",
-                    "size":200,
-                    "x":20,
-                    "y":10
-                },
-                "main": {
+                    "href": "http://www.google.com",
+                    "size": 200,
+                    "x": 20,
+                    "y": 10
+                }},
+                "main": {"15x20":{
                     "id": "id of image",
                     "href":"http://www.google.com",
                     "size":300,
                     "x":20,
                     "y":15
-                }
+                }}
             },
             "videos":[],
             "manualDocument": "http://www.google.com/manual.pdf",

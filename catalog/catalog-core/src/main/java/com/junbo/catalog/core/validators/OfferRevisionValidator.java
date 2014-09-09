@@ -198,6 +198,9 @@ public class OfferRevisionValidator extends ValidationSupport {
                     /*if (revision.getOwnerId() != null && !revision.getOwnerId().equals(item.getOwnerId())) {
                         errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "offer should only contains items of same owner"));
                     }*/
+                    if (Status.APPROVED.is(revision.getStatus()) && item.getCurrentRevisionId() == null){
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "Item " + item.getItemId() + " does not have an approved revision"));
+                    }
                     if (ItemType.STORED_VALUE.is(item.getType())) {
                         svItemId = item.getItemId();
                     }

@@ -5,6 +5,7 @@
  */
 package com.junbo.test.store;
 
+import com.junbo.common.error.Error;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -25,7 +26,6 @@ import com.junbo.test.common.property.Status;
 import org.apache.commons.lang3.time.DateUtils;
 import org.testng.annotations.Test;
 
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -53,8 +53,11 @@ public class LoginResourceTesting extends BaseTestClass {
     @Test
     public void testCheckUsername() throws Exception {
         String invalidUsername = "123Test";
-        UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckUserName(invalidUsername);
-        Validator.Validate("Validate invalid username", userNameCheckResponse.getIsAvailable(), false);
+        UserNameCheckResponse userNameCheckResponse = null;
+        Error error = testDataProvider.CheckUserNameWithError(invalidUsername, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("username");
+        assert error.getDetails().get(0).getReason().equalsIgnoreCase("Field value is invalid.");
 
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername());
@@ -63,14 +66,22 @@ public class LoginResourceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
         Validator.Validate("validate authtoken response correct", createUserRequest.getUsername(), authTokenResponse.getUsername());
 
-        userNameCheckResponse = testDataProvider.CheckUserName(invalidUsername);
-        Validator.Validate("Validate invalid username", userNameCheckResponse.getIsAvailable(), false);
+        error = testDataProvider.CheckUserNameWithError(invalidUsername, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("username");
+        assert error.getDetails().get(0).getReason().equalsIgnoreCase("Field value is invalid.");
 
         userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername());
         Validator.Validate("Validate duplicate username", userNameCheckResponse.getIsAvailable(), false);
 
         userNameCheckResponse = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15));
         Validator.Validate("Validate random character username", userNameCheckResponse.getIsAvailable(), true);
+
+        error = testDataProvider.CheckUserNameWithError(null, 400, "130.001");
+        Validator.Validate("Validate null username error response", true, error != null);
+
+        error = testDataProvider.CheckUserNameWithError("", 400, "130.001");
+        Validator.Validate("Validate empty username error response", true, error != null);
     }
 
     @Property(
@@ -86,12 +97,16 @@ public class LoginResourceTesting extends BaseTestClass {
     @Test
     public void testCheckEmail() throws Exception {
         String invalidEmail = "123Test";
-        UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckEmail(invalidEmail);
-        Validator.Validate("Validate invalid email", userNameCheckResponse.getIsAvailable(), false);
+        UserNameCheckResponse userNameCheckResponse =null;
+        Error error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
         invalidEmail = "###1212@silkcloud.com";
-        userNameCheckResponse = testDataProvider.CheckEmail(invalidEmail);
-        Validator.Validate("Validate invalid email", userNameCheckResponse.getIsAvailable(), false);
+        error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         userNameCheckResponse = testDataProvider.CheckEmail(createUserRequest.getEmail());
@@ -113,14 +128,22 @@ public class LoginResourceTesting extends BaseTestClass {
         Validator.Validate("validate authtoken response name correct", createUserRequest.getUsername(), userProfileGetResponse.getUserProfile().getUsername());
         Validator.Validate("validate authtoken response email correct", createUserRequest.getEmail(), userProfileGetResponse.getUserProfile().getEmail().getValue());
 
-        userNameCheckResponse = testDataProvider.CheckEmail(invalidEmail);
-        Validator.Validate("Validate invalid email", userNameCheckResponse.getIsAvailable(), false);
+        error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
         userNameCheckResponse = testDataProvider.CheckEmail(createUserRequest.getEmail());
         Validator.Validate("Validate duplicate email", userNameCheckResponse.getIsAvailable(), false);
 
         userNameCheckResponse = testDataProvider.CheckEmail(RandomHelper.randomEmail());
         Validator.Validate("Validate random character email", userNameCheckResponse.getIsAvailable(), true);
+
+        error = testDataProvider.CheckEmailWithError(null, 400, "130.001");
+        assert error != null;
+
+        error = testDataProvider.CheckEmailWithError("", 400, "130.001");
+        assert error != null;
     }
 
     @Property(
@@ -135,47 +158,73 @@ public class LoginResourceTesting extends BaseTestClass {
     )
     @Test
     public void testCreateUser() throws Exception {
+        AuthTokenResponse createUserResponse = null;
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         String invalidUsername = "123yunlong";
         String oldUsername = createUserRequest.getUsername();
         createUserRequest.setUsername(invalidUsername);
-        AuthTokenResponse createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        Error error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("username");
 
         createUserRequest.setUsername(oldUsername);
         String oldEmail = createUserRequest.getEmail();
         createUserRequest.setEmail("##1234@silkcloud.com");
-        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("email");
+
+        createUserRequest.setUsername(null);
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("username");
+        createUserRequest.setUsername(oldUsername);
 
         createUserRequest.setEmail(oldEmail);
         String oldNickName = createUserRequest.getNickName();
         // nick name should not be the same as username
         createUserRequest.setNickName(createUserRequest.getUsername());
-        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("username");
 
         createUserRequest.setNickName(oldNickName);
         String oldPassword = createUserRequest.getPassword();
         createUserRequest.setPassword(createUserRequest.getUsername() + "gggg");
-        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("password");
 
         createUserRequest.setPassword(oldPassword);
         String oldPin = createUserRequest.getPin();
         createUserRequest.setPin("abcd");
-        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("pin");
 
         createUserRequest.setPin(oldPin);
         Date oldDob = createUserRequest.getDob();
         createUserRequest.setDob(DateUtils.addYears(new Date(), 100));
-        createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 400);
-        assert createUserResponse == null;
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("dob");
 
         createUserRequest.setDob(oldDob);
+        oldPassword = createUserRequest.getPassword();
+        createUserRequest.setPassword(null);
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("password");
+        createUserRequest.setPassword(oldPassword);
+
         createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 200);
         Validator.Validate("Validate username created successfully", createUserRequest.getUsername(), createUserResponse.getUsername());
+
+        // validate create with same username failure
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 409, "131.002");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("username");
+        assert error.getDetails().get(0).getReason().contains("Field value is duplicate");
 
         UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse != null;
@@ -216,6 +265,10 @@ public class LoginResourceTesting extends BaseTestClass {
         response = testDataProvider.RateUserCredential(password);
         Validator.Validate("validate fair character password", response.getStrength(), CREDENTIAL_STRENGTH_FAIR);
 
+        password = RandomHelper.randomAlphabetic(1000) + RandomHelper.randomNumeric(1000);
+        response = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate strong character password", response.getStrength(), CREDENTIAL_STRENGTH_STRONG);
+
         password = "abcdEFG#$1223";
         response = testDataProvider.RateUserCredential(password);
         Validator.Validate("validate strong character password", response.getStrength(), CREDENTIAL_STRENGTH_STRONG);
@@ -223,6 +276,18 @@ public class LoginResourceTesting extends BaseTestClass {
         String username = "abcdefg";
         response = testDataProvider.RateUserCredential(password, username);
         Validator.Validate("validate invalid character password", response.getStrength(), CREDENTIAL_STRENGTH_INVALID);
+
+        password = null;
+        Error error = testDataProvider.RateUserCredentialWithError(password, RandomHelper.randomAlphabetic(10), 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("userCredential.value");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
+
+        password = "";
+        error = testDataProvider.RateUserCredentialWithError(password, RandomHelper.randomAlphabetic(10), 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("userCredential.value");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
     }
 
     @Property(
@@ -290,6 +355,45 @@ public class LoginResourceTesting extends BaseTestClass {
             owner = "ZhaoYunlong",
             status = Status.Enable,
             steps = {
+                    "Check login negative case"
+            }
+    )
+    @Test
+    public void testLoginInvalid() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse !=  null;
+
+        Error error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PIN", "1234", 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("userCredential.type");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid. type must be PASSWORD");
+
+        error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PASSWORD", RandomHelper.randomAlphabetic(10), 412, "132.103");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("password");
+
+        error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(10), "PASSWORD", createUserRequest.getPassword(), 412, "132.103");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("username");
+
+        error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PASSWORD", null, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("userCredential.value");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
+
+        authTokenResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        assert authTokenResponse != null;
+        assert authTokenResponse.getUsername().equals(createUserRequest.getUsername());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
                     "Check refresh token works"
             }
     )
@@ -301,8 +405,30 @@ public class LoginResourceTesting extends BaseTestClass {
         AuthTokenResponse response = testDataProvider.getToken(authTokenResponse.getRefreshToken());
         Validator.Validate("Validate refreshToken works", response.getUsername(), authTokenResponse.getUsername());
 
-        response = testDataProvider.getToken(authTokenResponse.getAccessToken(), 400);
-        assert response == null;
+        Error error = testDataProvider.getTokenWithError(authTokenResponse.getAccessToken(), 400, "132.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("refresh_token");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
+
+        error = testDataProvider.getTokenWithError(null, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("refreshToken");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
+
+        error = testDataProvider.getTokenWithError("", 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("refreshToken");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
+
+        error = testDataProvider.getTokenWithError("       ", 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("refreshToken");
+        assert error.getDetails().get(0).getReason().contains("Field is required");
+
+        error = testDataProvider.getTokenWithError(authTokenResponse.getRefreshToken(), 400, "132.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("refresh_token");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
     }
 
     @Property(
@@ -327,9 +453,18 @@ public class LoginResourceTesting extends BaseTestClass {
         storeUserEmail.setValue(newEmail);
         storeUserProfile.setEmail(storeUserEmail);
         userProfileUpdateRequest.setUserProfile(storeUserProfile);
+
         UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
         assert userProfileUpdateResponse.getChallenge() != null;
-        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("EMAIL_VERIFICATION");
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
+
+        ChallengeAnswer answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
 
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
@@ -338,28 +473,219 @@ public class LoginResourceTesting extends BaseTestClass {
             oAuthClient.accessEmailVerifyLink(link);
         }
 
-        ChallengeAnswer answer = new ChallengeAnswer();
-        answer.setType(userProfileUpdateResponse.getChallenge().getType());
-        userProfileUpdateRequest.setChallengeAnswer(answer);
-        userProfileUpdateRequest.setUserProfileUpdateToken(userProfileUpdateResponse.getUserProfileUpdateToken());
-        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
-        assert userProfileUpdateResponse.getChallenge() != null;
-        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
-
-        answer = new ChallengeAnswer();
-        answer.setType(userProfileUpdateResponse.getChallenge().getType());
-        answer.setPassword(createUserRequest.getPassword());
-        userProfileUpdateRequest.setChallengeAnswer(answer);
-        userProfileUpdateRequest.setUserProfileUpdateToken(userProfileUpdateResponse.getUserProfileUpdateToken());
-        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
-        assert userProfileUpdateResponse != null;
-        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
-
         UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
 
         AuthTokenResponse response = testDataProvider.SignIn(newEmail, createUserRequest.getPassword());
         assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check update email in invalid situation, all those steps should be done after password input",
+                    "1. check if the update link is not clicked, email cannot be updated",
+                    "2. check if the update link is not clicked, update again, it will generate two emails",
+                    "3. check if the update link is clicked, the primary email is updated",
+                    "4. check if there is no default validated email, the primary email can be updated with new email, should throw exception",
+                    "5. check if the password isn't correct, link mail isn't sent and there is no "
+            }
+    )
+    @Test
+    public void testUpdateEmailInvalidCases() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+
+        // Without password, there should be new mail sent
+        UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
+        StoreUserProfile storeUserProfile = new StoreUserProfile();
+        StoreUserEmail storeUserEmail = new StoreUserEmail();
+        String newEmail = RandomHelper.randomEmail();
+        storeUserEmail.setValue(newEmail);
+        storeUserProfile.setEmail(storeUserEmail);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+        UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getChallenge() != null;
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
+
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 0;
+
+        // Scenario 1:
+        ChallengeAnswer answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 1;
+
+        UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        // Scenario 2:
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 2;
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        // Scenario 3:
+        oAuthClient.accessEmailVerifyLink(links.get(0));
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+
+        // Scenario 4:
+        createUserRequest = testDataProvider.CreateUserRequest();
+        authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+
+        newEmail = RandomHelper.randomEmail();
+        userProfileUpdateRequest.getUserProfile().getEmail().setValue(newEmail);
+        userProfileUpdateRequest.setChallengeAnswer(null);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest, 412);
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
+        assert links != null;
+        assert links.size() == 1;
+        oAuthClient.accessEmailVerifyLink(links.get(0));
+
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+
+        answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 1;
+        oAuthClient.accessEmailVerifyLink(links.get(0));
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+
+        // Scenario 5:
+        createUserRequest = testDataProvider.CreateUserRequest();
+        authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+
+        newEmail = RandomHelper.randomEmail();
+        userProfileUpdateRequest.getUserProfile().getEmail().setValue(newEmail);
+        userProfileUpdateRequest.setChallengeAnswer(null);
+        String newHeadLine = RandomHelper.randomNumeric(100);
+        userProfileUpdateRequest.getUserProfile().setHeadline(newHeadLine);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest, 200);
+
+        answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(RandomHelper.randomAlphabetic(100));
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        Error error = testDataProvider.updateUserProfileWithError(userProfileUpdateRequest, 400, "130.108");
+        assert error != null;
+        assert error.getMessage().equalsIgnoreCase("Invalid Challenge Answer.");
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 0;
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+        assert userProfileGetResponse.getUserProfile().getHeadline() == null;
+
+        answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getHeadline().equalsIgnoreCase(newHeadLine);
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getHeadline().equalsIgnoreCase(newHeadLine);
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 1;
+        oAuthClient.accessEmailVerifyLink(links.get(0));
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse != null;
+        assert userProfileGetResponse.getUserProfile().getHeadline().equalsIgnoreCase(newHeadLine);
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+        assert userProfileGetResponse.getUserProfile().getEmail().getIsValidated();
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check update email works with invalid password"
+            }
+    )
+    @Test
+    public void testUpdateEmailWithInvalidPassword() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+
+        UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
+        StoreUserProfile storeUserProfile = new StoreUserProfile();
+        StoreUserEmail storeUserEmail = new StoreUserEmail();
+        String newEmail = RandomHelper.randomEmail();
+        storeUserEmail.setValue(newEmail);
+        storeUserProfile.setEmail(storeUserEmail);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+        UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getChallenge() != null;
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
+
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        for(String link : links) {
+            oAuthClient.accessEmailVerifyLink(link);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            ChallengeAnswer answer = new ChallengeAnswer();
+            answer.setType(userProfileUpdateResponse.getChallenge().getType());
+            answer.setPassword(RandomHelper.randomAlphabetic(10));
+            userProfileUpdateRequest.setChallengeAnswer(answer);
+            com.junbo.common.error.Error appError = testDataProvider.updateUserProfile(userProfileUpdateRequest, 400, "130.108");
+            assert appError != null;
+        }
+
+        // check maximum retry count
+        com.junbo.common.error.Error appError = testDataProvider.updateUserProfile(userProfileUpdateRequest, 400, "130.108");
+        assert appError != null;
     }
 
     @Property(

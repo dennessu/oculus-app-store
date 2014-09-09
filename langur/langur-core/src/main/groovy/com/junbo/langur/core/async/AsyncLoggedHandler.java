@@ -16,13 +16,15 @@ import java.io.ByteArrayOutputStream;
 public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
     protected static final Logger logger = JunboAsyncHttpClient.logger;
 
+    private String method;
     private String uri;
     private long startTime = System.currentTimeMillis();
     private ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     private StringBuffer trace = new StringBuffer();
     private boolean is5xxResponse;
 
-    public AsyncLoggedHandler(String uri) {
+    public AsyncLoggedHandler(String method, String uri) {
+        this.method = method;
         this.uri = uri;
     }
 
@@ -38,7 +40,7 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
         if (logger.isDebugEnabled() || is5xxResponse) {
             trace.setLength(0);
             bytes.reset();
-            trace.append(String.format("HttpResponse: %s\n\tresponse: %s %s", uri, status.getStatusCode(), status.getStatusText()));
+            trace.append(String.format("HttpResponse: %s %s\n\tresponse: %s %s", method, uri, status.getStatusCode(), status.getStatusText()));
         }
         return super.onStatusReceived(status);
     }

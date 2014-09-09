@@ -4,7 +4,6 @@ import com.junbo.common.cloudant.client.*
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.cloudant.model.CloudantSearchResult
 import com.junbo.common.cloudant.model.CloudantUniqueItem
-import com.junbo.common.track.Tracker
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -48,7 +47,6 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     protected CloudantDbUri cloudantDbUri
     protected Class<T> entityClass
     protected String dbName
-    protected Tracker tracker
 
     private boolean enableCache
     private boolean includeDocs
@@ -66,11 +64,6 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     @Required
     void setDbName(String dbName) {
         this.dbName = dbName
-    }
-
-    @Required
-    void setTracker(Tracker tracker) {
-        this.tracker = tracker
     }
 
     void setEnableCache(boolean enableCache) {

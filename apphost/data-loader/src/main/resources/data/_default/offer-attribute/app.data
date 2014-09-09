@@ -1,0 +1,10 @@
+{
+    "type": "CATEGORY",
+        "locales": {
+            "en_US": {
+                "name": "App",
+                "description": ""
+            }
+    },
+    "parent": null
+}

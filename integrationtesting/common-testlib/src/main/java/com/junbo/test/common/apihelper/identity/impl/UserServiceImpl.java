@@ -8,6 +8,8 @@ package com.junbo.test.common.apihelper.identity.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.common.error.*;
+import com.junbo.common.error.Error;
 import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
@@ -504,6 +506,18 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         Master.getInstance().addUser(userRtnId, userPut);
 
         return userRtnId;
+    }
+
+    public com.junbo.common.error.Error PutUserWithError(String userId, User user, int expectedResponseCode, String errorCode) throws Exception {
+
+        String putUrl = identityServerURL + "/" + userId;
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode);
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+
+        assert error.getCode().equalsIgnoreCase(errorCode);
+
+        return error;
     }
 
     @Override

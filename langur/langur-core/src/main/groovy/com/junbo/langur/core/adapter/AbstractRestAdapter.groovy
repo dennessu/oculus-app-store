@@ -54,17 +54,19 @@ abstract class AbstractRestAdapter {
     }
 
     void __processResponseData() {
+        def junboHttpContextResponseStatus = JunboHttpContext.responseStatus;
+        def junboHttpContextResponseHeaders = JunboHttpContext.responseHeaders;
 
         respondingContext.push(new Function<ContainerResponse, ContainerResponse>() {
             @Override
             ContainerResponse apply(ContainerResponse containerResponse) {
 
-                if (JunboHttpContext.responseStatus != -1) {
-                    containerResponse.status = JunboHttpContext.responseStatus
+                if (junboHttpContextResponseStatus != -1) {
+                    containerResponse.status = junboHttpContextResponseStatus
                 }
 
-                if (JunboHttpContext.responseHeaders != null) {
-                    for (Map.Entry<String, List<String>> entry : JunboHttpContext.responseHeaders.entrySet()) {
+                if (junboHttpContextResponseHeaders != null) {
+                    for (Map.Entry<String, List<String>> entry : junboHttpContextResponseHeaders.entrySet()) {
                         for (String value : entry.value) {
                             containerResponse.headers.add(entry.key, value)
                         }

@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.core.action
-
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.promise.Promise
@@ -14,7 +13,6 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppErrors
 import com.ning.http.client.Response
-import com.ning.http.client.extra.ListenableFutureAdapter
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -99,7 +97,7 @@ class ValidateCaptcha implements Action {
         requestBuilder.addParameter('remoteip', contextWrapper.remoteAddress)
 
         try {
-            return Promise.wrap(ListenableFutureAdapter.asGuavaFuture(requestBuilder.execute())).then { Response res ->
+            return requestBuilder.execute().then { Response res ->
                 if (res.statusCode / 100 == 2) {
                     String[] results = res.responseBody.split('\n')
                     if (results[0] == 'true') {

@@ -10,6 +10,8 @@ import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.Locale;
 
+import java.util.Map;
+
 /**
  * The ApiContext class.
  */
@@ -28,6 +30,15 @@ public class ApiContext {
     private String userAgent;
 
     private UserId user;
+
+    /**
+     * The ContextDataKey enum.
+     */
+    public static enum ContextDataKey {
+        CMS_CAMPAIGN
+    }
+
+    private Map<ContextDataKey, Object> contextData;
 
     public Platform getPlatform() {
         return platform;
@@ -83,5 +94,13 @@ public class ApiContext {
 
     public void setUser(UserId user) {
         this.user = user;
+    }
+
+    public Map<ContextDataKey, Object> getContextData() {
+        return contextData;
+    }
+
+    public void setContextData(Map<ContextDataKey, Object> contextData) {
+        this.contextData = contextData;
     }
 }
