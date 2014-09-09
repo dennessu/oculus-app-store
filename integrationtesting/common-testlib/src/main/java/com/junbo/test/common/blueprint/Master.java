@@ -72,6 +72,8 @@ public class Master {
 
     private String currentUid;
 
+    private String apiErrorMsg;
+
     public void initializeMaster() {
         this.initializeUsers();
         this.initializeCarts();
@@ -463,6 +465,14 @@ public class Master {
             }
         }
         return null;
+    }
+
+    public String getApiErrorMsg() {
+        return apiErrorMsg;
+    }
+
+    public void setApiErrorMsg(String apiErrorMsg) {
+        this.apiErrorMsg = apiErrorMsg;
     }
 
 }

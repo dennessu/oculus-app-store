@@ -41,6 +41,9 @@ class LoginResourceImpl implements LoginResource {
     @Value('${store.oauth.clientSecret}')
     private String clientSecret
 
+    @Value('${store.oauth.defaultScopes}')
+    private String defaultScopes
+
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
@@ -68,7 +71,7 @@ class LoginResourceImpl implements LoginResource {
             errorContext.fieldName = 'username'
             return resourceContainer.userResource.checkUsername(userNameCheckRequest.username)
         }.recover { Throwable ex ->
-            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.InvalidField)) {
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate)) {
                 response = new UserNameCheckResponse(isAvailable : false)
                 return Promise.pure()
             }
@@ -161,7 +164,7 @@ class LoginResourceImpl implements LoginResource {
                 new AccessTokenRequest(
                         refreshToken: tokenRequest.refreshToken,
                         grantType: 'refresh_token',
-                        scope: 'offline storeapi entitlement',
+                        scope: defaultScopes,
                         clientId: clientId,
                         clientSecret: clientSecret
                 )
@@ -194,7 +197,7 @@ class LoginResourceImpl implements LoginResource {
                         clientId: clientId,
                         clientSecret: clientSecret,
                         grantType: 'password',
-                        scope: 'offline storeapi entitlement'
+                        scope: defaultScopes
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
             def response = fromAuthTokenResponse(accessTokenResponse)

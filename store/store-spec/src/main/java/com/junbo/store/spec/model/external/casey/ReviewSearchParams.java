@@ -5,50 +5,22 @@
  */
 package com.junbo.store.spec.model.external.casey;
 
+import com.junbo.common.id.UserId;
+
 import javax.ws.rs.QueryParam;
 
 /**
  * ReviewSearchParams.
  */
-public class ReviewSearchParams {
-    @QueryParam("cursor")
-    private String cursor;
-
-    @QueryParam("count")
-    private Integer count;
-
-    @QueryParam("locale")
-    private String locale;
-
+public class ReviewSearchParams extends CaseySearchParams {
     @QueryParam("resourceType")
     private String resourceType;
 
     @QueryParam("resourceId")
     private String resourceId;
 
-    public String getCursor() {
-        return cursor;
-    }
-
-    public void setCursor(String cursor) {
-        this.cursor = cursor;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
+    @QueryParam("userId")
+    private UserId userId;
 
     public String getResourceType() {
         return resourceType;
@@ -64,5 +36,13 @@ public class ReviewSearchParams {
 
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }

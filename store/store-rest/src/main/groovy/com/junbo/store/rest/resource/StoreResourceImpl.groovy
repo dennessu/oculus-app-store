@@ -12,7 +12,7 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppError
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
@@ -37,6 +37,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
+import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
@@ -50,10 +51,8 @@ import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.*
 import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.iap.*
 import com.junbo.store.spec.model.identity.*
-import com.junbo.store.spec.model.profile.UpdateProfileState
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.model.token.Token
 import com.junbo.store.spec.resource.StoreResource
@@ -193,11 +192,6 @@ class StoreResourceImpl implements StoreResource {
                 user = u
             }.then {
                 updateUserCredential(user.getId(), request, errorContext)
-            }.then {
-                updateUserEmail(user, request, errorContext).then { Boolean changed ->
-                    userPendingUpdate = (userPendingUpdate || changed)
-                    return Promise.pure()
-                }
             }.then {
                 if (StringUtils.isEmpty(userProfile.headline)) {
                     return Promise.pure(null)
@@ -472,7 +466,7 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             requestValidator.validateMakeFreePurchaseRequest(request).then {
-                requestValidator.validateOfferForPurchase(request.offer, apiContext.country.getId(), apiContext.locale.getId(), true)
+                requestValidator.validateOfferForPurchase(user.getId(), request.offer, apiContext.country.getId(), apiContext.locale.getId(), true)
             }
         }.then {
             if (tosFreepurchaseEnable) {
@@ -510,7 +504,9 @@ class StoreResourceImpl implements StoreResource {
                     response.order = order.getId()
                     getEntitlementsByOrder(order, null).then { List<Entitlement> entitlements ->
                         response.entitlements = entitlements
-                        return Promise.pure(response)
+                        expandEntitlementItem(response.entitlements, apiContext).then {
+                            return Promise.pure(response)
+                        }
                     }
                 }
             }
@@ -538,7 +534,7 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             requestValidator.validatePreparePurchaseRequest(request).then {
-                requestValidator.validateOfferForPurchase(request.offer, apiContext.country.getId(), apiContext.locale.getId(), false)
+                requestValidator.validateOfferForPurchase(user.getId(), request.offer, apiContext.country.getId(), apiContext.locale.getId(), false)
             }
         }.then {
             if (request.purchaseToken == null) {
@@ -638,10 +634,15 @@ class StoreResourceImpl implements StoreResource {
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest) {
         PurchaseState purchaseState
         User user
+        ApiContext apiContext
         boolean askChallenge = false
         requestValidator.validateRequiredApiHeaders()
         return identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
+            apiContextBuilder.buildApiContext().then { ApiContext ac ->
+                apiContext = ac
+                return Promise.pure(null)
+            }
             return Promise.pure()
         }.then {
             requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest)
@@ -699,7 +700,9 @@ class StoreResourceImpl implements StoreResource {
                     }
                 }
             }.then {
-                return Promise.pure(response)
+                expandEntitlementItem(response.entitlements, apiContext).then {
+                    return Promise.pure(response)
+                }
             }
         }
     }
@@ -823,7 +826,7 @@ class StoreResourceImpl implements StoreResource {
     Promise<DetailsResponse> getDetails(DetailsRequest request) {
         requestValidator.validateRequiredApiHeaders().validateDetailsRequest(request)
         prepareBrowse().then { ApiContext apiContext ->
-            return browseService.getItemDetails(request.itemId, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
+            return browseService.getItem(request.itemId, true, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
                 return Promise.pure(new DetailsResponse(item: item))
             }
         }
@@ -831,25 +834,18 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<ReviewsResponse> getReviews(ReviewsRequest request) {
-        requestValidator.validateRequiredApiHeaders() // todo replace the dummy implementation
-        ReviewsResponse response = new ReviewsResponse(reviews: [])
-        return Promise.pure(response)
+        requestValidator.validateRequiredApiHeaders().validateReviewsRequest(request)
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.getReviews(request, apiContext)
+        }
     }
 
     @Override
     Promise<AddReviewResponse> addReview(AddReviewRequest request) {
-        requestValidator.validateRequiredApiHeaders() // todo replace the dummy implementation
-        return Promise.pure(new AddReviewResponse(
-                review: new Review(
-                        //reviewId: UUID.randomUUID().toString(),
-                        authorName: 'test',
-                        deviceName: 'Nexus 5',
-                        title: request.title,
-                        content: request.content,
-                        //starRating: request.starRating,
-                        timestamp: new Date()
-                )
-        ))
+        requestValidator.validateRequiredApiHeaders().validateAddReviewRequest(request)
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.addReview(request, apiContext)
+        }
     }
 
     @Override
@@ -986,7 +982,7 @@ class StoreResourceImpl implements StoreResource {
         return promise.then {
             return Promise.each(entitlementIds) { String entitlementId ->
                 return resourceContainer.entitlementResource.getEntitlement(new EntitlementId(entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
-                    if (catalogEntitlement.type != EntitlementType.DOWNLOAD.name()) {
+                    if (StringUtils.isEmpty(hostPackageName) && catalogEntitlement.type != EntitlementType.DOWNLOAD.name()) {
                         return Promise.pure(null)
                     }
                     return convertEntitlement(catalogEntitlement, hostPackageName).then { Entitlement e ->
@@ -1211,35 +1207,18 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<Boolean> updateUserEmail(User user, UserProfileUpdateRequest request, ErrorContext errorContext) {
-        if (StringUtils.isEmpty(request.userProfile.email?.value)) {
-            return Promise.pure(false)
-        }
-
-        return tokenProcessor.toTokenObject(request.userProfileUpdateToken, UpdateProfileState).then { UpdateProfileState state ->
-            if (user.emails == null) {
-                user.emails = [] as List
-            }
-            def defaultLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
-            if (defaultLink != null) {
-                user.emails.remove(defaultLink)
-            }
-
-            user.emails.add(new UserPersonalInfoLink(
-                    value: state.emailPIIId,
-                    isDefault: true
-            ))
-
-            return Promise.pure(true)
-        }
-    }
-
     private String getPlatformName() {
         return 'ANDROID'
     }
 
     private Promise validateInstrumentForPreparePurchase(User user, PreparePurchaseRequest preparePurchaseRequest) {
-        return Promise.pure(null) // todo valid pi
+        return resourceContainer.paymentInstrumentResource.getById(preparePurchaseRequest.getInstrument()).then { PaymentInstrument pi ->
+            if (pi == null || pi.userId != user.getId().getValue()) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('instrument').exception()
+            }
+
+            return Promise.pure(null)
+        }
     }
 
     private void fillPurchaseState(PurchaseState purchaseState, PreparePurchaseRequest request, ApiContext apiContext) {
@@ -1304,9 +1283,11 @@ class StoreResourceImpl implements StoreResource {
                 }
 
                 if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
-                    AppError appError = (AppError)t
-                    if (appError.error().message.contains('User reaches maximum allowed retry count')) {
-                        throw AppErrors.INSTANCE.maximumAttemptReached().exception()
+                    AppErrorException appError = (AppErrorException)t
+                    if (!CollectionUtils.isEmpty(appError.error.error().getDetails())
+                     && !org.springframework.util.StringUtils.isEmpty(appError.error.error().getDetails().get(0).getReason())
+                     && appError.error.error().getDetails().get(0).getReason().contains('User reaches maximum allowed retry count')) {
+                        throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                     }
                 }
 
@@ -1374,6 +1355,16 @@ class StoreResourceImpl implements StoreResource {
     private Promise<ApiContext> prepareBrowse() {
         identityUtils.getVerifiedUserFromToken().then {
             return apiContextBuilder.buildApiContext()
+        }
+    }
+
+    private Promise expandEntitlementItem(List<Entitlement> entitlements, ApiContext apiContext) {
+        Promise.each(entitlements) { Entitlement entitlement ->
+            browseService.getItem(entitlement.item, false, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
+                entitlement.itemDetails = item
+                entitlement.itemDetails.ownedByCurrentUser = true
+                return Promise.pure()
+            }
         }
     }
 }

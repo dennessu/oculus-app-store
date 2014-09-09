@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * CaseyReview.
  */
-public class CaseyReview {
+public class CaseyReview extends BaseCaseyModel {
     private List<Rating> ratings;
     private String reviewTitle;
     private String review;

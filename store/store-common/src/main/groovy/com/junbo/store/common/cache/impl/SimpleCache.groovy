@@ -63,6 +63,11 @@ class SimpleCache<K, V> implements Cache<K, V>, InitializingBean {
     }
 
     @Override
+    void evictAll() {
+        cache.removeAll();
+    }
+
+    @Override
     void afterPropertiesSet() throws Exception {
         assert cacheManager != null, 'cacheManager not set'
         if (cacheManager.status != Status.STATUS_ALIVE) {

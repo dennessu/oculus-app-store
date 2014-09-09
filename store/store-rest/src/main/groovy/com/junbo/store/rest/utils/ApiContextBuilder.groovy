@@ -35,6 +35,7 @@ class ApiContextBuilder {
 
     Promise<ApiContext> buildApiContext() {
         ApiContext result = new ApiContext()
+        result.contextData = new HashMap<>()
         result.platform = Platform.ANDROID
         result.userAgent = getHeader(StoreApiHeader.USER_AGENT)
         result.androidId = getHeader(StoreApiHeader.ANDROID_ID)

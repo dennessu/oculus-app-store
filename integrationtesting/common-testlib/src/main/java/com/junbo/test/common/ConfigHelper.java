@@ -5,6 +5,8 @@
  */
 package com.junbo.test.common;
 
+// CHECKSTYLE:OFF
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

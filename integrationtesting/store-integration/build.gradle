@@ -58,8 +58,10 @@ test {
 dependencies {
     compile junboProject(':common-testlib')
     compile junboProject(':store-spec')
+    compile junboProject(':store-spec')
     compile junboProject(':catalog-integration')
     compile junboProject(':payment-integration')
+    compile junboProject(':casey-emulator-spec')
 
     compile(libraries.asyncclient)
 

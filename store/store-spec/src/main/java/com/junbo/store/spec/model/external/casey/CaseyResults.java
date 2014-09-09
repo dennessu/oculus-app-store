@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * The CaseyResults class.
  */
-public class CaseyResults<T> {
+public class CaseyResults<T> extends BaseCaseyModel {
 
     private Link self;
 

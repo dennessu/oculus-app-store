@@ -7,6 +7,8 @@ package com.junbo.data.handler
 
 import com.junbo.catalog.common.util.CloneUtils
 import com.junbo.catalog.spec.enums.ItemType
+import com.junbo.catalog.spec.model.attribute.ItemAttribute
+import com.junbo.catalog.spec.model.attribute.OfferAttribute
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemsGetOptions
@@ -20,6 +22,7 @@ import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
+import com.junbo.data.handler.utils.CatalogUtils
 import com.junbo.data.model.CatalogData
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.option.list.OrganizationListOptions
@@ -37,6 +40,7 @@ class CatalogDataHandler extends BaseDataHandler {
     private ItemRevisionResource itemRevisionResource
     private OfferResource offerResource
     private OfferRevisionResource offerRevisionResource
+    private CatalogUtils catalogUtils
 
     @Required
     void setOrganizationResource(OrganizationResource organizationResource) {
@@ -61,6 +65,11 @@ class CatalogDataHandler extends BaseDataHandler {
     @Required
     void setOfferRevisionResource(OfferRevisionResource offerRevisionResource) {
         this.offerRevisionResource = offerRevisionResource
+    }
+
+    @Required
+    void setCatalogUtils(CatalogUtils catalogUtils) {
+        this.catalogUtils = catalogUtils
     }
 
     @Override
@@ -98,6 +107,7 @@ class CatalogDataHandler extends BaseDataHandler {
         String itemRevisionName = itemRevision.getLocales().get(defaultLocale).name
 
         //Judge if item and its revision have been loaded
+        item.genres = getItemAttributeIds(item.genres)
         Item itemExisting = null
         String itemId
         try {
@@ -142,7 +152,13 @@ class CatalogDataHandler extends BaseDataHandler {
             }
         } else {
             itemId = itemExisting.itemId
-            logger.info("----The item $itemRevisionName and its revision have been loaded, skip")
+            if (new HashSet<>(item.genres).equals(new HashSet(itemExisting.genres))) {
+                logger.info("----The item $itemRevisionName and its revision have been loaded, skip")
+            } else {
+                itemExisting.genres = item.genres
+                itemResource.update(itemExisting.getId(), itemExisting).get()
+                logger.info("----The item $itemRevisionName and its revision have been loaded, greners changed, update")
+            }
         }
 
         //loading offer and its revision
@@ -151,7 +167,7 @@ class CatalogDataHandler extends BaseDataHandler {
 
         offer.id = null
         offer.ownerId = ownerId
-
+        offer.categories = getOfferAttributeIds(offer.categories)
         offerRevision.id = null
         offerRevision.ownerId = ownerId
         offerRevision.items.get(0).itemId = itemId
@@ -180,7 +196,14 @@ class CatalogDataHandler extends BaseDataHandler {
             offerRevision.offerId = offerId
             handle(offerRevision)
         } else {
-            logger.info("----The offer $offerRevisionName and its revision have been loaded, skip")
+            if (new HashSet<>(offer.categories).equals(new HashSet(offerExisting.categories))) {
+                logger.info("----The offer $offerRevisionName and its revision have been loaded, skip")
+            } else {
+                offerExisting.categories = offer.categories
+                offerResource.update(offerExisting.getId(), offerExisting).get()
+                logger.info("----The offer $offerRevisionName and its revision have been loaded, categories changed, update")
+            }
+
         }
 
     }
@@ -259,6 +282,32 @@ class CatalogDataHandler extends BaseDataHandler {
         } catch (Exception e) {
             logger.error("Error creating offer revision $offerRevision.revisionId.", e)
         }
+    }
+
+    private List<String> getItemAttributeIds(List<String> itemAttributeNames) {
+        List<String> result = []
+        itemAttributeNames.each { String name ->
+            ItemAttribute attribute = catalogUtils.getItemAttributeByName(name)
+            if (attribute == null) {
+                logger.warn('Item attribute not found, name={}', name)
+            } else {
+                result << attribute.getId()
+            }
+        }
+        return result
+    }
+
+    private List<String> getOfferAttributeIds(List<String> offerAttributeNames) {
+        List<String> result = []
+        offerAttributeNames.each { String name ->
+            OfferAttribute attribute = catalogUtils.getOfferAttributeByName(name)
+            if (attribute == null) {
+                logger.warn('Offer attribute not found, name={}', name)
+            } else {
+                result << attribute.getId()
+            }
+        }
+        return result
     }
 
 }

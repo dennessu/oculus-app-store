@@ -35,6 +35,8 @@ public interface StoreService {
 
     UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest request, int expectedResponseCode) throws Exception;
 
+    com.junbo.common.error.Error updateUserProfileReturnError(UserProfileUpdateRequest request, int expectedResponseCode, String errorCode) throws Exception;
+
     BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request) throws Exception;
 
     BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request, int expectedResponseCode) throws Exception;
@@ -46,6 +48,8 @@ public interface StoreService {
     PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest) throws Exception;
 
     PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest, int expectedResponseCode) throws Exception;
+
+    com.junbo.common.error.Error preparePurchaseWithException(PreparePurchaseRequest preparePurchaseRequest, int expectedResponseCode, String errorCode) throws Exception;
 
     CommitPurchaseResponse commitPurchase(CommitPurchaseRequest commitPurchaseRequest) throws Exception;
 

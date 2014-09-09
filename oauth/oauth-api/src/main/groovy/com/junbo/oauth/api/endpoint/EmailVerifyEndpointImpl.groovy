@@ -140,6 +140,23 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             emailPii.value = ObjectMapperProvider.instance().valueToTree(email)
             userPersonalInfoResource.put(emailPii.getId(), emailPii).get()
 
+            if (isUpdatePrimaryMailRequired(user, emailVerifyCode)) {
+                User existing = userResource.get(user.getId(), new UserGetOptions()).get()
+                UserPersonalInfoLink defaultLink = existing.emails.find { UserPersonalInfoLink link ->
+                    return link.isDefault
+                }
+                if (defaultLink == null) {
+                    defaultLink = new UserPersonalInfoLink()
+                    defaultLink.isDefault = true
+                    defaultLink.value = new UserPersonalInfoId(emailVerifyCode.targetMailId)
+                    existing.emails.add(defaultLink)
+                } else {
+                    defaultLink.value = new UserPersonalInfoId(emailVerifyCode.targetMailId)
+                }
+
+                userResource.put(user.getId(), existing).get()
+            }
+            
             LoginState loginState = new LoginState(
                     userId: emailVerifyCode.userId,
                     lastAuthDate: new Date()
@@ -193,6 +210,26 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             String email = userService.getUserEmailByUserId(userId).get()
             csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.VerificationEmailSent, property: email)).get()
         }
+    }
+
+    private Boolean isUpdatePrimaryMailRequired(User user, EmailVerifyCode verifyCode) {
+        if (verifyCode.targetMailId == null) {
+            return false
+        }
+
+        if (CollectionUtils.isEmpty(user.emails)) {
+            return false
+        }
+
+        UserPersonalInfoLink defaultLink = user.emails.find { UserPersonalInfoLink link ->
+            return link.isDefault
+        }
+
+        if (defaultLink != null && defaultLink.value.value != verifyCode.targetMailId) {
+            return true
+        }
+
+        return false
     }
 
     private UserPersonalInfo getEmailPii(User user, EmailVerifyCode verifyCode) {

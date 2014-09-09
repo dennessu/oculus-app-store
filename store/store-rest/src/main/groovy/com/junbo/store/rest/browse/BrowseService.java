@@ -16,7 +16,7 @@ import com.junbo.store.spec.model.browse.document.Item;
  */
 public interface BrowseService {
 
-    Promise<Item> getItemDetails(ItemId itemId, ApiContext apiContext);
+    Promise<Item> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext);
 
     Promise<TocResponse> getToc(ApiContext apiContext);
 
@@ -27,4 +27,8 @@ public interface BrowseService {
     Promise<LibraryResponse> getLibrary(ApiContext apiContext);
 
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request, ApiContext apiContext);
+
+    Promise<ReviewsResponse> getReviews(ReviewsRequest request, ApiContext apiContext);
+
+    Promise<AddReviewResponse> addReview(AddReviewRequest request, ApiContext apiContext);
 }

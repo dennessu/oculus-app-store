@@ -1,0 +1,13 @@
+apply plugin: 'bootstrap'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.junbo.gradle:bootstrap:1.0'
+    }
+}

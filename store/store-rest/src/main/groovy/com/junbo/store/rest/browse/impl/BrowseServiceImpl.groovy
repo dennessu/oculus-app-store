@@ -1,49 +1,32 @@
 package com.junbo.store.rest.browse.impl
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
-import com.junbo.catalog.spec.enums.PriceType
-import com.junbo.catalog.spec.enums.Status
-import com.junbo.catalog.spec.model.attribute.ItemAttribute
-import com.junbo.catalog.spec.model.attribute.OfferAttribute
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
-import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.model.item.ItemsGetOptions
-import com.junbo.catalog.spec.model.offer.OfferRevision
-import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.id.ItemId
-import com.junbo.common.id.ItemRevisionId
-import com.junbo.common.id.OfferId
+import com.junbo.common.id.util.IdUtil
+import com.junbo.common.model.Link
 import com.junbo.common.model.Results
-import com.junbo.entitlement.spec.model.DownloadUrlGetOptions
-import com.junbo.entitlement.spec.model.DownloadUrlResponse
-import com.junbo.entitlement.spec.model.Entitlement
-import com.junbo.entitlement.spec.model.EntitlementSearchParam
-import com.junbo.entitlement.spec.model.PageMetadata
-import com.junbo.identity.spec.v1.model.Organization
-import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
+import com.junbo.entitlement.spec.model.*
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.rating.spec.model.priceRating.RatingItem
-import com.junbo.rating.spec.model.priceRating.RatingRequest
 import com.junbo.store.clientproxy.FacadeContainer
-import com.junbo.store.common.cache.Cache
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.browse.BrowseService
+import com.junbo.store.rest.browse.SectionHandler
 import com.junbo.store.rest.challenge.ChallengeHelper
-import com.junbo.store.rest.utils.RequestValidator
+import com.junbo.store.rest.utils.CatalogUtils
 import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.Item
-import com.junbo.store.spec.model.browse.document.Offer
-import com.junbo.store.spec.model.browse.document.SectionInfo
-import com.junbo.store.spec.model.browse.document.SectionInfoNode
+import com.junbo.store.spec.model.browse.document.*
 import com.junbo.store.spec.model.catalog.data.ItemData
-import com.junbo.store.spec.model.catalog.data.OfferData
+import com.junbo.store.spec.model.external.casey.CaseyLink
+import com.junbo.store.spec.model.external.casey.CaseyReview
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -82,38 +65,24 @@ class BrowseServiceImpl implements BrowseService {
     @Resource(name = 'storeCatalogBrowseUtils')
     private CatalogBrowseUtils catalogBrowseUtils
 
-    // hard coded sections
-    private List<SectionInfoNode> sections = [
-            new SectionInfoNode(
-                    name: 'Featured', criteria: 'featured',
-                    children: [
-                        new SectionInfoNode(name: 'All', category: 'all', criteria: 'featured'),
-                        new SectionInfoNode(name: 'SAMSUNG', category: 'samsung', criteria: 'featured')
-                    ] as List
-            ),
-            new SectionInfoNode(
-                    name: 'Games', category: 'Game'
-            ),
-            new SectionInfoNode(
-                    name: 'Apps', category: 'App'
-            ),
-            new SectionInfoNode(
-                    name: 'Experiences', category: 'Experience'
-            ),
-    ]
+    @Resource(name = 'storeSectionHandlers')
+    private List<SectionHandler> sectionHandlers
+
+    @Resource(name = 'storeCatalogUtils')
+    private CatalogUtils catalogUtils
 
     @Override
-    Promise<Item> getItemDetails(ItemId itemId, ApiContext apiContext) {
+    Promise<Item> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext) {
         Item result
         resourceContainer.itemResource.getItem(itemId.value).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
-            getItem(catalogItem, apiContext).then { Item item ->
+            innerGetItem(catalogItem, apiContext).then { Item item ->
                 result = item
                 return Promise.pure()
             }.then {
-                catalogBrowseUtils.checkItemOwnedByUser(itemId, apiContext.user).then { Boolean owned ->
-                    result.ownedByCurrentUser = owned
+                if (!includeDetails) {
                     return Promise.pure()
                 }
+                fillItemDetails(result, apiContext)
             }.then {
                 return Promise.pure(result)
             }
@@ -128,41 +97,35 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.pure(new TocResponse(challenge: challenge))
             }
 
-            result.sections = sections
-            return Promise.pure(result)
+            result.sections = []
+            Promise.each(sectionHandlers) { SectionHandler sectionHandler ->
+                sectionHandler.getTopLevelSectionInfoNode(apiContext).then { List<SectionInfoNode> list ->
+                    result.sections.addAll(list)
+                    return Promise.pure()
+                }
+            }.then {
+                return Promise.pure(result)
+            }
+
         }
     }
 
     @Override
     Promise<SectionLayoutResponse> getSectionLayout(SectionLayoutRequest request, ApiContext apiContext) {
-        SectionLayoutResponse result = new SectionLayoutResponse()
-        Stack<SectionInfo> parents = new Stack<>()
-        SectionInfoNode sectionInfoNode = getSectionInfoNode(request.category, request.criteria, sections, parents)
-        if (sectionInfoNode == null) {
+        SectionHandler sectionHandler = findSectionHandler(request.category, request.criteria, apiContext)
+        if (sectionHandler == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
-
-        result.breadcrumbs = parents
-        result.children = sectionInfoNode.children?.collect {SectionInfoNode s -> s.toSectionInfo()}
-        result.title = sectionInfoNode.name
-        result.ordered = sectionInfoNode.ordered == null ? false : sectionInfoNode.ordered
-
-        return innerGetList(sectionInfoNode, null, request.count == null ? defaultPageSize : request.count, apiContext).then { ListResponse response ->
-            result.items = response.items
-            result.next = response.next
-            return Promise.pure(result)
-        }
+        return sectionHandler.getSectionLayout(request, apiContext)
     }
 
     @Override
     Promise<ListResponse> getList(ListRequest request, ApiContext apiContext) {
-        Stack<SectionInfo> parents = new Stack<>()
-        SectionInfoNode sectionInfoNode = getSectionInfoNode(request.category, request.criteria, sections, parents)
-        if (sectionInfoNode == null) {
+        SectionHandler sectionHandler = findSectionHandler(request.category, request.criteria, apiContext)
+        if (sectionHandler == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
-
-        return innerGetList(sectionInfoNode, request.cursor, request.count == null ? defaultPageSize : request.count, apiContext)
+        return sectionHandler.getSectionList(request, apiContext)
     }
 
     @Override
@@ -215,13 +178,52 @@ class BrowseServiceImpl implements BrowseService {
         }
     }
 
+    @Override
+    Promise<ReviewsResponse> getReviews(ReviewsRequest request, ApiContext apiContext) {
+        return catalogBrowseUtils.getReviews(request.itemId.value, null, request.cursor, request.count)
+    }
+
+    @Override
+    Promise<AddReviewResponse> addReview(AddReviewRequest request, ApiContext apiContext) {
+        CaseyReview review = new CaseyReview(
+                reviewTitle: request.title,
+                review: request.content,
+                resourceType: 'item',
+                resource: new CaseyLink(
+                        id: request.itemId.value,
+                        href: IdUtil.toHref(request.itemId)
+                )
+        )
+
+        review.ratings = []
+        for (String type : request.starRatings.keySet()) {
+            review.ratings << new CaseyReview.Rating(type: type, score: request.starRatings[type])
+        }
+
+        return resourceContainer.caseyResource.addReview(review).then { CaseyReview newReview ->
+            return resourceContainer.userResource.get(apiContext.user, new UserGetOptions()).then { User user ->
+                return new AddReviewResponse(
+                        review: new Review(
+                                self: new Link(id: newReview.self.id, href: newReview.self.href),
+                                authorName: user.nickName,
+                                deviceName: apiContext.androidId,
+                                title: newReview.reviewTitle,
+                                content: newReview.review,
+                                starRatings: request.starRatings,
+                                timestamp: newReview.postedDate
+                        )
+                )
+            }
+        }
+    }
+
     Promise<ListResponse> innerGetList(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext) {
         ListResponse result = new ListResponse()
         ItemsGetOptions itemsGetOptions = new ItemsGetOptions(cursor: cursor, size: count, type: ItemType.APP.name())
         resourceContainer.itemResource.getItems(itemsGetOptions).then { Results<com.junbo.catalog.spec.model.item.Item> itemResults ->
             result.items = [] as List
             Promise.each(itemResults.items) { com.junbo.catalog.spec.model.item.Item catalogItem ->
-                getItem(catalogItem, apiContext).then { Item item ->
+                innerGetItem(catalogItem, apiContext).then { Item item ->
                     result.items << item
                     return Promise.pure()
                 }
@@ -238,7 +240,7 @@ class BrowseServiceImpl implements BrowseService {
     }
 
     private SectionInfoNode getSectionInfoNode(String category, String criteria, List<SectionInfoNode> sections, Stack<SectionInfo> parents) {
-        for (SectionInfoNode sectionInfoNode: sections) {
+        for (SectionInfoNode sectionInfoNode : sections) {
 
             if (sectionInfoNode.category == category && sectionInfoNode.criteria == criteria) {
                 return sectionInfoNode
@@ -262,14 +264,17 @@ class BrowseServiceImpl implements BrowseService {
             if (catalogItem.type != ItemType.APP.name()) {
                 return Promise.pure(null)
             }
-            return getItem(catalogItem, apiContext)
+            return innerGetItem(catalogItem, apiContext).then { Item item ->
+                item.ownedByCurrentUser = true
+                return Promise.pure(item)
+            }
         }
     }
 
-    private Promise<Item> getItem(com.junbo.catalog.spec.model.item.Item catalogItem, ApiContext apiContext) {
+    private Promise<Item> innerGetItem(com.junbo.catalog.spec.model.item.Item catalogItem, ApiContext apiContext) {
         ItemData itemData
         Item result = new Item()
-        catalogBrowseUtils.getItemData(catalogItem).then { ItemData e ->
+        catalogBrowseUtils.getItemData(new ItemId(catalogItem.getId())).then { ItemData e ->
             itemData = e
             browseDataBuilder.buildItemFromItemData(itemData, apiContext, result)
             return Promise.pure()
@@ -278,8 +283,35 @@ class BrowseServiceImpl implements BrowseService {
                 result.offer = e
                 return Promise.pure()
             }
-        }.then {
+        }.then { // get aggregate rating
             return Promise.pure(result)
+        }
+    }
+
+    private Promise fillItemDetails(Item item, ApiContext apiContext) {
+        catalogUtils.checkItemOwnedByUser(item.getSelf(), apiContext.user).then { Boolean owned ->
+            item.ownedByCurrentUser = owned
+            return Promise.pure()
+        }.then { // get current user review
+            catalogBrowseUtils.getReviews(item.self.value, apiContext.user, null, null).then { ReviewsResponse reviewsResponse ->
+                if (CollectionUtils.isEmpty(reviewsResponse?.reviews)) {
+                    item.currentUserReview = null
+                } else {
+                    item.currentUserReview = reviewsResponse.reviews.get(0)
+                }
+                return Promise.pure()
+            }
+        }.then { // get the review response
+            catalogBrowseUtils.getReviews(item.self.value, null, null, null).then { ReviewsResponse reviewsResponse ->
+                item.reviews = reviewsResponse
+                return Promise.pure()
+            }
+        }
+    }
+
+    private SectionHandler findSectionHandler(String category, String criteria, ApiContext apiContext) {
+        return sectionHandlers.find { SectionHandler sectionHandler ->
+            sectionHandler.canHandle(category, criteria, apiContext)
         }
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.test.store.apihelper.impl;
 
+import com.junbo.common.error.*;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -105,6 +106,16 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     }
 
     @Override
+    public com.junbo.common.error.Error updateUserProfileReturnError(UserProfileUpdateRequest request, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/user-profile", request, expectedResponseCode);
+        com.junbo.common.error.Error response = new JsonMessageTranscoder().decode(new TypeReference<com.junbo.common.error.Error>() {
+        }, responseBody);
+
+        assert response.getCode().equalsIgnoreCase(errorCode);
+        return response;
+    }
+
+    @Override
     public BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request) throws Exception {
         return getBillingProfile(request, 200);
     }
@@ -158,6 +169,15 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
             return preparePurchaseResponse;
         }
         return null;
+    }
+
+    @Override
+    public com.junbo.common.error.Error preparePurchaseWithException(PreparePurchaseRequest preparePurchaseRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/purchase/prepare", preparePurchaseRequest, expectedResponseCode);
+        com.junbo.common.error.Error appErrorException = new JsonMessageTranscoder().decode(new TypeReference<com.junbo.common.error.Error>() {
+        }, responseBody);
+        assert appErrorException.getCode().equalsIgnoreCase(errorCode);
+        return appErrorException;
     }
 
     @Override
@@ -387,7 +407,12 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public ReviewsResponse getReviews(ReviewsRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/reviews", expectedResponseCode);
+        String url = storeUrl + "/reviews?";
+        url = appendQuery(url, "itemId", request.getItemId());
+        url = appendQuery(url, "count", request.getCount());
+        url = appendQuery(url, "cursor", request.getCursor());
+
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             ReviewsResponse response = new JsonMessageTranscoder().decode(new TypeReference<ReviewsResponse>() {
             }, responseBody);

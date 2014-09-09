@@ -401,6 +401,10 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
+            if (oculusInput.company != null) {
+                logger.warn("company will be ignored")
+                oculusInput.company = null
+            }
             if (oculusInput.company == null) {
                 return Promise.pure(new OculusOutput(
                         userId: createdUser.getId()

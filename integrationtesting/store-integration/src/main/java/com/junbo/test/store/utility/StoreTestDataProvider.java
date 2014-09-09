@@ -7,22 +7,33 @@ package com.junbo.test.store.utility;
 
 // CHECKSTYLE:OFF
 
+
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
+import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
+import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.casey.CaseyReview;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
+import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
@@ -35,9 +46,13 @@ import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.payment.utility.PaymentTestDataProvider;
+import com.junbo.test.store.apihelper.CaseyEmulatorService;
 import com.junbo.test.store.apihelper.LoginService;
+import com.junbo.test.store.apihelper.StoreConfigService;
 import com.junbo.test.store.apihelper.StoreService;
+import com.junbo.test.store.apihelper.impl.CaseyEmulatorServiceImpl;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
+import com.junbo.test.store.apihelper.impl.StoreConfigServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
 import org.springframework.util.StringUtils;
 
@@ -50,20 +65,27 @@ import java.util.UUID;
 /**
  * Created by weiyu_000 on 8/6/14.
  */
+
 public class StoreTestDataProvider extends BaseTestDataProvider {
+
 
     LoginService loginClient = LoginServiceImpl.getInstance();
     StoreService storeClient = StoreServiceImpl.getInstance();
     OfferService offerClient = OfferServiceImpl.instance();
+    OfferRevisionService offerRevisionClient = OfferRevisionServiceImpl.instance();
+    ItemService itemClient = ItemServiceImpl.instance();
+    ItemRevisionService itemRevisionClient = ItemRevisionServiceImpl.instance();
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
+    CaseyEmulatorService caseyEmulatorClient = CaseyEmulatorServiceImpl.getInstance();
+    StoreConfigService storeConfigService = StoreConfigServiceImpl.getInstance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
     public CreateUserRequest CreateUserRequest() throws Exception {
-       return CreateUserRequest(RandomFactory.getRandomStringOfAlphabet(6));
+        return CreateUserRequest(RandomFactory.getRandomStringOfAlphabet(6));
     }
 
-    public CreateUserRequest CreateUserRequest(String username) throws Exception{
+    public CreateUserRequest CreateUserRequest(String username) throws Exception {
         CreateUserRequest createUserRequest = new CreateUserRequest();
         String dateString = "1990-01-01";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -83,19 +105,26 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return createUserRequest;
     }
 
-    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode) throws Exception {
+    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail,
+                                        int expectedResponseCode) throws Exception {
         AuthTokenResponse response = loginClient.CreateUser(createUserRequest, expectedResponseCode);
 
         if (needVerifyEmail && expectedResponseCode == 200) {
             oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
-            List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()), createUserRequest.getEmail());
+            List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()),
+                    createUserRequest.getEmail());
             assert links != null;
-            for(String link : links) {
+            for (String link : links) {
                 oAuthClient.accessEmailVerifyLink(link);
             }
         }
 
         return response;
+    }
+
+    public Error CreateUserWithError(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode, String errorCode) throws Exception {
+        Error error = loginClient.CreateUserWithError(createUserRequest, expectedResponseCode, errorCode);
+        return error;
     }
 
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
@@ -108,10 +137,32 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return loginClient.CheckUserName(request);
     }
 
+    public com.junbo.common.error.Error CheckUserNameWithError(String userName, int expectedResponseCode, String errorCode) throws Exception {
+        UserNameCheckRequest request = new UserNameCheckRequest();
+        request.setUsername(userName);
+        return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
+    }
+
     public UserNameCheckResponse CheckEmail(String email) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setEmail(email);
         return loginClient.CheckUserName(request);
+    }
+
+    public Error CheckEmailWithError(String email, int expectedResponseCode, String errorCode) throws Exception {
+        UserNameCheckRequest request = new UserNameCheckRequest();
+        request.setEmail(email);
+        return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
+    }
+
+    public Error SignInWithError(String username, String type, String password, int expectedCode, String errorCode) throws Exception {
+        UserSignInRequest userSignInRequest = new UserSignInRequest();
+        userSignInRequest.setUsername(username);
+        UserCredential userCredential = new UserCredential();
+        userCredential.setType(type);
+        userCredential.setValue(password);
+        userSignInRequest.setUserCredential(userCredential);
+        return loginClient.signInWithError(userSignInRequest, expectedCode, errorCode);
     }
 
     public AuthTokenResponse SignIn(String username, String password, int expectedCode) throws Exception {
@@ -126,6 +177,22 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public AuthTokenResponse SignIn(String userName, String password) throws Exception {
         return SignIn(userName, password, 200);
+    }
+
+    public Error RateUserCredentialWithError(String password, String username, int expectedErrorCode, String errorCode) throws Exception {
+        UserCredentialRateRequest userCredentialRateRequest = new UserCredentialRateRequest();
+        UserCredential userCredential = new UserCredential();
+        userCredential.setType("PASSWORD");
+        userCredential.setValue(password);
+        userCredentialRateRequest.setUserCredential(userCredential);
+
+        if (!StringUtils.isEmpty(username)) {
+            UserCredentialRateContext context = new UserCredentialRateContext();
+            context.setUsername(username);
+            userCredentialRateRequest.setContext(context);
+        }
+
+        return loginClient.rateUserCredentialWithError(userCredentialRateRequest, expectedErrorCode, errorCode);
     }
 
     public UserCredentialRateResponse RateUserCredential(String password, String username) throws Exception {
@@ -161,7 +228,22 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
-    public InstrumentUpdateResponse UpdateCreditCard(InstrumentUpdateResponse response, boolean isDefault) throws Exception {
+    public InstrumentUpdateResponse CreateCreditCardWithoutBillingAddress(String uid) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
+        Instrument instrument = new Instrument();
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        instrument.setAccountName(creditCardInfo.getAccountName());
+        instrument.setAccountNum(encryptedString);
+        instrument.setType("CREDITCARD");
+        instrument.setIsDefault(false);
+        instrumentUpdateRequest.setInstrument(instrument);
+        return storeClient.updateInstrument(instrumentUpdateRequest, 400);
+    }
+
+
+    public InstrumentUpdateResponse UpdateCreditCard(InstrumentUpdateResponse response,
+                                                     boolean isDefault) throws Exception {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = response.getBillingProfile().getInstruments().get(1);
         instrument.setIsDefault(isDefault);
@@ -175,6 +257,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         //instrument.setBillingAddress(getBillingAddress());
         instrument.setType("STOREDVALUE");
         instrument.setStoredValueCurrency("USD");
+        instrument.setBillingAddress(getBillingAddress());
 
         instrumentUpdateRequest.setInstrument(instrument);
         return storeClient.updateInstrument(instrumentUpdateRequest);
@@ -184,7 +267,50 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         paymentProvider.creditWallet(uid, amount);
     }
 
-    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid, String pin, TosId tosAcceptanceId) throws Exception {
+    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId pid,
+                                                   String pin, TosId tosAcceptanceId, boolean isIAP, int expectedCode)
+            throws Exception {
+        PreparePurchaseRequest request = new PreparePurchaseRequest();
+        request.setPurchaseToken(token);
+        request.setInstrument(pid);
+        request.setOffer(new OfferId(offerId));
+
+        if (!StringUtils.isEmpty(pin)) {
+            ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+            challengeAnswer.setType("PIN");
+            challengeAnswer.setPin(pin);
+            request.setChallengeAnswer(challengeAnswer);
+        }
+        if (tosAcceptanceId != null) {
+            ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+            challengeAnswer.setType("TOS_ACCEPTANCE");
+            challengeAnswer.setAcceptedTos(tosAcceptanceId);
+            request.setChallengeAnswer(challengeAnswer);
+        }
+        if (isIAP) {
+            Offer offer = Master.getInstance().getOffer(offerId);
+            OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
+            Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
+            ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
+            Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
+            ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
+            IAPParams params = new IAPParams();
+            params.setPackageName(hostItemRevision.getPackageName());
+            // Todo:    This value is workaround
+            params.setPackageSignatureHash(UUID.randomUUID().toString());
+            params.setPackageVersion(UUID.randomUUID().toString());
+            request.setIapParams(params);
+        }
+        return storeClient.preparePurchase(request, expectedCode);
+    }
+
+    public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid,
+                                                   String pin, TosId tosAcceptanceId) throws Exception {
+        return preparePurchase(token, offerId, piid, pin, tosAcceptanceId, false, 200);
+    }
+
+    public com.junbo.common.error.Error preparePurchaseWithException(String token, String offerId, PaymentInstrumentId piid,
+                                                                     String pin, TosId tosAcceptanceId, boolean isIAP, int expectedResponseCode, String errorCode) throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
         request.setPurchaseToken(token);
         request.setInstrument(piid);
@@ -202,7 +328,21 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             challengeAnswer.setAcceptedTos(tosAcceptanceId);
             request.setChallengeAnswer(challengeAnswer);
         }
-        return storeClient.preparePurchase(request);
+        if (isIAP) {
+            Offer offer = Master.getInstance().getOffer(offerId);
+            OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
+            Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
+            ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
+            Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
+            ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
+            IAPParams params = new IAPParams();
+            params.setPackageName(hostItemRevision.getPackageName());
+            // Todo:    This value is workaround
+            params.setPackageSignatureHash(UUID.randomUUID().toString());
+            params.setPackageVersion(UUID.randomUUID().toString());
+            request.setIapParams(params);
+        }
+        return storeClient.preparePurchaseWithException(request, expectedResponseCode, errorCode);
     }
 
     public String getOfferIdByName(String offerName) throws Exception {
@@ -210,21 +350,26 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken) throws Exception {
+        return commitPurchase(uid, purchaseToken, 200);
+    }
+
+    public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken, int expectedResponseCode) throws Exception {
         CommitPurchaseRequest commitPurchaseRequest = new CommitPurchaseRequest();
         commitPurchaseRequest.setPurchaseToken(purchaseToken);
         //commitPurchaseRequest.setChallengeSolution();
-        return storeClient.commitPurchase(commitPurchaseRequest);
+        return storeClient.commitPurchase(commitPurchaseRequest, expectedResponseCode);
     }
 
-    public IAPEntitlementConsumeResponse iapConsumeEntitlement(EntitlementId entitlementId, String offerId) throws Exception {
+    public IAPEntitlementConsumeResponse iapConsumeEntitlement(EntitlementId entitlementId, String offerId)
+            throws Exception {
         IAPEntitlementConsumeRequest request = new IAPEntitlementConsumeRequest();
         request.setTrackingGuid(UUID.randomUUID().toString());
         request.setEntitlement(entitlementId);
         request.setUseCountConsumed(1);
-        Offer offer = Master.getInstance().getOffer(offerId);
-        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
-        Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
-        ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
+        Offer offer = offerClient.getOffer(offerId);
+        OfferRevision offerRevision = offerRevisionClient.getOfferRevision(offer.getCurrentRevisionId());
+        Item item = itemClient.getItem(offerRevision.getItems().get(0).getItemId());
+        ItemRevision itemRevision = itemRevisionClient.getItemRevision(item.getCurrentRevisionId());
         String packageName = itemRevision.getPackageName();
         request.setPackageName(packageName);
         return storeClient.iapConsumeEntitlement(request);
@@ -241,6 +386,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public MakeFreePurchaseResponse makeFreePurchase(String offerId, TosId tosId) throws Exception {
+        return makeFreePurchase(offerId, tosId, 200);
+    }
+
+    public MakeFreePurchaseResponse makeFreePurchase(String offerId, TosId tosId, int expectedResponseCode) throws Exception {
         MakeFreePurchaseRequest request = new MakeFreePurchaseRequest();
         request.setOffer(new OfferId(offerId));
         if (tosId != null) {
@@ -249,7 +398,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             challengeAnswer.setAcceptedTos(tosId);
             request.setChallengeAnswer(challengeAnswer);
         }
-        return storeClient.makeFreePurchase(request);
+        return storeClient.makeFreePurchase(request, expectedResponseCode);
     }
 
     public DetailsResponse getItemDetails(String itemId) throws Exception {
@@ -276,11 +425,21 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getUserProfile(expectedResponseCode);
     }
 
-    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest, int expectedResponseCode) throws Exception {
+    public com.junbo.common.error.Error updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest, int expectedResponseCode, String errorCode) throws Exception {
+        return storeClient.updateUserProfileReturnError(userProfileUpdateRequest, expectedResponseCode, errorCode);
+    }
+
+    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest,
+                                                       int expectedResponseCode) throws Exception {
         return storeClient.updateUserProfile(userProfileUpdateRequest, expectedResponseCode);
     }
 
-    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest) throws Exception {
+    public Error updateUserProfileWithError(UserProfileUpdateRequest userProfileUpdateRequest, int expectedResponseCode, String errorCode) throws Exception {
+        return storeClient.updateUserProfileReturnError(userProfileUpdateRequest, expectedResponseCode, errorCode);
+    }
+
+    public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest)
+            throws Exception {
         return updateUserProfile(userProfileUpdateRequest, 200);
     }
 
@@ -288,12 +447,19 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return verifyEmail(verifyEmailRequest, 200);
     }
 
-    public VerifyEmailResponse verifyEmail(VerifyEmailRequest verifyEmailRequest, int exceptedResponseCode) throws Exception {
+    public VerifyEmailResponse verifyEmail(VerifyEmailRequest verifyEmailRequest, int exceptedResponseCode)
+            throws Exception {
         return storeClient.verifyEmail(verifyEmailRequest, exceptedResponseCode);
     }
 
     public EntitlementsGetResponse getEntitlement() throws Exception {
         return storeClient.getEntitlement();
+    }
+
+    public Error getTokenWithError(String refreshToken, int expectedCode, String errorCode) throws Exception {
+        AuthTokenRequest request = new AuthTokenRequest();
+        request.setRefreshToken(refreshToken);
+        return loginClient.getTokenWithError(request, expectedCode, errorCode);
     }
 
     public AuthTokenResponse getToken(String refreshToken, int expectedCode) throws Exception {
@@ -310,7 +476,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return getBillingProfile(offerId, 200);
     }
 
-    public BillingProfileGetResponse getBillingProfile(String offerId, int expectedCode) throws Exception{
+    public BillingProfileGetResponse getBillingProfile(String offerId, int expectedCode) throws Exception {
         BillingProfileGetRequest request = new BillingProfileGetRequest();
         request.setOffer(offerId == null ? null : new OfferId(offerId));
         return storeClient.getBillingProfile(request, expectedCode);
@@ -327,6 +493,15 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public ListResponse getList(ListRequest request) throws Exception {
         return storeClient.getList(request);
+    }
+
+    public ListResponse getList(String category, String criteria, String cursor, Integer count) throws Exception {
+        ListRequest listRequest = new ListRequest();
+        listRequest.setCategory(category);
+        listRequest.setCriteria(criteria);
+        listRequest.setCursor(cursor);
+        listRequest.setCount(count);
+        return storeClient.getList(listRequest);
     }
 
     public SectionLayoutResponse getLayout(String category, String criteria, Integer count) throws Exception {
@@ -347,5 +522,28 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         DeliveryRequest request = new DeliveryRequest();
         request.setItemId(itemId);
         return storeClient.getDelivery(request);
+    }
+
+    public ReviewsResponse getReviews(ItemId itemId, String cursor, Integer count) throws Exception {
+        ReviewsRequest reviewsRequest = new ReviewsRequest();
+        reviewsRequest.setItemId(itemId);
+        reviewsRequest.setCursor(cursor);
+        reviewsRequest.setCount(count);
+        return storeClient.getReviews(reviewsRequest);
+    }
+
+    public CaseyEmulatorData postCaseyEmulatorData(CaseyEmulatorData data) throws Exception {
+        return caseyEmulatorClient.postEmulatorData(data);
+    }
+
+    public CaseyEmulatorData postCaseyEmulatorData(List<CaseyReview> caseyReviewList, List<CaseyAggregateRating> ratingList) throws Exception {
+        CaseyEmulatorData data = new CaseyEmulatorData();
+        data.setCaseyAggregateRatings(ratingList);
+        data.setCaseyReviews(caseyReviewList);
+        return caseyEmulatorClient.postEmulatorData(data);
+    }
+
+    public void clearCache() throws Exception {
+        storeConfigService.clearCache();
     }
 }

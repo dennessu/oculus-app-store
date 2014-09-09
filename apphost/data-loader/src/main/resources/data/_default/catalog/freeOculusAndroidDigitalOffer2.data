@@ -1,6 +1,6 @@
 {
    "item": {
-        "genres": [], 
+        "genres": [{"id" : "Educational"}],
         "defaultOffer": null, 
         "rev": null,
         "currentRevision": null, 
@@ -322,7 +322,7 @@
     },
     "offer": {
         "rev": null,
-        "categories": [],
+        "categories": [{"id" : "App"}],
         "environment": null,
         "currentRevision": null,
         "publisher": {

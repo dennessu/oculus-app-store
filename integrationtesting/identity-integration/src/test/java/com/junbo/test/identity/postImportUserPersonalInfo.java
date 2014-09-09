@@ -7,7 +7,6 @@ package com.junbo.test.identity;
 
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.identity.spec.v1.model.*;
-import com.junbo.identity.spec.v1.model.migration.Company;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.test.common.HttpclientHelper;
@@ -16,13 +15,13 @@ import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +94,7 @@ public class postImportUserPersonalInfo {
             }
         }
 
+        /*
         Organization organization = Identity.OrganizationGetByOrganizationId(oculusOutput.getOrganizationId());
         Validator.Validate("validate organization name", oculusInput.getCompany().getName(), organization.getName());
         Validator.Validate("validate organization type", oculusInput.getCompany().getType(), organization.getType());
@@ -119,6 +119,7 @@ public class postImportUserPersonalInfo {
         PhoneNumber phoneNumber = (PhoneNumber) JsonHelper.JsonNodeToObject(companyPhone.getValue(), PhoneNumber.class);
         Validator.Validate("validate company phone number", oculusInput.getCompany().getPhone(),
                 phoneNumber.getInfo());
+        */
     }
 
     @Test(groups = "dailies")
@@ -190,12 +191,14 @@ public class postImportUserPersonalInfo {
     public void importMigrationDataWithDuplicateCompanyNameDifferentCompanyId() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         OculusOutput oculusOutput1 = Identity.ImportMigrationData(oculusInput);
+        /*
         Company company = oculusInput.getCompany();
         company.setCompanyId(RandomHelper.randomLong());
         oculusInput.setCompany(company);
         OculusOutput oculusOutput2 = Identity.ImportMigrationData(oculusInput);
         Validator.Validate("validate created 2 companies", true,
                 oculusOutput1.getOrganizationId() != oculusOutput2.getOrganizationId());
+        */
     }
 
     @Test(groups = "dailies")
@@ -242,12 +245,14 @@ public class postImportUserPersonalInfo {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
         String newCompanyName = RandomHelper.randomAlphabetic(20);
+        /*
         Company company = oculusInput.getCompany();
         company.setName(newCompanyName);
         oculusInput.setCompany(company);
         Identity.ImportMigrationData(oculusInput);
         Organization organization = Identity.OrganizationGetByOrganizationId(oculusOutput.getOrganizationId());
         Validator.Validate("validate company name is updated", newCompanyName, organization.getName());
+        */
     }
 
     @Test(groups = "dailies")
@@ -269,6 +274,7 @@ public class postImportUserPersonalInfo {
     public void importMigrationDataValidateUserOrganizationGroup() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
+        /*
         Boolean userIsAdmin = oculusInput.getCompany().getIsAdmin();
         Group group = Identity.SearchOrganizationGroup(oculusOutput.getOrganizationId(),
                 userIsAdmin ? IdentityModel.MigrateCompanyGroup.admin.name()
@@ -276,12 +282,14 @@ public class postImportUserPersonalInfo {
         );
         UserGroup userGroup = Identity.SearchUserGroup(group.getId(), false);
         Validator.Validate("validate user is in correct group", oculusOutput.getUserId(), userGroup.getUserId());
+        */
     }
 
     @Test(groups = "dailies")
     public void importMigrationDataSwitchUserOrganizationGroup() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
+        /*
         Boolean userIsAdmin = oculusInput.getCompany().getIsAdmin();
         Company company = oculusInput.getCompany();
         company.setIsAdmin(userIsAdmin ? false : true);
@@ -298,13 +306,14 @@ public class postImportUserPersonalInfo {
                         : IdentityModel.MigrateCompanyGroup.admin.name()
         );
         Identity.SearchUserGroup(groupWithoutUser.getId(), true);
+        */
     }
 
     @Test(groups = "dailies")
     public void importMigrationDataUserSwitchOrganization() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         OculusOutput oculusOutput1 = Identity.ImportMigrationData(oculusInput);
-
+        /*
         Company company = oculusInput.getCompany();
         company.setCompanyId(RandomHelper.randomLong());
         company.setName(RandomHelper.randomAlphabetic(20));
@@ -326,6 +335,7 @@ public class postImportUserPersonalInfo {
         );
         UserGroup userGroup = Identity.SearchUserGroup(group2.getId(), false);
         Validator.Validate("validate user is in correct group", oculusOutput1.getUserId(), userGroup.getUserId());
+        */
     }
 
     @Test(groups = "dailies")
@@ -384,7 +394,8 @@ public class postImportUserPersonalInfo {
     public void importMigrationDataNoDuplicateUpdate() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
-
+        Validator.Validate("Validate organization null", true, oculusOutput.getOrganizationId() == null);
+        /*
         User user1 = Identity.UserGetByUserId(oculusOutput.getUserId());
         Organization organization1 = Identity.OrganizationGetByOrganizationId(oculusOutput.getOrganizationId());
 
@@ -401,6 +412,7 @@ public class postImportUserPersonalInfo {
 
         Validator.Validate("Validate organization Id", organization1.getId(), organization2.getId());
         Validator.Validate("Validate organization revision", organization1.getRev(), organization2.getRev());
+        */
     }
 
     @Test(groups = "dailies")
