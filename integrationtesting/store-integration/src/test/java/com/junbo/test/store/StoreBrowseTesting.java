@@ -17,6 +17,7 @@ import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.test.store.utility.DataGenerator;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.util.CollectionUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -211,11 +212,33 @@ public class StoreBrowseTesting extends BaseTestClass {
         List<Review> reviews = fetchReviewsFromItemDetails(item);
         Assert.assertEquals(reviews.size(), numOfReviews, "Number of reviews not correct.");
         for (int i = 0;i < reviews.size(); ++i) {
-            validationHelper.verifyReview(reviews.get(i), caseyReviews.get(i), userProfile);
+            validationHelper.verifyReview(reviews.get(i), caseyReviews.get(i), userProfile.getNickName());
         }
         // verify the user review
-        validationHelper.verifyReview(item.getCurrentUserReview(), caseyReviews.get(0), userProfile);
+        validationHelper.verifyReview(item.getCurrentUserReview(), caseyReviews.get(0), userProfile.getNickName());
         validationHelper.verifyAggregateRatings(item.getAggregatedRatings(), caseyAggregateRating);
+    }
+
+    @Test
+    public void testGetReviewInvalidUserId() throws Exception {
+        gotoToc();
+
+        // prepare review with invalid user id
+        List<CaseyReview> caseyReviews = new ArrayList<>();
+        caseyReviews.add(DataGenerator.instance().generateCaseyReview(RandomStringUtils.randomAlphabetic(10)));
+        testDataProvider.postCaseyEmulatorData(caseyReviews, null);
+        testDataProvider.clearCache(); // clear the item cache to get the latest aggregate ratings
+
+        // check no reviews should be returned in the items if item is not got by getDetails
+        Item item = testDataProvider.getLayout("Game", null, 2).getItems().get(0);
+        item = testDataProvider.getItemDetails(item.getSelf().getValue()).getItem();
+        List<Review> reviews = fetchReviewsFromItemDetails(item);
+        Assert.assertEquals(reviews.size(), 1, "Number of reviews not correct.");
+        validationHelper.verifyReview(reviews.get(0), caseyReviews.get(0), null);
+
+        testDataProvider.postCaseyEmulatorData(null, null);
+        testDataProvider.clearCache();
+
     }
 
     private void testGetCategorySection(final String category, String sectionName, List<String> itemNames) throws Exception {
