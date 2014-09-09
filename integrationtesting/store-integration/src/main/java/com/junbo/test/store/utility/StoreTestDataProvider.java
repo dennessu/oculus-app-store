@@ -546,4 +546,13 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public void clearCache() throws Exception {
         storeConfigService.clearCache();
     }
+
+    public DeliveryResponse getDeliveryByOfferId(String offerId) throws Exception {
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(Master.getInstance().getOffer(offerId).getCurrentRevisionId());
+        String itemId = offerRevision.getItems().get(0).getItemId();
+        DeliveryRequest deliveryRequest = new DeliveryRequest();
+        deliveryRequest.setItemId(new ItemId(itemId));
+        return storeClient.getDelivery(deliveryRequest);
+    }
+
 }

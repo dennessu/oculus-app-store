@@ -389,12 +389,19 @@ public class StoreCommerceTesting extends BaseTestClass {
     @Test
     public void testPreparePurchaseWithInvalidPin() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
-        testDataProvider.CreateUser(createUserRequest, true);
-
-        PaymentInstrumentId paymentId = new PaymentInstrumentId(123L);
+        AuthTokenResponse response = testDataProvider.CreateUser(createUserRequest, true);
 
         String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
+
+        String uid = IdConverter.idToHexString(response.getUserId());
+        //add new credit card to user
+
+        InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateStoredValue();
+        testDataProvider.CreditStoredValue(uid, new BigDecimal(100));
+
+        //get payment id in billing profile
+        PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
 
         assert preparePurchaseResponse.getChallenge() != null;
         assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");

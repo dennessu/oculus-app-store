@@ -22,6 +22,7 @@ import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
@@ -345,11 +346,12 @@ class UserResourceImpl implements UserResource {
         return userValidator.validateForGet(userId).then { User user ->
             def callback = userAuthorizeCallbackFactory.create(user)
             return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('delete')) {
+                if (!AuthorizeContext.hasRights('delete') || !AuthorizeContext.hasScopes('csr')) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return userRepository.delete(userId)
+                user.setStatus(UserStatus.DELETED.toString())
+                return userRepository.update(user, user)
             }
         }
     }

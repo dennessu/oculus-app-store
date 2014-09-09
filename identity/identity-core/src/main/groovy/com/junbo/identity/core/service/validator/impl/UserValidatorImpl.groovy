@@ -612,7 +612,7 @@ class UserValidatorImpl implements UserValidator {
                 List<UserPersonalInfo> userPersonalInfos = new ArrayList<>()
                 return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo personalInfo ->
                     return userRepository.get(personalInfo.userId).then { User existing ->
-                        if (existing.username == personalInfo.id && existing.getId() != oldUser.getId()) {
+                        if (existing != null && existing.username != null && existing.username == personalInfo.getId() && existing.getId() != oldUser.getId()) {
                             userPersonalInfos.add(personalInfo)
                             return Promise.pure(Promise.BREAK)
                         }

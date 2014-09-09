@@ -60,6 +60,33 @@ public class postUser {
     }
 
     @Test(groups = "dailies")
+    public void testUpdateUser() throws Exception {
+        String username = RandomHelper.randomAlphabetic(15);
+        User user = IdentityModel.DefaultUser();
+        user = Identity.UserPostDefault(user);
+
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setUserId(user.getId());
+        userPersonalInfo.setType(IdentityModel.UserPersonalInfoType.USERNAME.toString());
+        UserLoginName loginName = new UserLoginName();
+        loginName.setUserName(username);
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(loginName));
+        UserPersonalInfo loginInfo = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        user.setIsAnonymous(false);
+        user.setUsername(loginInfo.getId());
+        Identity.UserPut(user);
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
+
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+                Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()), null,
+                HttpclientHelper.HttpRequestType.delete, nvps);
+
+        Validator.Validate("validate response error code", 403, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    @Test(groups = "dailies")
     //https://oculus.atlassian.net/browse/SER-436
     //Please insure users cannot have same username as nickname
     public void testNickNameDifferentFromUsername() throws Exception {

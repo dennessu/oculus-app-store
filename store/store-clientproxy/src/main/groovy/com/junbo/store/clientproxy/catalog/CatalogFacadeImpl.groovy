@@ -90,16 +90,6 @@ class CatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<com.junbo.store.spec.model.catalog.Category> getCategory(String categoryId) {
-        return null
-    }
-
-    @Override
-    Promise<List<com.junbo.store.spec.model.catalog.Category>> getCategoriesByParent(String parentId) {
-        return null
-    }
-
-    @Override
     Promise<List<Offer>> getInAppOffers(Item hostItem, IAPOfferGetRequest request) {
         return null
     }

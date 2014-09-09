@@ -8,10 +8,7 @@ package com.junbo.test.store;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.store.spec.model.browse.*;
-import com.junbo.store.spec.model.browse.document.Item;
-import com.junbo.store.spec.model.browse.document.Review;
-import com.junbo.store.spec.model.browse.document.SectionInfo;
-import com.junbo.store.spec.model.browse.document.SectionInfoNode;
+import com.junbo.store.spec.model.browse.document.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
@@ -19,6 +16,7 @@ import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.test.store.utility.DataGenerator;
+import org.apache.commons.collections.Predicate;
 import org.springframework.util.CollectionUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -220,7 +218,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         validationHelper.verifyAggregateRatings(item.getAggregatedRatings(), caseyAggregateRating);
     }
 
-    private void testGetCategorySection(String category, String sectionName, List<String> itemNames) throws Exception {
+    private void testGetCategorySection(final String category, String sectionName, List<String> itemNames) throws Exception {
         int pageSize = 2;
         gotoToc();
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(category, null, pageSize);
@@ -236,7 +234,14 @@ public class StoreBrowseTesting extends BaseTestClass {
         List<Item> items = getItemsInSection(category, null, pageSize);
 
         for (Item item : items) {
-            Assert.assertTrue(item.getAppDetails().getCategories().contains(category));
+            Assert.assertNotNull(org.apache.commons.collections.CollectionUtils.find(item.getAppDetails().getCategories(),
+                    new Predicate() {
+                        @Override
+                        public boolean evaluate(Object object) {
+                            return ((CategoryInfo) object).getName().equals(category);
+                        }
+                    }
+            ), "category not found in items");
             nameToItems.put(item.getTitle(), item);
         }
         for (String itemName : itemNames) {

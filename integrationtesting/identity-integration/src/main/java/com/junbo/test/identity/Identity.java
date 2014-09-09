@@ -260,6 +260,10 @@ public class Identity {
                 JsonHelper.JsonSerializer(user), User.class);
     }
 
+    public static void UserDelete(User user) throws Exception {
+        IdentityDelete(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()));
+    }
+
     public static User UserGetByUserId(UserId userId) throws Exception {
         return (User) IdentityGet(IdentityV1UserURI + "/" + IdFormatter.encodeId(userId), User.class);
     }
