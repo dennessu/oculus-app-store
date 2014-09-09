@@ -34,7 +34,7 @@ public abstract class BaseTestClass {
     protected List<String> itemsInFeaturedOffer;
     protected List<String> itemsInFeaturedItem;
 
-    public BaseTestClass () {
+    public BaseTestClass() {
         super();
         loadOffers();
     }
@@ -59,8 +59,12 @@ public abstract class BaseTestClass {
         item_digital_oclus_free1 = ConfigHelper.getSetting("testdata.item.digital.oculus.free1");
         item_digital_oclus_free2 = ConfigHelper.getSetting("testdata.item.digital.oculus.free2");
 
-        itemsInFeaturedOffer = Arrays.asList(ConfigHelper.getSetting("testdata.items.featuredoffer").split(","));
-        itemsInFeaturedItem = Arrays.asList(ConfigHelper.getSetting("testdata.items.featureditem").split(","));
+        if (ConfigHelper.getSetting("testdata.items.featuredoffer") != null) {
+            itemsInFeaturedOffer = Arrays.asList(ConfigHelper.getSetting("testdata.items.featuredoffer").split(","));
+        }
+        if (ConfigHelper.getSetting("testdata.items.featureditem") != null) {
+            itemsInFeaturedItem = Arrays.asList(ConfigHelper.getSetting("testdata.items.featureditem").split(","));
+        }
     }
 
     StoreTestDataProvider testDataProvider = new StoreTestDataProvider();

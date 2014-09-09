@@ -7,6 +7,7 @@ package com.junbo.test.common;
 
 // CHECKSTYLE:OFF
 
+import com.junbo.test.common.libs.LogHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -18,6 +19,7 @@ import java.util.Properties;
  */
 public final class ConfigHelper {
     private static final Properties properties = new Properties();
+    private static LogHelper logHelper = new LogHelper(ConfigHelper.class);
 
     static {
         try {
@@ -44,7 +46,12 @@ public final class ConfigHelper {
     }
 
     public static String getSetting(String key) {
-        return properties.getProperty(key);
+        try {
+            return properties.getProperty(key);
+        } catch (Exception ex) {
+            logHelper.logError(ex.getMessage());
+        }
+        return null;
     }
 
     private static void ReadTestClientNameFromFile(String path) {
