@@ -3,8 +3,10 @@ import com.junbo.catalog.spec.enums.OfferAttributeType
 import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.enums.Status
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
+import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
+import com.junbo.catalog.spec.model.attribute.OfferAttributeGetOptions
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
@@ -251,7 +253,7 @@ class CatalogBrowseUtils {
         OfferRevisionLocaleProperties localeProperties = localeUtils.getLocaleProperties(offerData.offerRevision?.locales, apiContext.locale , 'offerRevision', offerData.offerRevision?.getId(), 'locales') as OfferRevisionLocaleProperties
         result.formattedDescription = localeProperties?.shortDescription
         result.isFree = offerData.offerRevision?.price?.priceType == PriceType.FREE.name()
-        resourceContainer.ratingResource.priceRating(new RatingRequest(
+        resourceContainer.ratingResource.offersRating(new RatingRequest(
                 includeCrossOfferPromos: false,
                 country: apiContext.country.getId().value,
                 currency: apiContext.currency.getId().value,
@@ -290,7 +292,7 @@ class CatalogBrowseUtils {
             }
         }.then {  // get genres
             Promise.each(catalogItem.genres) { String genresId ->
-                resourceContainer.itemAttributeResource.getAttribute(genresId).then { ItemAttribute itemAttribute ->
+                resourceContainer.itemAttributeResource.getAttribute(genresId, new ItemAttributeGetOptions()).then { ItemAttribute itemAttribute ->
                     result.genres << itemAttribute
                     return Promise.pure()
                 }
@@ -385,7 +387,7 @@ class CatalogBrowseUtils {
             }
         }.then { // get categories
             Promise.each(catalogOffer.categories) { String categoryId ->
-                resourceContainer.offerAttributeResource.getAttribute(categoryId).then { OfferAttribute offerAttribute ->
+                resourceContainer.offerAttributeResource.getAttribute(categoryId, new OfferAttributeGetOptions()).then { OfferAttribute offerAttribute ->
                     result.categories << offerAttribute
                     return Promise.pure()
                 }
