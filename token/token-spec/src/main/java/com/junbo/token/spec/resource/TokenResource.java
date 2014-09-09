@@ -8,6 +8,7 @@ package com.junbo.token.spec.resource;
 
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.junbo.token.spec.model.*;
 
 import javax.ws.rs.*;
@@ -31,6 +32,7 @@ public interface TokenResource {
 
     @POST
     @Path("/consumption")
+    @RouteBy("consumption.getUserId()")
     Promise<TokenConsumption> consumeToken(TokenConsumption consumption);
 
     @PUT

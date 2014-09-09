@@ -17,6 +17,8 @@ import java.io.IOException;
 public class ContextFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        // request filter, clear context
         Context.clear();
+        Context.get().setIsInitialRestCall(true);
     }
 }

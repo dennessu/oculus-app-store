@@ -48,6 +48,8 @@ import java.net.*;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Service of Entitlement.
@@ -362,68 +364,57 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     }
 
     private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
-        URL url = null;
         try {
-            url = new URL(URLDecoder.decode(urlString, "utf-8"));
-        } catch (UnsupportedEncodingException e) {
-            url = new URL(urlString);
+            urlString = URLDecoder.decode(urlString, "utf-8");
+        } catch (UnsupportedEncodingException ignore) {
         }
-        String domainName = url.getHost();
-        if (!isS3(domainName) && !isCloudFront(domainName)) {
-            return urlString;
-        }
-        String objectKey = url.getPath().substring(1);
-        String extension = getExtension(objectKey);
 
-        java.util.Date expiration = new java.util.Date();
-        long milliSeconds = expiration.getTime();
-        milliSeconds += 1000 * expirationTime;
-        expiration.setTime(milliSeconds);
-
-        String finalFilename = null;
-        if (!StringUtils.isEmpty(filename)) {
-            if (!StringUtils.isEmpty(version)) {
-                filename = filename + "_" + version;
+        String bucketName = parseS3BucketName(urlString);
+        if (bucketName != null) {
+            Pattern s3Pattern = Pattern.compile(".*" + bucketName + "/(.*)");
+            Matcher s3Matcher = s3Pattern.matcher(urlString);
+            if (s3Matcher.matches()) {
+                String objectKey = s3Matcher.group(1);
+                return generateS3Url(bucketName, objectKey,
+                        generateFilename(objectKey, filename, version, platform), generateExpirationDate());
             }
-            filename = filename + "_" + platform;
-            finalFilename = extension == null ? filename : filename + "." + extension;
-        }
-
-        if (isS3(domainName)) {
-            return generateS3Url(domainName, objectKey, finalFilename, expiration);
-        }
-
-        //TODO: work around for cloudfront
-        if (isCloudFront(domainName)) {
-            String bucketName = bucketMap.get(domainName);
-            return generateS3Url(bucketName, objectKey, finalFilename, expiration);
-            //return generateCloudantFrontUrl(urlString, finalFilename, expiration);
+        } else if (isCloudFront(urlString)){
+            //TODO: work around for cloudfront
+            URL url = new URL(urlString);
+            bucketName = bucketMap.get(url.getHost());
+            String objectKey = url.getPath().substring(1);
+            return generateS3Url(bucketName, objectKey,
+                    generateFilename(objectKey, filename, version, platform), generateExpirationDate());
         }
 
         return urlString;
     }
 
-    private String generateCloudantFrontUrl(String urlString, String filename, Date expiration) {
-        try {
-            return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
-                    urlString + (filename == null ? "" : ("?" + "response-content-disposition=attachment;" + URLEncoder.encode("filename=\"" + filename + "\"", "UTF-8"))),
-                    privateKeyId, privateKey, expiration);    //TODO: null should be the keyPairId which is not provided yet
-        } catch (UnsupportedEncodingException ignore) {
-            return null;
+    private String parseS3BucketName(String url) {
+        for (String allowedBucketName : bucketNames) {
+            if (url.contains(allowedBucketName)) {
+                return allowedBucketName;
+            }
         }
+        return null;
     }
 
-    private String generateS3Url(String bucketName, String objectKey, String filename, Date expiration) {
-        GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                new GeneratePresignedUrlRequest(bucketName, objectKey);
-        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
-        generatePresignedUrlRequest.setExpiration(expiration);
+    private Boolean isCloudFront(String url) {
+        return url.contains("cloudfront.net");
+    }
+
+    private String generateFilename(String objectKey, String filename, String version, String platform) {
+        String extension = getExtension(objectKey);
+
         if (!StringUtils.isEmpty(filename)) {
-            generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
-                    "attachment;filename=\"" + filename + "\"");
+            if (!StringUtils.isEmpty(version)) {
+                filename = filename + "_" + version;
+            }
+            filename = filename + "_" + platform;
+            return extension == null ? filename : filename + "." + extension;
         }
-        URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
-        return downloadUrl.toString();
+
+        return null;
     }
 
     private String getExtension(String objectKey) {
@@ -440,12 +431,35 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         return lastPart;
     }
 
-    private Boolean isS3(String domainName) {
-        return bucketNames.contains(domainName.toLowerCase());
+    private Date generateExpirationDate() {
+        java.util.Date expiration = new java.util.Date();
+        long milliSeconds = expiration.getTime();
+        milliSeconds += 1000 * expirationTime;
+        expiration.setTime(milliSeconds);
+        return expiration;
     }
 
-    private Boolean isCloudFront(String domainName) {
-        return cloudFrontDomains.contains(domainName.toLowerCase());
+    private String generateCloudantFrontUrl(String urlString, String filename, Date expiration) {
+        try {
+            return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
+                    urlString + (filename == null ? "" : ("?" + "response-content-disposition=attachment;" + URLEncoder.encode("filename=\"" + filename + "\"", "UTF-8"))),
+                    privateKeyId, privateKey, expiration);
+        } catch (UnsupportedEncodingException ignore) {
+            return null;
+        }
+    }
+
+    private String generateS3Url(String bucketName, String objectKey, String filename, Date expiration) {
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucketName, objectKey);
+        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
+        generatePresignedUrlRequest.setExpiration(expiration);
+        if (!StringUtils.isEmpty(filename)) {
+            generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
+                    "attachment;filename=\"" + filename + "\"");
+        }
+        URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
+        return downloadUrl.toString();
     }
 
     private static void authorizeDownloadUrl() {
@@ -474,6 +488,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
     }
 
+    public static Map<String, String> getBucketMap() {
+        return bucketMap;
+    }
+
     public static Integer getExpirationTime() {
         return expirationTime;
     }
@@ -499,7 +517,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             }
             PrivateKey privateKey = null;
             try {
-                InputStream is = resource.getInputStream();  //TODO: not provided yet
+                InputStream is = resource.getInputStream();
                 privateKey = PEM.readPrivateKey(is);
             } catch (InvalidKeySpecException | IOException e) {
                 e.printStackTrace();

@@ -13,8 +13,4 @@
     <bean id="defaultBalanceResourceClientFactory" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxyFactory"/>
     <bean id="defaultVatResourceClientFactory" class="com.junbo.billing.spec.resource.proxy.VatResourceClientProxyFactory"/>
     <bean id="defaultAddressValidatorResourceClientFactory" class="com.junbo.billing.spec.resource.proxy.AddressValidatorResourceClientProxyFactory"/>
-
-    <bean id="defaultBalanceResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultVatResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultAddressValidatorResourceRouter" parent="routingRouterBase" />
 </beans>

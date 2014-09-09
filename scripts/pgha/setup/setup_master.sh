@@ -17,8 +17,8 @@ createDir $MASTER_DATA_PATH
 echo "[SETUP][MASTER] create database backup folder $MASTER_BACKUP_PATH"
 createDir $MASTER_BACKUP_PATH 
 
-echo "[SETUP][MASTER] create database archive folder $MASTER_ARCHIVE_PATH"
-createDir $MASTER_ARCHIVE_PATH
+echo "[SETUP][MASTER] create database archive folder $ARCHIVE_PATH"
+createDir $ARCHIVE_PATH
 
 echo "[SETUP][MASTER] create database log folder $MASTER_LOG_PATH"
 createDir $MASTER_LOG_PATH
@@ -59,7 +59,7 @@ max_wal_senders = 10
 listen_addresses = '*'
 hot_standby = on
 max_connections = $MAX_CONNECTIONS
-archive_command = 'cp %p $MASTER_ARCHIVE_PATH/%f'
+archive_command = $ARCHIVE_COMMAND
 port = $MASTER_DB_PORT
 EOF
 

@@ -83,13 +83,13 @@
                 <entry key="UserResource.checkEmail" value="*" />
                 <entry key="UserSecurityQuestionResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserSecurityQuestionVerifyAttemptResource.create" value="identity.service"/>
-                <entry key="UserSecurityQuestionVerifyAttemptResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserSecurityQuestionVerifyAttemptResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFAAttemptResource.create" value="identity.service"/>
-                <entry key="UserTFAAttemptResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTFAAttemptResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFABackupCodeAttemptResource.create" value="identity.service"/>
-                <entry key="UserTFABackupCodeAttemptResource" value="identity identity.service identity.pii csr"/>
-                <entry key="UserTFABackupCodeResource" value="identity identity.service identity.pii csr"/>
-                <entry key="UserTFAResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTFABackupCodeAttemptResource" value="identity.service identity.pii csr"/>
+                <entry key="UserTFABackupCodeResource" value="identity.service identity.pii csr"/>
+                <entry key="UserTFAResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTosAgreementResource" value="identity identity.service identity.pii csr"/>
                 <!-- oauth -->
                 <entry key="ClientEndpoint" value="client.register"/>
@@ -114,7 +114,7 @@
                 <!-- subscription -->
                 <entry key="SubscriptionResource" value="commerce subscription.service"/>
                 <!-- token -->
-                <entry key="TokenResource" value="token token.service"/>
+                <entry key="TokenResource" value="commerce token.developer token.service"/>
                 <entry key="TokenResource.getToken" value="crs token.service"/>
                 <entry key="TokenResource.updateToken" value="csr token.service"/>
                 <!-- Store API -->

@@ -30,11 +30,5 @@
 
     <bean id="defaultRoleAssignmentResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.RoleAssignmentResourceClientProxyFactory"/>
 
-    <bean id="defaultRoleResourceRouter" parent="routingRouterBase" />
-
-    <bean id="defaultRoleAssignmentResourceRouter" parent="routingRouterBase" />
-
     <bean id="defaultApiDefinitionResourceClientFactory" class="com.junbo.authorization.spec.resource.proxy.ApiDefinitionResourceClientProxyFactory"/>
-
-    <bean id="defaultApiDefinitionResourceRouter" parent="routingRouterBase" />
 </beans>

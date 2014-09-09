@@ -5,7 +5,7 @@
  */
 package com.junbo.test.payment.apihelper;
 
-import com.junbo.payment.spec.model.PaymentCallbackParams;
+//import com.junbo.payment.spec.model.PaymentCallbackParams;
 
 /**
  @author Jason
@@ -13,6 +13,6 @@ import com.junbo.payment.spec.model.PaymentCallbackParams;
   * The interface for Payment transcation related APIs
  */
 public interface PaymentCallbackService {
-    void postPaymentProperties(String paymentId, PaymentCallbackParams properties) throws Exception;
-    void postPaymentProperties(String paymentId, PaymentCallbackParams properties, int expectedResponseCode) throws Exception;
+   // void postPaymentProperties(String paymentId, PaymentCallbackParams properties) throws Exception;
+    //void postPaymentProperties(String paymentId, PaymentCallbackParams properties, int expectedResponseCode) throws Exception;
 }

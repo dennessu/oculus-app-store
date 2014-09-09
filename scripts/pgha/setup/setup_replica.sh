@@ -11,8 +11,8 @@ createDir $PGHA_BASE
 echo "[SETUP][REPLICA] create database data folder $REPLICA_DATA_PATH"
 createDir $REPLICA_DATA_PATH
 
-echo "[SETUP][REPLICA] create database archive folder $REPLICA_ARCHIVE_PATH"
-createDir $REPLICA_ARCHIVE_PATH
+echo "[SETUP][REPLICA] create database archive folder $ARCHIVE_PATH"
+createDir $ARCHIVE_PATH
 
 echo "[SETUP][REPLICA] create database archive folder $REPLICA_LOG_PATH"
 createDir $REPLICA_LOG_PATH
@@ -26,7 +26,7 @@ rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOS
 echo "[SETUP][REPLICA] configure recovery.conf"
 cat > $REPLICA_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
-restore_command = 'cp $REPLICA_ARCHIVE_PATH/%f %p'
+restore_command = $RESTORE_COMMAND
 standby_mode = 'on'
 primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=prefer sslcompression=1 krbsrvname=$PGUSER'
 trigger_file = '$PROMOTE_TRIGGER_FILE'
@@ -49,7 +49,7 @@ EOF
 
 echo "[SETUP][REPLICA] configure postgres.conf"
 cat >> $REPLICA_DATA_PATH/postgresql.conf <<EOF
-archive_command = 'cp %p $REPLICA_ARCHIVE_PATH/%f'
+archive_command = $ARCHIVE_COMMAND
 port = $REPLICA_DB_PORT
 EOF
 

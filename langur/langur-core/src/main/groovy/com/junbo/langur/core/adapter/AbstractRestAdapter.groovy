@@ -3,10 +3,13 @@ package com.junbo.langur.core.adapter
 import com.google.common.base.Function
 import com.junbo.langur.core.IpUtil
 import com.junbo.langur.core.context.JunboHttpContext
+import com.junbo.langur.core.routing.Router
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.Request
 import org.glassfish.jersey.server.ContainerResponse
 import org.glassfish.jersey.server.internal.process.RespondingContext
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.Context
@@ -25,6 +28,10 @@ abstract class AbstractRestAdapter {
 
     @Context
     private Request grizzlyRequest
+
+    @Autowired(required = false)
+    @Qualifier("routingDefaultRouter")
+    protected Router __router;
 
     JunboHttpContext.JunboHttpContextData __createJunboHttpContextData(Class requestHandler) {
 

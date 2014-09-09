@@ -261,7 +261,9 @@ public class StoreTesting extends BaseTestClass {
 
         //String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
 
-        freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+        if (freePurchaseResponse.getChallenge() != null) {
+            freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+        }
 
         EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
         Master.getInstance().setCurrentUid(null);

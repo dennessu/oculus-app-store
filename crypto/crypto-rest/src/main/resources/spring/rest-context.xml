@@ -66,10 +66,4 @@
     <bean id="defaultMasterKeyResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.MasterKeyResourceClientProxyFactory" />
     <bean id="defaultUserCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.UserCryptoResourceClientProxyFactory" />
     <bean id="defaultItemCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.ItemCryptoResourceClientProxyFactory" />
-
-    <bean id="defaultCryptoResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultMasterKeyResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultUserCryptoResourceRouter" parent="routingRouterBase" />
-    <bean id="defaultItemCryptoResourceRouter" parent="routingRouterBase" />
-
 </beans>

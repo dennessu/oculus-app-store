@@ -44,8 +44,11 @@ public class RandomHelper {
     }
 
     public static String randomEmail() {
-        String email = "silkcloudtest+" + randomAlphabetic(8).toLowerCase() + String.format("@gmail.com");
-        return email;
+        return "silkcloudtest+" + randomAlphabetic(8).toLowerCase() + String.format("@gmail.com");
+    }
+
+    public static String randomName() {
+        return "slTest_" + randomAlphabetic(8);
     }
 
     public static Object randomValueFromList(List<Object> values) {

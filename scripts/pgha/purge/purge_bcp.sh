@@ -21,7 +21,7 @@ echo "[PURGE][BCP] remove backup data"
 rm -rf $BCP_BACKUP_PATH
 
 echo "[PURGE][BCP] remove archive data"
-rm -rf $BCP_ARCHIVE_PATH
+rm -rf $ARCHIVE_PATH
 
 echo "[PURGE][BCP] remove pgbouncer data"
 rm -rf $PGBOUNCER_PATH

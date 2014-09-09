@@ -13,9 +13,11 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
+import com.junbo.oauth.db.repo.ScopeRepository
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.model.RefreshToken
+import com.junbo.oauth.spec.model.Scope
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -30,9 +32,16 @@ class GrantTokenByRefreshToken implements Action {
 
     private OAuthTokenService tokenService
 
+    private ScopeRepository scopeRepository
+
     @Required
     void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
+    }
+
+    @Required
+    void setScopeRepository(ScopeRepository scopeRepository) {
+        this.scopeRepository = scopeRepository
     }
 
     @Override
@@ -75,6 +84,14 @@ class GrantTokenByRefreshToken implements Action {
             throw AppErrors.INSTANCE.outboundScope().exception()
         }
 
+        oauthInfo.scopes.each { String scopeString ->
+            Scope scope = scopeRepository.getScope(scopeString)
+            if (scope != null && scope.tfaRequired) {
+                throw AppCommonErrors.INSTANCE.forbiddenWithMessage("Scope $scopeString is not allowed to " +
+                        "be granted by refresh token").exception()
+            }
+        }
+
         LoginState loginState = new LoginState(
                 userId: refreshToken.userId,
                 lastAuthDate: new Date()
@@ -85,7 +102,7 @@ class GrantTokenByRefreshToken implements Action {
         Boolean ipRestrictionRequired = Boolean.parseBoolean(ipRestriction);
 
         def newAccessToken = tokenService.generateAccessToken(client, refreshToken.userId,
-                scopesParam, ipRestrictionRequired)
+                scopesParam, ipRestrictionRequired, contextWrapper.overrideExpiration)
         contextWrapper.accessToken = newAccessToken
 
         def newRefreshToken = tokenService.generateRefreshToken(client, newAccessToken, refreshToken)

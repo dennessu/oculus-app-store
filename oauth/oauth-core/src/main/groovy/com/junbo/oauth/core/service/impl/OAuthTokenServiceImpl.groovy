@@ -90,18 +90,22 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
     }
 
     @Override
-    AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes) {
-        return generateAccessToken(client, userId, scopes, false)
+    AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes, Long overrideExpiration) {
+        return generateAccessToken(client, userId, scopes, false, overrideExpiration)
     }
 
     @Override
-    AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes, Boolean ipRestriction) {
+    AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes, Boolean ipRestriction, Long overrideExpiration) {
         Assert.notNull(client, 'client is null')
         Assert.notNull(client.clientId, 'client.clientId is null')
         Assert.notNull(userId, 'userId is null')
         Assert.notNull(scopes, 'scopes is null')
 
-        Long expiration = client.accessTokenExpiration
+        Long expiration = overrideExpiration
+        if (expiration == null) {
+             expiration = client.accessTokenExpiration
+        }
+
         if (expiration == null) {
             expiration = defaultAccessTokenExpiration
         }

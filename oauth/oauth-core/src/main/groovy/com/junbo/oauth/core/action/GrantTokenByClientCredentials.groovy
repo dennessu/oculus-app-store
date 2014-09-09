@@ -44,7 +44,8 @@ class GrantTokenByClientCredentials implements Action {
         String ipRestriction = parameterMap.getFirst(OAuthParameters.IP_RESTRICTION)
         Boolean ipRestrictionRequired = Boolean.parseBoolean(ipRestriction);
 
-        AccessToken accessToken = tokenService.generateAccessToken(client, 0L, oauthInfo.scopes, ipRestrictionRequired)
+        AccessToken accessToken = tokenService.generateAccessToken(client, 0L, oauthInfo.scopes, ipRestrictionRequired,
+                contextWrapper.overrideExpiration)
 
         contextWrapper.accessToken = accessToken
 
