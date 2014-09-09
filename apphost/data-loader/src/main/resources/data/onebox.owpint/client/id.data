@@ -1,7 +1,7 @@
 {
-  "client_id" : "curationTool",
+  "client_id" : "id",
   "client_secret" : "5E44199FA0F6AAA67D87E9C8E16E0E50#CD52714ADA1BC3B49F7ED7CB3FFC3E1A",
-  "client_name" : "curationTool",
+  "client_name" : "id",
 
   "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.dev/*" ],
   "default_redirect_uri" : "http://localhost",
@@ -9,8 +9,8 @@
   "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home" ],
   "default_logout_redirect_uri" : "http://localhost",
 
-  "scopes" : [ "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline", "item-binaries.manage"  ],
-  "default_scopes" : [ "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline", "item-binaries.manage"  ],
+  "scopes" : [ "identity", "identity.pii", "openid", "offline" ],
+  "default_scopes" : [ "identity", "identity.pii", "openid", "offline" ],
 
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
