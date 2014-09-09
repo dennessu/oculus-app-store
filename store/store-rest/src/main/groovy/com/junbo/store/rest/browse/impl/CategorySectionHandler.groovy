@@ -18,7 +18,6 @@ import com.junbo.store.spec.model.browse.SectionLayoutRequest
 import com.junbo.store.spec.model.browse.SectionLayoutResponse
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
-import com.junbo.store.spec.model.catalog.data.ItemData
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -143,10 +142,10 @@ class CategorySectionHandler implements SectionHandler {
 
             response.items = []
             Promise.each(offerResults.items) { Offer catalogOffer ->
-                catalogBrowseUtils.getItemData(new OfferId(catalogOffer.getOfferId())).then { ItemData itemData ->
-                    Item item = new Item()
-                    browseDataBuilder.buildItemFromItemData(itemData, apiContext, item)
-                    response.items << item
+                catalogBrowseUtils.getItem(new OfferId(catalogOffer.getOfferId()), false, apiContext).then { Item item ->
+                    if (item != null) {
+                        response.items << item
+                    }
                     return Promise.pure()
                 }
             }

@@ -5,13 +5,23 @@
  */
 package com.junbo.test.buyerscenario;
 
+import com.junbo.common.error.*;
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.json.ObjectMapperProvider;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserLoginName;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
+import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 
@@ -25,7 +35,7 @@ import java.util.List;
   * Time: 3/7/2014
   * For holding test cases of User portal
 */
-public class UserPortal extends TestClass {
+public class UserPortal extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(UserPortal.class);
 
@@ -60,5 +70,54 @@ public class UserPortal extends TestClass {
         UserLoginName userLoginName = ObjectMapperProvider.instance().treeToValue(loginName.getValue(), UserLoginName.class);
         List<String> userGetList = us.GetUserByUserName(userLoginName.getUserName());
         Assert.assertNotNull(userGetList, "Can't get user by user Name");
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "CustomerScenarios",
+            component = Component.Identity,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test post user",
+            steps = {
+                    "1. Post a user and get its user ID",
+                    "2. Put a user with default PI"
+            }
+    )
+    @Test
+    // Fix https://oculus.atlassian.net/browse/SER-368
+    public void testPostUserDefaultPI() throws Exception {
+        UserService us = UserServiceImpl.instance();
+        String userPostId = us.PostUser();
+
+        Assert.assertNotNull(Master.getInstance().getUser(userPostId));
+        Assert.assertNotNull(Master.getInstance().getUser(userPostId).getUsername());
+
+        User user = Master.getInstance().getUser(userPostId);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(userPostId, creditCardInfo);
+
+        user.setDefaultPI(new PaymentInstrumentId(IdConverter.hexStringToId(PaymentInstrumentId.class, creditCardId)));
+        String userPutId = us.PutUser(userPostId, user);
+        assert userPostId.equalsIgnoreCase(userPutId);
+
+        PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(Country.DEFAULT);
+        String paypayId = testDataProvider.postPaymentInstrument(userPutId, payPalInfo);
+        user = Master.getInstance().getUser(userPutId);
+
+        user.setDefaultPI(new PaymentInstrumentId(IdConverter.hexStringToId(PaymentInstrumentId.class, paypayId)));
+        com.junbo.common.error.Error error = us.PutUserWithError(userPutId, user, 400, "131.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("defaultPI");
+        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
+
+        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
+        String ewalletInfoId = testDataProvider.postPaymentInstrument(userPutId, ewalletInfo);
+        user = Master.getInstance().getUser(userPutId);
+
+        user.setDefaultPI(new PaymentInstrumentId(IdConverter.hexStringToId(PaymentInstrumentId.class, ewalletInfoId)));
+        userPutId = us.PutUser(userPutId, user);
+        assert userPutId.equalsIgnoreCase(userPostId);
     }
 }

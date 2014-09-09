@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.apihelper.identity;
 
+import com.junbo.common.error.*;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.common.Entities.Identity.UserInfo;
@@ -51,6 +52,8 @@ public interface UserService {
     String PutUser(String userId, User user) throws Exception;
 
     String PutUser(String userId, User user, int expectedResponseCode) throws Exception;
+
+    com.junbo.common.error.Error PutUserWithError(String userId, User user, int expectedResponseCode, String errorCode) throws Exception;
 
     String PostEmailVerification(String userId, String country, String locale) throws Exception;
 
