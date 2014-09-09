@@ -442,7 +442,7 @@ public class TestPutOfferRevision extends BaseTestClass {
     }
 
     @Property(
-            priority = Priority.BVT,
+            priority = Priority.Dailies,
             features = "Put v1/offer-revisions/{offerRevisionId}",
             component = Component.Catalog,
             owner = "JasonFu",
@@ -463,6 +463,7 @@ public class TestPutOfferRevision extends BaseTestClass {
         organizationId = organizationService.postDefaultOrganization().getId();
 
         item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        releaseItem(item1);
         offer1 = offerService.postDefaultOffer(organizationId);
 
         OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
@@ -528,6 +529,102 @@ public class TestPutOfferRevision extends BaseTestClass {
 
         offer = offerService.getOffer(offer1.getOfferId());
         Assert.assertEquals(offer.getCurrentRevisionId(), offerRevision6.getRevisionId());
+
+        //set endTime to offer revision and then verify the current revision
+        OfferRevision offerRevision7 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+        OfferRevision offerRevision8 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+
+        current = System.currentTimeMillis();
+        offerRevision7.setStartTime(new Date(current));
+        offerRevision7.setEndTime(new Date(current + 2000)); // 2s
+
+        offerRevision8.setStartTime(new Date(current));
+        offerRevision8.setEndTime(new Date(current + 2000)); // 2s
+
+        offerRevision7.setStatus(CatalogEntityStatus.APPROVED.name());
+        offerRevision8.setStatus(CatalogEntityStatus.APPROVED.name());
+
+        offerRevisionService.updateOfferRevision(offerRevision7.getRevisionId(), offerRevision7);
+        offerRevisionService.updateOfferRevision(offerRevision8.getRevisionId(), offerRevision8);
+
+        //wait two seconds:
+        Thread.sleep(2000);
+
+        offer = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offer.getCurrentRevisionId(), offerRevision6.getRevisionId());
+
+        //set endTime to offer revision and then verify the current revision
+        offer1 = offerService.postDefaultOffer(organizationId);
+        OfferRevision offerRevision9 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+        OfferRevision offerRevision10 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+
+        current = System.currentTimeMillis();
+        offerRevision9.setStartTime(new Date(current));
+        offerRevision9.setEndTime(new Date(current + 2000)); // 2s
+
+        offerRevision10.setStartTime(new Date(current));
+        offerRevision10.setEndTime(new Date(current + 2000)); // 2s
+
+        offerRevision9.setStatus(CatalogEntityStatus.APPROVED.name());
+        offerRevision10.setStatus(CatalogEntityStatus.APPROVED.name());
+
+        offerRevisionService.updateOfferRevision(offerRevision9.getRevisionId(), offerRevision9);
+        offerRevisionService.updateOfferRevision(offerRevision10.getRevisionId(), offerRevision10);
+
+        //wait two seconds:
+        Thread.sleep(2000);
+
+        offer = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offer.getCurrentRevisionId(), null);
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Put v1/offer-revisions/{offerRevisionId}",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Approve offer revision with released or not released item",
+            steps = {
+                    "1. Prepare a default offer revision",
+                    "2. Approve the offer revision with items released or not released",
+                    "3. Verify the expected behaviors"
+            }
+    )
+    @Test
+    public void testApproveOfferRevisionWithReleasedItem() throws Exception {
+        prepareCatalogAdminToken();
+
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
+
+        item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        offer1 = offerService.postDefaultOffer(organizationId);
+
+        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.APPROVED.name());
+        verifyExpectedFailure(offerRevision1.getRevisionId(), offerRevision1);
+
+        releaseItem(item1);
+        offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+        item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+
+        List<ItemEntry> itemEntriesList = offerRevision1.getItems();
+        ItemEntry itemEntry = new ItemEntry();
+        itemEntry.setItemId(item2.getItemId());
+        itemEntry.setQuantity(1);
+
+        itemEntriesList.add(itemEntry);
+        offerRevision1.setItems(itemEntriesList);
+        offerRevision1.setStatus(CatalogEntityStatus.APPROVED.name());
+        verifyExpectedFailure(offerRevision1.getRevisionId(), offerRevision1);
+
+        releaseItem(item2);
+        offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
     }
 
     private void verifyExpectedFailure(String offerRevisionId, OfferRevision offerRevision) throws Exception {
