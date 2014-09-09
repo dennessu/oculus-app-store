@@ -3,7 +3,6 @@ import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
-import com.junbo.catalog.spec.model.item.ItemsGetOptions
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Link
@@ -23,8 +22,10 @@ import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.*
-import com.junbo.store.spec.model.catalog.data.ItemData
+import com.junbo.store.spec.model.browse.document.Item
+import com.junbo.store.spec.model.browse.document.Review
+import com.junbo.store.spec.model.browse.document.SectionInfo
+import com.junbo.store.spec.model.browse.document.SectionInfoNode
 import com.junbo.store.spec.model.external.casey.CaseyLink
 import com.junbo.store.spec.model.external.casey.CaseyReview
 import groovy.transform.CompileStatic
@@ -73,20 +74,7 @@ class BrowseServiceImpl implements BrowseService {
 
     @Override
     Promise<Item> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext) {
-        Item result
-        resourceContainer.itemResource.getItem(itemId.value).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
-            innerGetItem(catalogItem, apiContext).then { Item item ->
-                result = item
-                return Promise.pure()
-            }.then {
-                if (!includeDetails) {
-                    return Promise.pure()
-                }
-                fillItemDetails(result, apiContext)
-            }.then {
-                return Promise.pure(result)
-            }
-        }
+        return catalogBrowseUtils.getItem(itemId, includeDetails, apiContext)
     }
 
     @Override
@@ -217,28 +205,6 @@ class BrowseServiceImpl implements BrowseService {
         }
     }
 
-    Promise<ListResponse> innerGetList(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext) {
-        ListResponse result = new ListResponse()
-        ItemsGetOptions itemsGetOptions = new ItemsGetOptions(cursor: cursor, size: count, type: ItemType.APP.name())
-        resourceContainer.itemResource.getItems(itemsGetOptions).then { Results<com.junbo.catalog.spec.model.item.Item> itemResults ->
-            result.items = [] as List
-            Promise.each(itemResults.items) { com.junbo.catalog.spec.model.item.Item catalogItem ->
-                innerGetItem(catalogItem, apiContext).then { Item item ->
-                    result.items << item
-                    return Promise.pure()
-                }
-            }
-        }.then {
-            result.next = new ListResponse.NextOption(
-                    category: sectionInfoNode.category,
-                    criteria: sectionInfoNode.criteria,
-                    cursor: itemsGetOptions.nextCursor,
-                    count: count
-            )
-            return Promise.pure(result)
-        }
-    }
-
     private SectionInfoNode getSectionInfoNode(String category, String criteria, List<SectionInfoNode> sections, Stack<SectionInfo> parents) {
         for (SectionInfoNode sectionInfoNode : sections) {
 
@@ -264,47 +230,10 @@ class BrowseServiceImpl implements BrowseService {
             if (catalogItem.type != ItemType.APP.name()) {
                 return Promise.pure(null)
             }
-            return innerGetItem(catalogItem, apiContext).then { Item item ->
+            return catalogBrowseUtils.getItem(catalogItem, false, apiContext).then { Item item ->
                 item.ownedByCurrentUser = true
                 return Promise.pure(item)
-            }
-        }
-    }
 
-    private Promise<Item> innerGetItem(com.junbo.catalog.spec.model.item.Item catalogItem, ApiContext apiContext) {
-        ItemData itemData
-        Item result = new Item()
-        catalogBrowseUtils.getItemData(new ItemId(catalogItem.getId())).then { ItemData e ->
-            itemData = e
-            browseDataBuilder.buildItemFromItemData(itemData, apiContext, result)
-            return Promise.pure()
-        }.then { // apply price info
-            catalogBrowseUtils.getOffer(itemData?.offer, apiContext).then { Offer e ->
-                result.offer = e
-                return Promise.pure()
-            }
-        }.then { // get aggregate rating
-            return Promise.pure(result)
-        }
-    }
-
-    private Promise fillItemDetails(Item item, ApiContext apiContext) {
-        catalogUtils.checkItemOwnedByUser(item.getSelf(), apiContext.user).then { Boolean owned ->
-            item.ownedByCurrentUser = owned
-            return Promise.pure()
-        }.then { // get current user review
-            catalogBrowseUtils.getReviews(item.self.value, apiContext.user, null, null).then { ReviewsResponse reviewsResponse ->
-                if (CollectionUtils.isEmpty(reviewsResponse?.reviews)) {
-                    item.currentUserReview = null
-                } else {
-                    item.currentUserReview = reviewsResponse.reviews.get(0)
-                }
-                return Promise.pure()
-            }
-        }.then { // get the review response
-            catalogBrowseUtils.getReviews(item.self.value, null, null, null).then { ReviewsResponse reviewsResponse ->
-                item.reviews = reviewsResponse
-                return Promise.pure()
             }
         }
     }

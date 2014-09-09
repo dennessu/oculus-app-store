@@ -1,5 +1,4 @@
 package com.junbo.store.rest.browse.impl
-
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.langur.core.promise.Promise
@@ -14,7 +13,6 @@ import com.junbo.store.spec.model.browse.SectionLayoutResponse
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.SectionInfo
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
-import com.junbo.store.spec.model.catalog.data.ItemData
 import com.junbo.store.spec.model.external.casey.CaseyLink
 import com.junbo.store.spec.model.external.casey.CaseyResults
 import com.junbo.store.spec.model.external.casey.cms.*
@@ -145,35 +143,35 @@ class FeaturedSectionHandler implements SectionHandler {
             return Promise.pure(response)
         }
 
-        List<ItemData> itemDataList = []
+        response.items = []
         Promise.pure().then {
             if (contentItem.type == ContentItem.Type.offer.name()) {
                 return Promise.each(contentItem.links) { CaseyLink caseyLink ->
-                    catalogBrowseUtils.getItemData(new OfferId(caseyLink.getId())).recover { Throwable ex ->
+                    catalogBrowseUtils.getItem(new OfferId(caseyLink.getId()), false, apiContext).recover { Throwable ex ->
                         LOGGER.error('name=Error_GetItem_From_Campaign, offer={}, campaign={}', caseyLink.getId(), campaign.getSelf().getId())
                         return Promise.pure()
-                    }.then { ItemData itemData ->
-                        if (itemData != null) {
-                            itemDataList << itemData
+                    }.then { Item item ->
+                        if (item != null) {
+                            response.items << item
                         }
                         return Promise.pure()
                     }
                 }
             } else if (contentItem.type == ContentItem.Type.item.name()) {
                 return Promise.each(contentItem.links) { CaseyLink caseyLink ->
-                    catalogBrowseUtils.getItemData(new ItemId(caseyLink.getId())).then { ItemData itemData ->
-                        itemDataList << itemData
+                    catalogBrowseUtils.getItem(new ItemId(caseyLink.getId()), false, apiContext).recover { Throwable ex ->
+                        LOGGER.error('name=Error_GetItem_From_Campaign, item={}, campaign={}', caseyLink.getId(), campaign.getSelf().getId())
+                        return Promise.pure()
+                    }.then { Item item ->
+                        if (item != null) {
+                            response.items << item
+                        }
                         return Promise.pure()
                     }
                 }
             }
             return Promise.pure()
         }.then {
-            response.items = itemDataList.collect { ItemData itemData ->
-                Item item = new Item()
-                browseDataBuilder.buildItemFromItemData(itemData, apiContext, item)
-                return item
-            }
             return Promise.pure(response)
         }
     }
