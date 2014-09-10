@@ -684,6 +684,9 @@ public class LoginResourceTesting extends BaseTestClass {
         }
 
         // check maximum retry count
+        ChallengeAnswer answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
         com.junbo.common.error.Error appError = testDataProvider.updateUserProfile(userProfileUpdateRequest, 400, "130.108");
         assert appError != null;
     }
