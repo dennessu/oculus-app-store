@@ -162,7 +162,9 @@ class CatalogFacadeImpl implements CatalogFacade {
         } else {
             def isDownloadable = items.any { Item item ->
                 item.type == com.junbo.catalog.spec.enums.ItemType.APP.name() ||
-                        item.type == com.junbo.catalog.spec.enums.ItemType.DOWNLOADED_ADDITION.name()
+                        item.type == com.junbo.catalog.spec.enums.ItemType.DOWNLOADED_ADDITION.name() ||
+                        item.type == com.junbo.catalog.spec.enums.ItemType.VIDEO.name() ||
+                        item.type == com.junbo.catalog.spec.enums.ItemType.PHOTO.name()
             }
             def isDigitalContent = items.any { Item item ->
                 item.type == com.junbo.catalog.spec.enums.ItemType.PERMANENT_UNLOCK.name() ||

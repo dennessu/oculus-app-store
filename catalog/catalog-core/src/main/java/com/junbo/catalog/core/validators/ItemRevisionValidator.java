@@ -187,7 +187,7 @@ public class ItemRevisionValidator extends ValidationSupport {
     }
 
     private void validateBinariesAndDownloadName(Map<String, Binary> binaries, String downloadName, String itemType, List<AppError> errors) {
-        if (ItemType.APP.is(itemType) || ItemType.DOWNLOADED_ADDITION.is(itemType)) {
+        if (ItemType.APP.is(itemType) || ItemType.DOWNLOADED_ADDITION.is(itemType) || ItemType.VIDEO.is(itemType) || ItemType.PHOTO.is(itemType)) {
             if (validateMapNotEmpty("binaries", binaries, errors)) {
                 for (String key : binaries.keySet()) {
                     if (!Platforms.contains(key)) {

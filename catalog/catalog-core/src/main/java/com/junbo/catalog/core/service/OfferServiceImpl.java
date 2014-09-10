@@ -429,6 +429,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                     || ItemType.PERMANENT_UNLOCK.is(item.getType())
                     || ItemType.CONSUMABLE_UNLOCK.is(item.getType())
                     || ItemType.SUBSCRIPTION.is(item.getType())
+                    || ItemType.VIDEO.is(item.getType())
+                    || ItemType.PHOTO.is(item.getType())
                     ) && !definedActions.get(itemEntry.getItemId()).contains(ActionType.GRANT_ENTITLEMENT.name())) {
                 Action action = new Action();
                 action.setType(ActionType.GRANT_ENTITLEMENT.name());
