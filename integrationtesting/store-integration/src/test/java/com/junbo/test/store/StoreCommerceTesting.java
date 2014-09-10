@@ -14,8 +14,12 @@ import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
+import com.junbo.test.common.Entities.Identity.UserInfo;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
@@ -651,12 +655,62 @@ public class StoreCommerceTesting extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store checkout",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test prepare purchase free offer",
+            steps = {
+                    "1. Create user",
+                    "2. Post prepare purchase with free offer",
+                    "3. Verify error code",
+            }
+    )
+    @Test
+    public void testPreparePurchaseFreeOffer() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
 
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        testDataProvider.preparePurchase(null, offerId, null, null, null, false, 412);
 
+        assert Master.getInstance().getApiErrorMsg().contains("Invalid offer: Offer is free.");
+        assert Master.getInstance().getApiErrorMsg().contains("130.110");
 
+    }
 
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store checkout",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test get billing profile filter out paypal",
+            steps = {
+                    "1. Create user",
+                    "2. Add paypal account to user",
+                    "2. Get billing profile",
+                    "3. Verify no paypal account respond",
+            }
+    )
+    @Test
+    public void testGetBillingProfileFilterOutPaypal() throws Exception {
+        String userName = RandomFactory.getRandomStringOfAlphabet(6);
+        UserInfo userInfo = UserInfo.getRandomUserInfo();
+        userInfo.setUserName(userName);
+        String uid = testDataProvider.createUser(userInfo);
 
+        PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(Country.DEFAULT);
+        testDataProvider.postPaypal(uid, payPalInfo);
 
+        testDataProvider.signIn(userName);
+        BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
+
+        assert response.getBillingProfile().getInstruments().size() == 0;
+    }
 
 
 }

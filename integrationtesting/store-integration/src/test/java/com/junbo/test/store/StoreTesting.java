@@ -50,7 +50,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.BVT,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test iap offer checkout",
@@ -118,7 +118,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.BVT,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Disable,
             environment = "release",
@@ -175,7 +175,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Store checkout with invalid PIN",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test iap offer checkout with invalid PIN",
@@ -281,7 +281,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.BVT,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             environment = "release",
             status = Status.Enable,
@@ -341,7 +341,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.BVT,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test iap offer checkout",
@@ -403,7 +403,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test store login",
@@ -435,7 +435,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test gate user whose email not validate",
