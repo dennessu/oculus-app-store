@@ -1,20 +1,16 @@
 package com.junbo.order.mock
-
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
-import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.ws.rs.BeanParam
 import javax.ws.rs.core.Response
-
 /**
  * Created by chriszhu on 2/11/14.
  */
@@ -50,7 +46,7 @@ class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumen
 
     @Override
     Promise<Results<PaymentInstrument>> searchPaymentInstrument(
-            @BeanParam PaymentInstrumentSearchParam searchParam, @BeanParam PageMetaData pageMetadata) {
+            @BeanParam PaymentInstrumentSearchParam searchParam) {
         return null
     }
 }

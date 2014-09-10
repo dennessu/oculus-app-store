@@ -170,14 +170,14 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     @Override
-    public Promise<List<PaymentInstrument>> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page) {
+    public Promise<List<PaymentInstrument>> searchPi(Long userId, PaymentInstrumentSearchParam searchParam) {
         if(userId == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
         if(!CommonUtil.isNullOrEmpty(searchParam.getType())) {
             PaymentUtil.getPIType(searchParam.getType());
         }
-        final List<PaymentInstrument> results = paymentInstrumentRepositoryFacade.search(userId, searchParam, page);
+        final List<PaymentInstrument> results = paymentInstrumentRepositoryFacade.search(userId, searchParam);
         final List<PaymentInstrument> detailedResults = new ArrayList<PaymentInstrument>();
         return Promise.each(results.iterator(), new Promise.Func<PaymentInstrument, Promise>() {
             @Override

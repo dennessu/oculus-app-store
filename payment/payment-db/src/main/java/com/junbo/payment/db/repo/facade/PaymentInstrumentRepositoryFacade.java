@@ -5,7 +5,6 @@
  */
 package com.junbo.payment.db.repo.facade;
 
-import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
 
@@ -21,5 +20,5 @@ public interface PaymentInstrumentRepositoryFacade {
     void update(PaymentInstrument request);
     void updateExternalInfo(Long paymentInstrumentId, String externalToken, String label, String num);
     List<PaymentInstrument> getByUserId(Long userId);
-    List<PaymentInstrument> search(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData pageMetadata);
+    List<PaymentInstrument> search(Long userId, PaymentInstrumentSearchParam searchParam);
 }

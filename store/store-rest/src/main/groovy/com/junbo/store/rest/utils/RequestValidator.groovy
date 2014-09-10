@@ -1,5 +1,4 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -18,7 +17,6 @@ import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
-import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
 import com.junbo.store.clientproxy.FacadeContainer
@@ -42,7 +40,6 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
-
 /**
  * The RequestValidator class.
  */
@@ -387,7 +384,7 @@ class RequestValidator {
                 return resourceContainer.paymentInstrumentResource.searchPaymentInstrument(new PaymentInstrumentSearchParam(
                         userId: userId,
                         type: PIType.STOREDVALUE.toString()
-                ), new PageMetaData()).then { Results<PaymentInstrument> results ->
+                )).then { Results<PaymentInstrument> results ->
                     if (results == null || CollectionUtils.isEmpty(results.items)) {
                         throw AppErrors.INSTANCE.invalidOffer('StoreValue is not exists.').exception()
                     }
