@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.Entitlement;
+import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfile;
 import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
@@ -36,6 +37,7 @@ import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.Validator;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import org.apache.commons.collections.CollectionUtils;
@@ -70,6 +72,17 @@ public class StoreValidationHelper extends BaseValidationHelper {
         if (response.getPurchaseToken() == null || response.getPurchaseToken().isEmpty()) {
             throw new TestException("missing purchase token in prepare purchase response");
         }
+    }
+
+    public void verifyEntitlementResponse(EntitlementsGetResponse entitlementsGetResponse, String offerId){
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(Master.getInstance().getOffer(offerId).getCurrentRevisionId());
+        Item item =  Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
+        Entitlement entitlement = entitlementsGetResponse.getEntitlements().get(0);
+
+        verifyEqual(entitlement.getItemType(), item.getType(), "verify item type");
+        verifyEqual(entitlement.getEntitlementType(), "DOWNLOAD","verify entitlement type");
+        verifyEqual(entitlement.getItem().getValue(), item.getId(), "verify item id");
+
     }
 
     public void verifyCommitPurchase(CommitPurchaseResponse response, String offerId) throws Exception {

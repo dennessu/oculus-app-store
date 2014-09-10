@@ -120,7 +120,7 @@ public class StoreTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             environment = "release",
             description = "Test prepare purchase digital good offer",
             steps = {
@@ -328,6 +328,8 @@ public class StoreTesting extends BaseTestClass {
         }
 
         EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
+        validationHelper.verifyEntitlementResponse(entitlementsResponse, offerId);
+
         Master.getInstance().setCurrentUid(null);
 
         AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());

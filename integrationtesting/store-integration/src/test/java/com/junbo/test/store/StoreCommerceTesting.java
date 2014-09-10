@@ -4,6 +4,7 @@ import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
@@ -51,6 +52,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
         //verify decrypted credit card info
         validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
+
     }
 
 
@@ -283,7 +285,7 @@ public class StoreCommerceTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test change payment via prepare purchase",
@@ -368,7 +370,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert preparePurchaseResponse.getChallenge() != null;
         assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false ,412);
+        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false, 412);
         assert preparePurchaseResponse == null;
     }
 
@@ -567,6 +569,92 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert Master.getInstance().getApiErrorMsg().contains("Billing Insufficient Fund");
 
     }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test check out duplicate offer",
+            steps = {
+                    "1. Create user",
+                    "2. Make free purchase",
+                    "3. Make free purchase again",
+                    "4. Verify error code",
+            }
+    )
+    @Test
+    public void testCheckoutDuplicateOffer() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+
+        testDataProvider.signIn(userName);
+
+        String offerId;
+        if (offer_iap_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+
+        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
+
+        testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+
+        testDataProvider.makeFreePurchase(offerId, null, 412);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Duplicate Purchase.");
+        assert Master.getInstance().getApiErrorMsg().contains("133.146");
+
+        EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
+        assert entitlementsResponse.getEntitlements().size() == 1;
+
+        validationHelper.verifyEntitlementResponse(entitlementsResponse, offerId);
+
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test free purchase normal offer",
+            steps = {
+                    "1. Create user",
+                    "2. Make free purchase normal offer",
+                    "3. Make free purchase again",
+                    "4. Verify error code",
+            }
+    )
+    @Test
+    public void testFreePurchaseNormalOffer() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+
+        testDataProvider.signIn(userName);
+
+        String offerId;
+        if (offer_iap_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
+        } else {
+            offerId = offer_digital_normal1;
+        }
+
+        testDataProvider.makeFreePurchase(offerId, null, 412);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Offer not free");
+        assert Master.getInstance().getApiErrorMsg().contains("130.110");
+
+    }
+
+
+
+
+
 
 
 
