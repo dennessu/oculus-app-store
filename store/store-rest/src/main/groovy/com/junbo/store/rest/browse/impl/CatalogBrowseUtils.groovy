@@ -20,6 +20,7 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
@@ -286,14 +287,16 @@ class CatalogBrowseUtils {
                 return Promise.pure()
             }
         }.then { // get developer
-            resourceContainer.organizationResource.get(result.item.ownerId, new OrganizationGetOptions()).then { Organization organization ->
+            getOrganization(result.item?.ownerId).then { Organization organization ->
                 result.developer = organization
                 return Promise.pure()
             }
         }.then {  // get genres
             Promise.each(catalogItem.genres) { String genresId ->
-                resourceContainer.itemAttributeResource.getAttribute(genresId, new ItemAttributeGetOptions()).then { ItemAttribute itemAttribute ->
-                    result.genres << itemAttribute
+                getItemAttribute(genresId).then { ItemAttribute itemAttribute ->
+                    if (itemAttribute != null) {
+                        result.genres << itemAttribute
+                    }
                     return Promise.pure()
                 }
             }
@@ -387,13 +390,15 @@ class CatalogBrowseUtils {
             }
         }.then { // get categories
             Promise.each(catalogOffer.categories) { String categoryId ->
-                resourceContainer.offerAttributeResource.getAttribute(categoryId, new OfferAttributeGetOptions()).then { OfferAttribute offerAttribute ->
-                    result.categories << offerAttribute
+                getOfferAttribute(categoryId).then { OfferAttribute offerAttribute ->
+                    if (offerAttribute != null) {
+                        result.categories << offerAttribute
+                    }
                     return Promise.pure()
                 }
             }
         }.then { // get publisher
-            resourceContainer.organizationResource.get(catalogOffer.ownerId, new OrganizationGetOptions()).then { Organization organization->
+            getOrganization(catalogOffer.ownerId).then { Organization organization->
                 result.publisher = organization
                 return Promise.pure()
             }
@@ -448,6 +453,33 @@ class CatalogBrowseUtils {
             return Promise.pure()
         }.then {
             return Promise.pure(result)
+        }
+    }
+
+    private Promise<Organization> getOrganization(OrganizationId organizationId) {
+        Promise.pure().then {
+            resourceContainer.organizationResource.get(organizationId, new OrganizationGetOptions())
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_Get_Organization_Fail, organization={}', organizationId)
+            return Promise.pure()
+        }
+    }
+
+    private Promise<ItemAttribute> getItemAttribute(String attributeId) {
+        Promise.pure().then {
+            resourceContainer.itemAttributeResource.getAttribute(attributeId, new ItemAttributeGetOptions())
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_Get_ItemAttribute_Fail, attribute={}', attributeId)
+            return Promise.pure()
+        }
+    }
+
+    private Promise<OfferAttribute> getOfferAttribute(String attributeId) {
+        Promise.pure().then {
+            resourceContainer.offerAttributeResource.getAttribute(attributeId, new OfferAttributeGetOptions())
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_Get_OfferAttribute_Fail, attribute={}', attributeId)
+            return Promise.pure()
         }
     }
 }

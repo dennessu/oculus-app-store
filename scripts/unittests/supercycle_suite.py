@@ -2,6 +2,7 @@
 from silkcloudut import *
 import ut_oauth
 import ut_checkout
+import ut_checkout_consumable
 import ut_identity
 
 if __name__ == '__main__':
@@ -15,6 +16,7 @@ if __name__ == '__main__':
     suite.addTest(ut_oauth.OAuthTests('testGetCountries'))
     suite.addTest(ut_identity.IdentityTests('testGroupMembershipDeletion'))
     suite.addTest(ut_identity.IdentityTests('testRoles'))
+    suite.addTest(ut_checkout_consumable.CheckoutTests('testCheckout'))
     # TODO: add testTFA
 
     silkcloud_utmain(suite)

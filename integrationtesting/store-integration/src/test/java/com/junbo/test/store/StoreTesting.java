@@ -120,7 +120,7 @@ public class StoreTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Disable,
+            status = Status.Enable,
             environment = "release",
             description = "Test prepare purchase digital good offer",
             steps = {

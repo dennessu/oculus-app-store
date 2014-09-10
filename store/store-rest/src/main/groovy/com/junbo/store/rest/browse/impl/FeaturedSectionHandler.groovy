@@ -198,10 +198,17 @@ class FeaturedSectionHandler implements SectionHandler {
             LOGGER.info('name=Store_FeatureCampaign_NotFound, country={}, label={}', apiContext.country.getId().value, campaignLabel)
         }
 
-        if (campaign != null) {
+        if (campaign?.placements != null) {
+            List<Placement> placements = []
             campaign.placements.each { Placement placement ->
-                placement.contentData = resourceContainer.caseyResource.getCmsContent(placement.content.id).get()
+                try {
+                    placement.contentData = resourceContainer.caseyResource.getCmsContent(placement?.content?.getId()).get()
+                    placements << placement
+                }  catch (Exception ex) {
+                    LOGGER.error('name=CmsCampaign_Get_Error, cmsContentId=' + placement?.content?.getId(), ex)
+                }
             }
+            campaign.placements = placements
         }
 
         apiContext.contextData.put(ApiContext.ContextDataKey.CMS_CAMPAIGN, campaign)

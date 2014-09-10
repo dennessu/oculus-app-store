@@ -155,12 +155,14 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
         item.setEntitlementMetas(new ArrayList<EntitlementMeta>());
 
-        for (EntitlementDef def : itemRevision.getEntitlementDefs()) {
-            EntitlementMeta meta = new EntitlementMeta();
-            meta.setConsumable(def.getConsumable());
-            meta.setType(def.getType());
+        if (itemRevision.getEntitlementDefs() != null) {
+            for (EntitlementDef def : itemRevision.getEntitlementDefs()) {
+                EntitlementMeta meta = new EntitlementMeta();
+                meta.setConsumable(def.getConsumable());
+                meta.setType(def.getType());
 
-            item.getEntitlementMetas().add(meta);
+                item.getEntitlementMetas().add(meta);
+            }
         }
 
         return item;

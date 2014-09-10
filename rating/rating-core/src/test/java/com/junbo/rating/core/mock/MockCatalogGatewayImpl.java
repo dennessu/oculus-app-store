@@ -235,6 +235,13 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                 put("US", new Properties(true, Utils.maxDate()));
             }});
             setCategories(new ArrayList<String>());
+            setItems(new ArrayList<LinkedEntry>() {{
+                add(new LinkedEntry() {{
+                    setEntryId("201L");
+                    setType(EntryType.ITEM);
+                    setQuantity(1);
+                }});
+            }});
             setSubOffers(new ArrayList<LinkedEntry>());
         }};
     }
@@ -249,7 +256,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private Item genPhysicalItem() {
         return new Item() {{
             setItemId("201L");
-            setType("PHYSICAL");
+            setType(ItemType.PHYSICAL.name());
         }};
     }
 

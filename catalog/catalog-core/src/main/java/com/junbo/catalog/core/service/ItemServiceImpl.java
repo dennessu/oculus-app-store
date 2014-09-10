@@ -175,7 +175,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             revision.setEntitlementDefs(new ArrayList<EntitlementDef>());
         }
         List<EntitlementDef> entitlementDefs = revision.getEntitlementDefs();
-        if (ItemType.APP.is(itemType)) {
+        if (ItemType.APP.is(itemType) || ItemType.VIDEO.is(itemType) || ItemType.PHOTO.is(itemType)) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.RUN, false);
         } else if (ItemType.DOWNLOADED_ADDITION.is(itemType)) {
