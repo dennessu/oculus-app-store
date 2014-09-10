@@ -2,6 +2,7 @@ package com.junbo.store.rest.resource
 
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.*
@@ -12,7 +13,10 @@ import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.model.TokenInfo
 import com.junbo.store.rest.context.ErrorContext
-import com.junbo.store.rest.utils.*
+import com.junbo.store.rest.utils.AppErrorUtils
+import com.junbo.store.rest.utils.ErrorCodes
+import com.junbo.store.rest.utils.RequestValidator
+import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
 import groovy.transform.CompileStatic
@@ -140,7 +144,7 @@ class LoginResourceImpl implements LoginResource {
             return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(request.preferredLocale, request.cor, apiContext.user.getId(), null)
         }.then {
             // get the auth token
-            innerSignIn(request.username, request.password)
+            innerSignIn(apiContext.user.getId())
         }
     }
 
@@ -189,6 +193,20 @@ class LoginResourceImpl implements LoginResource {
         }
     }
 
+    private Promise<AuthTokenResponse> innerSignIn(UserId userId) {
+        return resourceContainer.tokenEndpoint.postToken(
+                new AccessTokenRequest(
+                        userId: IdFormatter.encodeId(userId),
+                        clientId: clientId,
+                        clientSecret: clientSecret,
+                        grantType: 'CLIENT_CREDENTIALS',
+                        scope: defaultScopes
+                )
+        ).then { AccessTokenResponse accessTokenResponse ->
+            return buildResponse(accessTokenResponse)
+        }
+    }
+
     private Promise<AuthTokenResponse> innerSignIn(String username, String password) {
         return resourceContainer.tokenEndpoint.postToken( // todo : may need call credential verification first since post token does not return meaningful error when user credential is invalid
                 new AccessTokenRequest(
@@ -200,16 +218,20 @@ class LoginResourceImpl implements LoginResource {
                         scope: defaultScopes
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
-            def response = fromAuthTokenResponse(accessTokenResponse)
-            resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo ->
-                resourceContainer.userResource.get(tokenInfo.sub, new UserGetOptions()).then { User user ->
-                    resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernamePersonalinfo ->
-                        def userLoginName = ObjectMapperProvider.instance().treeToValue(usernamePersonalinfo.value, UserLoginName)
+            return buildResponse(accessTokenResponse);
+        }
+    }
 
-                        response.username = userLoginName.userName
-                        response.userId = tokenInfo.sub
-                        return Promise.pure(response)
-                    }
+    private Promise<AuthTokenResponse> buildResponse(AccessTokenResponse accessTokenResponse) {
+        def response = fromAuthTokenResponse(accessTokenResponse)
+        return resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo ->
+            return resourceContainer.userResource.get(tokenInfo.sub, new UserGetOptions()).then { User user ->
+                return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernamePersonalinfo ->
+                    def userLoginName = ObjectMapperProvider.instance().treeToValue(usernamePersonalinfo.value, UserLoginName)
+
+                    response.username = userLoginName.userName
+                    response.userId = tokenInfo.sub
+                    return Promise.pure(response)
                 }
             }
         }
