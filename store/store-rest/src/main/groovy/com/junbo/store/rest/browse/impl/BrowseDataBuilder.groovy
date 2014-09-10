@@ -76,21 +76,23 @@ class BrowseDataBuilder {
     }
 
     private AppDetails buildAppDetails(ItemData itemData, ItemRevisionLocaleProperties itemRevisionLocaleProperties, ApiContext apiContext) {
-        // todo fill content rating
         ItemRevision itemRevision = itemData.currentRevision
         AppDetails result = new AppDetails()
         result.packageName = itemRevision?.packageName
 
         Binary binary = itemRevision?.binaries?.get(Platform.ANDROID.value)
+        result.ageRatings = itemRevision?.ageRatings
         result.installationSize = binary?.size
         result.versionCode = null // todo set the version code
         result.versionString = binary?.version
-        result.releaseDate = itemRevision?.updatedTime // todo use real release date
+        result.releaseDate = itemData.offer?.offerRevision?.getCountries()?.get(apiContext.country.getId().value)?.releaseDate
         result.revisionNotes = itemData?.revisions?.collect {ItemRevision r -> buildRevisionNote(r, itemRevisionLocaleProperties, apiContext)}
+
 
         // item revision attribute
         result.website = itemRevisionLocaleProperties?.website
         result.forumUrl = itemRevisionLocaleProperties?.communityForumLink
+        result.developerEmail = itemRevisionLocaleProperties?.supportEmail
 
         result.categories = itemData?.offer?.categories?.collect { OfferAttribute offerAttribute ->
             return new CategoryInfo(

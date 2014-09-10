@@ -177,7 +177,7 @@ class CatalogBrowseUtils {
                 count: count
         )
 
-        return resourceContainer.caseyResource.getReviews(params).recover { Throwable ex ->
+        return resourceContainer.caseyReviewResource.getReviews(params).recover { Throwable ex ->
             LOGGER.error('name=Get_Casey_Review_Fail', ex)
             return Promise.pure()
         }.then { CaseyResults<CaseyReview> results ->
@@ -429,7 +429,7 @@ class CatalogBrowseUtils {
 
     private Promise<CaseyData> getCaseyData(String itemId) {
         CaseyData result = new CaseyData()
-        resourceContainer.caseyResource.getRatingByItemId(itemId).then { CaseyResults<CaseyAggregateRating> results ->
+        resourceContainer.caseyReviewResource.getRatingByItemId(itemId).then { CaseyResults<CaseyAggregateRating> results ->
             result.aggregatedRatings = results.items.collect { CaseyAggregateRating rating ->
                 AggregatedRatings aggregatedRatings = new AggregatedRatings(
                         type: rating.type,

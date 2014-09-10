@@ -6,10 +6,10 @@
 package com.junbo.store.spec.resource.external;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.store.spec.model.external.casey.*;
+import com.junbo.store.spec.model.external.casey.CaseyResults;
+import com.junbo.store.spec.model.external.casey.OfferSearchParams;
 import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsContent;
 
@@ -23,24 +23,11 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
-@AuthorizationNotRequired
 public interface CaseyResource {
 
     @GET
     @Path("search")
     Promise<CaseyResults<JsonNode>> searchOffers(@BeanParam OfferSearchParams params);
-
-    @GET
-    @Path("ratings/item/{itemId}")
-    Promise<CaseyResults<CaseyAggregateRating>> getRatingByItemId(@PathParam("itemId") String itemId);
-
-    @GET
-    @Path("reviews")
-    Promise<CaseyResults<CaseyReview>> getReviews(@BeanParam ReviewSearchParams params);
-
-    @POST
-    @Path("reviews")
-    Promise<CaseyReview> addReview(CaseyReview review);
 
     @GET
     @Path("cms-campaigns")

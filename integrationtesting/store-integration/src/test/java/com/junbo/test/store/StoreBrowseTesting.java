@@ -5,6 +5,7 @@
  */
 package com.junbo.test.store;
 
+import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.store.spec.model.browse.*;
@@ -15,10 +16,13 @@ import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.store.utility.DataGenerator;
 import org.apache.commons.collections.Predicate;
 import org.springframework.util.CollectionUtils;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.*;
@@ -27,6 +31,19 @@ import java.util.*;
  * The StoreBrowseTesting class.
  */
 public class StoreBrowseTesting extends BaseTestClass {
+
+    public enum GetItemMethod {
+        List,
+        Library,
+        Purchase,
+        Details
+    }
+
+    @BeforeClass
+    public void setUp() throws Exception {
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+    }
 
     @Test
     public void testGetToc() throws Exception {
@@ -73,8 +90,10 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertNotNull(freePurchaseResponse.getEntitlements().get(0).getItemDetails(), "itemDetails should not be null");
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
-        assert libraryResponse.getItems().size() == 1; // todo add more verifications
-
+        assert libraryResponse.getItems().size() == 1;
+        for (Item item: libraryResponse.getItems()) {
+            verifyItem(item, true, GetItemMethod.Library, null);
+        }
     }
 
     @Test
@@ -98,14 +117,17 @@ public class StoreBrowseTesting extends BaseTestClass {
         MakeFreePurchaseResponse response = testDataProvider.makeFreePurchase(offerId, null);
         response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
         Assert.assertNotNull(response.getEntitlements().get(0).getItemDetails(), "itemDetails in entitlement should not be null");
+        verifyItem(response.getEntitlements().get(0).getItemDetails(), true, GetItemMethod.Purchase, null);
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
-        assert libraryResponse.getItems().size() == 1; // todo add more verifications
+        assert libraryResponse.getItems().size() == 1;
         ItemId itemId = libraryResponse.getItems().get(0).getSelf();
 
         DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId.getValue());
+        verifyItem(response.getEntitlements().get(0).getItemDetails(), true, GetItemMethod.Details, true);
         Assert.assertTrue(detailsResponse.getItem().getOwnedByCurrentUser());
         Assert.assertTrue(detailsResponse.getItem().getOffer().getIsFree());
+
 
         // get delivery
         DeliveryResponse deliveryResponse = testDataProvider.getDelivery(itemId);
@@ -114,14 +136,16 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     @Test
     public void testGetDetails() throws Exception {
-        // get the first item in the first section
-        TocResponse response = gotoToc();
-        SectionInfoNode sectionInfo = response.getSections().get(1);
-        ItemId itemId = testDataProvider.getLayout(sectionInfo.getCategory(), sectionInfo.getCriteria(), null).getItems().get(0).getSelf();
+        gotoToc();
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_oculus_free1);
+        com.junbo.catalog.spec.model.offer.Offer catalogOffer = offerService.getOffer(offerId);
+        OfferRevision offerRevision = offerRevisionService.getOfferRevision(catalogOffer.getCurrentRevisionId());
+        Assert.assertEquals(offerRevision.getItems().size(), 1);
+        String itemId = offerRevision.getItems().get(0).getItemId();
 
         // get the item details
-        DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId.getValue());
-        Assert.assertFalse(detailsResponse.getItem().getOwnedByCurrentUser());
+        DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId);
+        verifyItem(detailsResponse.getItem(), true, GetItemMethod.Details, false);
     }
 
     @Test
@@ -178,12 +202,12 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     @Test
     public void testGetGameSection() throws Exception {
-        testGetCategorySection("Game", "Game", Arrays.asList(item_digital_normal1, item_digital_oclus_free1, item_digital_free));
+        testGetCategorySection("Game", "Game", Arrays.asList(item_digital_normal1, item_digital_oculus_free1, item_digital_free));
     }
 
     @Test
     public void testGetAppSection() throws Exception {
-        testGetCategorySection("App", "App", Arrays.asList(item_digital_normal2, item_digital_oclus_free2));
+        testGetCategorySection("App", "App", Arrays.asList(item_digital_normal2, item_digital_oculus_free2));
     }
 
     @Test
@@ -192,7 +216,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         StoreUserProfile userProfile = testDataProvider.getUserProfile().getUserProfile();
 
         // prepare review & aggregate ratings
-        int numOfReviews = 4; // todo change the number after the pagination issue is fixed
+        int numOfReviews = 20;
         List<CaseyReview> caseyReviews = new ArrayList<>();
         for (int i = 0; i < numOfReviews;++i) {
             caseyReviews.add(DataGenerator.instance().generateCaseyReview(IdFormatter.encodeId(userProfile.getUserId())));
@@ -272,6 +296,9 @@ public class StoreBrowseTesting extends BaseTestClass {
         // get layout
         int pageSize = 2;
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(category, criteria, pageSize);
+        for (Item item : sectionLayoutResponse.getItems()) {
+            verifyItem(item, false, GetItemMethod.List, null);
+        }
         if (sectionLayoutResponse.getNext() != null) { // get rest of the items by get list
             Assert.assertEquals(category, sectionLayoutResponse.getNext().getCategory());
             Assert.assertEquals(criteria, sectionLayoutResponse.getNext().getCriteria());
@@ -301,6 +328,9 @@ public class StoreBrowseTesting extends BaseTestClass {
 
             ListResponse result = testDataProvider.getList(listRequest);
             Assert.assertTrue(result.getItems().size() <= pageSize);
+            for (Item item : result.getItems()) {
+                verifyItem(item, false, GetItemMethod.List, null);
+            }
 
             if (result.getNext() == null || result.getItems().isEmpty()) {
                 break;
@@ -360,6 +390,24 @@ public class StoreBrowseTesting extends BaseTestClass {
         }
 
         return result;
+    }
+
+    private void verifyItem(Item item, boolean forceVerify, GetItemMethod method, Boolean ownedByUser) throws Exception {
+        if (!forceVerify && !itemsToVerify.containsKey(item.getTitle())) {
+            return ;
+        }
+        validationHelper.verifyItem(item, itemsToVerify.get(item.getTitle()));
+        if (method == GetItemMethod.Details) {
+            Assert.assertEquals(item.getOwnedByCurrentUser().booleanValue(), ownedByUser.booleanValue());
+        } else if (method == GetItemMethod.Library || method == GetItemMethod.Purchase) {
+            Assert.assertNull(item.getReviews());
+            Assert.assertNull(item.getCurrentUserReview());
+            Assert.assertTrue(item.getOwnedByCurrentUser());
+        } else if (method == GetItemMethod.List) {
+            Assert.assertNull(item.getReviews());
+            Assert.assertNull(item.getCurrentUserReview());
+            Assert.assertNull(item.getOwnedByCurrentUser());
+        }
     }
 }
 

@@ -197,4 +197,8 @@
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
+    <bean id="store.caseyReviewClientProxy"
+          class="com.junbo.store.spec.resource.external.proxy.CaseyReviewResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.casey.url}"/>
+    </bean>
 </beans>

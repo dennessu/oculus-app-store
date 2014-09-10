@@ -5,6 +5,9 @@
  */
 package com.junbo.test.common.apihelper.identity.impl;
 
+import com.junbo.common.id.OrganizationId;
+import com.junbo.common.util.IdFormatter;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.identity.RoleAssignmentService;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.RoleService;
@@ -37,6 +40,7 @@ public class OrganizationServiceImpl extends HttpClientBase implements Organizat
     }
 
     private OrganizationServiceImpl() {
+        componentType = ComponentType.IDENTITY;
     }
 
     public Organization postDefaultOrganization() throws Exception {
@@ -71,6 +75,13 @@ public class OrganizationServiceImpl extends HttpClientBase implements Organizat
 
     public Organization postOrganization(Organization organization, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, organizationUrl, organization, expectedResponseCode);
+        return new JsonMessageTranscoder().decode(new TypeReference<Organization>() {
+        }, responseBody);
+    }
+
+    @Override
+    public Organization getOrganization(OrganizationId organizationId) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, organizationUrl + "/" + IdFormatter.encodeId(organizationId), true);
         return new JsonMessageTranscoder().decode(new TypeReference<Organization>() {
         }, responseBody);
     }
