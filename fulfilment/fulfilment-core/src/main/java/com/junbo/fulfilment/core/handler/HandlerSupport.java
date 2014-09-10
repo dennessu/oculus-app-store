@@ -65,6 +65,7 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
 
                 LOGGER.info("Finish processing action [" + action.getActionId() + "].");
             } catch (Exception e) {
+                LOGGER.error("Error occurred during processing action.", e);
                 action.setStatus(FulfilmentStatus.FAILED);
             }
 
