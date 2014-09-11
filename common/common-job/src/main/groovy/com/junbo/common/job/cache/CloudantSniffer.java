@@ -116,23 +116,22 @@ public class CloudantSniffer {
                 databases.addAll(entry.getValue().keySet());
             }
 
-            LOGGER.info("Detect [" + databases.size() + "] candidate databases.");
             for (String db : databases) {
                 String fullDatabaseName = prefix + db;
                 Response response = executeGet(cloudantUri, fullDatabaseName, "", null).get();
 
                 if (response.getStatusCode() / 100 == 2) {
                     filtered.add(fullDatabaseName);
-                    LOGGER.info("Database [" + fullDatabaseName + "] is available on [" + cloudantUri.toString() + "].");
+                    LOGGER.debug("Database [" + fullDatabaseName + "] is available on " + cloudantUri.getDetail());
                 } else {
-                    LOGGER.info("Database [" + fullDatabaseName + "] doesn't exist on [" + cloudantUri.toString() + "].");
+                    LOGGER.debug("Database [" + fullDatabaseName + "] doesn't exist on " + cloudantUri.getDetail());
                 }
             }
         } catch (Exception e) {
             throw new CloudantConnectException("Error occurred during get all cloudant databases.", e);
         }
 
-        LOGGER.info("Finally detect [" + filtered.size() + "] available databases.");
+        LOGGER.info("Detect [" + filtered.size() + "] available databases on " + cloudantUri.getDetail());
         return filtered;
     }
 
@@ -151,7 +150,7 @@ public class CloudantSniffer {
         Object lastSeqObj = result.get(CLOUDANT_LASTSEQ_KEY);
         String lastSeq = (lastSeqObj == null ? null : lastSeqObj.toString());
 
-        LOGGER.info("Last change sequence id on [" + cloudantUri.toString() + "] is [" + lastSeq + "].");
+        LOGGER.debug("Last change sequence id on [" + cloudantUri.toString() + "] is [" + lastSeq + "].");
         return lastSeq;
     }
 
