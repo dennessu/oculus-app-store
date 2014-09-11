@@ -20,6 +20,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
@@ -30,12 +32,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
-
 /**
  * CloudantSniffer.
  */
 public class CloudantSniffer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloudantSniffer.class);
+
     private static final String ALL_DB_PATH = "/_all_dbs";
     private static final String CHANGE_PATH = "/_changes";
 
@@ -85,6 +87,7 @@ public class CloudantSniffer {
             }
         }
 
+        LOGGER.info("Find [" + filtered.size() + "] matched databases.");
         return filtered;
     }
 
@@ -101,7 +104,10 @@ public class CloudantSniffer {
         }
 
         Object lastSeqObj = result.get(CLOUDANT_LASTSEQ_KEY);
-        return lastSeqObj == null ? null : lastSeqObj.toString();
+        String lastSeq = (lastSeqObj == null ? null : lastSeqObj.toString());
+
+        LOGGER.info("Last sequence id is [" + lastSeq + "].");
+        return lastSeq;
     }
 
     public List<CloudantUri> getCloudantInstances() {
@@ -179,7 +185,6 @@ public class CloudantSniffer {
                     .setScheme(Realm.AuthScheme.BASIC).build();
 
             requestBuilder.setRealm(realm);
-            requestBuilder.setHeader("X-Cloudant-User", cloudantUri.getUsername());
         }
 
         if (queryParams != null) {
