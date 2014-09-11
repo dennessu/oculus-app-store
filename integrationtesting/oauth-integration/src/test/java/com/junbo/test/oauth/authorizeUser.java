@@ -185,10 +185,10 @@ public class authorizeUser {
         Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        //String userName = "allEnvLoginUser";
-        //String email = "silkcloudtest+allEnvLoginUser@gmail.com";
-        String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomHelper.randomEmail();
+        String userName = "allEnvLoginUser";
+        String email = "silkcloudtest+allEnvLoginUser@gmail.com";
+        //String userName = RandomHelper.randomAlphabetic(15);
+        //String email = RandomHelper.randomEmail();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
