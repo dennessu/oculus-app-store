@@ -354,6 +354,18 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return offerClient.getOfferIdByName(offerName);
     }
 
+    public Offer getOfferByOfferId(String offerId) throws Exception {
+        return offerClient.getOffer(offerId);
+    }
+
+    public OfferRevision getOfferRevision(String offerRevisionId) throws Exception{
+        return offerRevisionClient.getOfferRevision(offerRevisionId);
+    }
+
+    public Item getItemByItemId(String itemId) throws Exception{
+        return itemClient.getItem(itemId);
+    }
+
     public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken) throws Exception {
         return commitPurchase(uid, purchaseToken, 200);
     }
