@@ -73,6 +73,7 @@ start(){
     sudo docker pull silkcloud/onebox-couchdb > /dev/null
     COUCHDB=$(sudo docker run \
       -d \
+      --restart=always \
       -p 5984:5984 \
       -v $DATADIR/couchdb/logs:/var/log/couchdb \
       -v $DATADIR/couchdb/data:/var/lib/couchdb \
@@ -90,6 +91,7 @@ start(){
     sudo docker pull silkcloud/onebox-psql > /dev/null
     PSQL=$(sudo docker run \
       -d \
+      --restart=always \
       -p 5432:5432 \
       -v $DATADIR/psql/data:/data \
       -v $DATADIR/psql/logs:/var/log/postgresql \
@@ -105,6 +107,7 @@ start(){
     sudo docker pull silkcloud/onebox-memcached > /dev/null
     MEMCACHED=$(sudo docker run \
       -d \
+      --restart=always \
       -p 11211:11211 \
       --name=memcached \
       silkcloud/onebox-memcached)
