@@ -8,6 +8,7 @@ package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.PriceTierService;
+import com.junbo.catalog.core.validators.ValidationUtils;
 import com.junbo.catalog.db.repo.PriceTierRepository;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
@@ -154,6 +155,9 @@ public class PriceTierServiceImpl implements PriceTierService {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
         } else {
             for (String locale : priceTier.getLocales().keySet()) {
+                if (!ValidationUtils.isValidLocale(locale)) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalid("locales", "invalid locale code: " + locale));
+                }
                 if (priceTier.getLocales().get(locale) == null) {
                     errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
                 } else {
