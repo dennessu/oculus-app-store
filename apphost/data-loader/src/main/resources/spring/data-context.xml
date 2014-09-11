@@ -112,7 +112,6 @@
         <property name="handlers">
             <map>
                 <entry key="client" value-ref="clientDataHandler"/>
-                <entry key="scope" value-ref="scopeDataHandler"/>
                 <entry key="country" value-ref="countryDataHandler"/>
                 <entry key="currency" value-ref="currencyDataHandler"/>
                 <entry key="locale" value-ref="localeDataHandler"/>
@@ -133,7 +132,6 @@
             <list>
                 <value>masterkey</value>
                 <value>client</value>
-                <value>scope</value>
                 <value>locale</value>
                 <value>currency</value>
                 <value>country</value>

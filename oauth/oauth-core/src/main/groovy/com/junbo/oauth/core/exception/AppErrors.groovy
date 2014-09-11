@@ -59,7 +59,7 @@ interface AppErrors {
     AppError invalidAuthorization()
 
     @ErrorDef(httpStatusCode = 400, code = '111', message = 'Invalid Post Logout RedirectUri', reason = 'The post_logout_redirect_uri {0} is invalid',
-            field = 'conversationId')
+            field = 'post_logout_redirect_uri')
     AppError invalidPostLogoutRedirectUri(String postLogoutRedirectUri)
 
     @ErrorDef(httpStatusCode = 412, code = '112', message = 'Insufficient Scope',

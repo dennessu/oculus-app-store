@@ -49,7 +49,7 @@ class OAuthTests(ut.TestBase):
         view = curlForm('POST', ut.test_uri, '/v1/oauth2/authorize', data = { 'cid': cid, 'event': 'next' })
         assert view["view"] == 'redirect'
         link = view["model"]["location"]
-	cid = getqueryparam(link, 'cid')
+        cid = getqueryparam(link, 'cid')
 
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = { 'cid': cid})
         cid = getqueryparam(location, 'cid')
@@ -87,6 +87,86 @@ class OAuthTests(ut.TestBase):
         user.access_token = access_token
         user.refresh_token = refresh_token
         return user
+
+    def testLogout(self):
+        user = self.testRegister()
+
+        # test silent sign-in
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState',
+            'nonce': 'testNonce'
+        })
+
+        id_token = getqueryparam(location, 'id_token')
+        assert id_token is not None
+
+        # logout
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
+            'post_logout_redirect_uri': ut.test_logout_redirect_uri,
+            'id_token_hint': id_token
+        })
+
+        assert location == ut.test_logout_redirect_uri
+        pass
+
+    def testValidWildcardRedirectUri(self):
+        user = self.testRegister()
+
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': 'identity',
+            'redirect_uri': 'https://www.oculus.com/abc'
+        })
+
+        auth_code = getqueryparam(location, 'code')
+        assert auth_code is not None
+        pass
+
+    def testInvalidRedirectUri(self):
+        user = self.testRegister()
+
+        response = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
+            'redirect_uri': 'https://abc.a.com/oculus.com/',
+            'state': 'testState',
+            'nonce': 'testNonce'
+        }, raiseOnError = False)
+
+        assert response['message'] == 'Input Error'
+        assert response['details'][0]['field'] == 'redirect_uri'
+        pass
+
+    def testWildcardLogout(self):
+        user = self.testRegister()
+
+        # test silent sign-in
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState',
+            'nonce': 'testNonce'
+        })
+
+        id_token = getqueryparam(location, 'id_token')
+        assert id_token is not None
+
+        # logout
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
+            'post_logout_redirect_uri': ut.test_wildcard_logout_redirect_uri,
+            'id_token_hint': id_token
+        })
+
+        assert location == ut.test_wildcard_logout_redirect_uri
+        pass
 
     def testSilentLogin(self):
         user = self.testRegister()

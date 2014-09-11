@@ -12,6 +12,8 @@ if __name__ == '__main__':
     suite.addTest(ut_oauth.OAuthTests('testSilentLogin'))
     suite.addTest(ut_oauth.OAuthTests('testRegisterImplicitFlow'))
     suite.addTest(ut_oauth.OAuthTests('testSilentLoginImplicitFlow'))
+    suite.addTest(ut_oauth.OAuthTests('testLogout'))
+    suite.addTest(ut_oauth.OAuthTests('testWildcardLogout'))
     suite.addTest(ut_oauth.OAuthTests('testResetPassword'))
     suite.addTest(ut_oauth.OAuthTests('testGetCountries'))
     suite.addTest(ut_identity.IdentityTests('testGroupMembershipDeletion'))

@@ -6,7 +6,7 @@
   "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.dev/*" ],
   "default_redirect_uri" : "http://localhost",
 
-  "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home" ],
+  "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home", "https://*.oculus.com/*" ],
   "default_logout_redirect_uri" : "http://localhost",
 
   "scopes" : ["offline", "storeapi", "entitlement" ],

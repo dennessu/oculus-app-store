@@ -39,6 +39,8 @@ def setUpModule():
     global test_service_client_id
     global test_service_client_secret
     global test_redirect_uri
+    global test_logout_redirect_uri
+    global test_wildcard_logout_redirect_uri
     global test_sleep
     global cookies
 
@@ -49,6 +51,8 @@ def setUpModule():
         test_service_client_id = opts.sclient
         test_service_client_secret = opts.ssecret
         test_redirect_uri = 'http://localhost'
+        test_logout_redirect_uri = 'http://localhost'
+        test_wildcard_logout_redirect_uri = 'https://www.oculus.com/'
         test_sleep = opts.sleep
     else:
         test_uri = 'http://localhost:8080/'
@@ -57,6 +61,8 @@ def setUpModule():
         test_service_client_id = 'service'
         test_service_client_secret = 'secret'
         test_redirect_uri = 'http://localhost'
+        test_logout_redirect_uri = 'http://localhost'
+        test_wildcard_logout_redirect_uri = 'https://www.oculus.com/'
         test_sleep = None
 
     cookies = CookieJar()
