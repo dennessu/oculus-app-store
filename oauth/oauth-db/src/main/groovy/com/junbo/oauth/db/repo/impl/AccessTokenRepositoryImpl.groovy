@@ -35,7 +35,7 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
     @Override
     AccessToken save(AccessToken accessToken) {
         if (accessToken.tokenValue == null) {
-            accessToken.tokenValue = tokenGenerator.generateAccessToken()
+            accessToken.tokenValue = tokenGenerator.generateAccessToken(accessToken.userId)
         }
 
         return wrap(accessTokenDAO.save(unwrap(accessToken)))

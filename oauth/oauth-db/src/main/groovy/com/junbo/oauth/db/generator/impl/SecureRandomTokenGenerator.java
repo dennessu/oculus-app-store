@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.db.generator.impl;
 
+import com.junbo.configuration.topo.DataCenters;
 import com.junbo.oauth.db.generator.TokenGenerator;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Required;
@@ -104,6 +105,28 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
         return Base64.encodeBase64URLSafeString(bytes).replace('_', '~');
     }
 
+    private String generateWithDc(int length, Long userId) {
+        byte currentDcByte = (byte)(DataCenters.instance().currentDataCenterId());
+        byte userDcByte;
+
+        if (userId == 0L) {
+            userDcByte = currentDcByte;
+        } else {
+            userDcByte = (byte)((userId >> 2) & 0xF);
+        }
+
+        byte dcByte = (byte)(currentDcByte << 4 + userDcByte);
+
+        byte[] bytes = new byte[length];
+        random.nextBytes(bytes);
+
+        byte[] bytesWithDc = new byte[length + 1];
+        System.arraycopy(bytes, 0, bytesWithDc, 0, length);
+
+        bytesWithDc[length] = dcByte;
+        return Base64.encodeBase64URLSafeString(bytesWithDc).replace('_', '~');
+    }
+
     @Override
     public String generateLoginStateId() {
         return UUID.randomUUID().toString();
@@ -120,8 +143,8 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     }
 
     @Override
-    public String generateAccessToken() {
-        return generate(accessTokenLength);
+    public String generateAccessToken(Long userId) {
+        return generateWithDc(accessTokenLength, userId);
     }
 
     @Override
