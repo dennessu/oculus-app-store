@@ -84,7 +84,15 @@ class CatalogBrowseUtils {
     private CatalogUtils catalogUtils
 
     Promise<com.junbo.store.spec.model.browse.document.Item> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext) {
-        resourceContainer.itemResource.getItem(itemId.value).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
+        Promise.pure().then {
+            resourceContainer.itemResource.getItem(itemId.value)
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_GetItem_Fail, item={}', itemId.value, ex)
+            return Promise.pure()
+        }.then { com.junbo.catalog.spec.model.item.Item catalogItem ->
+            if (catalogItem  == null) {
+                return Promise.pure()
+            }
             return getItem(catalogItem, includeDetails, apiContext)
         }
     }
@@ -113,7 +121,7 @@ class CatalogBrowseUtils {
         }
     }
 
-    Promise<ItemId> lookupItemId(OfferId offerId) {
+    private Promise<ItemId> lookupItemId(OfferId offerId) {
         ItemId itemId = storeOfferToItemCache.get(offerId)
         if (itemId != null) {
             return Promise.pure(itemId)
@@ -177,7 +185,7 @@ class CatalogBrowseUtils {
                 count: count
         )
 
-        return resourceContainer.caseyResource.getReviews(params).recover { Throwable ex ->
+        return resourceContainer.caseyReviewResource.getReviews(params).recover { Throwable ex ->
             LOGGER.error('name=Get_Casey_Review_Fail', ex)
             return Promise.pure()
         }.then { CaseyResults<CaseyReview> results ->
@@ -252,19 +260,25 @@ class CatalogBrowseUtils {
         OfferRevisionLocaleProperties localeProperties = localeUtils.getLocaleProperties(offerData.offerRevision?.locales, apiContext.locale , 'offerRevision', offerData.offerRevision?.getId(), 'locales') as OfferRevisionLocaleProperties
         result.formattedDescription = localeProperties?.shortDescription
         result.isFree = offerData.offerRevision?.price?.priceType == PriceType.FREE.name()
-        resourceContainer.ratingResource.priceRating(new RatingRequest(
-                includeCrossOfferPromos: false,
-                country: apiContext.country.getId().value,
-                currency: apiContext.currency.getId().value,
-                lineItems: [
-                        new RatingItem(
-                                offerId: offerData.offer.offerId,
-                                quantity: 1
-                        )
-                ] as Set
-        )).then { RatingRequest ratingResult ->
-            result.price = ratingResult.lineItems[0].finalTotalAmount
-            storeItemPriceCache.put(cacheKey, result)
+        Promise.pure().then {
+            resourceContainer.ratingResource.priceRating(new RatingRequest(
+                    includeCrossOfferPromos: false,
+                    country: apiContext.country.getId().value,
+                    currency: apiContext.currency.getId().value,
+                    lineItems: [
+                            new RatingItem(
+                                    offerId: offerData.offer.offerId,
+                                    quantity: 1
+                            )
+                    ] as Set))
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_Price_Rating_Fail, offer={}', offerData.offer.getId(), ex)
+            return Promise.pure()
+        }.then { RatingRequest ratingResult ->
+            if (ratingResult != null) {
+                result.price = ratingResult.lineItems[0].finalTotalAmount
+                storeItemPriceCache.put(cacheKey, result)
+            }
             return Promise.pure(result)
         }
     }
@@ -429,7 +443,7 @@ class CatalogBrowseUtils {
 
     private Promise<CaseyData> getCaseyData(String itemId) {
         CaseyData result = new CaseyData()
-        resourceContainer.caseyResource.getRatingByItemId(itemId).then { CaseyResults<CaseyAggregateRating> results ->
+        resourceContainer.caseyReviewResource.getRatingByItemId(itemId).then { CaseyResults<CaseyAggregateRating> results ->
             result.aggregatedRatings = results.items.collect { CaseyAggregateRating rating ->
                 AggregatedRatings aggregatedRatings = new AggregatedRatings(
                         type: rating.type,
@@ -458,7 +472,7 @@ class CatalogBrowseUtils {
         Promise.pure().then {
             resourceContainer.organizationResource.get(organizationId, new OrganizationGetOptions())
         }.recover { Throwable ex ->
-            LOGGER.error('name=Store_Get_Organization_Fail, organization={}', organizationId)
+            LOGGER.error('name=Store_Get_Organization_Fail, organization={}', organizationId, ex)
             return Promise.pure()
         }
     }
@@ -467,7 +481,7 @@ class CatalogBrowseUtils {
         Promise.pure().then {
             resourceContainer.itemAttributeResource.getAttribute(attributeId)
         }.recover { Throwable ex ->
-            LOGGER.error('name=Store_Get_ItemAttribute_Fail, attribute={}', attributeId)
+            LOGGER.error('name=Store_Get_ItemAttribute_Fail, attribute={}', attributeId, ex)
             return Promise.pure()
         }
     }
@@ -476,7 +490,7 @@ class CatalogBrowseUtils {
         Promise.pure().then {
             resourceContainer.offerAttributeResource.getAttribute(attributeId)
         }.recover { Throwable ex ->
-            LOGGER.error('name=Store_Get_OfferAttribute_Fail, attribute={}', attributeId)
+            LOGGER.error('name=Store_Get_OfferAttribute_Fail, attribute={}', attributeId, ex)
             return Promise.pure()
         }
     }

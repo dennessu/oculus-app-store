@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.apihelper.identity;
 
+import com.junbo.common.id.OrganizationId;
 import com.junbo.identity.spec.v1.model.Organization;
 
 /**
@@ -17,4 +18,5 @@ public interface OrganizationService {
     Organization postDefaultOrganization(String userId) throws Exception;
     Organization postOrganization(Organization organization) throws Exception;
     Organization postOrganization(Organization organization, int expectedResponseCode) throws Exception;
+    Organization getOrganization(OrganizationId organizationId) throws Exception;
 }

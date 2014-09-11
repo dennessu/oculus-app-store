@@ -5,7 +5,11 @@
  */
 package com.junbo.store.spec.model.browse.document;
 
+import com.junbo.catalog.spec.model.common.AgeRating;
+
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The AppDetails class.
@@ -16,9 +20,7 @@ public class AppDetails {
 
     private List<GenreInfo> genres;
 
-    private Long contentRating;
-
-    private String releaseDate;
+    private Date releaseDate;
 
     private String website;
 
@@ -40,6 +42,8 @@ public class AppDetails {
 
     private List<RevisionNote> revisionNotes;
 
+    private Map<String, List<AgeRating>> ageRatings;
+
     public List<CategoryInfo> getCategories() {
         return categories;
     }
@@ -56,19 +60,11 @@ public class AppDetails {
         this.genres = genres;
     }
 
-    public Long getContentRating() {
-        return contentRating;
-    }
-
-    public void setContentRating(Long contentRating) {
-        this.contentRating = contentRating;
-    }
-
-    public String getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -174,5 +170,13 @@ public class AppDetails {
 
     public void setRevisionNotes(List<RevisionNote> revisionNotes) {
         this.revisionNotes = revisionNotes;
+    }
+
+    public Map<String, List<AgeRating>> getAgeRatings() {
+        return ageRatings;
+    }
+
+    public void setAgeRatings(Map<String, List<AgeRating>> ageRatings) {
+        this.ageRatings = ageRatings;
     }
 }

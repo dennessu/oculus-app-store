@@ -1,16 +1,18 @@
 package com.junbo.test.store;
 
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.store.utility.StoreTestDataProvider;
 import com.junbo.test.store.utility.StoreValidationHelper;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by weiyu_000 on 8/6/14.
  */
 public abstract class BaseTestClass {
+    protected String offer_digital_oculus_free1;
     protected String offer_digital_normal1;
     protected String offer_digital_normal2;
     protected String offer_physical_normal1;
@@ -27,12 +29,22 @@ public abstract class BaseTestClass {
     protected String item_digital_normal1;
     protected String item_digital_normal2;
     protected String item_digital_free;
-    protected String item_digital_oclus_free1;
-    protected String item_digital_oclus_free2;
+    protected String item_digital_oculus_free1;
+    protected String item_digital_oculus_free2;
 
     protected String featureRootCriteria = "featureRoot";
     protected List<String> itemsInFeaturedOffer;
     protected List<String> itemsInFeaturedItem;
+    protected Map<String, Boolean> itemsToVerify;
+
+
+    protected ItemService itemService;
+    protected ItemRevisionService itemRevisionService;
+    protected OfferService offerService;
+    protected OfferRevisionService offerRevisionService;
+    protected OfferAttributeService offerAttributeService;
+    protected ItemAttributeService itemAttributeService;
+    protected OAuthService oAuthTokenService;
 
     public BaseTestClass() {
         super();
@@ -40,6 +52,7 @@ public abstract class BaseTestClass {
     }
 
     private void loadOffers() {
+        offer_digital_oculus_free1 = ConfigHelper.getSetting("testdata.offer.digital.oculus.free1");
         offer_digital_normal1 = ConfigHelper.getSetting("testdata.offer.digital.normal1");
         offer_digital_normal2 = ConfigHelper.getSetting("testdata.offer.digital.normal2");
         offer_physical_normal1 = ConfigHelper.getSetting("testdata.offer.physical.normal1");
@@ -56,9 +69,34 @@ public abstract class BaseTestClass {
         item_digital_normal1 = ConfigHelper.getSetting("testdata.item.digital.normal1");
         item_digital_normal2 = ConfigHelper.getSetting("testdata.item.digital.normal2");
         item_digital_free = ConfigHelper.getSetting("testdata.item.digital.free");
-        item_digital_oclus_free1 = ConfigHelper.getSetting("testdata.item.digital.oculus.free1");
-        item_digital_oclus_free2 = ConfigHelper.getSetting("testdata.item.digital.oculus.free2");
+        item_digital_oculus_free1 = ConfigHelper.getSetting("testdata.item.digital.oculus.free1");
+        item_digital_oculus_free2 = ConfigHelper.getSetting("testdata.item.digital.oculus.free2");
 
+        if (ConfigHelper.getSetting("testdata.items.featuredoffer") != null) {
+            itemsInFeaturedOffer = Arrays.asList(ConfigHelper.getSetting("testdata.items.featuredoffer").split(","));
+        }
+        if (ConfigHelper.getSetting("testdata.items.featureditem") != null) {
+            itemsInFeaturedItem = Arrays.asList(ConfigHelper.getSetting("testdata.items.featureditem").split(","));
+        }
+        itemsToVerify = new HashMap<>();
+        if (ConfigHelper.getSetting("testdata.verify.items.free") != null) {
+            for (String itemName : Arrays.asList(ConfigHelper.getSetting("testdata.verify.items.free").split(","))) {
+                itemsToVerify.put(itemName, true);
+            }
+        }
+        if (ConfigHelper.getSetting("testdata.verify.items.nonfree") != null) {
+            for (String itemName : Arrays.asList(ConfigHelper.getSetting("testdata.verify.items.nonfree").split(","))) {
+                itemsToVerify.put(itemName, false);
+            }
+        }
+
+        itemService = ItemServiceImpl.instance();
+        itemRevisionService = ItemRevisionServiceImpl.instance();
+        offerService = OfferServiceImpl.instance();
+        offerRevisionService = OfferRevisionServiceImpl.instance();
+        offerAttributeService = OfferAttributeServiceImpl.instance();
+        itemAttributeService = ItemAttributeServiceImpl.instance();
+        oAuthTokenService = OAuthServiceImpl.getInstance();
         if (ConfigHelper.getSetting("testdata.items.featuredoffer") != null) {
             itemsInFeaturedOffer = Arrays.asList(ConfigHelper.getSetting("testdata.items.featuredoffer").split(","));
         }

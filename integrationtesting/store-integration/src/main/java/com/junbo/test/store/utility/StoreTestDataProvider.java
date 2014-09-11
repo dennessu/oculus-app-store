@@ -35,10 +35,14 @@ import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
@@ -78,6 +82,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
     CaseyEmulatorService caseyEmulatorClient = CaseyEmulatorServiceImpl.getInstance();
     StoreConfigService storeConfigService = StoreConfigServiceImpl.getInstance();
+    UserService identityClient = UserServiceImpl.instance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
@@ -554,5 +559,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         deliveryRequest.setItemId(new ItemId(itemId));
         return storeClient.getDelivery(deliveryRequest);
     }
+
+    public String postPaypal(String uid, PayPalInfo payPalInfo) throws Exception{
+        return paymentProvider.postPaymentInstrument(uid, payPalInfo);
+    }
+
+    public String createUser(UserInfo userInfo) throws Exception {
+        return identityClient.PostUser(userInfo);
+    }
+
 
 }

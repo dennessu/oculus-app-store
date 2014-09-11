@@ -10,15 +10,15 @@ import javax.ws.rs.QueryParam;
 /**
  * CaseySearchParams.
  */
-public class CaseySearchParams {
+public abstract class CaseySearchParams {
     @QueryParam("cursor")
-    private String cursor;
+    protected String cursor;
 
     @QueryParam("count")
-    private Integer count;
+    protected Integer count;
 
     @QueryParam("locale")
-    private String locale;
+    protected String locale;
 
     public String getCursor() {
         return cursor;

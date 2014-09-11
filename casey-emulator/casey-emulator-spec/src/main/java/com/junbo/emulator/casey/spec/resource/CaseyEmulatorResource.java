@@ -10,6 +10,7 @@ import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.resource.external.CaseyResource;
+import com.junbo.store.spec.resource.external.CaseyReviewResource;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -25,7 +26,7 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 @AuthorizationNotRequired
-public interface CaseyEmulatorResource extends CaseyResource {
+public interface CaseyEmulatorResource extends CaseyResource, CaseyReviewResource {
 
     @POST
     @Path("/data")
