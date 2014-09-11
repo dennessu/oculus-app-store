@@ -255,7 +255,7 @@ public class Oauth {
         String emailLink = viewModelResponse.getModel().get("link").toString();
         emailLink = URLProtocolAuthorityReplace(emailLink, DefaultOauthEndpoint);
         VerifyEmail(emailLink, false);
-        if (doubleVerifyEmail) VerifyEmail(emailLink, true);
+        if (doubleVerifyEmail) VerifyEmail(emailLink, doubleVerifyEmail);
         // goto next
         nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
@@ -371,24 +371,17 @@ public class Oauth {
     }
 
     public static void VerifyEmail(String link, Boolean validateUsedToken) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(link, false);
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Accept", "application/json"));
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(link, nvps, true);
         try {
-            String tarHeader = "Location";
-            for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
-                    Validator.Validate(
-                            validateUsedToken ?
-                                    "validate email verify fail" :
-                                    "validate email verify success",
-                            true,
-                            validateUsedToken ?
-                                    h.toString().contains("email-verify-fail") :
-                                    h.toString().contains("email-verify-success"));
-                    return;
-                }
-            }
-            throw new NotFoundException(
-                    "Did not found expected response header: " + tarHeader + " in response");
+            ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
+                    new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
+            Validator.Validate("validate view model", "emailVerify", viewModelResponse.getView());
+            Validator.Validate("validate email verify result", validateUsedToken ? false : true,
+                    viewModelResponse.getModel().get("verifyResult"));
+            Validator.Validate("validate email verify errors", validateUsedToken ? false : true,
+                    viewModelResponse.getErrors().isEmpty());
         } finally {
             response.close();
         }
