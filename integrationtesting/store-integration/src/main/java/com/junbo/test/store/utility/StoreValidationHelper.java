@@ -35,12 +35,8 @@ import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
-import com.junbo.test.catalog.*;
-import com.junbo.test.catalog.impl.*;
 import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.Validator;
-import com.junbo.test.common.apihelper.identity.OrganizationService;
-import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
@@ -65,9 +61,9 @@ public class StoreValidationHelper extends BaseValidationHelper {
 
     private static final String country = "US";
 
-    private final static Pattern ImageDimensionTextPattern = Pattern.compile("\\s*(\\d+)\\s*[xX]\\s*(\\d+)\\s*");
+    private static final  Pattern ImageDimensionTextPattern = Pattern.compile("\\s*(\\d+)\\s*[xX]\\s*(\\d+)\\s*");
 
-    private final static TreeMap<Integer, String> lengthToImageSizeGroup = new TreeMap<>();
+    private static final TreeMap<Integer, String> lengthToImageSizeGroup = new TreeMap<>();
 
     interface VerifyEqual<T> {
         void verify(T o1, T o2);
@@ -80,13 +76,7 @@ public class StoreValidationHelper extends BaseValidationHelper {
         lengthToImageSizeGroup.put(336, "tiny");
     }
 
-    OfferService offerClient = OfferServiceImpl.instance();
-    OfferRevisionService offerRevisionClient = OfferRevisionServiceImpl.instance();
-    ItemService itemClient = ItemServiceImpl.instance();
-    ItemRevisionService itemRevisionClient = ItemRevisionServiceImpl.instance();
-    OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
-    ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
-    OrganizationService organizationService = OrganizationServiceImpl.instance();
+    ServiceContainer serviceContainer = ServiceContainer.instance();
 
     public void verifyAddNewCreditCard(InstrumentUpdateResponse response) {
         BillingProfile billingProfile = response.getBillingProfile();
@@ -118,9 +108,9 @@ public class StoreValidationHelper extends BaseValidationHelper {
     }
 
     public void verifyCommitPurchase(CommitPurchaseResponse response, String offerId) throws Exception {
-        Offer offer = offerClient.getOffer(offerId);
-        OfferRevision offerRevision = offerRevisionClient.getOfferRevision(offer.getCurrentRevisionId());
-        com.junbo.catalog.spec.model.item.Item item = itemClient.getItem(offerRevision.getItems().get(0).getItemId());
+        Offer offer = serviceContainer.getOfferClient().getOffer(offerId);
+        OfferRevision offerRevision = serviceContainer.getOfferRevisionClient().getOfferRevision(offer.getCurrentRevisionId());
+        com.junbo.catalog.spec.model.item.Item item = serviceContainer.getItemClient().getItem(offerRevision.getItems().get(0).getItemId());
         Entitlement entitlement = response.getEntitlements().get(0);
 
         verifyEqual(entitlement.getItemType(), item.getType(), "verify item type");
@@ -235,10 +225,10 @@ public class StoreValidationHelper extends BaseValidationHelper {
     public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean isFree) throws Exception {
         OfferRevision currentOfferRevision = null;
         ItemRevision currentItemRevision = null;
-        com.junbo.catalog.spec.model.offer.Offer catalogOffer = offerClient.getOffer(item.getOffer().getSelf().getValue());
-        OfferRevision offerRevision = offerRevisionClient.getOfferRevision(catalogOffer.getCurrentRevisionId());
-        com.junbo.catalog.spec.model.item.Item catalogItem = itemClient.getItem(item.getSelf().getValue());
-        ItemRevision itemRevision = itemRevisionClient.getItemRevision(catalogItem.getCurrentRevisionId());
+        com.junbo.catalog.spec.model.offer.Offer catalogOffer = serviceContainer.getOfferClient().getOffer(item.getOffer().getSelf().getValue());
+        OfferRevision offerRevision = serviceContainer.getOfferRevisionClient().getOfferRevision(catalogOffer.getCurrentRevisionId());
+        com.junbo.catalog.spec.model.item.Item catalogItem = serviceContainer.getItemClient().getItem(item.getSelf().getValue());
+        ItemRevision itemRevision = serviceContainer.getItemRevisionClient().getItemRevision(catalogItem.getCurrentRevisionId());
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
         List<OfferRevision> offerRevisions = getOfferRevisions(catalogOffer);
@@ -246,12 +236,12 @@ public class StoreValidationHelper extends BaseValidationHelper {
 
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
             for (String id : catalogOffer.getCategories()) {
-                offerAttributes.add(offerAttributeService.getOfferAttribute(id));
+                offerAttributes.add(serviceContainer.getOfferAttributeService().getOfferAttribute(id));
             }
         }
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogItem.getGenres())) {
             for (String id: catalogItem.getGenres()) {
-                itemAttributes.add(itemAttributeService.getItemAttribute(id));
+                itemAttributes.add(serviceContainer.getItemAttributeService().getItemAttribute(id));
             }
         }
         for (OfferRevision revision : offerRevisions) {
@@ -268,8 +258,8 @@ public class StoreValidationHelper extends BaseValidationHelper {
         }
 
         ItemRevisionLocaleProperties localeProperties = currentItemRevision.getLocales().get(locale);
-        Organization developer = organizationService.getOrganization(catalogItem.getOwnerId());
-        Organization publisher = organizationService.getOrganization(catalogOffer.getOwnerId());
+        Organization developer = serviceContainer.getOrganizationService().getOrganization(catalogItem.getOwnerId());
+        Organization publisher = serviceContainer.getOrganizationService().getOrganization(catalogOffer.getOwnerId());
         verifyItem(item, catalogItem, currentItemRevision, developer);
         verifyItemImages(item.getImages(), localeProperties.getImages());
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
@@ -339,19 +329,26 @@ public class StoreValidationHelper extends BaseValidationHelper {
         Assert.assertEquals(appDetails.getForumUrl(), localeProperties.getCommunityForumLink());
         Assert.assertEquals(appDetails.getDeveloperEmail(), localeProperties.getSupportEmail());
         Assert.assertEquals(appDetails.getPackageName(), itemRevision.getPackageName());
-        verifyAgeRatingEquals(appDetails.getAgeRatings(), itemRevision.getAgeRatings());
+
         if (itemRevision.getBinaries() != null && itemRevision.getBinaries().get(Platform) != null) {
             Binary binary = itemRevision.getBinaries().get(Platform);
             Assert.assertEquals(appDetails.getVersionString(), binary.getVersion());
             Assert.assertEquals(appDetails.getInstallationSize(), binary.getSize());
         }
         if (offerRevision.getCountries() != null && offerRevision.getCountries().get(country) != null) {
-            Assert.assertEquals(appDetails.getReleaseDate(), offerRevision.getCountries().get(country).getReleaseDate());
+            if (offerRevision.getCountries() == null && offerRevision.getCountries().get(country) == null &&
+                    offerRevision.getCountries().get(country).getReleaseDate() == null) {
+                Assert.assertNull(appDetails.getReleaseDate());
+            }
+            else {
+                Assert.assertEquals(appDetails.getReleaseDate(), offerRevision.getCountries().get(country).getReleaseDate().toString());
+            }
         }
 
         // verify release notes
         verifyRevisionNote(appDetails.getRevisionNotes(), itemRevisions);
 
+        Assert.assertNull(appDetails.getContentRating());
         Assert.assertNull(appDetails.getDeveloperWebsite());
         Assert.assertNull(appDetails.getDeveloperWebsite());
         Assert.assertNull(appDetails.getPublisherEmail());
@@ -432,7 +429,7 @@ public class StoreValidationHelper extends BaseValidationHelper {
         HashMap<String, List<String>> params = new HashMap<>();
         params.put("itemId", Collections.singletonList(item.getId()));
         params.put("status", Collections.singletonList("APPROVED"));
-        Results<ItemRevision> revisionResults = itemRevisionClient.getItemRevisions(params);
+        Results<ItemRevision> revisionResults = serviceContainer.getItemRevisionClient().getItemRevisions(params);
         return revisionResults.getItems();
     }
 
@@ -440,7 +437,7 @@ public class StoreValidationHelper extends BaseValidationHelper {
         HashMap<String, List<String>> params = new HashMap<>();
         params.put("offerId", Collections.singletonList(offer.getId()));
         params.put("status", Collections.singletonList("APPROVED"));
-        Results<OfferRevision> revisionResults = offerRevisionClient.getOfferRevisions(params);
+        Results<OfferRevision> revisionResults = serviceContainer.getOfferRevisionClient().getOfferRevisions(params);
         return revisionResults.getItems();
     }
 
