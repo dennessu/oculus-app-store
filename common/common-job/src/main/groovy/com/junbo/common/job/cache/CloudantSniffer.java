@@ -5,6 +5,7 @@
  */
 package com.junbo.common.job.cache;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.cloudant.client.CloudantGlobalUri;
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.cloudant.exception.CloudantConnectException;
@@ -43,6 +44,7 @@ public class CloudantSniffer {
 
     private static final String CLOUDANT_PREFIX_KEY = "common.cloudant.dbNamePrefix";
     private static final String CLOUDANT_HEARTBEAT_KEY = "common.cloudant.heartbeat";
+    private static final String CLOUDANT_DBLIST_KEY = "common.cloudant.dblist";
 
     private static final String[] CLOUDANT_URI_KEYS = new String[]{
             "common.cloudant.url",
@@ -71,7 +73,7 @@ public class CloudantSniffer {
         initialize();
     }
 
-    public List<String> getAllDatabases(CloudantUri cloudantUri) {
+    /*public List<String> getAllDatabases(CloudantUri cloudantUri) {
         Response response = executeGet(cloudantUri, ALL_DB_PATH, null).get();
         List<String> databases = SnifferUtils.parse(response, List.class);
 
@@ -88,6 +90,49 @@ public class CloudantSniffer {
         }
 
         LOGGER.info("Find [" + filtered.size() + "] matched databases.");
+        return filtered;
+    }*/
+
+    public List<String> getAllDatabases(CloudantUri cloudantUri) {
+        String dblist = ConfigServiceManager.instance().getConfigValue(CLOUDANT_DBLIST_KEY);
+
+        if (StringUtils.isEmpty(dblist)) {
+            throw new CloudantConnectException("Cloudant database configuration file not found.");
+        }
+        LOGGER.info("Cloudant database configuration file is [" + dblist + "].");
+
+        String prefix = ConfigServiceManager.instance().getConfigValue(CLOUDANT_PREFIX_KEY);
+        if (prefix == null) {
+            prefix = CLOUDANT_DEFAULT_PREFIX;
+        }
+        LOGGER.info("Cloudant database prefix is [" + prefix + "].");
+
+        List<String> filtered = new ArrayList<>();
+        try {
+            Map<String, Map<String, Object>> payload = new ObjectMapper().readValue(getClass().getResourceAsStream(dblist), Map.class);
+
+            List<String> databases = new ArrayList<>();
+            for (Map.Entry<String, Map<String, Object>> entry : payload.entrySet()) {
+                databases.addAll(entry.getValue().keySet());
+            }
+
+            LOGGER.info("Detect [" + databases.size() + "] candidate databases.");
+            for (String db : databases) {
+                String fullDatabaseName = prefix + db;
+                Response response = executeGet(cloudantUri, fullDatabaseName, "", null).get();
+
+                if (response.getStatusCode() / 100 == 2) {
+                    filtered.add(fullDatabaseName);
+                    LOGGER.info("Database [" + fullDatabaseName + "] is available on [" + cloudantUri.toString() + "].");
+                } else {
+                    LOGGER.info("Database [" + fullDatabaseName + "] doesn't exist on [" + cloudantUri.toString() + "].");
+                }
+            }
+        } catch (Exception e) {
+            throw new CloudantConnectException("Error occurred during get all cloudant databases.", e);
+        }
+
+        LOGGER.info("Finally detect [" + filtered.size() + "] available databases.");
         return filtered;
     }
 
@@ -106,7 +151,7 @@ public class CloudantSniffer {
         Object lastSeqObj = result.get(CLOUDANT_LASTSEQ_KEY);
         String lastSeq = (lastSeqObj == null ? null : lastSeqObj.toString());
 
-        LOGGER.info("Last sequence id is [" + lastSeq + "].");
+        LOGGER.info("Last change sequence id on [" + cloudantUri.toString() + "] is [" + lastSeq + "].");
         return lastSeq;
     }
 
