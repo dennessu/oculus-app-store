@@ -81,7 +81,7 @@ class BrowseDataBuilder {
         result.packageName = itemRevision?.packageName
 
         Binary binary = itemRevision?.binaries?.get(Platform.ANDROID.value)
-        result.ageRatings = itemRevision?.ageRatings
+        result.contentRating = null
         result.installationSize = binary?.size
         result.versionCode = null // todo set the version code
         result.versionString = binary?.version
