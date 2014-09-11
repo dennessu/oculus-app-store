@@ -6,6 +6,9 @@
 package com.junbo.test.store;
 
 
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -50,7 +53,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.BVT,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test iap offer checkout",
@@ -118,9 +121,9 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.BVT,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             environment = "release",
             description = "Test prepare purchase digital good offer",
             steps = {
@@ -175,7 +178,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Store checkout with invalid PIN",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test iap offer checkout with invalid PIN",
@@ -281,7 +284,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.BVT,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             environment = "release",
             status = Status.Enable,
@@ -317,6 +320,9 @@ public class StoreTesting extends BaseTestClass {
             offerId = testDataProvider.getOfferIdByName(offer_digital_free);
         } else {
             offerId = offer_digital_free;
+            Offer offer = testDataProvider.getOfferByOfferId(offerId);
+            OfferRevision offerRevision =  testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
+            Item item = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId());
         }
 
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
@@ -328,6 +334,8 @@ public class StoreTesting extends BaseTestClass {
         }
 
         EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
+        validationHelper.verifyEntitlementResponse(entitlementsResponse, offerId);
+
         Master.getInstance().setCurrentUid(null);
 
         AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());
@@ -339,7 +347,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.BVT,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test iap offer checkout",
@@ -401,7 +409,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test store login",
@@ -433,7 +441,7 @@ public class StoreTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test gate user whose email not validate",

@@ -309,7 +309,7 @@ class StoreResourceImpl implements StoreResource {
                 }
             }
         }.then {
-            return innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), request.offer).then { BillingProfile billingProfile ->
+            return innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), request.offer, null).then { BillingProfile billingProfile ->
                 response.billingProfile = billingProfile
                 return Promise.pure(response)
             }
@@ -335,8 +335,8 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             instrumentUtils.updateInstrument(user, request)
-        }.then {
-            innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), null as OfferId).then { BillingProfile billingProfile ->
+        }.then { PaymentInstrumentId paymentInstrumentId ->
+            innerGetBillingProfile(user, apiContext.locale.getId(), apiContext.country.getId(), null as OfferId, paymentInstrumentId).then { BillingProfile billingProfile ->
                 InstrumentUpdateResponse response = new InstrumentUpdateResponse(
                         billingProfile: billingProfile
                 )
@@ -856,7 +856,8 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<BillingProfile> innerGetBillingProfile(User user, LocaleId locale, CountryId country, OfferId offerId) {
+    private Promise<BillingProfile> innerGetBillingProfile(User user, LocaleId locale, CountryId country, OfferId offerId,
+                                                           PaymentInstrumentId paymentInstrumentId) {
         com.junbo.store.spec.model.catalog.Offer offer
         Promise.pure(null).then {
             if (offerId != null) {
@@ -867,11 +868,12 @@ class StoreResourceImpl implements StoreResource {
             }
             return Promise.pure(null)
         }.then {
-            innerGetBillingProfile(user, locale, country, offer)
+            innerGetBillingProfile(user, locale, country, offer, paymentInstrumentId)
         }
     }
 
-    private Promise<BillingProfile> innerGetBillingProfile(User user, LocaleId locale, CountryId country, com.junbo.store.spec.model.catalog.Offer offer) {
+    private Promise<BillingProfile> innerGetBillingProfile(User user, LocaleId locale, CountryId country,
+                                                           com.junbo.store.spec.model.catalog.Offer offer, PaymentInstrumentId paymentInstrumentId) {
         BillingProfile billingProfile = new BillingProfile()
         billingProfile.instruments = []
 
@@ -887,6 +889,25 @@ class StoreResourceImpl implements StoreResource {
                 }
                 return Promise.pure(null)
             }
+        }.then {
+            if (paymentInstrumentId != null) {
+                Instrument target = CollectionUtils.isEmpty(billingProfile.instruments) ? null : billingProfile.instruments.find { Instrument temp ->
+                    return temp.self == paymentInstrumentId
+                }
+
+                if (target == null) {
+                    return instrumentUtils.getInstrument(user, paymentInstrumentId).then { Instrument temp ->
+                        if (temp != null) {
+                            billingProfile.instruments.add(temp)
+                        }
+
+                        return Promise.pure(null)
+                    }
+                }
+
+                return Promise.pure(null)
+            }
+            return Promise.pure(null)
         }.then {
             if (offer != null && offer.hasStoreValueItem) {
                 billingProfile.instruments.removeAll {Instrument instrument -> instrument.type == com.junbo.common.id.PIType.STOREDVALUE.name()}

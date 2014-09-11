@@ -20,15 +20,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ValidationSupport.
  */
 public abstract class ValidationSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationSupport.class);
+    private static final List<String> COUNTRY_CODES = Collections.unmodifiableList(Arrays.asList(Locale.getISOCountries()));
 
     protected void validateRequestNotNull(BaseModel model) {
         if (model == null) {
@@ -208,5 +207,22 @@ public abstract class ValidationSupport {
             return false;
         }
         return true;
+    }
+
+    protected void validateCountryCodes(String fieldName, Collection<String> countryCodes, List<AppError> errors) {
+        if (countryCodes == null) {
+            return;
+        }
+        for (String countryCode : countryCodes) {
+            if (!COUNTRY_CODES.containsAll(Arrays.asList(countryCode))) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid(fieldName, countryCode + " is not a valid country code"));
+            }
+        }
+    }
+
+    protected void validateLocale(String fieldName, String locale, List<AppError> errors) {
+        if (!ValidationUtils.isValidLocale(locale)) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid(fieldName, "invalid locale code: " + locale));
+        }
     }
 }

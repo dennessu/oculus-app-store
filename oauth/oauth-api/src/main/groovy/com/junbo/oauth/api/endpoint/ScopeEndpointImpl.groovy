@@ -12,6 +12,8 @@ import com.junbo.oauth.spec.model.Scope
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
+import javax.ws.rs.NotSupportedException
+
 /**
  * Default {@link com.junbo.oauth.spec.endpoint.ScopeEndpoint} implementation.
  * @author Zhanxin Yang
@@ -38,7 +40,7 @@ class ScopeEndpointImpl implements ScopeEndpoint {
      */
     @Override
     Promise<Scope> postScope(Scope scope) {
-        return Promise.pure(scopeService.saveScope(scope))
+        throw new NotSupportedException('The post scope operation is not supported')
     }
 
     /**
@@ -72,6 +74,6 @@ class ScopeEndpointImpl implements ScopeEndpoint {
      */
     @Override
     Promise<Scope> putScope(String scopeName, Scope scope) {
-        return Promise.pure(scopeService.updateScope(scopeName, scope))
+        throw new NotSupportedException('The put scope operation is not supported')
     }
 }

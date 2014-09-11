@@ -19,7 +19,7 @@ interface TokenGenerator {
 
     String generateAuthorizationCode()
 
-    String generateAccessToken()
+    String generateAccessToken(Long userId)
 
     String generateRefreshToken()
 

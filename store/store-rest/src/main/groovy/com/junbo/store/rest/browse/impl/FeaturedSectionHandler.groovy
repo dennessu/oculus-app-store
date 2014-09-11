@@ -148,7 +148,7 @@ class FeaturedSectionHandler implements SectionHandler {
             if (contentItem.type == ContentItem.Type.offer.name()) {
                 return Promise.each(contentItem.links) { CaseyLink caseyLink ->
                     catalogBrowseUtils.getItem(new OfferId(caseyLink.getId()), false, apiContext).recover { Throwable ex ->
-                        LOGGER.error('name=Error_GetItem_From_Campaign, offer={}, campaign={}', caseyLink.getId(), campaign.getSelf().getId())
+                        LOGGER.error('name=Error_GetItem_From_Campaign, offer={}, campaign={}', caseyLink.getId(), campaign.getSelf().getId(), ex)
                         return Promise.pure()
                     }.then { Item item ->
                         if (item != null) {

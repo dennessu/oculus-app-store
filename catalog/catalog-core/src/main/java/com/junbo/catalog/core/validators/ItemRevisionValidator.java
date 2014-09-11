@@ -67,6 +67,7 @@ public class ItemRevisionValidator extends ValidationSupport {
         validateSupportedInputDevices(revision.getSupportedInputDevices(), errors);
         validatePackageName(revision.getPackageName(), revision.getItemId(), errors);
         validateLocales(revision.getLocales(), errors);
+        validateCountryCodes("countries", revision.getCountries().keySet(), errors);
 
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
 
@@ -156,7 +157,7 @@ public class ItemRevisionValidator extends ValidationSupport {
             for (Map.Entry<String, ItemRevisionLocaleProperties> entry : locales.entrySet()) {
                 String locale = entry.getKey();
                 ItemRevisionLocaleProperties properties = entry.getValue();
-                // TODO: check locale is a valid locale
+                validateLocale("locales", locale, errors);
                 if (validateFieldNotNull("locales." + locale, properties, errors)) {
                     validateStringNotEmpty("locales." + locale + ".name", properties.getName(), errors);
                 }

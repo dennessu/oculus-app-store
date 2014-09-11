@@ -53,7 +53,7 @@ class InstrumentUtils {
 
     private static final int PAGE_SIZE = 100
 
-    public Promise updateInstrument(User user, InstrumentUpdateRequest instrumentUpdateRequest) {
+    public Promise<PaymentInstrumentId> updateInstrument(User user, InstrumentUpdateRequest instrumentUpdateRequest) {
         if (instrumentUpdateRequest.instrument.self != null) {
             return getInstrument(user, instrumentUpdateRequest.instrument.self).then { Instrument old ->
                 return innerUpdateInstrument(user, instrumentUpdateRequest.instrument, old)
@@ -63,7 +63,7 @@ class InstrumentUtils {
         }
     }
 
-    private Promise innerUpdateInstrument(User user, Instrument instrument, Instrument oldInstrument) {
+    private Promise<PaymentInstrumentId> innerUpdateInstrument(User user, Instrument instrument, Instrument oldInstrument) {
 
         boolean changed = false
         PaymentInstrument oldPaymentInstrument = oldInstrument.paymentInstrument
@@ -103,11 +103,11 @@ class InstrumentUtils {
             if (changed) {
                 return resourceContainer.paymentInstrumentResource.update(new PaymentInstrumentId(oldPaymentInstrument.getId()), oldPaymentInstrument)
             }
-            return Promise.pure(null)
+            return Promise.pure(oldInstrument.self)
         }
     }
 
-    private Promise innerCreateInstrument(User user, Instrument instrument) {
+    private Promise<PaymentInstrumentId> innerCreateInstrument(User user, Instrument instrument) {
         PaymentInstrument paymentInstrument = new PaymentInstrument()
         Promise promise = Promise.pure(null)
         dataConvertor.toPaymentInstrument(instrument, paymentInstrument)
@@ -155,11 +155,14 @@ class InstrumentUtils {
             paymentInstrument.userId = user.getId().value
             resourceContainer.paymentInstrumentResource.postPaymentInstrument(paymentInstrument)
         }.then { PaymentInstrument pi ->
+            instrument.self = new PaymentInstrumentId(pi.getId())
             if (instrument.isDefault || (user.defaultPI == null)) {
                 user.defaultPI = new PaymentInstrumentId(pi.getId())
-                return resourceContainer.userResource.put(user.getId(), user)
+                return resourceContainer.userResource.put(user.getId(), user).then {
+                    return Promise.pure(instrument.self)
+                }
             }
-            return Promise.pure(null)
+            return Promise.pure(instrument.self)
         }
     }
 

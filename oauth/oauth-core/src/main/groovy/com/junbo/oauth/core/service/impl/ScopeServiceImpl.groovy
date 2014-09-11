@@ -60,7 +60,12 @@ class ScopeServiceImpl implements ScopeService {
 
     @Override
     Scope getScope(String scopeName) {
-        return scopeRepository.getScope(scopeName)
+        Scope scope = scopeRepository.getScope(scopeName)
+        if (scope == null) {
+            throw AppCommonErrors.INSTANCE.resourceNotFound('scope', scopeName).exception()
+        }
+
+        return scope
     }
 
     @Override

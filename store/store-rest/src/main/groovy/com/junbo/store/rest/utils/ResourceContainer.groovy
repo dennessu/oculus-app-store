@@ -14,6 +14,7 @@ import com.junbo.order.spec.resource.OrderResource
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import com.junbo.rating.spec.resource.RatingResource
 import com.junbo.store.spec.resource.external.CaseyResource
+import com.junbo.store.spec.resource.external.CaseyReviewResource
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
@@ -115,4 +116,7 @@ class ResourceContainer {
 
     @Resource(name='store.caseyClientProxy')
     CaseyResource caseyResource
+
+    @Resource(name='store.caseyReviewClientProxy')
+    CaseyReviewResource caseyReviewResource
 }

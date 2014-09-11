@@ -144,6 +144,14 @@ class CatalogTests(ut.TestBase):
             "type": "APP",
             "developer": organization['self']
         })
+        itemRev = curlJson('POST', ut.test_uri, '/v1/item-revisions', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = self.getDigitalItemRevision(item, organization))
+        itemRev['status'] = 'APPROVED'
+        itemRev = curlJson('PUT', ut.test_uri, itemRev['self']['href'], headers = {
+            "Authorization": "Bearer " + adminToken
+        }, data = itemRev)
+
         offer = curlJson('POST', ut.test_uri, '/v1/offers', headers = {
             "Authorization": "Bearer " + user.access_token
         }, data = {

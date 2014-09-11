@@ -10,6 +10,7 @@ dependencies {
     compile(libraries.spring_orm)
     compile(libraries.spring_beans)
     compile(libraries.spring_web)
+    compile(libraries.spring_security)
 
     compile(libraries.jersey_server)
 

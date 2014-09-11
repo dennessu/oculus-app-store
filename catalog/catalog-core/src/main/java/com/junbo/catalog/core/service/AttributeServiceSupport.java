@@ -8,6 +8,7 @@ package com.junbo.catalog.core.service;
 
 import com.google.common.base.Joiner;
 import com.junbo.catalog.common.util.Utils;
+import com.junbo.catalog.core.validators.ValidationUtils;
 import com.junbo.catalog.db.repo.AttributeRepository;
 import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
@@ -119,7 +120,9 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
             for (Map.Entry<String, SimpleLocaleProperties> entry : attribute.getLocales().entrySet()) {
                 String locale = entry.getKey();
                 SimpleLocaleProperties properties = entry.getValue();
-                // TODO: check locale is a valid locale
+                if (!ValidationUtils.isValidLocale(locale)) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalid("locales", "invalid locale code: " + locale));
+                }
                 if (properties==null) {
                     errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
                 } else {

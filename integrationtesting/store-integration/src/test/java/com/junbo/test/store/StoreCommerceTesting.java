@@ -4,6 +4,7 @@ import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
@@ -13,8 +14,12 @@ import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
+import com.junbo.test.common.Entities.Identity.UserInfo;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
@@ -51,6 +56,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
         //verify decrypted credit card info
         validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
+
     }
 
 
@@ -283,7 +289,7 @@ public class StoreCommerceTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Store checkout",
-            component = Component.Order,
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test change payment via prepare purchase",
@@ -368,7 +374,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert preparePurchaseResponse.getChallenge() != null;
         assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false ,412);
+        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false, 412);
         assert preparePurchaseResponse == null;
     }
 
@@ -568,7 +574,143 @@ public class StoreCommerceTesting extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test check out duplicate offer",
+            steps = {
+                    "1. Create user",
+                    "2. Make free purchase",
+                    "3. Make free purchase again",
+                    "4. Verify error code",
+            }
+    )
+    @Test
+    public void testCheckoutDuplicateOffer() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
 
+        testDataProvider.signIn(userName);
+
+        String offerId;
+        if (offer_iap_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+
+        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
+
+        testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+
+        testDataProvider.makeFreePurchase(offerId, null, 412);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Duplicate Purchase.");
+        assert Master.getInstance().getApiErrorMsg().contains("133.146");
+
+        EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
+        assert entitlementsResponse.getEntitlements().size() == 1;
+
+        validationHelper.verifyEntitlementResponse(entitlementsResponse, offerId);
+
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test free purchase normal offer",
+            steps = {
+                    "1. Create user",
+                    "2. Make free purchase normal offer",
+                    "3. Make free purchase again",
+                    "4. Verify error code",
+            }
+    )
+    @Test
+    public void testFreePurchaseNormalOffer() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+
+        testDataProvider.signIn(userName);
+
+        String offerId;
+        if (offer_iap_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
+        } else {
+            offerId = offer_digital_normal1;
+        }
+
+        testDataProvider.makeFreePurchase(offerId, null, 412);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Offer not free");
+        assert Master.getInstance().getApiErrorMsg().contains("130.110");
+
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store checkout",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test prepare purchase free offer",
+            steps = {
+                    "1. Create user",
+                    "2. Post prepare purchase with free offer",
+                    "3. Verify error code",
+            }
+    )
+    @Test
+    public void testPreparePurchaseFreeOffer() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        testDataProvider.preparePurchase(null, offerId, null, null, null, false, 412);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Invalid offer: Offer is free.");
+        assert Master.getInstance().getApiErrorMsg().contains("130.110");
+
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store checkout",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test get billing profile filter out paypal",
+            steps = {
+                    "1. Create user",
+                    "2. Add paypal account to user",
+                    "2. Get billing profile",
+                    "3. Verify no paypal account respond",
+            }
+    )
+    @Test
+    public void testGetBillingProfileFilterOutPaypal() throws Exception {
+        String userName = RandomFactory.getRandomStringOfAlphabet(6);
+        UserInfo userInfo = UserInfo.getRandomUserInfo();
+        userInfo.setUserName(userName);
+        String uid = testDataProvider.createUser(userInfo);
+
+        PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(Country.DEFAULT);
+        testDataProvider.postPaypal(uid, payPalInfo);
+
+        testDataProvider.signIn(userName);
+        BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
+
+        assert response.getBillingProfile().getInstruments().size() == 0;
+    }
 
 
 }

@@ -188,7 +188,7 @@ class BrowseServiceImpl implements BrowseService {
             review.ratings << new CaseyReview.Rating(type: type, score: request.starRatings[type])
         }
 
-        return resourceContainer.caseyResource.addReview(review).then { CaseyReview newReview ->
+        return resourceContainer.caseyReviewResource.addReview(review).then { CaseyReview newReview ->
             return resourceContainer.userResource.get(apiContext.user, new UserGetOptions()).then { User user ->
                 return new AddReviewResponse(
                         review: new Review(

@@ -15,6 +15,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
+import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.db.repo.RememberMeTokenRepository
@@ -91,7 +92,11 @@ class Logout implements Action {
             if (StringUtils.isEmpty(postLogoutRedirectUri)) {
                 postLogoutRedirectUri = client.defaultLogoutRedirectUri
             } else {
-                if (!client.logoutRedirectUris.contains(postLogoutRedirectUri)) {
+                boolean allowed = client.logoutRedirectUris.any {
+                    String allowedLogoutRedirectUri -> UriUtil.match(postLogoutRedirectUri, allowedLogoutRedirectUri)
+                }
+
+                if (!allowed) {
                     throw AppErrors.INSTANCE.invalidPostLogoutRedirectUri(postLogoutRedirectUri).exception()
                 }
             }

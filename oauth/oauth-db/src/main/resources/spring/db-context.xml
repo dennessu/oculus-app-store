@@ -62,9 +62,8 @@
         <property name="localIgnoreBulk" value="true" />
     </bean>
 
-    <bean id="scopeRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantScopeRepositoryImpl" parent="cloudantClient">
-        <property name="dbName" value="scope"/>
-        <property name="localIgnoreBulk" value="true" />
+    <bean id="scopeRepository" class="com.junbo.oauth.db.repo.file.ScopeFileRepositoryImpl">
+        <property name="transcoder" ref="commonTranscoder"/>
     </bean>
 
     <bean id="consentRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantConsentRepositoryImpl" parent="cloudantClient">
