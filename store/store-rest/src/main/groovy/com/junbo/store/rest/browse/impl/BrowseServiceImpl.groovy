@@ -26,11 +26,13 @@ import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.browse.document.SectionInfo
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
+import com.junbo.store.spec.model.browse.document.SectionKey
 import com.junbo.store.spec.model.external.casey.CaseyLink
 import com.junbo.store.spec.model.external.casey.CaseyReview
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
@@ -42,7 +44,7 @@ import javax.annotation.Resource
  */
 @Component('storeBrowseService')
 @CompileStatic
-class BrowseServiceImpl implements BrowseService {
+class BrowseServiceImpl implements BrowseService, InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BrowseServiceImpl)
 
@@ -72,6 +74,11 @@ class BrowseServiceImpl implements BrowseService {
     @Resource(name = 'storeCatalogUtils')
     private CatalogUtils catalogUtils
 
+    @Value('${store.browse.campaign.rootCriteria}')
+    private String rootCriteria
+
+    private Map<SectionKey, SectionKey> legacyMap = new HashMap<>()
+
     @Override
     Promise<Item> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext) {
         return catalogBrowseUtils.getItem(itemId, includeDetails, apiContext)
@@ -100,6 +107,7 @@ class BrowseServiceImpl implements BrowseService {
 
     @Override
     Promise<SectionLayoutResponse> getSectionLayout(SectionLayoutRequest request, ApiContext apiContext) {
+        handleLegacy(request)
         SectionHandler sectionHandler = findSectionHandler(request.category, request.criteria, apiContext)
         if (sectionHandler == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
@@ -109,6 +117,7 @@ class BrowseServiceImpl implements BrowseService {
 
     @Override
     Promise<ListResponse> getList(ListRequest request, ApiContext apiContext) {
+        handleLegacy(request)
         SectionHandler sectionHandler = findSectionHandler(request.category, request.criteria, apiContext)
         if (sectionHandler == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
@@ -242,5 +251,30 @@ class BrowseServiceImpl implements BrowseService {
         return sectionHandlers.find { SectionHandler sectionHandler ->
             sectionHandler.canHandle(category, criteria, apiContext)
         }
+    }
+
+    private void handleLegacy(SectionLayoutRequest request) {
+        SectionKey key = fromLegacy(request.category, request.criteria);
+        request.category = key.category
+        request.criteria = key.criteria
+    }
+
+    private void handleLegacy(ListRequest request) {
+        SectionKey key = fromLegacy(request.category, request.criteria);
+        request.category = key.category
+        request.criteria = key.criteria
+    }
+
+    private SectionKey fromLegacy(String category, String criteria) {
+        SectionKey original = new SectionKey(category, criteria);
+        SectionKey result = legacyMap.get(original);
+        return result == null ? original : result;
+    }
+
+    @Override
+    void afterPropertiesSet() throws Exception {
+        legacyMap.put(new SectionKey(criteria: 'featured'), new SectionKey(criteria: rootCriteria))
+        legacyMap.put(new SectionKey(category: 'all', criteria: 'featured'), new SectionKey(criteria: 'android-featured'))
+        legacyMap.put(new SectionKey(category: 'samsung', criteria: 'featured'), new SectionKey(criteria: 'android-featured-samsung'))
     }
 }
