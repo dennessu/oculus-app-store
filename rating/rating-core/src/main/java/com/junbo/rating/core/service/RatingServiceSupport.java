@@ -200,7 +200,7 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
 
         Map<String, Properties> countries = offer.getCountries();
         if (!countries.containsKey(country) || countries.get(country).getReleaseDate() == null) {
-            throw AppErrors.INSTANCE.missingConfiguration("releaseDate").exception();
+            return BigDecimal.ZERO;
         }
 
         if (Utils.now().after(countries.get(country).getReleaseDate())) {
