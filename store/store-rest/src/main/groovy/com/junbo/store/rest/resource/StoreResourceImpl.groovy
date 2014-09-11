@@ -1,5 +1,4 @@
 package com.junbo.store.rest.resource.raw
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
@@ -28,7 +27,6 @@ import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
-import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -342,16 +340,6 @@ class StoreResourceImpl implements StoreResource {
                 )
                 return Promise.pure(response)
             }
-        }
-    }
-
-    @Override
-    Promise<EntitlementsGetResponse> getEntitlements(PageParam pageParam) {
-        requestValidator.validateRequiredApiHeaders()
-        return innerGetEntitlements(new EntitlementsGetRequest(), false, pageParam).then { Results<Entitlement> entitlementResults ->
-            return Promise.pure(new EntitlementsGetResponse(
-                    entitlements : entitlementResults.items
-            ))
         }
     }
 
@@ -933,14 +921,6 @@ class StoreResourceImpl implements StoreResource {
             return Promise.pure(null)
         }
     }
-
-    private Promise<User> getByUserName(String username) {
-        resourceContainer.userResource.list(new UserListOptions(username: username)).syncThen { Results<User> results ->
-            return results.items.isEmpty() ? null : results.items[0]
-        }
-    }
-
-
 
     private static boolean itemConsumable(ItemRevision itemRevision) {
         if (itemRevision.entitlementDefs != null) {

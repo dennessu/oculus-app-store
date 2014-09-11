@@ -47,6 +47,7 @@ public abstract class BaseTestClass {
     protected OfferAttributeService offerAttributeService;
     protected ItemAttributeService itemAttributeService;
     protected OAuthService oAuthTokenService;
+    protected int listItemPageSize = 2;
 
     public BaseTestClass() {
         super();
@@ -90,6 +91,9 @@ public abstract class BaseTestClass {
             for (String itemName : Arrays.asList(ConfigHelper.getSetting("testdata.verify.items.nonfree").split(","))) {
                 itemsToVerify.put(itemName, false);
             }
+        }
+        if (ConfigHelper.getSetting("testdata.list.pagesize") != null) {
+            listItemPageSize = Integer.parseInt(ConfigHelper.getSetting("testdata.list.pagesize"));
         }
 
         itemService = ItemServiceImpl.instance();

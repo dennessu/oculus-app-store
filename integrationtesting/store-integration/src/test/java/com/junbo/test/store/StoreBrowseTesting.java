@@ -18,8 +18,14 @@ import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
 import com.junbo.test.store.utility.DataGenerator;
 import org.apache.commons.collections.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -31,6 +37,8 @@ import java.util.*;
  * The StoreBrowseTesting class.
  */
 public class StoreBrowseTesting extends BaseTestClass {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StoreBrowseTesting.class);
 
     public enum GetItemMethod {
         List,
@@ -156,6 +164,15 @@ public class StoreBrowseTesting extends BaseTestClass {
         listAllItems(sectionInfo.getCategory(), sectionInfo.getCriteria(), 2, null);
     }
 
+    @Property(
+            priority = Priority.BVT,
+            features = "Store browse",
+            component = Component.STORE,
+            owner = "fzhang",
+            status = Status.Enable,
+            environment = "release",
+            description = "Test get all the items under all the section"
+    )
     @Test
     public void testExploreAllSections() throws Exception {
         // get the first item in the first section
@@ -198,6 +215,35 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertTrue(featuredItemLayout.getChildren().isEmpty(), "children should be empty");
         items = getItemsInSection(featuredItemSection.getCategory(), featuredItemSection.getCriteria(), pageSize);
         validationHelper.verifyItemsInList(itemsInFeaturedItem, items, true);
+    }
+
+    @Test
+    @Property(
+            priority = Priority.BVT,
+            features = "Store browse",
+            component = Component.STORE,
+            owner = "fzhang",
+            status = Status.Enable,
+            environment = "release",
+            description = "Test the feature sections"
+    )
+    public void testGetFeaturedSectionSmoke() throws Exception {
+        int pageSize = 2;
+        TocResponse tocResponse = gotoToc();
+        SectionInfo featuredSectionInfo = tocResponse.getSections().get(0).toSectionInfo();
+        Assert.assertEquals(featuredSectionInfo.getCriteria(), featureRootCriteria, "section criteria not match");
+
+        // validate top level feature section layout
+        SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(featuredSectionInfo.getCategory(), featuredSectionInfo.getCriteria(), pageSize);
+        Assert.assertTrue(sectionLayoutResponse.getBreadcrumbs().isEmpty(), "top level section's breadcrumbs should be empty");
+        Assert.assertEquals(sectionLayoutResponse.getChildren().size(), 2);
+        Assert.assertEquals(sectionLayoutResponse.getName(), "Featured");
+        Assert.assertTrue(sectionLayoutResponse.getItems().isEmpty(), "top level feature section should have empty items");
+        Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0, "Child under feature section is empty");
+
+        for (SectionInfo sectionInfo : sectionLayoutResponse.getChildren()) {
+            exploreSection(sectionInfo.getCategory(), sectionInfo.getCriteria());
+        }
     }
 
     @Test
@@ -292,17 +338,20 @@ public class StoreBrowseTesting extends BaseTestClass {
         return testDataProvider.getToc();
     }
 
-    private void exploreSection(String category, String criteria) throws Exception {
+    private int exploreSection(String category, String criteria) throws Exception {
         // get layout
-        int pageSize = 2;
-        SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(category, criteria, pageSize);
+        LOGGER.info("name=ExploreSectionStart, category={}, criteria={}", category, criteria);
+        int numOfItems = 0;
+        SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(category, criteria, listItemPageSize);
+        numOfItems += sectionLayoutResponse.getItems().size();
         for (Item item : sectionLayoutResponse.getItems()) {
             verifyItem(item, false, GetItemMethod.List, null);
+            verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), false, GetItemMethod.Details, false);
         }
         if (sectionLayoutResponse.getNext() != null) { // get rest of the items by get list
             Assert.assertEquals(category, sectionLayoutResponse.getNext().getCategory());
             Assert.assertEquals(criteria, sectionLayoutResponse.getNext().getCriteria());
-            listAllItems(category, criteria, pageSize, sectionLayoutResponse.getNext().getCursor());
+            numOfItems += listAllItems(category, criteria, listItemPageSize, sectionLayoutResponse.getNext().getCursor());
         }
 
         // explore sub section
@@ -311,10 +360,12 @@ public class StoreBrowseTesting extends BaseTestClass {
                 exploreSection(sectionInfo.getCategory(), sectionInfo.getCriteria());
             }
         }
+        LOGGER.info("name=ExploreSectionEnd, category={}, criteria={}, numOfItem={}", category, criteria, numOfItems);
+        return numOfItems;
     }
 
-    private void listAllItems(String category, String criteria, int pageSize, String cursor) throws Exception {
-        int loopLimit = 1000;
+    private int listAllItems(String category, String criteria, int pageSize, String cursor) throws Exception {
+        int count = 0;
         ListRequest listRequest = new ListRequest();
         listRequest.setCount(pageSize);
         listRequest.setCategory(category);
@@ -322,14 +373,13 @@ public class StoreBrowseTesting extends BaseTestClass {
         listRequest.setCursor(cursor);
 
         while (true) {
-            if (loopLimit-- < 0) {
-                Assert.fail("Loop limit reached in iterate list");
-            }
 
             ListResponse result = testDataProvider.getList(listRequest);
+            count += result.getItems().size();
             Assert.assertTrue(result.getItems().size() <= pageSize);
             for (Item item : result.getItems()) {
                 verifyItem(item, false, GetItemMethod.List, null);
+                verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), false, GetItemMethod.Details, false);
             }
 
             if (result.getNext() == null || result.getItems().isEmpty()) {
@@ -338,9 +388,10 @@ public class StoreBrowseTesting extends BaseTestClass {
 
             Assert.assertEquals(result.getNext().getCategory(), category);
             Assert.assertEquals(result.getNext().getCriteria(), criteria);
-            Assert.assertEquals(result.getNext().getCount().intValue(), 2);
+            Assert.assertEquals(result.getNext().getCount().intValue(), pageSize);
             listRequest.setCursor(result.getNext().getCursor());
         }
+        return count;
     }
 
     private List<Item> getItemsInSection(String category, String criteria, Integer pageSize) throws Exception {
@@ -393,7 +444,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     private void verifyItem(Item item, boolean forceVerify, GetItemMethod method, Boolean ownedByUser) throws Exception {
-        if (!forceVerify && !itemsToVerify.containsKey(item.getTitle())) {
+        if (!forceVerify && (!itemsToVerify.containsKey(item.getTitle())) && (!itemsToVerify.containsKey(item.getSelf().getValue()))) {
             return ;
         }
         validationHelper.verifyItem(item, itemsToVerify.get(item.getTitle()));

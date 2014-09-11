@@ -7,7 +7,6 @@ package com.junbo.store.spec.resource;
 
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.PageParam;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
@@ -54,11 +53,6 @@ public interface StoreResource {
     @Path("/billing-profile/instruments")
     // This requires email verification
     Promise<InstrumentUpdateResponse> updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest);
-
-    @GET
-    @Path("/entitlements")
-    // This requires email verification
-    Promise<EntitlementsGetResponse> getEntitlements(@BeanParam PageParam pageParam);
 
     @POST
     @Path("/purchase/free")
