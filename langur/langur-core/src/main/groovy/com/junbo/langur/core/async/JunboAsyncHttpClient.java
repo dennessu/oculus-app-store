@@ -103,7 +103,6 @@ public class JunboAsyncHttpClient implements Closeable {
                 }
                 logger.debug(sb.toString());
             }
-            ProfilingHelper.appendRow(null, "(HTTP) BEGIN %s %s", req.getMethod(), req.getURI());
             return req;
         }
     }
@@ -153,6 +152,7 @@ public class JunboAsyncHttpClient implements Closeable {
     }
 
     public Promise<Response> executeRequest(final Request request) throws IOException {
+        ProfilingHelper.appendRow(null, "(HTTP) BEGIN %s %s", request.getMethod(), request.getURI());
         try {
             Promise<Response> response = Promise.wrap(asGuavaFuture(
                     asyncHttpClient.executeRequest(request, new AsyncLoggedHandler(request.getMethod(), request.getURI().toString()))));
