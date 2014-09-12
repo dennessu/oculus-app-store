@@ -40,7 +40,7 @@ class RatingFacadeImpl implements RatingFacade {
     Promise<RatingRequest> rateOrder(Order order) throws AppErrorException {
         LOGGER.info('name=RatingFacadeImpl_Rate_Order')
         RatingRequest request = FacadeBuilder.buildRatingRequest(order)
-        return ratingResource.offersRating(request).recover { Throwable ex ->
+        return ratingResource.priceRating(request).recover { Throwable ex ->
             LOGGER.error('name=RatingFacadeImpl_Order_Rating_Error', ex)
             throw convertError(ex).exception()
         }.then { RatingRequest r ->

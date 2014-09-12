@@ -31,7 +31,7 @@ public class RatingResourceImpl implements RatingResource {
     private SubsRatingService subsRatingService;
 
     @Override
-    public Promise<RatingRequest> offersRating(RatingRequest request) {
+    public Promise<RatingRequest> priceRating(RatingRequest request) {
         PriceRatingContext context = new PriceRatingContext();
         context.fromRequest(request);
 

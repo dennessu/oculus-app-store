@@ -263,7 +263,7 @@ class CatalogBrowseUtils {
         result.formattedDescription = localeProperties?.shortDescription
         result.isFree = offerData.offerRevision?.price?.priceType == PriceType.FREE.name()
         Promise.pure().then {
-            resourceContainer.ratingResource.offersRating(new RatingRequest(
+            resourceContainer.ratingResource.priceRating(new RatingRequest(
                     includeCrossOfferPromos: false,
                     country: apiContext.country.getId().value,
                     currency: apiContext.currency.getId().value,
