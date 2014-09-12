@@ -34,6 +34,7 @@
 
     <bean id="walletProviderService" class="com.junbo.payment.core.provider.ewallet.EWalletProviderServiceImpl">
         <property name="walletClient" ref="paymentWalletProxy"/>
+        <property name="currencyClient" ref="currencyClient"/>
     </bean>
 
     <bean id="paypalProviderService" class="com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl">
