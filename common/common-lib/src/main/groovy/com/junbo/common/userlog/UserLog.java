@@ -1,18 +1,19 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.common.userlog;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
 import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
-import com.junbo.common.error.*;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserLogId;
 import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.userlog.DateDeserializer;
-import com.junbo.common.userlog.DateSerializer;
 
 import java.util.Date;
 
