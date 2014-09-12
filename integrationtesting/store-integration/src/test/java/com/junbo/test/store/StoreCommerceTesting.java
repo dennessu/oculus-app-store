@@ -16,6 +16,7 @@ import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -692,6 +693,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             steps = {
                     "1. Create user",
                     "2. Add paypal account to user",
+                    "3. Add credit card account to user",
                     "2. Get billing profile",
                     "3. Verify no paypal account respond",
             }
@@ -704,12 +706,16 @@ public class StoreCommerceTesting extends BaseTestClass {
         String uid = testDataProvider.createUser(userInfo);
 
         PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(Country.DEFAULT);
-        testDataProvider.postPaypal(uid, payPalInfo);
+        testDataProvider.postPayment(uid, payPalInfo);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        testDataProvider.postPayment(uid, creditCardInfo);
 
         testDataProvider.signIn(userName);
         BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
 
-        assert response.getBillingProfile().getInstruments().size() == 0;
+        assert response.getBillingProfile().getInstruments().size() == 1;
+        assert response.getBillingProfile().getInstruments().get(0).getType().equals("CREDITCARD");
     }
 
 

@@ -39,7 +39,7 @@ import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
-import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
@@ -354,6 +354,18 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return offerClient.getOfferIdByName(offerName);
     }
 
+    public Offer getOfferByOfferId(String offerId) throws Exception {
+        return offerClient.getOffer(offerId);
+    }
+
+    public OfferRevision getOfferRevision(String offerRevisionId) throws Exception{
+        return offerRevisionClient.getOfferRevision(offerRevisionId);
+    }
+
+    public Item getItemByItemId(String itemId) throws Exception{
+        return itemClient.getItem(itemId);
+    }
+
     public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken) throws Exception {
         return commitPurchase(uid, purchaseToken, 200);
     }
@@ -560,8 +572,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getDelivery(deliveryRequest);
     }
 
-    public String postPaypal(String uid, PayPalInfo payPalInfo) throws Exception{
-        return paymentProvider.postPaymentInstrument(uid, payPalInfo);
+    public String postPayment(String uid, PaymentInstrumentBase payment) throws Exception{
+        return paymentProvider.postPaymentInstrument(uid, payment);
     }
 
     public String createUser(UserInfo userInfo) throws Exception {
