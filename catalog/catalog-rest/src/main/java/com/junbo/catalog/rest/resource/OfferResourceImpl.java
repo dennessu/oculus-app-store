@@ -150,9 +150,6 @@ public class OfferResourceImpl implements OfferResource {
                 if (!AuthorizeContext.hasRights("update")) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
-                if (Boolean.TRUE.equals(offer.getPublished()) && !AuthorizeContext.hasRights("publish")) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception();
-                }
 
                 if (Boolean.TRUE.equals(offer.getPublished()) && !AuthorizeContext.hasRights("publish")) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception();

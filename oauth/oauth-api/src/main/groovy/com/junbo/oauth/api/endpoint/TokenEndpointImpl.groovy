@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.api.endpoint
-
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -16,12 +15,10 @@ import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.ws.rs.core.MultivaluedHashMap
 import javax.ws.rs.core.MultivaluedMap
-
 /**
  * Default {@link com.junbo.oauth.spec.endpoint.TokenEndpoint} implementation.
  * @author Zhanxin Yang
@@ -76,8 +73,6 @@ class TokenEndpointImpl implements TokenEndpoint {
         formParams.putSingle(OAuthParameters.NONCE, request.nonce)
         formParams.putSingle(OAuthParameters.IP_RESTRICTION, request.ipRestriction)
         formParams.putSingle(OAuthParameters.USER_ID, request.userId)
-
-        requestScope[ActionContextWrapper.REMOTE_ADDRESS] = JunboHttpContext.requestIpAddress
 
         requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
 
