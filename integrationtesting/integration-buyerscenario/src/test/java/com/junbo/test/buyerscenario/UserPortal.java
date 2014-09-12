@@ -81,7 +81,6 @@ public class UserPortal extends BaseTestClass {
             component = Component.Identity,
             owner = "JasonFu",
             status = Status.Enable,
-            environment = "release",
             description = "Test post user",
             steps = {
                     "1. Post a user and get its user ID",
