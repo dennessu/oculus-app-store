@@ -11,6 +11,7 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.browse.DeliveryResponse;
+import com.junbo.store.spec.model.browse.LibraryResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -35,7 +36,6 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import com.junbo.test.store.apihelper.TestContext;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -107,8 +107,8 @@ public class StoreTesting extends BaseTestClass {
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
-        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
+        //EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
+        //IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
 
         DeliveryResponse deliveryResponse = testDataProvider.getDeliveryByOfferId(offerId);
         String downloadLink = deliveryResponse.getDownloadUrl();
@@ -328,8 +328,7 @@ public class StoreTesting extends BaseTestClass {
             freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
         }
 
-        EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
-        validationHelper.verifyEntitlementResponse(entitlementsResponse, offerId);
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
 
         Master.getInstance().setCurrentUid(null);
 
@@ -394,8 +393,8 @@ public class StoreTesting extends BaseTestClass {
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
-        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
+        //EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
+        //IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
 
         //TODO validation
 
@@ -459,16 +458,4 @@ public class StoreTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
     }
 
-    @Test
-    public void testInvalidAndroidHeader() throws Exception {
-        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
-        TestContext.getData().putHeader("X-ANDROID-ID", "abcd");
-        testDataProvider.CreateUserWithError(createUserRequest, false, 400, "130.001");
-        TestContext.getData().putHeader("X-ANDROID-ID", "2e3176f14a71c40d0");
-        testDataProvider.CreateUserWithError(createUserRequest, false, 400, "130.001");
-        TestContext.getData().putHeader("X-ANDROID-ID", "");
-        testDataProvider.CreateUserWithError(createUserRequest, false, 400, "130.001");
-        TestContext.getData().putHeader("X-ANDROID-ID", "2e31-6f14a71c40d0");
-        testDataProvider.CreateUserWithError(createUserRequest, false, 400, "130.001");
-    }
 }
