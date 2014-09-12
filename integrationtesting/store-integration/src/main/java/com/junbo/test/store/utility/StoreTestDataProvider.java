@@ -19,6 +19,7 @@ import com.junbo.common.id.*;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
 import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -46,6 +47,8 @@ import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.order.OrderService;
+import com.junbo.test.common.apihelper.order.impl.OrderServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
@@ -86,6 +89,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     OfferAttributeService offerAttributeClient = OfferAttributeServiceImpl.instance();
     ItemAttributeService itemAttributeClient = ItemAttributeServiceImpl.instance();
     OrganizationService organizationClient = OrganizationServiceImpl.instance();
+    OrderService orderClient = OrderServiceImpl.getInstance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
@@ -133,6 +137,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public Error CreateUserWithError(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode, String errorCode) throws Exception {
         Error error = loginClient.CreateUserWithError(createUserRequest, expectedResponseCode, errorCode);
         return error;
+    }
+
+    public String getUserAccessToken(String username, String password) throws Exception {
+        return oAuthClient.postUserAccessToken(username, password);
     }
 
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
@@ -673,5 +681,9 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return organization;
     }
 
+    public Order getOrder(OrderId orderId) throws Exception {
+        orderClient.getOrderByOrderId(IdFormatter.encodeId(orderId));
+        return Master.getInstance().getOrder(IdFormatter.encodeId(orderId));
+    }
 
 }

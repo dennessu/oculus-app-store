@@ -28,6 +28,16 @@ public class DataGenerator {
         return innerInstance;
     }
 
+    public String generateAndroidId() {
+        String val = String.format("%016X", rand.nextLong());
+        if (rand.nextBoolean()) {
+            val = val.toLowerCase();
+        } else {
+            val = val.toUpperCase();
+        }
+        return val;
+    }
+
     public CaseyReview generateCaseyReview(String userId) {
         CaseyReview caseyReview = new CaseyReview();
         caseyReview.setReview("review text:" + RandomStringUtils.randomAlphabetic(15));

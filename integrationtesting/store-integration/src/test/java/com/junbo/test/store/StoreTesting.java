@@ -35,6 +35,7 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import com.junbo.test.store.apihelper.TestContext;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -458,4 +459,16 @@ public class StoreTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
     }
 
+    @Test
+    public void testInvalidAndroidHeader() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        TestContext.getData().putHeader("X-ANDROID-ID", "abcd");
+        testDataProvider.CreateUserWithError(createUserRequest, false, 400, "130.001");
+        TestContext.getData().putHeader("X-ANDROID-ID", "2e3176f14a71c40d0");
+        testDataProvider.CreateUserWithError(createUserRequest, false, 400, "130.001");
+        TestContext.getData().putHeader("X-ANDROID-ID", "");
+        testDataProvider.CreateUserWithError(createUserRequest, false, 400, "130.001");
+        TestContext.getData().putHeader("X-ANDROID-ID", "2e31-6f14a71c40d0");
+        testDataProvider.CreateUserWithError(createUserRequest, false, 400, "130.001");
+    }
 }

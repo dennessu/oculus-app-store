@@ -346,7 +346,7 @@ public class StoreValidationHelper extends BaseValidationHelper {
                 Assert.assertNull(appDetails.getReleaseDate());
             }
             else {
-                Assert.assertEquals(appDetails.getReleaseDate(), offerRevision.getCountries().get(country).getReleaseDate().toString());
+                Assert.assertEquals(appDetails.getReleaseDate(), offerRevision.getCountries().get(country).getReleaseDate());
             }
         }
 

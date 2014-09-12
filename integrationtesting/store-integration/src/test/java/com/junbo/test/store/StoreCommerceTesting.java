@@ -3,7 +3,10 @@ package com.junbo.test.store;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.util.IdFormatter;
+import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.Instrument;
@@ -25,6 +28,8 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import com.junbo.test.store.apihelper.TestContext;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -796,6 +801,61 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert Master.getInstance().getApiErrorMsg().contains("Offer not free");
         assert Master.getInstance().getApiErrorMsg().contains("130.110");
 
+    }
+
+    @Test
+    public void testFreePurchaseWithCountryHeader() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+        String country = "JP";
+        testDataProvider.signIn(userName);
+        TestContext.getData().putHeader("oculus-geoip-country-code", "JP");
+
+        String offerId;
+        if (offer_digital_oculus_free1.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_oculus_free1);
+        } else {
+            offerId = offer_digital_oculus_free1;
+        }
+
+        MakeFreePurchaseResponse response = testDataProvider.makeFreePurchase(offerId, null);
+        if (response.getChallenge() != null) {
+            response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
+        }
+
+        Master.getInstance().setCurrentUid(IdFormatter.encodeId(authTokenResponse.getUserId()));
+        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()), testDataProvider.getUserAccessToken(createUserRequest.getUsername(), createUserRequest.getPassword()));
+
+        Order order = testDataProvider.getOrder(response.getOrder());
+        Assert.assertEquals(order.getCountry(), new CountryId(country));
+    }
+
+    @Test
+    public void testFreePurchaseWithCountryHeaderFallBackToDefault() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+        testDataProvider.signIn(userName);
+        TestContext.getData().putHeader("oculus-geoip-country-code", "JPA");
+
+        String offerId;
+        if (offer_digital_oculus_free1.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_oculus_free1);
+        } else {
+            offerId = offer_digital_oculus_free1;
+        }
+
+        MakeFreePurchaseResponse response = testDataProvider.makeFreePurchase(offerId, null);
+        if (response.getChallenge() != null) {
+            response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
+        }
+
+        Master.getInstance().setCurrentUid(IdFormatter.encodeId(authTokenResponse.getUserId()));
+        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()), testDataProvider.getUserAccessToken(createUserRequest.getUsername(), createUserRequest.getPassword()));
+
+        Order order = testDataProvider.getOrder(response.getOrder());
+        Assert.assertEquals(order.getCountry(), new CountryId("US"));
     }
 
     @Property(

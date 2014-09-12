@@ -1,5 +1,4 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -42,6 +41,7 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
+import java.util.regex.Pattern
 
 /**
  * The RequestValidator class.
@@ -71,8 +71,14 @@ class RequestValidator {
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
 
+    private final Pattern androidIdPattern = Pattern.compile('[a-fA-F\\d]{16}')
+
     RequestValidator validateRequiredApiHeaders() {
         validateHeader(StoreApiHeader.ANDROID_ID, StoreApiHeader.USER_AGENT, StoreApiHeader.ACCEPT_LANGUAGE)
+        String androidId = JunboHttpContext.requestHeaders.getFirst(StoreApiHeader.ANDROID_ID.value)
+        if (!androidIdPattern.matcher(androidId).matches()) {
+            throw AppCommonErrors.INSTANCE.headerInvalid(StoreApiHeader.ANDROID_ID.value).exception()
+        }
         return this
     }
 

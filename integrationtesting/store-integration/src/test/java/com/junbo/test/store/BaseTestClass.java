@@ -5,10 +5,15 @@ import com.junbo.test.catalog.impl.*;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.store.apihelper.TestContext;
 import com.junbo.test.store.utility.StoreTestDataProvider;
 import com.junbo.test.store.utility.StoreValidationHelper;
+import org.testng.annotations.AfterMethod;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -107,5 +112,10 @@ public abstract class BaseTestClass {
 
     StoreTestDataProvider testDataProvider = new StoreTestDataProvider();
     StoreValidationHelper validationHelper = new StoreValidationHelper(testDataProvider);
+
+    @AfterMethod
+    public void clear() {
+        TestContext.clear();
+    }
 
 }
