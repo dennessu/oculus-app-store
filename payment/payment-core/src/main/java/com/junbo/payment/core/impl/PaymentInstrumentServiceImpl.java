@@ -230,7 +230,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     private void validateRequest(PaymentInstrument request){
-        if(request.getUserId() == null){
+        if(request == null || request.getUserId() == null){
             throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
         UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();

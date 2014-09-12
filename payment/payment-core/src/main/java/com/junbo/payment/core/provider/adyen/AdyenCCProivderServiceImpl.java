@@ -10,6 +10,7 @@ import com.adyen.services.common.Amount;
 import com.adyen.services.payment.*;
 import com.adyen.services.recurring.RecurringDetail;
 import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
@@ -278,6 +279,16 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
             public PaymentTransaction call() throws Exception {
+                //adyen need charge info when do the capture
+                if(paymentRequest.getChargeInfo() == null){
+                    throw AppCommonErrors.INSTANCE.fieldRequired("amount").exception();
+                }
+                if(paymentRequest.getChargeInfo().getAmount() == null){
+                    throw AppCommonErrors.INSTANCE.fieldRequired("amount").exception();
+                }
+                if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getCurrency())){
+                    throw AppCommonErrors.INSTANCE.fieldRequired("currency").exception();
+                }
                 ModificationRequest request = new ModificationRequest();
                 request.setMerchantAccount(getMerchantAccount());
                 String currency = paymentRequest.getChargeInfo().getCurrency();
