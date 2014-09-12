@@ -15,6 +15,7 @@ enum GrantType {
     AUTHORIZATION_CODE,
     REFRESH_TOKEN,
     CLIENT_CREDENTIALS,
+    CLIENT_CREDENTIALS_WITH_USER_ID,
     PASSWORD
 
     static boolean isValid(String value) {

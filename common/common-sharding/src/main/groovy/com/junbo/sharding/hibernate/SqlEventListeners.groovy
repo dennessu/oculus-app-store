@@ -10,6 +10,7 @@ import com.junbo.common.model.EntityAdminInfoString
 import com.junbo.langur.core.profiling.ProfilingHelper
 import com.junbo.langur.core.track.TrackContextManager
 import groovy.transform.CompileStatic
+import org.hibernate.HibernateException
 import org.hibernate.event.spi.*
 import org.hibernate.persister.entity.EntityPersister
 import org.slf4j.Logger
@@ -21,9 +22,10 @@ import org.slf4j.LoggerFactory
 class SqlEventListeners {
     private static final Logger logger = LoggerFactory.getLogger(SqlEventListeners)
 
-    static class preInsert implements PreInsertEventListener {
+    @CompileStatic
+    static class save implements SaveOrUpdateEventListener {
         @Override
-        boolean onPreInsert(PreInsertEvent event) {
+        void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
             if (event.entity instanceof EntityAdminInfo) {
                 def tracker = TrackContextManager.get()
                 def entity = (EntityAdminInfo)event.entity
@@ -43,6 +45,32 @@ class SqlEventListeners {
                 entity.updatedByClient = entity.createdByClient
                 entity.updatedTime = entity.createdTime
             }
+        }
+    }
+
+    @CompileStatic
+    static class update implements SaveOrUpdateEventListener {
+        @Override
+        void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
+            if (event.entity instanceof EntityAdminInfo) {
+                def tracker = TrackContextManager.get()
+                def entity = (EntityAdminInfo)event.entity
+                entity.updatedBy = tracker.currentUserId ?: 0L
+                entity.updatedByClient = tracker.currentClientId ?: ""
+                entity.updatedTime = new Date()
+            } else if (event.entity instanceof EntityAdminInfoString) {
+                def tracker = TrackContextManager.get()
+                def entity = (EntityAdminInfoString)event.entity
+                entity.updatedBy = tracker.currentUserId?.toString() ?: ""
+                entity.updatedByClient = tracker.currentClientId ?: ""
+                entity.updatedTime = new Date()
+            }
+        }
+    }
+
+    static class preInsert implements PreInsertEventListener {
+        @Override
+        boolean onPreInsert(PreInsertEvent event) {
             begin("insert", event.entity.class.simpleName, event.id.toString())
             return false
         }
@@ -63,19 +91,6 @@ class SqlEventListeners {
     static class preUpdate implements PreUpdateEventListener {
         @Override
         boolean onPreUpdate(PreUpdateEvent event) {
-            if (event.entity instanceof EntityAdminInfo) {
-                def tracker = TrackContextManager.get()
-                def entity = (EntityAdminInfo)event.entity
-                entity.updatedBy = tracker.currentUserId ?: 0L
-                entity.updatedByClient = tracker.currentClientId ?: ""
-                entity.updatedTime = new Date()
-            } else if (event.entity instanceof EntityAdminInfoString) {
-                def tracker = TrackContextManager.get()
-                def entity = (EntityAdminInfoString)event.entity
-                entity.updatedBy = tracker.currentUserId?.toString() ?: ""
-                entity.updatedByClient = tracker.currentClientId ?: 0L
-                entity.updatedTime = new Date()
-            }
             begin("update", event.entity.class.simpleName, event.id.toString())
             return false
         }

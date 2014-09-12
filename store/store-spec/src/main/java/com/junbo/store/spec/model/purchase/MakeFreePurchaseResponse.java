@@ -5,7 +5,9 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.OrderId;
+import com.junbo.common.userlog.EntityLoggable;
 import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.Entitlement;
 
@@ -14,7 +16,7 @@ import java.util.List;
 /**
  * The MakeFreePurchaseResponse class.
  */
-public class MakeFreePurchaseResponse {
+public class MakeFreePurchaseResponse implements EntityLoggable {
 
     private Challenge challenge;
 
@@ -44,5 +46,11 @@ public class MakeFreePurchaseResponse {
 
     public void setChallenge(Challenge challenge) {
         this.challenge = challenge;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getEntityLogId() {
+        return order == null ? null : order.getValue().toString();
     }
 }

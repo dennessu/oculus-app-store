@@ -5,6 +5,7 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.common.error.Error
 import com.junbo.common.filter.SequenceIdFilter
 import com.junbo.common.id.UserId
+import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.langur.core.track.UserLogProcessor
@@ -17,10 +18,15 @@ import org.springframework.http.HttpMethod
  */
 @CompileStatic
 class UserLogProcessorImpl implements UserLogProcessor {
+    private static boolean isEnabled = "true".equalsIgnoreCase(
+            ConfigServiceManager.instance().getConfigValue("common.userlog.enabled"))
     private UserLogRepository userLogRepo
 
     @Override
     void process(Object entity) {
+        if (!isEnabled) {
+            return
+        }
         try {
             if (JunboHttpContext.getRequestMethod().equalsIgnoreCase(HttpMethod.GET.toString()) ||
                     JunboHttpContext.getRequestUri().getPath().contains("oauth2") || TrackContextManager.isRouted()) {
@@ -32,6 +38,8 @@ class UserLogProcessorImpl implements UserLogProcessor {
             if (entity instanceof CloudantEntity) {
                 CloudantEntity cloudantEntity = (CloudantEntity) entity
                 entityId = cloudantEntity.getId()?.toString()
+            } else if (entity instanceof EntityLoggable) {
+                entityId = ((EntityLoggable) entity).getEntityLogId()
             } else if (entity instanceof AppErrorException) {
                 error = ((AppErrorException) entity).error.error()
             }

@@ -49,6 +49,8 @@ class LocalSessionFactoryWithListenerBean extends LocalSessionFactoryBean {
         registry.appendListeners(EventType.POST_LOAD, new SqlEventListeners.postLoad())
         registry.appendListeners(EventType.PRE_DELETE, new SqlEventListeners.preDelete())
         registry.appendListeners(EventType.POST_DELETE, new SqlEventListeners.postDelete())
+        registry.appendListeners(EventType.SAVE, new SqlEventListeners.save())
+        registry.appendListeners(EventType.UPDATE, new SqlEventListeners.update())
 
         if (postInsertEventListeners != null) {
             registry.appendListeners(EventType.POST_INSERT, postInsertEventListeners)

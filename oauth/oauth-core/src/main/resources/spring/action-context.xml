@@ -67,6 +67,10 @@
 
     <bean id="grantTokenByClientCredentials" class="com.junbo.oauth.core.action.GrantTokenByClientCredentials">
         <property name="tokenService" ref="tokenService"/>
+    </bean>
+
+    <bean id="grantTokenByUserId" class="com.junbo.oauth.core.action.GrantTokenByUserId">
+        <property name="tokenService" ref="tokenService"/>
         <property name="userResource" ref="oauth_userResource"/>
     </bean>
 

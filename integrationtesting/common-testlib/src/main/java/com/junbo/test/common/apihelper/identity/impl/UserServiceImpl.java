@@ -458,6 +458,41 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         return GetUserByUserName(userName, 200);
     }
 
+    public List<String> GetCurrentUserByUserName(String userName, int expectedResponseCode) throws Exception {
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> listUsername = new ArrayList<>();
+        listUsername.add(userName);
+
+        paraMap.put("username", listUsername);
+        String responseBody = restApiCall(HTTPMethod.GET, identityServerURL, null, expectedResponseCode, paraMap, false);
+
+        if (expectedResponseCode != 200) {
+            return null;
+        }
+        Results<User> userGet = new JsonMessageTranscoder().decode(
+                new TypeReference<Results<User>>() {
+                }, responseBody);
+
+        List<String> listUserId = new ArrayList<>();
+        for (User user : userGet.getItems()) {
+            Master.getInstance().addUser(IdConverter.idToHexString(user.getId()), user);
+            if (Master.getInstance().getUserAccessToken(IdConverter.idToHexString(user.getId())) == null) {
+                if (Master.getInstance().getUserPassword() != null && !Master.getInstance().getUserPassword().isEmpty())
+                    oAuthClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userName,
+                            Master.getInstance().getUserPassword());
+                else {
+                    oAuthClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userName, userPassword);
+                }
+            }
+            listUserId.add(IdConverter.idToHexString(user.getId()));
+        }
+        if (listUserId.size() > 0) {
+            Master.getInstance().setCurrentUid(listUserId.get(0));
+        }
+
+        return listUserId;
+    }
+
     public List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
         HashMap<String, List<String>> paraMap = new HashMap<>();

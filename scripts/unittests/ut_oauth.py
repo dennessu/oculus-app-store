@@ -109,8 +109,78 @@ class OAuthTests(ut.TestBase):
             'post_logout_redirect_uri': ut.test_logout_redirect_uri,
             'id_token_hint': id_token
         })
+        assert location.startswith(ut.test_logout_redirect_uri)
 
-        assert location == ut.test_logout_redirect_uri
+        # test silent sign-in again
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri
+        })
+        assert getqueryparam(location, 'code') is None
+        assert getqueryparam(location, 'cid') is not None
+        pass
+
+    def testLogoutConfirm(self):
+        user = self.testRegister()
+
+        # test silent sign-in
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState',
+            'nonce': 'testNonce'
+        })
+        id_token = getqueryparam(location, 'id_token')
+        assert id_token is not None
+
+        # logout without id_token
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
+            'post_logout_redirect_uri': ut.test_logout_redirect_uri
+        })
+        cid = getqueryparam(location, 'cid')
+        view = curlJson('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid })
+        assert view["view"] == 'logout-confirm'
+
+        # confirm logout with 'no'
+        curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid, 'event': 'no' })
+
+        # test silent sign-in
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState',
+            'nonce': 'testNonce'
+        })
+        id_token = getqueryparam(location, 'id_token')
+        assert id_token is not None
+
+        # logout without id_token
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
+            'post_logout_redirect_uri': ut.test_logout_redirect_uri
+        })
+        cid = getqueryparam(location, 'cid')
+        view = curlJson('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid })
+        assert view["view"] == 'logout-confirm'
+
+        # confirm logout with 'yes'
+        curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid, 'event': 'yes' })
+
+        # test sign-in again to confirm logout
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri
+        })
+        assert getqueryparam(location, 'code') is None
+        assert getqueryparam(location, 'cid') is not None
+
         pass
 
     def testLogoutConfirm(self):
@@ -225,8 +295,17 @@ class OAuthTests(ut.TestBase):
             'post_logout_redirect_uri': ut.test_wildcard_logout_redirect_uri,
             'id_token_hint': id_token
         })
+        assert location.startswith(ut.test_wildcard_logout_redirect_uri)
 
-        assert location == ut.test_wildcard_logout_redirect_uri
+        # test sign-in again to confirm logout
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri
+        })
+        assert getqueryparam(location, 'code') is None
+        assert getqueryparam(location, 'cid') is not None
         pass
 
     def testSilentLogin(self):
