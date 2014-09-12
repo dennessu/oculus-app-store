@@ -61,7 +61,6 @@ import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.net.ConnectException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -593,25 +592,17 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getTOC();
     }
 
-    public ListResponse getList(ListRequest request, int retryCount) throws Exception {
-        do {
-            try {
-                return storeClient.getList(request);
-            } catch (ConnectException ex) {
-                if (retryCount-- <= 0) {
-                    throw ex;
-                }
-            }
-        } while (true);
+    public ListResponse getList(ListRequest request) throws Exception {
+        return storeClient.getList(request);
     }
 
-    public ListResponse getList(String category, String criteria, String cursor, Integer count, int retryCount) throws Exception {
+    public ListResponse getList(String category, String criteria, String cursor, Integer count) throws Exception {
         ListRequest listRequest = new ListRequest();
         listRequest.setCategory(category);
         listRequest.setCriteria(criteria);
         listRequest.setCursor(cursor);
         listRequest.setCount(count);
-        return getList(listRequest, retryCount);
+        return getList(listRequest);
     }
 
     public SectionLayoutResponse getLayout(String category, String criteria, Integer count) throws Exception {

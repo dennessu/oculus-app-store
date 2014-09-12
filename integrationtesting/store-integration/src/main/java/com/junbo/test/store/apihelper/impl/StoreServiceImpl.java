@@ -20,8 +20,6 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.store.apihelper.StoreService;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -46,11 +44,6 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
         //for further header, we can set dynamic value from properties here
         return headers;
-    }
-
-    @Override
-    protected AsyncHttpClient getAsyncHttpClient() {
-        return new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setMaxRequestRetry(3).build());
     }
 
     public static synchronized StoreService getInstance() {

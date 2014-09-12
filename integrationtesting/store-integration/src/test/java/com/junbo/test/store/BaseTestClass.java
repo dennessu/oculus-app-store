@@ -48,7 +48,6 @@ public abstract class BaseTestClass {
     protected ItemAttributeService itemAttributeService;
     protected OAuthService oAuthTokenService;
     protected int listItemPageSize = 2;
-    protected int browseRetryCount = 0;
 
     public BaseTestClass() {
         super();
@@ -95,9 +94,6 @@ public abstract class BaseTestClass {
         }
         if (ConfigHelper.getSetting("testdata.list.pagesize") != null) {
             listItemPageSize = Integer.parseInt(ConfigHelper.getSetting("testdata.list.pagesize"));
-        }
-        if (ConfigHelper.getSetting("testdata.browse.retrycount") != null) {
-            browseRetryCount = Integer.parseInt(ConfigHelper.getSetting("testdata.browse.retrycount"));
         }
 
         itemService = ItemServiceImpl.instance();

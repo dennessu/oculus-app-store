@@ -374,7 +374,7 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         while (true) {
 
-            ListResponse result = testDataProvider.getList(listRequest, browseRetryCount);
+            ListResponse result = testDataProvider.getList(listRequest);
             count += result.getItems().size();
             Assert.assertTrue(result.getItems().size() <= pageSize);
             for (Item item : result.getItems()) {
@@ -407,7 +407,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         }
 
         while (nextOption != null) {
-            ListResponse listResponse = testDataProvider.getList(nextOption.getCategory(), nextOption.getCriteria(), nextOption.getCursor(), nextOption.getCount(), browseRetryCount);
+            ListResponse listResponse = testDataProvider.getList(nextOption.getCategory(), nextOption.getCriteria(), nextOption.getCursor(), nextOption.getCount());
             items.addAll(listResponse.getItems());
             if (listResponse.getItems().isEmpty()) {
                 break;

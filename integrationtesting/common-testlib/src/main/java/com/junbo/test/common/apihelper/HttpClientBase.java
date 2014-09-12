@@ -12,10 +12,7 @@ import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.LogHelper;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.FluentCaseInsensitiveStringsMap;
-import com.ning.http.client.Request;
-import com.ning.http.client.RequestBuilder;
+import com.ning.http.client.*;
 import com.ning.http.client.providers.netty.NettyResponse;
 import org.apache.http.client.HttpResponseException;
 import org.testng.Assert;
@@ -69,7 +66,7 @@ public abstract class HttpClientBase {
     }
 
     protected AsyncHttpClient getAsyncHttpClient() {
-        return new AsyncHttpClient();
+        return new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setMaxRequestRetry(3).build());
     }
 
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
