@@ -121,6 +121,9 @@ class CoreBuilder {
         List<Balance> returnBalances = []
         originalBalances.each { Balance b ->
             Balance balance = buildRefundBalance(b)
+            if (diffOrder.refundPaymentInstrument != null) {
+                balance.piId = diffOrder.refundPaymentInstrument
+            }
             b.balanceItems.each { BalanceItem item ->
                 def matched = diffOrder.orderItems.find { OrderItem orderItem ->
                     orderItem.getId().value == item.orderItemId.value

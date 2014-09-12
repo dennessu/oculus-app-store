@@ -7,7 +7,6 @@
 package com.junbo.payment.core;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
 import com.junbo.payment.spec.model.PaymentInstrumentType;
@@ -30,7 +29,7 @@ public interface PaymentInstrumentService {
     @Transactional(readOnly = true)
     List<PaymentInstrument> getByUserId(Long userId);
     @Transactional(readOnly = true)
-    Promise<List<PaymentInstrument>> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page);
+    Promise<List<PaymentInstrument>> searchPi(Long userId, PaymentInstrumentSearchParam searchParam);
     @Transactional(readOnly = true)
     PaymentInstrumentType getPIType(String piType);
 }

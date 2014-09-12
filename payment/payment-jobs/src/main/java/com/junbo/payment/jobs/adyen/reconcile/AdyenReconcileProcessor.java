@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.jobs.reconcile;
+package com.junbo.payment.jobs.adyen.reconcile;
 
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.PaymentTransactionService;
@@ -28,7 +28,7 @@ import java.util.concurrent.*;
 /**
  * Reconcile Processor.
  */
-public class ReconcileProcessor {
+public class AdyenReconcileProcessor {
     protected static final String SUCCESS_EVENT_RESPONSE = "{\"result\": \"OK\"}";
     private int concurrentCount;
     private int processCount;
@@ -38,7 +38,7 @@ public class ReconcileProcessor {
     private SettlementDetailRepository settlementDetailRepo;
     private PaymentTransactionService paymentTransactionService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReconcileProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdyenReconcileProcessor.class);
     private static final SettlementDetail NO_MORE_PAYMENTS = new SettlementDetail(){
         {
             setMerchantReference("-1");
@@ -120,9 +120,9 @@ public class ReconcileProcessor {
         event.setResponse(SUCCESS_EVENT_RESPONSE);
         String closeStatus = "Closed";
         try{
-            paymentTransactionService.reportPaymentEvent(event, null).get();
+            paymentTransactionService.reportPaymentEvent(event, null, null).get();
         }catch (Exception ex){
-            LOGGER.error("Error in reconcile batch:" + settlementDetail.getModificationMerchantReference() + " due to: " + ex.toString());
+            LOGGER.error("Error in reconcile batch:" + settlementDetail.getModificationMerchantReference() + " due to: ", ex);
             closeStatus = "ClosedWithError";
         }
         updateSettlementDetail(settlementDetail, closeStatus);

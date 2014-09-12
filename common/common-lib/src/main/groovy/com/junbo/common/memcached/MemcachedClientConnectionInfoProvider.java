@@ -20,10 +20,12 @@ public class MemcachedClientConnectionInfoProvider implements ConnectionInfoProv
     public Map getConnectionInfo() {
         Map<String, String> result = new HashMap<>();
         JunboMemcachedClient memcachedClient = JunboMemcachedClient.instance();
-        int i = 0;
-        for (MemcachedNode memcachedNode : memcachedClient.getNodeLocator().getAll()) {
-            result.put("node " + i++, "(" + (memcachedNode.isActive() ? "active) " : "inactive) ")
-                    + memcachedNode.toString());
+        if (memcachedClient != null) {
+            int i = 0;
+            for (MemcachedNode memcachedNode : memcachedClient.getNodeLocator().getAll()) {
+                result.put("node " + i++, "(" + (memcachedNode.isActive() ? "active) " : "inactive) ")
+                        + memcachedNode.toString());
+            }
         }
         return result;
     }

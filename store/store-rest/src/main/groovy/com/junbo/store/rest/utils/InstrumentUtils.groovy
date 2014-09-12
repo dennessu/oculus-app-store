@@ -193,7 +193,7 @@ class InstrumentUtils {
         List<PaymentInstrument> paymentInstruments = []
         List<Instrument> results = []
         CommonUtils.loop {
-            resourceContainer.paymentInstrumentResource.searchPaymentInstrument(new PaymentInstrumentSearchParam(userId: user.getId()), pageMetaData).then { Results<PaymentInstrument> paymentInstrumentResults ->
+            resourceContainer.paymentInstrumentResource.searchPaymentInstrument(new PaymentInstrumentSearchParam(userId: user.getId())).then { Results<PaymentInstrument> paymentInstrumentResults ->
                 paymentInstruments.addAll(paymentInstrumentResults.items)
                 pageMetaData.start += PAGE_SIZE
                 return Promise.pure(paymentInstrumentResults.items.size() == PAGE_SIZE ? null : Promise.BREAK)

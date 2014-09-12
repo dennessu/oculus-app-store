@@ -383,6 +383,7 @@
 
     <bean id="createUserCredential" class="com.junbo.oauth.core.action.CreateUserCredential">
         <property name="userCredentialResource" ref="oauth_userCredentialResource"/>
+        <property name="resetPasswordCodeRepository" ref="resetPasswordCodeRepository" />
     </bean>
 
     <bean id="createUserPii" class="com.junbo.oauth.core.action.CreateUserPii">
@@ -513,5 +514,7 @@
         <property name="userTFAAttemptResource" ref="oauth_userTFAAttemptResource"/>
     </bean>
 
-    <bean id="tfaRequiredView" class="com.junbo.oauth.core.view.TFARequiredView"/>
+    <bean id="tfaRequiredView" class="com.junbo.oauth.core.view.TFARequiredView">
+        <property name="debugEnabled" value="${common.conf.debugMode}"/>
+    </bean>
 </beans>

@@ -8,8 +8,8 @@ package com.junbo.payment.core.provider;
 
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.exception.AppServerExceptions;
+import com.junbo.payment.spec.internal.CallbackParams;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
 
@@ -28,7 +28,7 @@ public abstract class AbstractPaymentProviderService implements PaymentProviderS
     }
 
     @Override
-    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction paymentRequest, PaymentCallbackParams properties){
+    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction paymentRequest, CallbackParams properties){
         throw AppServerExceptions.INSTANCE.serviceNotImplemented("confirmNotify").exception();
     }
 

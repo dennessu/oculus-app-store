@@ -6,7 +6,7 @@
 
     <context:component-scan base-package="com.junbo.payment.db.*"/>
 
-    <!-- Payment Batch File Scheduler -->
+    <!-- adyen Payment Batch File Scheduler -->
     <bean id="paymentBatchSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
           parent="baseJobScheduler">
         <property name="schedulerName" value="paymentBatchScheduler" />
@@ -36,11 +36,11 @@
         <property name="targetMethod" value="execute" />
     </bean>
 
-    <bean id="fileProcessingJob" class="com.junbo.payment.jobs.file.FileProcessingJob">
+    <bean id="fileProcessingJob" class="com.junbo.payment.jobs.adyen.file.FileProcessingJob">
         <property name="fileProcessor" ref="fileProcessor"/>
     </bean>
 
-    <bean id="fileProcessor" class="com.junbo.payment.jobs.file.FileProcessor">
+    <bean id="fileProcessor" class="com.junbo.payment.jobs.adyen.file.FileProcessor">
         <property name="concurrentCount" value="${payment.jobs.batch.concurrentCount}" />
         <property name="batchSize" value="${payment.jobs.batch.batchSize}" />
         <property name="timeLimitMinutes" value="${payment.jobs.batch.timeLimitMinutes}" />
@@ -49,7 +49,7 @@
         <property name="settlementDetailRepo" ref="settlementDetailRepository"/>
     </bean>
 
-    <!-- Payment Reconcile Job Scheduler -->
+    <!-- adyen Payment Reconcile Job Scheduler -->
     <bean id="paymentReconcileSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
           parent="baseJobScheduler">
         <property name="schedulerName" value="paymentReconcileScheduler" />
@@ -79,17 +79,66 @@
         <property name="targetMethod" value="execute" />
     </bean>
 
-    <bean id="reconcileJob" class="com.junbo.payment.jobs.reconcile.ReconcileJob">
+    <bean id="reconcileJob" class="com.junbo.payment.jobs.adyen.reconcile.AdyenReconcileJob">
         <property name="reconcileProcessor" ref="reconcileProcessor"/>
     </bean>
 
-    <bean id="reconcileProcessor" class="com.junbo.payment.jobs.reconcile.ReconcileProcessor">
+    <bean id="reconcileProcessor" class="com.junbo.payment.jobs.adyen.reconcile.AdyenReconcileProcessor">
         <property name="concurrentCount" value="${payment.jobs.reconcile.concurrentCount}" />
         <property name="processCount" value="${payment.jobs.reconcile.processCount}" />
         <property name="timeLimitMinutes" value="${payment.jobs.reconcile.timeLimitMinutes}" />
         <property name="transactionManager" ref="transactionManager" />
         <property name="settlementDetailRepo" ref="settlementDetailRepository"/>
         <property name="paymentTransactionService" ref="paymentService"/>
+    </bean>
+
+
+
+    <!-- paypal Payment Reconcile Job Scheduler -->
+    <bean id="paypalPaymentReconcileSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          parent="baseJobScheduler">
+        <property name="schedulerName" value="paypalPaymentReconcileScheduler" />
+        <property name="autoStartup" value="${payment.jobs.reconcile.paypal.scheduler.start}" />
+        <property name="triggers">
+            <list>
+                <ref bean="paypalPaymentReconcileJobTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--Job Trigger -->
+    <bean id="paypalPaymentReconcileJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="paypalPaymentReconcileProcessor" />
+        <property name="cronExpression" value="${payment.jobs.reconcile.paypal.cronexpression}" />
+    </bean>
+
+    <!-- reconcile Job -->
+    <bean id="paypalPaymentReconcileProcessor" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="paypalReconcileJob"/>
+                </property>
+            </bean>
+        </property>
+        <property name="targetMethod" value="execute" />
+    </bean>
+
+    <bean id="paypalReconcileJob" class="com.junbo.payment.jobs.paypal.PaypalReconcileJob">
+        <property name="reconcileProcessor" ref="paypalReconcileProcessor"/>
+    </bean>
+
+    <bean id="paypalReconcileProcessor" class="com.junbo.payment.jobs.paypal.PaypalReconcileProcessor">
+        <property name="paymentTransactionService" ref="paymentService"/>
+        <property name="sftpDownloader" ref="paypalSFTPDownload"/>
+        <property name="localPath" value="${payment.jobs.reconcile.paypal.sftp.localpath}"/>
+        <property name="remotePath" value="${payment.jobs.reconcile.paypal.sftp.remotepath}"/>
+    </bean>
+
+    <bean id="paypalSFTPDownload" class="com.junbo.payment.jobs.paypal.SFTPDownloader">
+        <property name="hostName" value="${payment.jobs.reconcile.paypal.sftp.hostname}"/>
+        <property name="username" value="${payment.jobs.reconcile.paypal.sftp.username}"/>
+        <property name="password" value="${payment.jobs.reconcile.paypal.sftp.password}"/>
     </bean>
 
 </beans>

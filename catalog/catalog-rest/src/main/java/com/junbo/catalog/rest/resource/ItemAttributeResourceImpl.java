@@ -7,8 +7,11 @@
 package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.ItemAttributeService;
+import com.junbo.catalog.spec.enums.LocaleAccuracy;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions;
 import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.resource.ItemAttributeResource;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
@@ -18,32 +21,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Attribute resource implementation.
  */
-public class ItemAttributeResourceImpl implements ItemAttributeResource {
+public class ItemAttributeResourceImpl extends ResourceSupport implements ItemAttributeResource {
     @Autowired
     private ItemAttributeService attributeService;
 
     @Override
-    public Promise<ItemAttribute> getAttribute(String attributeId) {
-        return Promise.pure(attributeService.getAttribute(attributeId));
+    public Promise<ItemAttribute> getAttribute(String attributeId, final ItemAttributeGetOptions options) {
+        final ItemAttribute attribute = attributeService.getAttribute(attributeId);
+        filterLocale(attribute, options.getLocale());
+        return Promise.pure(attribute);
     }
 
     @Override
-    public Promise<Results<ItemAttribute>> getAttributes(@BeanParam ItemAttributesGetOptions options) {
+    public Promise<Results<ItemAttribute>> getAttributes(final ItemAttributesGetOptions options) {
         List<ItemAttribute> attributes = attributeService.getAttributes(options);
+        for (final ItemAttribute attribute : attributes) {
+            filterLocale(attribute, options.getLocale());
+        }
         Results<ItemAttribute> results = new Results<>();
         results.setItems(attributes);
         Link nextLink = new Link();
         nextLink.setHref(buildNextUrl(options));
         results.setNext(nextLink);
         return Promise.pure(results);
+    }
+
+    private void filterLocale(final ItemAttribute attribute, final String locale) {
+        attribute.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+        if (!StringUtils.isEmpty(locale)) {
+            attribute.setLocaleAccuracy(calLocaleAccuracy(attribute.getLocales().get(locale)));
+            attribute.setLocales(new HashMap<String, SimpleLocaleProperties>() {{
+                put(locale, getLocaleProperties(attribute.getLocales(), locale));
+            }});
+        }
     }
 
     private String buildNextUrl(ItemAttributesGetOptions options) {

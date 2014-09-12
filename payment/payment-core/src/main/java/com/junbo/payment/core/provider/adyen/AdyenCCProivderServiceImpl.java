@@ -10,6 +10,7 @@ import com.adyen.services.common.Amount;
 import com.adyen.services.payment.*;
 import com.adyen.services.recurring.RecurringDetail;
 import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
@@ -126,7 +127,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                     }
                     result = getPaymentResult(restResponse);
                 } catch (Exception e) {
-                    LOGGER.error("error calling adyen:" + e.toString());
+                    LOGGER.error("error calling adyen:", e);
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(result != null && result.getResultCode().equalsIgnoreCase(CONFIRMED_STATUS)){
@@ -223,7 +224,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 sbReq.append(getAddressRequest(address));
             }
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error("error encode the URL");
+            LOGGER.error("error encode the URL", e);
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "error encode").exception();
         }
         return sbReq;
@@ -278,6 +279,16 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
             public PaymentTransaction call() throws Exception {
+                //adyen need charge info when do the capture
+                if(paymentRequest.getChargeInfo() == null){
+                    throw AppCommonErrors.INSTANCE.fieldRequired("amount").exception();
+                }
+                if(paymentRequest.getChargeInfo().getAmount() == null){
+                    throw AppCommonErrors.INSTANCE.fieldRequired("amount").exception();
+                }
+                if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getCurrency())){
+                    throw AppCommonErrors.INSTANCE.fieldRequired("currency").exception();
+                }
                 ModificationRequest request = new ModificationRequest();
                 request.setMerchantAccount(getMerchantAccount());
                 String currency = paymentRequest.getChargeInfo().getCurrency();
@@ -289,7 +300,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 try {
                     result = service.capture(request);
                 } catch (RemoteException e) {
-                    LOGGER.error("error call adyen capture.");
+                    LOGGER.error("error call adyen capture.", e);
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(result != null && result.getResponse().equals(CAPTURE_STATE)){

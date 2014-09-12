@@ -26,10 +26,14 @@ class CloudantResetPasswordCodeRepositoryImpl extends CloudantClient<ResetPasswo
     }
 
     @Override
-    ResetPasswordCode getAndRemove(String code) {
+    ResetPasswordCode get(String code) {
         ResetPasswordCode entity = cloudantGetSync(code)
-        cloudantDeleteSync(code)
         return entity
+    }
+
+    @Override
+    void remove(String code) {
+        cloudantDeleteSync(code)
     }
 
     @Override

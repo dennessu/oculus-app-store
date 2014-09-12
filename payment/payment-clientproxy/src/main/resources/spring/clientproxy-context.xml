@@ -11,11 +11,6 @@
         <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
 
-    <bean id="brainTreeClient" class="com.junbo.payment.spec.internal.proxy.BrainTreeResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${payment.clientproxy.braintree.target}"/>
-    </bean>
-
     <bean id="currencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy"
           parent="currencyResourceClientProxy">
     </bean>

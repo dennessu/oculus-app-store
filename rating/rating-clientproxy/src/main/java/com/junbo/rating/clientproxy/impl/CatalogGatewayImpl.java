@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
+import com.junbo.catalog.spec.model.pricetier.PriceTierGetOptions;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.resource.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
@@ -198,7 +199,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
             case TIERED:
                 PriceTier priceTier;
                 try {
-                    priceTier = priceTierResource.getPriceTier(price.getPriceTier()).get();
+                    priceTier = priceTierResource.getPriceTier(price.getPriceTier(), new PriceTierGetOptions()).get();
                 } catch (Exception e) {
                     throw AppErrors.INSTANCE.catalogGatewayError().exception();
                 }

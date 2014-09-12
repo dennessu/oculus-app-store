@@ -8,8 +8,8 @@ package com.junbo.catalog.spec.model.pricetier;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.common.jackson.annotation.PriceTierId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -31,6 +31,10 @@ public class PriceTier extends BaseModel {
     @NotNull
     @ApiModelProperty(position = 3, required = true, value = "Locale properties")
     private Map<String, SimpleLocaleProperties> locales;
+    @ApiModelProperty(position = 4, required = true,
+            value = "This is the calculated value to give how accurate the localizable attributes is.",
+            allowableValues = "HIGH, MEDIUM, LOW")
+    private String localeAccuracy;
 
     @JsonIgnore
     public String getId() {
@@ -55,5 +59,13 @@ public class PriceTier extends BaseModel {
 
     public void setLocales(Map<String, SimpleLocaleProperties> locales) {
         this.locales = locales;
+    }
+
+    public String getLocaleAccuracy() {
+        return localeAccuracy;
+    }
+
+    public void setLocaleAccuracy(String localeAccuracy) {
+        this.localeAccuracy = localeAccuracy;
     }
 }

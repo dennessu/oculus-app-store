@@ -14,6 +14,8 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
     __resourceScopeValidator.validateScope("${adapteeName}.${methodName}");
     [/#if]
 
+    __throttleController.throttle("${adapteeName}.${methodName}");
+
     try {
         ${adapteeType} adaptee = __adaptee;
 

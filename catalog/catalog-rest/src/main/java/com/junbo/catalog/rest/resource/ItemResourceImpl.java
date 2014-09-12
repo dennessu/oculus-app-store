@@ -57,7 +57,7 @@ public class ItemResourceImpl implements ItemResource {
     }
 
     private String buildNextUrl(ItemsGetOptions options) {
-        if (!CollectionUtils.isEmpty(options.getItemIds()) || options.getHostItemId() != null) {
+        if (!CollectionUtils.isEmpty(options.getItemIds())) {
             return null;
         }
 
@@ -70,6 +70,9 @@ public class ItemResourceImpl implements ItemResource {
         }
         if (options.getOwnerId() != null) {
             builder.queryParam("developerId", IdFormatter.encodeId(options.getOwnerId()));
+        }
+        if (options.getHostItemId() != null) {
+            builder.queryParam("hostItemId", options.getHostItemId());
         }
         builder.queryParam("count", options.getValidSize());
         if (!StringUtils.isEmpty(options.getNextCursor())) {

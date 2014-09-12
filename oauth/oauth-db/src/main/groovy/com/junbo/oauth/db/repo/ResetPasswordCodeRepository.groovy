@@ -8,7 +8,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 public interface ResetPasswordCodeRepository {
-    ResetPasswordCode getAndRemove(String code)
+    ResetPasswordCode get(String code)
+    void remove(String code)
     void save(ResetPasswordCode resetPasswordCode)
     void removeByUserIdEmail(Long userId, String email)
 }

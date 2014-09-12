@@ -6,6 +6,7 @@ import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -106,5 +107,22 @@ class OrderValidator {
             }
         }
         return this
+    }
+
+    OrderValidator validatePaymentInstrument(PaymentInstrument pi, Order order) {
+        if (pi.userId != null && order.user.value != pi.userId) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid(
+                    'payments', 'do not belong to this user').exception()
+        }
+        if (PIType.get(pi.type) == PIType.CREDITCARD) {
+            String expDate = pi.typeSpecificDetails.expireDate
+            assert (expDate != null)
+            Date expireDate = CoreBuilder.buildDate(expDate)
+            Date now = new Date()
+            if (expireDate.before(now)) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid(
+                        'payments', 'PI expired').exception()
+            }
+        }
     }
 }

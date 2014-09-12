@@ -7,8 +7,8 @@
 package com.junbo.payment.core.provider;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.spec.internal.CallbackParams;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
 
 import javax.ws.rs.core.Response;
@@ -36,7 +36,7 @@ public interface PaymentProviderService{
     Promise<PaymentTransaction> getByTransactionToken(PaymentTransaction paymentRequest);
 
     Promise<PaymentTransaction> confirm(String transactionId, PaymentTransaction paymentRequest);
-    Promise<PaymentTransaction> confirmNotify(PaymentTransaction paymentRequest, PaymentCallbackParams properties);
+    Promise<PaymentTransaction> confirmNotify(PaymentTransaction paymentRequest, CallbackParams properties);
 
     Promise<PaymentTransaction> processNotify(String request);
 }

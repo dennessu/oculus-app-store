@@ -1,8 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-BOX_NAME = ENV['BOX_NAME'] || "sc-localdev-base"
-BOX_URI = ENV['BOX_URI'] || "http://arti.silkcloud.info/sc-localdev-base-20140725.box"
+BOX_NAME = ENV['BOX_NAME'] || "sc-localdev-base-20140911"
+BOX_URI = ENV['BOX_URI'] || "http://arti.silkcloud.info/sc-localdev-base-20140911.box"
 BOX_MEM = ENV['BOX_MEM'] || 2048
 
 VAGRANTFILE_API_VERSION = "2"
@@ -37,6 +37,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 5984, host: 5984
   config.vm.network "forwarded_port", guest: 5432, host: 5432
   config.vm.network "forwarded_port", guest: 11211, host: 11211
+  config.vm.network "forwarded_port", guest: 9000, host: 9000
 
   config.vm.provider "virtualbox" do |v|
     v.name = "sc-localdev"

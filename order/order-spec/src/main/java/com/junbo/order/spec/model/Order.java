@@ -14,6 +14,7 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OrderId;
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.jackson.annotation.HateoasLink;
@@ -151,6 +152,9 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     @ApiModelProperty(required = true, position = 310, value = "The note of order updating. ")
     private String note;
+
+    @ApiModelProperty(required = true, position = 320, value = "The refund payment instrument. ")
+    private PaymentInstrumentId refundPaymentInstrument;
 
     @JsonIgnore
     private String paymentDescription;
@@ -446,5 +450,13 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setOrderSnapshot(List<OfferSnapshot> orderSnapshot) {
         this.orderSnapshot = orderSnapshot;
+    }
+
+    public PaymentInstrumentId getRefundPaymentInstrument() {
+        return refundPaymentInstrument;
+    }
+
+    public void setRefundPaymentInstrument(PaymentInstrumentId refundPaymentInstrument) {
+        this.refundPaymentInstrument = refundPaymentInstrument;
     }
 }

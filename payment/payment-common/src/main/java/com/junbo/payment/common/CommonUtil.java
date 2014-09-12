@@ -109,6 +109,9 @@ public final class CommonUtil {
                 preValidation(((List) obj).get(i));
             }
         }
+        if(obj == null || obj.getClass().getDeclaredFields() == null){
+            return ;
+        }
         for(Field field : obj.getClass().getDeclaredFields()){
             for(Annotation annotation : field.getAnnotations()){
                 if(annotation instanceof FilterIn){
@@ -141,6 +144,9 @@ public final class CommonUtil {
             for(int i = 0; i < ((List) obj).size(); i ++){
                 postFilter(((List) obj).get(i));
             }
+        }
+        if(obj == null || obj.getClass().getDeclaredFields() == null){
+            return ;
         }
         for(Field field : obj.getClass().getDeclaredFields()){
             for(Annotation annotation : field.getAnnotations()){
@@ -178,7 +184,7 @@ public final class CommonUtil {
             result = Base64.encodeBase64String(rawHmac);
             return result;
         }catch (Exception ex){
-            LOGGER.error(ex.toString());
+            LOGGER.error("error calculate HMCA:", ex);
             throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
         }
     }
@@ -190,7 +196,7 @@ public final class CommonUtil {
         try{
             return URLEncoder.encode(param, "UTF-8");
         }catch (UnsupportedEncodingException e) {
-            LOGGER.error("error encode the URL parameter:" + param);
+            LOGGER.error("error encode the URL parameter:" + param, e);
             throw AppServerExceptions.INSTANCE.errorEncode(param).exception();
         }
     }
@@ -202,7 +208,7 @@ public final class CommonUtil {
         try{
             return URLDecoder.decode(param, "UTF-8");
         }catch (UnsupportedEncodingException e) {
-            LOGGER.error("error decode the URL parameter:" + param);
+            LOGGER.error("error decode the URL parameter:" + param, e);
             throw AppServerExceptions.INSTANCE.errorDecode(param).exception();
         }
     }

@@ -1,13 +1,15 @@
+https://registry.hub.docker.com/u/silkcloud/onebox-couchdb/
+
 Docker image to run a local dev couchdb server
 
 ## Features
 * Based on phusion/baseimage
 * Listen at 0.0.0.0
 
-## Volumes
-* /var/log/couchdb
-* /var/lib/couchdb
-* /etc/couchdb
+## Folders
+* /var/log/couchdb (log folder, exposed as Volume)
+* /var/lib/couchdb (data folder, exposed as Volume)
+* /etc/couchdb (config folder)
 
 ## Usage
 To run the image and bind to port 5984:

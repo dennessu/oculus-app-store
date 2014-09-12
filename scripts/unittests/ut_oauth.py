@@ -183,6 +183,67 @@ class OAuthTests(ut.TestBase):
 
         pass
 
+    def testLogoutConfirm(self):
+        user = self.testRegister()
+
+        # test silent sign-in
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState',
+            'nonce': 'testNonce'
+        })
+        id_token = getqueryparam(location, 'id_token')
+        assert id_token is not None
+
+        # logout without id_token
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
+            'post_logout_redirect_uri': ut.test_logout_redirect_uri
+        })
+        cid = getqueryparam(location, 'cid')
+        view = curlJson('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid })
+        assert view["view"] == 'logout-confirm'
+
+        # confirm logout with 'no'
+        curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid, 'event': 'no' })
+
+        # test silent sign-in
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState',
+            'nonce': 'testNonce'
+        })
+        id_token = getqueryparam(location, 'id_token')
+        assert id_token is not None
+
+        # logout without id_token
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
+            'post_logout_redirect_uri': ut.test_logout_redirect_uri
+        })
+        cid = getqueryparam(location, 'cid')
+        view = curlJson('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid })
+        assert view["view"] == 'logout-confirm'
+
+        # confirm logout with 'yes'
+        curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid, 'event': 'yes' })
+
+        # test silent sign-in again
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri
+        })
+        assert getqueryparam(location, 'code') is None
+        assert getqueryparam(location, 'cid') is not None
+
+        pass
+
     def testValidWildcardRedirectUri(self):
         user = self.testRegister()
 

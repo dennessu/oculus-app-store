@@ -12,7 +12,6 @@ import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.routing.RouteBy;
-import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
 import com.wordnik.swagger.annotations.Api;
@@ -61,8 +60,6 @@ public interface PaymentInstrumentResource {
     @GET
     @Path("payment-instruments")
     @RouteBy("searchParam.getUserId()")
-    Promise<Results<PaymentInstrument>> searchPaymentInstrument(
-            @BeanParam PaymentInstrumentSearchParam searchParam,
-            @BeanParam PageMetaData pageMetadata);
+    Promise<Results<PaymentInstrument>> searchPaymentInstrument(@BeanParam PaymentInstrumentSearchParam searchParam);
 
 }

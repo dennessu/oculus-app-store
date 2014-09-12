@@ -28,12 +28,12 @@ import javax.ws.rs.core.MediaType;
 public interface PaymentTransactionResource {
     @POST
     @Path("/credit")
-    @RouteBy("request.getUserId()")
+    @RouteBy("request.getPaymentInstrumentId()")
     Promise<PaymentTransaction> postPaymentCredit(PaymentTransaction request);
 
     @POST
     @Path("/authorization")
-    @RouteBy("request.getUserId()")
+    @RouteBy("request.getPaymentInstrumentId()")
     Promise<PaymentTransaction> postPaymentAuthorization(PaymentTransaction request);
 
     @POST
@@ -50,7 +50,7 @@ public interface PaymentTransactionResource {
 
     @POST
     @Path("/charge")
-    @RouteBy("request.getUserId()")
+    @RouteBy("request.getPaymentInstrumentId()")
     Promise<PaymentTransaction> postPaymentCharge(PaymentTransaction request);
 
     @PUT

@@ -47,8 +47,6 @@
                 <constructor-arg name="name" value="TOKEN_INFO"/>
             </bean>
         </property>
-        <property name="defaultScopes" value="${oauth.core.accessToken.default.scopes}"/>
-        <property name="defaultAccessTokenExpiration" value="${oauth.core.accessToken.default.expiration}"/>
     </bean>
 
     <bean id="spelConditionEvaluator" class="com.junbo.authorization.SPELConditionEvaluator"/>

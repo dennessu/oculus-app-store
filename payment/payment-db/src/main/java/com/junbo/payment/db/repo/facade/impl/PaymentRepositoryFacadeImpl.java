@@ -11,7 +11,8 @@ import com.junbo.payment.db.repo.PaymentPropertyRepository;
 import com.junbo.payment.db.repo.PaymentTransactionRepository;
 import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
+import com.junbo.payment.spec.internal.CallbackParams;
+import com.junbo.payment.spec.internal.CallbackParamsFactory;
 import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentProperty;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -76,7 +77,7 @@ public class PaymentRepositoryFacadeImpl implements PaymentRepositoryFacade {
         return paymentEventRepository.getByPaymentId(paymentId).get();
     }
 
-    public void addPaymentProperties(Long paymentId, PaymentCallbackParams properties) {
+    public void addPaymentProperties(Long paymentId, CallbackParams properties) {
         if (properties == null) {
             return;
         }
@@ -90,7 +91,7 @@ public class PaymentRepositoryFacadeImpl implements PaymentRepositoryFacade {
         }
     }
 
-    public PaymentCallbackParams getPaymentProperties(Long paymentId) {
+    public CallbackParams getPaymentProperties(Long paymentId) {
         PaymentTransaction paymentTransaction = paymentTransactionRepository.get(paymentId).get();
         if (paymentTransaction == null) {
             return null;
@@ -103,6 +104,6 @@ public class PaymentRepositoryFacadeImpl implements PaymentRepositoryFacade {
         for (PaymentProperty property : properties) {
             paymentProperties.put(property.getPropertyName(), property.getPropertyValue());
         }
-        return CommonUtil.parseJson(CommonUtil.toJson(paymentProperties, null), PaymentCallbackParams.class);
+        return CallbackParamsFactory.getCallbackParams(paymentProperties);
     }
 }

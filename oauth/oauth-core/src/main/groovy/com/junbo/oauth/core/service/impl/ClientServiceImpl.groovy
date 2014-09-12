@@ -79,10 +79,6 @@ class ClientServiceImpl implements ClientService {
             throw AppErrors.INSTANCE.notExistClient(clientId).exception()
         }
 
-        if (client.ownerUserId != AuthorizeContext.currentUserId) {
-            throw AppErrors.INSTANCE.notClientOwner().exception()
-        }
-
         return client
     }
 
@@ -110,10 +106,6 @@ class ClientServiceImpl implements ClientService {
 
         Client existingClient = getClient(clientId)
 
-        if (client.ownerUserId != AuthorizeContext.currentUserId) {
-            throw AppErrors.INSTANCE.notClientOwner().exception()
-        }
-
         if (client.rev != existingClient.rev) {
             throw AppErrors.INSTANCE.updateConflict().exception()
         }
@@ -124,10 +116,6 @@ class ClientServiceImpl implements ClientService {
 
         if (client.clientSecret == null || existingClient.clientSecret != client.clientSecret) {
             throw AppErrors.INSTANCE.cantUpdateFields('client_secret').exception()
-        }
-
-        if (client.ownerUserId == null || existingClient.ownerUserId != client.ownerUserId) {
-            throw AppErrors.INSTANCE.cantUpdateFields('owner_user_id').exception()
         }
 
         if (client.idTokenIssuer == null || existingClient.idTokenIssuer != client.idTokenIssuer) {

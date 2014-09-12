@@ -4,38 +4,28 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.spec.model;
+package com.junbo.payment.spec.internal;
 
 import com.junbo.payment.common.CommonUtil;
 
 /**
- * payment call back property.
+ * Adyen Callback Params.
  */
-public class PaymentCallbackParams {
-    //paypal
-    private String token;
-    private String payerID;
-    //adyen
+public class AdyenCallbackParams implements CallbackParams{
+    public static final String provider = "Adyen";
     private String authResult;
     private String pspReference;
     private String merchantReference;
     private String skinCode;
+    private String merchantReturnData;
     private String merchantSig;
 
-    public String getPayerID() {
-        return payerID;
+    public String getAuthResult() {
+        return authResult;
     }
 
-    public void setPayerID(String payerID) {
-        this.payerID = payerID;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
+    public void setAuthResult(String authResult) {
+        this.authResult = authResult;
     }
 
     public String getPspReference() {
@@ -44,14 +34,6 @@ public class PaymentCallbackParams {
 
     public void setPspReference(String pspReference) {
         this.pspReference = pspReference;
-    }
-
-    public String getAuthResult() {
-        return authResult;
-    }
-
-    public void setAuthResult(String authResult) {
-        this.authResult = authResult;
     }
 
     public String getMerchantReference() {
@@ -70,6 +52,14 @@ public class PaymentCallbackParams {
         this.skinCode = skinCode;
     }
 
+    public String getMerchantReturnData() {
+        return merchantReturnData;
+    }
+
+    public void setMerchantReturnData(String merchantReturnData) {
+        this.merchantReturnData = merchantReturnData;
+    }
+
     public String getMerchantSig() {
         return merchantSig;
     }
@@ -78,14 +68,13 @@ public class PaymentCallbackParams {
         this.merchantSig = merchantSig;
     }
 
-    public void urlDecode(){
-        token = CommonUtil.urlDecode(token);
-        payerID = CommonUtil.urlDecode(payerID);
-        authResult = CommonUtil.urlDecode(authResult);
-        pspReference = CommonUtil.urlDecode(pspReference);
-        merchantReference = CommonUtil.urlDecode(merchantReference);
-        skinCode = CommonUtil.urlDecode(skinCode);
-        merchantSig = CommonUtil.urlDecode(merchantSig);
+    @Override
+    public String getProvider() {
+        return provider;
     }
 
+    @Override
+    public Long getPaymentId() {
+        return CommonUtil.decode(merchantReference);
+    }
 }

@@ -193,7 +193,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     // todo:    Liangfu:    Later if we have another tfa type, we can split them and use singleton
 
     private Promise<Void> tfaAdvanceCheck(UserTFA userTFA) {
-        if (userTFA.verifyType == TFAVerifyType.MAIL.toString()) {
+        if (userTFA.verifyType == TFAVerifyType.EMAIL.toString()) {
             return tfaMailAdvanceCheck(userTFA)
         } else {
             return tfaPhoneAdvanceCheck(userTFA)
@@ -223,7 +223,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     private Promise<Void> fillCode(UserId userId, UserTFA userTFA) {
-        if (userTFA.verifyType == TFAVerifyType.MAIL.toString()) {
+        if (userTFA.verifyType == TFAVerifyType.EMAIL.toString()) {
             return fillEmailCode(userId, userTFA)
         } else {
             return fillPhoneCode(userId, userTFA)
@@ -299,7 +299,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('personalInfo').exception()
         }
 
-        if (userTFA.verifyType == TFAVerifyType.MAIL.toString()) {
+        if (userTFA.verifyType == TFAVerifyType.EMAIL.toString()) {
             if (!StringUtils.isEmpty(userTFA.template)) {
                 throw AppCommonErrors.INSTANCE.fieldNotWritable('template').exception()
             }
@@ -334,7 +334,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     private Promise<Void> validatePersonalInfo(UserId userId, UserPersonalInfoId personalInfoId, String verifyType, UserTFA userTFA) {
-        if (verifyType == TFAVerifyType.MAIL.toString()) {
+        if (verifyType == TFAVerifyType.EMAIL.toString()) {
             return validateEmail(userId, personalInfoId, userTFA).then {
                 return userPersonalInfoRepository.get(personalInfoId).then { UserPersonalInfo personalInfo ->
                     Email email = (Email)JsonHelper.jsonNodeToObj(personalInfo.value, Email)

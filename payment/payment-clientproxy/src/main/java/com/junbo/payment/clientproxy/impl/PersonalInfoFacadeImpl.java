@@ -63,7 +63,7 @@ public class PersonalInfoFacadeImpl implements PersonalInfoFacade {
                                     userPersonalInfo.getValue(), Address.class);
                             return Promise.pure(mapAddress(address));
                         } catch (JsonProcessingException e) {
-                            LOGGER.error("error parse json for address:" + billingAddressId);
+                            LOGGER.error("error parse json for address:" + billingAddressId, e);
                             throw AppClientExceptions.INSTANCE.billingAddressNotFound(billingAddressId.toString()).exception();
                         }
                     }

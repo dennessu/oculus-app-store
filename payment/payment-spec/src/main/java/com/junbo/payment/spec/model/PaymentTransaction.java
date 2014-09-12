@@ -14,6 +14,7 @@ import com.junbo.common.jackson.annotation.PaymentTransactionId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.payment.common.FilterIn;
+import com.junbo.payment.spec.internal.CallbackParams;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +51,7 @@ public class PaymentTransaction extends ResourceMetaForDualWrite<Long> {
     private List<PaymentEvent> paymentEvents;
     @FilterIn
     @JsonIgnore
-    PaymentCallbackParams paymentCallbackParams;
+    CallbackParams callbackParams;
     @JsonIgnore
     private UserInfo userInfo;
 
@@ -158,12 +159,12 @@ public class PaymentTransaction extends ResourceMetaForDualWrite<Long> {
         this.paymentEvents = paymentEvents;
     }
 
-    public PaymentCallbackParams getPaymentCallbackParams() {
-        return paymentCallbackParams;
+    public CallbackParams getCallbackParams() {
+        return callbackParams;
     }
 
-    public void setPaymentCallbackParams(PaymentCallbackParams paymentCallbackParams) {
-        this.paymentCallbackParams = paymentCallbackParams;
+    public void setCallbackParams(CallbackParams callbackParams) {
+        this.callbackParams = callbackParams;
     }
 
     public UserInfo getUserInfo() {

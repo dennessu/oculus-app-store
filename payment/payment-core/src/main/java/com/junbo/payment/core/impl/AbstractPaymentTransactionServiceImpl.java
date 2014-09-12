@@ -69,7 +69,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
     protected UserInfoFacade userInfoFacade;
 
     protected void validateRequest(PaymentTransaction request, boolean needChargeInfo, boolean supportChargeInfo){
-        if(request.getUserId() == null){
+        if(request == null || request.getUserId() == null){
             throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
         UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();
@@ -146,7 +146,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
                 }
             });
         }catch(Exception ex){
-            LOGGER.error("error get payment instrument:" + ex.toString());
+            LOGGER.error("error get payment instrument:", ex);
             throw AppServerExceptions.INSTANCE.invalidPI().exception();
         }
         if(pi == null){
@@ -223,11 +223,11 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
                                                          final List<PaymentEvent> events, final PaymentAPI api, final PaymentStatus status, final boolean saveUuid){
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        final String externalToken = CommonUtil.isNullOrEmpty(payment.getExternalToken()) ? null : payment.getExternalToken();
         return template.execute(new TransactionCallback<List<PaymentEvent>>() {
             public List<PaymentEvent> doInTransaction(TransactionStatus txnStatus) {
                 if(status != null){
-                    paymentRepositoryFacade.updatePayment(payment.getId()
-                            , status, payment.getExternalToken());
+                    paymentRepositoryFacade.updatePayment(payment.getId(), status, externalToken);
                 }
                 paymentRepositoryFacade.savePaymentEvent(payment.getId(), events);
                 if(saveUuid){

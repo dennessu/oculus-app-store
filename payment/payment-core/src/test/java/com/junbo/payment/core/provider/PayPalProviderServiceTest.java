@@ -1,13 +1,13 @@
 package com.junbo.payment.core.provider;
 
 import com.junbo.common.id.PIType;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentCallbackService;
 import com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.Platform;
 import com.junbo.payment.spec.model.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -55,11 +55,9 @@ public class PayPalProviderServiceTest extends BaseTest {
 
         PaymentTransaction result = paymentService.charge(payment).get();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
-        PaymentCallbackParams properties = new PaymentCallbackParams();
-        properties.setToken(result.getWebPaymentInfo().getToken());
-        properties.setPayerID("CCZA9BJT9NKTS");
+        String callbackRequest = getMockCallbackRequest(result);
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
-        paymentCallbackService.addPaymentProperties(result.getId(), properties);
+        paymentCallbackService.addPaymentProperties(callbackRequest);
         PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
@@ -68,6 +66,14 @@ public class PayPalProviderServiceTest extends BaseTest {
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
         newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.SETTLED.toString());
+    }
+
+    private String getMockCallbackRequest(PaymentTransaction result) {
+        String callbackRequest = "provider=PayPal&paymentId=";
+        callbackRequest += CommonUtil.encode(result.getId());
+        callbackRequest += "&token=" + result.getWebPaymentInfo().getToken();
+        callbackRequest += "&billingId=123&PayerID=CCZA9BJT9NKTS";
+        return callbackRequest;
     }
 
     @Test(enabled = false)
@@ -102,11 +108,9 @@ public class PayPalProviderServiceTest extends BaseTest {
 
         PaymentTransaction result = paymentService.charge(payment).get();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
-        PaymentCallbackParams properties = new PaymentCallbackParams();
-        properties.setToken(result.getWebPaymentInfo().getToken());
-        properties.setPayerID("CCZA9BJT9NKTS");
+        String callbackRequest = getMockCallbackRequest(result);
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
-        paymentCallbackService.addPaymentProperties(result.getId(), properties);
+        paymentCallbackService.addPaymentProperties(callbackRequest);
         PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
@@ -148,11 +152,9 @@ public class PayPalProviderServiceTest extends BaseTest {
 
         PaymentTransaction result = paymentService.charge(payment).get();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
-        PaymentCallbackParams properties = new PaymentCallbackParams();
-        properties.setToken(result.getWebPaymentInfo().getToken());
-        properties.setPayerID("CCZA9BJT9NKTS");
+        String callbackRequest = getMockCallbackRequest(result);
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
-        paymentCallbackService.addPaymentProperties(result.getId(), properties);
+        paymentCallbackService.addPaymentProperties(callbackRequest);
         PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token

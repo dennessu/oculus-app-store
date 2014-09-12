@@ -31,7 +31,12 @@ public class MockUserResource implements UserResource {
 
     @Override
     public Promise<User> get(UserId userId, @BeanParam UserGetOptions getOptions) {
-        return Promise.pure(new User());
+        User user = new User(){
+            {
+                setStatus("ACTIVE");
+            }
+        };
+        return Promise.pure(user);
     }
 
     @Override

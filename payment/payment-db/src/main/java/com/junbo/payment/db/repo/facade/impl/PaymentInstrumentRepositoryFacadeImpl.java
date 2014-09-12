@@ -12,7 +12,6 @@ import com.junbo.payment.db.repo.CreditCardDetailRepository;
 import com.junbo.payment.db.repo.PaymentInstrumentRepository;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.spec.model.CreditCardDetail;
-import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
 import org.springframework.beans.factory.annotation.Required;
@@ -119,7 +118,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
         return result;
     }
 
-    public List<PaymentInstrument> search(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData pageMetadata) {
+    public List<PaymentInstrument> search(Long userId, PaymentInstrumentSearchParam searchParam) {
         List<PaymentInstrument> result = new ArrayList<PaymentInstrument>();
         List<PaymentInstrument> piList = paymentInstrumentRepository.getByUserAndType(userId,
                 CommonUtil.isNullOrEmpty(searchParam.getType()) ? null : PIType.valueOf(searchParam.getType())).get();

@@ -77,6 +77,8 @@ class TokenEndpointImpl implements TokenEndpoint {
         formParams.putSingle(OAuthParameters.IP_RESTRICTION, request.ipRestriction)
         formParams.putSingle(OAuthParameters.USER_ID, request.userId)
 
+        requestScope[ActionContextWrapper.REMOTE_ADDRESS] = JunboHttpContext.requestIpAddress
+
         requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
 
         requestScope[ActionContextWrapper.REMOTE_ADDRESS] = JunboHttpContext.requestIpAddress

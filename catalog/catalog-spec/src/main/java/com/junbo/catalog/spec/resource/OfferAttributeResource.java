@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttributeGetOptions;
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
@@ -37,7 +38,7 @@ public interface OfferAttributeResource {
     @GET
     @Path("/{attributeId}")
     @AuthorizationNotRequired
-    Promise<OfferAttribute> getAttribute(@PathParam("attributeId") String attributeId);
+    Promise<OfferAttribute> getAttribute(@PathParam("attributeId") String attributeId, @BeanParam OfferAttributeGetOptions options);
 
     @CacheMaxAge(duration = 30, unit = TimeUnit.MINUTES)
     @ApiOperation("Get all offer attributes")

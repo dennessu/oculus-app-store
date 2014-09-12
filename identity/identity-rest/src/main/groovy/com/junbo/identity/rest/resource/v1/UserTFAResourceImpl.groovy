@@ -291,7 +291,7 @@ class UserTFAResourceImpl implements UserTFAResource {
     }
 
     private Promise<Void> sendCode(UserTFA userTFA) {
-        if (userTFA.verifyType == TFAVerifyType.MAIL.toString()) {
+        if (userTFA.verifyType == TFAVerifyType.EMAIL.toString()) {
             QueryParam queryParam = new QueryParam(
                     source: EMAIL_SOURCE,
                     action: EMAIL_ACTION,
