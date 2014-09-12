@@ -122,7 +122,7 @@ public class AdyenReconcileProcessor {
         try{
             paymentTransactionService.reportPaymentEvent(event, null, null).get();
         }catch (Exception ex){
-            LOGGER.error("Error in reconcile batch:" + settlementDetail.getModificationMerchantReference() + " due to: " + ex.toString());
+            LOGGER.error("Error in reconcile batch:" + settlementDetail.getModificationMerchantReference() + " due to: ", ex);
             closeStatus = "ClosedWithError";
         }
         updateSettlementDetail(settlementDetail, closeStatus);

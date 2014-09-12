@@ -112,7 +112,7 @@ public class FileProcessor {
         try {
             loadFiles(new File(batchDirectory, filePrefix + batchId + fileFormat).getAbsolutePath());
         } catch (IOException e) {
-            LOGGER.error("Sending check balance request for batch id: " + batchId);
+            LOGGER.error("Sending check balance request for batch id: " + batchId, e);
             throw AppServerExceptions.INSTANCE.errorParseBatchFile(batchId.toString()).exception();
         }
 
@@ -175,7 +175,7 @@ public class FileProcessor {
                 try {
                     settlementDetail.setCreationDate(df.parse(reader.getFieldValue("Creation Date")));
                 } catch (ParseException e) {
-                    LOGGER.error("error parse create date file:" + filePath);
+                    LOGGER.error("error parse create date file:" + filePath, e);
                     throw AppServerExceptions.INSTANCE.invalidBatchFile(filePath).exception();
                 }
                 settlementDetail.setTimeZone(reader.getFieldValue("TimeZone"));
@@ -212,10 +212,10 @@ public class FileProcessor {
             reader.close();
             new File(filePath).delete();
         } catch (FileNotFoundException e) {
-            LOGGER.error("file not found:" + filePath);
+            LOGGER.error("file not found:" + filePath, e);
             throw AppServerExceptions.INSTANCE.invalidBatchFile(filePath).exception();
         } catch (IOException e) {
-            LOGGER.error("error read file:" + filePath);
+            LOGGER.error("error read file:" + filePath, e);
             throw AppServerExceptions.INSTANCE.invalidBatchFile(filePath).exception();
         }
     }
@@ -226,7 +226,7 @@ public class FileProcessor {
         try{
             fileIndex = Long.parseLong(fileNames[fileNames.length - 1].replace(fileFormat, ""));
         }catch (Exception ex){
-            LOGGER.error("error parse file name:" + filePath);
+            LOGGER.error("error parse file name:" + filePath, ex);
             throw AppServerExceptions.INSTANCE.invalidBatchFile(filePath).exception();
         }
         return fileIndex;

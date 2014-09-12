@@ -40,7 +40,7 @@ public class ProviderRoutingServiceImpl implements ProviderRoutingService{
         try{
             paymentProvider = PaymentProvider.valueOf(provider);
         }catch(Exception ex){
-            LOGGER.error("provider routing failed:" + ex.toString());
+            LOGGER.error("provider routing failed:", ex);
             throw AppServerExceptions.INSTANCE.providerNotFound(provider).exception();
         }
         PaymentProviderService result = PaymentProviderRegistry.getPaymentProviderService(paymentProvider);

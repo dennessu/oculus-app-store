@@ -380,7 +380,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                     public Promise<PaymentTransaction> apply(Throwable throwable) {
                         ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
                         LOGGER.error("error get transaction for " + provider.getProviderName() +
-                                "; error detail: " + proxyResponse.getBody());
+                                "; error detail: " + proxyResponse.getBody(), throwable);
                         throw AppServerExceptions.INSTANCE.providerProcessError(
                                 provider.getProviderName(), proxyResponse.getBody()).exception();
                     }
@@ -490,7 +490,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                                          PaymentStatus status, PaymentEventType event) {
         ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
         LOGGER.error(api.toString() + " declined by " + provider.getProviderName() +
-                "; error detail: " + throwable.toString());
+                "; error detail: ", throwable);
         request.setStatus(status.toString());
         PaymentEvent authDeclined = createPaymentEvent(request, event, status, CommonUtil.toJson(proxyResponse.getBody(), null));
         addPaymentEvent(request, authDeclined);

@@ -58,7 +58,7 @@ public class PaypalReconcileProcessor {
         try{
             process(strDate);
         }catch (Exception ex){
-            LOGGER.error("paypal reconcile execute error on date:" + strDate + " " + ex.toString());
+            LOGGER.error("paypal reconcile execute error on date:" + strDate, ex);
         }
     }
 
@@ -75,7 +75,7 @@ public class PaypalReconcileProcessor {
         try{
             result = process(fileToProcess);
         }catch (Exception e) {
-            LOGGER.error("PayPal Settlement Job Stopped with error when processing file for date: " + date + ". " + e.toString());
+            LOGGER.error("PayPal Settlement Job Stopped with error when processing file for date: " + date + ". ", e);
             return null;
         }
         if(!CommonUtil.isNullOrEmpty(result)){
@@ -90,7 +90,7 @@ public class PaypalReconcileProcessor {
         try{
             sdf.parse(strDate);
         }catch (java.text.ParseException e){
-            LOGGER.error("error parse date: " + strDate + e.toString());
+            LOGGER.error("error parse date: " + strDate, e);
             return null;
         }
         String[] allFiles = null;
@@ -107,7 +107,7 @@ public class PaypalReconcileProcessor {
                 }
             }
         }catch (Exception e) {
-            LOGGER.error("failed downloading PayPal file for date: " + strDate + " " + e.toString());
+            LOGGER.error("failed downloading PayPal file for date: " + strDate + " ", e);
             return null;
         }
 
@@ -151,7 +151,7 @@ public class PaypalReconcileProcessor {
         try{
             paymentTransactionService.reportPaymentEvent(event, null, null).get();
         }catch (Exception ex){
-            LOGGER.error("Error in reconcile batch:" + row.getPaymentTrackingID() + " due to: " + ex.toString());
+            LOGGER.error("Error in reconcile batch:" + row.getPaymentTrackingID() + " due to: ", ex);
         }
     }
 

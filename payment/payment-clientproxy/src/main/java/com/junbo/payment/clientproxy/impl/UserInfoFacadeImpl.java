@@ -82,7 +82,7 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
                             }
                             return Promise.pure(result);
                         } catch (JsonProcessingException e) {
-                            LOGGER.error("error parse json for user:" + userId);
+                            LOGGER.error("error parse json for user:" + userId, e);
                             throw AppClientExceptions.INSTANCE.userNameNotFound(user.getName().getValue().toString()).exception();
                         }
                     }
@@ -112,7 +112,7 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
                             }
                             return Promise.pure(null);
                         } catch (JsonProcessingException e) {
-                            LOGGER.error("error parse json for user:" + userId);
+                            LOGGER.error("error parse json for user:" + userId, e);
                             throw AppCommonErrors.INSTANCE.fieldInvalid("user_id").exception();
                         }
                     }

@@ -52,7 +52,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
             service = new PaymentLocator().getPaymentHttpPort(new java.net.URL(paymentURL));
             recurService = new RecurringLocator().getRecurringHttpPort(new java.net.URL(recurringURL));
         }catch (Exception ex){
-            LOGGER.error("error set up adyen service");
+            LOGGER.error("error set up adyen service", ex);
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "setup service").exception();
         }
         //Basic HTTP Authentication:
@@ -138,7 +138,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         try {
             result = recurService.listRecurringDetails(request);
         } catch (RemoteException e) {
-            LOGGER.error("error get recurring reference: " + e.toString());
+            LOGGER.error("error get recurring reference: ", e);
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
         }
         if(result != null && result.getDetails() != null && result.getDetails().length > 0){
@@ -243,7 +243,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         try {
             result = service.authorise(request);
         } catch (RemoteException e) {
-            LOGGER.error("error call Adyen authorise API.");
+            LOGGER.error("error call Adyen authorise API.", e);
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
         }
         if(result != null && result.getResultCode().equals("Authorised")){
@@ -272,7 +272,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                 try{
                     cancelResult = service.cancel(refundReq);
                 } catch (RemoteException e) {
-                    LOGGER.error("error call adyen cancel API.");
+                    LOGGER.error("error call adyen cancel API.", e);
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(cancelResult != null){
@@ -310,7 +310,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                 try{
                     refundResult = service.refund(refundReq);
                 } catch (RemoteException e) {
-                    LOGGER.error("error call adyen refund API.");
+                    LOGGER.error("error call adyen refund API.", e);
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(refundResult != null){
@@ -408,7 +408,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         try{
             transaction = process(request);
         }catch (Exception ex){
-            LOGGER.error("process adyen notification error:" + ex.toString());
+            LOGGER.error("process adyen notification error:", ex);
         }
         return Promise.pure(transaction);
     }

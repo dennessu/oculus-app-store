@@ -6,6 +6,7 @@
 
 package com.junbo.payment.core.provider.paypal;
 
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
@@ -120,6 +121,9 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
             public PaymentTransaction call() throws Exception {
+                if(paymentRequest.getWebPaymentInfo() == null){
+                    throw AppCommonErrors.INSTANCE.fieldRequired("webPaymentInfo").exception();
+                }
                 CurrencyCodeType currency = CurrencyCodeType.fromValue(paymentRequest.getChargeInfo().getCurrency());
                 PaymentDetailsType paymentDetails = new PaymentDetailsType();
                 paymentDetails.setPaymentAction(ACTION);
@@ -345,10 +349,10 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
     private void handleException(Exception e){
         if(e instanceof SocketTimeoutException){
-            LOGGER.error("provider:" + PROVIDER_NAME + " gateway timeout exception: " + e.toString());
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway timeout exception: ", e);
             throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
         }else{
-            LOGGER.error("provider:" + PROVIDER_NAME + " gateway exception: " + e.toString());
+            LOGGER.error("provider:" + PROVIDER_NAME + " gateway exception: ", e);
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
         }
     }

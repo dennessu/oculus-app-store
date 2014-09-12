@@ -45,7 +45,7 @@ public class SFTPDownloader {
                 LOGGER.info("download file successfully!");
                 return;
             } catch (Exception e) {
-                LOGGER.warn("download file failed:" + e.toString());
+                LOGGER.warn("download file failed:", e);
                 ex = e;
             } finally {
                 manager.close();
@@ -77,7 +77,7 @@ public class SFTPDownloader {
                 }
                 return fileNames.toArray(new String[0]);
             } catch (Exception e) {
-                LOGGER.warn("Failed to find files on sftp. " + e.toString());
+                LOGGER.warn("Failed to find files on sftp. ", e);
                 ex = e;
             } finally {
                 manager.close();
@@ -108,7 +108,7 @@ public class SFTPDownloader {
         try {
             Thread.sleep(RETRY_SLEEP_SECONDS);
         } catch (InterruptedException e) {
-            LOGGER.error("error occurred when sleep");
+            LOGGER.error("error occurred when sleep", e);
         }
     }
 

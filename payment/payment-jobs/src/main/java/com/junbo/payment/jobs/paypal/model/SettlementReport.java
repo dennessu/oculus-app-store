@@ -33,7 +33,7 @@ public class SettlementReport {
             try {
                 inputStreamReader = getReader(new BufferedInputStream(new FileInputStream(filename)));
             } catch (IOException e) {
-                LOGGER.error("error parse batch file :" + filename + " " + e.toString());
+                LOGGER.error("error parse batch file :" + filename, e);
                 continue;
             }
             BufferedReader in = new BufferedReader(inputStreamReader);
@@ -47,7 +47,7 @@ public class SettlementReport {
                         row = SectionBodyRow.getRawData(values[0], values);
                     }
                     catch(Exception e){
-                        LOGGER.error("error parse batch file :" + filename + " line:" + lineNumber + " " + e.toString());
+                        LOGGER.error("error parse batch file :" + filename + " line:" + lineNumber, e);
                         break;
                     }
                     // ignore the data not cared about
@@ -57,7 +57,7 @@ public class SettlementReport {
                     section.getRows().add(row);
                 }
             } catch (IOException e) {
-                LOGGER.error("error parse batch file :" + filename + " " + e.toString());
+                LOGGER.error("error parse batch file :" + filename, e);
                 continue;
             }
         }

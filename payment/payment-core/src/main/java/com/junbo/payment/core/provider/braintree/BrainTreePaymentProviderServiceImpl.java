@@ -51,7 +51,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         try{
             env = Environment.valueOf(environment);
         }catch(Exception ex){
-            LOGGER.error("not able to get the right environment:" + environment);
+            LOGGER.error("not able to get the right environment:" + environment, ex);
             String sb = "";
             Environment[] environments = Environment.values();
             for (int index = 0; index < environments.length; index++) {
@@ -329,15 +329,15 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
     }
 
     private void handleProviderException(Exception ex, String action, String source, String sourceValue){
+        LOGGER.error("Provider:" + PROVIDER_NAME + " take action:" + action + " for:" + source + "of " + sourceValue);
         if(ex instanceof DownForMaintenanceException){
-            LOGGER.error("gateway internal timeout exception: " + ex.toString() +
-            ".Provider:" + PROVIDER_NAME + " take action:" + action + " for:" + source + "of " + sourceValue);
+            LOGGER.error("gateway internal timeout exception: ", ex);
             throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
         }else if(ex instanceof SocketTimeoutException){
-            LOGGER.error("provider:" + PROVIDER_NAME + " gateway timeout exception: " + ex.toString());
+            LOGGER.error("gateway timeout exception: ", ex);
             throw AppServerExceptions.INSTANCE.providerGatewayTimeout(PROVIDER_NAME).exception();
         }else{
-            LOGGER.error("provider:" + PROVIDER_NAME + " gateway exception: " + ex.toString());
+            LOGGER.error("gateway exception: ", ex);
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.toString()).exception();
         }
     }
@@ -458,7 +458,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         try{
             dummyCustomer = gateway.customer().create(request);
         }catch (Exception ex){
-            LOGGER.error("gateway exception: " + ex.getMessage() + " while create customer:" + customerId);
+            LOGGER.error("gateway exception: " + ex.getMessage() + " while create customer:" + customerId, ex);
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, ex.getMessage()).exception();
         }
         if(dummyCustomer.isSuccess()){
