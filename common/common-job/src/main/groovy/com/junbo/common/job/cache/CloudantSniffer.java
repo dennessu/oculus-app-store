@@ -122,9 +122,11 @@ public class CloudantSniffer {
 
                 if (response.getStatusCode() / 100 == 2) {
                     filtered.add(fullDatabaseName);
-                    LOGGER.debug("Database [" + fullDatabaseName + "] is available on " + cloudantUri.getDetail());
+                    LOGGER.debug("Database [" + fullDatabaseName
+                            + "] is available on instance [" + cloudantUri.getDetail() + "].");
                 } else {
-                    LOGGER.debug("Database [" + fullDatabaseName + "] doesn't exist on " + cloudantUri.getDetail());
+                    LOGGER.debug("Database [" + fullDatabaseName
+                            + "] doesn't exist on instance [" + cloudantUri.getDetail() + "].");
                 }
             }
         } catch (Exception e) {
@@ -202,10 +204,7 @@ public class CloudantSniffer {
             }
 
             CloudantGlobalUri uri = new CloudantGlobalUri(value);
-            String instanceKey = uri.getCurrentDcUri().getValue() + "#"
-                    + SnifferUtils.isNull(uri.getCurrentDcUri().getUsername(), "");
-
-            cloudantUriMap.put(instanceKey, uri.getCurrentDcUri());
+            cloudantUriMap.put(uri.getCurrentDcUri().getKey(), uri.getCurrentDcUri());
         }
 
         cloudantInstances = new ArrayList(cloudantUriMap.values());

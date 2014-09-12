@@ -82,6 +82,8 @@ public class CacheSnifferJob implements InitializingBean {
 
             for (String database : databases) {
                 // listen database continuous feed
+                LOGGER.info("Start listening database [" + database + "] on instance [" + cloudantUri.getDetail() + "]");
+
                 listenDatabaseChanges(cloudantUri, database);
             }
         }
