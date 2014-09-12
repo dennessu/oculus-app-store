@@ -7,12 +7,15 @@ import com.junbo.configuration.ConfigServiceManager
 import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.util.StringUtils
 /**
  * Created by Shenhua on 5/14/2014.
  */
 @CompileStatic
 class AuthorizeContext {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizeContext)
 
     private static final ThreadLocal<TokenInfo> CURRENT_TOKEN_INFO = new ThreadLocal<>()
 
@@ -72,6 +75,7 @@ class AuthorizeContext {
 
         TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
         if (tokenInfo == null || tokenInfo.scopes == null) {
+            LOGGER.info('The token info\'s scope is empty. hasScopes return false')
             return false
         }
 
@@ -83,6 +87,7 @@ class AuthorizeContext {
 
         for (String scope : scopes) {
             if (!currentScopes.contains(scope) && scope != '*') {
+                LOGGER.info("Current scopes do not contain $scope")
                 return false
             }
         }

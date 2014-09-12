@@ -13,7 +13,7 @@
   "default_scopes" : [ "offline", "storeapi", "entitlement", "catalog" ],
 
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
-  "grant_types" : [ "CLIENT_CREDENTIALS", "PASSWORD", "REFRESH_TOKEN" ],
+  "grant_types" : [ "CLIENT_CREDENTIALS_WITH_USER_ID", "PASSWORD", "REFRESH_TOKEN" ],
 
   "id_token_issuer" : "api.oculus.com",
   "need_consent" : false

@@ -109,6 +109,7 @@ class OAuthTests(ut.TestBase):
             'post_logout_redirect_uri': ut.test_logout_redirect_uri,
             'id_token_hint': id_token
         })
+        assert location.startswith(ut.test_logout_redirect_uri)
 
         # test silent sign-in again
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
@@ -233,6 +234,7 @@ class OAuthTests(ut.TestBase):
             'post_logout_redirect_uri': ut.test_wildcard_logout_redirect_uri,
             'id_token_hint': id_token
         })
+        assert location.startswith(ut.test_wildcard_logout_redirect_uri)
 
         # test sign-in again to confirm logout
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
