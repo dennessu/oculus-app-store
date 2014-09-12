@@ -77,6 +77,7 @@
                 <entry key="UserCredentialVerifyAttemptResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserCredentialVerifyAttemptResource.create" value="identity.service"/>
                 <entry key="UserGroupMembershipResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserLogResource" value="identity.service csr"/>
                 <entry key="UserPersonalInfoResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserResource.checkUsername" value="*" />

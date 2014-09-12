@@ -7,6 +7,7 @@ package com.junbo.identity.spec.filter;
 
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
+import com.junbo.common.userlog.UserLog;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,29 +43,32 @@ public class ResultsInterceptor implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext requestContext,
                        ContainerResponseContext responseContext) throws IOException {
-        if(responseContext == null || responseContext.getStatus() != Response.Status.OK.getStatusCode()
-        || responseContext.getEntity() == null || !(responseContext.getEntity() instanceof Results)) {
+        if (responseContext == null || responseContext.getStatus() != Response.Status.OK.getStatusCode()
+                || responseContext.getEntity() == null || !(responseContext.getEntity() instanceof Results)) {
             return;
         }
 
-        Results resultList = (Results)responseContext.getEntity();
+        Results resultList = (Results) responseContext.getEntity();
+        if (!CollectionUtils.isEmpty(resultList.getItems()) && (resultList.getItems().get(0) instanceof UserLog)) {
+            return;
+        }
         if (needResetNext(resultList)) {
             Link self = getSelf(responseContext);
             resultList.setSelf(self);
 
-            if((resultList.hasNext())
-            || (resultList.getTotal() != null && resultList.getItems() != null && resultList.getTotal() != resultList.getItems().size())) {
+            if ((resultList.hasNext())
+                    || (resultList.getTotal() != null && resultList.getItems() != null && resultList.getTotal() != resultList.getItems().size())) {
                 resultList.setNext(getNext(resultList.getTotal(), self));
             }
         }
     }
 
     private Link getSelf(ContainerResponseContext responseContext) {
-        if(!(responseContext instanceof ContainerResponse)) {
+        if (!(responseContext instanceof ContainerResponse)) {
             return null;
         }
 
-        ContainerResponse response = (ContainerResponse)responseContext;
+        ContainerResponse response = (ContainerResponse) responseContext;
         Link ref = new Link();
 
         String requestUri = response.getRequestContext().getRequestUri().toString();
@@ -77,7 +81,7 @@ public class ResultsInterceptor implements ContainerResponseFilter {
     }
 
     private Link getNext(Long total, Link self) {
-        if(self == null || StringUtils.isEmpty(self.getHref()))    {
+        if (self == null || StringUtils.isEmpty(self.getHref())) {
             return null;
         }
         String selfUrl = self.getHref();
@@ -99,7 +103,7 @@ public class ResultsInterceptor implements ContainerResponseFilter {
 
     private Integer extract(String url, String format) {
         String[] strings = url.split(format);
-        if(strings != null && strings.length == 2) {
+        if (strings != null && strings.length == 2) {
             String[] countValue = strings[1].split(AND_FORMAT);
             return Integer.parseInt(countValue[0]);
         }
@@ -108,14 +112,12 @@ public class ResultsInterceptor implements ContainerResponseFilter {
     }
 
     private Integer getNextCursor(Integer selfCursor, Integer selfCount) {
-        if((selfCursor == null && selfCount == null) ||
-           (selfCursor != null && selfCount == null)) {
+        if ((selfCursor == null && selfCount == null) ||
+                (selfCursor != null && selfCount == null)) {
             return null;
-        }
-        else if(selfCursor == null && selfCount != null) {
+        } else if (selfCursor == null && selfCount != null) {
             return selfCount;
-        }
-        else {
+        } else {
             return selfCount + selfCursor;
         }
     }
@@ -125,19 +127,17 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         String nextURL = url;
 
         String[] str = url.split(CURSOR_FORMAT);
-        if(str.length != 2) {
+        if (str.length != 2) {
             // no cursor information in current url
             // append mode
-            if(nextCursor != null) {
+            if (nextCursor != null) {
                 nextURL += ("&cursor=" + nextCursor);
             }
-        }
-        else {
+        } else {
             // Replace mode
-            if(nextCursor != null) {
+            if (nextCursor != null) {
                 nextURL = nextURL.replaceAll("&cursor=" + cursor, "&cursor=" + nextCursor);
-            }
-            else {
+            } else {
                 nextURL = nextURL.replaceAll("&cursor=" + cursor, "");
             }
         }

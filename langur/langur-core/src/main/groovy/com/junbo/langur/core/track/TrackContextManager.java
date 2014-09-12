@@ -20,6 +20,14 @@ public class TrackContextManager {
         instance = trackContext;
     }
 
+    public static boolean isRouted() {
+        return Boolean.TRUE.equals(isRouted.get());
+    }
+
+    public static void setIsRouted(boolean isRouted) {
+        TrackContextManager.isRouted.set(isRouted);
+    }
+
     private static TrackContext instance = new TrackContext() {
         private boolean isDebugEnabled = resolveDebugEnabled();
 
@@ -52,4 +60,6 @@ public class TrackContextManager {
             return this.isDebugEnabled;
         }
     };
+
+    private static ThreadLocal<Boolean> isRouted = new ThreadLocal<>();
 }

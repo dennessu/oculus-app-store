@@ -275,9 +275,10 @@ class CloudantClientImpl implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, String sort, Integer limit, String bookmark, boolean includeDocs) {
         def searchRequest = new SearchRequest(
                 query: queryString,
+                sort: sort,
                 limit: limit,
                 bookmark: bookmark,
                 include_docs: includeDocs
@@ -442,6 +443,7 @@ class CloudantClientImpl implements CloudantClientInternal {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     static class SearchRequest {
         String query
+        String sort
         Integer limit
         String bookmark
         Boolean include_docs

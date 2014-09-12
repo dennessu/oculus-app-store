@@ -195,6 +195,15 @@ class CatalogTests(ut.TestBase):
             "Authorization": "Bearer " + adminToken
         }, data = offer)
 
+        userErrorLogs = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
+            "userId": user.json['self']['id'],
+            "apiName": "offers",
+            "isOK": False
+        }, headers={
+            "Authorization": "Bearer " + oauth.getServiceAccessToken('identity.service')
+        })
+        assert userErrorLogs['total'] == 1
+
 
     def testItemOfferE2EFlow(self):
         user1, organization1 = self.createDevOrgnization()
