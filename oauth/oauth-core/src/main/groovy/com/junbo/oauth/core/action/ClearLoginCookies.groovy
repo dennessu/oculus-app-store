@@ -16,6 +16,7 @@ import com.junbo.oauth.db.repo.RememberMeTokenRepository
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.web.util.UriComponentsBuilder
 
 import javax.ws.rs.core.Response
 
@@ -82,6 +83,12 @@ class ClearLoginCookies implements Action {
         // Return an OK(200) response.
         if (contextWrapper.responseBuilder == null) {
             contextWrapper.responseBuilder = Response.ok()
+        }
+
+        if (contextWrapper.redirectUri != null) {
+            def uriBuilder = UriComponentsBuilder.fromHttpUrl(contextWrapper.redirectUri)
+            uriBuilder.queryParam('logout', 'y')
+            contextWrapper.redirectUri = uriBuilder.build().toUriString()
         }
 
         return Promise.pure(null)

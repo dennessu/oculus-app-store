@@ -154,6 +154,6 @@ class Logout implements Action {
             }
         }
 
-        return Promise.pure(new ActionResult('clearCookie'))
+        return Promise.pure(new ActionResult('redirectWithoutClearCookie'))
     }
 }

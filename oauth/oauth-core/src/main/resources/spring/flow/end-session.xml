@@ -12,7 +12,7 @@
             <wf:action ref="logout"/>
             <wf:transition on="redirectToConfirmation" to="redirectToConfirmation"/>
             <wf:transition on="redirectToLogoutRedirectUri" to="redirectClearCookie"/>
-            <wf:transition on="clearCookie" to="clearCookie"/>
+            <wf:transition on="redirectWithoutClearCookie" to="redirectWithoutClearCookie"/>
         </wf:action-state>
 
         <wf:view-state id="redirectToConfirmation">
@@ -40,12 +40,6 @@
         <wf:end-state id="redirectWithoutClearCookie">
             <wf:on-entry>
                 <wf:action ref="redirect"/>
-            </wf:on-entry>
-        </wf:end-state>
-
-        <wf:end-state id="clearCookie">
-            <wf:on-entry>
-                <wf:action ref="clearLoginCookies"/>
             </wf:on-entry>
         </wf:end-state>
     </wf:flow>
