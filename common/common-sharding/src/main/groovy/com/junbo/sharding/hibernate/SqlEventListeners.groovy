@@ -27,15 +27,21 @@ class SqlEventListeners {
             if (event.entity instanceof EntityAdminInfo) {
                 def tracker = TrackContextManager.get()
                 def entity = (EntityAdminInfo)event.entity
-                entity.createdBy = tracker.currentUserId
-                entity.createdByClient = tracker.currentClientId
+                entity.createdBy = tracker.currentUserId ?: 0L
+                entity.createdByClient = tracker.currentClientId ?: ""
                 entity.createdTime = new Date()
+                entity.updatedBy = entity.createdBy
+                entity.updatedByClient = entity.createdByClient
+                entity.updatedTime = entity.createdTime
             } else if (event.entity instanceof EntityAdminInfoString) {
                 def tracker = TrackContextManager.get()
                 def entity = (EntityAdminInfoString)event.entity
-                entity.createdBy = tracker.currentUserId?.toString()
-                entity.createdByClient = tracker.currentClientId
+                entity.createdBy = tracker.currentUserId?.toString() ?: ""
+                entity.createdByClient = tracker.currentClientId ?: ""
                 entity.createdTime = new Date()
+                entity.updatedBy = entity.createdBy
+                entity.updatedByClient = entity.createdByClient
+                entity.updatedTime = entity.createdTime
             }
             begin("insert", event.entity.class.simpleName, event.id.toString())
             return false
@@ -60,14 +66,14 @@ class SqlEventListeners {
             if (event.entity instanceof EntityAdminInfo) {
                 def tracker = TrackContextManager.get()
                 def entity = (EntityAdminInfo)event.entity
-                entity.updatedBy = tracker.currentUserId
-                entity.updatedByClient = tracker.currentClientId
+                entity.updatedBy = tracker.currentUserId ?: 0L
+                entity.updatedByClient = tracker.currentClientId ?: ""
                 entity.updatedTime = new Date()
             } else if (event.entity instanceof EntityAdminInfoString) {
                 def tracker = TrackContextManager.get()
                 def entity = (EntityAdminInfoString)event.entity
-                entity.updatedBy = tracker.currentUserId?.toString()
-                entity.updatedByClient = tracker.currentClientId
+                entity.updatedBy = tracker.currentUserId?.toString() ?: ""
+                entity.updatedByClient = tracker.currentClientId ?: 0L
                 entity.updatedTime = new Date()
             }
             begin("update", event.entity.class.simpleName, event.id.toString())
