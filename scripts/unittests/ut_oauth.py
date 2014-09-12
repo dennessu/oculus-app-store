@@ -110,7 +110,15 @@ class OAuthTests(ut.TestBase):
             'id_token_hint': id_token
         })
 
-        assert location == ut.test_logout_redirect_uri
+        # test silent sign-in again
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri
+        })
+        assert getqueryparam(location, 'code') is None
+        assert getqueryparam(location, 'cid') is not None
         pass
 
     def testLogoutConfirm(self):
@@ -162,7 +170,7 @@ class OAuthTests(ut.TestBase):
         # confirm logout with 'yes'
         curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid, 'event': 'yes' })
 
-        # test silent sign-in again
+        # test sign-in again to confirm logout
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
             'client_id': ut.test_client_id,
             'response_type': 'code',
@@ -226,7 +234,15 @@ class OAuthTests(ut.TestBase):
             'id_token_hint': id_token
         })
 
-        assert location == ut.test_wildcard_logout_redirect_uri
+        # test sign-in again to confirm logout
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri
+        })
+        assert getqueryparam(location, 'code') is None
+        assert getqueryparam(location, 'cid') is not None
         pass
 
     def testSilentLogin(self):
