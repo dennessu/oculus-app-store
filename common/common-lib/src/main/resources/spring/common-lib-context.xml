@@ -64,4 +64,15 @@
     </bean>
 
     <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.DefaultCloudantMarshaller" factory-method="instance" />
+
+    <bean id="contextScopeListener" class="com.junbo.common.util.ContextScopeListener" />
+
+    <bean id="userLogRepository" class="com.junbo.common.userlog.UserLogRepositoryCloudantImpl" parent="cloudantClientWithSearch">
+        <property name="dbName" value="user_log"/>
+    </bean>
+
+    <bean id="userLogProcessor" class="com.junbo.common.userlog.UserLogProcessorImpl">
+        <property name="userLogRepo" ref="userLogRepository"/>
+    </bean>
+
 </beans>

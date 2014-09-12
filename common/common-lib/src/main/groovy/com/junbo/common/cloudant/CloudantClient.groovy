@@ -3,6 +3,7 @@ package com.junbo.common.cloudant
 import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+
 /**
  * CloudantClient used for CloudantOnly resources.
  */
@@ -12,12 +13,12 @@ abstract class CloudantClient<T extends CloudantEntity> extends CloudantClientBa
     @Override
     Promise<T> cloudantPost(T entity) {
         def trackContext = TrackContextManager.get()
-        entity.createdBy = trackContext.currentUserId
-        entity.createdByClient = trackContext.currentClientId
+        entity.createdBy = trackContext.currentUserId ?: 0L
+        entity.createdByClient = trackContext.currentClientId ?: ""
         entity.createdTime = new Date()
-        entity.updatedBy = null
-        entity.updatedByClient = null
-        entity.updatedTime = null
+        entity.updatedBy = entity.createdBy
+        entity.updatedByClient = entity.createdByClient
+        entity.updatedTime = entity.createdTime
         return super.cloudantPost(entity)
     }
 
@@ -27,8 +28,8 @@ abstract class CloudantClient<T extends CloudantEntity> extends CloudantClientBa
         entity.createdBy = oldEntity.createdBy
         entity.createdByClient = oldEntity.createdByClient
         entity.createdTime = oldEntity.createdTime
-        entity.updatedBy = trackContext.currentUserId
-        entity.updatedByClient = trackContext.currentClientId
+        entity.updatedBy = trackContext.currentUserId ?: 0L
+        entity.updatedByClient = trackContext.currentClientId ?: ""
         entity.updatedTime = new Date()
         return super.cloudantPut(entity, oldEntity)
     }

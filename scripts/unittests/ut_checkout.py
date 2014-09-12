@@ -270,6 +270,23 @@ class CheckoutTests(ut.TestBase):
         searchEntitlementIds = [ entitlement['self']['id'] for entitlement in entitlementSearchResults['results'] ]
         self.assertSetEqual(set(entitlementIds), set(searchEntitlementIds))
 
+        errorUserLogResponse = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
+            "userId": user.json['self']['id'],
+            "apiName": "orders"
+        }, headers={
+            "Authorization": "Bearer " + user.access_token
+        }, raiseOnError=False)
+        assert errorUserLogResponse['message'] == 'Forbidden'
+
+        serviceAccessToken = oauth.getServiceAccessToken('identity.service')
+        userLogs = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
+            "userId": user.json['self']['id'],
+            "apiName": "orders"
+        }, headers={
+            "Authorization": "Bearer " + serviceAccessToken
+        })
+        assert userLogs['total'] == 2
+
         return order
 
     def testCatalogGetAll(self):

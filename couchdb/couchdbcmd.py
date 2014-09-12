@@ -212,39 +212,46 @@ def createdbs(envConf, dbPrefix):
             if not key in dbs:
                 continue
 
-            existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
+            authdbs = envConf[authDbsConfigKey]
+            username = parseUsername(url)
+
+            if isCloudantUrl(url) and authdbs and username in authdbs:
+                for authdb in authdbs[username]:
+                    authUrl = url.replace(username + '.', authdb + '.') 
+                    creatdb(authUrl, envConf[apiKeysConfigKey], dbs[key].items(), key, index, authdb, dbPrefix)
+            else:
+                creatdb(url, envConf[apiKeysConfigKey], dbs[key].items(), key, index, username, dbPrefix)
+
             for db, dbDef in dbs[key].items():
                 fullDbName = dbPrefix + db
-                if not fullDbName in existingDbs:
-                    info("Creating DB '%s' in '%s[%d]'" % (fullDbName, key, index))
-                    curl(url + "/" + fullDbName, "PUT")
-                else:
-                    info("DB '%s' in '%s[%d]' exists" % (fullDbName, key, index))
-                
                 createviews(dbDef, url, fullDbName)
-                grantPermissions(envConf[apiKeysConfigKey], envConf[authDbsConfigKey], url, fullDbName)
-            
-def grantPermissions(apikeyConf, authdbs, url, fullDbName):
+
+def creatdb(url, apikeyConf, alldbs, key, index, username, dbPrefix):
+    existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
+    for db, dbDef in alldbs:
+        fullDbName = dbPrefix + db
+        if not fullDbName in existingDbs:
+            info("Creating DB '%s' of '%s[%d]' in '%s'" % (fullDbName, key, index, username))
+            curl(url + "/" + fullDbName, "PUT") 
+            grantPermissions(apikeyConf, url, fullDbName, username)
+        else:
+            info("DB '%s' of '%s[%d]' in '%s' exists" % (fullDbName, key, index, username))
+
+def grantPermissions(apikeyConf, url, fullDbName, username):
     if not apikeyConf:
         return
     if isCloudantUrl(url):
         for conf in apikeyConf:
             apikey = conf['key']
             permissionUrl = url + "/%s/_security" % fullDbName
-            username = parseUsername(url)
             permissions = curlJson(permissionUrl)
             if not permissions:
                 permissions['cloudant'] = {}
                 permissions['cloudant'][username] = allRoles
                 permissions['_id'] = "_security"
-            permissions['cloudant'][apikey] = [role for role in conf['roles']]
-            if authdbs and username in authdbs:
-                for authdb in authdbs[username]:
-                    info("Granting permissions for APIKEY '%s' of DB '%s' in '%s'" % (apikey, fullDbName, authdb))
-                    grantPermission(permissionUrl.replace(username + '.', authdb + '.'), permissions)
-            else:
-                info("Granting permissions for APIKEY '%s' of DB '%s'" % (apikey, fullDbName))
-                grantPermission(permissionUrl, permissions)
+                permissions['cloudant'][apikey] = [role for role in conf['roles']]
+            info("Granting permissions for APIKEY '%s' of DB '%s' in '%s'" % (apikey, fullDbName, username))
+            grantPermission(permissionUrl, permissions)
 
 def grantPermission(permissionUrl, permissions):
     result = curlJson(permissionUrl, "PUT", json.dumps(permissions))
@@ -287,6 +294,7 @@ def dropdbs(envConf, dbPrefix):
     global dbsConfigKey
     if not dbPrefix: dbPrefix = ''
     dbs = readDbs()
+    authdbs = envConf[authDbsConfigKey]
 
     for key, list in envConf[dbsConfigKey].items():
         index = -1
@@ -294,14 +302,21 @@ def dropdbs(envConf, dbPrefix):
             index += 1
             if not key in dbs:
                 continue
+            username = parseUsername(url)
+            if isCloudantUrl(url) and authdbs and username in authdbs:
+                for authdb in authdbs[username]:
+                    authUrl = url.replace(username + '.', authdb + '.') 
+                    dropdb(authUrl, dbs, key, index, authdb, dbPrefix)
+            else:
+                dropdb(url, dbs, key, index, username, dbPrefix)
 
-            existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
-            for db in dbs[key]:
-                fullDbName = dbPrefix + db
-
-                if fullDbName in existingDbs:
-                    info("Dropping database '%s' from '%s[%d]'" % (fullDbName, key, index));
-                    curl(url + "/" + fullDbName, "DELETE")
+def dropdb(url, dbs, key, index, username, dbPrefix):
+    existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
+    for db in dbs[key]:
+        fullDbName = dbPrefix + db
+        if fullDbName in existingDbs:
+            info("Dropping database '%s' from '%s[%d]' in '%s'" % (fullDbName, key, index, username))
+            curl(url + "/" + fullDbName, "DELETE")
 
 def purgedbs(envConf, dbPrefix):
     global dbsConfigKey

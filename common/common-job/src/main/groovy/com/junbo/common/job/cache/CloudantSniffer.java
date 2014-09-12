@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.cloudant.client.CloudantGlobalUri;
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.cloudant.exception.CloudantConnectException;
+import com.junbo.common.cloudant.exception.CloudantException;
 import com.junbo.configuration.ConfigServiceManager;
 import com.junbo.langur.core.async.JunboAsyncHttpClient;
 import com.junbo.langur.core.promise.Promise;
@@ -26,8 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,12 +39,14 @@ import java.util.Map;
 public class CloudantSniffer {
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudantSniffer.class);
 
-    private static final String ALL_DB_PATH = "/_all_dbs";
+    //private static final String ALL_DB_PATH = "/_all_dbs";
     private static final String CHANGE_PATH = "/_changes";
 
     private static final String CLOUDANT_PREFIX_KEY = "common.cloudant.dbNamePrefix";
     private static final String CLOUDANT_HEARTBEAT_KEY = "common.cloudant.heartbeat";
     private static final String CLOUDANT_DBLIST_KEY = "common.cloudant.dblist";
+
+    private static final String CLASSPATH_PREFIX = "classpath:";
 
     private static final String[] CLOUDANT_URI_KEYS = new String[]{
             "common.cloudant.url",
@@ -100,6 +102,12 @@ public class CloudantSniffer {
             throw new CloudantConnectException("Cloudant database configuration file not found.");
         }
         LOGGER.info("Cloudant database configuration file is [" + dblist + "].");
+        InputStream dbFileInputStream = readFile(dblist);
+
+        if (dbFileInputStream == null) {
+            throw new CloudantException("Error occurred during reading file [" + dblist + "].");
+        }
+        LOGGER.info("Read cloudant database list file successfully.");
 
         String prefix = ConfigServiceManager.instance().getConfigValue(CLOUDANT_PREFIX_KEY);
         if (prefix == null) {
@@ -108,8 +116,9 @@ public class CloudantSniffer {
         LOGGER.info("Cloudant database prefix is [" + prefix + "].");
 
         List<String> filtered = new ArrayList<>();
+
         try {
-            Map<String, Map<String, Object>> payload = new ObjectMapper().readValue(getClass().getResourceAsStream(dblist), Map.class);
+            Map<String, Map<String, Object>> payload = new ObjectMapper().readValue(dbFileInputStream, Map.class);
 
             List<String> databases = new ArrayList<>();
             for (Map.Entry<String, Map<String, Object>> entry : payload.entrySet()) {
@@ -122,13 +131,17 @@ public class CloudantSniffer {
 
                 if (response.getStatusCode() / 100 == 2) {
                     filtered.add(fullDatabaseName);
-                    LOGGER.debug("Database [" + fullDatabaseName + "] is available on " + cloudantUri.getDetail());
+                    LOGGER.debug("Database [" + fullDatabaseName
+                            + "] is available on instance [" + cloudantUri.getDetail() + "].");
                 } else {
-                    LOGGER.debug("Database [" + fullDatabaseName + "] doesn't exist on " + cloudantUri.getDetail());
+                    LOGGER.debug("Database [" + fullDatabaseName
+                            + "] doesn't exist on instance [" + cloudantUri.getDetail() + "].");
                 }
             }
         } catch (Exception e) {
             throw new CloudantConnectException("Error occurred during get all cloudant databases.", e);
+        } finally {
+            SnifferUtils.close(dbFileInputStream);
         }
 
         LOGGER.info("Detect [" + filtered.size() + "] available databases on " + cloudantUri.getDetail());
@@ -202,10 +215,7 @@ public class CloudantSniffer {
             }
 
             CloudantGlobalUri uri = new CloudantGlobalUri(value);
-            String instanceKey = uri.getCurrentDcUri().getValue() + "#"
-                    + SnifferUtils.isNull(uri.getCurrentDcUri().getUsername(), "");
-
-            cloudantUriMap.put(instanceKey, uri.getCurrentDcUri());
+            cloudantUriMap.put(uri.getCurrentDcUri().getKey(), uri.getCurrentDcUri());
         }
 
         cloudantInstances = new ArrayList(cloudantUriMap.values());
@@ -247,5 +257,22 @@ public class CloudantSniffer {
         } catch (IOException e) {
             throw new CloudantConnectException("Error occurred while executing request to cloudant DB", e);
         }
+    }
+
+    private InputStream readFile(String fileName) {
+        InputStream inputStream = null;
+
+        if (fileName.startsWith(CLASSPATH_PREFIX)) {
+            fileName = fileName.substring(CLASSPATH_PREFIX.length());
+            inputStream = getClass().getResourceAsStream(fileName);
+        }
+
+        try {
+            inputStream = new FileInputStream(fileName);
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Error occurred during reading file [" + fileName + "].");
+        }
+
+        return inputStream;
     }
 }

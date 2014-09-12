@@ -642,6 +642,13 @@
       }
   }, 
   "cloudant": {
+    "user_log": {
+      "indexes": {
+        "search": {
+          "index": "function(doc) {index('userId', doc.userId);index('apiName', doc.api);index('clientId', doc.clientId);index('httpMethod', doc.httpMethod);index('createdTime', doc.logTime);index('sequenceId', doc.sequenceId);index('isOK', doc.error === null || doc.error === undefined);}"
+        }
+      }
+    },
     "entitlement": {
       "indexes": {
         "search": {

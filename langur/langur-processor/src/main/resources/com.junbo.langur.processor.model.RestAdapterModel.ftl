@@ -8,6 +8,8 @@ import com.junbo.langur.core.filter.AfterInvocationFilter;
 import com.junbo.langur.core.routing.Router;
 import com.junbo.langur.core.context.JunboHttpContextScopeListener;
 import com.junbo.langur.core.context.JunboHttpContextScopeListeners;
+import com.junbo.langur.core.track.TrackContextManager;
+import com.junbo.langur.core.track.UserLogProcessor;
 import java.util.List;
 
 @org.springframework.stereotype.Component
@@ -32,6 +34,10 @@ public class ${className} extends com.junbo.langur.core.adapter.AbstractRestAdap
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("junboHttpContextScopeListeners")
     protected JunboHttpContextScopeListeners __junboHttpContextScopeListeners;
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    @org.springframework.beans.factory.annotation.Qualifier("userLogProcessor")
+    private UserLogProcessor __userLogProcessor;
 
     [#if !authorizationNotRequired]
     @org.springframework.beans.factory.annotation.Autowired(required = false)
@@ -63,6 +69,10 @@ public class ${className} extends com.junbo.langur.core.adapter.AbstractRestAdap
 
     public void setAfterInvocationFilter(AfterInvocationFilter afterInvocationFilter) {
         __afterInvocationFilter = afterInvocationFilter;
+    }
+
+    public void setUserLogProcessor(UserLogProcessor UserLogProcessor) {
+        __userLogProcessor = UserLogProcessor;
     }
 
     [#list restMethods as restMethod]

@@ -11,6 +11,7 @@ import com.junbo.configuration.ConfigServiceManager;
 import com.ning.http.client.Response;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -76,6 +77,16 @@ public final class SnifferUtils {
             Thread.sleep(ms);
         } catch (InterruptedException e) {
             //silently ignore
+        }
+    }
+
+    public static void close(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                //ignore silently
+            }
         }
     }
 }
