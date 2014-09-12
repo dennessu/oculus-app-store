@@ -35,6 +35,7 @@ class ActionContextWrapper {
     public static final String ACCESS_TOKEN_RESPONSE = 'access_token_response'
     public static final String REFRESH_TOKEN = 'refresh_token'
     public static final String REDIRECT_URI_BUILDER = 'redirect_uri_builder'
+    public static final String REDIRECT_URI = 'redirect_uri'
     public static final String ID_TOKEN = 'id_token'
     public static final String NEED_REMEMBER_ME = 'need_remember_me'
     public static final String REMEMBER_ME_TOKEN = 'remember_me_token'
@@ -203,6 +204,14 @@ class ActionContextWrapper {
 
     void setRedirectUriBuilder(UriComponentsBuilder builder) {
         actionContext.requestScope[REDIRECT_URI_BUILDER] = builder
+    }
+
+    String getRedirectUri() {
+        return actionContext.flowScope[REDIRECT_URI] as String
+    }
+
+    void setRedirectUri(String redirectUri) {
+        actionContext.flowScope[REDIRECT_URI] = redirectUri
     }
 
     Boolean getNeedRememberMe() {

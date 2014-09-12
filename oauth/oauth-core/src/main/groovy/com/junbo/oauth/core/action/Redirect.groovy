@@ -15,6 +15,7 @@ import org.springframework.util.Assert
 import org.springframework.web.util.UriComponentsBuilder
 
 import javax.ws.rs.core.Response
+import javax.ws.rs.core.UriBuilder
 
 /**
  * Redirect.
@@ -23,13 +24,19 @@ import javax.ws.rs.core.Response
 class Redirect implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
+        // redirectUriBuilder is request scope
+        // redirectUri is flow scope
         def contextWrapper = new ActionContextWrapper(context)
         UriComponentsBuilder builder = contextWrapper.redirectUriBuilder
-        Assert.notNull(builder, 'builder is null')
+        URI uri
+        if (builder != null) {
+            uri = builder.build().toUri()
+        }
+        else {
+            uri = UriComponentsBuilder.fromUriString(contextWrapper.redirectUri).build().toUri()
+        }
 
-        Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
-                .location(builder.build().toUri())
-
+        Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND).location(uri)
         contextWrapper.responseBuilder = responseBuilder
 
         return Promise.pure(null)

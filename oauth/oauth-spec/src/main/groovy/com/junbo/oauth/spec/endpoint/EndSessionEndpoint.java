@@ -13,11 +13,9 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 
 /**
  * EndSessionEndpoint.
@@ -26,6 +24,7 @@ import javax.ws.rs.core.UriInfo;
 @Path("/oauth2/end-session")
 @RestResource
 @AuthorizationNotRequired
+@Produces(MediaType.APPLICATION_JSON)
 public interface EndSessionEndpoint {
 
     @ApiOperation("Logout the user from web flow")
