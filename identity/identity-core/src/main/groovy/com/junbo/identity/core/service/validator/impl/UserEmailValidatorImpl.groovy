@@ -8,6 +8,7 @@ import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.EmailValidator
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.v1.model.Email
@@ -85,7 +86,7 @@ class UserEmailValidatorImpl implements PiiValidator {
 
             return Promise.each(existing) { UserPersonalInfo info ->
                 return userRepository.get(info.userId).then { User user ->
-                    if (user == null || CollectionUtils.isEmpty(user.emails)) {
+                    if (user == null || CollectionUtils.isEmpty(user.emails) || user.status == UserStatus.DELETED.toString()) {
                         return Promise.pure(null)
                     }
 
