@@ -11,8 +11,7 @@
         <property name="dbName" value="role_assignment"/>
     </bean>
 
-    <bean id="apiDefinitionRepository" class="com.junbo.authorization.db.repository.ApiDefinitionRepositoryCloudantImpl"
-          parent="cloudantClient">
-        <property name="dbName" value="api_definition"/>
+    <bean id="apiDefinitionRepository" class="com.junbo.authorization.db.repository.ApiDefinitionFileRepositoryImpl">
+        <property name="transcoder" ref="commonTranscoder"/>
     </bean>
 </beans>

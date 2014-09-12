@@ -13,6 +13,7 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+
 /**
  * ApiDefinitionResourceImpl.
  */
@@ -43,15 +44,5 @@ class ApiDefinitionResourceImpl implements ApiDefinitionResource {
         }
 
         return Promise.pure(apiDefinition)
-    }
-
-    @Override
-    Promise<ApiDefinition> create(ApiDefinition apiDefinition) {
-        return Promise.pure(apiService.saveApi(apiDefinition))
-    }
-
-    @Override
-    Promise<ApiDefinition> update(String apiName, ApiDefinition apiDefinition) {
-        return Promise.pure(apiService.updateApi(apiName, apiDefinition))
     }
 }
