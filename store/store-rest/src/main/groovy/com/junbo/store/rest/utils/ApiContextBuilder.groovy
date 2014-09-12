@@ -46,9 +46,8 @@ class ApiContextBuilder {
         result.userAgent = getHeader(StoreApiHeader.USER_AGENT)
         result.androidId = getHeader(StoreApiHeader.ANDROID_ID)
         result.user = (AuthorizeContext.currentUserId?.value == null || AuthorizeContext.currentUserId?.value == 0) ? null : AuthorizeContext.currentUserId
-
+        String countryCode = getHeader(StoreApiHeader.IP_COUNTRY)
         Promise.pure().then { // get country.
-            String countryCode = getHeader(StoreApiHeader.IP_COUNTRY)
             if (StringUtils.isEmpty(countryCode)) {
                 countryCode = defaultCountry
             }
@@ -70,6 +69,7 @@ class ApiContextBuilder {
                 return Promise.pure()
             }
         }.then {
+            LOGGER.info("name=Store_Build_Context, androidId={}, countryCode={}, actualCountryCode={}", result.androidId, countryCode, result.getCountry().getId().value)
             return Promise.pure(result)
         }
     }

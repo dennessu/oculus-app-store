@@ -19,6 +19,9 @@ public class TestContext {
         }
     };
 
+    /**
+     * The TestContext class.
+     */
     public static class TestContextData {
 
         private Map<String, String> headers = new HashMap<>();
