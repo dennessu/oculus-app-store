@@ -60,6 +60,149 @@ public class StoreCommerceTesting extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test add new credit card with Invalid type",
+            steps = {
+                    "1. Create user",
+                    "2. Add credit card into billing profile with invalid type",
+                    "3. Verify error response",
+                    "4. Add credit catd into billing profile without type",
+                    "5. Verify error response",
+            }
+    )
+    @Test
+    public void testAddCreditCardWithInvalidType() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+
+        testDataProvider.CreateCreditCard(uid, RandomFactory.getRandomStringOfAlphabet(6), RandomFactory.getRandomStringOfAlphabet(5), 400);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid. Invalid instrument type");
+        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+
+        testDataProvider.CreateCreditCard(uid, RandomFactory.getRandomStringOfAlphabet(6), null, 400);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Field is required");
+        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test add new credit card with invalid billing address",
+            steps = {
+                    "1. Create user",
+                    "2. Add credit card into billing profile with billing address",
+                    "3. Verify error response",
+            }
+    )
+    @Test
+    public void testAddCreditCardWithInvalidBillingAddress() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+
+        testDataProvider.CreateCreditCardWithInvalidAddress(uid);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
+        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test add new credit card without account name",
+            steps = {
+                    "1. Create user",
+                    "2. Add credit card into billing profile without account name",
+                    "3. Verify error response",
+            }
+    )
+    @Test
+    public void testAddCreditCardWithInvalidAccountName() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+
+        testDataProvider.CreateCreditCard(uid, null, "CREDITCARD", 400);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Field is required");
+        assert Master.getInstance().getApiErrorMsg().contains("instrument.accountName");
+        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test add new ewallet with invalid currency",
+            steps = {
+                    "1. Create user",
+                    "2. Add ewallet into billing profile with invalid currency",
+                    "3. Verify error response",
+                    "4. Add ewallet into billing profile without currency",
+                    "5. Verify error response",
+            }
+    )
+    @Test
+    public void testAddEwalletWithInvalidCurrency() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+
+        testDataProvider.CreateStoredValue("###123", null, 400);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
+        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+
+        testDataProvider.CreateStoredValue(null, null, 400);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Field is required");
+        assert Master.getInstance().getApiErrorMsg().contains("instrument.storedValueCurrency");
+        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test add new ewallet with balance",
+            steps = {
+                    "1. Create user",
+                    "2. Add ewallet into billing profile with balance",
+                    "3. Verify error response",
+
+            }
+    )
+    @Test
+    public void testAddEwalletWithBalance() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+
+        testDataProvider.CreateStoredValue("USD", new BigDecimal(10), 409);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Input Validation Failure");
+        assert Master.getInstance().getApiErrorMsg().contains("135.002");
+        assert Master.getInstance().getApiErrorMsg().contains("Field is not writable");
+
+    }
+
 
     @Property(
             priority = Priority.BVT,
@@ -202,7 +345,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             steps = {
                     "1. Create user",
                     "2. Make free purchase with invalid offer id",
-                    "8. Verify error response"
+                    "3. Verify error response"
             }
     )
     @Test
@@ -230,7 +373,6 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         assert Master.getInstance().getApiErrorMsg().contains("offer 123 is not found");
         assert Master.getInstance().getApiErrorMsg().contains("123.004");
-
 
     }
 
@@ -718,5 +860,29 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert response.getBillingProfile().getInstruments().get(0).getType().equals("CREDITCARD");
     }
 
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test get new user's entitlement",
+            steps = {
+                    "1. Create new user and sign in",
+                    "2. Get entitlements",
+                    "3. Verify no entitlements",
+            }
+    )
+    @Test
+    public void testEmptyEntitlement() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+        testDataProvider.signIn(userName);
+
+        EntitlementsGetResponse response = testDataProvider.getEntitlement();
+        assert response.getEntitlements().size() == 0;
+    }
 
 }

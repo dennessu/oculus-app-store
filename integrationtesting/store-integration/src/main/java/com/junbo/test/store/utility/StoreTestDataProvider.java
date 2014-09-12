@@ -234,6 +234,21 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
+    public InstrumentUpdateResponse CreateCreditCard(String uid, String accountName, String type, int expectedResponseCode) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
+        Instrument instrument = new Instrument();
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        instrument.setAccountName(accountName);
+        instrument.setAccountNum(encryptedString);
+        instrument.setBillingAddress(getBillingAddress());
+        instrument.setType(type);
+        instrument.setIsDefault(false);
+        //instrument.setStoredValueCurrency("USD");
+        instrumentUpdateRequest.setInstrument(instrument);
+        return storeClient.updateInstrument(instrumentUpdateRequest, expectedResponseCode);
+    }
+
     public InstrumentUpdateResponse CreateCreditCardWithoutBillingAddress(String uid) throws Exception {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
@@ -243,6 +258,20 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         instrument.setAccountNum(encryptedString);
         instrument.setType("CREDITCARD");
         instrument.setIsDefault(false);
+        instrumentUpdateRequest.setInstrument(instrument);
+        return storeClient.updateInstrument(instrumentUpdateRequest, 400);
+    }
+
+    public InstrumentUpdateResponse CreateCreditCardWithInvalidAddress(String uid) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
+        Instrument instrument = new Instrument();
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        instrument.setAccountName(creditCardInfo.getAccountName());
+        instrument.setAccountNum(encryptedString);
+        instrument.setType("CREDITCARD");
+        instrument.setIsDefault(false);
+        instrument.setBillingAddress(getInvalidBillingAddress());
         instrumentUpdateRequest.setInstrument(instrument);
         return storeClient.updateInstrument(instrumentUpdateRequest, 400);
     }
@@ -258,16 +287,22 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public InstrumentUpdateResponse CreateStoredValue() throws Exception {
+        return CreateStoredValue("USD", null, 200);
+    }
+
+    public InstrumentUpdateResponse CreateStoredValue(String currency, BigDecimal balance, int expectedResponseCde) throws Exception {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
         //instrument.setBillingAddress(getBillingAddress());
         instrument.setType("STOREDVALUE");
-        instrument.setStoredValueCurrency("USD");
+        instrument.setStoredValueCurrency(currency);
         instrument.setBillingAddress(getBillingAddress());
+        instrument.setStoredValueBalance(balance);
 
         instrumentUpdateRequest.setInstrument(instrument);
-        return storeClient.updateInstrument(instrumentUpdateRequest);
+        return storeClient.updateInstrument(instrumentUpdateRequest, expectedResponseCde);
     }
+
 
     public void CreditStoredValue(String uid, BigDecimal amount) throws Exception {
         paymentProvider.creditWallet(uid, amount);
@@ -359,11 +394,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return offerClient.getOffer(offerId);
     }
 
-    public OfferRevision getOfferRevision(String offerRevisionId) throws Exception{
+    public OfferRevision getOfferRevision(String offerRevisionId) throws Exception {
         return offerRevisionClient.getOfferRevision(offerRevisionId);
     }
 
-    public Item getItemByItemId(String itemId) throws Exception{
+    public Item getItemByItemId(String itemId) throws Exception {
         return itemClient.getItem(itemId);
     }
 
@@ -398,6 +433,16 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         address.setStreet1("800 West Campbell Road");
         address.setCity("Richardson");
         address.setPostalCode("75080");
+        address.setSubCountry("TX");
+        address.setCountry("US");
+        return address;
+    }
+
+    private Address getInvalidBillingAddress() throws Exception {
+        Address address = new Address();
+        address.setStreet1("800 West Campbell Road");
+        address.setCity("Richardson");
+        address.setPostalCode("####");
         address.setSubCountry("TX");
         address.setCountry("US");
         return address;
@@ -581,7 +626,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getDelivery(deliveryRequest);
     }
 
-    public String postPayment(String uid, PaymentInstrumentBase payment) throws Exception{
+    public String postPayment(String uid, PaymentInstrumentBase payment) throws Exception {
         return paymentProvider.postPaymentInstrument(uid, payment);
     }
 
