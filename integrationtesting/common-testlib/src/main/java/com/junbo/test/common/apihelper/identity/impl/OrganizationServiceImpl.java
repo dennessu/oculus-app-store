@@ -16,6 +16,7 @@ import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.authorization.spec.model.Role;
 import com.junbo.test.common.libs.IdConverter;
@@ -82,8 +83,10 @@ public class OrganizationServiceImpl extends HttpClientBase implements Organizat
     @Override
     public Organization getOrganization(OrganizationId organizationId) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, organizationUrl + "/" + IdFormatter.encodeId(organizationId), true);
-        return new JsonMessageTranscoder().decode(new TypeReference<Organization>() {
+        Organization organization = new JsonMessageTranscoder().decode(new TypeReference<Organization>() {
         }, responseBody);
+        Master.getInstance().addOrganization(IdFormatter.encodeId(organizationId), organization);
+        return organization;
     }
 
 }

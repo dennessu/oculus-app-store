@@ -110,6 +110,6 @@ public abstract class BaseTestClass {
     }
 
     StoreTestDataProvider testDataProvider = new StoreTestDataProvider();
-    StoreValidationHelper validationHelper = new StoreValidationHelper();
+    StoreValidationHelper validationHelper = new StoreValidationHelper(testDataProvider);
 
 }

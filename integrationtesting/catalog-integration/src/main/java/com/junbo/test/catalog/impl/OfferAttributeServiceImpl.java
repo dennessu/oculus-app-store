@@ -13,6 +13,7 @@ import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
@@ -49,7 +50,9 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
     public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + attributeId;
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
-        return new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
+        OfferAttribute offerAttribute = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
+        Master.getInstance().addOfferAttribute(attributeId, offerAttribute);
+        return offerAttribute;
     }
 
     public Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara) throws Exception {

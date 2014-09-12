@@ -8,13 +8,17 @@ package com.junbo.test.store.utility;
 // CHECKSTYLE:OFF
 
 
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
+import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -27,21 +31,17 @@ import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
-import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.test.catalog.ItemService;
-import com.junbo.test.catalog.OfferRevisionService;
-import com.junbo.test.catalog.OfferService;
-import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
-import com.junbo.test.catalog.impl.ItemServiceImpl;
-import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
-import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.*;
+import com.junbo.test.catalog.impl.*;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
@@ -84,6 +84,9 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     CaseyEmulatorService caseyEmulatorClient = CaseyEmulatorServiceImpl.getInstance();
     StoreConfigService storeConfigService = StoreConfigServiceImpl.getInstance();
     UserService identityClient = UserServiceImpl.instance();
+    OfferAttributeService offerAttributeClient = OfferAttributeServiceImpl.instance();
+    ItemAttributeService itemAttributeClient = ItemAttributeServiceImpl.instance();
+    OrganizationService organizationClient = OrganizationServiceImpl.instance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
@@ -391,15 +394,51 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public Offer getOfferByOfferId(String offerId) throws Exception {
-        return offerClient.getOffer(offerId);
+        Offer offer = Master.getInstance().getOffer(offerId);
+        if (offer == null) {
+            offer = offerClient.getOffer(offerId);
+        }
+        return offer;
     }
 
-    public OfferRevision getOfferRevision(String offerRevisionId) throws Exception {
-        return offerRevisionClient.getOfferRevision(offerRevisionId);
+    public OfferRevision getOfferRevision(String offerRevisionId) throws Exception{
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
+        if (offerRevision == null) {
+            offerRevision = offerRevisionClient.getOfferRevision(offerRevisionId);
+        }
+        return offerRevision;
     }
 
-    public Item getItemByItemId(String itemId) throws Exception {
-        return itemClient.getItem(itemId);
+    public Item getItemByItemId(String itemId) throws Exception{
+        Item item = Master.getInstance().getItem(itemId);
+        if (item == null) {
+            item = itemClient.getItem(itemId);
+        }
+        return item;
+    }
+
+    public ItemRevision getItemRevision(String itemRevisionId) throws Exception {
+        ItemRevision itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
+        if (itemRevision == null) {
+            itemRevision = itemRevisionClient.getItemRevision(itemRevisionId);
+        }
+        return itemRevision;
+    }
+
+    public ItemAttribute getItemAttribute(String itemAttributeId) throws Exception {
+        ItemAttribute itemAttribute = Master.getInstance().getItemAttribute(itemAttributeId);
+        if (itemAttribute == null) {
+            itemAttribute = itemAttributeClient.getItemAttribute(itemAttributeId);
+        }
+        return itemAttribute;
+    }
+
+    public OfferAttribute getOfferAttribute(String offerAttributeId) throws Exception {
+        OfferAttribute offerAttribute = Master.getInstance().getOfferAttribute(offerAttributeId);
+        if (offerAttribute == null) {
+            offerAttribute = offerAttributeClient.getOfferAttribute(offerAttributeId);
+        }
+        return offerAttribute;
     }
 
     public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken) throws Exception {
@@ -632,6 +671,15 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public String createUser(UserInfo userInfo) throws Exception {
         return identityClient.PostUser(userInfo);
+    }
+
+    public Organization getOrganization(OrganizationId organizationId) throws Exception {
+        String orgIdString = IdFormatter.encodeId(organizationId);
+        Organization organization = Master.getInstance().getOrganization(orgIdString);
+        if (organization == null) {
+            organization = organizationClient.getOrganization(organizationId);
+        }
+        return organization;
     }
 
 

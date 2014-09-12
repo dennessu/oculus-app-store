@@ -65,6 +65,8 @@ public class StoreValidationHelper extends BaseValidationHelper {
 
     private static final TreeMap<Integer, String> lengthToImageSizeGroup = new TreeMap<>();
 
+    private StoreTestDataProvider storeTestDataProvider;
+
     interface VerifyEqual<T> {
         void verify(T o1, T o2);
     }
@@ -76,7 +78,9 @@ public class StoreValidationHelper extends BaseValidationHelper {
         lengthToImageSizeGroup.put(336, "tiny");
     }
 
-    ServiceContainer serviceContainer = ServiceContainer.instance();
+    public StoreValidationHelper(StoreTestDataProvider storeTestDataProvider) {
+        this.storeTestDataProvider = storeTestDataProvider;
+    }
 
     public void verifyAddNewCreditCard(InstrumentUpdateResponse response) {
         BillingProfile billingProfile = response.getBillingProfile();
@@ -108,9 +112,9 @@ public class StoreValidationHelper extends BaseValidationHelper {
     }
 
     public void verifyCommitPurchase(CommitPurchaseResponse response, String offerId) throws Exception {
-        Offer offer = serviceContainer.getOfferClient().getOffer(offerId);
-        OfferRevision offerRevision = serviceContainer.getOfferRevisionClient().getOfferRevision(offer.getCurrentRevisionId());
-        com.junbo.catalog.spec.model.item.Item item = serviceContainer.getItemClient().getItem(offerRevision.getItems().get(0).getItemId());
+        Offer offer = storeTestDataProvider.getOfferByOfferId(offerId);
+        OfferRevision offerRevision = storeTestDataProvider.getOfferRevision(offer.getCurrentRevisionId());
+        com.junbo.catalog.spec.model.item.Item item = storeTestDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId());
         Entitlement entitlement = response.getEntitlements().get(0);
 
         verifyEqual(entitlement.getItemType(), item.getType(), "verify item type");
@@ -225,10 +229,11 @@ public class StoreValidationHelper extends BaseValidationHelper {
     public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean isFree) throws Exception {
         OfferRevision currentOfferRevision = null;
         ItemRevision currentItemRevision = null;
-        com.junbo.catalog.spec.model.offer.Offer catalogOffer = serviceContainer.getOfferClient().getOffer(item.getOffer().getSelf().getValue());
-        OfferRevision offerRevision = serviceContainer.getOfferRevisionClient().getOfferRevision(catalogOffer.getCurrentRevisionId());
-        com.junbo.catalog.spec.model.item.Item catalogItem = serviceContainer.getItemClient().getItem(item.getSelf().getValue());
-        ItemRevision itemRevision = serviceContainer.getItemRevisionClient().getItemRevision(catalogItem.getCurrentRevisionId());
+        com.junbo.catalog.spec.model.offer.Offer catalogOffer =
+                storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue());
+        OfferRevision offerRevision = storeTestDataProvider.getOfferRevision(catalogOffer.getCurrentRevisionId());
+        com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue());
+        ItemRevision itemRevision = storeTestDataProvider.getItemRevision(catalogItem.getCurrentRevisionId());
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
         List<OfferRevision> offerRevisions = getOfferRevisions(catalogOffer);
@@ -236,12 +241,12 @@ public class StoreValidationHelper extends BaseValidationHelper {
 
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
             for (String id : catalogOffer.getCategories()) {
-                offerAttributes.add(serviceContainer.getOfferAttributeService().getOfferAttribute(id));
+                offerAttributes.add(storeTestDataProvider.getOfferAttribute(id));
             }
         }
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogItem.getGenres())) {
             for (String id: catalogItem.getGenres()) {
-                itemAttributes.add(serviceContainer.getItemAttributeService().getItemAttribute(id));
+                itemAttributes.add(storeTestDataProvider.getItemAttribute(id));
             }
         }
         for (OfferRevision revision : offerRevisions) {
@@ -258,8 +263,8 @@ public class StoreValidationHelper extends BaseValidationHelper {
         }
 
         ItemRevisionLocaleProperties localeProperties = currentItemRevision.getLocales().get(locale);
-        Organization developer = serviceContainer.getOrganizationService().getOrganization(catalogItem.getOwnerId());
-        Organization publisher = serviceContainer.getOrganizationService().getOrganization(catalogOffer.getOwnerId());
+        Organization developer = storeTestDataProvider.getOrganization(catalogItem.getOwnerId());
+        Organization publisher = storeTestDataProvider.getOrganization(catalogOffer.getOwnerId());
         verifyItem(item, catalogItem, currentItemRevision, developer);
         verifyItemImages(item.getImages(), localeProperties.getImages());
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
@@ -429,7 +434,7 @@ public class StoreValidationHelper extends BaseValidationHelper {
         HashMap<String, List<String>> params = new HashMap<>();
         params.put("itemId", Collections.singletonList(item.getId()));
         params.put("status", Collections.singletonList("APPROVED"));
-        Results<ItemRevision> revisionResults = serviceContainer.getItemRevisionClient().getItemRevisions(params);
+        Results<ItemRevision> revisionResults = storeTestDataProvider.itemRevisionClient.getItemRevisions(params);
         return revisionResults.getItems();
     }
 
@@ -437,7 +442,7 @@ public class StoreValidationHelper extends BaseValidationHelper {
         HashMap<String, List<String>> params = new HashMap<>();
         params.put("offerId", Collections.singletonList(offer.getId()));
         params.put("status", Collections.singletonList("APPROVED"));
-        Results<OfferRevision> revisionResults = serviceContainer.getOfferRevisionClient().getOfferRevisions(params);
+        Results<OfferRevision> revisionResults = storeTestDataProvider.offerRevisionClient.getOfferRevisions(params);
         return revisionResults.getItems();
     }
 
