@@ -48,6 +48,8 @@ public interface UserService {
 
     List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception;
 
+    List<String> GetCurrentUserByUserName(String userName, int expectedResponseCode) throws Exception;
+
     //update a user
     String PutUser(String userId, User user) throws Exception;
 
