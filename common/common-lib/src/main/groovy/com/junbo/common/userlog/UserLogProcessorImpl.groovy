@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.common.userlog
 
 import com.junbo.common.cloudant.CloudantEntity
@@ -11,6 +16,8 @@ import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.langur.core.track.UserLogProcessor
 import groovy.transform.CompileStatic
 import org.apache.log4j.MDC
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
 
 /**
@@ -18,6 +25,7 @@ import org.springframework.http.HttpMethod
  */
 @CompileStatic
 class UserLogProcessorImpl implements UserLogProcessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserLogProcessor.class)
     private static boolean isEnabled = "true".equalsIgnoreCase(
             ConfigServiceManager.instance().getConfigValue("common.userlog.enabled"))
     private UserLogRepository userLogRepo
@@ -63,7 +71,8 @@ class UserLogProcessorImpl implements UserLogProcessor {
             )
 
             getUserLogRepo().create(userLog).get()
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while logging user action of [$JunboHttpContext.requestUri.path].", e)
         }
     }
 
