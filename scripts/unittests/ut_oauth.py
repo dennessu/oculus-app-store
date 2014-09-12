@@ -113,6 +113,67 @@ class OAuthTests(ut.TestBase):
         assert location == ut.test_logout_redirect_uri
         pass
 
+    def testLogoutConfirm(self):
+        user = self.testRegister()
+
+        # test silent sign-in
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState',
+            'nonce': 'testNonce'
+        })
+        id_token = getqueryparam(location, 'id_token')
+        assert id_token is not None
+
+        # logout without id_token
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
+            'post_logout_redirect_uri': ut.test_logout_redirect_uri
+        })
+        cid = getqueryparam(location, 'cid')
+        view = curlJson('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid })
+        assert view["view"] == 'logout-confirm'
+
+        # confirm logout with 'no'
+        curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid, 'event': 'no' })
+
+        # test silent sign-in
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState',
+            'nonce': 'testNonce'
+        })
+        id_token = getqueryparam(location, 'id_token')
+        assert id_token is not None
+
+        # logout without id_token
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
+            'post_logout_redirect_uri': ut.test_logout_redirect_uri
+        })
+        cid = getqueryparam(location, 'cid')
+        view = curlJson('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid })
+        assert view["view"] == 'logout-confirm'
+
+        # confirm logout with 'yes'
+        curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = { 'cid': cid, 'event': 'yes' })
+
+        # test silent sign-in again
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri
+        })
+        assert getqueryparam(location, 'code') is None
+        assert getqueryparam(location, 'cid') is not None
+
+        pass
+
     def testValidWildcardRedirectUri(self):
         user = self.testRegister()
 
@@ -175,8 +236,10 @@ class OAuthTests(ut.TestBase):
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
             'client_id': ut.test_client_id,
             'response_type': 'code',
-            'scope': 'identity',
-            'redirect_uri': ut.test_redirect_uri
+            'scope': 'identity openid',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState',
+            'nonce': 'testNonce'
         })
         auth_code = getqueryparam(location, 'code')
         assert auth_code is not None
@@ -189,6 +252,9 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': ut.test_redirect_uri
         })
         access_token = response["access_token"]
+        assert access_token is not None
+        id_token = response["id_token"]
+        assert id_token is not None
         auth_header = { 'Authorization': 'Bearer ' + access_token }
         token_info = curlJson('GET', ut.test_uri, '/v1/oauth2/tokeninfo', query = { 'access_token': access_token })
         user_href = token_info['sub']['href']
@@ -198,7 +264,8 @@ class OAuthTests(ut.TestBase):
 
         # logout
         curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
-            'post_logout_redirect_uri': ut.test_redirect_uri
+            'post_logout_redirect_uri': ut.test_redirect_uri,
+            'id_token_hint': id_token
         })
 
         # test silent sign-in again
@@ -288,11 +355,16 @@ class OAuthTests(ut.TestBase):
         nounce = randomstr(10)
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
             'client_id': ut.test_client_id,
-            'response_type': 'token',
-            'scope': 'identity',
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
             'redirect_uri': ut.test_redirect_uri,
-            'state': nounce
+            'state': nounce,
+            'nonce': 'testNonce'
         })
+
+        id_token = getqueryparam(location, 'id_token')
+        assert id_token is not None
+
         access_token = getqueryparam(location, 'access_token')
         assert nounce == getqueryparam(location, 'state')
         auth_header = { 'Authorization': 'Bearer ' + access_token }
@@ -304,7 +376,8 @@ class OAuthTests(ut.TestBase):
 
         # logout
         curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
-            'post_logout_redirect_uri': ut.test_redirect_uri
+            'post_logout_redirect_uri': ut.test_redirect_uri,
+            'id_token_hint': id_token
         })
 
         # test silent sign-in again

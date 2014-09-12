@@ -106,6 +106,7 @@
         <property name="tokenService" ref="tokenService"/>
         <property name="clientRepository" ref="encryptedClientRepository"/>
         <property name="confirmationUri" value="${oauth.core.portal.logoutConfirmationUri}"/>
+        <property name="defaultConfirmationUri" value="${oauth.core.portal.url}"/>
     </bean>
 
     <bean id="redirect" class="com.junbo.oauth.core.action.Redirect"/>

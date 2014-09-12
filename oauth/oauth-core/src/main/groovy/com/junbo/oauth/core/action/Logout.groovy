@@ -6,6 +6,7 @@
 package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.promise.Promise
@@ -19,6 +20,7 @@ import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.db.repo.RememberMeTokenRepository
+import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.model.IdToken
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -27,6 +29,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 import org.springframework.web.util.UriComponentsBuilder
+
+import javax.ws.rs.core.UriBuilder
 
 /**
  * Logout.
@@ -41,6 +45,7 @@ class Logout implements Action {
     private ClientRepository clientRepository
 
     private String confirmationUri
+    private String defaultConfirmationUri
 
     @Required
     void setLoginStateRepository(LoginStateRepository loginStateRepository) {
@@ -67,6 +72,11 @@ class Logout implements Action {
         this.confirmationUri = confirmationUri
     }
 
+    @Required
+    void setDefaultConfirmationUri(String defaultConfirmationUri) {
+        this.defaultConfirmationUri = defaultConfirmationUri
+    }
+
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
@@ -76,33 +86,42 @@ class Logout implements Action {
 
         IdToken idToken = null
         String idTokenHint = parameterMap.getFirst(OAuthParameters.ID_TOKEN_HINT)
+        String postLogoutRedirectUri = this.defaultConfirmationUri
         if (StringUtils.hasText(idTokenHint)) {
-            idToken = tokenService.parseIdToken(idTokenHint)
+            Client client = null
+            try {
+                idToken = tokenService.parseIdToken(idTokenHint)
 
-            def client = clientRepository.getClient(idToken.aud)
-            if (client == null) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('id_token_hint').exception()
-            }
-
-            if (new Date().time / 1000 > idToken.exp) {
-                throw AppErrors.INSTANCE.expiredIdToken().exception()
-            }
-
-            String postLogoutRedirectUri = parameterMap.getFirst(OAuthParameters.POST_LOGOUT_REDIRECT_URI)
-            if (StringUtils.isEmpty(postLogoutRedirectUri)) {
-                postLogoutRedirectUri = client.defaultLogoutRedirectUri
-            } else {
-                boolean allowed = client.logoutRedirectUris.any {
-                    String allowedLogoutRedirectUri -> UriUtil.match(postLogoutRedirectUri, allowedLogoutRedirectUri)
+                client = clientRepository.getClient(idToken.aud)
+                if (client == null) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('id_token_hint').exception()
                 }
 
-                if (!allowed) {
-                    throw AppErrors.INSTANCE.invalidPostLogoutRedirectUri(postLogoutRedirectUri).exception()
+                if (new Date().time / 1000 > idToken.exp) {
+                    throw AppErrors.INSTANCE.expiredIdToken().exception()
                 }
             }
+            catch(AppErrorException exception) {
+                LOGGER.error('Error parsing the id_token', exception)
+            }
 
-            contextWrapper.redirectUriBuilder = UriComponentsBuilder.fromUriString(postLogoutRedirectUri)
+            if (client != null) {
+                postLogoutRedirectUri = parameterMap.getFirst(OAuthParameters.POST_LOGOUT_REDIRECT_URI)
+                if (StringUtils.isEmpty(postLogoutRedirectUri)) {
+                    postLogoutRedirectUri = client.defaultLogoutRedirectUri
+                }
+                else {
+                    boolean allowed = client.logoutRedirectUris.any {
+                        String allowedLogoutRedirectUri -> UriUtil.match(postLogoutRedirectUri, allowedLogoutRedirectUri)
+                    }
+
+                    if (!allowed) {
+                        throw AppErrors.INSTANCE.invalidPostLogoutRedirectUri(postLogoutRedirectUri).exception()
+                    }
+                }
+            }
         }
+        contextWrapper.redirectUri = postLogoutRedirectUri
 
         def rememberMeCookie = cookieMap.get(OAuthParameters.COOKIE_REMEMBER_ME)
         if (rememberMeCookie != null) {
@@ -126,21 +145,12 @@ class Logout implements Action {
 
                 if (idToken != null) {
                     Long userId = IdFormatter.decodeId(UserId, idToken.sub)
-                    if (userId != loginState.userId) {
-                        def redirectUriBuilder = UriComponentsBuilder.fromUriString(confirmationUri)
-                        redirectUriBuilder.queryParam(OAuthParameters.CONVERSATION_ID, contextWrapper.conversationId)
-                        redirectUriBuilder.queryParam(OAuthParameters.EVENT, 'logoutConfirmation')
-                        redirectUriBuilder.queryParam(OAuthParameters.USER_ID,
-                                IdFormatter.encodeId(new UserId(loginState.userId)))
-                        redirectUriBuilder.queryParam(OAuthParameters.ID_TOKEN_USER_ID, idToken.sub)
-
-                        contextWrapper.redirectUriBuilder = redirectUriBuilder
-
-                        return Promise.pure(new ActionResult('redirectToConfirmation'))
+                    if (userId == loginState.userId) {
+                        return Promise.pure(new ActionResult('redirectToLogoutRedirectUri'))
                     }
-
-                    return Promise.pure(new ActionResult('redirectToLogoutRedirectUri'))
                 }
+
+                return Promise.pure(new ActionResult('redirectToConfirmation'))
             }
         }
 
