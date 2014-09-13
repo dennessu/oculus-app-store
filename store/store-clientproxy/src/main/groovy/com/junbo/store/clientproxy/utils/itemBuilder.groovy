@@ -1,41 +1,52 @@
-package com.junbo.store.rest.browse.impl
+package com.junbo.store.clientproxy.utils
+
 import com.fasterxml.jackson.core.type.TypeReference
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
+import com.junbo.catalog.spec.model.common.RevisionNotes
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.ItemId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.browse.Images
-import com.junbo.store.spec.model.browse.document.*
+import com.junbo.store.spec.model.browse.document.AggregatedRatings
+import com.junbo.store.spec.model.browse.document.AppDetails
+import com.junbo.store.spec.model.browse.document.CategoryInfo
+import com.junbo.store.spec.model.browse.document.GenreInfo
+import com.junbo.store.spec.model.browse.document.Image
+import com.junbo.store.spec.model.browse.document.Item
+import com.junbo.store.spec.model.browse.document.Offer
+import com.junbo.store.spec.model.browse.document.RevisionNote
 import com.junbo.store.spec.model.catalog.data.ItemData
+import com.junbo.store.spec.model.external.casey.search.CaseyItem
+import com.junbo.store.spec.model.external.casey.search.CaseyOffer
+import com.junbo.store.spec.model.external.casey.search.CatalogAttribute
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.CollectionUtils
 
-import javax.annotation.Resource
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+
 /**
- * The BrowseDataBuilder class.
+ * The itemBuilder class.
  */
 @CompileStatic
-@Component('storeBrowseDataBuilder')
-class BrowseDataBuilder {
+@Component('storeImageConvertor')
+class itemBuilder {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(BrowseDataBuilder)
+    private final static Logger LOGGER = LoggerFactory.getLogger(itemBuilder)
 
     private final static Pattern ImageDimensionTextPattern = Pattern.compile('\\s*(\\d+)\\s*[xX]\\s*(\\d+)\\s*')
-
-    @Resource(name = 'storeLocaleUtils')
-    private LocaleUtils localeUtils
 
     private TreeMap<Integer, String> lengthToImageSizeGroup // (length -> sizeGroup)
 
@@ -51,6 +62,54 @@ class BrowseDataBuilder {
         val.each { Map.Entry<String, String> entry ->
             lengthToImageSizeGroup[Integer.parseInt(entry.key)] = entry.value
         }
+    }
+
+    public Item buildItem(CaseyOffer caseyOffer, List<AggregatedRatings> aggregatedRatings, ApiContext apiContext) {
+        Item result = new Item()
+        CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer?.items) ? null : caseyOffer.items[0]
+        result.title = caseyItem?.name
+        result.descriptionHtml = caseyItem?.longDescription
+        result.supportedLocales = caseyItem?.supportedLocales
+        result.creator = caseyItem?.developer?.name
+        result.self = caseyItem?.self
+        result.images = buildImages(caseyItem?.images, caseyItem?.self)
+        result.appDetails = buildAppDetails(caseyOffer, caseyItem, apiContext.country.getId().value)
+        result.offer = buildOffer(caseyOffer)
+        result.aggregatedRatings = aggregatedRatings
+        return result
+    }
+
+    public Item build(ItemData itemData, ApiContext apiContext) {
+        Item result = new Item()
+        CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer?.items) ? null : caseyOffer.items[0]
+        result.title = caseyItem?.name
+        result.descriptionHtml = caseyItem?.longDescription
+        result.supportedLocales = caseyItem?.supportedLocales
+        result.creator = caseyItem?.developer?.name
+        result.self = caseyItem?.self
+        result.images = buildImages(caseyItem?.images, caseyItem?.self)
+        result.appDetails = buildAppDetails(caseyOffer, caseyItem, country)
+        result.offer = buildOffer(caseyOffer)
+        result.aggregatedRatings = aggregatedRatings
+        return result
+    }
+
+    public Images buildImages(com.junbo.catalog.spec.model.common.Images catalogImages, ItemId itemId) {
+        if (catalogImages == null) {
+            return null
+        }
+        return new Images(
+                main: buildImageMap(catalogImages.main, itemId),
+                thumbnail: buildImageMap(catalogImages.thumbnail, itemId),
+                background: buildImageMap(catalogImages.background, itemId),
+                featured: buildImageMap(catalogImages.featured, itemId),
+                gallery: catalogImages.gallery == null ? null : catalogImages.gallery.collect { com.junbo.catalog.spec.model.common.ImageGalleryEntry entry ->
+                    return new com.junbo.store.spec.model.browse.ImageGalleryEntry(
+                            thumbnail: buildImageMap(entry.thumbnail, itemId),
+                            full: buildImageMap(entry.full, itemId)
+                    )
+                }
+        )
     }
 
     public Item buildItemFromItemData(ItemData itemData, ApiContext apiContext, Item item) {
@@ -113,29 +172,11 @@ class BrowseDataBuilder {
         }
         Binary binary = itemRevision.binaries[apiContext.platform.value]
         return new RevisionNote(
-            versionCode: null as Integer, // todo fill version code
-            releaseDate: itemRevision.updatedTime, // todo use real release date
-            versionString: binary?.version,
-            title: itemRevisionLocaleProperties?.releaseNotes?.shortNotes,
-            description: itemRevisionLocaleProperties?.releaseNotes?.longNotes
-        )
-    }
-
-    private Images buildImages(com.junbo.catalog.spec.model.common.Images catalogImages, ItemId itemId) {
-        if (catalogImages == null) {
-            return null
-        }
-        return new Images(
-                main: buildImageMap(catalogImages.main, itemId),
-                thumbnail: buildImageMap(catalogImages.thumbnail, itemId),
-                background: buildImageMap(catalogImages.background, itemId),
-                featured: buildImageMap(catalogImages.featured, itemId),
-                gallery: catalogImages.gallery == null ? null : catalogImages.gallery.collect { com.junbo.catalog.spec.model.common.ImageGalleryEntry entry ->
-                    return new com.junbo.store.spec.model.browse.ImageGalleryEntry(
-                            thumbnail: buildImageMap(entry.thumbnail, itemId),
-                            full: buildImageMap(entry.full, itemId)
-                    )
-                }
+                versionCode: null as Integer, // todo fill version code
+                releaseDate: itemRevision.updatedTime, // todo use real release date
+                versionString: binary?.version,
+                title: itemRevisionLocaleProperties?.releaseNotes?.shortNotes,
+                description: itemRevisionLocaleProperties?.releaseNotes?.longNotes
         )
     }
 
@@ -152,6 +193,57 @@ class BrowseDataBuilder {
             result.put(imageSizeGroup, buildImage(entry.getValue()));
         }
         return result
+    }
+
+    private AppDetails buildAppDetails(CaseyOffer caseyOffer, CaseyItem caseyItem, String country) {
+        AppDetails appDetails = new AppDetails()
+        appDetails.packageName = caseyItem?.packageName
+        Binary binary = caseyItem?.binaries?.get(Platform.ANDROID.value)
+        appDetails.installationSize = binary?.size
+        appDetails.versionCode = null // todo set the version code
+        appDetails.versionString = binary?.version
+        appDetails.releaseDate = caseyOffer?.countries?.get(country)?.releaseDate
+        appDetails.revisionNotes = [buildRevisionNote(caseyItem?.releaseNotes, binary, appDetails.releaseDate)]
+        appDetails.website = caseyItem?.website
+        appDetails.forumUrl = caseyItem?.communityForumLink
+        appDetails.developerEmail = caseyItem?.supportEmail
+        appDetails.categories = caseyOffer?.categories?.collect { CatalogAttribute attribute ->
+            return new CategoryInfo(
+                    id: attribute.getAttributeId(),
+                    name: attribute.name
+            )
+        }
+        appDetails.genres = caseyItem?.genres?.collect { CatalogAttribute attribute ->
+            return new GenreInfo(
+                    id: attribute.getAttributeId(),
+                    name: attribute.name
+            )
+        }
+        appDetails.publisherName = caseyOffer?.publisher?.name
+        appDetails.developerName = caseyItem?.developer?.name
+        return appDetails;
+    }
+
+    private RevisionNote buildRevisionNote(RevisionNotes revisionNotes, Binary binary, Date releaseDate) {
+        return new RevisionNote(
+                versionCode: null as Integer, // todo fill version code
+                releaseDate: releaseDate,
+                versionString: binary?.version,
+                title: revisionNotes?.shortNotes,
+                description: revisionNotes?.longNotes
+        )
+    }
+
+    private Offer buildOffer(CaseyOffer caseyOffer) {
+        if (caseyOffer == null) {
+            return null
+        }
+        Offer offer = new Offer()
+        offer.currency = caseyOffer?.price?.currencyCode == null ? null : new CurrencyId(caseyOffer?.price?.currencyCode)
+        offer.price = caseyOffer?.price?.amount
+        offer.self = caseyOffer?.self
+        offer.isFree = caseyOffer?.price?.isFree
+        offer.formattedDescription = caseyOffer?.shortDescription
     }
 
     private Image buildImage(com.junbo.catalog.spec.model.common.Image catalogImage) {

@@ -5,13 +5,15 @@
  */
 package com.junbo.store.spec.resource.external;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.external.casey.CaseyResults;
-import com.junbo.store.spec.model.external.casey.OfferSearchParams;
 import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsContent;
+import com.junbo.store.spec.model.external.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.casey.cms.CmsPageGetParams;
+import com.junbo.store.spec.model.external.casey.search.CaseyOffer;
+import com.junbo.store.spec.model.external.casey.search.OfferSearchParams;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,11 +29,15 @@ public interface CaseyResource {
 
     @GET
     @Path("search")
-    Promise<CaseyResults<JsonNode>> searchOffers(@BeanParam OfferSearchParams params);
+    Promise<CaseyResults<CaseyOffer>> searchOffers(@BeanParam OfferSearchParams params);
 
     @GET
     @Path("cms-campaigns")
     Promise<CaseyResults<CmsCampaign>> getCmsCampaigns();
+
+    @GET
+    @Path("cms-pages")
+    Promise<CaseyResults<CmsPage>> getCmsPages(CmsPageGetParams pageGetParams);
 
     @GET
     @Path("cms-contents/{contentId}")
