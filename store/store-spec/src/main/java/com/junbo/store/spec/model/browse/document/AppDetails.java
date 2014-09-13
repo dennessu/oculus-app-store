@@ -69,7 +69,7 @@ public class AppDetails {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 
