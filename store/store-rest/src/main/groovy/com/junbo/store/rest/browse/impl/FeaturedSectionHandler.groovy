@@ -1,9 +1,10 @@
 package com.junbo.store.rest.browse.impl
+
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.rest.browse.SectionHandler
-import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.ListRequest
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+
 /**
  * The FeaturedSectionHandler class.
  */

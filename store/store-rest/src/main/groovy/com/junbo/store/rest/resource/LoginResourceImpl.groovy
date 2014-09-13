@@ -16,7 +16,7 @@ import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.rest.utils.AppErrorUtils
 import com.junbo.store.rest.utils.ErrorCodes
 import com.junbo.store.rest.utils.RequestValidator
-import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
 import groovy.transform.CompileStatic

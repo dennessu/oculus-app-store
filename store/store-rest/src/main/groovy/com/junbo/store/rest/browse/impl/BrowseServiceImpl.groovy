@@ -17,7 +17,7 @@ import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.browse.SectionHandler
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.CatalogUtils
-import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge

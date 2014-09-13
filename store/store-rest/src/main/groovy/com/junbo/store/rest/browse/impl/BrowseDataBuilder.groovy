@@ -9,7 +9,7 @@ import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties
 import com.junbo.common.id.ItemId
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.browse.Images

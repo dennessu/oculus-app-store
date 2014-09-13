@@ -3,7 +3,7 @@ package com.junbo.store.rest.purchase
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.crypto.spec.model.CryptoMessage
 import com.junbo.langur.core.promise.Promise
-import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils

@@ -39,6 +39,7 @@ import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
+import com.junbo.store.clientproxy.ResourceContainer
 
 import javax.annotation.Resource
 import java.util.regex.Pattern

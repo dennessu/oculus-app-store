@@ -1,4 +1,5 @@
 package com.junbo.store.rest.browse.impl
+
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties
 import com.junbo.catalog.spec.model.offer.Offer
@@ -7,9 +8,9 @@ import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.OfferId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.browse.SectionHandler
-import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.ListRequest
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+
 /**
  * The CategorySectionHandler class.
  */

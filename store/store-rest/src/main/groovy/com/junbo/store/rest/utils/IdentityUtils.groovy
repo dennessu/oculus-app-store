@@ -12,6 +12,7 @@ import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.identity.PersonalInfo
+import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.stereotype.Component

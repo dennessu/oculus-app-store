@@ -10,7 +10,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.Constants
 import com.junbo.store.rest.utils.DataConverter
-import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
 import groovy.transform.CompileStatic

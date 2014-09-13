@@ -1,7 +1,7 @@
 package com.junbo.store.rest.browse.impl
 
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
-import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

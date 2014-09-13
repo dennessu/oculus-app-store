@@ -32,7 +32,7 @@ import com.junbo.rating.spec.model.priceRating.RatingRequest
 import com.junbo.store.common.cache.Cache
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.utils.CatalogUtils
-import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.ReviewsResponse
 import com.junbo.store.spec.model.browse.document.AggregatedRatings
