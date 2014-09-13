@@ -7,7 +7,10 @@
 package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.PriceTierService;
+import com.junbo.catalog.spec.enums.LocaleAccuracy;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
+import com.junbo.catalog.spec.model.pricetier.PriceTierGetOptions;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.catalog.spec.resource.PriceTierResource;
 import com.junbo.common.id.util.IdUtil;
@@ -18,32 +21,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Price tier resource implementation.
  */
-public class PriceTierResourceImpl implements PriceTierResource {
+public class PriceTierResourceImpl extends ResourceSupport implements PriceTierResource {
     @Autowired
     private PriceTierService priceTierService;
 
     @Override
-    public Promise<PriceTier> getPriceTier(String tierId) {
-        return Promise.pure(priceTierService.getPriceTier(tierId));
+    public Promise<PriceTier> getPriceTier(String tierId, final PriceTierGetOptions options) {
+        final PriceTier tier = priceTierService.getPriceTier(tierId);
+        filterLocale(tier, options.getLocale());
+        return Promise.pure(tier);
     }
 
     @Override
-    public Promise<Results<PriceTier>> getPriceTiers(@BeanParam PriceTiersGetOptions options) {
-        List<PriceTier> attributes = priceTierService.getPriceTiers(options);
+    public Promise<Results<PriceTier>> getPriceTiers(final PriceTiersGetOptions options) {
+        List<PriceTier> tiers = priceTierService.getPriceTiers(options);
+        for (final PriceTier tier : tiers) {
+            filterLocale(tier, options.getLocale());
+        }
         Results<PriceTier> results = new Results<>();
-        results.setItems(attributes);
+        results.setItems(tiers);
         Link nextLink = new Link();
         nextLink.setHref(buildNextUrl(options));
         results.setNext(nextLink);
         return Promise.pure(results);
+    }
+
+    private void filterLocale(final PriceTier tier, final String locale) {
+        tier.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+        if (!StringUtils.isEmpty(locale)) {
+            tier.setLocaleAccuracy(calLocaleAccuracy(tier.getLocales().get(locale)));
+            tier.setLocales(new HashMap<String, SimpleLocaleProperties>() {{
+                put(locale, getLocaleProperties(tier.getLocales(), locale));
+            }});
+        }
     }
 
     private String buildNextUrl(PriceTiersGetOptions options) {

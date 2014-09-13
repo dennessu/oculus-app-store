@@ -14,7 +14,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class EntitlementDef {
     @ApiModelProperty(position = 1, required = true, value = "The entitlement type",
-            allowableValues = "DOWNLOAD, RUN, ONLINE_ACCESS, SUBSCRIPTION")
+            allowableValues = "DOWNLOAD, RUN, DEVELOPER, ALLOW_IN_APP")
     private String type;
     @JsonProperty("isConsumable")
     @ApiModelProperty(position = 1, required = true, value = "True if this is an consumable")

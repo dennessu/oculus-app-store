@@ -23,7 +23,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 /**
  * Created by lizwu on 1/28/14.
  */
-@Api(value = "rating")
+@Api(value = "priceRating")
 @Path("/")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})

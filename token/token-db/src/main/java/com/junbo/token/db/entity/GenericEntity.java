@@ -6,6 +6,8 @@
 
 package com.junbo.token.db.entity;
 
+import com.junbo.common.model.EntityAdminInfoString;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -15,7 +17,7 @@ import java.util.Date;
  * generic entity.
  */
 @MappedSuperclass
-public abstract class GenericEntity implements Serializable {
+public abstract class GenericEntity implements EntityAdminInfoString, Serializable {
     @Column(name = "created_time", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdTime;
@@ -64,6 +66,30 @@ public abstract class GenericEntity implements Serializable {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    @Override
+    @Transient
+    public String getCreatedByClient() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public void setCreatedByClient(String createdByClient) {
+
+    }
+
+    @Override
+    @Transient
+    public String getUpdatedByClient() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public void setUpdatedByClient(String updatedByClient) {
+
     }
 
     @Transient

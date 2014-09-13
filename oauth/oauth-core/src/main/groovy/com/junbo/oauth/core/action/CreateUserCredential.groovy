@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.UserCredential
@@ -15,6 +16,8 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
+import com.junbo.oauth.spec.model.ResetPasswordCode
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -30,11 +33,18 @@ import org.springframework.util.StringUtils
 class CreateUserCredential implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateUserCredential)
     private UserCredentialResource userCredentialResource
+    private ResetPasswordCodeRepository resetPasswordCodeRepository
 
     @Required
     void setUserCredentialResource(UserCredentialResource userCredentialResource) {
         this.userCredentialResource = userCredentialResource
     }
+
+    @Required
+    void setResetPasswordCodeRepository(ResetPasswordCodeRepository resetPasswordCodeRepository) {
+        this.resetPasswordCodeRepository = resetPasswordCodeRepository
+    }
+
 
     @Override
     Promise<ActionResult> execute(ActionContext context) {
@@ -52,6 +62,14 @@ class CreateUserCredential implements Action {
                 value: password,
                 type: 'PASSWORD'
         )
+        ResetPasswordCode resetPasswordCode = contextWrapper.resetPasswordCode
+        if (resetPasswordCode != null) {
+            def code = resetPasswordCodeRepository.get(resetPasswordCode.code)
+            if (code == null)  {
+                contextWrapper.errors.add(AppErrors.INSTANCE.resetPasswordCodeAlreadyUsed().error())
+                return Promise.pure(new ActionResult('error'))
+            }
+        }
 
         return userCredentialResource.create((UserId) user.id, passwordCredential).recover { Throwable throwable ->
             handleException(throwable, contextWrapper)
@@ -60,6 +78,12 @@ class CreateUserCredential implements Action {
         }.then { UserCredential newUserCredential ->
             if (newUserCredential == null) {
                 return Promise.pure(new ActionResult('error'))
+            }
+
+            // if it is reset password case, unvalidate the code when user credential reset successfully
+            if (resetPasswordCode != null) {
+                resetPasswordCodeRepository.remove(resetPasswordCode.code)
+                resetPasswordCodeRepository.removeByUserIdEmail(resetPasswordCode.userId, resetPasswordCode.email)
             }
 
             return Promise.pure(new ActionResult('success'))

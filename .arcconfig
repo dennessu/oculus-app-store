@@ -1,10 +1,11 @@
 {
- "project_id" : "main",
+ "project_id" : "owp main",
  "conduit_uri" : "https://code.silkcloud.info/",
  "copyright_holder" : "SilkCloud",
  "git.default-relative-commit" : "HEAD^",
  "arc.feature.start.default" : "origin/master",
  "arc.land.update.default" : "rebase",
  "base" : "arc:upstream",
- "editor" : "vim"
+ "editor" : "vim",
+ "repository.callsign" : "B"
 }

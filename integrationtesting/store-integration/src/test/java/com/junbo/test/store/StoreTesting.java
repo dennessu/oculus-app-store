@@ -6,6 +6,9 @@
 package com.junbo.test.store;
 
 
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -318,6 +321,9 @@ public class StoreTesting extends BaseTestClass {
             offerId = testDataProvider.getOfferIdByName(offer_digital_free);
         } else {
             offerId = offer_digital_free;
+            Offer offer = testDataProvider.getOfferByOfferId(offerId);
+            OfferRevision offerRevision =  testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
+            Item item = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId());
         }
 
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);

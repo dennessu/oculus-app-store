@@ -32,8 +32,8 @@ EXPOSE 5432
 # Enable insecure key so that docker-ssh can work, it is ok in dev env
 RUN /usr/sbin/enable_insecure_key
 
-# Expose config, log and data directories.
-VOLUME ["/etc/postgresql", "/var/log/postgresql", "/data"]
+# Expose log and data directories as Volume, to improve performance
+VOLUME ["/var/log/postgresql", "/data"]
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]

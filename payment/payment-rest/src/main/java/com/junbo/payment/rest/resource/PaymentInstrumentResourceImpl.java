@@ -18,7 +18,6 @@ import com.junbo.payment.auth.PaymentInstrumentAuthorizeCallbackFactory;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.core.PaymentInstrumentService;
-import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
 import com.junbo.payment.spec.resource.PaymentInstrumentResource;
@@ -134,8 +133,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     }
 
     @Override
-    public Promise<Results<PaymentInstrument>> searchPaymentInstrument(
-            @BeanParam final PaymentInstrumentSearchParam searchParam, @BeanParam final PageMetaData pageMetadata) {
+    public Promise<Results<PaymentInstrument>> searchPaymentInstrument(@BeanParam final PaymentInstrumentSearchParam searchParam) {
         if(searchParam.getUserId() == null){
             throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
@@ -150,7 +148,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
                     return Promise.pure(result);
                 }
 
-                return piService.searchPi(searchParam.getUserId().getValue(), searchParam, pageMetadata)
+                return piService.searchPi(searchParam.getUserId().getValue(), searchParam)
                         .then(new Promise.Func<List<PaymentInstrument>, Promise<Results<PaymentInstrument>>>() {
                             @Override
                             public Promise<Results<PaymentInstrument>> apply(List<PaymentInstrument> paymentInstruments) {

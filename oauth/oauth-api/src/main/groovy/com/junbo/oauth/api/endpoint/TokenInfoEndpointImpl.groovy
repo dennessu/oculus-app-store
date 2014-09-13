@@ -14,8 +14,8 @@ import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
@@ -26,15 +26,34 @@ import org.springframework.util.StringUtils
  */
 @Component
 @CompileStatic
-class TokenInfoEndpointImpl implements TokenInfoEndpoint {
+class TokenInfoEndpointImpl implements TokenInfoEndpoint, InitializingBean {
+    private static final DEFAULT_TOKEN = '00000000000000000000'
+
+    private static final String DEFAULT_CLIENT = 'anonymous'
     /**
      * The OAuthTokenService to handle the token related logic.
      */
     private OAuthTokenService tokenService
 
+    private String defaultScopes
+
+    private TokenInfo defaultToken
+
+    private Long defaultAccessTokenExpiration
+
     @Required
     void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
+    }
+
+    @Required
+    void setDefaultScopes(String defaultScopes) {
+        this.defaultScopes = defaultScopes
+    }
+
+    @Required
+    void setDefaultAccessTokenExpiration(Long defaultAccessTokenExpiration) {
+        this.defaultAccessTokenExpiration = defaultAccessTokenExpiration
     }
 
     /**
@@ -47,6 +66,10 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint {
         // Validate the tokenValue, the token value can't be empty.
         if (StringUtils.isEmpty(tokenValue)) {
             throw AppCommonErrors.INSTANCE.parameterRequired('access_token').exception()
+        }
+
+        if (tokenValue == DEFAULT_TOKEN) {
+            return Promise.pure(defaultToken)
         }
 
         // Retrieve the access token with the tokenValue.
@@ -77,5 +100,15 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint {
         }
 
         return Promise.pure(tokenInfo)
+    }
+
+    @Override
+    void afterPropertiesSet() throws Exception {
+        defaultToken = new TokenInfo(
+                sub: new UserId(0L),
+                clientId: DEFAULT_CLIENT,
+                scopes: defaultScopes,
+                expiresIn: defaultAccessTokenExpiration
+        )
     }
 }

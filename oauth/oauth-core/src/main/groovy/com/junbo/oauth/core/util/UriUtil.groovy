@@ -28,7 +28,7 @@ class UriUtil {
                 return false
             }
 
-            if (!uriPartMatches(uri1.authority, allowed.authority)) {
+            if (!authorityMatches(uri1.authority, allowed.authority)) {
                 return false
             }
 
@@ -45,6 +45,21 @@ class UriUtil {
             LOGGER.debug('Invalid uri format', e)
             return false
         }
+    }
+
+    private static boolean authorityMatches(String authority, String authorityTemplate) {
+        if (StringUtils.isEmpty(authorityTemplate)) {
+            return true
+        }
+
+        if (authorityTemplate.contains('*')) {
+            String redirectUriPattern =
+                    '^' + authorityTemplate.replace('.', '\\.').replace('?', '\\?').replace('*', '[^@:#?/%]*') + '$'
+
+            return Pattern.matches(redirectUriPattern, authority)
+        }
+
+        return authority == authorityTemplate
     }
 
     private static boolean uriPartMatches(String part, String partTemplate) {
@@ -76,9 +91,6 @@ class UriUtil {
     static boolean isValidRedirectUri(String uri) {
         try {
             URI uri1 = URI.create(uri)
-            if (StringUtils.hasText(uri1.fragment)) {
-                return false
-            }
             return true
         } catch (IllegalArgumentException e) {
             LOGGER.debug('Invalid uri format', e)

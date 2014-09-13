@@ -8,6 +8,7 @@ import com.junbo.langur.core.client.*;
 import com.junbo.langur.core.async.JunboAsyncHttpClient;
 
 import com.junbo.langur.core.context.JunboHttpContextScopeListener;
+import com.junbo.langur.core.context.JunboHttpContextScopeListeners;
 import java.util.List;
 
 import ${resourceType};
@@ -42,8 +43,9 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
     @org.springframework.beans.factory.annotation.Qualifier("routingResponseHandler")
     private ResponseHandler __responseHandler;
 
-    @org.springframework.beans.factory.annotation.Autowired(required = false)
-    protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.beans.factory.annotation.Qualifier("junboHttpContextScopeListeners")
+    protected JunboHttpContextScopeListeners __junboHttpContextScopeListeners;
 
     public ${className}() { }
 

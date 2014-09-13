@@ -13,7 +13,12 @@ import java.util.List;
  * Entity status.
  */
 public enum Status {
-    DRAFT, PENDING_REVIEW, APPROVED, REJECTED;
+    // draft -> pending_review -> approved -> obsolete
+    //    /\        |
+    //    |         V
+    //    \---- rejected
+
+    DRAFT, PENDING_REVIEW, APPROVED, REJECTED, OBSOLETE;
 
     public static final List<Status> ALL = Arrays.asList(Status.values());
 

@@ -69,6 +69,7 @@ public class OfferSearch extends BaseTestClass {
 
         ItemService itemService = ItemServiceImpl.instance();
         item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        item = releaseItem(item);
 
         offer1 = offerService.postDefaultOffer(organizationId);
         offer2 = offerService.postDefaultOffer(organizationId);

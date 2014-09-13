@@ -11,6 +11,7 @@ import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
+import com.junbo.oauth.spec.model.GrantType
 import com.junbo.oauth.spec.model.TokenInfo
 import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.rest.utils.AppErrorUtils
@@ -167,7 +168,7 @@ class LoginResourceImpl implements LoginResource {
         return resourceContainer.tokenEndpoint.postToken(
                 new AccessTokenRequest(
                         refreshToken: tokenRequest.refreshToken,
-                        grantType: 'refresh_token',
+                        grantType: GrantType.REFRESH_TOKEN.name(),
                         scope: defaultScopes,
                         clientId: clientId,
                         clientSecret: clientSecret
@@ -199,7 +200,7 @@ class LoginResourceImpl implements LoginResource {
                         userId: IdFormatter.encodeId(userId),
                         clientId: clientId,
                         clientSecret: clientSecret,
-                        grantType: 'CLIENT_CREDENTIALS',
+                        grantType: GrantType.CLIENT_CREDENTIALS_WITH_USER_ID.name(),
                         scope: defaultScopes
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
@@ -214,7 +215,7 @@ class LoginResourceImpl implements LoginResource {
                         password: password,
                         clientId: clientId,
                         clientSecret: clientSecret,
-                        grantType: 'password',
+                        grantType: GrantType.PASSWORD.name(),
                         scope: defaultScopes
                 )
         ).then { AccessTokenResponse accessTokenResponse ->

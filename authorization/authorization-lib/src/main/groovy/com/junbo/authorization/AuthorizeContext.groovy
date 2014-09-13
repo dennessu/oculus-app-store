@@ -1,17 +1,21 @@
 package com.junbo.authorization
-
 import com.junbo.common.id.UserId
+import com.junbo.langur.core.track.TrackContext
+import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.util.StringUtils
 /**
  * Created by Shenhua on 5/14/2014.
  */
 @CompileStatic
 class AuthorizeContext {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizeContext)
 
     private static final ThreadLocal<TokenInfo> CURRENT_TOKEN_INFO = new ThreadLocal<>()
 
@@ -22,6 +26,8 @@ class AuthorizeContext {
     public static final String SUPER_SCOPE = '_SUPER_SCOPE_'
 
     private static boolean authorizeDisabled = false
+
+    private static boolean globalDebugMode = false
 
     static void setAuthorizeDisabled(boolean disabled) {
         authorizeDisabled = disabled
@@ -46,9 +52,9 @@ class AuthorizeContext {
         return tokenInfo == null ? null : tokenInfo.clientId
     }
 
-    static Boolean getDebugEnabled() {
+    static boolean getDebugEnabled() {
         TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
-        return tokenInfo == null ? false : tokenInfo.debugEnabled
+        return globalDebugMode || (tokenInfo == null ? false : (tokenInfo.debugEnabled ?: false))
     }
 
     @PackageScope
@@ -69,6 +75,7 @@ class AuthorizeContext {
 
         TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
         if (tokenInfo == null || tokenInfo.scopes == null) {
+            LOGGER.info('The token info\'s scope is empty. hasScopes return false')
             return false
         }
 
@@ -80,6 +87,7 @@ class AuthorizeContext {
 
         for (String scope : scopes) {
             if (!currentScopes.contains(scope) && scope != '*') {
+                LOGGER.info("Current scopes do not contain $scope")
                 return false
             }
         }
@@ -169,6 +177,36 @@ class AuthorizeContext {
             if (authorizeDisabled != null) {
                 this.authorizeDisabled = Boolean.parseBoolean(authorizeDisabled);
             }
+
+            String globalDebugMode = configService.getConfigValue('common.conf.debugMode');
+            if (!StringUtils.isEmpty(globalDebugMode)) {
+                this.globalDebugMode = Boolean.parseBoolean(globalDebugMode);
+            }
         }
+
+        // make it globally available in common-lib
+        TrackContextManager.set(new TrackContext() {
+            @Override
+            Long getCurrentUserId() {
+                return AuthorizeContext.getCurrentUserId()?.value
+            }
+
+            @Override
+            String getCurrentClientId() {
+                return AuthorizeContext.getCurrentClientId()
+            }
+
+            @Override
+            String getCurrentScopes() {
+                TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
+                return (tokenInfo == null || tokenInfo.scopes == null) ?
+                        null : tokenInfo.scopes
+            }
+
+            @Override
+            boolean getDebugEnabled() {
+                return AuthorizeContext.getDebugEnabled()
+            }
+        })
     }
 }

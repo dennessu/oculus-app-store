@@ -18,7 +18,7 @@ import com.junbo.payment.spec.enums.PaymentAPI;
 import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.PaymentType;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
+import com.junbo.payment.spec.internal.CallbackParams;
 import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -182,8 +182,8 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
                 api, PaymentStatus.SETTLE_CREATED, false);
         final PaymentProviderService provider = getProviderByName(existedTransaction.getPaymentProvider());
-        PaymentCallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
-        request.setPaymentCallbackParams(properties);
+        CallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
+        request.setCallbackParams(properties);
         return provider.confirm(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
                     @Override
@@ -301,11 +301,26 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         return Promise.pure(result);
     }
 
+    private boolean isOpenStatus(String paymentStatus){
+        if(PaymentStatus.AUTH_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.AUTHORIZING.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.SETTLEMENT_SUBMIT_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.SETTLE_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.SETTLING.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.REVERSE_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.REFUND_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.UNCONFIRMED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.CREDIT_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.UNCONFIRMED.toString().equalsIgnoreCase(paymentStatus)){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public Promise<PaymentTransaction> getUpdatedTransaction(Long paymentId) {
         final PaymentTransaction result = getPaymentAndEvents(paymentId);
-        if(result.getStatus().equalsIgnoreCase(PaymentStatus.SETTLED.toString()) ||
-                result.getStatus().equalsIgnoreCase(PaymentStatus.SETTLE_DECLINED.toString())){
+        if(!isOpenStatus(result.getStatus())){
             return Promise.pure(result);
         }else{
             return getProviderTransaction(paymentId)
@@ -322,15 +337,24 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                             if (paymentTransaction == null) {
                                 return Promise.pure(result);
                             } else {
-                                PaymentStatus paymentStatus = PaymentStatus.valueOf(paymentTransaction.getStatus());
-                                if(paymentStatus.toString().equalsIgnoreCase(result.getStatus())){
-                                    return Promise.pure(result);
+                                boolean needUpdate = false;
+                                //update the external token only
+                                if(CommonUtil.isNullOrEmpty(result.getExternalToken()) &&
+                                        !CommonUtil.isNullOrEmpty(paymentTransaction.getExternalToken())){
+                                    needUpdate = true;
                                 }
-                                PaymentEvent reportEvent = createPaymentEvent(result
-                                        , PaymentEventType.REPORT_EVENT, paymentStatus, SUCCESS_EVENT_RESPONSE);
-                                reportPaymentEvent(reportEvent, null);
-                                result.setStatus(paymentStatus.toString());
-                                result.getPaymentEvents().add(reportEvent);
+                                PaymentStatus paymentStatus = PaymentStatus.valueOf(paymentTransaction.getStatus());
+                                if(!paymentStatus.toString().equalsIgnoreCase(result.getStatus())){
+                                    needUpdate = true;
+                                }
+                                //report a event as status changed.
+                                if(needUpdate){
+                                    PaymentEvent reportEvent = createPaymentEvent(result
+                                            , PaymentEventType.REPORT_EVENT, paymentStatus, SUCCESS_EVENT_RESPONSE);
+                                    reportPaymentEvent(reportEvent, paymentTransaction, null);
+                                    result.setStatus(paymentStatus.toString());
+                                    result.getPaymentEvents().add(reportEvent);
+                                }
                                 return Promise.pure(result);
                             }
                         }
@@ -344,9 +368,9 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         PaymentTransaction payment = paymentRepositoryFacade.getByPaymentId(paymentId);
         String externalToken = payment.getExternalToken();
         if(CommonUtil.isNullOrEmpty(externalToken)){
-            PaymentCallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
+            CallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
             if(properties != null){
-                payment.setPaymentCallbackParams(properties);
+                payment.setCallbackParams(properties);
             }
         }
         final PaymentProviderService provider = getProviderByName(payment.getPaymentProvider());
@@ -355,8 +379,8 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                     @Override
                     public Promise<PaymentTransaction> apply(Throwable throwable) {
                         ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
-                        LOGGER.error("error get transaction for" + provider.getProviderName() +
-                                "; error detail: " + proxyResponse.getBody());
+                        LOGGER.error("error get transaction for " + provider.getProviderName() +
+                                "; error detail: " + proxyResponse.getBody(), throwable);
                         throw AppServerExceptions.INSTANCE.providerProcessError(
                                 provider.getProviderName(), proxyResponse.getBody()).exception();
                     }
@@ -364,12 +388,21 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     }
 
     @Override
-    public Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentCallbackParams paymentCallbackParams) {
+    public Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentTransaction paymentNew,
+                                                          CallbackParams paymentCallbackParams) {
         if(event.getPaymentId() == null){
             LOGGER.error("the payment id is missing for the event.");
             throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound("null paymentId").exception();
         }
         PaymentTransaction payment = getPaymentById(event.getPaymentId());
+        if(paymentNew != null){
+            if(!CommonUtil.isNullOrEmpty(paymentNew.getExternalToken())){
+                payment.setExternalToken(paymentNew.getExternalToken());
+            }
+            if(!CommonUtil.isNullOrEmpty(paymentNew.getStatus())){
+                payment.setStatus(paymentNew.getStatus());
+            }
+        }
         LOGGER.info("report event for payment:" + event.getPaymentId());
         updatePaymentAndSaveEvent(payment, Arrays.asList(event), PaymentAPI.ReportEvent,
                 PaymentUtil.getPaymentStatus(event.getStatus()), false);
@@ -387,7 +420,22 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         return providerService.processNotify(request)
                 .then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
-            public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+            public Promise<PaymentTransaction> apply(PaymentTransaction payment) {
+                if(payment == null){
+                    return Promise.pure(null);
+                }
+                if(CommonUtil.isNullOrEmpty(payment.getStatus())){
+                    return Promise.pure(null);
+                }
+                PaymentTransaction existingTrx = paymentRepositoryFacade.getByPaymentId(payment.getId());
+                if(existingTrx == null){
+                    //Credit Card Auth use PIID as reference so no transaction would be found:
+                    LOGGER.warn("cannot find payment transaction:" + payment.getId());
+                    return Promise.pure(null);
+                }
+                PaymentEvent reportEvent = createPaymentEvent(payment
+                        , PaymentEventType.NOTIFY, PaymentStatus.valueOf(payment.getStatus()), SUCCESS_EVENT_RESPONSE);
+                reportPaymentEvent(reportEvent, payment, null);
                 return Promise.pure(null);
             }
         });
@@ -442,7 +490,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                                          PaymentStatus status, PaymentEventType event) {
         ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
         LOGGER.error(api.toString() + " declined by " + provider.getProviderName() +
-                "; error detail: " + throwable.toString());
+                "; error detail: ", throwable);
         request.setStatus(status.toString());
         PaymentEvent authDeclined = createPaymentEvent(request, event, status, CommonUtil.toJson(proxyResponse.getBody(), null));
         addPaymentEvent(request, authDeclined);

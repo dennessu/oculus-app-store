@@ -10,7 +10,7 @@
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "CLIENT_CREDENTIALS", "PASSWORD", "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
   "id_token_issuer" : "www.junbo.com",
-  "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home" ],
+  "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home", "https://*.oculus.com/*" ],
   "default_logout_redirect_uri" : "http://localhost",
   "need_consent" : false
 }

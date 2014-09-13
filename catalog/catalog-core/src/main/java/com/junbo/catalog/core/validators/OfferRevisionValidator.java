@@ -71,6 +71,8 @@ public class OfferRevisionValidator extends ValidationSupport {
         validateLocales(revision.getLocales(), errors);
         validateSubOffers(revision, errors);
         validateItems(revision, errors);
+        validateCountryCodes("countries", revision.getCountries().keySet(), errors);
+
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
 
         if (!errors.isEmpty()) {
@@ -134,7 +136,7 @@ public class OfferRevisionValidator extends ValidationSupport {
             for (Map.Entry<String, OfferRevisionLocaleProperties> entry : locales.entrySet()) {
                 String locale = entry.getKey();
                 OfferRevisionLocaleProperties properties = entry.getValue();
-                // TODO: check locale is a valid locale
+                validateLocale("locales", locale, errors);
                 if (validateFieldNotNull("locales." + locale, properties, errors)) {
                     validateStringNotEmpty("locales." + locale + ".name", properties.getName(), errors);
                 }
@@ -198,6 +200,9 @@ public class OfferRevisionValidator extends ValidationSupport {
                     /*if (revision.getOwnerId() != null && !revision.getOwnerId().equals(item.getOwnerId())) {
                         errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "offer should only contains items of same owner"));
                     }*/
+                    if (Status.APPROVED.is(revision.getStatus()) && item.getCurrentRevisionId() == null){
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "Item " + item.getItemId() + " does not have an approved revision"));
+                    }
                     if (ItemType.STORED_VALUE.is(item.getType())) {
                         svItemId = item.getItemId();
                     }

@@ -100,6 +100,7 @@ class CoreUtils {
         diffOrder.setId(existingOrder.getId())
         diffOrder.orderItems = []
         diffOrder.totalAmount = 0G
+        diffOrder.refundPaymentInstrument = request.refundPaymentInstrument
 
         Boolean changed = false
         existingOrder.orderItems.each { OrderItem i ->

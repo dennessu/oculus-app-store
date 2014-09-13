@@ -13,6 +13,7 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+
 /**
  * ApiDefinitionResourceImpl.
  */

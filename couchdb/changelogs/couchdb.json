@@ -642,10 +642,17 @@
       }
   }, 
   "cloudant": {
+    "user_log": {
+      "indexes": {
+        "search": {
+          "index": "function(doc) {index('userId', doc.userId);index('apiName', doc.api);index('clientId', doc.clientId);index('httpMethod', doc.httpMethod);index('createdTime', doc.logTime);index('sequenceId', doc.sequenceId);index('isOK', doc.error === null || doc.error === undefined);}"
+        }
+      }
+    },
     "entitlement": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('userId', doc.userId);index('isDeleted', doc.isDeleted);index('type', doc.type);index('isBanned', doc.isBanned);index('itemId', doc.itemId);index('useCount', doc.useCount);index('grantTime', doc.grantTime);index('expirationTime', doc.expirationTime);index('updatedTime', doc.updatedTime);}"
+          "index": "function(doc) {index('userId', doc.userId);index('isDeleted', doc.isDeleted);index('type', doc.type);index('isBanned', doc.isBanned);index('itemId', doc.itemId);if (doc.useCount) index('useCount', doc.useCount);index('grantTime', doc.grantTime);if (doc.expirationTime) index('expirationTime', doc.expirationTime);index('updatedTime', doc.updatedTime || doc.createdTime);}"
         }
       }, 
       "views": {

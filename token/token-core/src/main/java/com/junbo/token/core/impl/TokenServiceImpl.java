@@ -125,16 +125,18 @@ public class TokenServiceImpl implements TokenService {
         updateTokenItem(item, order);
         consumption.setItemId(item.getId());
         TokenConsumption result = tokenRepository.addConsumption(consumption);
-        FulfilmentRequest fulfilmentRequest = new FulfilmentRequest();
-        fulfilmentRequest.setUserId(consumption.getUserId());
-        fulfilmentRequest.setOrderId(idGenerator.nextId(consumption.getUserId()));
-        fulfilmentRequest.setTrackingUuid(UUID.randomUUID().toString());
-        FulfilmentItem fulfilItem = new FulfilmentItem();
-        fulfilItem.setOfferId(consumption.getProduct());
-        fulfilItem.setQuantity(1);
-        fulfilItem.setItemReferenceId(item.getHashValue());
-        fulfilmentRequest.setItems(Arrays.asList(fulfilItem));
-        fulfilmentClient.fulfill(fulfilmentRequest).get();
+        if(tokenSet.getProductType().equalsIgnoreCase(ProductType.OFFER.toString())){
+            FulfilmentRequest fulfilmentRequest = new FulfilmentRequest();
+            fulfilmentRequest.setUserId(consumption.getUserId());
+            fulfilmentRequest.setOrderId(idGenerator.nextId(consumption.getUserId()));
+            fulfilmentRequest.setTrackingUuid(UUID.randomUUID().toString());
+            FulfilmentItem fulfilItem = new FulfilmentItem();
+            fulfilItem.setOfferId(consumption.getProduct());
+            fulfilItem.setQuantity(1);
+            fulfilItem.setItemReferenceId(item.getHashValue());
+            fulfilmentRequest.setItems(Arrays.asList(fulfilItem));
+            fulfilmentClient.fulfill(fulfilmentRequest).get();
+        }
         return Promise.pure(result);
     }
 

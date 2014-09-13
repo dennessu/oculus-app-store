@@ -6,10 +6,12 @@
 
 package com.junbo.order.db.entity;
 
+import com.junbo.common.model.EntityAdminInfo;
 import com.junbo.order.db.ValidationMessages;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -20,7 +22,7 @@ import java.util.Date;
  */
 
 @MappedSuperclass
-public abstract class CommonDbEntityWithDate implements Serializable, Shardable {
+public abstract class CommonDbEntityWithDate implements EntityAdminInfo, Serializable, Shardable {
     protected Date createdTime;
     protected Long createdBy;
     protected Date updatedTime;
@@ -60,6 +62,30 @@ public abstract class CommonDbEntityWithDate implements Serializable, Shardable 
     }
     public void setUpdatedBy(Long updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    @Override
+    @Transient
+    public String getCreatedByClient() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public void setCreatedByClient(String createdByClient) {
+
+    }
+
+    @Override
+    @Transient
+    public String getUpdatedByClient() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public void setUpdatedByClient(String updatedByClient) {
+
     }
 
     @Column(name = "RESOURCE_AGE")

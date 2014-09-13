@@ -27,12 +27,17 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
     }
 
     @Override
-    ResetPasswordCode getAndRemove(String code) {
+    ResetPasswordCode get(String code) {
+        ResetPasswordCodeEntity entity = resetPasswordCodeDAO.get(code)
+        return wrap(entity)
+    }
+
+    @Override
+    void remove(String code) {
         ResetPasswordCodeEntity entity = resetPasswordCodeDAO.get(code)
         if (entity != null) {
             resetPasswordCodeDAO.delete(entity)
         }
-        return wrap(entity)
     }
 
     @Override

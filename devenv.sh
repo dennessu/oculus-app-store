@@ -8,22 +8,23 @@ fi
 
 hash docker >/dev/null 2>&1 || { echo "!! docker not installed, cannot continue"; exit 2; }
 
+CONTAINER_NAMES="psql couchdb memcached"
+
 DATADIR=${DOCKERDATADIR:-$HOME/dockerdata}
 
 killz(){
-  echo "Killing all docker containers:"
+  echo "Killing all dev-env docker containers:"
   sudo docker ps
-  ids=`sudo docker ps | tail -n +2 |cut -d ' ' -f 1`
-  echo $ids | xargs -r sudo docker kill
-  echo $ids | xargs -r sudo docker rm
+  echo $CONTAINER_NAMES | xargs -r -n 1 sudo docker kill
+  echo $CONTAINER_NAMES | xargs -r -n 1 sudo docker rm
+  echo "All the dev-env containers have been killed and removed"
 }
 
 stop(){
-  echo "Stopping all docker containers:"
+  echo "Stopping all dev-env docker containers:"
   sudo docker ps
-  ids=`sudo docker ps | tail -n +2 |cut -d ' ' -f 1`
-  echo $ids | xargs -r sudo docker stop
-  echo $ids | xargs -r sudo docker rm
+  echo $CONTAINER_NAMES | xargs -r -n 1 sudo docker stop
+  echo "All the dev-env containers have been stopped"
 }
 
 dockerssh(){
@@ -42,48 +43,76 @@ dockerenter(){
   sudo docker-bash $1
 }
 
+resume_container() {
+  CONTAINER=$1
+  RUNNING=$(sudo docker inspect --format="{{ .State.Running }}" $CONTAINER 2> /dev/null)
+  if [ $? -eq 1 ]; then
+    echo "Container - $CONTAINER does not exist."
+    return 1
+  fi
+
+  if [ "$RUNNING" == "false" ]; then
+    echo "Container - $CONTAINER is not running. Will start it"
+    sudo docker start $CONTAINER
+    return 0
+  fi
+
+  if [ "$RUNNING" == "true" ]; then
+    echo "Container - $CONTAINER is already running"
+    return 0
+  fi
+}
+
 start(){
   # CouchDB
   mkdir -p $DATADIR/couchdb/data
   mkdir -p $DATADIR/couchdb/logs
-  sudo docker rm couchdb > /dev/null 2>&1 || true
-  echo "Pulling latest image - silkcloud/onebox-couchdb ..."
-  sudo docker pull silkcloud/onebox-couchdb > /dev/null
-  COUCHDB=$(sudo docker run \
-    -d \
-    -p 5984:5984 \
-    -v $DATADIR/couchdb/logs:/var/log/couchdb \
-    -v $DATADIR/couchdb/data:/var/lib/couchdb \
-    --name=couchdb \
-    silkcloud/onebox-couchdb)
-  echo "Started COUCHDB in container $COUCHDB"
+
+  resume_container couchdb || {
+    echo "Pulling latest image - silkcloud/onebox-couchdb ..."
+    sudo docker pull silkcloud/onebox-couchdb > /dev/null
+    COUCHDB=$(sudo docker run \
+      -d \
+      --restart=always \
+      -p 5984:5984 \
+      -v $DATADIR/couchdb/logs:/var/log/couchdb \
+      -v $DATADIR/couchdb/data:/var/lib/couchdb \
+      --name=couchdb \
+      silkcloud/onebox-couchdb)
+    echo "Started COUCHDB in new container $COUCHDB"
+  }
 
   # Postgresql
   mkdir -p $DATADIR/psql/data
   mkdir -p $DATADIR/psql/logs
-  sudo docker rm psql > /dev/null 2>&1 || true
-  echo "Pulling latest image - silkcloud/onebox-psql ..."
-  sudo docker pull silkcloud/onebox-psql > /dev/null
-  PSQL=$(sudo docker run \
-    -d \
-    -p 5432:5432 \
-    -v $DATADIR/psql/data:/data \
-    -v $DATADIR/psql/logs:/var/log/postgresql \
-    --name=psql \
-    -e PSQL_PASS='#Bugsfor$' \
-    silkcloud/onebox-psql)
-  echo "Started PSQL in container $PSQL"
+
+  resume_container psql || {
+    echo "Pulling latest image - silkcloud/onebox-psql ..."
+    sudo docker pull silkcloud/onebox-psql > /dev/null
+    PSQL=$(sudo docker run \
+      -d \
+      --restart=always \
+      -p 5432:5432 \
+      -v $DATADIR/psql/data:/data \
+      -v $DATADIR/psql/logs:/var/log/postgresql \
+      --name=psql \
+      -e PSQL_PASS='#Bugsfor$' \
+      silkcloud/onebox-psql)
+    echo "Started PSQL in new container $PSQL"
+  }
 
   # Memcached
-  sudo docker rm memcached > /dev/null 2>&1 || true
-  echo "Pulling latest image - silkcloud/onebox-memcached ..."
-  sudo docker pull silkcloud/onebox-memcached > /dev/null
-  MEMCACHED=$(sudo docker run \
-    -d \
-    -p 11211:11211 \
-    --name=memcached \
-    silkcloud/onebox-memcached)
-  echo "Started MEMCACHED in container $MEMCACHED"
+  resume_container memcached || {
+    echo "Pulling latest image - silkcloud/onebox-memcached ..."
+    sudo docker pull silkcloud/onebox-memcached > /dev/null
+    MEMCACHED=$(sudo docker run \
+      -d \
+      --restart=always \
+      -p 11211:11211 \
+      --name=memcached \
+      silkcloud/onebox-memcached)
+    echo "Started MEMCACHED in new container $MEMCACHED"
+  }
 
   sudo docker ps
 }

@@ -4,7 +4,6 @@ import com.junbo.common.cloudant.client.*
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.cloudant.model.CloudantSearchResult
 import com.junbo.common.cloudant.model.CloudantUniqueItem
-import com.junbo.common.track.Tracker
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -48,7 +47,6 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     protected CloudantDbUri cloudantDbUri
     protected Class<T> entityClass
     protected String dbName
-    protected Tracker tracker
 
     private boolean enableCache
     private boolean includeDocs
@@ -66,11 +64,6 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     @Required
     void setDbName(String dbName) {
         this.dbName = dbName
-    }
-
-    @Required
-    void setTracker(Tracker tracker) {
-        this.tracker = tracker
     }
 
     void setEnableCache(boolean enableCache) {
@@ -256,8 +249,8 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return getEffective().queryView(getDbUri(null), entityClass, viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs)
     }
 
-    public Promise<CloudantSearchResult<T>> search(String searchName, String queryString, Integer limit, String bookmark) {
-        return getEffective().search(getDbUri(null), entityClass, searchName, queryString, limit, bookmark, true).syncThen { CloudantQueryResult searchResult ->
+    public Promise<CloudantSearchResult<T>> search(String searchName, String queryString, String sort, Integer limit, String bookmark) {
+        return getEffective().search(getDbUri(null), entityClass, searchName, queryString, sort, limit, bookmark, true).syncThen { CloudantQueryResult searchResult ->
             if (searchResult.rows != null) {
                 return new CloudantSearchResult<T>(
                         results: searchResult.rows.unique {
@@ -277,16 +270,20 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         }
     }
 
+    public Promise<CloudantSearchResult<T>> search(String searchName, String queryString, Integer limit, String bookmark) {
+        return search(searchName, queryString, null, limit, bookmark)
+    }
+
     public Promise<CloudantQueryResult> search(String searchName, String queryString, Integer limit, String bookmark,
                                                   boolean includeDocs) {
         if (includeDocs && !this.includeDocs) {
             // pass false to implementation method and try to fetch results one by one.
             // this means to allow higher cache hit rate
-            return getEffective().search(getDbUri(null), entityClass, searchName, queryString, limit, bookmark, false).then { CloudantQueryResult result ->
+            return getEffective().search(getDbUri(null), entityClass, searchName, queryString, null, limit, bookmark, false).then { CloudantQueryResult result ->
                 return fetchDocs(result)
             }
         }
-        return getEffective().search(getDbUri(null), entityClass, searchName, queryString, limit, bookmark, includeDocs)
+        return getEffective().search(getDbUri(null), entityClass, searchName, queryString, null, limit, bookmark, includeDocs)
     }
 
     private Promise<CloudantQueryResult> fetchDocs(CloudantQueryResult result) {
@@ -358,6 +355,10 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     public CloudantQueryResult queryViewSync(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
         return queryView(viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs).get()
+    }
+
+    public CloudantSearchResult<T> searchSync(String searchName, String queryString, String sort, Integer limit, String bookmark) {
+        return search(searchName, queryString, sort, limit, bookmark).get()
     }
 
     public CloudantSearchResult<T> searchSync(String searchName, String queryString, Integer limit, String bookmark) {

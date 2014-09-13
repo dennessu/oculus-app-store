@@ -144,6 +144,14 @@ class CatalogTests(ut.TestBase):
             "type": "APP",
             "developer": organization['self']
         })
+        itemRev = curlJson('POST', ut.test_uri, '/v1/item-revisions', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = self.getDigitalItemRevision(item, organization))
+        itemRev['status'] = 'APPROVED'
+        itemRev = curlJson('PUT', ut.test_uri, itemRev['self']['href'], headers = {
+            "Authorization": "Bearer " + adminToken
+        }, data = itemRev)
+
         offer = curlJson('POST', ut.test_uri, '/v1/offers', headers = {
             "Authorization": "Bearer " + user.access_token
         }, data = {
@@ -186,6 +194,15 @@ class CatalogTests(ut.TestBase):
         offer = curlJson('PUT', ut.test_uri, offer['self']['href'], headers = {
             "Authorization": "Bearer " + adminToken
         }, data = offer)
+
+        userErrorLogs = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
+            "userId": user.json['self']['id'],
+            "apiName": "offers",
+            "isOK": False
+        }, headers={
+            "Authorization": "Bearer " + oauth.getServiceAccessToken('identity.service')
+        })
+        assert userErrorLogs['total'] == 1
 
 
     def testItemOfferE2EFlow(self):

@@ -14,7 +14,11 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.Transaction
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.OrderId
 import com.junbo.common.id.PaymentId
+import com.junbo.common.shuffle.Oculus40Id
+import com.junbo.common.shuffle.Oculus48Id
+import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PaymentStatus
 import com.junbo.payment.spec.model.ChargeInfo
@@ -317,7 +321,10 @@ class TransactionServiceImpl implements TransactionService {
         paymentTransaction.setTrackingUuid(UUID.randomUUID())
         paymentTransaction.setUserId(balance.userId.value)
         paymentTransaction.setPaymentInstrumentId(balance.piId.value)
-        paymentTransaction.setBillingRefId(balance.id.toString())
+        if (balance.orderIds != null && balance.orderIds.size() > 0) {
+            OrderId orderId = balance.orderIds.get(0);
+            paymentTransaction.setBillingRefId(IdFormatter.encodeId(orderId));
+        }
 
         def chargeInfo = new ChargeInfo()
         chargeInfo.setCurrency(balance.currency)

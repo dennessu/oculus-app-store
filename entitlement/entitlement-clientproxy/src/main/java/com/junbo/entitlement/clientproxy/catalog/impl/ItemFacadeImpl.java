@@ -5,6 +5,7 @@
  */
 package com.junbo.entitlement.clientproxy.catalog.impl;
 
+import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy;
 import com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy;
@@ -15,13 +16,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Impl of CatalogFacade.
  */
 public class ItemFacadeImpl implements ItemFacade {
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemFacadeImpl.class);
+    private static Pattern cursorPattern = Pattern.compile(".*&cursor=(.*)");
     @Autowired
     @Qualifier("entitlementItemClient")
     private ItemResourceClientProxy itemClient;
@@ -66,21 +73,44 @@ public class ItemFacadeImpl implements ItemFacade {
 
     @Override
     public Set<String> getItemIdsByHostItemId(String hostItemId) {
-        List<Item> items = new LinkedList<>();
+        Results<Item> items = null;
         ItemsGetOptions options = new ItemsGetOptions();
         options.setHostItemId(hostItemId);
-        options.setSize(200);  //temp work around
+        options.setSize(Constants.DEFAULT_PAGING_SIZE);
+        Set<String> itemIds = new HashSet<>();
+
         try {
             LOGGER.info("Getting items by hostItemId [{}] started.", hostItemId);
-            items = itemClient.getItems(options).get().getItems();
+            while (true) {
+                items = addNextItems(items, options, itemIds);
+                if (items.getItems().size() < Constants.DEFAULT_PAGING_SIZE) {
+                    break;
+                }
+            }
             LOGGER.info("Getting items by hostItemId [{}] finished.", hostItemId);
         } catch (Exception e) {
             LOGGER.error("Getting items by hostItemId [{" + hostItemId + "}] failed.", e);
         }
-        Set<String> itemIds = new HashSet<>();
-        for (Item item : items) {
+
+        return itemIds;
+    }
+
+    private Results<Item> addNextItems(Results<Item> items, ItemsGetOptions options, Set<String> itemIds) {
+        if (items != null) {
+            options.setCursor(getNextCursor(items.getNext().getHref()));
+        }
+        Results<Item> result = itemClient.getItems(options).get();
+        for (Item item : result.getItems()) {
             itemIds.add(item.getItemId());
         }
-        return itemIds;
+        return result;
+    }
+
+    private String getNextCursor(String nextHref) {
+        Matcher matcher = cursorPattern.matcher(nextHref);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return null;
     }
 }

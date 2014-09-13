@@ -6,6 +6,7 @@
 package com.junbo.common.filter;
 
 import com.junbo.common.util.Context;
+import com.junbo.langur.core.profiling.ProfilingHelper;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -20,5 +21,8 @@ public class ContextFilter implements ContainerRequestFilter {
         // request filter, clear context
         Context.clear();
         Context.get().setIsInitialRestCall(true);
+
+        // clear profiling info
+        ProfilingHelper.clear();
     }
 }

@@ -11,13 +11,13 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.util.StringUtils
 
 /**
@@ -33,9 +33,16 @@ class AuthenticateClient implements Action {
      */
     private ClientRepository clientRepository
 
+    private PasswordEncoder passwordEncoder
+
     @Required
     void setClientRepository(ClientRepository clientRepository) {
         this.clientRepository = clientRepository
+    }
+
+    @Required
+    void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder
     }
 
     /**
@@ -89,7 +96,7 @@ class AuthenticateClient implements Action {
         }
 
         // Validate the client secret in the parameter with the client secret in the configuration.
-        if (appClient.clientSecret != clientSecret) {
+        if (passwordEncoder.matches(passwordEncoder.encode(appClient.clientSecret), passwordEncoder.encode(clientSecret))) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('client_secret', clientSecret).exception()
         }
 

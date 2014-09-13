@@ -27,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ public class ItemRevisionValidator extends ValidationSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationSupport.class);
     private ItemRepository itemRepo;
     private ItemRevisionRepository itemRevisionRepo;
+    private static final List<String> ALL_STATUS = Arrays.asList("DRAFT", "PENDING_REVIEW", "APPROVED", "REJECTED");
 
     @Required
     public void setItemRepo(ItemRepository itemRepo) {
@@ -65,6 +67,7 @@ public class ItemRevisionValidator extends ValidationSupport {
         validateSupportedInputDevices(revision.getSupportedInputDevices(), errors);
         validatePackageName(revision.getPackageName(), revision.getItemId(), errors);
         validateLocales(revision.getLocales(), errors);
+        validateCountryCodes("countries", revision.getCountries().keySet(), errors);
 
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
 
@@ -126,6 +129,15 @@ public class ItemRevisionValidator extends ValidationSupport {
         }
     }
 
+    @Override
+    protected boolean validateStatus(String status, List<AppError> errors) {
+        if (status == null || !ALL_STATUS.contains(status)) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("status", Joiner.on(',').join(ALL_STATUS)));
+            return false;
+        }
+        return true;
+    }
+
     private void validateItem(ItemRevision revision, List<AppError> errors) {
         if (validateFieldNotNull("item", revision.getItemId(), errors)) {
             Item item = itemRepo.get(revision.getItemId());
@@ -145,7 +157,7 @@ public class ItemRevisionValidator extends ValidationSupport {
             for (Map.Entry<String, ItemRevisionLocaleProperties> entry : locales.entrySet()) {
                 String locale = entry.getKey();
                 ItemRevisionLocaleProperties properties = entry.getValue();
-                // TODO: check locale is a valid locale
+                validateLocale("locales", locale, errors);
                 if (validateFieldNotNull("locales." + locale, properties, errors)) {
                     validateStringNotEmpty("locales." + locale + ".name", properties.getName(), errors);
                 }
@@ -187,7 +199,7 @@ public class ItemRevisionValidator extends ValidationSupport {
     }
 
     private void validateBinariesAndDownloadName(Map<String, Binary> binaries, String downloadName, String itemType, List<AppError> errors) {
-        if (ItemType.APP.is(itemType) || ItemType.DOWNLOADED_ADDITION.is(itemType)) {
+        if (ItemType.APP.is(itemType) || ItemType.DOWNLOADED_ADDITION.is(itemType) || ItemType.VIDEO.is(itemType) || ItemType.PHOTO.is(itemType)) {
             if (validateMapNotEmpty("binaries", binaries, errors)) {
                 for (String key : binaries.keySet()) {
                     if (!Platforms.contains(key)) {

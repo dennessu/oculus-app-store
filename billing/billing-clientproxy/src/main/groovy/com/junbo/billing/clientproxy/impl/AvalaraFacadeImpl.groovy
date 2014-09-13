@@ -5,7 +5,6 @@
  */
 
 package com.junbo.billing.clientproxy.impl
-
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.clientproxy.impl.avalara.*
@@ -29,9 +28,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import javax.annotation.Resource
-
-import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
-
 /**
  * Created by LinYi on 14-3-10.
  */
@@ -180,7 +176,7 @@ class AvalaraFacadeImpl implements TaxFacade {
     Promise<ValidateAddressResponse> validateAvalaraAddress(AvalaraAddress address) {
         String validateAddressUrl = configuration.baseUrl + 'address/validate'
         def requestBuilder = buildRequest(validateAddressUrl, address)
-        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+        return requestBuilder.execute().recover { Throwable throwable ->
             LOGGER.error('Error_Build_Avalara_Request.', throwable)
             throw AppErrors.INSTANCE.addressValidationError().exception()
         }.then { Response response ->
@@ -211,7 +207,7 @@ class AvalaraFacadeImpl implements TaxFacade {
         String getTaxUrl = configuration.baseUrl + 'tax/get'
         String content = transcoder.encode(request)
         def requestBuilder = buildRequest(getTaxUrl, content)
-        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+        return requestBuilder.execute().recover { Throwable throwable ->
             LOGGER.error('Error_Build_Avalara_Request.', throwable)
             return Promise.pure(null)
         }.then { Response response ->

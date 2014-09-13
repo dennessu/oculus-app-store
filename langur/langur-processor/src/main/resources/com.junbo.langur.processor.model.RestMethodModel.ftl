@@ -14,6 +14,8 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
     __resourceScopeValidator.validateScope("${adapteeName}.${methodName}");
     [/#if]
 
+    __throttleController.throttle("${adapteeName}.${methodName}");
+
     try {
         ${adapteeType} adaptee = __adaptee;
 
@@ -26,6 +28,7 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
             });
             if (url != null) {
                 adaptee = __clientFactory.create(url);
+                TrackContextManager.setIsRouted(true);
            }
         }
 
@@ -49,22 +52,25 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
             @Override
             public void invoke(${returnType} result) {
                 __processResponseData();
+                __userLogProcessor.process(result);
 
-                __asyncResponse.resume(result);
                 __scope.close();
+                __asyncResponse.resume(result);
             }
         });
 
         future.onFailure(new Promise.Callback<Throwable>() {
             @Override
             public void invoke(Throwable result) {
-                __asyncResponse.resume(result);
+                __userLogProcessor.process(result);
                 __scope.close();
+                __asyncResponse.resume(result);
             }
         });
     } catch (Throwable ex) {
-        __asyncResponse.resume(ex);
+        __userLogProcessor.process(ex);
         __scope.close();
+        __asyncResponse.resume(ex);
         return;
     }
 }

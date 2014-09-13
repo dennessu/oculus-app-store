@@ -3,7 +3,7 @@ package com.junbo.langur.core.client;
 
 import com.junbo.langur.core.async.JunboAsyncHttpClient;
 import com.junbo.langur.core.context.JunboHttpContext;
-import com.junbo.langur.core.context.JunboHttpContextScopeListener;
+import com.junbo.langur.core.context.JunboHttpContextScopeListeners;
 import com.junbo.langur.core.routing.Router;
 import groovy.transform.CompileStatic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,8 @@ public abstract class AbstractClientProxy {
     protected boolean __inProcessCallable;
 
     @Autowired(required = false)
-    protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
+    @Qualifier("junboHttpContextScopeListeners")
+    protected JunboHttpContextScopeListeners __junboHttpContextScopeListeners;
 
     @Autowired(required = false)
     @Qualifier("routingDefaultRouter")
@@ -99,7 +100,7 @@ public abstract class AbstractClientProxy {
         this.__inProcessCallable = inProcessCallable;
     }
 
-    public void setJunboHttpContextScopeListeners(List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners) {
+    public void setJunboHttpContextScopeListeners(JunboHttpContextScopeListeners __junboHttpContextScopeListeners) {
         this.__junboHttpContextScopeListeners = __junboHttpContextScopeListeners;
     }
 

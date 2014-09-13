@@ -156,9 +156,9 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         }
 
         boolean isDeveloper = isDeveloper();
-        if (!Status.APPROVED.is(revision.getStatus()) && !isDeveloper) {
+        if (!Status.APPROVED.is(revision.getStatus()) && !Status.OBSOLETE.is(revision.getStatus()) && !isDeveloper) {
             throw AppCommonErrors.INSTANCE.resourceNotFound("offer-revision", revisionId).exception();
-        } else if (Status.APPROVED.is(revision.getStatus())) {
+        } else if (Status.APPROVED.is(revision.getStatus()) || Status.OBSOLETE.is(revision.getStatus())) {
             return Promise.pure(revision);
         } else {
             AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(revision.getOfferId());
@@ -214,6 +214,10 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
                 }
 
                 if (Status.REJECTED.is(offerRevision.getStatus()) && !AuthorizeContext.hasRights("reject")) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
+                }
+
+                if (Status.OBSOLETE.is(offerRevision.getStatus()) && !AuthorizeContext.hasRights("obsolete")) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 

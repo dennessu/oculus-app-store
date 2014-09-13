@@ -5,19 +5,11 @@
  */
 
 package com.junbo.billing.clientproxy.impl
-
-import com.junbo.billing.clientproxy.impl.avalara.ResponseMessage
-import com.junbo.common.error.ErrorDetail
-
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
-import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
-
-import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.clientproxy.TaxFacade
+import com.junbo.billing.clientproxy.impl.avalara.ResponseMessage
 import com.junbo.billing.clientproxy.impl.common.XmlConvertor
 import com.junbo.billing.clientproxy.impl.sabrix.*
+import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.enums.TaxAuthority
 import com.junbo.billing.spec.enums.TaxStatus
@@ -27,6 +19,7 @@ import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.TaxItem
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.error.ErrorDetail
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.async.JunboAsyncHttpClient.BoundRequestBuilder
@@ -39,7 +32,8 @@ import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
 import java.text.SimpleDateFormat
-
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 /**
  * Implementation of Sabrix facade to calculate tax & validate address.
  */
@@ -517,7 +511,7 @@ class SabrixFacadeImpl implements TaxFacade {
         String taxCalculationUrl = configuration.baseUrl + 'sabrix/xmlinvoice'
         String content = xmlConvertor.getXml(batch)
         def requestBuilder = buildRequest(taxCalculationUrl, content)
-        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+        return requestBuilder.execute().recover { Throwable throwable ->
             LOGGER.error('Error_Build_Sabrix_Request.', throwable)
             return Promise.pure(null)
         }.then { Response response ->
@@ -620,7 +614,7 @@ class SabrixFacadeImpl implements TaxFacade {
         String validateAddressUrl = configuration.baseUrl + 'sabrix/addressvalidation'
         String content = xmlConvertor.getXml(address)
         def requestBuilder = buildRequest(validateAddressUrl, content)
-        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+        return requestBuilder.execute().recover { Throwable throwable ->
             LOGGER.error('Error_Build_Sabrix_Request.', throwable)
             throw AppErrors.INSTANCE.addressValidationError().exception()
         }.then { Response response ->
@@ -684,7 +678,7 @@ class SabrixFacadeImpl implements TaxFacade {
         String vatIdValidation = configuration.baseUrl + 'sabrix-extensions/registrationvalidation'
         String content = xmlConvertor.getXml(request)
         def requestBuilder = buildRequest(vatIdValidation, content)
-        return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
+        return requestBuilder.execute().recover { Throwable throwable ->
             LOGGER.error('Error_Build_Sabrix_Request.', throwable)
             return Promise.pure(null)
         }.then { Response response ->

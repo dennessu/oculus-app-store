@@ -17,9 +17,10 @@ import java.util.Set;
 public class OfferAttributesGetOptions extends PageableGetOptions {
     @QueryParam("attributeId")
     private Set<String> attributeIds;
-
     @QueryParam("type")
     private String attributeType;
+    @QueryParam("locale")
+    private String locale;
 
     public Set<String> getAttributeIds() {
         return attributeIds;
@@ -35,5 +36,13 @@ public class OfferAttributesGetOptions extends PageableGetOptions {
 
     public void setAttributeType(String attributeType) {
         this.attributeType = attributeType;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

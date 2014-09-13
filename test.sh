@@ -32,7 +32,7 @@ set -o pipefail
 
 cd ./scripts/unittests/
 mkdir -p logs
-python ./supercycle_suite.py | tee logs/supercycle_suite.log
+python ./supercycle_suite.py 2>&1 | tee logs/supercycle_suite.log
 
 trap - EXIT INT TERM
 cleanup

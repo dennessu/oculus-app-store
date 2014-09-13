@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.junbo.test.catalog.impl.ItemAttributeServiceImpl.*;
+
 /**
  * Created by weiyu_000 on 8/6/14.
  */
@@ -50,7 +52,7 @@ public abstract class BaseTestClass {
     protected OfferService offerService;
     protected OfferRevisionService offerRevisionService;
     protected OfferAttributeService offerAttributeService;
-    protected ItemAttributeService itemAttributeService;
+    protected final ThreadLocal<ItemAttributeService> itemAttributeService = new ThreadLocal<>();
     protected OAuthService oAuthTokenService;
     protected int listItemPageSize = 2;
 
@@ -106,8 +108,14 @@ public abstract class BaseTestClass {
         offerService = OfferServiceImpl.instance();
         offerRevisionService = OfferRevisionServiceImpl.instance();
         offerAttributeService = OfferAttributeServiceImpl.instance();
-        itemAttributeService = ItemAttributeServiceImpl.instance();
+        itemAttributeService.set(instance());
         oAuthTokenService = OAuthServiceImpl.getInstance();
+        if (ConfigHelper.getSetting("testdata.items.featuredoffer") != null) {
+            itemsInFeaturedOffer = Arrays.asList(ConfigHelper.getSetting("testdata.items.featuredoffer").split(","));
+        }
+        if (ConfigHelper.getSetting("testdata.items.featureditem") != null) {
+            itemsInFeaturedItem = Arrays.asList(ConfigHelper.getSetting("testdata.items.featureditem").split(","));
+        }
     }
 
     StoreTestDataProvider testDataProvider = new StoreTestDataProvider();

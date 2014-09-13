@@ -7,15 +7,24 @@
 
     <wf:flow id="endSessionFlow">
         <wf:action-state id="logout">
+            <wf:action ref="validateLocale" />
+            <wf:action ref="validateCountry" />
             <wf:action ref="logout"/>
             <wf:transition on="redirectToConfirmation" to="redirectToConfirmation"/>
             <wf:transition on="redirectToLogoutRedirectUri" to="redirectClearCookie"/>
-            <wf:transition on="clearCookie" to="clearCookie"/>
+            <wf:transition on="redirectWithoutClearCookie" to="redirectWithoutClearCookie"/>
         </wf:action-state>
 
         <wf:view-state id="redirectToConfirmation">
             <wf:on-render>
-                <wf:action ref="redirect"/>
+                <wf:action ref="redirectToConfirm"/>
+            </wf:on-render>
+            <wf:transition on="*" to="logoutConfirmView"/>
+        </wf:view-state>
+
+        <wf:view-state id="logoutConfirmView">
+            <wf:on-render>
+                <wf:action ref="logoutConfirmView"/>
             </wf:on-render>
             <wf:transition on="yes" to="redirectClearCookie"/>
             <wf:transition on="no" to="redirectWithoutClearCookie"/>
@@ -33,13 +42,11 @@
                 <wf:action ref="redirect"/>
             </wf:on-entry>
         </wf:end-state>
-
-        <wf:end-state id="clearCookie">
-            <wf:on-entry>
-                <wf:action ref="clearLoginCookies"/>
-            </wf:on-entry>
-        </wf:end-state>
-
     </wf:flow>
 
+    <bean id="redirectToConfirm" class="com.junbo.oauth.core.view.RedirectToPage">
+        <property name="pageUrl" value="${oauth.core.portal.logoutConfirmationUri}"/>
+    </bean>
+
+    <bean id="logoutConfirmView" class="com.junbo.oauth.core.view.LogoutConfirmView"/>
 </beans>

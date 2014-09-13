@@ -87,11 +87,11 @@ public class PaymentClientProxyTest extends BaseTest {
         Assert.assertNotNull(result2.getId());
         PaymentInstrumentSearchParam searchParam = new PaymentInstrumentSearchParam();
         searchParam.setUserId(userId);
-        Results<PaymentInstrument> results = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).get();
+        Results<PaymentInstrument> results = piClient.searchPaymentInstrument(searchParam).get();
         Assert.assertTrue(results.getItems().size() > 1);
         piClient.delete(new PaymentInstrumentId(result.getId())).get();
         searchParam.setType(PIType.CREDITCARD.toString());
-        Results<PaymentInstrument> results2 = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).get();
+        Results<PaymentInstrument> results2 = piClient.searchPaymentInstrument(searchParam).get();
         Assert.assertEquals(results.getItems().size(), results2.getItems().size() + 1);
     }
 
@@ -222,7 +222,7 @@ public class PaymentClientProxyTest extends BaseTest {
         final PaymentInstrument result2 = piClient.postPaymentInstrument(pi2).get();
         PaymentInstrumentSearchParam searchParam = new PaymentInstrumentSearchParam();
         searchParam.setUserId(userId);
-        Results<PaymentInstrument> results = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).get();
+        Results<PaymentInstrument> results = piClient.searchPaymentInstrument(searchParam).get();
         Assert.assertEquals(results.getItems().size(), 2);
         PaymentInstrument walletPI;
         if(results.getItems().get(0).getType().equals(PIType.STOREDVALUE.getId())){

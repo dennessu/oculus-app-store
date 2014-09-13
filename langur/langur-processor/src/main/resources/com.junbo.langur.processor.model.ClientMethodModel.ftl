@@ -1,18 +1,6 @@
 [#-- @ftlvariable name="" type="com.junbo.langur.processor.model.ClientMethodModel" --]
 
 public Promise<${returnType}> ${methodName}([#list parameters as parameter]final ${parameter.paramType} ${parameter.paramName}[#if parameter_has_next], [/#if][/#list]) {
-    final long __startTime = System.currentTimeMillis();
-    final Date __startDate = new Date();
-
-    if (org.springframework.util.StringUtils.isEmpty(__machineName)) {
-        try {
-            java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-            __machineName = localMachine.getHostName();
-        } catch (java.net.UnknownHostException unknownHostEx) {
-            LOGGER.error("No Host can be detected");
-        }
-    }
-    final java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     final javax.ws.rs.core.UriBuilder __uriBuilder = UriBuilder.fromUri(__target);
     __uriBuilder.path("${path}");
@@ -73,13 +61,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
             @Override
             public Promise<${returnType}> apply() {
                 __router.resolveDataAccessPolicy(${interfaceType}.class);
-                return __service.${methodName}([#list parameters as parameter]${parameter.paramName}[#if parameter_has_next], [/#if][/#list]).then(new Promise.Func<${returnType}, Promise<${returnType}>>() {
-                    @Override
-                    public Promise<${returnType}> apply(${returnType} __result) {
-                        LOGGER.info("(InProc) Method: ${methodName}\t" +(System.currentTimeMillis() - __startTime) + "ms\t" + df.format(__startDate) + "\t" +  __target + "\t" + __uriBuilder.toTemplate().replace(__target, "") + "\t" + __machineName);
-                        return Promise.pure(__result);
-                    }
-                });
+                return __service.${methodName}([#list parameters as parameter]${parameter.paramName}[#if parameter_has_next], [/#if][/#list]);
             }
         });
     }
@@ -95,9 +77,8 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
     Promise<Response> __future;
 
     try {
-        __future = Promise.wrap(asGuavaFuture(__client.executeRequest(__request)));
+        __future = __client.executeRequest(__request);
     } catch (java.io.IOException ex) {
-        LOGGER.error("(Remote) Method: ${methodName}\t" +(System.currentTimeMillis() - __startTime) + "ms\t" + df.format(__startDate) + "\t" +  __target + "\t" + __uriBuilder.toTemplate().replace(__target, "") + "\t" + __machineName);
         throw new RuntimeException(ex);
     }
 
@@ -108,8 +89,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
                 __responseHandler.onResponse(response);
             }
 
-        LOGGER.info("(Remote) Method: ${methodName}\t" +(System.currentTimeMillis() - __startTime) + "ms\t" + df.format(__startDate) + "\t" +  __target + "\t" + __uriBuilder.toTemplate().replace(__target, "") + "\t" + __machineName);
-        if (response.getStatusCode() / 100 == 2) {
+            if (response.getStatusCode() / 100 == 2) {
                 try {
                     return Promise.pure(__transcoder.<${returnType}>decode(new TypeReference<${returnType}>() {}, response.getResponseBody()));
                 } catch (java.io.IOException ex) {

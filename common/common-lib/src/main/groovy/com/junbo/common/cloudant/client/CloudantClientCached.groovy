@@ -9,11 +9,9 @@ import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import net.spy.memcached.MemcachedClientIF
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 /**
  * CloudantClient.
  */
@@ -29,7 +27,7 @@ class CloudantClientCached implements CloudantClientInternal {
     private static CloudantClientImpl impl = CloudantClientImpl.instance()
     private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
 
-    private static MemcachedClientIF memcachedClient = JunboMemcachedClient.instance()
+    private static JunboMemcachedClient memcachedClient = JunboMemcachedClient.instance()
     private Integer expiration
     private Integer maxEntitySize
     private boolean storeViewResults
@@ -149,8 +147,8 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
-        Promise<CloudantQueryResult> future = impl.search(dbUri, entityClass, searchName, queryString, limit, bookmark, includeDocs)
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, String sort, Integer limit, String bookmark, boolean includeDocs) {
+        Promise<CloudantQueryResult> future = impl.search(dbUri, entityClass, searchName, queryString, sort, limit, bookmark, includeDocs)
         if (includeDocs && storeViewResults) {
             future = updateCache(dbUri, entityClass, future)
         }

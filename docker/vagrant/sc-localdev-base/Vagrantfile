@@ -35,7 +35,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     apt-get update -qq
     apt-get remove -qqy puppet chef
     apt-get upgrade -y --force-yes
-    apt-get install -qqy --force-yes git tmux lsof vim htop iftop nload p7zip-full ack-grep httpie postgresql-client-9.3 python-software-properties php5-curl php5-cli cifs-utils
+    apt-get install -qqy --force-yes git tmux lsof vim htop iftop nload p7zip-full ack-grep httpie postgresql-client-9.3 python-software-properties php5-curl php5-cli nodejs cifs-utils
+    ln -s /usr/bin/nodejs /usr/bin/node
 
     # Install jdk7
     add-apt-repository -y ppa:webupd8team/java
@@ -46,13 +47,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     apt-get install -qqy --force-yes oracle-java7-installer
     rm -f /var/cache/oracle-jdk7-installer/*.tar.gz
 
-    # Install gradle 2.0
+    # Install gradle 2.1
     echo "Installing Gradle, downloading zip from official site"
-    wget -q -O /tmp/gradle-2.0-bin.zip https://services.gradle.org/distributions/gradle-2.0-bin.zip
-    7z x -y -o/opt /tmp/gradle-2.0-bin.zip
-    chmod 755 /opt/gradle-2.0
-    echo 'export PATH=$PATH:/opt/gradle-2.0/bin' >> /home/vagrant/.bashrc
-    rm -f /opt/gradle-2.0-bin.zip
+    wget -q -O /tmp/gradle-2.1-bin.zip https://services.gradle.org/distributions/gradle-2.1-bin.zip
+    7z x -y -o/opt /tmp/gradle-2.1-bin.zip
+    chmod 755 /opt/gradle-2.1
+    echo 'export PATH=$PATH:/opt/gradle-2.1/bin' >> /home/vagrant/.bashrc
+    rm -f /opt/gradle-2.1-bin.zip
 
     # Install arcanist
     echo "Installing arcanist"

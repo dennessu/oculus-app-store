@@ -164,7 +164,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     public OfferRevision update(OfferRevision revision, OfferRevision oldRevision) {
         OfferRevision updatedRevision = cloudantPutSync(revision, oldRevision);
         CacheFacade.OFFER_REVISION.put(updatedRevision.getRevisionId(), updatedRevision);
-        if (Status.APPROVED.is(revision.getStatus())) {
+        if (Status.APPROVED.is(revision.getStatus()) || Status.OBSOLETE.is(revision.getStatus())) {
             CacheFacade.OFFER_CONTROL.evict(updatedRevision.getOfferId());
         }
         return updatedRevision;

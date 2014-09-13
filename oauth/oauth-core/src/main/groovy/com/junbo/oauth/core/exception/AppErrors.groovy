@@ -59,7 +59,7 @@ interface AppErrors {
     AppError invalidAuthorization()
 
     @ErrorDef(httpStatusCode = 400, code = '111', message = 'Invalid Post Logout RedirectUri', reason = 'The post_logout_redirect_uri {0} is invalid',
-            field = 'conversationId')
+            field = 'post_logout_redirect_uri')
     AppError invalidPostLogoutRedirectUri(String postLogoutRedirectUri)
 
     @ErrorDef(httpStatusCode = 412, code = '112', message = 'Insufficient Scope',
@@ -184,4 +184,10 @@ interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = '139', message = 'Error Calling Recaptcha',
             reason = 'Error happened when calling recaptcha server', field = 'recaptcha')
     AppError errorCallingRecaptcha()
+
+    @ErrorDef(httpStatusCode = 412, code = '140', message = 'Reset Password Code already used')
+    AppError resetPasswordCodeAlreadyUsed()
+
+    @ErrorDef(httpStatusCode = 412, code = '141', message = 'User does not have phone in his/her profile')
+    AppError phoneNotFound()
 }

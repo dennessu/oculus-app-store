@@ -54,7 +54,8 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
                         context.getCountry()).exception();
             }
 
-            if (item.getQuantity() > 1 && containsSpecificTypeGoods(item.getOffer(), context.getTimestamp(),                    ItemType.APP, ItemType.DOWNLOADED_ADDITION)){
+            if (item.getQuantity() > 1 && containsSpecificTypeGoods(item.getOffer(), context.getTimestamp(),
+                    ItemType.APP, ItemType.DOWNLOADED_ADDITION, ItemType.VIDEO, ItemType.PHOTO)){
                 throw AppErrors.INSTANCE.incorrectQuantity(item.getOfferId(), item.getQuantity()).exception();
             }
         }
@@ -63,8 +64,10 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
     protected boolean containsSpecificTypeGoods(RatingOffer offer, String timestamp, ItemType... types) {
         for (LinkedEntry entry : offer.getItems()) {
             Item item = catalogGateway.getItem(entry.getEntryId());
-            if (ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType())) {
-                return true;
+            for (ItemType itemType : types) {
+                if (itemType.is(item.getType())) {
+                    return true;
+                }
             }
         }
         for (LinkedEntry entry : offer.getSubOffers()) {
@@ -197,7 +200,7 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
 
         Map<String, Properties> countries = offer.getCountries();
         if (!countries.containsKey(country) || countries.get(country).getReleaseDate() == null) {
-            throw AppErrors.INSTANCE.missingConfiguration("releaseDate").exception();
+            return BigDecimal.ZERO;
         }
 
         if (Utils.now().after(countries.get(country).getReleaseDate())) {

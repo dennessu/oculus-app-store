@@ -12,7 +12,7 @@ import javax.ws.rs.NotSupportedException
 enum TFAVerifyType implements Identifiable<Short> {
     CALL((short)1),
     SMS((short)2),
-    MAIL((short)3)
+    EMAIL((short)3)
 
     private final Short id
 

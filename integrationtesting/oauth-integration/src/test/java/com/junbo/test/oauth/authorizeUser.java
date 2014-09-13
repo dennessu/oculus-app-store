@@ -189,7 +189,7 @@ public class authorizeUser {
         //String email = "silkcloudtest+allEnvLoginUser@gmail.com";
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, true);
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
         HttpclientHelper.ResetHttpClient();
@@ -273,6 +273,32 @@ public class authorizeUser {
         String loginResponseLink = Oauth.UserLogin(cid, userName, newPassword);
         String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
+    }
+
+    @Test(groups = "dailies")
+    public void verifyEmailTwiceEnsureTheSecondFail() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, true, true);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
     }
 
     private static void ValidateErrorFreeResponse(String responseString) throws Exception {

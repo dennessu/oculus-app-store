@@ -5,30 +5,33 @@
  */
 package com.junbo.test.buyerscenario;
 
-import com.junbo.common.error.*;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserLoginName;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.common.Utility.TestClass;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.property.*;
-
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
 import com.junbo.test.identity.Identity;
-import org.testng.annotations.Test;
 import org.testng.Assert;
+import org.testng.annotations.Test;
+
 import java.util.List;
+
 
 /**
   * @author Jason
@@ -87,8 +90,9 @@ public class UserPortal extends BaseTestClass {
     @Test
     // Fix https://oculus.atlassian.net/browse/SER-368
     public void testPostUserDefaultPI() throws Exception {
+        UserInfo randomUser = UserInfo.getRandomUserInfo();
         UserService us = UserServiceImpl.instance();
-        String userPostId = us.PostUser();
+        String userPostId = us.PostUser(randomUser);
 
         Assert.assertNotNull(Master.getInstance().getUser(userPostId));
         Assert.assertNotNull(Master.getInstance().getUser(userPostId).getUsername());
@@ -119,5 +123,11 @@ public class UserPortal extends BaseTestClass {
         user.setDefaultPI(new PaymentInstrumentId(IdConverter.hexStringToId(PaymentInstrumentId.class, ewalletInfoId)));
         userPutId = us.PutUser(userPutId, user);
         assert userPutId.equalsIgnoreCase(userPostId);
+
+        List<String> userIds = us.GetCurrentUserByUserName(randomUser.getUserName(), 403);
+        assert userIds == null;
+
+        userIds = us.GetUserByUserName("", 200);
+        assert userIds.size() == 0;
     }
 }

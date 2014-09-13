@@ -40,4 +40,12 @@ class CloudantUri {
     public String toString() {
         return value;
     }
+
+    public String getDetail() {
+        return String.format("URL [%s] | DC [%s] | Username [%s]", value, dc, username);
+    }
+
+    public String getKey() {
+        return String.format("%s#%s", value, username);
+    }
 }

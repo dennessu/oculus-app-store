@@ -2,6 +2,16 @@
 
 # please put the file under the batch directory: ${payment.jobs.batch.batchDirectory}
 
+if [ ! $# -eq 3 ]
+then
+    echo "usage: $0 username password downloadURL"
+    exit
+fi
+
+username=$1
+password=$2
+url=$3
+
 file_name="index.txt"
 if [ ! -f $file_name ] 
 then
@@ -21,7 +31,7 @@ download_index=$(($index + 1))
 batch_name=$batch_prefix$download_index$batch_format
 echo "download file: $batch_name"
 
-curl -O -u report@Company.Oculus:passw0rdpasswordpassw0rd https://ca-test.adyen.com/reports/download/MerchantAccount/OculusCOM/$batch_name
+curl -O -u $username:$password $url/$batch_name
 
 if [ -f $batch_name ] 
 then

@@ -7,6 +7,7 @@ package com.junbo.common.util;
 
 import com.junbo.common.routing.model.DataAccessPolicy;
 import com.junbo.configuration.topo.Topology;
+import com.junbo.langur.core.profiling.ProfilingHelper;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.promise.ThreadLocalRequireNew;
 import groovy.lang.Closure;
@@ -76,6 +77,7 @@ public class Context {
 
         public void setDataAccessPolicy(DataAccessPolicy dataAccessPolicy) {
             this.dataAccessPolicy = dataAccessPolicy;
+            ProfilingHelper.appendRow(logger, "setDataAccessPolicy to %s", dataAccessPolicy);
         }
 
         /**

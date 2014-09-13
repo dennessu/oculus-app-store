@@ -7,12 +7,18 @@ package com.junbo.langur.core.async;
 
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
+import com.junbo.langur.core.profiling.ProfilingHelper;
+import com.junbo.langur.core.promise.Promise;
 import com.ning.http.client.*;
+import com.ning.http.client.providers.netty.NettyAsyncHttpProviderConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
+
+import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
 
 /**
  * JunboAsyncHttpClient is used to do logging in request.
@@ -32,12 +38,16 @@ public class JunboAsyncHttpClient implements Closeable {
         ConfigService configService = ConfigServiceManager.instance();
 
         AsyncHttpClientConfigBean config = new AsyncHttpClientConfigBean();
+        NettyAsyncHttpProviderConfig nettyConfig = new NettyAsyncHttpProviderConfig();
+        int maxHeadersSize = Integer.parseInt(configService.getConfigValue("common.client.maxHeadersSize"));
+        nettyConfig.addProperty(NettyAsyncHttpProviderConfig.HTTP_CLIENT_CODEC_MAX_HEADER_SIZE, maxHeadersSize);
+        nettyConfig.addProperty(NettyAsyncHttpProviderConfig.HTTPS_CLIENT_CODEC_MAX_HEADER_SIZE, maxHeadersSize);
 
         config.setConnectionTimeOutInMs(Integer.parseInt(configService.getConfigValue("common.client.connectionTimeout")));
         config.setRequestTimeoutInMs(Integer.parseInt(configService.getConfigValue("common.client.requestTimeout")));
         config.setMaxConnectionPerHost(Integer.parseInt(configService.getConfigValue("common.client.maxConnectionPerHost")));
         config.setCompressionEnabled(true);
-
+        config.setProviderConfig(nettyConfig);
 
         this.asyncHttpClient = new AsyncHttpClient(new UTF8NettyAsyncHttpProvider(config), config);
         this.isDebugMode = "true".equalsIgnoreCase(configService.getConfigValue("common.conf.debugMode"));
@@ -59,7 +69,7 @@ public class JunboAsyncHttpClient implements Closeable {
             super(BoundRequestBuilder.class, prototype);
         }
 
-        public ListenableFuture<Response> execute() throws IOException {
+        public Promise<Response> execute() throws IOException {
             return JunboAsyncHttpClient.this.executeRequest(build());
         }
 
@@ -91,7 +101,7 @@ public class JunboAsyncHttpClient implements Closeable {
                     sb.append("\n\trequest body: ");
                     sb.append(req.getStringData());
                 }
-                logger.trace(sb.toString());
+                logger.debug(sb.toString());
             }
             return req;
         }
@@ -141,8 +151,42 @@ public class JunboAsyncHttpClient implements Closeable {
         return requestBuilder(request);
     }
 
-    public ListenableFuture<Response> executeRequest(Request request) throws IOException {
-        return asyncHttpClient.executeRequest(request, new AsyncLoggedHandler(request.getURI().toString()));
+    public Promise<Response> executeRequest(final Request request) throws IOException {
+        ProfilingHelper.appendRow(null, "(HTTP) BEGIN %s %s", request.getMethod(), request.getURI());
+        try {
+            Promise<Response> response = Promise.wrap(asGuavaFuture(
+                    asyncHttpClient.executeRequest(request, new AsyncLoggedHandler(request.getMethod(), request.getURI().toString()))));
+            if (ProfilingHelper.isProfileEnabled()) {
+                response = response.then(new Promise.Func<Response, Promise<Response>>() {
+                    @Override
+                    public Promise<Response> apply(Response response) {
+                        if (ProfilingHelper.isProfileEnabled()) {
+                            String profilingOutput = response.getHeaders().getJoinedValue(ProfilingHelper.PROFILE_OUTPUT_KEY, "");
+                            if (!StringUtils.isEmpty(profilingOutput)) {
+                                ProfilingHelper.beginScope(null, null);
+                                ProfilingHelper.appendRaw(profilingOutput);
+                                ProfilingHelper.endScope(null, null);
+                            }
+                        }
+                        ProfilingHelper.appendRow(null, "(HTTP) END resp: %s %s %d %s", request.getMethod(), request.getUrl(), response.getStatusCode(), response.getStatusText());
+                        return Promise.pure(response);
+                    }
+                }).recover(new Promise.Func<Throwable, Promise<Response>>() {
+                    @Override
+                    public Promise<Response> apply(Throwable t) {
+                        ProfilingHelper.appendRow(null, "(HTTP) EXCEPT resp: %s %s %s %s", request.getMethod(), request.getUrl(), t.getClass().getSimpleName(), t.getMessage());
+                        if (t instanceof RuntimeException) {
+                            throw (RuntimeException) t;
+                        }
+                        throw new RuntimeException(t);
+                    }
+                });
+            }
+            return response;
+        } catch (Throwable ex) {
+            ProfilingHelper.appendRow(null, "(HTTP) EXCEPT resp: %s %s %s %s", request.getMethod(), request.getUrl(), ex.getClass().getSimpleName(), ex.getMessage());
+            throw ex;
+        }
     }
 
     public BoundRequestBuilder requestBuilder(String reqType, String url) {

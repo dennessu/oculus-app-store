@@ -195,8 +195,8 @@ public class StoreValidationHelper extends BaseValidationHelper {
         }
     }
 
-    public void verifyReview(Review review, CaseyReview caseyReview, StoreUserProfile storeUserProfile) {
-        Assert.assertEquals(review.getAuthorName(), storeUserProfile.getNickName());
+    public void verifyReview(Review review, CaseyReview caseyReview, String expectedName) {
+        Assert.assertEquals(review.getAuthorName(), expectedName);
         Assert.assertEquals(review.getContent(), caseyReview.getReview());
         Assert.assertEquals(review.getTitle(), caseyReview.getReviewTitle());
         Assert.assertEquals(review.getStarRatings().size(), caseyReview.getRatings().size());

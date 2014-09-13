@@ -3,8 +3,10 @@ import com.junbo.catalog.spec.enums.OfferAttributeType
 import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.enums.Status
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
+import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
+import com.junbo.catalog.spec.model.attribute.OfferAttributeGetOptions
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
@@ -479,7 +481,7 @@ class CatalogBrowseUtils {
 
     private Promise<ItemAttribute> getItemAttribute(String attributeId) {
         Promise.pure().then {
-            resourceContainer.itemAttributeResource.getAttribute(attributeId)
+            resourceContainer.itemAttributeResource.getAttribute(attributeId, new ItemAttributeGetOptions())
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_Get_ItemAttribute_Fail, attribute={}', attributeId, ex)
             return Promise.pure()
@@ -488,7 +490,7 @@ class CatalogBrowseUtils {
 
     private Promise<OfferAttribute> getOfferAttribute(String attributeId) {
         Promise.pure().then {
-            resourceContainer.offerAttributeResource.getAttribute(attributeId)
+            resourceContainer.offerAttributeResource.getAttribute(attributeId, new OfferAttributeGetOptions())
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_Get_OfferAttribute_Fail, attribute={}', attributeId, ex)
             return Promise.pure()

@@ -170,11 +170,23 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             LOGGER.error("Error updating offer-revision. ", exception);
             throw exception;
         }
-        if (Status.APPROVED.is(oldRevision.getStatus())) {
+
+        // obsolete is the final status
+        if (Status.OBSOLETE.is(oldRevision.getStatus())) {
+            AppErrorException exception = AppCommonErrors.INSTANCE.invalidOperation("Cannot update an obsolete revision").exception();
+            LOGGER.error("Error updating offer-revision. ", exception);
+            throw exception;
+            // approved status can only be changed to obsolete
+        } else if (Status.APPROVED.is(oldRevision.getStatus()) && !Status.OBSOLETE.is(revision.getStatus())) {
             AppErrorException exception = AppCommonErrors.INSTANCE.invalidOperation("Cannot update an approved revision").exception();
             LOGGER.error("Error updating offer-revision. ", exception);
             throw exception;
         }
+
+        if (Status.OBSOLETE.is(revision.getStatus())) {
+            return obsoleteRevision(oldRevision, revision);
+        }
+
         if (Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus())) {
             revisionValidator.validateFull(revision, oldRevision);
             generateEventActions(revision);
@@ -182,7 +194,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             if (Status.APPROVED.is(revision.getStatus())) {
                 Long timestamp = Utils.currentTimestamp();
                 revision.setTimestamp(timestamp);
-                if (revision.getStartTime() == null || revision.getCreatedTime().getTime() < timestamp) {
+                if (revision.getStartTime() == null || revision.getStartTime().getTime() < timestamp) {
                     revision.setStartTime(new Date(timestamp));
                 }
 
@@ -191,7 +203,41 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         } else {
             revisionValidator.validateUpdateBasic(revision, oldRevision);
         }
+
         return offerRevisionRepo.update(revision, oldRevision);
+    }
+
+    private OfferRevision obsoleteRevision(OfferRevision oldRevision, OfferRevision revision) {
+        if (!Status.APPROVED.is(oldRevision.getStatus())) {
+            AppErrorException exception = AppCommonErrors.INSTANCE.invalidOperation("Cannot obsolete an non-approved revision").exception();
+            LOGGER.error("Error updating offer-revision. ", exception);
+            throw exception;
+        }
+        revisionValidator.validateFull(revision, oldRevision);
+        revision = oldRevision;
+        revision.setStatus(Status.OBSOLETE.name());
+        Long timestamp = Utils.currentTimestamp();
+        if (revision.getEndTime() == null || revision.getEndTime().getTime() > timestamp) {
+            revision.setEndTime(new Date(timestamp));
+            updateOfferForObsoleteRevision(revision, timestamp);
+        }
+
+        return offerRevisionRepo.update(revision, oldRevision);
+    }
+
+    private void updateOfferForObsoleteRevision(OfferRevision revision, Long timestamp) {
+        Offer offer = getEntity(revision.getOfferId());
+        if (revision.getRevisionId().equals(offer.getCurrentRevisionId())) {
+            offer.setCurrentRevisionId(null);
+            offer.setActiveRevision(null);
+        }
+        if (offer.getApprovedRevisions() != null) {
+            RevisionInfo revisionInfo = offer.getApprovedRevisions().get(revision.getRevisionId());
+            if (revisionInfo != null) {
+                revisionInfo.setEndTime(timestamp);
+            }
+        }
+        offerRepo.update(offer, offer);
     }
 
     private void updateOfferForApprovedRevision(OfferRevision revision, Long timestamp) {
@@ -212,7 +258,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
         // set activeRevision for index
         if (revision.getStartTime().getTime() <= timestamp
-                && (revision.getEndTime() == null || revision.getEndTime().getTime() >= timestamp)) {
+                && (revision.getEndTime() == null || revision.getEndTime().getTime() > timestamp)) {
             offer.setActiveRevision(revision);
         }
         if (offer.getApprovedRevisions() == null) {
@@ -429,6 +475,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                     || ItemType.PERMANENT_UNLOCK.is(item.getType())
                     || ItemType.CONSUMABLE_UNLOCK.is(item.getType())
                     || ItemType.SUBSCRIPTION.is(item.getType())
+                    || ItemType.VIDEO.is(item.getType())
+                    || ItemType.PHOTO.is(item.getType())
                     ) && !definedActions.get(itemEntry.getItemId()).contains(ActionType.GRANT_ENTITLEMENT.name())) {
                 Action action = new Action();
                 action.setType(ActionType.GRANT_ENTITLEMENT.name());

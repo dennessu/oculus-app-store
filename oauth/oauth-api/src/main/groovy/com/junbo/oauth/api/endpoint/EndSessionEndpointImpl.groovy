@@ -69,7 +69,7 @@ class EndSessionEndpointImpl implements EndSessionEndpoint {
 
         // Parse the conversation id and event
         String conversationId = uriInfo.queryParameters.getFirst(OAuthParameters.CONVERSATION_ID)
-        String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT)
+        String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT)?: ''
 
         // if the conversation id is empty, start a new conversation in the flowExecutor.
         if (StringUtils.isEmpty(conversationId)) {

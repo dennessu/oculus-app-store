@@ -33,7 +33,8 @@ echo "## psql dbs created."
 python $SC_APP_DIR/dbsetup/couchdb/couchdbcmd.py createdbs $SC_ENVIRONMENT --prefix=$SC_CLOUDANT_PREFIX --yes --key=D58BA755FF96B35A6DABA7298F7A8CE2
 echo "## couchdb/cloudant dbs created."
 
-/var/silkcloud/apphost/dataloader.sh
+# disable memcached here, otherwise it would be slow to load data.
+JAVA_OPTS="-Dcommon.memcached.enabled=false" /var/silkcloud/apphost/dataloader.sh
 echo "## domain data loaded."
 
 echo "#### finished preparing databases."

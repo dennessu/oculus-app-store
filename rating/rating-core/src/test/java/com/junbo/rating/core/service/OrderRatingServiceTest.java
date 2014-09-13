@@ -107,6 +107,7 @@ public class OrderRatingServiceTest extends BaseTest {
         RatableItem item = new RatableItem();
         item.setOfferId("200L");
         item.setQuantity(1);
+        item.setShippingMethodId("400L");
         context.setItems(new HashSet<RatableItem>());
         context.getItems().add(item);
 
@@ -117,6 +118,7 @@ public class OrderRatingServiceTest extends BaseTest {
         Assert.assertEquals(result.getLineItems().size(), 1);
 
         Assert.assertEquals(result.getRatingSummary().getFinalAmount(), BigDecimal.ZERO);
+        Assert.assertEquals(result.getShippingSummary().getTotalShippingFee(), BigDecimal.TEN);
 
         item.setOfferId("107L");
         context.setItems(new HashSet<RatableItem>());

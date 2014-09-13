@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.core.io.Resource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 
+import javax.ws.rs.NotSupportedException
+
 /**
  * ApiDefinitionFileRepositoryImpl.
  */
@@ -36,6 +38,16 @@ class ApiDefinitionFileRepositoryImpl implements ApiDefinitionRepository, Initia
     @Override
     ApiDefinition getApi(String apiName) {
         return apiDefinitions[apiName]
+    }
+
+    @Override
+    ApiDefinition saveApi(ApiDefinition api) {
+        throw new NotSupportedException('create is not supported in file repository')
+    }
+
+    @Override
+    ApiDefinition updateApi(ApiDefinition api, ApiDefinition oldApi) {
+        throw new NotSupportedException('update is not supported in file repository')
     }
 
     @Override

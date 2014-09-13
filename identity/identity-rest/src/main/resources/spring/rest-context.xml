@@ -19,6 +19,7 @@
     <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" />
     <bean id="defaultTosResource" class="com.junbo.identity.rest.resource.v1.TosResourceImpl" />
     <bean id="defaultUserGroupMembershipResource" class="com.junbo.identity.rest.resource.v1.UserGroupMembershipResourceImpl"/>
+    <bean id="defaultUserLogResource" class="com.junbo.identity.rest.resource.v1.UserLogResourceImpl"/>
     <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionResourceImpl" />
     <bean id="defaultUserSecurityQuestionVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionVerifyAttemptResourceImpl" />
     <bean id="defaultUserTosAgreementResource" class="com.junbo.identity.rest.resource.v1.UserTosAgreementResourceImpl" />
@@ -46,6 +47,7 @@
     <bean id="defaultDeviceResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.DeviceResourceClientProxyFactory"/>
     <bean id="defaultTosResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.TosResourceClientProxyFactory"/>
     <bean id="defaultUserGroupMembershipResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserGroupMembershipResourceClientProxyFactory"/>
+    <bean id="defaultUserLogResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserLogResourceClientProxyFactory"/>
     <bean id="defaultUserSecurityQuestionResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserSecurityQuestionResourceClientProxyFactory"/>
     <bean id="defaultUserSecurityQuestionVerifyAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserSecurityQuestionVerifyAttemptResourceClientProxyFactory"/>
     <bean id="defaultUserTosAgreementResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxyFactory"/>
@@ -62,4 +64,5 @@
     <bean id="defaultOrganizationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxyFactory" />
     <bean id="defaultErrorInfoResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.ErrorInfoResourceClientProxyFactory" />
     <bean id="defaultMigrationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.MigrationResourceClientProxyFactory" />
+
 </beans>

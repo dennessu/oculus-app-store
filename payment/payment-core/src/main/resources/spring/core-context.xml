@@ -28,12 +28,9 @@
         <property name="companyName" value="${payment.provider.braintree.companyname}"/>
     </bean>
 
-    <bean id="brainTreeRestProviderService" class="com.junbo.payment.core.provider.braintree.BrainTreeRestProviderServiceImpl">
-        <property name="brainTreeResource" ref="brainTreeClient"/>
-    </bean>
-
     <bean id="walletProviderService" class="com.junbo.payment.core.provider.ewallet.EWalletProviderServiceImpl">
         <property name="walletClient" ref="paymentWalletProxy"/>
+        <property name="currencyClient" ref="currencyClient"/>
     </bean>
 
     <bean id="paypalProviderService" class="com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl">
@@ -68,7 +65,6 @@
         <property name="paymentProviderRepository" ref="paymentProviderRepository" />
     </bean>
 
-    <!-- regiester brainTreeRestProviderService for async and brainTreePaymentProviderService for sync call -->
     <bean id="paymentHandlerRegistry" class="com.junbo.payment.core.provider.impl.PaymentProviderRegistry">
         <property name="registry">
             <util:map id="handlerRegistryMap">

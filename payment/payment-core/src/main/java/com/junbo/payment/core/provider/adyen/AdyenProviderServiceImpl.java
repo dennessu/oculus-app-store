@@ -19,11 +19,11 @@ import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
-import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.Platform;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
+import com.junbo.payment.spec.internal.AdyenCallbackParams;
+import com.junbo.payment.spec.internal.CallbackParams;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.model.WebPaymentInfo;
@@ -49,12 +49,10 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
     @Override
     public void afterPropertiesSet(){
         try{
-            service = new PaymentLocator().getPaymentHttpPort(
-                new java.net.URL(paymentURL));
-            recurService = new RecurringLocator().getRecurringHttpPort(
-                new java.net.URL(recurringURL));
+            service = new PaymentLocator().getPaymentHttpPort(new java.net.URL(paymentURL));
+            recurService = new RecurringLocator().getRecurringHttpPort(new java.net.URL(recurringURL));
         }catch (Exception ex){
-            LOGGER.error("error set up adyen service");
+            LOGGER.error("error set up adyen service", ex);
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "setup service").exception();
         }
         //Basic HTTP Authentication:
@@ -117,9 +115,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                     String strRequest = getRedirectInfo(pi, paymentRequest);
                     paymentRequest.setWebPaymentInfo(new WebPaymentInfo());
                     paymentRequest.getWebPaymentInfo().setRedirectURL(redirectURL + "?" + strRequest);
-                    if(paymentRequest.getWebPaymentInfo() != null){
-                        paymentRequest.getWebPaymentInfo().setPlatform(paymentRequest.getWebPaymentInfo().getPlatform());
-                    }
+                    paymentRequest.getWebPaymentInfo().setPlatform(paymentRequest.getWebPaymentInfo().getPlatform());
                     paymentRequest.setStatus(PaymentStatus.UNCONFIRMED.toString());
                     return paymentRequest;
                 }else{
@@ -142,7 +138,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         try {
             result = recurService.listRecurringDetails(request);
         } catch (RemoteException e) {
-            LOGGER.error("error get recurring reference: " + e.toString());
+            LOGGER.error("error get recurring reference: ", e);
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
         }
         if(result != null && result.getDetails() != null && result.getDetails().length > 0){
@@ -194,6 +190,10 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         //recurringContract
         strToSign.append(RECURRING);
         strRequest.append("&recurringContract=" + RECURRING);
+        //merchantReturnData: output the billing ref id(order id)
+        String billingRefId = paymentRequest.getBillingRefId();
+        strToSign.append(billingRefId);
+        strRequest.append("&merchantReturnData=" + billingRefId);
          //signature
         String merchantSig = CommonUtil.calHMCASHA1(strToSign.toString(), skinSecret);
         strRequest.append("&merchantSig=" + CommonUtil.urlEncode(merchantSig));
@@ -243,7 +243,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         try {
             result = service.authorise(request);
         } catch (RemoteException e) {
-            LOGGER.error("error call Adyen authorise API.");
+            LOGGER.error("error call Adyen authorise API.", e);
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
         }
         if(result != null && result.getResultCode().equals("Authorised")){
@@ -272,7 +272,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                 try{
                     cancelResult = service.cancel(refundReq);
                 } catch (RemoteException e) {
-                    LOGGER.error("error call adyen cancel API.");
+                    LOGGER.error("error call adyen cancel API.", e);
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(cancelResult != null){
@@ -310,7 +310,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                 try{
                     refundResult = service.refund(refundReq);
                 } catch (RemoteException e) {
-                    LOGGER.error("error call adyen refund API.");
+                    LOGGER.error("error call adyen refund API.", e);
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(refundResult != null){
@@ -329,12 +329,18 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
     }
 
     @Override
-    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentCallbackParams properties){
+    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, CallbackParams properties){
         //validate signature: authResult + pspReference + merchantReference + skinCode + merchantReturnData
-        if(!CommonUtil.isNullOrEmpty(properties.getPspReference()) && !CommonUtil.isNullOrEmpty(properties.getAuthResult())){
-            String strToSign = properties.getAuthResult() + properties.getPspReference() +
-                    properties.getMerchantReference() + properties.getSkinCode();
-            if(!CommonUtil.calHMCASHA1(strToSign, skinSecret).equals(properties.getMerchantSig())){
+        AdyenCallbackParams callbackParams;
+        if(properties instanceof AdyenCallbackParams){
+            callbackParams = (AdyenCallbackParams)properties;
+        }else{
+            throw AppServerExceptions.INSTANCE.providerNotFound(properties.toString()).exception();
+        }
+        if(!CommonUtil.isNullOrEmpty(callbackParams.getPspReference()) && !CommonUtil.isNullOrEmpty(callbackParams.getAuthResult())){
+            String strToSign = callbackParams.getAuthResult() + callbackParams.getPspReference() +
+                    callbackParams.getMerchantReference() + callbackParams.getSkinCode() + callbackParams.getMerchantReturnData();
+            if(!CommonUtil.calHMCASHA1(strToSign, skinSecret).equals(callbackParams.getMerchantSig())){
                 LOGGER.error("Signature is not matched for:" + strToSign);
                 throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
             }
@@ -342,17 +348,17 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
             LOGGER.error("invalid callback: Info is empty or not enough.");
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "invalid callback").exception();
         }
-        if(properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
-            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString()), properties.getPspReference());
+        if(callbackParams.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
+            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString()), callbackParams.getPspReference());
             payment.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
-            payment.setExternalToken(properties.getPspReference());
+            payment.setExternalToken(callbackParams.getPspReference());
             //get the recurring info and save it back as pi external token:
             RecurringDetail recurringReference = getRecurringReference(payment.getPaymentInstrumentId());
             updatePIInfo(payment.getPaymentInstrumentId(), recurringReference);
         }else{
-            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.UNCONFIRMED.toString()), properties.getPspReference());
+            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.UNCONFIRMED.toString()), callbackParams.getPspReference());
             payment.setStatus(PaymentStatus.UNCONFIRMED.toString());
-            payment.setExternalToken(properties.getPspReference());
+            payment.setExternalToken(callbackParams.getPspReference());
         }
         return Promise.pure(payment);
     }
@@ -397,16 +403,17 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         checkAuthorization();
         //TODO: save to DB and check redundant notification. Log it first
         LOGGER.info("receive notification from ayden:" + request);
-        //
+
+        PaymentTransaction transaction = null;
         try{
-            process(request);
+            transaction = process(request);
         }catch (Exception ex){
-            LOGGER.error("process adyen notification error:" + ex.toString());
+            LOGGER.error("process adyen notification error:", ex);
         }
-        return Promise.pure(null);
+        return Promise.pure(transaction);
     }
 
-    private void process(String request) {
+    private PaymentTransaction process(String request) {
         //get results
         Map<String, String> notifies = new HashMap<>();
         String[] requests = request.split("&");
@@ -419,39 +426,29 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         AdyenNotifyRequest notify = CommonUtil.parseJson(CommonUtil.toJson(notifies, null), AdyenNotifyRequest.class);
         if(notify.getPspReference() == null){
             LOGGER.warn("no psp reference available");
-            return ;
+            return null;
+        }
+        String merchantAccount = notify.getMerchantAccountCode();
+        if(!notify.getSuccess().equalsIgnoreCase("true") || !merchantAccount.equalsIgnoreCase(this.merchantAccount)){
+            LOGGER.warn("notify failed or merchant account not match!");
+            return null;
         }
         Long paymentId = CommonUtil.decode(notify.getMerchantReference());
-        String merchantAccount = notify.getMerchantAccountCode();
-        PaymentTransaction transaction = paymentRepositoryFacade.getByPaymentId(paymentId);
-        if(transaction == null){
-            //Credit Card Auth use PIID as reference so no transaction would be found:
-            LOGGER.warn("cannot find payment transaction:" + paymentId);
-            return ;
+        PaymentTransaction transaction = new PaymentTransaction();
+        transaction.setId(paymentId);
+        transaction.setExternalToken(notify.getPspReference());
+        if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.AUTHORISATION.name())){
+            transaction.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CANCELLATION.name())){
+            transaction.setStatus(PaymentStatus.REVERSED.toString());
+        }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND.name())){
+            transaction.setStatus(PaymentStatus.REFUNDED.toString());
+        }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CAPTURE_FAILED.name())){
+            transaction.setStatus(PaymentStatus.SETTLE_DECLINED.toString());
+        }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND_FAILED.name())){
+            transaction.setStatus(PaymentStatus.REFUND_DECLINED.toString());
         }
-        String externalToken = notify.getPspReference();
-        if(notify.getSuccess().equalsIgnoreCase("true") && merchantAccount.equalsIgnoreCase(this.merchantAccount)
-                && externalToken.equalsIgnoreCase(transaction.getExternalToken())){
-            if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.AUTHORISATION.name())){
-                //Ignore of Credit Card Auth as CC use API call directly
-                if(!transaction.getPaymentProvider().equalsIgnoreCase(PaymentProvider.AdyenCC.toString())){
-                    paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                            PaymentStatus.SETTLEMENT_SUBMITTED.toString()), null);
-                }
-            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CANCELLATION.name())){
-                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.REVERSED.toString()), null);
-            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND.name())){
-                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.REFUNDED.toString()), null);
-            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CAPTURE_FAILED.name())){
-                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.SETTLE_DECLINED.toString()), null);
-            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND_FAILED.name())){
-                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.REFUND_DECLINED.toString()), null);
-            }
-        }
+        return transaction;
     }
 
     private void checkAuthorization() {

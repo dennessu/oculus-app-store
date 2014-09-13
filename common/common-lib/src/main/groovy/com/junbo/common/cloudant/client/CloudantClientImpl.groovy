@@ -27,8 +27,6 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
-
-import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 /**
  * CloudantClientImpl.
  */
@@ -277,9 +275,10 @@ class CloudantClientImpl implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, String sort, Integer limit, String bookmark, boolean includeDocs) {
         def searchRequest = new SearchRequest(
                 query: queryString,
+                sort: sort,
                 limit: limit,
                 bookmark: bookmark,
                 include_docs: includeDocs
@@ -323,7 +322,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         }
 
         try {
-            return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable e ->
+            return requestBuilder.execute().recover { Throwable e ->
                 throw new CloudantConnectException('Exception happened while executing request to cloudant DB', e)
             }
         } catch (IOException e) {
@@ -418,6 +417,9 @@ class CloudantClientImpl implements CloudantClientInternal {
                 if (cloudantError?.reason == "Invalid bookmark parameter supplied") {
                     throw AppCommonErrors.INSTANCE.parameterInvalid("cursor").exception();
                 }
+                if (cloudantError?.reason == "Value for limit is too large, must not exceed 200") {
+                    throw AppCommonErrors.INSTANCE.parameterInvalid("count", "Should not exceed 200").exception();
+                }
             }
 
             logger.error("Failed to $verb for view $viewName in CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason")
@@ -444,6 +446,7 @@ class CloudantClientImpl implements CloudantClientInternal {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     static class SearchRequest {
         String query
+        String sort
         Integer limit
         String bookmark
         Boolean include_docs

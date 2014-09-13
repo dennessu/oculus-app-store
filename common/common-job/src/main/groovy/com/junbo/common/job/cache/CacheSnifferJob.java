@@ -7,7 +7,6 @@ package com.junbo.common.job.cache;
 
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.memcached.JunboMemcachedClient;
-import net.spy.memcached.MemcachedClientIF;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.InitializingBean;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -26,7 +26,7 @@ import java.util.concurrent.*;
 public class CacheSnifferJob implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheSnifferJob.class);
 
-    private static MemcachedClientIF memcachedClient = JunboMemcachedClient.instance();
+    private static JunboMemcachedClient memcachedClient = JunboMemcachedClient.instance();
 
     private static final String FEED_SEPARATOR = "\r\n";
     private static final String SEQ_KEY = "seq";
@@ -67,18 +67,23 @@ public class CacheSnifferJob implements InitializingBean {
         int totalDatabases = 0;
 
         // collect all databases
+        Map<String, List<String>> databaseMap = new HashMap<>();
         for (CloudantUri cloudantUri : cloudantInstances) {
             List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri);
             totalDatabases += databases.size();
+
+            databaseMap.put(cloudantUri.getKey(), databases);
         }
 
         executor = Executors.newScheduledThreadPool(totalDatabases + MONITOR_THREADS);
 
         for (CloudantUri cloudantUri : cloudantInstances) {
-            List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri);
+            List<String> databases = databaseMap.get(cloudantUri.getKey());
 
             for (String database : databases) {
                 // listen database continuous feed
+                LOGGER.info("Start listening database [" + database + "] on instance [" + cloudantUri.getDetail() + "]");
+
                 listenDatabaseChanges(cloudantUri, database);
             }
         }

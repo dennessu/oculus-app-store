@@ -14,6 +14,7 @@
             <wf:transition on="PASSWORD" to="passwordBranch"/>
             <wf:transition on="REFRESH_TOKEN" to="refreshTokenBranch"/>
             <wf:transition on="CLIENT_CREDENTIALS" to="clientCredentialsBranch"/>
+            <wf:transition on="CLIENT_CREDENTIALS_WITH_USER_ID" to="clientCredentialsWithUserIdBranch"/>
         </wf:action-state>
 
         <wf:action-state id="authorizationCodeBranch">
@@ -39,6 +40,12 @@
         <wf:action-state id="clientCredentialsBranch">
             <wf:action ref="validateScope"/>
             <wf:action ref="grantTokenByClientCredentials"/>
+            <wf:transition on="*" to="grantRefreshToken"/>
+        </wf:action-state>
+
+        <wf:action-state id="clientCredentialsWithUserIdBranch">
+            <wf:action ref="validateScope"/>
+            <wf:action ref="grantTokenByUserId"/>
             <wf:transition on="*" to="grantRefreshToken"/>
         </wf:action-state>
 
