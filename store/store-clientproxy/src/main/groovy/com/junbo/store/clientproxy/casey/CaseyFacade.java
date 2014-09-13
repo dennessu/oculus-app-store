@@ -11,8 +11,8 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
 import com.junbo.store.spec.model.browse.ReviewsResponse;
 import com.junbo.store.spec.model.browse.document.AggregatedRatings;
+import com.junbo.store.spec.model.browse.document.Item;
 import com.junbo.store.spec.model.browse.document.SectionInfoNode;
-import com.junbo.store.spec.model.catalog.data.ItemData;
 import com.junbo.store.spec.model.external.casey.CaseyResults;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public interface CaseyFacade {
 
-    Promise<CaseyResults<ItemData>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext);
+    Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext);
 
     Promise<List<AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext);
 

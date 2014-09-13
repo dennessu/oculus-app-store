@@ -25,8 +25,6 @@ import com.junbo.store.spec.model.catalog.Offer
 import com.junbo.store.spec.model.catalog.data.CaseyData
 import com.junbo.store.spec.model.catalog.data.ItemData
 import com.junbo.store.spec.model.catalog.data.OfferData
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
-import com.junbo.store.spec.model.external.casey.CaseyResults
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -97,7 +95,7 @@ class CatalogFacadeImpl implements CatalogFacade {
                 }
             }
         }.then {
-            return getCaseyData(catalogItem.getId()).then { CaseyData caseyData ->
+            return getCaseyData(catalogItem.getId(), apiContext).then { CaseyData caseyData ->
                 result.caseyData = caseyData
                 return Promise.pure()
             }
@@ -167,29 +165,10 @@ class CatalogFacadeImpl implements CatalogFacade {
         }
     }
 
-    private Promise<CaseyData> getCaseyData(String itemId) {
+    private Promise<CaseyData> getCaseyData(String itemId, ApiContext apiContext) {
         CaseyData result = new CaseyData()
-        resourceContainer.caseyReviewResource.getRatingByItemId(itemId).then { CaseyResults<CaseyAggregateRating> results ->
-            result.aggregatedRatings = results.items.collect { CaseyAggregateRating rating ->
-                AggregatedRatings aggregatedRatings = new AggregatedRatings(
-                        type: rating.type,
-                        averageRating: rating.average,
-                        ratingsCount: rating.count,
-                )
-
-                Map<Integer, Long> histogram = new HashMap<>()
-                for (int i = 0; i < rating.histogram.length; i++) {
-                    histogram.put(i, rating.histogram[i])
-                }
-                aggregatedRatings.ratingsHistogram = histogram
-
-                return aggregatedRatings
-            }
-            return Promise.pure()
-        }.recover { Throwable throwable ->
-            LOGGER.error('name=Get_Casey_Fail', throwable)
-            return Promise.pure()
-        }.then {
+        caseyFacade.getAggregatedRatings(new ItemId(itemId), apiContext).then { List<AggregatedRatings> aggregatedRatings ->
+            result.aggregatedRatings = aggregatedRatings
             return Promise.pure(result)
         }
     }
