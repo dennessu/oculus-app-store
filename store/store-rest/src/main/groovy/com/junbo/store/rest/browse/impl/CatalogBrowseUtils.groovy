@@ -62,9 +62,6 @@ class CatalogBrowseUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogBrowseUtils)
 
-    @Resource(name = 'storeLocaleUtils')
-    private LocaleUtils localeUtils
-
     @Resource(name = 'storeOfferToItemCache')
     private Cache<OfferId, ItemId> storeOfferToItemCache
 
@@ -175,71 +172,6 @@ class CatalogBrowseUtils {
             return Promise.pure(result)
         }
     }
-
-    Promise<ReviewsResponse> getReviews(String itemId, UserId userId, String cursor, Integer count) {
-        ReviewSearchParams params = new ReviewSearchParams(
-                resourceType: 'item',
-                resourceId: itemId,
-                userId: userId,
-                cursor: cursor,
-                count: count
-        )
-
-        return resourceContainer.caseyReviewResource.getReviews(params).recover { Throwable ex ->
-            LOGGER.error('name=Get_Casey_Review_Fail', ex)
-            return Promise.pure()
-        }.then { CaseyResults<CaseyReview> results ->
-            if (results == null) {
-                return Promise.pure(new ReviewsResponse(
-                    reviews: []
-                ))
-            }
-
-            ReviewsResponse reviews = new ReviewsResponse()
-            if (!StringUtils.isEmpty(results.cursor)) {
-                reviews.next = new ReviewsResponse.NextOption(
-                        itemId: new ItemId(itemId),
-                        cursor: results.cursor,
-                        count: results.count
-                )
-            }
-
-            reviews.reviews = []
-            Promise.each(results.items) { CaseyReview caseyReview ->
-                Review review = new Review(
-                        self: new Link(id: caseyReview.self.id, href: caseyReview.self.href),
-                        title: caseyReview.reviewTitle,
-                        content: caseyReview.review,
-                        timestamp: caseyReview.postedDate
-                )
-                review.starRatings = [:] as Map<String, Integer>
-                for (CaseyReview.Rating rating : caseyReview.ratings) {
-                    review.starRatings[rating.type] = rating.score
-                }
-
-                Promise.pure().then {
-                    resourceContainer.userResource.get(new UserId(IdFormatter.decodeId(UserId, caseyReview.user.getId())), new UserGetOptions())
-                }.recover { Throwable e ->
-                    if (e instanceof AppErrorException) {
-                        return Promise.pure(null)
-                    } else {
-                        LOGGER.error('Exception happened while calling identity', e)
-                        return Promise.pure(null)
-                    }
-                }.then { User user ->
-                    if (user != null) {
-                        review.authorName = user.nickName
-                    }
-
-                    reviews.reviews << review
-                    return Promise.pure()
-                }
-            }.then {
-                return Promise.pure(reviews)
-            }
-        }
-    }
-
 
     private Promise<Offer> getOffer(OfferData offerData, ApiContext apiContext) {
         if (offerData == null) {
@@ -416,28 +348,6 @@ class CatalogBrowseUtils {
             }
         }.then {
             return Promise.pure(result)
-        }
-    }
-
-    private Promise<List<ItemRevision>> getHistoryItemRevisions(ItemId itemId) {
-        List<ItemRevision> results = [] as List
-        ItemRevisionsGetOptions options = new ItemRevisionsGetOptions(
-                itemIds: [itemId.value] as Set,
-                status: Status.APPROVED.name()
-        )
-        CommonUtils.loop {
-            resourceContainer.itemRevisionResource.getItemRevisions(options).then { Results<ItemRevision> revisionResults ->
-                results.addAll(revisionResults.items)
-                String cursor = CommonUtils.getQueryParam(revisionResults.next?.href, 'cursor')
-                if (revisionResults.items.isEmpty() || StringUtils.isEmpty(cursor)) {
-                    return Promise.pure(Promise.BREAK)
-                }
-                options.cursor = cursor
-                return Promise.pure()
-            }
-        }.then {
-            results = results.sort { ItemRevision e -> e.updatedTime }.reverse()
-            return Promise.pure(results)
         }
     }
 

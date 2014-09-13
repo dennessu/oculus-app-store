@@ -6,13 +6,20 @@
 package com.junbo.store.spec.model.browse.document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The SectionInfoNode class.
  */
 public class SectionInfoNode {
+
+    public enum SectionType {
+        FeaturedSection,
+        CategorySection
+    }
 
     private String name;
 
@@ -20,10 +27,28 @@ public class SectionInfoNode {
 
     private String criteria;
 
+    private List<SectionInfoNode> children;
+
+    @JsonIgnore
+    private SectionType sectionType;
+
+    @JsonIgnore
+    private SectionInfoNode parent;
+
     @JsonIgnore
     private Boolean ordered;
 
-    private List<SectionInfoNode> children;
+    @JsonIgnore
+    private String categoryId;
+
+    @JsonIgnore
+    private String cmsPage;
+
+    @JsonIgnore
+    private String cmsSlot;
+
+    @JsonIgnore
+    private Map<String, SimpleLocaleProperties> categoryLocales;
 
     public SectionInfoNode() {
     }
@@ -66,12 +91,60 @@ public class SectionInfoNode {
         this.children = children;
     }
 
+    public SectionType getSectionType() {
+        return sectionType;
+    }
+
+    public void setSectionType(SectionType sectionType) {
+        this.sectionType = sectionType;
+    }
+
     public Boolean getOrdered() {
         return ordered;
     }
 
     public void setOrdered(Boolean ordered) {
         this.ordered = ordered;
+    }
+
+    public SectionInfoNode getParent() {
+        return parent;
+    }
+
+    public void setParent(SectionInfoNode parent) {
+        this.parent = parent;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCmsPage() {
+        return cmsPage;
+    }
+
+    public void setCmsPage(String cmsPage) {
+        this.cmsPage = cmsPage;
+    }
+
+    public String getCmsSlot() {
+        return cmsSlot;
+    }
+
+    public void setCmsSlot(String cmsSlot) {
+        this.cmsSlot = cmsSlot;
+    }
+
+    public Map<String, SimpleLocaleProperties> getCategoryLocales() {
+        return categoryLocales;
+    }
+
+    public void setCategoryLocales(Map<String, SimpleLocaleProperties> categoryLocales) {
+        this.categoryLocales = categoryLocales;
     }
 
     public SectionInfo toSectionInfo() {

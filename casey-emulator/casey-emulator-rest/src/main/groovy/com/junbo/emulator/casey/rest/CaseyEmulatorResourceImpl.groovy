@@ -16,6 +16,7 @@ import com.junbo.store.spec.model.external.casey.cms.CmsCampaign
 import com.junbo.store.spec.model.external.casey.cms.CmsContent
 import com.junbo.store.spec.model.external.casey.cms.ContentItem
 import com.junbo.store.spec.model.external.casey.cms.Placement
+import com.junbo.store.spec.model.external.casey.search.OfferSearchParams
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component

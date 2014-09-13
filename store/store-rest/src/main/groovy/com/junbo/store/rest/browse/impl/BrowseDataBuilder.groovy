@@ -1,5 +1,4 @@
 package com.junbo.store.rest.browse.impl
-
 import com.fasterxml.jackson.core.type.TypeReference
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
@@ -9,7 +8,6 @@ import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties
 import com.junbo.common.id.ItemId
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.browse.Images
@@ -35,9 +33,6 @@ class BrowseDataBuilder {
     private final static Logger LOGGER = LoggerFactory.getLogger(BrowseDataBuilder)
 
     private final static Pattern ImageDimensionTextPattern = Pattern.compile('\\s*(\\d+)\\s*[xX]\\s*(\\d+)\\s*')
-
-    @Resource(name = 'storeResourceContainer')
-    private ResourceContainer resourceContainer
 
     @Resource(name = 'storeLocaleUtils')
     private LocaleUtils localeUtils

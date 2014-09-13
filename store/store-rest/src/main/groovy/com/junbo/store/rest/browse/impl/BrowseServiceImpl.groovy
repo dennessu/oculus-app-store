@@ -1,6 +1,7 @@
 package com.junbo.store.rest.browse.impl
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.id.ItemId
@@ -11,28 +12,26 @@ import com.junbo.entitlement.spec.model.*
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.rating.spec.model.priceRating.RatingItem
 import com.junbo.store.clientproxy.FacadeContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.browse.SectionHandler
+import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.CatalogUtils
-import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.Item
-import com.junbo.store.spec.model.browse.document.Review
-import com.junbo.store.spec.model.browse.document.SectionInfo
-import com.junbo.store.spec.model.browse.document.SectionInfoNode
-import com.junbo.store.spec.model.browse.document.SectionKey
+import com.junbo.store.spec.model.browse.document.*
 import com.junbo.store.spec.model.external.casey.CaseyLink
+import com.junbo.store.spec.model.external.casey.CaseyResults
 import com.junbo.store.spec.model.external.casey.CaseyReview
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
@@ -44,11 +43,9 @@ import javax.annotation.Resource
  */
 @Component('storeBrowseService')
 @CompileStatic
-class BrowseServiceImpl implements BrowseService, InitializingBean {
+class BrowseServiceImpl implements BrowseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BrowseServiceImpl)
-
-    private int defaultPageSize = 10
 
     @Value('${store.tos.browse}')
     private String storeBrowseTos
@@ -74,8 +71,11 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
     @Resource(name = 'storeCatalogUtils')
     private CatalogUtils catalogUtils
 
-    @Value('${store.browse.campaign.rootCriteria}')
-    private String rootCriteria
+    @Resource(name = 'storeSectionService')
+    private SectionService sectionService
+
+    @Resource(name = 'storeLocaleUtils')
+    private LocaleUtils localeUtils
 
     private Map<SectionKey, SectionKey> legacyMap = new HashMap<>()
 
@@ -92,37 +92,50 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
                 return Promise.pure(new TocResponse(challenge: challenge))
             }
 
-            result.sections = []
-            Promise.each(sectionHandlers) { SectionHandler sectionHandler ->
-                sectionHandler.getTopLevelSectionInfoNode(apiContext).then { List<SectionInfoNode> list ->
-                    result.sections.addAll(list)
-                    return Promise.pure()
-                }
-            }.then {
-                return Promise.pure(result)
+            List<SectionInfoNode> sectionInfoNodes = sectionService.getTopLevelSectionInfoNode()
+            result.sections = sectionInfoNodes.each { SectionInfoNode sectionInfoNode ->
+                return buildSectionInfoNodeForResponse(sectionInfoNode, apiContext)
             }
-
+            return Promise.pure(result)
         }
     }
 
     @Override
     Promise<SectionLayoutResponse> getSectionLayout(SectionLayoutRequest request, ApiContext apiContext) {
         handleLegacy(request)
-        SectionHandler sectionHandler = findSectionHandler(request.category, request.criteria, apiContext)
-        if (sectionHandler == null) {
+        SectionInfoNode sectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria)
+        if (sectionInfoNode == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
-        return sectionHandler.getSectionLayout(request, apiContext)
+
+        SectionLayoutResponse response = new SectionLayoutResponse()
+        sectionInfoNode = buildSectionInfoNodeForResponse(sectionInfoNode, apiContext)
+        response.name = sectionInfoNode.name
+        response.children = sectionInfoNode.children?.collect {SectionInfoNode e -> e.toSectionInfo() }
+        response.ordered = false
+        response.breadcrumbs = []
+        SectionInfoNode parent = sectionInfoNode.parent
+        while (parent != null) {
+            response.breadcrumbs << parent.toSectionInfo()
+            parent = parent.parent
+        }
+        response.breadcrumbs = response.breadcrumbs.reverse()
+
+        innerGetList(new ListRequest(criteria: request.criteria, category: request.category, count: request.count), sectionInfoNode, apiContext).then { ListResponse listResponse ->
+            response.items = listResponse.items
+            response.next = listResponse.next
+            return Promise.pure(response)
+        }
     }
 
     @Override
     Promise<ListResponse> getList(ListRequest request, ApiContext apiContext) {
         handleLegacy(request)
-        SectionHandler sectionHandler = findSectionHandler(request.category, request.criteria, apiContext)
-        if (sectionHandler == null) {
+        SectionInfoNode sectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria)
+        if (sectionInfoNode == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
-        return sectionHandler.getSectionList(request, apiContext)
+        innerGetList(request, sectionInfoNode, apiContext)
     }
 
     @Override
@@ -214,6 +227,24 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
         }
     }
 
+    private Promise<ListResponse> innerGetList(ListRequest request, SectionInfoNode sectionInfoNode, ApiContext apiContext) {
+        ListResponse listResponse = new ListResponse(items: [])
+        facadeContainer.caseyFacade.search(sectionInfoNode, request.cursor, request.count, apiContext).then { CaseyResults<Item> caseyResults ->
+            if (caseyResults.cursor != null) {
+                listResponse.next = new ListResponse.NextOption(
+                        cursor: caseyResults.cursor,
+                        count: request.count,
+                        category: request.category,
+                        criteria: request.criteria
+                )
+            }
+            Promise.each(caseyResults.items) { Item item ->
+                listResponse.items << item
+                decorateItem(true, true, false, apiContext, item)
+            }
+        }
+    }
+
     private SectionInfoNode getSectionInfoNode(String category, String criteria, List<SectionInfoNode> sections, Stack<SectionInfo> parents) {
         for (SectionInfoNode sectionInfoNode : sections) {
 
@@ -271,10 +302,19 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
         return result == null ? original : result;
     }
 
-    @Override
-    void afterPropertiesSet() throws Exception {
-        legacyMap.put(new SectionKey(criteria: 'featured'), new SectionKey(criteria: rootCriteria))
-        legacyMap.put(new SectionKey(category: 'all', criteria: 'featured'), new SectionKey(criteria: 'android-featured'))
-        legacyMap.put(new SectionKey(category: 'samsung', criteria: 'featured'), new SectionKey(criteria: 'android-featured-samsung'))
+    private SectionInfoNode buildSectionInfoNodeForResponse(SectionInfoNode internalNode, ApiContext apiContext) {
+        SectionInfoNode sectionInfoNode = new SectionInfoNode()
+        if (internalNode.categoryLocales != null && internalNode.sectionType == SectionInfoNode.SectionType.CategorySection) {
+            SimpleLocaleProperties simpleLocaleProperties =
+                    localeUtils.getLocaleProperties(internalNode.categoryLocales, apiContext.locale, 'OfferAttribute', internalNode?.categoryId, 'locales') as SimpleLocaleProperties
+            sectionInfoNode.name = simpleLocaleProperties?.name
+        }
+        sectionInfoNode.category = internalNode.category
+        sectionInfoNode.criteria = internalNode.criteria
+        sectionInfoNode.children = internalNode.children.each { SectionInfoNode e ->
+            return buildSectionInfoNodeForResponse(e, apiContext)
+        }
+        return sectionInfoNode
     }
+
 }

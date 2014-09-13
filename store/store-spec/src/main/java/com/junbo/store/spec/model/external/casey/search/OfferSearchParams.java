@@ -3,7 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.store.spec.model.external.casey;
+package com.junbo.store.spec.model.external.casey.search;
+
+import com.junbo.store.spec.model.external.casey.CaseySearchParams;
 
 import javax.ws.rs.QueryParam;
 
@@ -23,6 +25,18 @@ public class OfferSearchParams extends CaseySearchParams {
 
     @QueryParam("sortBy")
     private String sortBy;
+
+    @QueryParam("offerId")
+    private String offerId;
+
+    @QueryParam("expand")
+    private String expand;
+
+    @QueryParam("cmsPage")
+    private String cmsPage;
+
+    @QueryParam("cmsSlot")
+    private String cmsSlot;
 
     public String getCountry() {
         return country;
@@ -54,5 +68,37 @@ public class OfferSearchParams extends CaseySearchParams {
 
     public void setSortBy(String sortBy) {
         this.sortBy = sortBy;
+    }
+
+    public String getOfferId() {
+        return offerId;
+    }
+
+    public void setOfferId(String offerId) {
+        this.offerId = offerId;
+    }
+
+    public String getExpand() {
+        return expand;
+    }
+
+    public void setExpand(String expand) {
+        this.expand = expand;
+    }
+
+    public String getCmsSlot() {
+        return cmsSlot;
+    }
+
+    public void setCmsSlot(String cmsSlot) {
+        this.cmsSlot = cmsSlot;
+    }
+
+    public String getCmsPage() {
+        return cmsPage;
+    }
+
+    public void setCmsPage(String cmsPage) {
+        this.cmsPage = cmsPage;
     }
 }

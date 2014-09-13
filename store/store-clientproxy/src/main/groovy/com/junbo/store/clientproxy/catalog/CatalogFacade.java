@@ -6,29 +6,19 @@
 package com.junbo.store.clientproxy.catalog;
 
 import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.model.Results;
+import com.junbo.common.id.ItemId;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.store.spec.model.catalog.Item;
+import com.junbo.store.spec.model.ApiContext;
 import com.junbo.store.spec.model.catalog.Offer;
-import com.junbo.store.spec.model.iap.IAPOfferGetRequest;
-
-import java.util.List;
+import com.junbo.store.spec.model.catalog.data.ItemData;
 
 /**
  * The CatalogFacade class.
  */
 public interface CatalogFacade {
 
-    Promise<Item> getItem(String itemId);
+    Promise<ItemData> getItemData(ItemId itemId, ApiContext apiContext);
 
     Promise<Offer> getOffer(String offerId, LocaleId locale);
-
-    Promise<Results<Item>> getItemsByCategory(String categoryId, Long cursor, Long count);
-
-    Promise<Item> getItemByPackageName(String packageName);
-
-    Promise<List<Offer>> getInAppOffers(Item hostItem, IAPOfferGetRequest request);
-
-    Promise<String> getCategoryId(String categoryName);
 
 }
