@@ -1,8 +1,12 @@
 package com.junbo.store.clientproxy.catalog
 import com.junbo.catalog.spec.enums.ItemType
+import com.junbo.catalog.spec.enums.OfferAttributeType
 import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
+import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
+import com.junbo.catalog.spec.model.attribute.OfferAttributeGetOptions
+import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
@@ -19,6 +23,8 @@ import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.casey.CaseyFacade
+import com.junbo.store.clientproxy.utils.ItemBuilder
+import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.catalog.Offer
@@ -30,6 +36,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
 /**
@@ -47,27 +54,30 @@ class CatalogFacadeImpl implements CatalogFacade {
     @Resource(name = 'storeCaseyFacade')
     private CaseyFacade caseyFacade
 
+    @Resource(name = 'storeItemBuilder')
+    private ItemBuilder itemBuilder
+
     @Override
-    Promise<ItemData> getItemData(ItemId itemId, ApiContext apiContext) {
-        ItemData result = new ItemData()
-        result.genres = []
+    Promise<Item> getItem(ItemId itemId, ApiContext apiContext) {
+        ItemData itemData = new ItemData()
+        itemData.genres = []
         Item catalogItem
         Promise.pure().then {
             resourceContainer.itemResource.getItem(itemId.value).then { Item e ->
                 catalogItem = e
-                result.item = e
+                itemData.item = e
                 return Promise.pure()
             }
         }.then { // get developer
-            getOrganization(result.item?.ownerId).then { Organization organization ->
-                result.developer = organization
+            getOrganization(itemData.item?.ownerId).then { Organization organization ->
+                itemData.developer = organization
                 return Promise.pure()
             }
         }.then {  // get genres
             Promise.each(catalogItem.genres) { String genresId ->
-                getItemAttribute(genresId).then { ItemAttribute itemAttribute ->
+                getItemAttribute(genresId, apiContext).then { ItemAttribute itemAttribute ->
                     if (itemAttribute != null) {
-                        result.genres << itemAttribute
+                        itemData.genres << itemAttribute
                     }
                     return Promise.pure()
                 }
@@ -77,7 +87,7 @@ class CatalogFacadeImpl implements CatalogFacade {
                 return Promise.pure()
             }
             resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision e ->
-                result.currentRevision = e
+                itemData.currentRevision = e
                 return Promise.pure()
             }
         }.then {
@@ -89,18 +99,18 @@ class CatalogFacadeImpl implements CatalogFacade {
                 if (CollectionUtils.isEmpty(offerResults.items)) {
                     return Promise.pure()
                 }
-                getOfferData(offerResults.items[0]).then { OfferData offerData ->
-                    result.offer = offerData
+                getOfferData(offerResults.items[0], apiContext).then { OfferData offerData ->
+                    itemData.offer = offerData
                     return Promise.pure()
                 }
             }
         }.then {
             return getCaseyData(catalogItem.getId(), apiContext).then { CaseyData caseyData ->
-                result.caseyData = caseyData
+                itemData.caseyData = caseyData
                 return Promise.pure()
             }
         }.then {
-            return Promise.pure(result)
+            return Promise.pure(itemBuilder.buildItem(itemData, apiContext))
         }
     }
 
@@ -134,7 +144,51 @@ class CatalogFacadeImpl implements CatalogFacade {
         }
     }
 
-    private Promise<OfferData> getOfferData(com.junbo.catalog.spec.model.offer.Offer catalogOffer) {
+    @Override
+    Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode) {
+        // todo get item revision by version code
+        return resourceContainer.itemResource.getItem(itemId.value).then { Item catalogItem ->
+            return resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
+                return Promise.pure(itemRevision)
+            }
+        }
+    }
+
+    @Override
+    Promise<OfferAttribute> getOfferCategoryByName(String name, LocaleId locale) {
+        String cursor
+        OfferAttribute result
+        CommonUtils.loop {
+            resourceContainer.offerAttributeResource.getAttributes(new OfferAttributesGetOptions(attributeType: OfferAttributeType.CATEGORY.name(), cursor: cursor)).then { Results<OfferAttribute> results ->
+                result = results.items.find { OfferAttribute offerAttribute ->
+                    return offerAttribute.locales?.get(locale.value)?.name == name
+                }
+                if (result != null) {
+                    return Promise.pure(Promise.BREAK)
+                }
+
+                cursor = CommonUtils.getQueryParam(results.next?.href, 'cursor')
+                if (results.items.isEmpty() || StringUtils.isEmpty(cursor)) {
+                    return Promise.pure(Promise.BREAK)
+                }
+                return Promise.pure()
+            }
+        }.then {
+            return Promise.pure(result)
+        }
+    }
+
+    @Override
+    public Promise<OfferAttribute> getOfferAttribute(String attributeId, ApiContext apiContext) {
+        Promise.pure().then {
+            resourceContainer.offerAttributeResource.getAttribute(attributeId, new OfferAttributeGetOptions(locale: apiContext.locale.getId().value))
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_Get_OfferAttribute_Fail, attribute={}', attributeId, ex)
+            return Promise.pure()
+        }
+    }
+
+    private Promise<OfferData> getOfferData(com.junbo.catalog.spec.model.offer.Offer catalogOffer, ApiContext apiContext) {
         OfferData result = new OfferData()
         result.offer = catalogOffer
         result.categories = []
@@ -148,7 +202,7 @@ class CatalogFacadeImpl implements CatalogFacade {
             }
         }.then { // get categories
             Promise.each(catalogOffer.categories) { String categoryId ->
-                getOfferAttribute(categoryId).then { OfferAttribute offerAttribute ->
+                getOfferAttribute(categoryId, apiContext).then { OfferAttribute offerAttribute ->
                     if (offerAttribute != null) {
                         result.categories << offerAttribute
                     }
@@ -182,20 +236,11 @@ class CatalogFacadeImpl implements CatalogFacade {
         }
     }
 
-    private Promise<ItemAttribute> getItemAttribute(String attributeId) {
+    private Promise<ItemAttribute> getItemAttribute(String attributeId, ApiContext apiContext) {
         Promise.pure().then {
-            resourceContainer.itemAttributeResource.getAttribute(attributeId)
+            resourceContainer.itemAttributeResource.getAttribute(attributeId, new ItemAttributeGetOptions(locale: apiContext.locale.getId().value))
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_Get_ItemAttribute_Fail, attribute={}', attributeId, ex)
-            return Promise.pure()
-        }
-    }
-
-    private Promise<OfferAttribute> getOfferAttribute(String attributeId) {
-        Promise.pure().then {
-            resourceContainer.offerAttributeResource.getAttribute(attributeId)
-        }.recover { Throwable ex ->
-            LOGGER.error('name=Store_Get_OfferAttribute_Fail, attribute={}', attributeId, ex)
             return Promise.pure()
         }
     }

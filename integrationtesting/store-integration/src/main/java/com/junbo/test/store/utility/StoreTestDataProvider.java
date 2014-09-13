@@ -16,6 +16,7 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
+import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
 import com.junbo.identity.spec.v1.model.Organization;
@@ -27,6 +28,7 @@ import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
+import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.*;
@@ -65,9 +67,7 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -400,6 +400,21 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return offerClient.getOfferIdByName(offerName);
     }
 
+    public Item getItemByName(String itemName) throws Exception {
+        HashMap<String, List<String>> params = new HashMap<String, List<String>>();
+        params.put("q", Collections.singletonList("name:" + itemName));
+        Results<Item> itemResults = itemClient.getItems(params);
+        return itemResults.getItems().isEmpty() ? null : itemResults.getItems().iterator().next();
+    }
+
+    public Offer getOfferByItem(String itemId) throws Exception {
+        HashMap<String, List<String>> params = new HashMap<String, List<String>>();
+        params.put("itemId", Collections.singletonList(itemId));
+        params.put("published", Collections.singletonList("true"));
+        List<Offer> offers = offerClient.getOffers(params).getItems();
+        return offers.isEmpty() ? null : offers.iterator().next();
+    }
+
     public Offer getOfferByOfferId(String offerId) throws Exception {
         Offer offer = Master.getInstance().getOffer(offerId);
         if (offer == null) {
@@ -510,10 +525,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.makeFreePurchase(request, expectedResponseCode);
     }
 
-    public DetailsResponse getItemDetails(String itemId) throws Exception {
+    public DetailsResponse getItemDetails(String itemId, int expectedResponseCode) throws Exception {
         DetailsRequest request = new DetailsRequest();
         request.setItemId(new ItemId(itemId));
-        return storeClient.getDetails(request);
+        return storeClient.getDetails(request, expectedResponseCode);
+    }
+
+    public DetailsResponse getItemDetails(String itemId) throws Exception {
+        return getItemDetails(itemId, 200);
     }
 
     public AuthTokenResponse signIn(String userName) throws Exception {
@@ -645,10 +664,25 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return caseyEmulatorClient.postEmulatorData(data);
     }
 
-    public CaseyEmulatorData postCaseyEmulatorData(List<CaseyReview> caseyReviewList, List<CaseyAggregateRating> ratingList) throws Exception {
+    public CaseyEmulatorData postCaseyEmulatorData(List<CaseyReview> caseyReviewList, List<CaseyAggregateRating> ratingList, CmsPage cmsPage) throws Exception {
         CaseyEmulatorData data = new CaseyEmulatorData();
         data.setCaseyAggregateRatings(ratingList);
         data.setCaseyReviews(caseyReviewList);
+        if (cmsPage != null) {
+            data.setCmsPages(Arrays.asList(cmsPage));
+        }
+        data.setCmsPageOffers(new HashMap<String, List<OfferId>>());
+        return caseyEmulatorClient.postEmulatorData(data);
+    }
+
+    public CaseyEmulatorData postCaseyEmulatorData(CmsPage cmsPage, Map<String, List<OfferId>> offerIds) throws Exception {
+        CaseyEmulatorData data = new CaseyEmulatorData();
+        data.setCaseyAggregateRatings(new ArrayList<CaseyAggregateRating>());
+        data.setCaseyReviews(new ArrayList<CaseyReview>());
+        if (cmsPage != null) {
+            data.setCmsPages(Arrays.asList(cmsPage));
+        }
+        data.setCmsPageOffers(offerIds);
         return caseyEmulatorClient.postEmulatorData(data);
     }
 

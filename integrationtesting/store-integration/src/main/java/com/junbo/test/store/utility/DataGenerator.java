@@ -8,11 +8,14 @@ package com.junbo.test.store.utility;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyLink;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
+import com.junbo.store.spec.model.external.casey.cms.CmsContentSlot;
+import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -71,4 +74,14 @@ public class DataGenerator {
         return aggregateRating;
     }
 
+    public CmsPage genCmsPage(String path) {
+        CmsPage cmsPage = new CmsPage();
+        cmsPage.setPath(path);
+        cmsPage.setSlots(new HashMap<String, CmsContentSlot>());
+        return cmsPage;
+    }
+
+    public SecureRandom random() {
+        return rand;
+    }
 }

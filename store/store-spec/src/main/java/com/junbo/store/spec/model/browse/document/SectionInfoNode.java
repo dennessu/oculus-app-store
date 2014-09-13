@@ -6,18 +6,19 @@
 package com.junbo.store.spec.model.browse.document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * The SectionInfoNode class.
  */
 public class SectionInfoNode {
 
+    /**
+     * The SectionType enum.
+     */
     public enum SectionType {
-        FeaturedSection,
+        CmsSection,
         CategorySection
     }
 
@@ -46,9 +47,6 @@ public class SectionInfoNode {
 
     @JsonIgnore
     private String cmsSlot;
-
-    @JsonIgnore
-    private Map<String, SimpleLocaleProperties> categoryLocales;
 
     public SectionInfoNode() {
     }
@@ -137,14 +135,6 @@ public class SectionInfoNode {
 
     public void setCmsSlot(String cmsSlot) {
         this.cmsSlot = cmsSlot;
-    }
-
-    public Map<String, SimpleLocaleProperties> getCategoryLocales() {
-        return categoryLocales;
-    }
-
-    public void setCategoryLocales(Map<String, SimpleLocaleProperties> categoryLocales) {
-        this.categoryLocales = categoryLocales;
     }
 
     public SectionInfo toSectionInfo() {

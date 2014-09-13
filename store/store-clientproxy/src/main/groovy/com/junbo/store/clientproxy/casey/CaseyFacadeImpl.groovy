@@ -1,29 +1,35 @@
 package com.junbo.store.clientproxy.casey
-
-import com.junbo.catalog.spec.model.common.RevisionNotes
-import com.junbo.catalog.spec.model.item.Binary
-import com.junbo.common.enumid.CurrencyId
+import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.ItemId
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Link
+import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
+import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
-import com.junbo.store.clientproxy.utils.itemBuilder
+import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.spec.model.ApiContext
-import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.browse.ReviewsResponse
-import com.junbo.store.spec.model.browse.document.*
+import com.junbo.store.spec.model.browse.document.AggregatedRatings
+import com.junbo.store.spec.model.browse.document.Item
+import com.junbo.store.spec.model.browse.document.Review
+import com.junbo.store.spec.model.browse.document.SectionInfoNode
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
 import com.junbo.store.spec.model.external.casey.CaseyResults
 import com.junbo.store.spec.model.external.casey.CaseyReview
 import com.junbo.store.spec.model.external.casey.ReviewSearchParams
+import com.junbo.store.spec.model.external.casey.cms.CmsPage
+import com.junbo.store.spec.model.external.casey.cms.CmsPageGetParams
 import com.junbo.store.spec.model.external.casey.search.CaseyItem
 import com.junbo.store.spec.model.external.casey.search.CaseyOffer
-import com.junbo.store.spec.model.external.casey.search.CatalogAttribute
 import com.junbo.store.spec.model.external.casey.search.OfferSearchParams
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
@@ -34,7 +40,6 @@ import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
-
 /**
  * The CaseyFacadeImpl class.
  */
@@ -47,38 +52,58 @@ class CaseyFacadeImpl implements CaseyFacade {
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
-    @Resource(name = 'storeImageConvertor')
-    private itemBuilder imageConvertor
-
-    @Value('${store.casey.search.expand}')
-    private String expand
+    @Resource(name = 'storeItemBuilder')
+    private ItemBuilder itemBuilder
 
     @Override
     Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext) {
+        assert sectionInfoNode.sectionType != null, 'sectionType could not be null'
         CaseyResults<Item> results = new CaseyResults<Item>(
                 items: [] as List,
                 cursor: null as String
         )
 
-        if (canSearch(sectionInfoNode)) {
+        if (!canSearch(sectionInfoNode)) {
             return Promise.pure(results)
         }
         OfferSearchParams searchParams = buildOfferSearchParams(sectionInfoNode, cursor, count, apiContext)
 
         resourceContainer.caseyResource.searchOffers(searchParams).recover { Throwable ex ->
-            LOGGER.info('name=Store_SearchOffer_Error', ex)
+            LOGGER.error('name=Store_SearchOffer_Error, searchParams={}', ObjectMapperProvider.instance().writeValueAsString(searchParams), ex)
             return Promise.pure(null)
         }.then { CaseyResults<CaseyOffer> rawResults ->
             if (rawResults == null) {
                 return Promise.pure(results)
             }
-            rawResults.each { CaseyOffer caseyOffer ->
-                results.items << buildItem(caseyOffer, searchParams.country)
-            }
+
             results.cursor = rawResults.cursor
             results.count = rawResults.count
             results.totalCount = rawResults.totalCount
-            return Promise.pure(results)
+            Promise.each (rawResults.items) { CaseyOffer caseyOffer ->
+                CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer.items) ? null : caseyOffer.items[0]
+                Organization publisher, developer
+                Promise.pure().then {
+                    getOrganization(caseyOffer.publisher).then { Organization organization ->
+                        publisher = organization
+                        return Promise.pure()
+                    }
+                }.then {
+                    getOrganization(caseyItem?.developer).then { Organization organization ->
+                        developer = organization
+                        return Promise.pure()
+                    }
+                }.then {
+                    if (CollectionUtils.isEmpty(caseyOffer?.items)) {
+                        return Promise.pure()
+                    }
+                    getAggregatedRatings(caseyOffer.items.get(0).self, apiContext)
+                }.then { List<AggregatedRatings> aggregatedRatings ->
+                    results.items << itemBuilder.buildItem(caseyOffer, aggregatedRatings, publisher, developer, apiContext)
+                    return Promise.pure()
+                }
+            }then {
+                return Promise.pure(results)
+            }
         }
     }
 
@@ -175,10 +200,50 @@ class CaseyFacadeImpl implements CaseyFacade {
         }
     }
 
+    @Override
+    Promise<Boolean> itemAvailable(ItemId itemId, ApiContext apiContext) {
+        resourceContainer.offerResource.getOffers(new OffersGetOptions(itemId: itemId?.value)).then { Results<Offer> offerResults ->
+            if (offerResults.items.size() > 1) {
+                LOGGER.warn('name=Store_Multiple_Offers_Found, item={}, useOffer={}', itemId, offerResults.items[0].offerId)
+            }
+            if (CollectionUtils.isEmpty(offerResults.items)) {
+                return Promise.pure(false)
+            }
+
+            // call search to check whether the offer is available under the given country
+            OfferSearchParams offerSearchParams = new OfferSearchParams()
+            offerSearchParams.locale = apiContext.locale.getId().value
+            offerSearchParams.country = apiContext.country.getId().value
+            offerSearchParams.offerId = offerResults.items[0].offerId
+            offerSearchParams.minimal = true
+            resourceContainer.caseyResource.searchOffers(offerSearchParams).recover { Throwable ex ->
+                LOGGER.info('name=Store_SearchOffer_Error', ex)
+                return Promise.pure()
+            }.then { CaseyResults<CaseyOffer> results ->
+                if (CollectionUtils.isEmpty(results?.items)) {
+                    return Promise.pure(false)
+                }
+                return Promise.pure(true)
+            }
+        }
+    }
+
+    @Override
+    Promise<CmsPage> getCmsPage(String pageName) {
+        resourceContainer.caseyResource.getCmsPages(
+            new CmsPageGetParams(path: "\"/${pageName}\"")
+        ).then { CaseyResults<CmsPage> results ->
+            if (CollectionUtils.isEmpty(results.items)) {
+                return Promise.pure()
+            }
+            return Promise.pure(results.items[0])
+        }
+    }
+
     private OfferSearchParams buildOfferSearchParams(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext) {
         OfferSearchParams offerSearchParams = new OfferSearchParams()
         switch (sectionInfoNode.sectionType) {
-            case SectionInfoNode.SectionType.FeaturedSection:
+            case SectionInfoNode.SectionType.CmsSection:
                 offerSearchParams.cmsPage = sectionInfoNode.cmsPage
                 offerSearchParams.cmsSlot = sectionInfoNode.cmsSlot
                 break;
@@ -187,7 +252,6 @@ class CaseyFacadeImpl implements CaseyFacade {
         }
         offerSearchParams.locale = apiContext.locale.getId().value
         offerSearchParams.country = apiContext.country.getId().value
-        offerSearchParams.expand = expand
         offerSearchParams.count = count
         offerSearchParams.cursor = cursor
         offerSearchParams.platform = apiContext.platform.value
@@ -195,9 +259,18 @@ class CaseyFacadeImpl implements CaseyFacade {
     }
 
     private boolean canSearch(SectionInfoNode sectionInfoNode) {
-        if (sectionInfoNode.sectionType == SectionInfoNode.SectionType.FeaturedSection) {
+        if (sectionInfoNode.sectionType == SectionInfoNode.SectionType.CmsSection) {
             return !StringUtils.isBlank(sectionInfoNode.cmsPage) && !StringUtils.isBlank(sectionInfoNode.cmsSlot)
         }
         return true
+    }
+
+    private Promise<Organization> getOrganization(OrganizationId organizationId) {
+        Promise.pure().then {
+            resourceContainer.organizationResource.get(organizationId, new OrganizationGetOptions())
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_Get_Organization_Fail, organization={}', organizationId, ex)
+            return Promise.pure()
+        }
     }
 }

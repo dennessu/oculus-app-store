@@ -1,24 +1,30 @@
 package com.junbo.emulator.casey.rest
-import com.fasterxml.jackson.databind.JsonNode
-import com.junbo.catalog.spec.model.item.Item
-import com.junbo.catalog.spec.model.item.ItemsGetOptions
-import com.junbo.catalog.spec.model.offer.Offer
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
-import com.junbo.catalog.spec.resource.ItemResource
-import com.junbo.catalog.spec.resource.OfferResource
+import com.junbo.catalog.spec.enums.PriceType
+import com.junbo.catalog.spec.model.attribute.ItemAttribute
+import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
+import com.junbo.catalog.spec.model.attribute.OfferAttribute
+import com.junbo.catalog.spec.model.attribute.OfferAttributeGetOptions
+import com.junbo.catalog.spec.model.item.*
+import com.junbo.catalog.spec.model.offer.*
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.ItemId
+import com.junbo.common.id.OfferId
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData
 import com.junbo.emulator.casey.spec.resource.CaseyEmulatorResource
+import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.common.utils.CommonUtils
+import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.spec.model.external.casey.*
-import com.junbo.store.spec.model.external.casey.cms.CmsCampaign
-import com.junbo.store.spec.model.external.casey.cms.CmsContent
-import com.junbo.store.spec.model.external.casey.cms.ContentItem
-import com.junbo.store.spec.model.external.casey.cms.Placement
-import com.junbo.store.spec.model.external.casey.search.OfferSearchParams
+import com.junbo.store.spec.model.external.casey.cms.*
+import com.junbo.store.spec.model.external.casey.search.*
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Value
+import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
@@ -38,36 +44,30 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     @Resource(name = 'caseyEmulatorDataRepository')
     CaseyEmulatorDataRepository caseyEmulatorDataRepository
 
-    @Resource(name = 'casey.offerClient')
-    OfferResource offerResource
+    @Resource(name = 'storeResourceContainer')
+    ResourceContainer resourceContainer
 
-    @Resource(name = 'casey.itemClient')
-    ItemResource itemResource
+    @Resource(name = 'storeSectionService')
+    SectionService sectionService
 
     private CmsCampaign cmsCampaign
 
     private Map<String, CmsContent> cmsContentMap = [:]
 
-    @Value('${store.browse.campaign.label}')
-    private String label
-
     private List<String> offerNames = []
 
     private List<String> itemNames = []
 
-    @Value('${emulator.casey.campaign.offers}')
-    void setOfferNames(String offerNames) {
-        this.offerNames = Arrays.asList(offerNames.split(','))
-    }
-
-    @Value('${emulator.casey.campaign.items}')
-    void setItemNames(String itemNames) {
-        this.itemNames = Arrays.asList(itemNames.split(','))
-    }
-
     @Override
-    Promise<CaseyResults<JsonNode>> searchOffers(OfferSearchParams params) {
-        throw new RuntimeException('not implemented yet')
+    Promise<CaseyResults<CaseyOffer>> searchOffers(OfferSearchParams params) {
+        params.count = params.count == null ? 10 : params.count
+        if (params.offerId != null) {
+            return Promise.pure(searchByOfferId(params))
+        } else if (!StringUtils.isEmpty(params.cmsPage)) {
+            return Promise.pure(searchFromCms(params))
+        } else {
+            return Promise.pure(searchByCategory(params))
+        }
     }
 
     @Override
@@ -147,9 +147,93 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     @Override
+    Promise<CaseyResults<CmsPage>> getCmsPages(CmsPageGetParams pageGetParams) {
+        CmsPage cmsPage = caseyEmulatorDataRepository.get().cmsPages?.find { CmsPage cmsPage ->
+            return "\"/${cmsPage.path}\"" == pageGetParams.path
+        }
+
+        if (cmsPage != null) {
+            return Promise.pure(new CaseyResults<CmsPage>(items: [cmsPage]))
+        } else {
+            return Promise.pure(new CaseyResults<CmsPage>(items: []))
+        }
+    }
+
+    @Override
     Promise<CmsContent> getCmsContent(String contentId) {
         emulatorUtils.emulateLatency()
         return Promise.pure(cmsContentMap[contentId])
+    }
+
+    private CaseyResults<CaseyOffer> searchFromCms(OfferSearchParams searchParams) {
+        if (StringUtils.isEmpty(searchParams.cmsSlot)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('cmsSlot').exception()
+        }
+        String key = "${searchParams.cmsPage}-${searchParams.cmsSlot}"
+        List<OfferId> offerIds = caseyEmulatorDataRepository.get().cmsPageOffers?.get(key)
+        if (CollectionUtils.isEmpty(offerIds)) {
+            return new CaseyResults<CaseyOffer>(items: [])
+        }
+
+        int offset = 0
+        if (!StringUtils.isEmpty(searchParams.cursor)) {
+            offset = Integer.parseInt(searchParams.cursor)
+        }
+        for (;offset < offerIds.size();offset += searchParams.count) {
+            List<CaseyOffer> offers = offerIds.subList(offset, Math.min(offset + searchParams.count, offerIds.size())).collect { OfferId offerId ->
+                Offer offer = resourceContainer.offerResource.getOffer(offerId.value).get();
+                buildCaseyOffer(offer, new LocaleId(searchParams.locale), new CountryId(searchParams.country))
+            }
+            offers = offers.findAll { CaseyOffer offer ->
+                checkOfferValid(offer, searchParams)
+            }.asList()
+            if (offers.size() > 0) {
+                return new CaseyResults<CaseyOffer>(items: offers, cursor:  (offset + searchParams.count).toString())
+            }
+        }
+        return new CaseyResults<CaseyOffer>(items: [])
+    }
+
+    private CaseyResults<CaseyOffer> searchByCategory(OfferSearchParams searchParams) {
+        while (true) {
+            Results<Offer> offerResults = resourceContainer.offerResource.getOffers(new OffersGetOptions(published: true, category: searchParams.category, cursor: searchParams.cursor, size: searchParams.count)).get()
+            CaseyResults<CaseyOffer> results = new CaseyResults<CaseyOffer>()
+            results.items = offerResults.items.collect { Offer offer ->
+                buildCaseyOffer(offer, new LocaleId(searchParams.locale), new CountryId(searchParams.country))
+            }
+
+            String cursor = CommonUtils.getQueryParam(offerResults.next?.href, 'cursor')
+            results.items = results.items.findAll { CaseyOffer offer ->
+                checkOfferValid(offer, searchParams)
+            }.asList()
+            if (!results.items.isEmpty()) {
+                results.cursor = cursor
+                return results
+            }
+
+            if (offerResults.items.isEmpty() || StringUtils.isEmpty(cursor)) {
+                break;
+            }
+            searchParams.cursor = cursor
+        }
+        return new CaseyResults<CaseyOffer>(items: [], cursor: 'end')
+    }
+
+    private CaseyResults<CaseyOffer> searchByOfferId(OfferSearchParams searchParams) {
+        List<CaseyOffer> offers = []
+        Offer offer = resourceContainer.offerResource.getOffer(searchParams.offerId).get()
+        CaseyOffer caseyOffer = buildCaseyOffer(offer, new LocaleId(searchParams.locale), new CountryId(searchParams.country))
+        if (checkOfferValid(caseyOffer, searchParams)) {
+            offers << caseyOffer
+        }
+        return new CaseyResults<CaseyOffer>(items: offers, cursor: 'end')
+    }
+
+    private boolean checkOfferValid(CaseyOffer offer,  OfferSearchParams searchParams) {
+        if (!offer.regions.containsKey(searchParams.country)) {
+            return false
+        }
+        return true
     }
 
     private CmsContent createContent(List<String> resourceNames, String resourceType, String contentsName, String label, String description) {
@@ -179,7 +263,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     String getOfferIdByName(String name) {
-        Results<Offer> offerResults = offerResource.getOffers(new OffersGetOptions(query: "name:${name}")).get()
+        Results<Offer> offerResults = resourceContainer.offerResource.getOffers(new OffersGetOptions(query: "name:${name}")).get()
         if (offerResults.items.isEmpty()) {
             return null
         }
@@ -187,7 +271,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     String geItemIdByName(String name) {
-        Results<Item> itemResults = itemResource.getItems(new ItemsGetOptions(query: "name:${name}")).get()
+        Results<Item> itemResults = resourceContainer.itemResource.getItems(new ItemsGetOptions(query: "name:${name}")).get()
         if (itemResults.items.isEmpty()) {
             return null
         }
@@ -205,7 +289,6 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
             }
             CmsCampaign result = new CmsCampaign()
             result.self = new CaseyLink(id: UUID.randomUUID().toString(), href: 'abc')
-            result.label = label
             result.eligibleCountries = [new CaseyLink(id: 'US')]
             result.status = 'APPROVED'
 
@@ -224,10 +307,77 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
 
     @Override
     Promise<CaseyEmulatorData> postEmulatorData(CaseyEmulatorData caseyEmulatorData) {
-        return Promise.pure(caseyEmulatorDataRepository.post(caseyEmulatorData))
+        return Promise.pure(caseyEmulatorDataRepository.post(caseyEmulatorData)).then { CaseyEmulatorData result ->
+            sectionService.refreshSectionInfoNode()
+            return Promise.pure(result)
+        }
     }
 
     private void addCmsContent(CmsContent cmsContent) {
         cmsContentMap[cmsContent.getSelf().getId()] = cmsContent
     }
+
+    private CaseyOffer buildCaseyOffer(Offer offer, LocaleId localeId, CountryId countryId) {
+        CaseyOffer caseyOffer = new CaseyOffer()
+        caseyOffer.self = new OfferId(offer.getId())
+        caseyOffer.categories = offer.categories?.collect { String categoryId ->
+            OfferAttribute offerAttribute = resourceContainer.offerAttributeResource.getAttribute(categoryId, new OfferAttributeGetOptions(locale: localeId.value)).get()
+            CatalogAttribute catalogAttribute = new CatalogAttribute()
+            catalogAttribute.attributeId = categoryId
+            catalogAttribute.name = offerAttribute.locales?.get(localeId.value)?.getName()
+            return catalogAttribute
+        }
+
+        if (offer.currentRevisionId != null) {
+            OfferRevision offerRevision = resourceContainer.offerRevisionResource.getOfferRevision(offer.currentRevisionId, new OfferRevisionGetOptions(locale: localeId.value)).get();
+            caseyOffer.longDescription = offerRevision.locales?.get(localeId.value)?.longDescription
+            caseyOffer.shortDescription = offerRevision.locales?.get(localeId.value)?.shortDescription
+            caseyOffer.regions = offerRevision.countries
+            caseyOffer.price = new CaseyPrice()
+            caseyOffer.price.isFree = offerRevision.price?.priceType == PriceType.FREE.name()
+            // Set<String> currencies = offerRevision.price?.prices?.get(countryId.value)?.keySet()
+            // todo set the price
+            caseyOffer.items = offerRevision?.items?.collect { ItemEntry itemEntry ->
+                return getCaseyItem(new ItemId(itemEntry.itemId), localeId)
+            }
+        }
+
+        caseyOffer.publisher = offer.ownerId
+        return caseyOffer
+    }
+
+
+    private CaseyItem getCaseyItem(ItemId itemId, LocaleId localeId) {
+        CaseyItem caseyItem = new CaseyItem()
+        Item item = resourceContainer.itemResource.getItem(itemId.value).get()
+        caseyItem.self = itemId
+        caseyItem.type = item.type
+        caseyItem.developer = item.ownerId
+        caseyItem.genres = item.genres?.collect { String genreId ->
+            ItemAttribute itemAttribute = resourceContainer.itemAttributeResource.getAttribute(genreId, new ItemAttributeGetOptions(locale: localeId.value)).get()
+            CatalogAttribute catalogAttribute = new CatalogAttribute()
+            catalogAttribute.attributeId = genreId
+            catalogAttribute.name = itemAttribute.locales?.get(localeId.value)?.getName()
+            return catalogAttribute
+        }
+
+        if (item.currentRevisionId != null) {
+            ItemRevision itemRevision = resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions(locale: localeId.value)).get()
+            caseyItem.packageName = itemRevision.packageName
+            caseyItem.supportedLocales = itemRevision.supportedLocales
+            caseyItem.binaries = itemRevision.binaries
+            ItemRevisionLocaleProperties localeProperties = itemRevision.locales?.get(localeId.value)
+            caseyItem.releaseNotes = localeProperties?.releaseNotes
+            caseyItem.name = localeProperties?.name
+            caseyItem.longDescription = localeProperties?.longDescription
+            caseyItem.supportEmail = localeProperties?.supportEmail
+            caseyItem.website = localeProperties?.website
+            caseyItem.communityForumLink = localeProperties?.communityForumLink
+            caseyItem.images = localeProperties?.images
+        }
+
+        return caseyItem
+    }
+
 }
+

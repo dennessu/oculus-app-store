@@ -10,7 +10,7 @@ import com.junbo.catalog.spec.model.common.RevisionNotes;
 import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.SupportedLocale;
 import com.junbo.common.id.ItemId;
-import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class CaseyItem extends BaseCaseyModel {
 
     private ItemId self;
     private String type;
-    private Organization developer;
+    private OrganizationId developer;
     private String packageName;
     private Map<String, Binary> binaries;
     private Map<String, SupportedLocale> supportedLocales;
@@ -52,11 +52,11 @@ public class CaseyItem extends BaseCaseyModel {
         this.type = type;
     }
 
-    public Organization getDeveloper() {
+    public OrganizationId getDeveloper() {
         return developer;
     }
 
-    public void setDeveloper(Organization developer) {
+    public void setDeveloper(OrganizationId developer) {
         this.developer = developer;
     }
 

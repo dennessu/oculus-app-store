@@ -1,27 +1,22 @@
 package com.junbo.store.clientproxy.utils
 
 import com.fasterxml.jackson.core.type.TypeReference
+import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
 import com.junbo.catalog.spec.model.common.RevisionNotes
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties
-import com.junbo.common.enumid.CurrencyId
+import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties
 import com.junbo.common.id.ItemId
+import com.junbo.common.id.OfferId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.browse.Images
-import com.junbo.store.spec.model.browse.document.AggregatedRatings
-import com.junbo.store.spec.model.browse.document.AppDetails
-import com.junbo.store.spec.model.browse.document.CategoryInfo
-import com.junbo.store.spec.model.browse.document.GenreInfo
-import com.junbo.store.spec.model.browse.document.Image
-import com.junbo.store.spec.model.browse.document.Item
-import com.junbo.store.spec.model.browse.document.Offer
-import com.junbo.store.spec.model.browse.document.RevisionNote
+import com.junbo.store.spec.model.browse.document.*
 import com.junbo.store.spec.model.catalog.data.ItemData
 import com.junbo.store.spec.model.external.casey.search.CaseyItem
 import com.junbo.store.spec.model.external.casey.search.CaseyOffer
@@ -38,13 +33,13 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**
- * The itemBuilder class.
+ * The ItemBuilder class.
  */
 @CompileStatic
-@Component('storeImageConvertor')
-class itemBuilder {
+@Component('storeItemBuilder')
+class ItemBuilder {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(itemBuilder)
+    private final static Logger LOGGER = LoggerFactory.getLogger(ItemBuilder)
 
     private final static Pattern ImageDimensionTextPattern = Pattern.compile('\\s*(\\d+)\\s*[xX]\\s*(\\d+)\\s*')
 
@@ -64,34 +59,49 @@ class itemBuilder {
         }
     }
 
-    public Item buildItem(CaseyOffer caseyOffer, List<AggregatedRatings> aggregatedRatings, ApiContext apiContext) {
+    public Item buildItem(CaseyOffer caseyOffer, List<AggregatedRatings> aggregatedRatings, Organization publisher, Organization developer, ApiContext apiContext) {
         Item result = new Item()
         CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer?.items) ? null : caseyOffer.items[0]
         result.title = caseyItem?.name
+        result.itemType = caseyItem?.type
         result.descriptionHtml = caseyItem?.longDescription
         result.supportedLocales = caseyItem?.supportedLocales
-        result.creator = caseyItem?.developer?.name
+        result.creator = developer?.name
         result.self = caseyItem?.self
         result.images = buildImages(caseyItem?.images, caseyItem?.self)
-        result.appDetails = buildAppDetails(caseyOffer, caseyItem, apiContext.country.getId().value)
-        result.offer = buildOffer(caseyOffer)
+        result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext.country.getId().value)
+        result.offer = buildOffer(caseyOffer, apiContext)
         result.aggregatedRatings = aggregatedRatings
         return result
     }
 
-    public Item build(ItemData itemData, ApiContext apiContext) {
-        Item result = new Item()
-        CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer?.items) ? null : caseyOffer.items[0]
-        result.title = caseyItem?.name
-        result.descriptionHtml = caseyItem?.longDescription
-        result.supportedLocales = caseyItem?.supportedLocales
-        result.creator = caseyItem?.developer?.name
-        result.self = caseyItem?.self
-        result.images = buildImages(caseyItem?.images, caseyItem?.self)
-        result.appDetails = buildAppDetails(caseyOffer, caseyItem, country)
-        result.offer = buildOffer(caseyOffer)
-        result.aggregatedRatings = aggregatedRatings
-        return result
+    public Item buildItem(ItemData itemData, ApiContext apiContext) {
+        if (itemData == null) {
+            return null
+        }
+        Item item = new Item()
+        item.self = new ItemId(itemData.item.getId())
+        item.itemType = itemData.item.type
+
+        ItemRevisionLocaleProperties itemLocaleProperties = itemData.currentRevision?.locales?.get(apiContext.locale.getId().value)
+        item.title = itemLocaleProperties?.name
+        item.descriptionHtml = itemLocaleProperties?.longDescription
+        item.images = buildImages(itemLocaleProperties?.images, item.getSelf())
+        item.supportedLocales = itemData.currentRevision?.supportedLocales
+
+        item.creator = itemData.developer?.name
+        item.appDetails = buildAppDetails(itemData, itemLocaleProperties, apiContext)
+        item.aggregatedRatings = itemData.caseyData?.aggregatedRatings
+
+        if (itemData.offer != null) {
+            item.offer = new Offer()
+            item.offer.self = new OfferId(itemData.offer.offer.getId())
+            item.offer.currency = apiContext.currency.getId()
+            OfferRevisionLocaleProperties localeProperties = itemData.offer?.offerRevision?.locales?.get(apiContext.locale.getId().value)
+            item.offer.formattedDescription = localeProperties?.shortDescription
+            item.offer.isFree = itemData.offer.offerRevision?.price?.priceType == PriceType.FREE.name()
+        }
+        return item
     }
 
     public Images buildImages(com.junbo.catalog.spec.model.common.Images catalogImages, ItemId itemId) {
@@ -112,23 +122,6 @@ class itemBuilder {
         )
     }
 
-    public Item buildItemFromItemData(ItemData itemData, ApiContext apiContext, Item item) {
-        item.self = new ItemId(itemData.item.getId())
-        item.itemType = itemData.item.type
-
-        ItemRevisionLocaleProperties itemLocaleProperties = localeUtils.getLocaleProperties(itemData.currentRevision?.locales, apiContext.locale, 'item', item.self.value, 'locales') as ItemRevisionLocaleProperties
-        item.title = itemLocaleProperties?.name
-        item.descriptionHtml = itemLocaleProperties?.longDescription
-        item.images = buildImages(itemLocaleProperties?.images, item.getSelf())
-        item.supportedLocales = itemData.currentRevision?.supportedLocales
-
-        item.creator = itemData.developer?.name
-        item.appDetails = buildAppDetails(itemData, itemLocaleProperties, apiContext)
-        item.aggregatedRatings = itemData.caseyData.aggregatedRatings
-        item.reviews = itemData.caseyData.reviewsResponse
-        return item
-    }
-
     private AppDetails buildAppDetails(ItemData itemData, ItemRevisionLocaleProperties itemRevisionLocaleProperties, ApiContext apiContext) {
         ItemRevision itemRevision = itemData.currentRevision
         AppDetails result = new AppDetails()
@@ -140,7 +133,7 @@ class itemBuilder {
         result.versionCode = null // todo set the version code
         result.versionString = binary?.version
         result.releaseDate = itemData.offer?.offerRevision?.getCountries()?.get(apiContext.country.getId().value)?.releaseDate
-        result.revisionNotes = itemData?.revisions?.collect {ItemRevision r -> buildRevisionNote(r, itemRevisionLocaleProperties, apiContext)}
+        result.revisionNotes = [buildRevisionNote(itemRevisionLocaleProperties?.releaseNotes, binary, itemData.offer?.offerRevision?.countries?.get(apiContext.country.getId().value)?.releaseDate)]
 
 
         // item revision attribute
@@ -151,33 +144,19 @@ class itemBuilder {
         result.categories = itemData?.offer?.categories?.collect { OfferAttribute offerAttribute ->
             return new CategoryInfo(
                     id: offerAttribute.getId(),
-                    name: (localeUtils.getLocaleProperties(offerAttribute.locales, apiContext.locale, 'offerAttribute', offerAttribute.getId(), 'locales') as SimpleLocaleProperties)?.name
+                    name: offerAttribute.locales?.get(apiContext.locale.getId().value)?.name
             )
         }
         result.genres = itemData?.genres?.collect { ItemAttribute itemAttribute ->
             return new GenreInfo(
                     id: itemAttribute.getId(),
-                    name: (localeUtils.getLocaleProperties(itemAttribute.locales, apiContext.locale, 'itemAttribute', itemAttribute.getId(), 'locales') as SimpleLocaleProperties)?.name
+                    name: itemAttribute.locales?.get(apiContext.locale.getId().value)?.name
             )
         }
 
         result.publisherName = itemData?.offer?.publisher?.name
         result.developerName = itemData?.developer?.name
         return result
-    }
-
-    private RevisionNote buildRevisionNote(ItemRevision itemRevision, ItemRevisionLocaleProperties itemRevisionLocaleProperties, ApiContext apiContext) {
-        if (itemRevision?.binaries == null) {
-            return null
-        }
-        Binary binary = itemRevision.binaries[apiContext.platform.value]
-        return new RevisionNote(
-                versionCode: null as Integer, // todo fill version code
-                releaseDate: itemRevision.updatedTime, // todo use real release date
-                versionString: binary?.version,
-                title: itemRevisionLocaleProperties?.releaseNotes?.shortNotes,
-                description: itemRevisionLocaleProperties?.releaseNotes?.longNotes
-        )
     }
 
     private Map<String, Image> buildImageMap(Map<String, com.junbo.catalog.spec.model.common.Image> catalogImageMap, ItemId itemId) {
@@ -195,14 +174,14 @@ class itemBuilder {
         return result
     }
 
-    private AppDetails buildAppDetails(CaseyOffer caseyOffer, CaseyItem caseyItem, String country) {
+    private AppDetails buildAppDetails(CaseyOffer caseyOffer, CaseyItem caseyItem, Organization publisher, Organization developer, String country) {
         AppDetails appDetails = new AppDetails()
         appDetails.packageName = caseyItem?.packageName
         Binary binary = caseyItem?.binaries?.get(Platform.ANDROID.value)
         appDetails.installationSize = binary?.size
         appDetails.versionCode = null // todo set the version code
         appDetails.versionString = binary?.version
-        appDetails.releaseDate = caseyOffer?.countries?.get(country)?.releaseDate
+        appDetails.releaseDate = caseyOffer?.regions?.get(country)?.releaseDate
         appDetails.revisionNotes = [buildRevisionNote(caseyItem?.releaseNotes, binary, appDetails.releaseDate)]
         appDetails.website = caseyItem?.website
         appDetails.forumUrl = caseyItem?.communityForumLink
@@ -219,8 +198,8 @@ class itemBuilder {
                     name: attribute.name
             )
         }
-        appDetails.publisherName = caseyOffer?.publisher?.name
-        appDetails.developerName = caseyItem?.developer?.name
+        appDetails.publisherName = publisher?.name
+        appDetails.developerName = developer?.name
         return appDetails;
     }
 
@@ -234,16 +213,17 @@ class itemBuilder {
         )
     }
 
-    private Offer buildOffer(CaseyOffer caseyOffer) {
+    private Offer buildOffer(CaseyOffer caseyOffer, ApiContext apiContext) {
         if (caseyOffer == null) {
             return null
         }
         Offer offer = new Offer()
-        offer.currency = caseyOffer?.price?.currencyCode == null ? null : new CurrencyId(caseyOffer?.price?.currencyCode)
+        offer.currency = apiContext.currency.getId()
         offer.price = caseyOffer?.price?.amount
         offer.self = caseyOffer?.self
         offer.isFree = caseyOffer?.price?.isFree
         offer.formattedDescription = caseyOffer?.shortDescription
+        return offer
     }
 
     private Image buildImage(com.junbo.catalog.spec.model.common.Image catalogImage) {

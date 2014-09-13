@@ -37,7 +37,7 @@ public interface CaseyResource {
 
     @GET
     @Path("cms-pages")
-    Promise<CaseyResults<CmsPage>> getCmsPages(CmsPageGetParams pageGetParams);
+    Promise<CaseyResults<CmsPage>> getCmsPages(@BeanParam CmsPageGetParams pageGetParams);
 
     @GET
     @Path("cms-contents/{contentId}")

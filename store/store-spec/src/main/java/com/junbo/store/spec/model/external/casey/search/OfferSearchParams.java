@@ -38,6 +38,9 @@ public class OfferSearchParams extends CaseySearchParams {
     @QueryParam("cmsSlot")
     private String cmsSlot;
 
+    @QueryParam("minimal")
+    private Boolean minimal;
+
     public String getCountry() {
         return country;
     }
@@ -100,5 +103,13 @@ public class OfferSearchParams extends CaseySearchParams {
 
     public void setCmsPage(String cmsPage) {
         this.cmsPage = cmsPage;
+    }
+
+    public Boolean getMinimal() {
+        return minimal;
+    }
+
+    public void setMinimal(Boolean minimal) {
+        this.minimal = minimal;
     }
 }

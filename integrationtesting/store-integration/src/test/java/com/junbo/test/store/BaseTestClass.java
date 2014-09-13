@@ -40,12 +40,11 @@ public abstract class BaseTestClass {
     protected String item_digital_free;
     protected String item_digital_oculus_free1;
     protected String item_digital_oculus_free2;
+    protected String cmsPagePath;
 
     protected String featureRootCriteria = "featureRoot";
-    protected List<String> itemsInFeaturedOffer;
-    protected List<String> itemsInFeaturedItem;
-    protected Map<String, Boolean> itemsToVerify;
-
+    protected List<String> cmsSlot1Items;
+    protected List<String> cmsSlot2Items;
 
     protected ItemService itemService;
     protected ItemRevisionService itemRevisionService;
@@ -55,6 +54,8 @@ public abstract class BaseTestClass {
     protected final ThreadLocal<ItemAttributeService> itemAttributeService = new ThreadLocal<>();
     protected OAuthService oAuthTokenService;
     protected int listItemPageSize = 2;
+
+    protected boolean useCaseyEmulator = false;
 
     public BaseTestClass() {
         super();
@@ -82,27 +83,20 @@ public abstract class BaseTestClass {
         item_digital_oculus_free1 = ConfigHelper.getSetting("testdata.item.digital.oculus.free1");
         item_digital_oculus_free2 = ConfigHelper.getSetting("testdata.item.digital.oculus.free2");
 
-        if (ConfigHelper.getSetting("testdata.items.featuredoffer") != null) {
-            itemsInFeaturedOffer = Arrays.asList(ConfigHelper.getSetting("testdata.items.featuredoffer").split(","));
+        if (ConfigHelper.getSetting("testdata.cmspage.slot1.items") != null) {
+            cmsSlot1Items = Arrays.asList(ConfigHelper.getSetting("testdata.cmspage.slot1.items").split(","));
         }
-        if (ConfigHelper.getSetting("testdata.items.featureditem") != null) {
-            itemsInFeaturedItem = Arrays.asList(ConfigHelper.getSetting("testdata.items.featureditem").split(","));
-        }
-        itemsToVerify = new HashMap<>();
-        if (ConfigHelper.getSetting("testdata.verify.items.free") != null) {
-            for (String itemName : Arrays.asList(ConfigHelper.getSetting("testdata.verify.items.free").split(","))) {
-                itemsToVerify.put(itemName, true);
-            }
-        }
-        if (ConfigHelper.getSetting("testdata.verify.items.nonfree") != null) {
-            for (String itemName : Arrays.asList(ConfigHelper.getSetting("testdata.verify.items.nonfree").split(","))) {
-                itemsToVerify.put(itemName, false);
-            }
+        if (ConfigHelper.getSetting("testdata.cmspage.slot2.items") != null) {
+            cmsSlot2Items = Arrays.asList(ConfigHelper.getSetting("testdata.cmspage.slot2.items").split(","));
         }
         if (ConfigHelper.getSetting("testdata.list.pagesize") != null) {
             listItemPageSize = Integer.parseInt(ConfigHelper.getSetting("testdata.list.pagesize"));
         }
+        if (ConfigHelper.getSetting("casey.useEmulator") != null) {
+            useCaseyEmulator = Boolean.valueOf(ConfigHelper.getSetting("casey.useEmulator"));
+        }
 
+        cmsPagePath = ConfigHelper.getSetting("testdata.cmspage.path");
         itemService = ItemServiceImpl.instance();
         itemRevisionService = ItemRevisionServiceImpl.instance();
         offerService = OfferServiceImpl.instance();
@@ -110,12 +104,6 @@ public abstract class BaseTestClass {
         offerAttributeService = OfferAttributeServiceImpl.instance();
         itemAttributeService.set(instance());
         oAuthTokenService = OAuthServiceImpl.getInstance();
-        if (ConfigHelper.getSetting("testdata.items.featuredoffer") != null) {
-            itemsInFeaturedOffer = Arrays.asList(ConfigHelper.getSetting("testdata.items.featuredoffer").split(","));
-        }
-        if (ConfigHelper.getSetting("testdata.items.featureditem") != null) {
-            itemsInFeaturedItem = Arrays.asList(ConfigHelper.getSetting("testdata.items.featureditem").split(","));
-        }
     }
 
     StoreTestDataProvider testDataProvider = new StoreTestDataProvider();

@@ -20,6 +20,7 @@ dependencies {
     compile junboProject(':oom-core')
     compile (libraries.jersey_common)
 
+    compile junboProject(':store-rest')
     compile junboProject(':store-spec')
     compile junboProject(':catalog-spec')
     compile junboProject(':casey-emulator-spec')

@@ -10,6 +10,7 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
 /**
@@ -39,7 +40,8 @@ class PriceRatingFacadeImpl implements PriceRatingFacade {
             LOGGER.error('name=Store_Price_Rating_Fail, offer={}', offerId, ex)
             return Promise.pure()
         }.then { RatingRequest ratingResult ->
-            return Promise.pure(RatingItem)
+            RatingItem ratingItem = CollectionUtils.isEmpty(ratingResult?.lineItems) ? null : ratingResult.lineItems.iterator().next()
+            return Promise.pure(ratingItem)
         }
     }
 }

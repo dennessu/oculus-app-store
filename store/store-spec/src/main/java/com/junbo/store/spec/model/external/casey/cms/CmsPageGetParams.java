@@ -5,11 +5,14 @@
  */
 package com.junbo.store.spec.model.external.casey.cms;
 
+import javax.ws.rs.QueryParam;
+
 /**
  * The CmsPageGetParams class.
  */
 public class CmsPageGetParams {
 
+    @QueryParam("path")
     private String path;
 
     public String getPath() {

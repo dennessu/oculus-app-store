@@ -7,7 +7,7 @@ package com.junbo.store.spec.model.external.casey.search;
 
 import com.junbo.catalog.spec.model.offer.CountryProperties;
 import com.junbo.common.id.OfferId;
-import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 
 import java.util.List;
@@ -20,10 +20,10 @@ public class CaseyOffer extends BaseCaseyModel {
 
     private OfferId self;
     private List<CatalogAttribute> categories;
-    private Organization publisher;
+    private OrganizationId publisher;
     private List<CaseyItem> items;
     private CaseyPrice price;
-    private Map<String, CountryProperties> countries;
+    private Map<String, CountryProperties> regions;
     private String shortDescription;
     private String longDescription;
 
@@ -43,11 +43,11 @@ public class CaseyOffer extends BaseCaseyModel {
         this.categories = categories;
     }
 
-    public Organization getPublisher() {
+    public OrganizationId getPublisher() {
         return publisher;
     }
 
-    public void setPublisher(Organization publisher) {
+    public void setPublisher(OrganizationId publisher) {
         this.publisher = publisher;
     }
 
@@ -67,12 +67,12 @@ public class CaseyOffer extends BaseCaseyModel {
         this.price = price;
     }
 
-    public Map<String, CountryProperties> getCountries() {
-        return countries;
+    public Map<String, CountryProperties> getRegions() {
+        return regions;
     }
 
-    public void setCountries(Map<String, CountryProperties> countries) {
-        this.countries = countries;
+    public void setRegions(Map<String, CountryProperties> regions) {
+        this.regions = regions;
     }
 
     public String getShortDescription() {

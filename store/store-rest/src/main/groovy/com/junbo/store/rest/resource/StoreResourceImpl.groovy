@@ -815,7 +815,7 @@ class StoreResourceImpl implements StoreResource {
     Promise<DetailsResponse> getDetails(DetailsRequest request) {
         requestValidator.validateRequiredApiHeaders().validateDetailsRequest(request)
         prepareBrowse().then { ApiContext apiContext ->
-            return browseService.getItem(request.itemId, true, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
+            return browseService.getItem(request.itemId, true, true, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
                 return Promise.pure(new DetailsResponse(item: item))
             }
         }
@@ -1362,7 +1362,7 @@ class StoreResourceImpl implements StoreResource {
 
     private Promise expandEntitlementItem(List<Entitlement> entitlements, ApiContext apiContext) {
         Promise.each(entitlements) { Entitlement entitlement ->
-            browseService.getItem(entitlement.item, false, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
+            browseService.getItem(entitlement.item, false, false, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
                 entitlement.itemDetails = item
                 entitlement.itemDetails.ownedByCurrentUser = true
                 return Promise.pure()
