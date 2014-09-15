@@ -1,28 +1,44 @@
 package com.junbo.store.clientproxy.catalog
-
 import com.junbo.catalog.spec.enums.ItemType
+import com.junbo.catalog.spec.enums.OfferAttributeType
 import com.junbo.catalog.spec.enums.PriceType
+import com.junbo.catalog.spec.model.attribute.ItemAttribute
+import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
+import com.junbo.catalog.spec.model.attribute.OfferAttributeGetOptions
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
+import com.junbo.catalog.spec.model.item.Item
+import com.junbo.catalog.spec.model.item.ItemRevision
+import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
-import com.junbo.catalog.spec.resource.ItemResource
-import com.junbo.catalog.spec.resource.OfferAttributeResource
-import com.junbo.catalog.spec.resource.OfferResource
-import com.junbo.catalog.spec.resource.OfferRevisionResource
+import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.id.ItemId
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
+import com.junbo.identity.spec.v1.model.Organization
+import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.clientproxy.casey.CaseyFacade
+import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.common.utils.CommonUtils
-import com.junbo.store.spec.model.catalog.Item
+import com.junbo.store.spec.model.ApiContext
+import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.catalog.Offer
-import com.junbo.store.spec.model.iap.IAPOfferGetRequest
+import com.junbo.store.spec.model.catalog.data.CaseyData
+import com.junbo.store.spec.model.catalog.data.ItemData
+import com.junbo.store.spec.model.catalog.data.OfferData
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
-
 /**
  * The CatalogFacadeImpl class.
  */
@@ -30,23 +46,72 @@ import javax.annotation.Resource
 @Component('storeCatalogFacade')
 class CatalogFacadeImpl implements CatalogFacade {
 
-    @Resource(name = 'store.offerItemClient')
-    ItemResource itemResource
+    private final static Logger LOGGER = LoggerFactory.getLogger(CatalogFacadeImpl)
 
-    @Resource(name = 'store.offerClient')
-    OfferResource offerResource
+    @Resource(name = 'storeResourceContainer')
+    private ResourceContainer resourceContainer
 
-    @Resource(name = 'store.offerRevisionClient')
-    OfferRevisionResource offerRevisionResource
+    @Resource(name = 'storeCaseyFacade')
+    private CaseyFacade caseyFacade
 
-    @Resource(name = 'store.offerAttributeClient')
-    OfferAttributeResource offerAttributeResource
-
-    private Map<String, OfferAttribute> nameToCategoryMap = null
+    @Resource(name = 'storeItemBuilder')
+    private ItemBuilder itemBuilder
 
     @Override
-    Promise<Item> getItem(String itemId) {
-        return null
+    Promise<Item> getItem(ItemId itemId, ApiContext apiContext) {
+        ItemData itemData = new ItemData()
+        itemData.genres = []
+        Item catalogItem
+        Promise.pure().then {
+            resourceContainer.itemResource.getItem(itemId.value).then { Item e ->
+                catalogItem = e
+                itemData.item = e
+                return Promise.pure()
+            }
+        }.then { // get developer
+            getOrganization(itemData.item?.ownerId).then { Organization organization ->
+                itemData.developer = organization
+                return Promise.pure()
+            }
+        }.then {  // get genres
+            Promise.each(catalogItem.genres) { String genresId ->
+                getItemAttribute(genresId, apiContext).then { ItemAttribute itemAttribute ->
+                    if (itemAttribute != null) {
+                        itemData.genres << itemAttribute
+                    }
+                    return Promise.pure()
+                }
+            }
+        }.then {
+            if (catalogItem.currentRevisionId == null) {
+                return Promise.pure()
+            }
+            resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision e ->
+                itemData.currentRevision = e
+                return Promise.pure()
+            }
+        }.then {
+            // get offer
+            resourceContainer.offerResource.getOffers(new OffersGetOptions(itemId: catalogItem.itemId)).then { Results<com.junbo.catalog.spec.model.offer.Offer> offerResults ->
+                if (offerResults.items.size() > 1) {
+                    LOGGER.warn('name=Store_Multiple_Offers_Found, item={}, useOffer={}', catalogItem.itemId, offerResults.items[0].offerId)
+                }
+                if (CollectionUtils.isEmpty(offerResults.items)) {
+                    return Promise.pure()
+                }
+                getOfferData(offerResults.items[0], apiContext).then { OfferData offerData ->
+                    itemData.offer = offerData
+                    return Promise.pure()
+                }
+            }
+        }.then {
+            return getCaseyData(catalogItem.getId(), apiContext).then { CaseyData caseyData ->
+                itemData.caseyData = caseyData
+                return Promise.pure()
+            }
+        }.then {
+            return Promise.pure(itemBuilder.buildItem(itemData, apiContext))
+        }
     }
 
     @Override
@@ -54,9 +119,9 @@ class CatalogFacadeImpl implements CatalogFacade {
         com.junbo.catalog.spec.model.offer.Offer catalogOffer
         OfferRevision offerRevision
         Offer result = new Offer(hasPhysicalItem: false, hasStoreValueItem: false)
-        offerResource.getOffer(offerId).then { com.junbo.catalog.spec.model.offer.Offer cof -> // todo fill other fields
+        resourceContainer.offerResource.getOffer(offerId).then { com.junbo.catalog.spec.model.offer.Offer cof -> // todo fill other fields
             catalogOffer = cof
-            offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions(locale: locale?.value)).then { OfferRevision it ->
+            resourceContainer.offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions(locale: locale?.value)).then { OfferRevision it ->
                 offerRevision = it
                 loadPriceInfo(offerRevision, result)
                 return Promise.pure(null)
@@ -64,7 +129,7 @@ class CatalogFacadeImpl implements CatalogFacade {
         }.then {
             result.setId(offerId)
             Promise.each(offerRevision.items) { ItemEntry itemEntry ->
-                itemResource.getItem(itemEntry.itemId).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
+                resourceContainer.itemResource.getItem(itemEntry.itemId).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
                     if (catalogItem.type == ItemType.STORED_VALUE.name()) {
                         result.hasStoreValueItem = true
                     }
@@ -80,46 +145,103 @@ class CatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<Results<Item>> getItemsByCategory(String categoryId, Long cursor, Long count) {
-        return null
+    Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode) {
+        // todo get item revision by version code
+        return resourceContainer.itemResource.getItem(itemId.value).then { Item catalogItem ->
+            return resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
+                return Promise.pure(itemRevision)
+            }
+        }
     }
 
     @Override
-    Promise<Item> getItemByPackageName(String packageName) {
-        return null
-    }
+    Promise<OfferAttribute> getOfferCategoryByName(String name, LocaleId locale) {
+        String cursor
+        OfferAttribute result
+        CommonUtils.loop {
+            resourceContainer.offerAttributeResource.getAttributes(new OfferAttributesGetOptions(attributeType: OfferAttributeType.CATEGORY.name(), cursor: cursor)).then { Results<OfferAttribute> results ->
+                result = results.items.find { OfferAttribute offerAttribute ->
+                    return offerAttribute.locales?.get(locale.value)?.name == name
+                }
+                if (result != null) {
+                    return Promise.pure(Promise.BREAK)
+                }
 
-    @Override
-    Promise<List<Offer>> getInAppOffers(Item hostItem, IAPOfferGetRequest request) {
-        return null
-    }
-
-    @Override
-    Promise<String> getCategoryId(String categoryName) {
-        Promise.pure(null).then {
-            if (nameToCategoryMap != null) {
+                cursor = CommonUtils.getQueryParam(results.next?.href, 'cursor')
+                if (results.items.isEmpty() || StringUtils.isEmpty(cursor)) {
+                    return Promise.pure(Promise.BREAK)
+                }
                 return Promise.pure()
             }
+        }.then {
+            return Promise.pure(result)
+        }
+    }
 
-            nameToCategoryMap = [:]
-            OfferAttributesGetOptions options = new OfferAttributesGetOptions(attributeType: 'CATEGORY')
-            CommonUtils.loop {
-                offerAttributeResource.getAttributes(options).then { Results<OfferAttribute> results ->
-                    results.items.each { OfferAttribute offerAttribute ->
-                        String name = offerAttribute.locales['en_US']?.name
-                        if (name != null) {
-                            nameToCategoryMap[name] = offerAttribute
-                        }
+    @Override
+    public Promise<OfferAttribute> getOfferAttribute(String attributeId, ApiContext apiContext) {
+        Promise.pure().then {
+            resourceContainer.offerAttributeResource.getAttribute(attributeId, new OfferAttributeGetOptions(locale: apiContext.locale.getId().value))
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_Get_OfferAttribute_Fail, attribute={}', attributeId, ex)
+            return Promise.pure()
+        }
+    }
+
+    private Promise<OfferData> getOfferData(com.junbo.catalog.spec.model.offer.Offer catalogOffer, ApiContext apiContext) {
+        OfferData result = new OfferData()
+        result.offer = catalogOffer
+        result.categories = []
+        Promise.pure().then { // get offer revision
+            if (catalogOffer.currentRevisionId == null) {
+                return Promise.pure()
+            }
+            resourceContainer.offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions()).then { OfferRevision e ->
+                result.offerRevision = e
+                return Promise.pure()
+            }
+        }.then { // get categories
+            Promise.each(catalogOffer.categories) { String categoryId ->
+                getOfferAttribute(categoryId, apiContext).then { OfferAttribute offerAttribute ->
+                    if (offerAttribute != null) {
+                        result.categories << offerAttribute
                     }
-                    if (results.items.isEmpty()) {
-                        return Promise.pure(Promise.BREAK)
-                    }
-                    options.nextCursor = options.cursor
                     return Promise.pure()
                 }
             }
+        }.then { // get publisher
+            getOrganization(catalogOffer.ownerId).then { Organization organization->
+                result.publisher = organization
+                return Promise.pure()
+            }
         }.then {
-            return Promise.pure(nameToCategoryMap[categoryName]?.id)
+            return Promise.pure(result)
+        }
+    }
+
+    private Promise<CaseyData> getCaseyData(String itemId, ApiContext apiContext) {
+        CaseyData result = new CaseyData()
+        caseyFacade.getAggregatedRatings(new ItemId(itemId), apiContext).then { List<AggregatedRatings> aggregatedRatings ->
+            result.aggregatedRatings = aggregatedRatings
+            return Promise.pure(result)
+        }
+    }
+
+    private Promise<Organization> getOrganization(OrganizationId organizationId) {
+        Promise.pure().then {
+            resourceContainer.organizationResource.get(organizationId, new OrganizationGetOptions())
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_Get_Organization_Fail, organization={}', organizationId, ex)
+            return Promise.pure()
+        }
+    }
+
+    private Promise<ItemAttribute> getItemAttribute(String attributeId, ApiContext apiContext) {
+        Promise.pure().then {
+            resourceContainer.itemAttributeResource.getAttribute(attributeId, new ItemAttributeGetOptions(locale: apiContext.locale.getId().value))
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_Get_ItemAttribute_Fail, attribute={}', attributeId, ex)
+            return Promise.pure()
         }
     }
 

@@ -10,11 +10,12 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.Constants
 import com.junbo.store.rest.utils.DataConverter
-import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -25,17 +26,20 @@ import javax.annotation.Resource
 @Component('storeChallengeHelper')
 class ChallengeHelperImpl implements ChallengeHelper {
 
-    private static final Logg
-
     @Resource(name = 'storeResourceContainer')
     ResourceContainer resourceContainer
 
     @Resource(name = 'storeDataConverter')
     DataConverter dataConverter
 
+    @Value('${store.tos.challenge.enabled}')
+    private boolean tosChallengeEnabled
 
     @Override
     Promise<Challenge> checkTosChallenge(UserId userId, String tosTitle, ChallengeAnswer challengeAnswer) {
+        if (!tosChallengeEnabled) {
+            return Promise.pure()
+        }
         return resourceContainer.tosResource.list(new TosListOptions(title: tosTitle)).then { Results<Tos> toses ->
             if (toses == null || CollectionUtils.isEmpty(toses.items)) {
                 return Promise.pure(null)

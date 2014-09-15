@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.catalog.spec.model.offer.Offer;
@@ -50,6 +51,7 @@ public class Master {
     private Map<String, Order> orders;
     private Map<String, ItemAttribute> itemAttributes;
     private Map<String, OfferAttribute> offerAttributes;
+    private Map<String, Organization> organizations;
     private final String defaultLocale = "en_US";
 
     private Map<String, PaymentInstrument> paymentInstruments;
@@ -90,6 +92,7 @@ public class Master {
         this.initializeFulfilmentItems();
         this.initializeUserAccessTokens();
         this.initializeServiceAccessTokens();
+        this.initializeOrgnizations();
         this.currentUid = new String();
     }
 
@@ -189,6 +192,13 @@ public class Master {
             this.serviceAccessTokens = new HashMap<>();
         }
         this.serviceAccessTokens.clear();
+    }
+
+    public void initializeOrgnizations() {
+        if(this.organizations == null){
+            this.organizations = new HashMap<>();
+        }
+        this.organizations.clear();
     }
 
     public void initializeFulfilmentItems() {
@@ -305,6 +315,10 @@ public class Master {
         this.serviceAccessTokens.put(componentType,accessToken);
     }
 
+    public void addOrganization(String organizationId, Organization organization) {
+        this.organizations.put(organizationId, organization);
+    }
+
     public User getUser(String userId) {
         return this.users.get(userId);
     }
@@ -331,6 +345,10 @@ public class Master {
 
     public Order getOrder(String orderId) {
         return this.orders.get(orderId);
+    }
+
+    public Organization getOrganization(String organizationId) {
+        return this.organizations.get(organizationId);
     }
 
     public PaymentInstrument getPaymentInstrument(String paymentInstrumentId) {

@@ -14,6 +14,7 @@ import com.junbo.store.spec.model.billing.Instrument
 import com.junbo.store.spec.model.billing.PaymentOption
 import com.junbo.store.spec.model.browse.document.Tos
 import com.junbo.store.spec.model.identity.PersonalInfo
+import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 

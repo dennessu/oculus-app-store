@@ -1,6 +1,7 @@
 package com.junbo.test.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.ErrorDetail;
 import com.junbo.identity.spec.v1.model.ErrorInfo;
 import com.junbo.test.common.HttpclientHelper;
@@ -54,6 +55,7 @@ public class postErrorCodeDetail {
     @Test(groups = "bvt")
     // https://oculus.atlassian.net/browse/SER-306
     // https://oculus.atlassian.net/browse/SER-305
+    // https://oculus.atlassian.net/browse/SER-573
     public void postErrorInfo() throws Exception {
         ErrorInfo errorInfo = IdentityModel.DefaultErrorInfo();
         ErrorInfo posted = Identity.ErrorInfoDefault(errorInfo);
@@ -80,5 +82,10 @@ public class postErrorCodeDetail {
         Validator.Validate("Validate get errorSummary", errorDetail.getErrorSummary(), errorDetailGotten.getErrorSummary());
         Validator.Validate("Validate get supportLink", errorDetail.getSupportLink(), errorDetailGotten.getSupportLink());
         Validator.Validate("Validate get errorTitle", errorDetail.getErrorTitle(), errorDetailGotten.getErrorTitle());
+
+        Results<ErrorInfo> results = Identity.ErrorInfoGetAll();
+        assert results != null;
+        assert results.getItems() != null;
+        assert results.getItems().size() > 0;
     }
 }

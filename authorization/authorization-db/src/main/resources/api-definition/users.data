@@ -13,7 +13,7 @@
         }],
         "csr": [{
             "precondition": "true",
-            "rights": ["read", "update", "search"],
+            "rights": ["read", "update", "search", "delete"],
             "scriptType": "SPEL"
         }]
     }

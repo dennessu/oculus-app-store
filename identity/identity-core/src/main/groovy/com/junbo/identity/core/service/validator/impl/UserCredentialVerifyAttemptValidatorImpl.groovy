@@ -180,7 +180,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 else if (userLoginAttempt.type == CredentialType.PIN.toString()) {
                     return userPinRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
                             0).then { List<UserPin> userPinList ->
-                        if (userPinList == null || userPinList.size() > 1) {
+                        if (CollectionUtils.isEmpty(userPinList) || userPinList.size() > 1) {
                             throw AppErrors.INSTANCE.userPinIncorrect().exception()
                         }
 
@@ -243,7 +243,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 User user = null;
                 return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
                     return userRepository.get(userPersonalInfo.userId).then { User existing ->
-                        if (existing.username == userPersonalInfo.getId()) {
+                        if (existing.username == userPersonalInfo.getId() && existing.status != UserStatus.DELETED.toString()) {
                             user = existing
                             return Promise.pure(Promise.BREAK)
                         }
@@ -261,7 +261,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         User user = null
         return Promise.each(userPersonalInfoList){ UserPersonalInfo info ->
             return userRepository.get(info.userId).then { User existing ->
-                if (existing == null || CollectionUtils.isEmpty(existing.emails)) {
+                if (existing == null || CollectionUtils.isEmpty(existing.emails) || existing.status == UserStatus.DELETED.toString()) {
                     return Promise.pure(null)
                 }
 

@@ -9,6 +9,7 @@ import groovy.transform.CompileStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -119,7 +120,12 @@ public abstract class AbstractClientProxy {
             httpContextData.getRequestHeaders().addAll(entry.getKey(), entry.getValue());
         }
 
-        httpContextData.setRequestIpAddress("0.0.0.0");
+        JunboHttpContext.JunboHttpContextData current = JunboHttpContext.getData();
+        if (current != null && !StringUtils.isEmpty(current.getRequestIpAddress())) {
+            httpContextData.setRequestIpAddress(current.getRequestIpAddress());
+        } else {
+            httpContextData.setRequestIpAddress("0.0.0.0");
+        }
 
         return httpContextData;
     }

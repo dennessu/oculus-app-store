@@ -14,6 +14,7 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 import java.util.regex.Pattern
 
@@ -71,7 +72,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     }
 
     private void checkUserPhone(PhoneNumber phoneNumber) {
-        if (phoneNumber.info == null) {
+        if (StringUtils.isEmpty(phoneNumber.info)) {
             throw AppCommonErrors.INSTANCE.fieldRequired('value.info').exception()
         }
 

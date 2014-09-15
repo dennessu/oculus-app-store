@@ -177,7 +177,8 @@
     </bean>
 
     <bean id="birthdayValidator" class="com.junbo.identity.core.service.validator.impl.BirthdayValidatorImpl">
-        <property name="timespanInYears" value="120"/>
+        <property name="timespanMaxInYears" value="120" />
+        <property name="timespanMinInYears" value="13" />
     </bean>
 
     <bean id="driverLicenseValidator" class="com.junbo.identity.core.service.validator.impl.DriverLicenseValidatorImpl">

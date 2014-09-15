@@ -137,7 +137,25 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
 
     @Override
     Promise<Results<ErrorInfo>> list(ErrorInfoListOptions listOptions) {
-        throw new IllegalStateException('Unsupported operation')
+        if (listOptions == null) {
+            throw new IllegalStateException('Unsupported operation')
+        }
+
+        return errorInfoValidator.validateForSearch(listOptions).then {
+            return errorInfoRepository.searchAll(listOptions.limit, listOptions.offset).then { List<ErrorInfo> errorInfoList ->
+                def result = new Results<ErrorInfo>(items: [])
+
+                errorInfoList.each { ErrorInfo newErrorInfo ->
+                    newErrorInfo = errorInfoFilter.filterForGet(newErrorInfo, null)
+
+                    if (newErrorInfo != null) {
+                        result.items.add(newErrorInfo)
+                    }
+                }
+
+                return Promise.pure(result)
+            }
+        }
     }
 
     @Override

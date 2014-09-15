@@ -13,6 +13,7 @@ import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
@@ -49,7 +50,9 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     public ItemAttribute getItemAttribute(String attributeId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + attributeId;
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
-        return new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
+        ItemAttribute itemAttribute = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
+        Master.getInstance().addItemAttribute(attributeId, itemAttribute);
+        return itemAttribute;
     }
 
     public Results<ItemAttribute> getItemAttributes(HashMap<String, List<String>> httpPara) throws Exception {

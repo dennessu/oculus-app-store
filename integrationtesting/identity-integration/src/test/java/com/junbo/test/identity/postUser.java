@@ -24,7 +24,6 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author dw
@@ -59,7 +58,9 @@ public class postUser {
         Validator.Validate("validate user name", posted.getUsername(), stored.getUsername());
     }
 
-    @Test(groups = "dailies")
+    @Test(groups = "dailies", enabled = false)
+    // https://oculus.atlassian.net/browse/SER-553
+    // Only CSR can delete user, will disable this temporary
     public void testUpdateUser() throws Exception {
         String username = RandomHelper.randomAlphabetic(15);
         User user = IdentityModel.DefaultUser();
@@ -84,6 +85,110 @@ public class postUser {
 
         Validator.Validate("validate response error code", 403, response.getStatusLine().getStatusCode());
         response.close();
+    }
+
+    @Test(groups = "dailies", enabled = false)
+    // https://oculus.atlassian.net/browse/SER-553
+    // This case will be disabled
+    public void testDeleteAndUpdateUser() throws Exception {
+        String username = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        User user = Identity.UserPostDefaultWithMail(username, email);
+
+        String password = RandomHelper.randomAlphabetic(15);
+        CloseableHttpResponse response = Identity.UserCredentialPostDefault(user.getId(), null, password);
+        Validator.Validate("Validate credential create response code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserPinCredentialPostDefault(user.getId(), password, "1234", false);
+        Validator.Validate("Validate credential pin create response code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserCredentialAttemptesPostDefault(username, password);
+        Validator.Validate("Validate credential attempt create response code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserCredentialAttemptesPostDefault(email, password);
+        Validator.Validate("Validate credential attempt with mail create response code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+        Identity.UserDelete(user);
+
+        User newUser = Identity.UserPostDefaultWithMail(username, email);
+        assert user.getId() != newUser.getId();
+
+        String passwordErrorMessage = "User Password Incorrect";
+        response = Identity.UserCredentialAttemptesPostDefault(username, password, false);
+        Validator.Validate("Validator new user with the same name", 412, response.getStatusLine().getStatusCode());
+        Validator.Validate("Validator errorMessage", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(passwordErrorMessage));
+        response.close();
+
+        response = Identity.UserPinCredentialAttemptPostDefault(username, "1234", false);
+        String pinErrorMessage = "User Pin Incorrect";
+        Validator.Validate("Validator new user with the same name pin", 412, response.getStatusLine().getStatusCode());
+        Validator.Validate("Validator errorMessage", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(pinErrorMessage));
+        response.close();
+
+        response = Identity.UserCredentialAttemptesPostDefault(email, password, false);
+        Validator.Validate("Validator new user with the same email", 412, response.getStatusLine().getStatusCode());
+        Validator.Validate("Validator errorMessage", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(passwordErrorMessage));
+        response.close();
+
+        response = Identity.UserPinCredentialAttemptPostDefault(email, "1234", false);
+        Validator.Validate("Validator new user with the same email in", 412, response.getStatusLine().getStatusCode());
+        Validator.Validate("Validator errorMessage", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(pinErrorMessage));
+        response.close();
+
+        Thread.sleep(1000);
+
+        String newPassword = RandomHelper.randomAlphabetic(15);
+        response = Identity.UserCredentialPostDefault(newUser.getId(), null, newPassword);
+        Validator.Validate("Validate user credential create response code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserPinCredentialPostDefault(newUser.getId(), newPassword, "5678", false);
+        Validator.Validate("Validate credential pin create response code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserCredentialAttemptesPostDefault(username, password, false);
+        Validator.Validate("Validator new user with the same name", 412, response.getStatusLine().getStatusCode());
+        Validator.Validate("Validator errorMessage", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(passwordErrorMessage));
+        response.close();
+
+        response = Identity.UserPinCredentialAttemptPostDefault(username, "1234", false);
+        Validator.Validate("Validator username with old pin", 412, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserCredentialAttemptesPostDefault(username, newPassword);
+        Validator.Validate("Validator new user with the new password", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserCredentialAttemptesPostDefault(email, newPassword);
+        Validator.Validate("Validator new user email with the new password", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserPinCredentialAttemptPostDefault(username, "5678");
+        Validator.Validate("Validator new user with new pin", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserPinCredentialAttemptPostDefault(email, "5678");
+        Validator.Validate("Validator new user email with new pin", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setUserId(user.getId());
+        userPersonalInfo.setType(IdentityModel.UserPersonalInfoType.EMAIL.toString());
+        Email mailPii = new Email();
+        mailPii.setInfo(email);
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(mailPii));
+        response = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo, false);
+        String message = "Mail is already used.";
+        Validator.Validate("Validator userPersonalInfo with same email", 400, response.getStatusLine().getStatusCode());
+        Validator.Validate("Validator mail is used", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(message));
+        response.close();
+
+        List<User> userList = Identity.UserSearchByUsername(username);
+        assert userList != null;
+        assert userList.size() == 1;
     }
 
     @Test(groups = "dailies")

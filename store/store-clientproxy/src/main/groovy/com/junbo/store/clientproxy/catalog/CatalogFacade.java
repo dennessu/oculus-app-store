@@ -5,30 +5,27 @@
  */
 package com.junbo.store.clientproxy.catalog;
 
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.model.Results;
+import com.junbo.common.id.ItemId;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.store.spec.model.catalog.Item;
+import com.junbo.store.spec.model.ApiContext;
+import com.junbo.store.spec.model.browse.document.Item;
 import com.junbo.store.spec.model.catalog.Offer;
-import com.junbo.store.spec.model.iap.IAPOfferGetRequest;
-
-import java.util.List;
 
 /**
  * The CatalogFacade class.
  */
 public interface CatalogFacade {
 
-    Promise<Item> getItem(String itemId);
+    Promise<Item> getItem(ItemId itemId, ApiContext apiContext);
 
     Promise<Offer> getOffer(String offerId, LocaleId locale);
 
-    Promise<Results<Item>> getItemsByCategory(String categoryId, Long cursor, Long count);
+    Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode);
 
-    Promise<Item> getItemByPackageName(String packageName);
+    Promise<OfferAttribute> getOfferCategoryByName(String name, LocaleId locale);
 
-    Promise<List<Offer>> getInAppOffers(Item hostItem, IAPOfferGetRequest request);
-
-    Promise<String> getCategoryId(String categoryName);
-
+    Promise<OfferAttribute> getOfferAttribute(String attributeId, ApiContext apiContext);
 }

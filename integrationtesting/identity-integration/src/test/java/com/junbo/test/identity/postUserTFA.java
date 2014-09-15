@@ -48,7 +48,7 @@ public class postUserTFA {
         UserPersonalInfoLink userPersonalInfoLink = new UserPersonalInfoLink();
         userPersonalInfoLink.setUserId(user.getId());
         userPersonalInfoLink.setIsDefault(true);
-        if (userTFA.getVerifyType().equals(IdentityModel.TFAVerifyType.MAIL.name())) {
+        if (userTFA.getVerifyType().equals(IdentityModel.TFAVerifyType.EMAIL.name())) {
             upi = Identity.UserPersonalInfoPost(user.getId(), IdentityModel.DefaultUserPersonalInfoEmail());
             userPersonalInfoLink.setValue(upi.getId());
             upiLink.add(userPersonalInfoLink);

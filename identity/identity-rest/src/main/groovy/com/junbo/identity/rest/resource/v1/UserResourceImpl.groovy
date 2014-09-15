@@ -286,6 +286,10 @@ class UserResourceImpl implements UserResource {
                         throw AppCommonErrors.INSTANCE.forbidden().exception()
                     }
 
+                    if (!AuthorizeContext.hasScopes('csr') && user.status == UserStatus.DELETED.toString()) {
+                        return Promise.pure(null)
+                    }
+
                     if (user == null) {
                         return Promise.pure(user)
                     }
@@ -307,7 +311,8 @@ class UserResourceImpl implements UserResource {
                     User user = null
                     return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
                         return userRepository.get(userPersonalInfo.userId).then { User existing ->
-                            if (existing.username == userPersonalInfo.getId()) {
+                            if (existing.username == userPersonalInfo.getId()
+                             && (existing.status != UserStatus.DELETED.toString() || AuthorizeContext.hasScopes('csr'))) {
                                 user = existing
                                 return Promise.pure(Promise.BREAK)
                             }
@@ -351,7 +356,9 @@ class UserResourceImpl implements UserResource {
                 }
 
                 user.setStatus(UserStatus.DELETED.toString())
-                return userRepository.update(user, user)
+                return userRepository.update(user, user).then {
+                    return Promise.pure(null)
+                }
             }
         }
     }

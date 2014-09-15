@@ -1,5 +1,4 @@
 package com.junbo.store.rest.resource.raw
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
@@ -28,7 +27,6 @@ import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
-import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -56,6 +54,7 @@ import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.model.token.Token
 import com.junbo.store.spec.resource.StoreResource
+import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
@@ -340,18 +339,9 @@ class StoreResourceImpl implements StoreResource {
                 InstrumentUpdateResponse response = new InstrumentUpdateResponse(
                         billingProfile: billingProfile
                 )
+                response.updatedInstrument = paymentInstrumentId
                 return Promise.pure(response)
             }
-        }
-    }
-
-    @Override
-    Promise<EntitlementsGetResponse> getEntitlements(PageParam pageParam) {
-        requestValidator.validateRequiredApiHeaders()
-        return innerGetEntitlements(new EntitlementsGetRequest(), false, pageParam).then { Results<Entitlement> entitlementResults ->
-            return Promise.pure(new EntitlementsGetResponse(
-                    entitlements : entitlementResults.items
-            ))
         }
     }
 
@@ -624,6 +614,7 @@ class StoreResourceImpl implements StoreResource {
                             return Promise.pure(response)
                         }
                     }
+                    response.order = createOrder.getId()
                     return Promise.pure(response)
                 }
             }
@@ -791,6 +782,7 @@ class StoreResourceImpl implements StoreResource {
         }.then {
             resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: user.getId(), tosId: request.tosId, agreementTime: new Date())).then { UserTosAgreement userTosAgreement ->
                 return Promise.pure(new AcceptTosResponse(
+                    userTosAgreementId: userTosAgreement.getId(),
                     tos: userTosAgreement.tosId,
                     acceptedTime: userTosAgreement.agreementTime
                 ))
@@ -826,7 +818,7 @@ class StoreResourceImpl implements StoreResource {
     Promise<DetailsResponse> getDetails(DetailsRequest request) {
         requestValidator.validateRequiredApiHeaders().validateDetailsRequest(request)
         prepareBrowse().then { ApiContext apiContext ->
-            return browseService.getItem(request.itemId, true, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
+            return browseService.getItem(request.itemId, true, true, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
                 return Promise.pure(new DetailsResponse(item: item))
             }
         }
@@ -933,14 +925,6 @@ class StoreResourceImpl implements StoreResource {
             return Promise.pure(null)
         }
     }
-
-    private Promise<User> getByUserName(String username) {
-        resourceContainer.userResource.list(new UserListOptions(username: username)).syncThen { Results<User> results ->
-            return results.items.isEmpty() ? null : results.items[0]
-        }
-    }
-
-
 
     private static boolean itemConsumable(ItemRevision itemRevision) {
         if (itemRevision.entitlementDefs != null) {
@@ -1381,7 +1365,7 @@ class StoreResourceImpl implements StoreResource {
 
     private Promise expandEntitlementItem(List<Entitlement> entitlements, ApiContext apiContext) {
         Promise.each(entitlements) { Entitlement entitlement ->
-            browseService.getItem(entitlement.item, false, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
+            browseService.getItem(entitlement.item, false, false, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
                 entitlement.itemDetails = item
                 entitlement.itemDetails.ownedByCurrentUser = true
                 return Promise.pure()

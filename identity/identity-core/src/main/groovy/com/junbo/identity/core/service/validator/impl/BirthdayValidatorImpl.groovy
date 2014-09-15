@@ -1,4 +1,5 @@
 package com.junbo.identity.core.service.validator.impl
+
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
@@ -10,6 +11,7 @@ import com.junbo.identity.spec.v1.model.UserDOB
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+
 /**
  * 1):  Check not null;
  * 2):  Check the age in an range.
@@ -18,7 +20,8 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class BirthdayValidatorImpl implements PiiValidator {
 
-    private Integer timespanInYears
+    private Integer timespanMinInYears
+    private Integer timespanMaxInYears
 
     @Override
     boolean handles(String type) {
@@ -55,14 +58,13 @@ class BirthdayValidatorImpl implements PiiValidator {
         }
 
         def after = Calendar.instance
-
+        after.add(Calendar.YEAR, -timespanMinInYears)
         if (birthday.after(after.time)) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
 
         def before = Calendar.instance
-        before.add(Calendar.YEAR, -timespanInYears)
-
+        before.add(Calendar.YEAR, -timespanMaxInYears)
         if (birthday.before(before.time)) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
@@ -74,7 +76,12 @@ class BirthdayValidatorImpl implements PiiValidator {
     }
 
     @Required
-    void setTimespanInYears(Integer timespanInYears) {
-        this.timespanInYears = timespanInYears
+    void setTimespanMinInYears(Integer timespanMinInYears) {
+        this.timespanMinInYears = timespanMinInYears
+    }
+
+    @Required
+    void setTimespanMaxInYears(Integer timespanMaxInYears) {
+        this.timespanMaxInYears = timespanMaxInYears
     }
 }

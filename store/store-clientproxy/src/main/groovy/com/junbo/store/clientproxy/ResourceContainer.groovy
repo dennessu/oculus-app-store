@@ -1,4 +1,4 @@
-package com.junbo.store.rest.utils
+package com.junbo.store.clientproxy
 
 import com.junbo.catalog.spec.resource.*
 import com.junbo.crypto.spec.resource.CryptoResource

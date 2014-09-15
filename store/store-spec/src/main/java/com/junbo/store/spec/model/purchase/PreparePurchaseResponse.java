@@ -5,13 +5,16 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.id.OrderId;
+import com.junbo.common.userlog.EntityLoggable;
 import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.billing.Instrument;
 
 /**
  * The PreparePurchaseResponse class.
  */
-public class PreparePurchaseResponse {
+public class PreparePurchaseResponse implements EntityLoggable {
 
     private String formattedTotalPrice;
 
@@ -20,6 +23,9 @@ public class PreparePurchaseResponse {
     private String purchaseToken;
 
     private Challenge challenge;
+
+    @JsonIgnore
+    private OrderId order;
 
     public Instrument getInstrument() {
         return instrument;
@@ -51,5 +57,19 @@ public class PreparePurchaseResponse {
 
     public void setChallenge(Challenge challenge) {
         this.challenge = challenge;
+    }
+
+    public OrderId getOrder() {
+        return order;
+    }
+
+    public void setOrder(OrderId order) {
+        this.order = order;
+    }
+
+    @JsonIgnore
+    @Override
+    public String getEntityLogId() {
+        return purchaseToken + ":" + String.valueOf(order);
     }
 }
