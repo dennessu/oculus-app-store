@@ -141,7 +141,7 @@ public class StoreBrowseValidationHelper {
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
         List<OfferRevision> offerRevisions = getOfferRevisions(catalogOffer);
-        List<ItemRevision> itemRevisions = getItemRevisions(catalogItem);
+        List<ItemRevision> itemRevisions =  Arrays.asList(itemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
 
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
             for (String id : catalogOffer.getCategories()) {
