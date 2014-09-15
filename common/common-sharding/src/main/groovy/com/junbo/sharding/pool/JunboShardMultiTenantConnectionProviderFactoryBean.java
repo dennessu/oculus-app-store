@@ -12,8 +12,6 @@ import com.zaxxer.hikari.HikariDataSource;
  * JunboShardMultiTenantConnectionProviderFactoryBean.
  */
 public class JunboShardMultiTenantConnectionProviderFactoryBean extends ShardMultiTenantConnectionProviderFactoryBean {
-    private static final int DEFAULT_CONNECTION_TIMEOUT = 5000;
-
     protected HikariDataSource createDataSource(String url) {
         HikariDataSource dataSource = new HikariDataSource();
 
