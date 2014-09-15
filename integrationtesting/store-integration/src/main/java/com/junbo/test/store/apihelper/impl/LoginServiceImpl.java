@@ -14,10 +14,12 @@ import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.store.apihelper.LoginService;
+import com.junbo.test.store.apihelper.TestContext;
+import com.junbo.test.store.utility.DataGenerator;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Collections;
+import java.util.Map;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -37,10 +39,11 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
         FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
-        headers.put("X-ANDROID-ID", Collections.singletonList(RandomStringUtils.randomAlphabetic(10)));
+        headers.put("X-ANDROID-ID", Collections.singletonList(DataGenerator.instance().generateAndroidId()));
         headers.put("Accept-Language", Collections.singletonList("en-US"));
-        headers.put("X-MCCMNC", Collections.singletonList("INT_TEST"));
-
+        for (Map.Entry<String, String> entry: TestContext.getData().getHeaders().entrySet()) {
+            headers.put(entry.getKey(), Collections.singletonList(entry.getValue()));
+        }
         //for further header, we can set dynamic value from properties here
         return headers;
     }

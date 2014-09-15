@@ -22,17 +22,17 @@ class ShardMultiTenantConnectionProviderFactoryBean
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShardMultiTenantConnectionProviderFactoryBean)
 
-    private String uniqueName
+    protected String uniqueName
 
-    private String jdbcUrls
+    protected String jdbcUrls
 
-    private String className
+    protected String className
 
-    private int minPoolSize
+    protected int minPoolSize
 
-    private int maxPoolSize
+    protected int maxPoolSize
 
-    private Properties driverProperties
+    protected Properties driverProperties
 
     void setUniqueName(String uniqueName) {
         this.uniqueName = uniqueName
@@ -170,7 +170,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
         return dataSourceProxy
     }
 
-    private HikariDataSource createDataSource(String url) {
+    protected HikariDataSource createDataSource(String url) {
         HikariDataSource dataSource = new HikariDataSource()
 
         dataSource.setDriverClassName(className)

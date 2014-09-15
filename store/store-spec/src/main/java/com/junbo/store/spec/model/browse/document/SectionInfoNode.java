@@ -14,16 +14,39 @@ import java.util.List;
  */
 public class SectionInfoNode {
 
+    /**
+     * The SectionType enum.
+     */
+    public enum SectionType {
+        CmsSection,
+        CategorySection
+    }
+
     private String name;
 
     private String category;
 
     private String criteria;
 
+    private List<SectionInfoNode> children;
+
+    @JsonIgnore
+    private SectionType sectionType;
+
+    @JsonIgnore
+    private SectionInfoNode parent;
+
     @JsonIgnore
     private Boolean ordered;
 
-    private List<SectionInfoNode> children;
+    @JsonIgnore
+    private String categoryId;
+
+    @JsonIgnore
+    private String cmsPage;
+
+    @JsonIgnore
+    private String cmsSlot;
 
     public SectionInfoNode() {
     }
@@ -66,12 +89,52 @@ public class SectionInfoNode {
         this.children = children;
     }
 
+    public SectionType getSectionType() {
+        return sectionType;
+    }
+
+    public void setSectionType(SectionType sectionType) {
+        this.sectionType = sectionType;
+    }
+
     public Boolean getOrdered() {
         return ordered;
     }
 
     public void setOrdered(Boolean ordered) {
         this.ordered = ordered;
+    }
+
+    public SectionInfoNode getParent() {
+        return parent;
+    }
+
+    public void setParent(SectionInfoNode parent) {
+        this.parent = parent;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCmsPage() {
+        return cmsPage;
+    }
+
+    public void setCmsPage(String cmsPage) {
+        this.cmsPage = cmsPage;
+    }
+
+    public String getCmsSlot() {
+        return cmsSlot;
+    }
+
+    public void setCmsSlot(String cmsSlot) {
+        this.cmsSlot = cmsSlot;
     }
 
     public SectionInfo toSectionInfo() {

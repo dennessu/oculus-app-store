@@ -13,9 +13,12 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.StoreApiHeader
+import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -27,11 +30,15 @@ import javax.annotation.Resource
 @Component('storeContextBuilder')
 class ApiContextBuilder {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(ApiContextBuilder)
+
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
     @Resource(name = 'storeIdentityUtils')
     private IdentityUtils identityUtils
+
+    private String defaultCountry = 'US'
 
     Promise<ApiContext> buildApiContext() {
         ApiContext result = new ApiContext()
@@ -40,9 +47,15 @@ class ApiContextBuilder {
         result.userAgent = getHeader(StoreApiHeader.USER_AGENT)
         result.androidId = getHeader(StoreApiHeader.ANDROID_ID)
         result.user = (AuthorizeContext.currentUserId?.value == null || AuthorizeContext.currentUserId?.value == 0) ? null : AuthorizeContext.currentUserId
-
-        Promise.pure().then { // get country. todo use ip geo or from sewer
-            resourceContainer.countryResource.get(new CountryId('US'), new CountryGetOptions()).then { Country country ->
+        String countryCode = getHeader(StoreApiHeader.IP_COUNTRY)
+        Promise.pure().then { // get country.
+            if (StringUtils.isEmpty(countryCode)) {
+                countryCode = defaultCountry
+            }
+            resourceContainer.countryResource.get(new CountryId(countryCode), new CountryGetOptions()).recover { Throwable ex ->
+                LOGGER.error('name=Store_Invalid_CountryCode, countryCode={}, default={}', countryCode, defaultCountry, ex)
+                resourceContainer.countryResource.get(new CountryId(defaultCountry),  new CountryGetOptions())
+            }.then { Country country ->
                 result.country = country
                 return Promise.pure()
             }
@@ -57,6 +70,7 @@ class ApiContextBuilder {
                 return Promise.pure()
             }
         }.then {
+            LOGGER.info("name=Store_Build_Context, androidId={}, countryCode={}, actualCountryCode={}", result.androidId, countryCode, result.getCountry().getId().value)
             return Promise.pure(result)
         }
     }

@@ -15,7 +15,9 @@ public enum StoreApiHeader {
 
     ACCEPT_LANGUAGE("Accept-Language"),
 
-    USER_AGENT("User-Agent");
+    USER_AGENT("User-Agent"),
+
+    IP_COUNTRY("oculus-geoip-country-code");
 
     private final String value;
 

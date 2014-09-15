@@ -11,6 +11,7 @@ import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
 import com.junbo.catalog.spec.enums.*;
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.catalog.spec.model.offer.*;
@@ -23,10 +24,7 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * OfferRevisionValidator.
@@ -68,10 +66,11 @@ public class OfferRevisionValidator extends ValidationSupport {
         if(validateFieldNotNull("price", revision.getPrice(), errors)) {
             validatePrice(revision.getPrice(), errors);
         }
+        validatePrice(revision.getPreOrderPrice(), errors);
         validateLocales(revision.getLocales(), errors);
         validateSubOffers(revision, errors);
         validateItems(revision, errors);
-        validateCountryCodes("countries", revision.getCountries().keySet(), errors);
+        validateCountries("regions", revision.getCountries(), revision.getPrice(), errors);
 
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
 
@@ -120,6 +119,25 @@ public class OfferRevisionValidator extends ValidationSupport {
         }
     }
 
+    protected void validateCountries(String fieldName, Map<String, CountryProperties> countries, Price price, List<AppError> errors) {
+        if (countries == null) {
+            return;
+        }
+        for (String countryCode : countries.keySet()) {
+            if (!COUNTRY_CODES.containsAll(Arrays.asList(countryCode))) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid(fieldName, countryCode + " is not a valid country code"));
+            }
+            if (countries.get(countryCode).getIsPurchasable() != Boolean.TRUE || price == null
+                    || !PriceType.CUSTOM.is(price.getPriceType()) || price.getPrices() == null) {
+                continue;
+            }
+            if (!price.getPrices().containsKey(countryCode)) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("regions",
+                        "offer is purchasable in " + countryCode + ", but no price defined for that country."));
+            }
+        }
+    }
+
     private void validateOffer(OfferRevision revision, List<AppError> errors) {
         if (validateFieldNotNull("offer", revision.getOfferId(), errors)) {
             Offer offer = offerRepo.get(revision.getOfferId());
@@ -155,7 +173,6 @@ public class OfferRevisionValidator extends ValidationSupport {
             }
         }
     }
-
 
     private boolean validateDistributedChannels(List<String> distributedChannels, List<AppError> errors) {
         if (distributedChannels != null) {

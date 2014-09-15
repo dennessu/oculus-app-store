@@ -320,7 +320,7 @@ public class IdentityModel {
         UserTFA userTFA = new UserTFA();
         userTFA.setVerifyType(RandomTFAVerifyType());
         //userTFA.setVerifyType(TFAVerifyType.CALL.name());
-        if (!userTFA.getVerifyType().equals(TFAVerifyType.MAIL.name())) {
+        if (!userTFA.getVerifyType().equals(TFAVerifyType.EMAIL.name())) {
             userTFA.setTemplate(RandomHelper.randomAlphabetic(100));
         }
         return userTFA;
@@ -434,7 +434,7 @@ public class IdentityModel {
     public static String RandomTFAVerifyType() {
         List<Object> array = new ArrayList<>();
         array.add(TFAVerifyType.CALL.name());
-        array.add(TFAVerifyType.MAIL.name());
+        array.add(TFAVerifyType.EMAIL.name());
         array.add(TFAVerifyType.SMS.name());
         return RandomHelper.randomValueFromList(array).toString();
     }
@@ -501,7 +501,7 @@ public class IdentityModel {
      */
     public static enum TFAVerifyType {
         CALL,
-        MAIL,
+        EMAIL,
         SMS
     }
 }

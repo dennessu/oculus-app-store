@@ -4,9 +4,47 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <import resource="classpath*:spring/common-context.xml"/>
-    <import resource="classpath*:spring/common-lib-context.xml" />
+    <import resource="classpath*:spring/common-lib-context.xml"/>
     <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
     <import resource="classpath*:spring/dualwrite-context.xml"/>
     <import resource="classpath*:spring/threadpool-context.xml"/>
+
+    <bean id="testHikariDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls"
+                  value="jdbc:postgresql://154.179.137.100|54.179.137.100:6543/postgres?loginTimeout=5;public;0..255;dc0"/>
+
+        <property name="uniqueName" value="jdbc/sharding"/>
+        <property name="className" value="com.junbo.sharding.hibernate.JunboDataSource"/>
+        <property name="minPoolSize" value="3"/>
+        <property name="maxPoolSize" value="15"/>
+
+        <property name="driverProperties">
+            <props>
+                <prop key="user">silkcloud</prop>
+                <prop key="password">abc123</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="testHikariSessionFactory" class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
+        <property name="jtaTransactionManager" ref="transactionManager"/>
+        <property name="hibernateProperties">
+            <map>
+                <entry key="hibernate.dialect" value="${sharding.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${sharding.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${sharding.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${sharding.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${sharding.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class"
+                       value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver"
+                       value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="testHikariDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
+        </property>
+    </bean>
 </beans>

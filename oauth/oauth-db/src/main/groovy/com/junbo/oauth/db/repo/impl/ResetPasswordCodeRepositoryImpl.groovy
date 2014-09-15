@@ -8,6 +8,8 @@ import com.junbo.oauth.spec.model.ResetPasswordCode
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
+import javax.ws.rs.NotSupportedException
+
 /**
  * Created by minhao on 5/2/14.
  */
@@ -33,11 +35,21 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
     }
 
     @Override
+    ResetPasswordCode getByHash(String hash) {
+        throw new NotSupportedException()
+    }
+
+    @Override
     void remove(String code) {
         ResetPasswordCodeEntity entity = resetPasswordCodeDAO.get(code)
         if (entity != null) {
             resetPasswordCodeDAO.delete(entity)
         }
+    }
+
+    @Override
+    void removeByHash(String hash) {
+        throw new NotSupportedException()
     }
 
     @Override

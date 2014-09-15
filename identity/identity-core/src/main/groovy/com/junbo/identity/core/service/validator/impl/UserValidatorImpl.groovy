@@ -105,7 +105,9 @@ class UserValidatorImpl implements UserValidator {
 
         return validateUserInfo(user).then {
             if (user.username != oldUser.username) {
-                return validateUserNameDuplicate(user, oldUser)
+                return validateUserNameDuplicate(user, oldUser).then {
+                    return validateEmailUpdate(user, oldUser)
+                }
             }
 
             return validateEmailUpdate(user, oldUser)
@@ -331,7 +333,7 @@ class UserValidatorImpl implements UserValidator {
 
             return Promise.each(existing) { UserPersonalInfo info ->
                 return userRepository.get(info.userId).then { User existingUser ->
-                    if (existingUser == null || CollectionUtils.isEmpty(existingUser.emails)) {
+                    if (existingUser == null || CollectionUtils.isEmpty(existingUser.emails) || existingUser.status == UserStatus.DELETED.toString()) {
                         return Promise.pure(null)
                     }
 
@@ -612,7 +614,8 @@ class UserValidatorImpl implements UserValidator {
                 List<UserPersonalInfo> userPersonalInfos = new ArrayList<>()
                 return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo personalInfo ->
                     return userRepository.get(personalInfo.userId).then { User existing ->
-                        if (existing != null && existing.username != null && existing.username == personalInfo.getId() && existing.getId() != oldUser.getId()) {
+                        if (existing != null && existing.username != null && existing.username == personalInfo.getId() && existing.getId() != oldUser.getId()
+                         && existing.status != UserStatus.DELETED.toString()) {
                             userPersonalInfos.add(personalInfo)
                             return Promise.pure(Promise.BREAK)
                         }

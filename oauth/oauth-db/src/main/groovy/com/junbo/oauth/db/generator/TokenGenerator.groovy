@@ -39,6 +39,8 @@ interface TokenGenerator {
 
     String generateSalt()
 
+    String hashKey(String key)
+
     boolean isValidAccessToken(String tokenValue)
 
     boolean isValidRefreshToken(String tokenValue)
@@ -48,4 +50,6 @@ interface TokenGenerator {
     boolean isValidEmailVerifyCode(String codeValue)
 
     boolean isValidResetPasswordCode(String codeValue)
+
+    int getAccessTokenLength()
 }

@@ -8,13 +8,19 @@ package com.junbo.test.store.utility;
 // CHECKSTYLE:OFF
 
 
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
+import com.junbo.common.model.Results;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
+import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
@@ -22,30 +28,29 @@ import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
+import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
-import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.test.catalog.ItemService;
-import com.junbo.test.catalog.OfferRevisionService;
-import com.junbo.test.catalog.OfferService;
-import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
-import com.junbo.test.catalog.impl.ItemServiceImpl;
-import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
-import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.*;
+import com.junbo.test.catalog.impl.*;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
-import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.order.OrderService;
+import com.junbo.test.common.apihelper.order.impl.OrderServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
@@ -62,9 +67,7 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -83,6 +86,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     CaseyEmulatorService caseyEmulatorClient = CaseyEmulatorServiceImpl.getInstance();
     StoreConfigService storeConfigService = StoreConfigServiceImpl.getInstance();
     UserService identityClient = UserServiceImpl.instance();
+    OfferAttributeService offerAttributeClient = OfferAttributeServiceImpl.instance();
+    ItemAttributeService itemAttributeClient = ItemAttributeServiceImpl.instance();
+    OrganizationService organizationClient = OrganizationServiceImpl.instance();
+    OrderService orderClient = OrderServiceImpl.getInstance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
@@ -130,6 +137,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public Error CreateUserWithError(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode, String errorCode) throws Exception {
         Error error = loginClient.CreateUserWithError(createUserRequest, expectedResponseCode, errorCode);
         return error;
+    }
+
+    public String getUserAccessToken(String username, String password) throws Exception {
+        return oAuthClient.postUserAccessToken(username, password);
     }
 
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
@@ -233,6 +244,21 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.updateInstrument(instrumentUpdateRequest);
     }
 
+    public InstrumentUpdateResponse CreateCreditCard(String uid, String accountName, String type, int expectedResponseCode) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
+        Instrument instrument = new Instrument();
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        instrument.setAccountName(accountName);
+        instrument.setAccountNum(encryptedString);
+        instrument.setBillingAddress(getBillingAddress());
+        instrument.setType(type);
+        instrument.setIsDefault(false);
+        //instrument.setStoredValueCurrency("USD");
+        instrumentUpdateRequest.setInstrument(instrument);
+        return storeClient.updateInstrument(instrumentUpdateRequest, expectedResponseCode);
+    }
+
     public InstrumentUpdateResponse CreateCreditCardWithoutBillingAddress(String uid) throws Exception {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
@@ -242,6 +268,20 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         instrument.setAccountNum(encryptedString);
         instrument.setType("CREDITCARD");
         instrument.setIsDefault(false);
+        instrumentUpdateRequest.setInstrument(instrument);
+        return storeClient.updateInstrument(instrumentUpdateRequest, 400);
+    }
+
+    public InstrumentUpdateResponse CreateCreditCardWithInvalidAddress(String uid) throws Exception {
+        InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
+        Instrument instrument = new Instrument();
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        instrument.setAccountName(creditCardInfo.getAccountName());
+        instrument.setAccountNum(encryptedString);
+        instrument.setType("CREDITCARD");
+        instrument.setIsDefault(false);
+        instrument.setBillingAddress(getInvalidBillingAddress());
         instrumentUpdateRequest.setInstrument(instrument);
         return storeClient.updateInstrument(instrumentUpdateRequest, 400);
     }
@@ -257,16 +297,22 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public InstrumentUpdateResponse CreateStoredValue() throws Exception {
+        return CreateStoredValue("USD", null, 200);
+    }
+
+    public InstrumentUpdateResponse CreateStoredValue(String currency, BigDecimal balance, int expectedResponseCde) throws Exception {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
         //instrument.setBillingAddress(getBillingAddress());
         instrument.setType("STOREDVALUE");
-        instrument.setStoredValueCurrency("USD");
+        instrument.setStoredValueCurrency(currency);
         instrument.setBillingAddress(getBillingAddress());
+        instrument.setStoredValueBalance(balance);
 
         instrumentUpdateRequest.setInstrument(instrument);
-        return storeClient.updateInstrument(instrumentUpdateRequest);
+        return storeClient.updateInstrument(instrumentUpdateRequest, expectedResponseCde);
     }
+
 
     public void CreditStoredValue(String uid, BigDecimal amount) throws Exception {
         paymentProvider.creditWallet(uid, amount);
@@ -354,16 +400,67 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return offerClient.getOfferIdByName(offerName);
     }
 
+    public Item getItemByName(String itemName) throws Exception {
+        HashMap<String, List<String>> params = new HashMap<String, List<String>>();
+        params.put("q", Collections.singletonList("name:" + itemName));
+        Results<Item> itemResults = itemClient.getItems(params);
+        return itemResults.getItems().isEmpty() ? null : itemResults.getItems().iterator().next();
+    }
+
+    public Offer getOfferByItem(String itemId) throws Exception {
+        HashMap<String, List<String>> params = new HashMap<String, List<String>>();
+        params.put("itemId", Collections.singletonList(itemId));
+        params.put("published", Collections.singletonList("true"));
+        List<Offer> offers = offerClient.getOffers(params).getItems();
+        return offers.isEmpty() ? null : offers.iterator().next();
+    }
+
     public Offer getOfferByOfferId(String offerId) throws Exception {
-        return offerClient.getOffer(offerId);
+        Offer offer = Master.getInstance().getOffer(offerId);
+        if (offer == null) {
+            offer = offerClient.getOffer(offerId);
+        }
+        return offer;
     }
 
     public OfferRevision getOfferRevision(String offerRevisionId) throws Exception{
-        return offerRevisionClient.getOfferRevision(offerRevisionId);
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
+        if (offerRevision == null) {
+            offerRevision = offerRevisionClient.getOfferRevision(offerRevisionId);
+        }
+        return offerRevision;
     }
 
     public Item getItemByItemId(String itemId) throws Exception{
-        return itemClient.getItem(itemId);
+        Item item = Master.getInstance().getItem(itemId);
+        if (item == null) {
+            item = itemClient.getItem(itemId);
+        }
+        return item;
+    }
+
+    public ItemRevision getItemRevision(String itemRevisionId) throws Exception {
+        ItemRevision itemRevision = Master.getInstance().getItemRevision(itemRevisionId);
+        if (itemRevision == null) {
+            itemRevision = itemRevisionClient.getItemRevision(itemRevisionId);
+        }
+        return itemRevision;
+    }
+
+    public ItemAttribute getItemAttribute(String itemAttributeId) throws Exception {
+        ItemAttribute itemAttribute = Master.getInstance().getItemAttribute(itemAttributeId);
+        if (itemAttribute == null) {
+            itemAttribute = itemAttributeClient.getItemAttribute(itemAttributeId);
+        }
+        return itemAttribute;
+    }
+
+    public OfferAttribute getOfferAttribute(String offerAttributeId) throws Exception {
+        OfferAttribute offerAttribute = Master.getInstance().getOfferAttribute(offerAttributeId);
+        if (offerAttribute == null) {
+            offerAttribute = offerAttributeClient.getOfferAttribute(offerAttributeId);
+        }
+        return offerAttribute;
     }
 
     public CommitPurchaseResponse commitPurchase(String uid, String purchaseToken) throws Exception {
@@ -402,6 +499,16 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return address;
     }
 
+    private Address getInvalidBillingAddress() throws Exception {
+        Address address = new Address();
+        address.setStreet1("800 West Campbell Road");
+        address.setCity("Richardson");
+        address.setPostalCode("####");
+        address.setSubCountry("TX");
+        address.setCountry("US");
+        return address;
+    }
+
     public MakeFreePurchaseResponse makeFreePurchase(String offerId, TosId tosId) throws Exception {
         return makeFreePurchase(offerId, tosId, 200);
     }
@@ -418,10 +525,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.makeFreePurchase(request, expectedResponseCode);
     }
 
-    public DetailsResponse getItemDetails(String itemId) throws Exception {
+    public DetailsResponse getItemDetails(String itemId, int expectedResponseCode) throws Exception {
         DetailsRequest request = new DetailsRequest();
         request.setItemId(new ItemId(itemId));
-        return storeClient.getDetails(request);
+        return storeClient.getDetails(request, expectedResponseCode);
+    }
+
+    public DetailsResponse getItemDetails(String itemId) throws Exception {
+        return getItemDetails(itemId, 200);
     }
 
     public AuthTokenResponse signIn(String userName) throws Exception {
@@ -518,7 +629,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         listRequest.setCriteria(criteria);
         listRequest.setCursor(cursor);
         listRequest.setCount(count);
-        return storeClient.getList(listRequest);
+        return getList(listRequest);
     }
 
     public SectionLayoutResponse getLayout(String category, String criteria, Integer count) throws Exception {
@@ -553,10 +664,25 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return caseyEmulatorClient.postEmulatorData(data);
     }
 
-    public CaseyEmulatorData postCaseyEmulatorData(List<CaseyReview> caseyReviewList, List<CaseyAggregateRating> ratingList) throws Exception {
+    public CaseyEmulatorData postCaseyEmulatorData(List<CaseyReview> caseyReviewList, List<CaseyAggregateRating> ratingList, CmsPage cmsPage) throws Exception {
         CaseyEmulatorData data = new CaseyEmulatorData();
         data.setCaseyAggregateRatings(ratingList);
         data.setCaseyReviews(caseyReviewList);
+        if (cmsPage != null) {
+            data.setCmsPages(Arrays.asList(cmsPage));
+        }
+        data.setCmsPageOffers(new HashMap<String, List<OfferId>>());
+        return caseyEmulatorClient.postEmulatorData(data);
+    }
+
+    public CaseyEmulatorData postCaseyEmulatorData(CmsPage cmsPage, Map<String, List<OfferId>> offerIds) throws Exception {
+        CaseyEmulatorData data = new CaseyEmulatorData();
+        data.setCaseyAggregateRatings(new ArrayList<CaseyAggregateRating>());
+        data.setCaseyReviews(new ArrayList<CaseyReview>());
+        if (cmsPage != null) {
+            data.setCmsPages(Arrays.asList(cmsPage));
+        }
+        data.setCmsPageOffers(offerIds);
         return caseyEmulatorClient.postEmulatorData(data);
     }
 
@@ -572,13 +698,26 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getDelivery(deliveryRequest);
     }
 
-    public String postPaypal(String uid, PayPalInfo payPalInfo) throws Exception{
-        return paymentProvider.postPaymentInstrument(uid, payPalInfo);
+    public String postPayment(String uid, PaymentInstrumentBase payment) throws Exception {
+        return paymentProvider.postPaymentInstrument(uid, payment);
     }
 
     public String createUser(UserInfo userInfo) throws Exception {
         return identityClient.PostUser(userInfo);
     }
 
+    public Organization getOrganization(OrganizationId organizationId, int statusCode) throws Exception {
+        String orgIdString = IdFormatter.encodeId(organizationId);
+        Organization organization = Master.getInstance().getOrganization(orgIdString);
+        if (organization == null) {
+            organization = organizationClient.getOrganization(organizationId, statusCode);
+        }
+        return organization;
+    }
+
+    public Order getOrder(OrderId orderId) throws Exception {
+        orderClient.getOrderByOrderId(IdFormatter.encodeId(orderId));
+        return Master.getInstance().getOrder(IdFormatter.encodeId(orderId));
+    }
 
 }

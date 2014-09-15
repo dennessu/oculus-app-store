@@ -9,6 +9,7 @@ import com.junbo.identity.core.service.validator.ErrorInfoValidator
 import com.junbo.identity.data.repository.ErrorInfoRepository
 import com.junbo.identity.spec.v1.model.ErrorDetail
 import com.junbo.identity.spec.v1.model.ErrorInfo
+import com.junbo.identity.spec.v1.option.list.ErrorInfoListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -58,6 +59,14 @@ class ErrorInfoValidatorImpl implements ErrorInfoValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    Promise<Void> validateForSearch(ErrorInfoListOptions listOptions) {
+        if (listOptions == null) {
+            Promise.throwing(new IllegalArgumentException('listOptions can\'t be null'))
+        }
+
+        return Promise.pure(null)
+    }
 
     private void basicCheck(ErrorInfo errorInfo) {
         if (errorInfo == null) {

@@ -13,6 +13,8 @@ import com.junbo.oauth.spec.model.AccessToken
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
+import javax.ws.rs.NotSupportedException
+
 /**
  * Javadoc.
  */
@@ -73,6 +75,11 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
         if (entity != null) {
             accessTokenDAO.delete(entity)
         }
+    }
+
+    @Override
+    void removeByHash(String hash) {
+        throw new NotSupportedException()
     }
 
     @Override

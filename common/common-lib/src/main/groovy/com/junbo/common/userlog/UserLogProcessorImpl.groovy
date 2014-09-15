@@ -37,7 +37,9 @@ class UserLogProcessorImpl implements UserLogProcessor {
         }
         try {
             if (JunboHttpContext.getRequestMethod().equalsIgnoreCase(HttpMethod.GET.toString()) ||
-                    JunboHttpContext.getRequestUri().getPath().contains("oauth2") || TrackContextManager.isRouted()) {
+                    JunboHttpContext.getRequestUri().getPath().contains("oauth2") ||
+                    JunboHttpContext.getRequestUri().getPath().contains("horizon-api/id") ||
+                    TrackContextManager.isRouted()) {
                 return
             }
 

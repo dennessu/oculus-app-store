@@ -20,9 +20,6 @@ public class ItemData {
     private OfferData offer;
 
     private Item item;
-
-    private List<ItemRevision> revisions;
-
     private ItemRevision currentRevision;
 
     private List<ItemAttribute> genres;
@@ -45,14 +42,6 @@ public class ItemData {
 
     public void setItem(Item item) {
         this.item = item;
-    }
-
-    public List<ItemRevision> getRevisions() {
-        return revisions;
-    }
-
-    public void setRevisions(List<ItemRevision> revisions) {
-        this.revisions = revisions;
     }
 
     public ItemRevision getCurrentRevision() {

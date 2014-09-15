@@ -5,6 +5,8 @@
  */
 package com.junbo.oauth.spec.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore
 import groovy.transform.CompileStatic
 
 /**
@@ -12,8 +14,22 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class LoginState extends ExpirableToken {
-    String id
+    @CloudantIgnore
+    String loginStateId
+
+    @JsonIgnore
+    String hashedId
     Long userId
     Date lastAuthDate
     String sessionId
+
+    @Override
+    String getId() {
+        return hashedId
+    }
+
+    @Override
+    void setId(String id) {
+        this.hashedId = id
+    }
 }

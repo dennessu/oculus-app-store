@@ -37,10 +37,12 @@
     <bean id="itemRevisionValidator" class="com.junbo.catalog.core.validators.ItemRevisionValidator">
         <property name="itemRepo" ref="itemCloudantRepo"/>
         <property name="itemRevisionRepo" ref="itemRevisionCloudantRepo"/>
+        <property name="priceTierRepo" ref="priceTierCloudantRepo"/>
     </bean>
     <bean id="offerRevisionValidator" class="com.junbo.catalog.core.validators.OfferRevisionValidator">
         <property name="itemRepo" ref="itemCloudantRepo"/>
         <property name="offerRepo" ref="offerCloudantRepo"/>
+        <property name="priceTierRepo" ref="priceTierCloudantRepo"/>
     </bean>
 
     <bean id="itemAttributeService" class="com.junbo.catalog.core.service.ItemAttributeServiceImpl">

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
+import com.junbo.store.clientproxy.ResourceContainer
 
 import javax.annotation.Resource
 

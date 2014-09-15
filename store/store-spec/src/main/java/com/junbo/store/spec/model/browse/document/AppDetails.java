@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.browse.document;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public class AppDetails {
 
     private Long contentRating;
 
-    private String releaseDate;
+    private Date releaseDate;
 
     private String website;
 
@@ -64,11 +65,11 @@ public class AppDetails {
         this.contentRating = contentRating;
     }
 
-    public String getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 

@@ -7,35 +7,30 @@ package com.junbo.test.common.apihelper;
 
 // CHECKSTYLE:OFF
 
+import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.blueprint.Master;
-import com.ning.http.client.FluentCaseInsensitiveStringsMap;
-import com.ning.http.client.providers.netty.NettyResponse;
 import com.junbo.test.common.exception.TestException;
-import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.test.common.libs.LogHelper;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.RequestBuilder;
-import com.ning.http.client.Request;
-
-import java.util.concurrent.Future;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-
+import com.ning.http.client.*;
+import com.ning.http.client.providers.netty.NettyResponse;
 import org.apache.http.client.HttpResponseException;
 import org.testng.Assert;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * Created by Yunlong on 3/20/14.
  */
 public abstract class HttpClientBase {
     private LogHelper logger = new LogHelper(HttpClientBase.class);
-    private AsyncHttpClient asyncClient = new AsyncHttpClient();
+    private AsyncHttpClient asyncClient;
 
     public String contentType = "application/json";
 
@@ -64,6 +59,14 @@ public abstract class HttpClientBase {
         public String getHttpMethod() {
             return methodName;
         }
+    }
+
+    public HttpClientBase() {
+        asyncClient = getAsyncHttpClient();
+    }
+
+    protected AsyncHttpClient getAsyncHttpClient() {
+        return new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setMaxRequestRetry(3).build());
     }
 
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {

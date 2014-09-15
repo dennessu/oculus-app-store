@@ -211,6 +211,28 @@ public class Identity {
         IdentityDelete(IdentityV1LocaleURI + "/" + localeId);
     }
 
+    public static User UserPostDefaultWithMail(String username, String email) throws Exception {
+        User user = UserPostDefaultWithName(username);
+        Email mailPii = new Email();
+        mailPii.setInfo(email);
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(mailPii));
+        userPersonalInfo.setUserId(user.getId());
+        userPersonalInfo.setType(IdentityModel.UserPersonalInfoType.EMAIL.toString());
+        UserPersonalInfo pii = UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        pii.setLastValidateTime(new Date());
+        pii = UserPersonalInfoPut(user.getId(), pii);
+        UserPersonalInfoLink link = new UserPersonalInfoLink();
+        link.setValue(pii.getId());
+        link.setLabel(RandomHelper.randomAlphabetic(15));
+        link.setUserId(user.getId());
+        link.setIsDefault(true);
+        List<UserPersonalInfoLink> links = new ArrayList<>();
+        links.add(link);
+        user.setEmails(links);
+        return UserPut(user);
+    }
+
     public static User UserPostDefaultWithMail(Integer nameLength, String email) throws Exception {
         User user = UserPostDefault(nameLength);
         Email mailPii = new Email();
@@ -230,6 +252,20 @@ public class Identity {
         List<UserPersonalInfoLink> links = new ArrayList<>();
         links.add(link);
         user.setEmails(links);
+        return UserPut(user);
+    }
+
+    public static User UserPostDefaultWithName(String username) throws Exception {
+        User user = UserPostDefault(IdentityModel.DefaultUser());
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setUserId(user.getId());
+        userPersonalInfo.setType("USERNAME");
+        UserLoginName loginName = new UserLoginName();
+        loginName.setUserName(username);
+        userPersonalInfo.setValue(ObjectMapperProvider.instance().valueToTree(loginName));
+        UserPersonalInfo loginInfo = UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        user.setIsAnonymous(false);
+        user.setUsername(loginInfo.getId());
         return UserPut(user);
     }
 
@@ -264,8 +300,30 @@ public class Identity {
         IdentityDelete(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()));
     }
 
+    public static List<User> UserSearchByUsername(String username) throws Exception {
+        List<User> userList = new ArrayList<User>();
+        for (Object obj : IdentityGet(
+                IdentityV1UserURI + "?username=" + username,
+                (Results.class)).getItems()) {
+            userList.add((User) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), User.class)
+            );
+        }
+        return userList;
+    }
+
     public static User UserGetByUserId(UserId userId) throws Exception {
         return (User) IdentityGet(IdentityV1UserURI + "/" + IdFormatter.encodeId(userId), User.class);
+    }
+
+    public static CloseableHttpResponse UserPersonalInfoPost(UserId userId, UserPersonalInfo upi, boolean validResponse) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserPersonalInfoURI,
+                JsonHelper.JsonSerializer(upi), HttpclientHelper.HttpRequestType.post, nvps);
+        if (validResponse) {
+            Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
+        }
+        return response;
     }
 
     public static UserPersonalInfo UserPersonalInfoPost(UserId userId, UserPersonalInfo upi) throws Exception {

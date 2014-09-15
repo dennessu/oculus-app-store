@@ -5,7 +5,6 @@
  */
 package com.junbo.oauth.core.action
 
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.UserCredential
@@ -64,7 +63,7 @@ class CreateUserCredential implements Action {
         )
         ResetPasswordCode resetPasswordCode = contextWrapper.resetPasswordCode
         if (resetPasswordCode != null) {
-            def code = resetPasswordCodeRepository.get(resetPasswordCode.code)
+            def code = resetPasswordCodeRepository.getByHash(resetPasswordCode.hashedCode)
             if (code == null)  {
                 contextWrapper.errors.add(AppErrors.INSTANCE.resetPasswordCodeAlreadyUsed().error())
                 return Promise.pure(new ActionResult('error'))
@@ -82,7 +81,7 @@ class CreateUserCredential implements Action {
 
             // if it is reset password case, unvalidate the code when user credential reset successfully
             if (resetPasswordCode != null) {
-                resetPasswordCodeRepository.remove(resetPasswordCode.code)
+                resetPasswordCodeRepository.removeByHash(resetPasswordCode.hashedCode)
                 resetPasswordCodeRepository.removeByUserIdEmail(resetPasswordCode.userId, resetPasswordCode.email)
             }
 

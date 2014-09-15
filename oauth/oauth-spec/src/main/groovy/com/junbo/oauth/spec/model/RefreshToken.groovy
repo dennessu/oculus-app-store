@@ -5,6 +5,8 @@
  */
 package com.junbo.oauth.spec.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore
 import groovy.transform.CompileStatic
 
 /**
@@ -12,7 +14,11 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class RefreshToken extends ExpirableToken {
+    @CloudantIgnore
     String tokenValue
+
+    @JsonIgnore
+    String hashedTokenValue
 
     String clientId
     Long userId
@@ -23,11 +29,11 @@ class RefreshToken extends ExpirableToken {
 
     @Override
     String getId() {
-        return tokenValue
+        return hashedTokenValue
     }
 
     @Override
     void setId(String id) {
-        this.tokenValue = id
+        this.hashedTokenValue = id
     }
 }

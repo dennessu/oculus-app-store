@@ -5,7 +5,9 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.OrderId;
+import com.junbo.common.userlog.EntityLoggable;
 import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.Entitlement;
 
@@ -14,7 +16,7 @@ import java.util.List;
 /**
  * The CommitPurchaseResponse class.
  */
-public class CommitPurchaseResponse {
+public class CommitPurchaseResponse implements EntityLoggable {
 
     private Challenge challenge;
 
@@ -54,5 +56,11 @@ public class CommitPurchaseResponse {
 
     public void setEntitlements(List<Entitlement> entitlements) {
         this.entitlements = entitlements;
+    }
+
+    @JsonIgnore
+    @Override
+    public String getEntityLogId() {
+        return order == null ? null : order.toString();
     }
 }

@@ -14,6 +14,7 @@ import com.junbo.entitlement.spec.model.EntitlementSearchParam
 import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.spec.model.browse.document.Item
+import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 

@@ -14,6 +14,7 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.browse.DeliveryResponse;
+import com.junbo.store.spec.model.browse.LibraryResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -109,8 +110,8 @@ public class StoreTesting extends BaseTestClass {
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
-        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
+        //EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
+        //IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
 
         DeliveryResponse deliveryResponse = testDataProvider.getDeliveryByOfferId(offerId);
         String downloadLink = deliveryResponse.getDownloadUrl();
@@ -333,8 +334,7 @@ public class StoreTesting extends BaseTestClass {
             freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
         }
 
-        EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
-        validationHelper.verifyEntitlementResponse(entitlementsResponse, offerId);
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
 
         Master.getInstance().setCurrentUid(null);
 
@@ -399,8 +399,8 @@ public class StoreTesting extends BaseTestClass {
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
-        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
+        //EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
+        //IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
 
         //TODO validation
 

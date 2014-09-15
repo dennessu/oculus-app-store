@@ -7,9 +7,11 @@
 package com.junbo.catalog.core.validators;
 
 import com.google.common.base.Joiner;
+import com.junbo.catalog.db.repo.PriceTierRepository;
 import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.common.*;
+import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
@@ -17,9 +19,11 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -27,7 +31,26 @@ import java.util.*;
  */
 public abstract class ValidationSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationSupport.class);
-    private static final List<String> COUNTRY_CODES = Collections.unmodifiableList(Arrays.asList(Locale.getISOCountries()));
+    protected static final List<String> COUNTRY_CODES = Collections.unmodifiableList(Arrays.asList(Locale.getISOCountries()));
+    protected static final List<String> CURRENCY_CODES = Collections.unmodifiableList(Arrays.asList(
+            "AED","AFN","ALL","AMD","ANG","AOA","ARS","AUD","AWG","AZN","BAM","BBD","BDT","BGN","BHD","BIF","BMD","BND",
+            "BOB","BOV","BRL","BSD","BTN","BWP","BYR","BZD","CAD","CDF","CHE","CHF","CHW","CLF","CLP","CNY","COP","COU",
+            "CRC","CUC","CUP","CVE","CZK","DJF","DKK","DOP","DZD","EGP","ERN","ETB","EUR","FJD","FKP","GBP","GEL","GHS",
+            "GIP","GMD","GNF","GTQ","GYD","HKD","HNL","HRK","HTG","HUF","IDR","ILS","INR","IQD","IRR","ISK","JMD","JOD",
+            "JPY","KES","KGS","KHR","KMF","KPW","KRW","KWD","KYD","KZT","LAK","LBP","LKR","LRD","LSL","LTL","LVL","LYD",
+            "MAD","MDL","MGA","MKD","MMK","MNT","MOP","MRO","MUR","MVR","MWK","MXN","MXV","MYR","MZN","NAD","NGN","NIO",
+            "NOK","NPR","NZD","OMR","PAB","PEN","PGK","PHP","PKR","PLN","PYG","QAR","RON","RSD","RUB","RWF","SAR","SBD",
+            "SCR","SDG","SEK","SGD","SHP","SLL","SOS","SRD","SSP","STD","SYP","SZL","THB","TJS","TMT","TND","TOP","TRY",
+            "TTD","TWD","TZS","UAH","UGX","USD","USN","USS","UYI","UYU","UZS","VEF","VND","VUV","WST","XAF","XAG","XAU",
+            "XBA","XBB","XBC","XBD","XBT","XCD","XDR","XFU","XOF","XPD","XPF","XPT","XSU","XTS","XUA","XXX","YER","ZAR",
+            "ZMK","ZMW","ZWD"
+    ));
+    private PriceTierRepository priceTierRepo;
+
+    @Required
+    public void setPriceTierRepo(PriceTierRepository priceTierRepo) {
+        this.priceTierRepo = priceTierRepo;
+    }
 
     protected void validateRequestNotNull(BaseModel model) {
         if (model == null) {
@@ -158,19 +181,52 @@ public abstract class ValidationSupport {
     }
 
     protected void validatePrice(Price price, List<AppError> errors) {
+        if (price == null) {
+            return;
+        }
         if (!PriceType.contains(price.getPriceType())) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("priceType", Joiner.on(", ").join(PriceType.ALL)));
         }
 
         if (PriceType.TIERED.is(price.getPriceType())) {
             validateMapEmpty("prices", price.getPrices(), errors);
-            validateFieldNotNull("priceTier", price.getPriceTier(), errors);
+            if (validateFieldNotNull("priceTier", price.getPriceTier(), errors)) {
+                PriceTier priceTier = priceTierRepo.get(price.getPriceTier());
+                if (priceTier == null) {
+                    errors.add(AppCommonErrors.INSTANCE.resourceNotFound("priceTier", price.getPriceTier()));
+                }
+            }
         } else if (PriceType.FREE.is(price.getPriceType())) {
             validateFieldNull("priceTier", price.getPriceTier(), errors);
             validateMapEmpty("prices", price.getPrices(), errors);
         } else if (PriceType.CUSTOM.is(price.getPriceType())) {
             validateFieldNull("priceTier", price.getPriceTier(), errors);
-            validateFieldNotNull("prices", price.getPrices(), errors);
+            if (validateFieldNotNull("prices", price.getPrices(), errors)) {
+                validatePrice(price.getPrices(), errors);
+            }
+        }
+    }
+
+    private void validatePrice(Map<String, Map<String, BigDecimal>> prices, List<AppError> errors) {
+        if (prices == null) {
+            return;
+        }
+        for (String countryCode : prices.keySet()) {
+            if (!COUNTRY_CODES.contains(countryCode)) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("prices", "invalid country code: " + countryCode));
+            }
+            if (prices.get(countryCode) == null) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("prices", "prices should not be null for " + countryCode));
+            }
+            for (String currencyCode : prices.get(countryCode).keySet()) {
+                if (!CURRENCY_CODES.contains(currencyCode)) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalid("prices." + countryCode, "invalid currency code: " + currencyCode));
+                }
+                BigDecimal amount = prices.get(countryCode).get(currencyCode);
+                if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalid("prices", "price amount should be a positive number"));
+                }
+            }
         }
     }
 
