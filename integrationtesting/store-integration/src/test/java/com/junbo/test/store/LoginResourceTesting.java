@@ -209,6 +209,11 @@ public class LoginResourceTesting extends BaseTestClass {
         assert error != null;
         assert error.getDetails().get(0).getField().contains("dob");
 
+        createUserRequest.setDob(DateUtils.addYears(new Date(), -11));
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+
+
         createUserRequest.setDob(oldDob);
         oldPassword = createUserRequest.getPassword();
         createUserRequest.setPassword(null);
