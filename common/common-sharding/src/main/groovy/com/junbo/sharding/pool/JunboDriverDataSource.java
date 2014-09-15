@@ -21,8 +21,23 @@ import java.util.logging.Logger;
 public class JunboDriverDataSource implements DataSource {
     private DriverDataSource driverDataSource;
 
-    public JunboDriverDataSource(String jdbcUrl, Properties properties, String username, String password) {
+    public JunboDriverDataSource(String jdbcUrl,
+                                 Properties properties,
+                                 String username,
+                                 String password,
+                                 long connectionTimeout) {
+
+        System.out.println(connectionTimeout);
+
         driverDataSource = new DriverDataSource(jdbcUrl, properties, username, password);
+    }
+
+    public DriverDataSource getDriverDataSource() {
+        return driverDataSource;
+    }
+
+    public void setDriverDataSource(DriverDataSource driverDataSource) {
+        this.driverDataSource = driverDataSource;
     }
 
     @Override

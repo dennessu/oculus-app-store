@@ -18,6 +18,7 @@
         <property name="className" value="com.junbo.sharding.hibernate.JunboDataSource"/>
         <property name="minPoolSize" value="3"/>
         <property name="maxPoolSize" value="15"/>
+        <property name="connectionTimeout" value="5000"/>
 
         <property name="driverProperties">
             <props>
