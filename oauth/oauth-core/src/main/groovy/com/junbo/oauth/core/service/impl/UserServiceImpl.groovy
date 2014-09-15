@@ -148,8 +148,7 @@ class UserServiceImpl implements UserService {
                 type: 'PASSWORD',
                 username: username,
                 value: password,
-                //TODO: remove the hard coded client id
-                clientId: new ClientId(1L),
+                clientId: new ClientId(clientId),
                 ipAddress: ipAddress,
                 userAgent: userAgent
         )
