@@ -3,10 +3,10 @@
   "client_secret" : "EF4ADF35E786DBF5E8E198374D6E5AF4#08C5E8F2EB97C1F949E081B641CE0CDAC76FBE79F62C11DE4A78FF1AD80FC54CE6F3FA7296DE9CBA023DCFA21EFB2A7A",
   "client_name" : "developerCenter",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.dev/*" ],
+  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
   "default_redirect_uri" : "http://localhost",
 
-  "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home" ],
+  "logout_redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
   "default_logout_redirect_uri" : "http://localhost",
 
   "scopes" : [ "identity", "identity.pii", "catalog", "commerce", "openid", "offline" ],

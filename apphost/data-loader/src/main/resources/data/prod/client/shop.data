@@ -3,14 +3,14 @@
   "client_secret" : "6C5C4C44AB681C365FD27C795F97269B#43FEC66540AEE645FC290A623BD01BC8811AFA28C14950A3EF4065C0565D90CFACD12DD8113C226EC2AF8BC7B5006E95",
   "client_name" : "shop",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.dev/*" ],
+  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
   "default_redirect_uri" : "http://localhost",
 
-  "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home", "https://*.oculus.com/*" ],
+  "logout_redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
   "default_logout_redirect_uri" : "http://localhost",
 
-  "scopes" : [ "identity", "identity.pii", "catalog", "commerce", "openid", "offline" ],
-  "default_scopes" : [ "identity", "identity.pii", "catalog", "commerce", "openid", "offline" ],
+  "scopes" : [ "everyone", "identity", "identity.pii", "catalog", "commerce", "openid", "offline" ],
+  "default_scopes" : [ "everyone", "identity", "identity.pii", "catalog", "commerce", "openid", "offline" ],
 
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
