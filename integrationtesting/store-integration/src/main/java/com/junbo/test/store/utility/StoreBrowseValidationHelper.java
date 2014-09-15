@@ -213,7 +213,9 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(item.getTitle(), localeProperties.getName(), "item title not match");
         Assert.assertEquals(item.getDescriptionHtml(), localeProperties.getLongDescription(), "description html not match");
         verifySupportedLocaleEquals(item.getSupportedLocales(), itemRevision.getSupportedLocales());
-        Assert.assertEquals(item.getCreator(), developer == null ? null : developer.getName());
+        if (developer != null) {
+            Assert.assertEquals(item.getCreator(), developer.getName());
+        }
     }
 
     private void verifyItemImages(Images images, com.junbo.catalog.spec.model.common.Images catalogImages) {
@@ -262,8 +264,12 @@ public class StoreBrowseValidationHelper {
             }
         }
 
-        Assert.assertEquals(appDetails.getPublisherName(), publisher == null ? null : publisher.getName());
-        Assert.assertEquals(appDetails.getDeveloperName(), developer == null ? null : developer.getName());
+        if (publisher != null) {
+            Assert.assertEquals(appDetails.getPublisherName(), publisher.getName());
+        }
+        if (developer != null) {
+            Assert.assertEquals(appDetails.getDeveloperName(), developer.getName());
+        }
         Assert.assertEquals(appDetails.getWebsite(), localeProperties.getWebsite());
         Assert.assertEquals(appDetails.getForumUrl(), localeProperties.getCommunityForumLink());
         Assert.assertEquals(appDetails.getDeveloperEmail(), localeProperties.getSupportEmail());
