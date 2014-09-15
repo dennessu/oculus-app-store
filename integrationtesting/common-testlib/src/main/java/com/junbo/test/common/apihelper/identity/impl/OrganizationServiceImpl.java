@@ -81,8 +81,8 @@ public class OrganizationServiceImpl extends HttpClientBase implements Organizat
     }
 
     @Override
-    public Organization getOrganization(OrganizationId organizationId) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, organizationUrl + "/" + IdFormatter.encodeId(organizationId), true);
+    public Organization getOrganization(OrganizationId organizationId, int expectedCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, organizationUrl + "/" + IdFormatter.encodeId(organizationId), expectedCode, true);
         Organization organization = new JsonMessageTranscoder().decode(new TypeReference<Organization>() {
         }, responseBody);
         Master.getInstance().addOrganization(IdFormatter.encodeId(organizationId), organization);

@@ -706,11 +706,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return identityClient.PostUser(userInfo);
     }
 
-    public Organization getOrganization(OrganizationId organizationId) throws Exception {
+    public Organization getOrganization(OrganizationId organizationId, int statusCode) throws Exception {
         String orgIdString = IdFormatter.encodeId(organizationId);
         Organization organization = Master.getInstance().getOrganization(orgIdString);
         if (organization == null) {
-            organization = organizationClient.getOrganization(organizationId);
+            organization = organizationClient.getOrganization(organizationId, statusCode);
         }
         return organization;
     }

@@ -14,6 +14,7 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.store.spec.model.browse.Images;
@@ -26,6 +27,8 @@ import com.junbo.test.catalog.enums.PriceType;
 import com.junbo.test.common.Validator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 import org.testng.Assert;
 
@@ -38,6 +41,8 @@ import java.util.regex.Pattern;
  * The StoreBrowseValidationHelper class.
  */
 public class StoreBrowseValidationHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StoreBrowseValidationHelper.class);
 
     private static final String Platform = "ANDROID";
 
@@ -167,8 +172,9 @@ public class StoreBrowseValidationHelper {
         }
 
         ItemRevisionLocaleProperties localeProperties = currentItemRevision.getLocales().get(locale);
-        Organization developer = null; //storeTestDataProvider.getOrganization(catalogItem.getOwnerId()); todo disable this
-        Organization publisher = null; //storeTestDataProvider.getOrganization(catalogOffer.getOwnerId());
+        Organization developer = getOrganization(catalogItem.getOwnerId());
+        Organization publisher = getOrganization(catalogOffer.getOwnerId());
+
         verifyItem(item, catalogItem, currentItemRevision, developer);
         verifyItemImages(item.getImages(), localeProperties.getImages());
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
@@ -213,9 +219,8 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(item.getTitle(), localeProperties.getName(), "item title not match");
         Assert.assertEquals(item.getDescriptionHtml(), localeProperties.getLongDescription(), "description html not match");
         verifySupportedLocaleEquals(item.getSupportedLocales(), itemRevision.getSupportedLocales());
-        if (developer != null) {
-            Assert.assertEquals(item.getCreator(), developer.getName());
-        }
+
+        Assert.assertEquals(item.getCreator(), developer == null ? null : developer.getName());
     }
 
     private void verifyItemImages(Images images, com.junbo.catalog.spec.model.common.Images catalogImages) {
@@ -264,12 +269,9 @@ public class StoreBrowseValidationHelper {
             }
         }
 
-        if (publisher != null) {
-            Assert.assertEquals(appDetails.getPublisherName(), publisher.getName());
-        }
-        if (developer != null) {
-            Assert.assertEquals(appDetails.getDeveloperName(), developer.getName());
-        }
+        Assert.assertEquals(appDetails.getPublisherName(), publisher == null ? null : publisher.getName());
+        Assert.assertEquals(appDetails.getDeveloperName(), developer == null ? null : developer.getName());
+
         Assert.assertEquals(appDetails.getWebsite(), localeProperties.getWebsite());
         Assert.assertEquals(appDetails.getForumUrl(), localeProperties.getCommunityForumLink());
         Assert.assertEquals(appDetails.getDeveloperEmail(), localeProperties.getSupportEmail());
@@ -426,5 +428,14 @@ public class StoreBrowseValidationHelper {
                 }
             }
         });
+    }
+
+    private Organization getOrganization(OrganizationId organizationId) {
+        try {
+            return storeTestDataProvider.getOrganization(organizationId, 0);
+        } catch (Exception e) {
+            LOGGER.error("name=Get_Organization_Error", e);
+            return null;
+        }
     }
 }
