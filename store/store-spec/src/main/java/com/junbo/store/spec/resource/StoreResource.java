@@ -7,6 +7,7 @@ package com.junbo.store.spec.resource;
 
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteByAccessToken;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.PageParam;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
@@ -47,11 +48,13 @@ public interface StoreResource {
 
     @GET
     @Path("/billing-profile")
+    @RouteByAccessToken
     // This requires email verification
     Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest billingProfileGetRequest);
 
     @POST
     @Path("/billing-profile/instruments")
+    @RouteByAccessToken
     // This requires email verification
     Promise<InstrumentUpdateResponse> updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest);
 
@@ -62,16 +65,19 @@ public interface StoreResource {
 
     @POST
     @Path("/purchase/free")
+    @RouteByAccessToken
     // This requires email verification
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest makeFreePurchaseRequest);
 
     @POST
     @Path("/purchase/prepare")
+    @RouteByAccessToken
     // This requires email verification
     Promise<PreparePurchaseResponse> preparePurchase(PreparePurchaseRequest preparePurchaseRequest);
 
     @POST
     @Path("/purchase/commit")
+    @RouteByAccessToken
     // This requires email verification
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest);
 

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.MultivaluedMap;
+import java.util.List;
 
 /**
  * The implementation of router.
@@ -69,7 +70,7 @@ public class RouterImpl implements Router {
     }
 
     @Override
-    public String getTargetUrl(Class<?> resourceClass, Object[] routingParams) {
+    public String getTargetUrl(Class<?> resourceClass, List<Object> routingParams) {
         String result = getTargetUrlInternal(resourceClass, routingParams);
         if (result != null) {
             logger.info("Routing {} to {}", JunboHttpContext.getRequestUri(), result);
@@ -118,7 +119,7 @@ public class RouterImpl implements Router {
         }
     }
 
-    private String getTargetUrlInternal(Class<?> resourceClass, Object[] routingParams) {
+    private String getTargetUrlInternal(Class<?> resourceClass, List<Object> routingParams) {
         boolean isFirstRoute = setRoutingPath();
 
         resolveDataAccessPolicy(resourceClass);
@@ -128,7 +129,7 @@ public class RouterImpl implements Router {
             return getDefault(policy, false);
         }
 
-        if (routingParams == null || routingParams.length == 0) {
+        if (routingParams == null || routingParams.size() == 0) {
             return getDefault(policy, false);
         }
 

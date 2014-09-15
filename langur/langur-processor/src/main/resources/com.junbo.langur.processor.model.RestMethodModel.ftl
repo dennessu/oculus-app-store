@@ -21,11 +21,14 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
 
         // check whether routing is needed
         if (__router != null) {
-            String url = __router.getTargetUrl(${adapteeType}.class, new Object[] {
-                [#list routeParamExprs as paramExpr]
-                ${paramExpr}[#if paramExpr_has_next],[/#if]
-                [/#list]
-            });
+            List<Object> routeParams = new ArrayList<>(${routeParamExprs.size()});
+            [#list routeParamExprs as paramExpr]
+            try {
+                routeParams.add(${paramExpr});
+            } catch (NullPointerException ignore) {
+            }
+            [/#list]
+            String url = __router.getTargetUrl(${adapteeType}.class, routeParams);
             if (url != null) {
                 adaptee = __clientFactory.create(url);
                 TrackContextManager.setIsRouted(true);
