@@ -121,7 +121,7 @@ public abstract class AbstractClientProxy {
         }
 
         JunboHttpContext.JunboHttpContextData current = JunboHttpContext.getData();
-        if (!StringUtils.isEmpty(current.getRequestIpAddress())) {
+        if (current != null && !StringUtils.isEmpty(current.getRequestIpAddress())) {
             httpContextData.setRequestIpAddress(current.getRequestIpAddress());
         } else {
             httpContextData.setRequestIpAddress("0.0.0.0");
