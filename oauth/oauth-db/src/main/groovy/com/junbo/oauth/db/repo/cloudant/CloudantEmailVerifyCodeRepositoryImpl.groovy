@@ -12,6 +12,7 @@ import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.spec.model.EmailVerifyCode
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * CloudantEmailVerifyCodeRepositoryImpl.
@@ -35,6 +36,10 @@ class CloudantEmailVerifyCodeRepositoryImpl extends CloudantClient<EmailVerifyCo
 
     @Override
     EmailVerifyCode getAndRemove(String code) {
+        if (StringUtils.isEmpty(code)) {
+            return null
+        }
+
         String hashed = tokenGenerator.hashKey(code)
         EmailVerifyCode entity = cloudantGetSync(hashed)
         cloudantDeleteSync(hashed)

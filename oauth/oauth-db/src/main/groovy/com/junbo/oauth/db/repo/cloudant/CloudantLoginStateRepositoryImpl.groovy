@@ -11,6 +11,7 @@ import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.spec.model.LoginState
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * CloudantLoginStateRepositoryImpl.
@@ -33,7 +34,11 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
 
     @Override
     LoginState get(String id) {
-        LoginState loginState = cloudantGetSync(id)
+        if (StringUtils.isEmpty(id)) {
+            return null
+        }
+
+        LoginState loginState = cloudantGetSync(tokenGenerator.hashKey(id))
         if (loginState != null) {
             loginState.loginStateId = id
         }
@@ -43,9 +48,9 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
 
     @Override
     LoginState save(LoginState loginState) {
-        if (loginState.id == null) {
-            loginState.id = tokenGenerator.generateLoginStateId()
-            loginState.hashedId = tokenGenerator.hashKey(loginState.id)
+        if (loginState.loginStateId == null) {
+            loginState.loginStateId = tokenGenerator.generateLoginStateId()
+            loginState.hashedId = tokenGenerator.hashKey(loginState.loginStateId)
         }
 
         if (loginState.sessionId == null) {
@@ -60,7 +65,14 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
     }
 
     @Override
-    void delete(String id) {
-        cloudantDeleteSync(tokenGenerator.hashKey(id))
+    void remove(String id) {
+        if (StringUtils.hasText(id)) {
+            cloudantDeleteSync(tokenGenerator.hashKey(id))
+        }
+    }
+
+    @Override
+    void removeByHash(String hash) {
+        cloudantDeleteSync(hash)
     }
 }

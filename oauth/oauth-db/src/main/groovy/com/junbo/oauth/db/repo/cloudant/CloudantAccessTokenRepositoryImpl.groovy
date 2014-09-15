@@ -18,6 +18,7 @@ import org.apache.commons.codec.binary.Base64
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * CloudantAccessTokenRepositoryImpl.
@@ -44,6 +45,10 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
 
     @Override
     AccessToken get(String tokenValue) {
+        if (StringUtils.isEmpty(tokenValue)) {
+            return null
+        }
+        
         String tokenHash = tokenGenerator.hashKey(tokenValue)
         AccessToken token = cloudantGetSync(tokenHash)
         if (token == null) {
@@ -97,7 +102,9 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
 
     @Override
     void remove(String tokenValue) {
-        cloudantDeleteSync(tokenGenerator.hashKey(tokenValue))
+        if (StringUtils.hasText(tokenValue)) {
+            cloudantDeleteSync(tokenGenerator.hashKey(tokenValue))
+        }
     }
 
     @Override

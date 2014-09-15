@@ -17,6 +17,7 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.Cookie
 
@@ -43,7 +44,7 @@ class LoadLoginState implements Action {
 
         Cookie loginStateCookie = cookieMap.get(OAuthParameters.COOKIE_LOGIN_STATE)
 
-        if (loginStateCookie == null) {
+        if (loginStateCookie == null || StringUtils.isEmpty(loginStateCookie.value)) {
             return Promise.pure(null)
         }
 

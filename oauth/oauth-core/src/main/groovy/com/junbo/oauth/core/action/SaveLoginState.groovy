@@ -39,7 +39,7 @@ class SaveLoginState implements Action {
         loginState = loginStateRepository.save(loginState)
         contextWrapper.loginState = loginState
 
-        CookieUtil.setCookie(context, OAuthParameters.COOKIE_LOGIN_STATE, loginState.getId(), -1)
+        CookieUtil.setCookie(context, OAuthParameters.COOKIE_LOGIN_STATE, loginState.loginStateId, -1)
         CookieUtil.setCookie(context, OAuthParameters.COOKIE_SESSION_STATE, loginState.sessionId, -1, false)
 
         return Promise.pure(new ActionResult('success'))

@@ -12,6 +12,7 @@ import com.junbo.oauth.spec.model.RememberMeToken
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
+import org.springframework.util.StringUtils
 
 /**
  * CloudantRememberMeTokenRepositoryImpl.
@@ -45,6 +46,10 @@ class CloudantRememberMeTokenRepositoryImpl extends CloudantClient<RememberMeTok
 
     @Override
     RememberMeToken get(String tokenValue) {
+        if (StringUtils.isEmpty(tokenValue)) {
+            return null
+        }
+
         RememberMeToken token = cloudantGetSync(tokenGenerator.hashKey(tokenValue))
         if (token != null) {
             token.tokenValue = tokenValue
@@ -55,6 +60,10 @@ class CloudantRememberMeTokenRepositoryImpl extends CloudantClient<RememberMeTok
 
     @Override
     RememberMeToken getAndRemove(String tokenValue) {
+        if (StringUtils.isEmpty(tokenValue)) {
+            return null
+        }
+
         String hashed = tokenGenerator.hashKey(tokenValue)
         RememberMeToken entity = cloudantGetSync(hashed)
         if (entity != null) {

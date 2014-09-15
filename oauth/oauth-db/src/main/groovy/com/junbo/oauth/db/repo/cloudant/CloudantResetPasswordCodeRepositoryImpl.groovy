@@ -11,6 +11,7 @@ import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
 import com.junbo.oauth.spec.model.ResetPasswordCode
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * CloudantResetPasswordCodeRepositoryImpl.
@@ -27,12 +28,20 @@ class CloudantResetPasswordCodeRepositoryImpl extends CloudantClient<ResetPasswo
 
     @Override
     ResetPasswordCode get(String code) {
+        if (StringUtils.isEmpty(code)) {
+            return null
+        }
+
         ResetPasswordCode entity = cloudantGetSync(tokenGenerator.hashKey(code))
         return entity
     }
 
     @Override
     ResetPasswordCode getByHash(String hash) {
+        if (StringUtils.isEmpty(hash)) {
+            return null
+        }
+
         return cloudantGetSync(hash)
     }
 

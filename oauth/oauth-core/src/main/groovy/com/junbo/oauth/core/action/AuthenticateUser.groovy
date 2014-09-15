@@ -149,7 +149,8 @@ class AuthenticateUser implements Action {
 
             def oldLoginState = contextWrapper.loginState
             if (oldLoginState != null) {
-                loginState.id = oldLoginState.id
+                loginState.loginStateId = oldLoginState.loginStateId
+                loginState.hashedId = oldLoginState.hashedId
                 loginState.rev = oldLoginState.rev
 
                 if (loginState.userId == oldLoginState.userId) {

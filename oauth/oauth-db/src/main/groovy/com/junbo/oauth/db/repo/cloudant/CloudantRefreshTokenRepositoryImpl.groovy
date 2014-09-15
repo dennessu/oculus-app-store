@@ -12,6 +12,7 @@ import com.junbo.oauth.spec.model.RefreshToken
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
+import org.springframework.util.StringUtils
 
 /**
  * CloudantRefreshTokenRepositoryImpl.
@@ -47,6 +48,10 @@ class CloudantRefreshTokenRepositoryImpl extends CloudantClient<RefreshToken>
 
     @Override
     RefreshToken get(String tokenValue) {
+        if (StringUtils.isEmpty(tokenValue)) {
+            return null
+        }
+
         RefreshToken token = cloudantGetSync(tokenGenerator.hashKey(tokenValue))
         if (token != null) {
             token.tokenValue = tokenValue
@@ -62,6 +67,10 @@ class CloudantRefreshTokenRepositoryImpl extends CloudantClient<RefreshToken>
 
     @Override
     RefreshToken getAndRemove(String tokenValue) {
+        if (StringUtils.isEmpty(tokenValue)) {
+            return null
+        }
+
         String hashed = tokenGenerator.hashKey(tokenValue)
         RefreshToken entity = cloudantGetSync(hashed)
         if (entity != null) {

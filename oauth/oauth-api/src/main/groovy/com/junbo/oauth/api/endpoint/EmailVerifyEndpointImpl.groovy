@@ -164,7 +164,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
             loginStateRepository.save(loginState)
             def responseBuilder = response(successUri, true, locale, null)
-            CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.getId(), -1)
+            CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.loginStateId, -1)
             CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
                     loginState.sessionId, -1, false)
 

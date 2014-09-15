@@ -134,7 +134,7 @@ class Logout implements Action {
         }
 
         def loginStateCookie = cookieMap.get(OAuthParameters.COOKIE_LOGIN_STATE)
-        if (loginStateCookie != null) {
+        if (loginStateCookie != null && StringUtils.hasText(loginStateCookie.value)) {
             def loginState = loginStateRepository.get(loginStateCookie.value)
 
             if (loginState == null) {

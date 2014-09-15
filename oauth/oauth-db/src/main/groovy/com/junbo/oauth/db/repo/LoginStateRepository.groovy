@@ -17,5 +17,7 @@ interface LoginStateRepository {
 
     LoginState save(LoginState loginState)
 
-    void delete(String id)
+    void remove(String id)
+
+    void removeByHash(String id)
 }

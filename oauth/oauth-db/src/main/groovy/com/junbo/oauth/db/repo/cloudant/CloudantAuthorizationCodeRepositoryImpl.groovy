@@ -10,6 +10,8 @@ import com.junbo.oauth.db.repo.AuthorizationCodeRepository
 import com.junbo.oauth.spec.model.AuthorizationCode
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
+
 /**
  * CloudantAuthorizationCodeRepositoryImpl.
  */
@@ -36,6 +38,10 @@ class CloudantAuthorizationCodeRepositoryImpl extends CloudantClient<Authorizati
 
     @Override
     AuthorizationCode getAndRemove(String code) {
+        if (StringUtils.isEmpty(code)) {
+            return null
+        }
+
         String hashedKey = tokenGenerator.hashKey(code)
         AuthorizationCode entity = cloudantGetSync(hashedKey)
         if (entity != null) {
