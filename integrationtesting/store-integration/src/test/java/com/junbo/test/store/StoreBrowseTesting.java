@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.*;
@@ -58,7 +59,8 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private StoreBrowseValidationHelper storeBrowseValidationHelper;
 
-    public StoreBrowseTesting() throws Exception {
+    @BeforeMethod
+    public void setUp() throws Exception {
         oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
         oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
         storeBrowseValidationHelper = new StoreBrowseValidationHelper(testDataProvider);
