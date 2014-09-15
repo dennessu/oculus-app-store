@@ -168,10 +168,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
 
-        testDataProvider.CreateStoredValue("###123", null, 400);
+        testDataProvider.CreateStoredValue("###123", null, 412);
 
-        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
-        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+        assert Master.getInstance().getApiErrorMsg().contains("Currency Not Found");
+        assert Master.getInstance().getApiErrorMsg().contains("131.123");
 
         testDataProvider.CreateStoredValue(null, null, 400);
 
