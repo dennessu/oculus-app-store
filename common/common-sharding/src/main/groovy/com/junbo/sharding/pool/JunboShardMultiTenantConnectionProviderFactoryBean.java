@@ -9,16 +9,6 @@ import com.zaxxer.hikari.HikariDataSource;
 public class JunboShardMultiTenantConnectionProviderFactoryBean extends ShardMultiTenantConnectionProviderFactoryBean {
     private static final int DEFAULT_CONNECTION_TIMEOUT = 5000;
 
-    private Integer connectionTimeout;
-
-    public void setConnectionTimeout(Integer connectionTimeout) {
-        this.connectionTimeout = connectionTimeout;
-    }
-
-    public Integer getConnectionTimeout() {
-        return connectionTimeout;
-    }
-
     protected HikariDataSource createDataSource(String url) {
         HikariDataSource dataSource = new HikariDataSource();
 
@@ -33,14 +23,12 @@ public class JunboShardMultiTenantConnectionProviderFactoryBean extends ShardMul
         dataSource.setPassword(driverProperties.getProperty("password"));
 
         dataSource.setDataSourceProperties(driverProperties);
-        dataSource.setConnectionTimeout(connectionTimeout == null ? DEFAULT_CONNECTION_TIMEOUT : connectionTimeout);
 
         dataSource.setDataSource(new JunboDriverDataSource(
                 url,
                 driverProperties,
                 driverProperties.getProperty("user"),
-                driverProperties.getProperty("password"),
-                connectionTimeout));
+                driverProperties.getProperty("password")));
 
         return dataSource;
     }
