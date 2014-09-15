@@ -172,4 +172,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "146", message = "Duplicate Purchase.")
     AppError duplicatePurchase();
+
+    @ErrorDef(httpStatusCode = 412, code = "147", message = "Rating result error.")
+    AppError ratingResultError(AppError error);
 }
