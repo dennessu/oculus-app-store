@@ -33,11 +33,13 @@ class CloudantRefreshTokenRepositoryImpl extends CloudantClient<RefreshToken>
         if (refreshToken.tokenValue == null) {
             refreshToken.tokenValue = tokenGenerator.generateRefreshToken() +
                     DELIMITER + tokenGenerator.generateRefreshTokenSeries()
+            refreshToken.hashedTokenValue = tokenGenerator.hashKey(refreshToken.tokenValue)
         } else {
             String[] tokens = refreshToken.tokenValue.split('\\.')
             Assert.isTrue(tokens.length == 2)
 
             refreshToken.tokenValue = tokens[0] + DELIMITER + tokenGenerator.generateRefreshTokenSeries()
+            refreshToken.hashedTokenValue = tokenGenerator.hashKey(refreshToken.tokenValue)
         }
 
         return cloudantPostSync(refreshToken)
@@ -45,7 +47,12 @@ class CloudantRefreshTokenRepositoryImpl extends CloudantClient<RefreshToken>
 
     @Override
     RefreshToken get(String tokenValue) {
-        return cloudantGetSync(tokenValue)
+        RefreshToken token = cloudantGetSync(tokenGenerator.hashKey(tokenValue))
+        if (token != null) {
+            token.tokenValue = tokenValue
+        }
+
+        return token
     }
 
     @Override
@@ -55,8 +62,13 @@ class CloudantRefreshTokenRepositoryImpl extends CloudantClient<RefreshToken>
 
     @Override
     RefreshToken getAndRemove(String tokenValue) {
-        RefreshToken entity = cloudantGetSync(tokenValue)
-        cloudantDelete(tokenValue)
+        String hashed = tokenGenerator.hashKey(tokenValue)
+        RefreshToken entity = cloudantGetSync(hashed)
+        if (entity != null) {
+            entity.tokenValue = tokenValue
+        }
+
+        cloudantDeleteSync(hashed)
         return entity
     }
 

@@ -5,12 +5,18 @@
  */
 package com.junbo.oauth.db.generator.impl;
 
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.configuration.topo.DataCenters;
 import com.junbo.oauth.db.generator.TokenGenerator;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
@@ -20,6 +26,7 @@ import java.util.regex.Pattern;
  * Javadoc.
  */
 public class SecureRandomTokenGenerator implements TokenGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecureRandomTokenGenerator.class);
 
     private static final Pattern DEFAULT_CODEC_PATTERN = Pattern.compile("[0-9A-Za-z=\\-~]+");
 
@@ -180,6 +187,20 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     @Override
     public String generateSalt() {
         return generate(saltLength);
+    }
+
+    @Override
+    public String hashKey(String key) {
+        try {
+            // MessageDigest is not thread safe, always create new instance per usage.
+            // getInstance is not that expensive.
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            return Hex.encodeHexString(md.digest(key.getBytes()));
+        } catch (NoSuchAlgorithmException e) {
+            LOGGER.error("Error happened while hashing the key", e);
+            throw AppCommonErrors.INSTANCE.internalServerError(e).exception();
+        }
     }
 
     @Override

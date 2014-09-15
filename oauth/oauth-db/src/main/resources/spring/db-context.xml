@@ -75,6 +75,7 @@
         <property name="dbName" value="email_verify_code"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
         <property name="localIgnoreBulk" value="true" />
+        <property name="cipherService" ref="oauthCipherService"/>
     </bean>
 
     <bean id="resetPasswordCodeRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantResetPasswordCodeRepositoryImpl" parent="cloudantClient">

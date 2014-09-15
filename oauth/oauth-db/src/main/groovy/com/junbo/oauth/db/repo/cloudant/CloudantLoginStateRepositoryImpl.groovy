@@ -33,13 +33,19 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
 
     @Override
     LoginState get(String id) {
-        return cloudantGetSync(id)
+        LoginState loginState = cloudantGetSync(id)
+        if (loginState != null) {
+            loginState.loginStateId = id
+        }
+
+        return loginState
     }
 
     @Override
     LoginState save(LoginState loginState) {
         if (loginState.id == null) {
             loginState.id = tokenGenerator.generateLoginStateId()
+            loginState.hashedId = tokenGenerator.hashKey(loginState.id)
         }
 
         if (loginState.sessionId == null) {
@@ -55,6 +61,6 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
 
     @Override
     void delete(String id) {
-        cloudantDeleteSync(id)
+        cloudantDeleteSync(tokenGenerator.hashKey(id))
     }
 }

@@ -26,6 +26,7 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
     AccessToken save(AccessToken accessToken) {
         if (accessToken.tokenValue == null) {
             accessToken.tokenValue = tokenGenerator.generateAccessToken(accessToken.userId)
+            accessToken.hashedTokenValue = tokenGenerator.hashKey(accessToken.tokenValue)
         }
 
         return cloudantPostSync(accessToken)
@@ -33,7 +34,12 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
 
     @Override
     AccessToken get(String tokenValue) {
-        return cloudantGetSync(tokenValue)
+        AccessToken token = cloudantGetSync(tokenGenerator.hashKey(tokenValue))
+        if (token != null) {
+            token.tokenValue = tokenValue
+        }
+
+        return token
     }
 
     @Override
@@ -53,7 +59,12 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
 
     @Override
     void remove(String tokenValue) {
-        cloudantDeleteSync(tokenValue)
+        cloudantDeleteSync(tokenGenerator.hashKey(tokenValue))
+    }
+
+    @Override
+    void removeByHash(String hash) {
+        cloudantDeleteSync(hash)
     }
 
     @Override

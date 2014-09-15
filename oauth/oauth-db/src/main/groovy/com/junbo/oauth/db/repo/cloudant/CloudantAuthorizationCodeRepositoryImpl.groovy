@@ -28,6 +28,7 @@ class CloudantAuthorizationCodeRepositoryImpl extends CloudantClient<Authorizati
     void save(AuthorizationCode code) {
         if (code.code == null) {
             code.code = tokenGenerator.generateAuthorizationCode()
+            code.hashedCode = tokenGenerator.hashKey(code.code)
         }
 
         cloudantPostSync(code)
@@ -35,8 +36,13 @@ class CloudantAuthorizationCodeRepositoryImpl extends CloudantClient<Authorizati
 
     @Override
     AuthorizationCode getAndRemove(String code) {
-        AuthorizationCode entity = cloudantGetSync(code)
-        cloudantDeleteSync(code)
+        String hashedKey = tokenGenerator.hashKey(code)
+        AuthorizationCode entity = cloudantGetSync(hashedKey)
+        if (entity != null) {
+            entity.code = code
+        }
+
+        cloudantDeleteSync(hashedKey)
         return entity
     }
 }

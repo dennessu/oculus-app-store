@@ -27,19 +27,30 @@ class CloudantResetPasswordCodeRepositoryImpl extends CloudantClient<ResetPasswo
 
     @Override
     ResetPasswordCode get(String code) {
-        ResetPasswordCode entity = cloudantGetSync(code)
+        ResetPasswordCode entity = cloudantGetSync(tokenGenerator.hashKey(code))
         return entity
     }
 
     @Override
+    ResetPasswordCode getByHash(String hash) {
+        return cloudantGetSync(hash)
+    }
+
+    @Override
     void remove(String code) {
-        cloudantDeleteSync(code)
+        cloudantDeleteSync(tokenGenerator.hashKey(code))
+    }
+
+    @Override
+    void removeByHash(String hash) {
+        cloudantDeleteSync(hash)
     }
 
     @Override
     void save(ResetPasswordCode resetPasswordCode) {
         if (resetPasswordCode.code == null) {
             resetPasswordCode.code = tokenGenerator.generateResetPasswordCode()
+            resetPasswordCode.hashedCode = tokenGenerator.hashKey(resetPasswordCode.code)
         }
 
         cloudantPostSync(resetPasswordCode)
