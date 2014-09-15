@@ -247,4 +247,9 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
         return DEFAULT_CODEC_PATTERN.matcher(codeValue).matches();
     }
+
+    @Override
+    public int getAccessTokenLength() {
+        return this.accessTokenLength;
+    }
 }

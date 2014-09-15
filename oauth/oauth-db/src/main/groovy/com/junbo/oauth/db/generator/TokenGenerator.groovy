@@ -50,4 +50,6 @@ interface TokenGenerator {
     boolean isValidEmailVerifyCode(String codeValue)
 
     boolean isValidResetPasswordCode(String codeValue)
+
+    int getAccessTokenLength()
 }
