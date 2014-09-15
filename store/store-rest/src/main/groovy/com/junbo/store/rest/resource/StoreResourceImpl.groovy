@@ -339,6 +339,7 @@ class StoreResourceImpl implements StoreResource {
                 InstrumentUpdateResponse response = new InstrumentUpdateResponse(
                         billingProfile: billingProfile
                 )
+                response.updatedInstrument = paymentInstrumentId
                 return Promise.pure(response)
             }
         }
@@ -613,6 +614,7 @@ class StoreResourceImpl implements StoreResource {
                             return Promise.pure(response)
                         }
                     }
+                    response.order = createOrder.getId()
                     return Promise.pure(response)
                 }
             }
@@ -780,6 +782,7 @@ class StoreResourceImpl implements StoreResource {
         }.then {
             resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: user.getId(), tosId: request.tosId, agreementTime: new Date())).then { UserTosAgreement userTosAgreement ->
                 return Promise.pure(new AcceptTosResponse(
+                    userTosAgreementId: userTosAgreement.getId(),
                     tos: userTosAgreement.tosId,
                     acceptedTime: userTosAgreement.agreementTime
                 ))
