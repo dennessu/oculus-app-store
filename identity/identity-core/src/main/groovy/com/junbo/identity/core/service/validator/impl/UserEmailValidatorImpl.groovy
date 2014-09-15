@@ -68,7 +68,7 @@ class UserEmailValidatorImpl implements PiiValidator {
     }
 
     private void checkUserEmail(Email email) {
-        if (email.info == null) {
+        if (StringUtils.isEmpty(email.info)) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
 
