@@ -29,6 +29,11 @@ class ErrorInfoRepositoryCloudantImpl  extends CloudantClient<ErrorInfo> impleme
     }
 
     @Override
+    Promise<List<ErrorInfo>> searchAll(Integer limit, Integer offset) {
+        return cloudantGetAll(limit, offset, false)
+    }
+
+    @Override
     Promise<Void> delete(ErrorIdentifier id) {
         throw new IllegalStateException('Delete operation not supported for errorInfo')
     }
