@@ -7,6 +7,7 @@
 package com.junbo.test.store.utility;
 
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.store.spec.model.Challenge;
@@ -15,6 +16,7 @@ import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfile;
 import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.browse.LibraryResponse;
 import com.junbo.store.spec.model.browse.TocResponse;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
@@ -71,15 +73,14 @@ public class StoreValidationHelper extends BaseValidationHelper {
         }
     }
 
-    public void verifyEntitlementResponse(EntitlementsGetResponse entitlementsGetResponse, String offerId){
+    public void verifyLibraryResponse(LibraryResponse response, String offerId){
         OfferRevision offerRevision = Master.getInstance().getOfferRevision(Master.getInstance().getOffer(offerId).getCurrentRevisionId());
         Item item =  Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
-        Entitlement entitlement = entitlementsGetResponse.getEntitlements().get(0);
+        ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
 
-        verifyEqual(entitlement.getItemType(), item.getType(), "verify item type");
-        verifyEqual(entitlement.getEntitlementType(), "DOWNLOAD","verify entitlement type");
-        verifyEqual(entitlement.getItem().getValue(), item.getId(), "verify item id");
-
+        verifyEqual(response.getItems().get(0).getItemType(), item.getType(), "verify item type");
+        verifyEqual(response.getItems().get(0).getTitle(), itemRevision.getLocales().get("en_US").getName(),"verify entitlement type");
+        verifyEqual(response.getItems().get(0).getOwnedByCurrentUser(), Boolean.valueOf(true),"verify owned by current user");
     }
 
     public void verifyCommitPurchase(CommitPurchaseResponse response, String offerId) throws Exception {
@@ -131,5 +132,6 @@ public class StoreValidationHelper extends BaseValidationHelper {
         Assert.assertNull(tocResponse.getChallenge());
         Assert.assertEquals(tocResponse.getSections().size(), 4); // current 3 sections will be returned.
     }
+
 }
 

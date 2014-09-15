@@ -9,13 +9,10 @@ package com.junbo.test.store;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.browse.DeliveryResponse;
 import com.junbo.store.spec.model.browse.LibraryResponse;
-import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
@@ -67,8 +64,8 @@ public class StoreTesting extends BaseTestClass {
                     "6. Commit purchase",
                     "7. Verify purchase response",
                     "8. Consume iap entitlement",
-                    "9. Get entitlement",
-                    "10. Verify entitlement response"
+                    "9. Get library",
+                    "10. Verify library response"
             }
     )
     @Test
@@ -209,7 +206,7 @@ public class StoreTesting extends BaseTestClass {
 
         for (int i = 0; i < 5; i++) {
             com.junbo.common.error.Error appError = testDataProvider.preparePurchaseWithException(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "5678", null, false, 400, "130.108");
+                    offerId, paymentId, "5678", null, false, 400, "130.108");
             assert appError != null;
         }
 
@@ -297,8 +294,8 @@ public class StoreTesting extends BaseTestClass {
                     "4. Verify response",
                     "5. Make free purchase",
                     "6. Verify purchase response",
-                    "8. Get entitlement",
-                    "9. Verify entitlement response",
+                    "8. Get library",
+                    "9. Verify library response",
                     "10. Refresh token",
             }
     )
@@ -322,8 +319,9 @@ public class StoreTesting extends BaseTestClass {
         } else {
             offerId = offer_digital_free;
             Offer offer = testDataProvider.getOfferByOfferId(offerId);
-            OfferRevision offerRevision =  testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
+            OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
             Item item = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId());
+            testDataProvider.getItemRevision(item.getCurrentRevisionId());
         }
 
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
@@ -335,6 +333,7 @@ public class StoreTesting extends BaseTestClass {
         }
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
+        validationHelper.verifyLibraryResponse(libraryResponse, offerId);
 
         Master.getInstance().setCurrentUid(null);
 
@@ -360,8 +359,8 @@ public class StoreTesting extends BaseTestClass {
                     "6. Commit purchase",
                     "7. Verify purchase response",
                     "8. Consume iap entitlement",
-                    "9. Get entitlement",
-                    "10. Verify entitlement response"
+                    "9. Get library",
+                    "10. Verify library response"
             }
     )
     @Test
@@ -379,7 +378,7 @@ public class StoreTesting extends BaseTestClass {
 
         String offerId = testDataProvider.getOfferIdByName(offer_iap_normal);
         //post order without set payment instrument
-               PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null, true, 200);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null, true, 200);
 
         assert preparePurchaseResponse.getChallenge() != null;
 
@@ -399,10 +398,8 @@ public class StoreTesting extends BaseTestClass {
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        //EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
-        //IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
-
-        //TODO validation
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
+        assert libraryResponse.getItems().size() == 0 ;
 
     }
 
