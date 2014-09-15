@@ -67,7 +67,7 @@ public class ItemRevisionValidator extends ValidationSupport {
         validateSupportedInputDevices(revision.getSupportedInputDevices(), errors);
         validatePackageName(revision.getPackageName(), revision.getItemId(), errors);
         validateLocales(revision.getLocales(), errors);
-        validateCountryCodes("countries", revision.getCountries().keySet(), errors);
+        validateCountryCodes("regions", revision.getCountries().keySet(), errors);
 
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
 
