@@ -21,7 +21,7 @@ public interface OfferAttributeService {
     OfferAttribute getOfferAttribute(String attributeId) throws Exception;
     OfferAttribute getOfferAttribute(String attributeId, String locale) throws Exception;
     OfferAttribute getOfferAttribute(String attributeId, String locale, int expectedResponseCode) throws Exception;
-    public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode, boolean isServiceScope) throws Exception;
+    OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode, boolean isServiceScope) throws Exception;
 
     Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara) throws Exception;
     Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
