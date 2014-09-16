@@ -88,7 +88,7 @@ class CatalogFacadeImpl implements CatalogFacade {
             if (catalogItem.currentRevisionId == null) {
                 return Promise.pure()
             }
-            resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision e ->
+            resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions(locale: apiContext.locale.getId().value)).then { ItemRevision e ->
                 itemData.currentRevision = e
                 return Promise.pure()
             }
@@ -150,13 +150,15 @@ class CatalogFacadeImpl implements CatalogFacade {
     Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode, ApiContext apiContext) {
         if (versionCode == null) {
             return resourceContainer.itemResource.getItem(itemId.value).then { Item catalogItem ->
-                return resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
+                return resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId,
+                        new ItemRevisionGetOptions(locale: apiContext.locale.getId().value)).then { ItemRevision itemRevision ->
                     return Promise.pure(itemRevision)
                 }
             }
         }
 
-        ItemRevisionsGetOptions options = new ItemRevisionsGetOptions(status: Status.APPROVED.name(), itemIds: [itemId.value] as Set)
+        ItemRevisionsGetOptions options = new ItemRevisionsGetOptions(status: Status.APPROVED.name(),
+                itemIds: [itemId.value] as Set, locale: apiContext.locale.getId().value)
         ItemRevision result
         CommonUtils.loop {
             resourceContainer.itemRevisionResource.getItemRevisions(options).then { Results<ItemRevision> itemRevisionResults ->
@@ -221,7 +223,7 @@ class CatalogFacadeImpl implements CatalogFacade {
             if (catalogOffer.currentRevisionId == null) {
                 return Promise.pure()
             }
-            resourceContainer.offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions()).then { OfferRevision e ->
+            resourceContainer.offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions(locale: apiContext.locale.getId().value)).then { OfferRevision e ->
                 result.offerRevision = e
                 return Promise.pure()
             }

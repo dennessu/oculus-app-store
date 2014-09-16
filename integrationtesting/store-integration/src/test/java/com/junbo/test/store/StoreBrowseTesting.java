@@ -176,6 +176,21 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     @Test
+    public void testGetDetailsLocalesFallback() throws Exception {
+        gotoToc();
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_oculus_free1);
+        com.junbo.catalog.spec.model.offer.Offer catalogOffer = offerService.getOffer(offerId);
+        OfferRevision offerRevision = offerRevisionService.getOfferRevision(catalogOffer.getCurrentRevisionId());
+        Assert.assertEquals(offerRevision.getItems().size(), 1);
+        String itemId = offerRevision.getItems().get(0).getItemId();
+
+        // get the item details
+        TestContext.getData().putHeader("Accept-Language", "zh-CN");
+        DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId);
+        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+    }
+
+    @Test
     public void testGetDeliveryVersionCodeNotFound() throws Exception {
         // create user and sign in
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
