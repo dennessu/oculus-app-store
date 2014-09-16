@@ -102,7 +102,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store commerce",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test add new credit card with invalid billing address",
             steps = {
                     "1. Create user",
