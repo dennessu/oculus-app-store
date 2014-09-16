@@ -47,18 +47,31 @@ class CreateUserCommunication implements Action {
 
     @Override
     Promise<ActionResult> execute(ActionContext context) {
-        def contextWrapper = new ActionContextWrapper(context)
+        ActionContextWrapper contextWrapper = new ActionContextWrapper(context)
         def parameterMap = contextWrapper.parameterMap
-        def communicationIdStr = parameterMap.getFirst(OAuthParameters.COMMUNICATION)
-        def user = contextWrapper.user
+        String generalCommunicationIdStr = parameterMap.getFirst(OAuthParameters.GENERAL_COMMUNICATION)
+        String newReleaseCommunicationIdStr = parameterMap.getFirst(OAuthParameters.NEW_RELEASE_COMMUNICATION)
 
+        def user = contextWrapper.user
         Assert.notNull(user, 'user is null')
 
-        if (StringUtils.isEmpty(communicationIdStr)) {
+        if (StringUtils.isEmpty(generalCommunicationIdStr) && StringUtils.isEmpty(newReleaseCommunicationIdStr)) {
             return Promise.pure(new ActionResult('success'))
         }
 
-        UniversalId communicationId = IdUtil.fromLink(new Link(href: communicationIdStr))
+        return this.createUserCommunication(generalCommunicationIdStr, contextWrapper).then {
+            return this.createUserCommunication(newReleaseCommunicationIdStr, contextWrapper)
+        }
+    }
+
+    private Promise<ActionResult> createUserCommunication(String communicationUri, ActionContextWrapper contextWrapper) {
+        if (StringUtils.isEmpty(communicationUri)){
+            return Promise.pure(new ActionResult('success'))
+        }
+
+        def user = contextWrapper.user
+
+        UniversalId communicationId = IdUtil.fromLink(new Link(href: communicationUri))
         if (communicationId == null || !(communicationId instanceof CommunicationId)) {
             contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterInvalid('communication').error())
             return Promise.pure(new ActionResult('error'))
