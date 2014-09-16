@@ -11,11 +11,9 @@ import com.junbo.test.store.utility.StoreValidationHelper;
 import org.testng.annotations.AfterMethod;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static com.junbo.test.catalog.impl.ItemAttributeServiceImpl.*;
+import static com.junbo.test.catalog.impl.ItemAttributeServiceImpl.instance;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -55,6 +53,8 @@ public abstract class BaseTestClass {
     protected OAuthService oAuthTokenService;
     protected int listItemPageSize = 2;
 
+    protected boolean serviceClientEnabled = false;
+
     protected boolean useCaseyEmulator = false;
 
     public BaseTestClass() {
@@ -83,6 +83,10 @@ public abstract class BaseTestClass {
         item_digital_oculus_free1 = ConfigHelper.getSetting("testdata.item.digital.oculus.free1");
         item_digital_oculus_free2 = ConfigHelper.getSetting("testdata.item.digital.oculus.free2");
 
+
+        if (ConfigHelper.getSetting("test.oauth.service.client.enabled") != null) {
+            serviceClientEnabled = Boolean.valueOf(ConfigHelper.getSetting("test.oauth.service.client.enabled"));
+        }
         if (ConfigHelper.getSetting("testdata.cmspage.slot1.items") != null) {
             cmsSlot1Items = Arrays.asList(ConfigHelper.getSetting("testdata.cmspage.slot1.items").split(","));
         }

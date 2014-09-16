@@ -47,7 +47,12 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
         return getItemAttribute(attributeId, 200);
     }
 
-    public ItemAttribute getItemAttribute(String attributeId, int expectedResponseCode) throws Exception {
+    @Override
+    public ItemAttribute getItemAttribute(String itemAttributeId, int expectedResponseCode) throws Exception {
+        return getItemAttribute(itemAttributeId, expectedResponseCode, isServiceScope);
+    }
+
+    public ItemAttribute getItemAttribute(String attributeId, int expectedResponseCode, boolean isServiceScope) throws Exception {
         String url = catalogServerURL + "/" + attributeId;
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
         ItemAttribute itemAttribute = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);

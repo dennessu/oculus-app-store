@@ -47,12 +47,16 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
         return getOfferAttribute(attributeId, 200);
     }
 
-    public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception {
+    public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode, boolean isServiceScope) throws Exception {
         String url = catalogServerURL + "/" + attributeId;
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
         OfferAttribute offerAttribute = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
         Master.getInstance().addOfferAttribute(attributeId, offerAttribute);
         return offerAttribute;
+    }
+
+    public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception {
+        return getOfferAttribute(attributeId, expectedResponseCode, isServiceScope);
     }
 
     public Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara) throws Exception {

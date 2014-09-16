@@ -20,6 +20,7 @@ public interface ItemAttributeService {
 
     ItemAttribute getItemAttribute(String itemAttributeId) throws Exception;
     ItemAttribute getItemAttribute(String itemAttributeId, int expectedResponseCode) throws Exception;
+    ItemAttribute getItemAttribute(String itemAttributeId, int expectedResponseCode, boolean isServiceScope) throws Exception;
 
     Results<ItemAttribute> getItemAttributes(HashMap<String, List<String>> httpPara) throws Exception;
     Results<ItemAttribute> getItemAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;

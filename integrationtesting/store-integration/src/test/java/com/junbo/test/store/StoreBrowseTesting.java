@@ -61,8 +61,10 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     @BeforeClass(alwaysRun = true)
     public void setUp() throws Exception {
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+        if (serviceClientEnabled) {
+            oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+        }
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOG);
         storeBrowseValidationHelper = new StoreBrowseValidationHelper(testDataProvider);
 
         if (ConfigHelper.getSetting("explore.items.details.verifyall") != null) {
@@ -528,7 +530,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     private void verifyItem(Item item, GetItemMethod method, Boolean ownedByUser) throws Exception {
-        storeBrowseValidationHelper.verifyItem(item);
+        storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled);
         if (method == GetItemMethod.Details) {
             Assert.assertEquals(item.getOwnedByCurrentUser().booleanValue(), ownedByUser.booleanValue());
         } else if (method == GetItemMethod.Library || method == GetItemMethod.Purchase) {

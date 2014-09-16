@@ -19,6 +19,7 @@ import java.util.List;
 public interface OfferAttributeService {
 
     OfferAttribute getOfferAttribute(String attributeId) throws Exception;
+    public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode, boolean isServiceScope) throws Exception;
     OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception;
 
     Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara) throws Exception;

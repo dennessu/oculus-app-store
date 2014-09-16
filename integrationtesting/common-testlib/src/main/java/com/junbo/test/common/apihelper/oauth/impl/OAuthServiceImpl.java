@@ -106,8 +106,9 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
                 formParams.put("scope", "drm");
                 clientId = "client";
                 break;
+            case CATALOG:
             case SMOKETEST:
-                formParams.put("scope","smoketest");
+                formParams.put("scope","smoketest identity catalog");
                 clientId = ConfigHelper.getSetting("client_id");
                 break;
             default:

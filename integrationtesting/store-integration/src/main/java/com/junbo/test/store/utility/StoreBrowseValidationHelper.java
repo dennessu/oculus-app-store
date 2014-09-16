@@ -135,7 +135,7 @@ public class StoreBrowseValidationHelper {
         }
     }
 
-    public void verifyItem(com.junbo.store.spec.model.browse.document.Item item) throws Exception {
+    public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled) throws Exception {
         OfferRevision currentOfferRevision = null;
         ItemRevision currentItemRevision = null;
         com.junbo.catalog.spec.model.offer.Offer catalogOffer =
@@ -172,13 +172,13 @@ public class StoreBrowseValidationHelper {
         }
 
         ItemRevisionLocaleProperties localeProperties = currentItemRevision.getLocales().get(locale);
-        Organization developer = getOrganization(catalogItem.getOwnerId());
-        Organization publisher = getOrganization(catalogOffer.getOwnerId());
+        Organization developer = getOrganization(catalogItem.getOwnerId(), serviceClientEnabled);
+        Organization publisher = getOrganization(catalogOffer.getOwnerId(), serviceClientEnabled);
 
-        verifyItem(item, catalogItem, currentItemRevision, developer);
+        verifyItem(item, catalogItem, currentItemRevision, developer, serviceClientEnabled);
         verifyItemImages(item.getImages(), localeProperties.getImages());
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
-                developer, publisher);
+                developer, publisher, serviceClientEnabled);
         boolean isFree = PriceType.FREE.name().equals(offerRevision.getPrice().getPriceType());
         verifyItemOffer(item.getOffer(), catalogOffer, offerRevision, isFree);
     }
@@ -212,7 +212,7 @@ public class StoreBrowseValidationHelper {
     }
 
     private void verifyItem(com.junbo.store.spec.model.browse.document.Item item, Item catalogItem, ItemRevision itemRevision,
-                            Organization developer) {
+                            Organization developer, boolean serviceClientEnabled) {
         Assert.assertEquals(item.getSelf(), new ItemId(catalogItem.getItemId()));
         Assert.assertEquals(item.getItemType(), catalogItem.getType());
         ItemRevisionLocaleProperties localeProperties = itemRevision.getLocales().get(locale);
@@ -220,7 +220,9 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(item.getDescriptionHtml(), localeProperties.getLongDescription(), "description html not match");
         verifySupportedLocaleEquals(item.getSupportedLocales(), itemRevision.getSupportedLocales());
 
-        Assert.assertEquals(item.getCreator(), developer == null ? null : developer.getName());
+        if (serviceClientEnabled) {
+            Assert.assertEquals(item.getCreator(), developer == null ? null : developer.getName());
+        }
     }
 
     private void verifyItemImages(Images images, com.junbo.catalog.spec.model.common.Images catalogImages) {
@@ -245,7 +247,7 @@ public class StoreBrowseValidationHelper {
 
     private void verifyAppDetails(AppDetails appDetails, List<OfferAttribute> categories, List<ItemAttribute> genres,
                                   OfferRevision offerRevision, ItemRevision itemRevision, List<ItemRevision> itemRevisions,
-                                  Organization developer, Organization publisher) {
+                                  Organization developer, Organization publisher, boolean serviceClientEnabled) {
         // verify categories
         ItemRevisionLocaleProperties localeProperties = itemRevision.getLocales().get(locale);
         if (categories == null) {
@@ -269,8 +271,10 @@ public class StoreBrowseValidationHelper {
             }
         }
 
-        Assert.assertEquals(appDetails.getPublisherName(), publisher == null ? null : publisher.getName());
-        Assert.assertEquals(appDetails.getDeveloperName(), developer == null ? null : developer.getName());
+        if (serviceClientEnabled) {
+            Assert.assertEquals(appDetails.getPublisherName(), publisher == null ? null : publisher.getName());
+            Assert.assertEquals(appDetails.getDeveloperName(), developer == null ? null : developer.getName());
+        }
 
         Assert.assertEquals(appDetails.getWebsite(), localeProperties.getWebsite());
         Assert.assertEquals(appDetails.getForumUrl(), localeProperties.getCommunityForumLink());
@@ -281,7 +285,8 @@ public class StoreBrowseValidationHelper {
             Binary binary = itemRevision.getBinaries().get(Platform);
             Assert.assertEquals(appDetails.getVersionString(), binary.getVersion());
             Assert.assertEquals(appDetails.getInstallationSize(), binary.getSize());
-            Assert.assertEquals(appDetails.getVersionCode(), binary.getMetadata() == null || binary.getMetadata().get("versionCode") == null ? null : binary.getMetadata().get("versionCode").asInt());
+            Assert.assertEquals(appDetails.getVersionCode(), binary.getMetadata() == null
+                    || binary.getMetadata().get("versionCode") == null ? null : binary.getMetadata().get("versionCode").asInt());
         }
         if (offerRevision.getCountries() != null && offerRevision.getCountries().get(country) != null) {
             if (offerRevision.getCountries() == null && offerRevision.getCountries().get(country) == null &&
@@ -321,7 +326,8 @@ public class StoreBrowseValidationHelper {
 
             Assert.assertEquals(revisionNote.getTitle(), historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getShortNotes());
             Assert.assertEquals(revisionNote.getDescription(), historyLocalProperties == null ? null :  historyLocalProperties.getReleaseNotes().getLongNotes());
-            Assert.assertEquals(revisionNote.getVersionCode(), historyBinary == null || historyBinary.getMetadata() == null || historyBinary.getMetadata().get("versionCode") == null ? null : historyBinary.getMetadata().get("versionCode").asInt());
+            Assert.assertEquals(revisionNote.getVersionCode(), historyBinary == null || historyBinary.getMetadata() == null
+                    || historyBinary.getMetadata().get("versionCode") == null ? null : historyBinary.getMetadata().get("versionCode").asInt());
             Assert.assertEquals(revisionNote.getVersionString(), historyBinary == null ? null : historyBinary.getVersion());
         }
     }
@@ -432,7 +438,10 @@ public class StoreBrowseValidationHelper {
         });
     }
 
-    private Organization getOrganization(OrganizationId organizationId) {
+    private Organization getOrganization(OrganizationId organizationId, boolean serviceClientEnabled) {
+        if (!serviceClientEnabled) {
+            return null;
+        }
         try {
             return storeTestDataProvider.getOrganization(organizationId, 0);
         } catch (Exception e) {
