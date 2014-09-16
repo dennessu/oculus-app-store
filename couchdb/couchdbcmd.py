@@ -232,10 +232,10 @@ def creatdb(url, apikeyConf, alldbs, key, index, username, dbPrefix):
         fullDbName = dbPrefix + db
         if not fullDbName in existingDbs:
             info("Creating DB '%s' of '%s[%d]' in '%s'" % (fullDbName, key, index, username))
-            curl(url + "/" + fullDbName, "PUT") 
-            grantPermissions(apikeyConf, url, fullDbName, username)
+            curl(url + "/" + fullDbName, "PUT")
         else:
             info("DB '%s' of '%s[%d]' in '%s' exists" % (fullDbName, key, index, username))
+        grantPermissions(apikeyConf, url, fullDbName, username)
 
 def grantPermissions(apikeyConf, url, fullDbName, username):
     if not apikeyConf:
