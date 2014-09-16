@@ -308,7 +308,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     LOGGER.error("Error sending Maximum retry reachable Notification")
                     return Promise.pure(null)
                 }.then {
-                    throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum allowed retry count').exception()
+                    throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
                 }
             }
         }
@@ -440,7 +440,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameUserAttemptCount) {
                 return Promise.pure(null)
             }
-            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
+            throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
         }
     }
 
@@ -457,7 +457,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 return Promise.pure(null)
             }
 
-            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
+            throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
         }
     }
 

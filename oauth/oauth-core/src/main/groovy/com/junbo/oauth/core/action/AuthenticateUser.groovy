@@ -111,6 +111,10 @@ class AuthenticateUser implements Action {
                     case HttpStatus.PRECONDITION_FAILED.value():
                         handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential())
                         break
+                    // For response of TOO_MANY_REQUESTS, it suggests that the User reaches maximum login attempt
+                    case HttpStatus.TOO_MANY_REQUESTS.value():
+                        handleAppError(contextWrapper, e.error)
+                        break
                     // For response of FORBIDDEN, it suggests that captcha is required for user login.
                     case HttpStatus.FORBIDDEN.value():
                         // TODO: wait for identity response of captcha required
