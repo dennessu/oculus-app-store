@@ -202,7 +202,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
 
     private Promise<Void> tfaMailAdvanceCheck(UserTFA userTFA) {
         return userTFAMailRepository.searchTFACodeByUserIdAndPIIAfterTime(userTFA.userId, userTFA.personalInfo,
-                Integer.MAX_VALUE, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { List<UserTFA> userTFAList ->
+                maxSMSRequestsPerHour + 1, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { List<UserTFA> userTFAList ->
             if (CollectionUtils.isEmpty(userTFAList) || userTFAList.size() <= maxSMSRequestsPerHour) {
                 return Promise.pure(null)
             }
@@ -213,7 +213,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
 
     private Promise<Void> tfaPhoneAdvanceCheck(UserTFA userTFA) {
         return userTFAPhoneRepository.searchTFACodeByUserIdAndPIIAfterTime(userTFA.userId, userTFA.personalInfo,
-                Integer.MAX_VALUE, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { List<UserTFA> userTeleCodeList ->
+                maxSMSRequestsPerHour + 1, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { List<UserTFA> userTeleCodeList ->
             if (CollectionUtils.isEmpty(userTeleCodeList) || userTeleCodeList.size() <= maxSMSRequestsPerHour) {
                 return Promise.pure(null)
             }
@@ -231,8 +231,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     private Promise<Void> fillEmailCode(UserId userId, UserTFA userTFA) {
-        return userTFAMailRepository.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo,
-            Integer.MAX_VALUE, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
+        return userTFAMailRepository.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo, 1, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
             if (CollectionUtils.isEmpty(codeList)) {
                 userTFA.verifyCode = codeGenerator.generateCode()
             } else {
@@ -245,7 +244,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
 
     private Promise<Void> fillPhoneCode(UserId userId, UserTFA userTFA) {
         return userTFAPhoneRepository.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo,
-                Integer.MAX_VALUE, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
+                1, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
             if (CollectionUtils.isEmpty(codeList)) {
                 String code = codeGenerator.generateCode()
                 if (userTFA.verifyType == TFAVerifyType.CALL.toString()) {

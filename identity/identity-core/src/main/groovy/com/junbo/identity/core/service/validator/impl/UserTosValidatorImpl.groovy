@@ -64,7 +64,7 @@ class UserTosValidatorImpl implements UserTosValidator {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
         return checkBasicUserTosInfo(userTos).then {
-            return userTosRepository.searchByUserIdAndTosId(userTos.userId, userTos.tosId, Integer.MAX_VALUE, 0).then {
+            return userTosRepository.searchByUserIdAndTosId(userTos.userId, userTos.tosId, 1, 0).then {
                 List<UserTosAgreement> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('tosId').exception()
@@ -93,7 +93,7 @@ class UserTosValidatorImpl implements UserTosValidator {
             }
 
             if (userTos.tosId != oldUserTos.tosId) {
-                return userTosRepository.searchByUserIdAndTosId(userTos.userId, userTos.tosId, Integer.MAX_VALUE, 0).then {
+                return userTosRepository.searchByUserIdAndTosId(userTos.userId, userTos.tosId, 1, 0).then {
                     List<UserTosAgreement> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('tosId').exception()

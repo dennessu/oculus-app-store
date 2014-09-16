@@ -80,6 +80,9 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private List<String> ip4WhiteList
     private Integer sameIPRetryInterval
 
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
+
     private NormalizeService normalizeService
     private CredentialHashFactory credentialHashFactory
 
@@ -161,7 +164,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 userLoginAttempt.setUserId((UserId)user.id)
 
                 if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-                    return userPasswordRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
+                    return userPasswordRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
                             0).then { List<UserPassword> userPasswordList ->
                         if (CollectionUtils.isEmpty(userPasswordList) || userPasswordList.size() > 1) {
                             throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
@@ -178,7 +181,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
                 }
                 else if (userLoginAttempt.type == CredentialType.PIN.toString()) {
-                    return userPinRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
+                    return userPinRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
                             0).then { List<UserPin> userPinList ->
                         if (CollectionUtils.isEmpty(userPinList) || userPinList.size() > 1) {
                             throw AppErrors.INSTANCE.userPinIncorrect().exception()
@@ -210,7 +213,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         }
 
         if (isEmail(userLoginAttempt.username)) {
-            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase(Locale.ENGLISH), null, Integer.MAX_VALUE,
+            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase(Locale.ENGLISH), null, maximumFetchSize,
                     0).then { List<UserPersonalInfo> personalInfos ->
                     if (CollectionUtils.isEmpty(personalInfos)) {
                         throw AppErrors.INSTANCE.userNotFoundByName(userLoginAttempt.username).exception()
@@ -235,7 +238,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 }
         } else {
             return userPersonalInfoRepository.searchByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username),
-                    Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                    maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
                 if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                     return Promise.pure(null)
                 }
@@ -659,5 +662,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }

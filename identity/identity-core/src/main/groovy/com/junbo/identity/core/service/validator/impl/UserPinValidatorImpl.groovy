@@ -35,6 +35,8 @@ class UserPinValidatorImpl implements UserPinValidator {
     private Integer currentCredentialVersion
 
     private Pattern allowedPattern
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     @Override
     Promise<UserPin> validateForGet(UserId userId, UserPinId userPinId) {
@@ -121,8 +123,7 @@ class UserPinValidatorImpl implements UserPinValidator {
             return Promise.pure(null)
         }
 
-        return userPinRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE,
-                0).then { List<UserPin> userPinList ->
+        return userPinRepository.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then { List<UserPin> userPinList ->
             if (userPinList == null || userPinList.size() == 0 || userPinList.size() > 1) {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
@@ -182,5 +183,10 @@ class UserPinValidatorImpl implements UserPinValidator {
     @Required
     void setAllowedPattern(String allowedPattern) {
         this.allowedPattern = Pattern.compile(allowedPattern)
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }

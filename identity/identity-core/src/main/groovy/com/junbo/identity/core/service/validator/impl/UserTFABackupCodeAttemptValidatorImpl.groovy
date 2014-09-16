@@ -43,6 +43,9 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
 
     private Integer maxRetryCount
 
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
+
     @Override
     Promise<UserTFABackupCodeAttempt> validateForGet(UserId userId, UserTFABackupCodeAttemptId attemptId) {
         if (userId == null) {
@@ -147,7 +150,7 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
 
             attempt.userId = userId
 
-            return userTFABackupCodeRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE,
+            return userTFABackupCodeRepository.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize,
                     0).then { List<UserTFABackupCode> userTFABackupCodeList ->
                 if (CollectionUtils.isEmpty(userTFABackupCodeList)) {
                     throw AppErrors.INSTANCE.userTFABackupCodeIncorrect().exception()
@@ -244,6 +247,11 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
     @Required
     void setMaxRetryCount(Integer maxRetryCount) {
         this.maxRetryCount = maxRetryCount
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }
 
