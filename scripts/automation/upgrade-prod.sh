@@ -15,6 +15,10 @@ read
 ./upgrade-dbs.sh
 echo "Please verify db upgrade is properly updated."
 read
+echo "Please verify config is fine to be reset."
+read
+./reset-config.sh
+echo "Reset config finished."
 ./upgrade-utils.sh
 echo "Please verify new utils are working properly."
 read

@@ -12,6 +12,7 @@ set -e
 # used to catch-up green/blue with the other part
 # db is already setup at this stage, so upgrade apps only
 
+./reset-config.sh
 ./upgrade-apps.sh
 echo "Please verify new apps are taking traffic. Press enter to continue."
 read
