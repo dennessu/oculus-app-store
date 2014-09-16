@@ -175,7 +175,10 @@ class BrowseServiceImpl implements BrowseService {
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request, ApiContext apiContext) {
         ItemRevision itemRevision
         DeliveryResponse result = new DeliveryResponse()
-        facadeContainer.catalogFacade.getAppItemRevision(request.itemId, request.desiredVersionCode).then { ItemRevision e ->
+        facadeContainer.catalogFacade.getAppItemRevision(request.itemId, request.desiredVersionCode, apiContext).then { ItemRevision e ->
+            if (e == null) {
+                throw AppErrors.INSTANCE.itemVersionCodeNotFound().exception()
+            }
             itemRevision = e
             return resourceContainer.downloadUrlResource.getDownloadUrl(request.itemId, new DownloadUrlGetOptions(itemRevisionId: e.getRevisionId(), platform: apiContext.platform.value)).then { DownloadUrlResponse response ->
                 result.downloadUrl = response.redirectUrl

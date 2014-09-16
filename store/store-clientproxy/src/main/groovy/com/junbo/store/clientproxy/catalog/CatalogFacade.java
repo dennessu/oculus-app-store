@@ -23,7 +23,7 @@ public interface CatalogFacade {
 
     Promise<Offer> getOffer(String offerId, LocaleId locale);
 
-    Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode);
+    Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode, ApiContext apiContext);
 
     Promise<OfferAttribute> getOfferCategoryByName(String name, LocaleId locale);
 

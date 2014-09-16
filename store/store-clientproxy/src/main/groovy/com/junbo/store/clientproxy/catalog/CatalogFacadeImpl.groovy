@@ -2,6 +2,7 @@ package com.junbo.store.clientproxy.catalog
 import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.enums.OfferAttributeType
 import com.junbo.catalog.spec.enums.PriceType
+import com.junbo.catalog.spec.enums.Status
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
 import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
@@ -10,6 +11,7 @@ import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
@@ -145,12 +147,35 @@ class CatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode) {
-        // todo get item revision by version code
-        return resourceContainer.itemResource.getItem(itemId.value).then { Item catalogItem ->
-            return resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
-                return Promise.pure(itemRevision)
+    Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode, ApiContext apiContext) {
+        if (versionCode == null) {
+            return resourceContainer.itemResource.getItem(itemId.value).then { Item catalogItem ->
+                return resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
+                    return Promise.pure(itemRevision)
+                }
             }
+        }
+
+        ItemRevisionsGetOptions options = new ItemRevisionsGetOptions(status: Status.APPROVED.name(), itemIds: [itemId.value] as Set)
+        ItemRevision result
+        CommonUtils.loop {
+            resourceContainer.itemRevisionResource.getItemRevisions(options).then { Results<ItemRevision> itemRevisionResults ->
+                result = itemRevisionResults?.items?.find { ItemRevision e ->
+                    return itemBuilder.getVersionCode(e?.binaries?.get(apiContext.platform.value)) == versionCode
+                }
+                if (result != null) {
+                    return Promise.pure(Promise.BREAK)
+                }
+
+                String cursor = CommonUtils.getQueryParam(itemRevisionResults?.next?.href, 'cursor')
+                if (StringUtils.isEmpty(cursor) || CollectionUtils.isEmpty(itemRevisionResults?.items)) {
+                    return Promise.pure(Promise.BREAK)
+                }
+                options.cursor = cursor
+                return Promise.pure()
+            }
+        }.then {
+            return Promise.pure(result)
         }
     }
 
