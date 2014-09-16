@@ -52,21 +52,18 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
         String tokenHash = tokenGenerator.hashKey(tokenValue)
         AccessToken token = cloudantGetSync(tokenHash)
         if (token == null) {
-            int accessTokenDc = Context.get().dataCenterId
             try {
-                accessTokenDc = getDcFromAccessToken(tokenValue)
+                int accessTokenDc = getDcFromAccessToken(tokenValue)
+                token = (AccessToken) getEffective().cloudantGet(getDbUri(accessTokenDc, tokenValue), entityClass, tokenHash).get()
             } catch (Exception e) {
                 logger.error("Error occurred while parsing DC id from accessToken $tokenValue", e)
                 return null
             }
-            if (Context.get().dataCenterId == accessTokenDc) {
-                return null
-            }
-            token = (AccessToken) getEffective().cloudantGet(getDbUri(accessTokenDc, tokenValue), entityClass, tokenHash).get()
         }
         if (token != null) {
             token.tokenValue = tokenValue
         }
+
         return token
     }
 
