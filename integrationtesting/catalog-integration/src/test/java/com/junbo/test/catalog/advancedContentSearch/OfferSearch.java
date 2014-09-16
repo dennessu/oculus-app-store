@@ -138,7 +138,6 @@ public class OfferSearch extends BaseTestClass {
         offerRevisionLocaleProperties.setShortDescription("offerRevisionShortDescription_" +
                 RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
 
-        locales.put("default", offerRevisionLocaleProperties);
         locales.put(defaultLocale, offerRevisionLocaleProperties);
         offerRevisionPrepared.setLocales(locales);
 

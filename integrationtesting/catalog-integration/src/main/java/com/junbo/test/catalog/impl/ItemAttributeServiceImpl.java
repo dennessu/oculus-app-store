@@ -44,12 +44,22 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     }
 
     public ItemAttribute getItemAttribute(String attributeId) throws Exception {
-        return getItemAttribute(attributeId, 200);
+        return getItemAttribute(attributeId, null);
     }
 
-    @Override
-    public ItemAttribute getItemAttribute(String itemAttributeId, int expectedResponseCode) throws Exception {
-        return getItemAttribute(itemAttributeId, expectedResponseCode, isServiceScope);
+    public ItemAttribute getItemAttribute(String attributeId, String locale) throws Exception {
+        return getItemAttribute(attributeId, locale, 200);
+    }
+
+    public ItemAttribute getItemAttribute(String attributeId, String locale, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + attributeId;
+        if (locale != null && locale.length() > 0) {
+            url = url.concat(String.format("?locale=%s", locale));
+        }
+        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
+        ItemAttribute itemAttribute = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
+        Master.getInstance().addItemAttribute(attributeId, itemAttribute);
+        return itemAttribute;
     }
 
     public ItemAttribute getItemAttribute(String attributeId, int expectedResponseCode, boolean isServiceScope) throws Exception {
