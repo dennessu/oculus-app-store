@@ -13,6 +13,8 @@ import com.junbo.common.cloudant.model.CloudantResponse
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CloudantId
 import com.junbo.common.util.Utils
+import com.junbo.configuration.reloadable.IntegerConfig
+import com.junbo.configuration.reloadable.impl.ReloadableConfigFactory
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.promise.Promise
 import com.ning.http.client.Realm
@@ -48,13 +50,31 @@ class CloudantClientImpl implements CloudantClientInternal {
     private static JunboAsyncHttpClient asyncHttpClient = JunboAsyncHttpClient.instance()
     private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
 
+    private static IntegerConfig writeCount = ReloadableConfigFactory.create("[common.cloudant.writes]", IntegerConfig.class)
+
+    private static Map<String, String> getWriteParam(Map<String, String> initial = null) {
+        Integer writeCount = writeCount.get()
+        if (initial == null && writeCount == null) {
+            return Collections.emptyMap()
+        }
+
+        if (initial == null) {
+            initial = [:]
+        }
+        if (writeCount != null) {
+            initial.put("w", writeCount.intValue().toString())
+        }
+        return initial
+    }
+
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
         if (entity.getId() != null) {
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
         }
-        return executeRequest(dbUri, HttpMethod.POST, '', [:], entity).then({ Response response ->
+
+        return executeRequest(dbUri, HttpMethod.POST, '', getWriteParam(), entity).then({ Response response ->
             checkWriteErrors("create", dbUri, entity, response)
 
             def cloudantResponse = marshaller.unmarshall(response.responseBody, CloudantResponse)
@@ -70,7 +90,7 @@ class CloudantClientImpl implements CloudantClientInternal {
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantGet(CloudantDbUri dbUri, Class<T> entityClass, String id) {
         CloudantId.validate(id)
-        return executeRequest(dbUri, HttpMethod.GET, urlEncode(id), [:], null).then({ Response response ->
+        return executeRequest(dbUri, HttpMethod.GET, urlEncode(id), Collections.emptyMap(), null).then({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
@@ -94,7 +114,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
-        return executeRequest(dbUri, HttpMethod.PUT, urlEncode(entity.cloudantId), [:], entity).then({ Response response ->
+        return executeRequest(dbUri, HttpMethod.PUT, urlEncode(entity.cloudantId), getWriteParam(), entity).then({ Response response ->
             checkWriteErrors("update", dbUri, entity, response)
 
             def cloudantResponse = marshaller.unmarshall(response.responseBody, CloudantResponse)
@@ -114,7 +134,7 @@ class CloudantClientImpl implements CloudantClientInternal {
             // force update cloudantId
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
-            return executeRequest(dbUri, HttpMethod.DELETE, urlEncode(entity.cloudantId), ['rev': entity.cloudantRev], null).then({ Response response ->
+            return executeRequest(dbUri, HttpMethod.DELETE, urlEncode(entity.cloudantId), getWriteParam(['rev': entity.cloudantRev]), null).then({ Response response ->
                 checkWriteErrors("delete", dbUri, entity, response)
                 return Promise.pure(null);
             })
@@ -440,6 +460,10 @@ class CloudantClientImpl implements CloudantClientInternal {
 
             throw new CloudantException("Failed to $verb object to Cloudant, error: $cloudantError.error," +
                     " reason: $cloudantError.reason")
+        }
+        if (response.statusCode == HttpStatus.ACCEPTED.value()) {
+            // log the warning because subsequent GETs and GETs to views may fail.
+            logger.warn("Call $verb $dbUri for ${entity?.cloudantId} returned 202 ACCEPTED.")
         }
     }
 

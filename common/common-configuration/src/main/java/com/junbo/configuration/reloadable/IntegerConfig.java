@@ -7,6 +7,7 @@
 package com.junbo.configuration.reloadable;
 
 import com.junbo.configuration.reloadable.impl.ReloadableConfig;
+import org.springframework.util.StringUtils;
 
 /**.
  * Java doc
@@ -14,6 +15,9 @@ import com.junbo.configuration.reloadable.impl.ReloadableConfig;
 public class IntegerConfig extends ReloadableConfig<Integer> {
     @Override
     protected Integer parseValue(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return null;
+        }
         return Integer.parseInt(value);
     }
 }
