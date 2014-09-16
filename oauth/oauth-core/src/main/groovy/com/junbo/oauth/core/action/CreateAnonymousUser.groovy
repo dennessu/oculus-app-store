@@ -12,7 +12,6 @@ import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise

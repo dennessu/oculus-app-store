@@ -128,6 +128,7 @@
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
                 <wf:action ref="createUserTosAgreement"/>
+                <wf:action ref="createUserCommunication" />
                 <wf:action ref="sendWelcomeEmail"/>
             </wf:transition>
             <wf:transition on="next2" to="EMAIL_VERIFY_REQUIRED_VIEW">
@@ -137,6 +138,7 @@
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
                 <wf:action ref="createUserTosAgreement"/>
+                <wf:action ref="createUserCommunication" />
                 <wf:action ref="sendAccountVerifyEmail"/>
             </wf:transition>
             <wf:transition on="login" to="LOGIN_VIEW" />
@@ -492,6 +494,11 @@
     <bean id="createUserTosAgreement" class="com.junbo.oauth.core.action.CreateUserTosAgreement">
         <property name="tosResource" ref="oauth_tosResource"/>
         <property name="userTosAgreementResource" ref="oauth_userTosAgreementResource"/>
+    </bean>
+
+    <bean id="createUserCommunication" class="com.junbo.oauth.core.action.CreateUserCommunication">
+        <property name="communicationResource" ref="oauth_communicationResource"/>
+        <property name="userCommunicationResource" ref="oauth_userCommunicationResource"/>
     </bean>
 
     <bean id="redirectToTFARequired" class="com.junbo.oauth.core.view.RedirectToPage">
