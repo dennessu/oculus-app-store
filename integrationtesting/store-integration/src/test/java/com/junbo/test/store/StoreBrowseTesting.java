@@ -174,6 +174,29 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     @Test
+    public void testGetDeliveryVersionCodeNotFound() throws Exception {
+        // create user and sign in
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+        testDataProvider.signIn(userName);
+
+        // buy offers
+        String offerId;
+        if (offer_iap_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+        MakeFreePurchaseResponse response = testDataProvider.makeFreePurchase(offerId, null);
+        response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
+        ItemId itemId = response.getEntitlements().get(0).getItem();
+        // get delivery
+        testDataProvider.getDelivery(itemId, Integer.MAX_VALUE, 412);
+        assert Master.getInstance().getApiErrorMsg().contains("130.118");
+    }
+
+    @Test
     public void testGetDetailsNotAvailableInCountry() throws Exception {
         gotoToc();
         TestContext.getData().putHeader("oculus-geoip-country-code", "CN");

@@ -281,6 +281,7 @@ public class StoreBrowseValidationHelper {
             Binary binary = itemRevision.getBinaries().get(Platform);
             Assert.assertEquals(appDetails.getVersionString(), binary.getVersion());
             Assert.assertEquals(appDetails.getInstallationSize(), binary.getSize());
+            Assert.assertEquals(appDetails.getVersionCode(), binary.getMetadata() == null || binary.getMetadata().get("versionCode") == null ? null : binary.getMetadata().get("versionCode").asInt());
         }
         if (offerRevision.getCountries() != null && offerRevision.getCountries().get(country) != null) {
             if (offerRevision.getCountries() == null && offerRevision.getCountries().get(country) == null &&
@@ -320,6 +321,7 @@ public class StoreBrowseValidationHelper {
 
             Assert.assertEquals(revisionNote.getTitle(), historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getShortNotes());
             Assert.assertEquals(revisionNote.getDescription(), historyLocalProperties == null ? null :  historyLocalProperties.getReleaseNotes().getLongNotes());
+            Assert.assertEquals(revisionNote.getVersionCode(), historyBinary == null || historyBinary.getMetadata() == null || historyBinary.getMetadata().get("versionCode") == null ? null : historyBinary.getMetadata().get("versionCode").asInt());
             Assert.assertEquals(revisionNote.getVersionString(), historyBinary == null ? null : historyBinary.getVersion());
         }
     }

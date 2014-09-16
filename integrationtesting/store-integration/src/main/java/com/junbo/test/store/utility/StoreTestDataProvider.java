@@ -647,9 +647,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public DeliveryResponse getDelivery(ItemId itemId) throws Exception {
+        return getDelivery(itemId, null, 200);
+    }
+
+    public DeliveryResponse getDelivery(ItemId itemId, Integer desiredVersionCode, int expectedResponseCode) throws Exception {
         DeliveryRequest request = new DeliveryRequest();
         request.setItemId(itemId);
-        return storeClient.getDelivery(request);
+        request.setDesiredVersionCode(desiredVersionCode);
+        return storeClient.getDelivery(request, expectedResponseCode);
     }
 
     public ReviewsResponse getReviews(ItemId itemId, String cursor, Integer count) throws Exception {
