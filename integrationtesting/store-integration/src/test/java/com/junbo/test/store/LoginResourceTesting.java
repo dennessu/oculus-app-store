@@ -679,7 +679,7 @@ public class LoginResourceTesting extends BaseTestClass {
             oAuthClient.accessEmailVerifyLink(link);
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             ChallengeAnswer answer = new ChallengeAnswer();
             answer.setType(userProfileUpdateResponse.getChallenge().getType());
             answer.setPassword(RandomHelper.randomAlphabetic(10));

@@ -207,7 +207,7 @@ public class StoreTesting extends BaseTestClass {
         assert preparePurchaseResponse.getChallenge() != null;
         assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             com.junbo.common.error.Error appError = testDataProvider.preparePurchaseWithException(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "5678", null, false, 400, "130.108");
             assert appError != null;
