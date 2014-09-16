@@ -240,7 +240,7 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     private String getKey(CloudantDbUri dbUri, String id) {
-        return id + ":" + dbUri.dbName + ":" + dbUri.cloudantUri.dc
+        return id + ":" + dbUri.fullDbName + ":" + dbUri.cloudantUri.dc
     }
 
     private static Integer safeParseInt(String str) {

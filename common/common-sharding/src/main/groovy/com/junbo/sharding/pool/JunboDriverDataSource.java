@@ -5,6 +5,7 @@
  */
 package com.junbo.sharding.pool;
 
+import com.junbo.configuration.ConfigServiceManager;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.webflow.action.Action;
 import com.zaxxer.hikari.util.DriverDataSource;
@@ -27,6 +28,7 @@ import java.util.logging.Logger;
 public class JunboDriverDataSource implements DataSource {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(JunboDriverDataSource.class);
 
+    private static final String LOGIN_TIMEOUT_KEY = "common.db.loginTimeout";
     private DriverDataSource[] candidates;
     private PrintWriter logWriter;
 
@@ -48,9 +50,16 @@ public class JunboDriverDataSource implements DataSource {
 
         String hostsUrl = getHostsUrl(jdbcUrl);
 
+        String loginTimeout = ConfigServiceManager.instance().getConfigValue(LOGIN_TIMEOUT_KEY);
         for (int i = 0; i < hosts.length; i++) {
-            String hostUrl = jdbcUrl.replace(hostsUrl, hosts[i].getHost() + ":" + hosts[i].getPort());
-            candidates[i] = new DriverDataSource(hostUrl, properties, username, password);
+            String finalUrl = jdbcUrl.replace(hostsUrl, hosts[i].getHost() + ":" + hosts[i].getPort());
+
+            // quick and dirty, don't take existing jdbc url parameters into account
+            if (loginTimeout != null) {
+                finalUrl = finalUrl + "?loginTimeout=" + loginTimeout;
+            }
+
+            candidates[i] = new DriverDataSource(finalUrl, properties, username, password);
         }
     }
 
@@ -125,7 +134,7 @@ public class JunboDriverDataSource implements DataSource {
         return false;
     }
 
-    private static interface Func<I, O> {
+    static interface Func<I, O> {
         public O apply(I input) throws Exception;
     }
 

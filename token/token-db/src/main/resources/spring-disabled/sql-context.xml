@@ -10,7 +10,7 @@
     <context:annotation-config />
 
     <!--Data source has the database information -->
-    <bean id="tokenDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="tokenDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${token.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/token"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>

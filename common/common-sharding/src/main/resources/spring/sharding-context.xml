@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        ">
 
-    <bean id="shardingDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="shardingDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${sharding.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/sharding"/>
@@ -153,7 +153,7 @@
 
     <bean id="externalShardAlgorithm" class="com.junbo.sharding.DefaultShardByHashAlgorithm" />
 
-    <bean id="indexDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="indexDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${index.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/index"/>
