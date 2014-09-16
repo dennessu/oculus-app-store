@@ -108,7 +108,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             }
 
             return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(userAuthenticator.userId,
-                    userAuthenticator.type, userAuthenticator.externalId, Integer.MAX_VALUE, 0).then {
+                    userAuthenticator.type, userAuthenticator.externalId, 1, 0).then {
                 List<UserAuthenticator> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('externalId').exception()
@@ -144,7 +144,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             if (authenticator.externalId != oldAuthenticator.externalId
              || authenticator.type != oldAuthenticator.type) {
                 return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(authenticator.userId,
-                        authenticator.type, authenticator.externalId, Integer.MAX_VALUE, 0).then {
+                        authenticator.type, authenticator.externalId, 1, 0).then {
                     List<UserAuthenticator> existing ->
                         if (!CollectionUtils.isEmpty(existing)) {
                             throw AppCommonErrors.INSTANCE.fieldDuplicate('type or externalId').exception()

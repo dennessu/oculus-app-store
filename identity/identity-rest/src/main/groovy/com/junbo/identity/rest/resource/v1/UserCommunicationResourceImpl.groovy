@@ -202,9 +202,6 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
                     listOptions.communicationId, listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
             return userCommunicationRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
-        } else if (listOptions.communicationId != null) {
-            return userCommunicationRepository.searchByCommunicationId(listOptions.communicationId, listOptions.limit,
-                    listOptions.offset)
         } else {
             throw new IllegalArgumentException('Unsupported search operation.')
         }

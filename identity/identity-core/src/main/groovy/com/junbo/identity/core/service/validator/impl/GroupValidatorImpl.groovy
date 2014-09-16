@@ -107,7 +107,7 @@ class GroupValidatorImpl implements GroupValidator {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('organization').exception()
             }
 
-            return groupRepository.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Group existing ->
+            return groupRepository.searchByOrganizationIdAndName(group.organizationId, group.name, 1, 0).then { Group existing ->
                 if (existing != null) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
                 }

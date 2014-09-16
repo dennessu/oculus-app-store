@@ -35,6 +35,8 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
 
     private Integer minAnswerLength
     private Integer maxAnswerLength
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     @Override
     Promise<UserSecurityQuestion> validateForGet(UserId userId, UserSecurityQuestionId userSecurityQuestionId) {
@@ -113,7 +115,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
             }
             return Promise.pure(null)
         }.then {
-            return userSecurityQuestionRepository.searchByUserId(userId, Integer.MAX_VALUE, 0).then {
+            return userSecurityQuestionRepository.searchByUserId(userId, maximumFetchSize, 0).then {
                 List<UserSecurityQuestion> userSecurityQuestionList ->
                     if (!CollectionUtils.isEmpty(userSecurityQuestionList)) {
                         boolean exists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
@@ -178,7 +180,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
             }
 
             if (userSecurityQuestion.securityQuestion != oldUserSecurityQuestion.securityQuestion) {
-                return userSecurityQuestionRepository.searchByUserId(userId, Integer.MAX_VALUE, 0).then {
+                return userSecurityQuestionRepository.searchByUserId(userId, maximumFetchSize, 0).then {
                     List<UserSecurityQuestion> userSecurityQuestionList ->
                     boolean securityQuestionExists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
                         return (existing.securityQuestion == userSecurityQuestion.securityQuestion)
@@ -258,5 +260,10 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
     @Required
     void setMaxAnswerLength(Integer maxAnswerLength) {
         this.maxAnswerLength = maxAnswerLength
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }

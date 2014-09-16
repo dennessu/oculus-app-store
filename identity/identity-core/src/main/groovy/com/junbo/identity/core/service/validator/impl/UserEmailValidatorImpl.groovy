@@ -30,6 +30,8 @@ class UserEmailValidatorImpl implements PiiValidator {
     private EmailValidator emailValidator
     private UserPersonalInfoRepository userPersonalInfoRepository
     private UserRepository userRepository
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     @Override
     boolean handles(String type) {
@@ -78,7 +80,7 @@ class UserEmailValidatorImpl implements PiiValidator {
     private Promise<Void> checkAdvanceUserEmail(Email email) {
         // 2.	User’s default email is required to be globally unique - no two users can use the same email as their default email.
         //      The first user set this email to default will get this email.
-        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase(Locale.ENGLISH), null, Integer.MAX_VALUE, 0).then {
+        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase(Locale.ENGLISH), null, maximumFetchSize, 0).then {
             List<UserPersonalInfo> existing ->
             if (CollectionUtils.isEmpty(existing)) {
                 return Promise.pure(null)
@@ -130,5 +132,10 @@ class UserEmailValidatorImpl implements PiiValidator {
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }

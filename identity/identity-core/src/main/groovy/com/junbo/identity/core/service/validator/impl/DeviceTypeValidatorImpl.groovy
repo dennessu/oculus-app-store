@@ -117,7 +117,7 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
         }
 
         return checkBasicDeviceType(deviceType).then {
-            return deviceTypeRepository.searchByDeviceTypeCode(deviceType.typeCode, Integer.MAX_VALUE, 0).then {
+            return deviceTypeRepository.searchByDeviceTypeCode(deviceType.typeCode, 1, 0).then {
                 List<DeviceType> deviceTypeList ->
                     if (!CollectionUtils.isEmpty(deviceTypeList)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('typeCode').exception()

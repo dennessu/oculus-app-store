@@ -32,6 +32,8 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
     private Integer currentCredentialVersion
 
     private CredentialHashFactory credentialHashFactory
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     @Override
     Promise<UserPassword> validateForGet(UserId userId, UserPasswordId userPasswordId) {
@@ -121,7 +123,7 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
             return Promise.pure(null)
         }
 
-        return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+        return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
             List<UserPassword> userPasswordList ->
             if (userPasswordList == null || userPasswordList.size() == 0 || userPasswordList.size() > 1) {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
@@ -182,5 +184,10 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
     @Required
     void setCredentialHashFactory(CredentialHashFactory credentialHashFactory) {
         this.credentialHashFactory = credentialHashFactory
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }

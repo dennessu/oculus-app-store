@@ -102,6 +102,10 @@ class UserResourceImpl implements UserResource {
     @Value('${identity.conf.mailEnable}')
     private Boolean identityMailSentEnable
 
+    // Any data that will use this data should be data issue, we may need to fix this.
+    @Value('${common.maximum.fetch.size}')
+    private Integer maximumFetchSize
+
     void setIdentityMailSentEnable(Boolean identityMailSentEnable) {
         this.identityMailSentEnable = identityMailSentEnable
     }
@@ -307,7 +311,7 @@ class UserResourceImpl implements UserResource {
 
             if (listOptions.username != null) {
                 String canonicalUsername = normalizeService.normalize(listOptions.username)
-                return userPersonalInfoRepository.searchByCanonicalUsername(canonicalUsername, Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                return userPersonalInfoRepository.searchByCanonicalUsername(canonicalUsername, maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
                     User user = null
                     return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
                         return userRepository.get(userPersonalInfo.userId).then { User existing ->
@@ -386,7 +390,7 @@ class UserResourceImpl implements UserResource {
             return Promise.pure(null)
         } else {
             // if username changes, will disable all passwords and pins. User needs to reset this.
-            return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+            return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
                 List<UserPassword> userPasswordList ->
                     if (CollectionUtils.isEmpty(userPasswordList)) {
                         return Promise.pure(null)
@@ -399,7 +403,7 @@ class UserResourceImpl implements UserResource {
                         return Promise.pure(null)
                     }
             }.then {
-                return userPinRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+                return userPinRepository.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
                     List<UserPin> userPinList ->
                         if (CollectionUtils.isEmpty(userPinList)) {
                             return Promise.pure(null)

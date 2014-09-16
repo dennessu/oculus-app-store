@@ -51,8 +51,8 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.userId == null && options.communicationId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('userId or communicationId').exception()
+        if (options.userId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         return Promise.pure(null)
@@ -66,8 +66,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             }
 
             return userCommunicationRepository.searchByUserIdAndCommunicationId(userCommunication.userId,
-                    userCommunication.communicationId, Integer.MAX_VALUE, 0
-            ).then { List<UserCommunication> existing ->
+                    userCommunication.communicationId, 1, 0).then { List<UserCommunication> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                 }
@@ -106,7 +105,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
 
             if (userCommunication.communicationId != oldUserCommunication.communicationId) {
                 return userCommunicationRepository.searchByUserIdAndCommunicationId(userCommunication.userId,
-                        userCommunication.communicationId, Integer.MAX_VALUE, 0).then { List<UserCommunication> existing ->
+                        userCommunication.communicationId, 1, 0).then { List<UserCommunication> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                     }
