@@ -627,6 +627,40 @@ public class TestPutOfferRevision extends BaseTestClass {
         offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
     }
 
+    @Property(
+            priority = Priority.BVT,
+            features = "Put v1/offer-revisions/{offerRevisionId}",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test put offer revision valid and invalid scenarios",
+            steps = {
+                    "1. Prepare a default offer revision",
+                    "2. Put the offer revision with corrected fields values",
+                    "3. Verify the action could be successful"
+            }
+    )
+    @Test
+    public void testPutOfferRevisionToObsolete() throws Exception {
+        prepareCatalogAdminToken();
+
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
+
+        item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        releaseItem(item1);
+        offer1 = offerService.postDefaultOffer(organizationId);
+
+        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+        String revisionId = offerRevision1.getRevisionId();
+
+        //obsolete a draft offer revision -- should fail;
+        offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
+        verifyExpectedFailure(revisionId, offerRevision1, 412);
+
+    }
+
     private void verifyExpectedFailure(String offerRevisionId, OfferRevision offerRevision) throws Exception {
         verifyExpectedFailure(offerRevisionId, offerRevision, 400);
     }
