@@ -450,7 +450,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public ItemAttribute getItemAttribute(String itemAttributeId) throws Exception {
         ItemAttribute itemAttribute = Master.getInstance().getItemAttribute(itemAttributeId);
         if (itemAttribute == null) {
-            itemAttribute = itemAttributeClient.getItemAttribute(itemAttributeId);
+            itemAttribute = itemAttributeClient.getItemAttribute(itemAttributeId, 0, false);
         }
         return itemAttribute;
     }
@@ -458,7 +458,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public OfferAttribute getOfferAttribute(String offerAttributeId) throws Exception {
         OfferAttribute offerAttribute = Master.getInstance().getOfferAttribute(offerAttributeId);
         if (offerAttribute == null) {
-            offerAttribute = offerAttributeClient.getOfferAttribute(offerAttributeId);
+            offerAttribute = offerAttributeClient.getOfferAttribute(offerAttributeId, 0, false);
         }
         return offerAttribute;
     }
@@ -647,9 +647,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public DeliveryResponse getDelivery(ItemId itemId) throws Exception {
+        return getDelivery(itemId, null, 200);
+    }
+
+    public DeliveryResponse getDelivery(ItemId itemId, Integer desiredVersionCode, int expectedResponseCode) throws Exception {
         DeliveryRequest request = new DeliveryRequest();
         request.setItemId(itemId);
-        return storeClient.getDelivery(request);
+        request.setDesiredVersionCode(desiredVersionCode);
+        return storeClient.getDelivery(request, expectedResponseCode);
     }
 
     public ReviewsResponse getReviews(ItemId itemId, String cursor, Integer count) throws Exception {

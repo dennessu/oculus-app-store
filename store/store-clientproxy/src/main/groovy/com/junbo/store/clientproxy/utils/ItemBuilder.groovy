@@ -69,7 +69,7 @@ class ItemBuilder {
         result.creator = developer?.name
         result.self = caseyItem?.self
         result.images = buildImages(caseyItem?.images, caseyItem?.self)
-        result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext.country.getId().value)
+        result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext)
         result.offer = buildOffer(caseyOffer, apiContext)
         result.aggregatedRatings = aggregatedRatings
         return result
@@ -130,7 +130,7 @@ class ItemBuilder {
         Binary binary = itemRevision?.binaries?.get(Platform.ANDROID.value)
         result.contentRating = null
         result.installationSize = binary?.size
-        result.versionCode = null // todo set the version code
+        result.versionCode = getVersionCode(binary)
         result.versionString = binary?.version
         result.releaseDate = itemData.offer?.offerRevision?.getCountries()?.get(apiContext.country.getId().value)?.releaseDate
         result.revisionNotes = [buildRevisionNote(itemRevisionLocaleProperties?.releaseNotes, binary, itemData.offer?.offerRevision?.countries?.get(apiContext.country.getId().value)?.releaseDate)]
@@ -174,12 +174,14 @@ class ItemBuilder {
         return result
     }
 
-    private AppDetails buildAppDetails(CaseyOffer caseyOffer, CaseyItem caseyItem, Organization publisher, Organization developer, String country) {
+    private AppDetails buildAppDetails(CaseyOffer caseyOffer, CaseyItem caseyItem, Organization publisher, Organization developer, ApiContext apiContext) {
+        String country = apiContext.country.getId().value
         AppDetails appDetails = new AppDetails()
         appDetails.packageName = caseyItem?.packageName
-        Binary binary = caseyItem?.binaries?.get(Platform.ANDROID.value)
+        Binary binary = caseyItem?.binaries?.get(apiContext.platform.value)
         appDetails.installationSize = binary?.size
-        appDetails.versionCode = null // todo set the version code
+        appDetails.versionCode = getVersionCode(binary)
+
         appDetails.versionString = binary?.version
         appDetails.releaseDate = caseyOffer?.regions?.get(country)?.releaseDate
         appDetails.revisionNotes = [buildRevisionNote(caseyItem?.releaseNotes, binary, appDetails.releaseDate)]
@@ -205,7 +207,7 @@ class ItemBuilder {
 
     private RevisionNote buildRevisionNote(RevisionNotes revisionNotes, Binary binary, Date releaseDate) {
         return new RevisionNote(
-                versionCode: null as Integer, // todo fill version code
+                versionCode: getVersionCode(binary),
                 releaseDate: releaseDate,
                 versionString: binary?.version,
                 title: revisionNotes?.shortNotes,
@@ -269,5 +271,9 @@ class ItemBuilder {
             return null
         }
         return dimension
+    }
+
+    public Integer getVersionCode(Binary binary) {
+        return binary?.getMetadata()?.get('versionCode')?.asInt()
     }
 }

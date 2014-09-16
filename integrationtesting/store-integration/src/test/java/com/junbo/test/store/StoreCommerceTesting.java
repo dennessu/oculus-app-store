@@ -7,10 +7,10 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.order.spec.model.Order;
-import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.browse.LibraryResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
@@ -102,7 +102,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store commerce",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test add new credit card with invalid billing address",
             steps = {
                     "1. Create user",
@@ -168,10 +168,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
 
-        testDataProvider.CreateStoredValue("###123", null, 400);
+        testDataProvider.CreateStoredValue("###123", null, 412);
 
-        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
-        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+        assert Master.getInstance().getApiErrorMsg().contains("Currency Not Found");
+        assert Master.getInstance().getApiErrorMsg().contains("131.123");
 
         testDataProvider.CreateStoredValue(null, null, 400);
 
@@ -760,10 +760,9 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert Master.getInstance().getApiErrorMsg().contains("Duplicate Purchase.");
         assert Master.getInstance().getApiErrorMsg().contains("133.146");
 
-        //EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
-       // assert entitlementsResponse.getEntitlements().size() == 1;
-
-       // validationHelper.verifyEntitlementResponse(entitlementsResponse, offerId);
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
+        assert libraryResponse.getItems().size() == 1;
+        validationHelper.verifyLibraryResponse(libraryResponse, offerId);
 
     }
 
@@ -927,11 +926,11 @@ public class StoreCommerceTesting extends BaseTestClass {
             component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
-            description = "Test get new user's entitlement",
+            description = "Test get new user's library",
             steps = {
                     "1. Create new user and sign in",
-                    "2. Get entitlements",
-                    "3. Verify no entitlements",
+                    "2. Get library",
+                    "3. Verify no libraries",
             }
     )
     @Test
@@ -941,8 +940,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         String userName = authTokenResponse.getUsername();
         testDataProvider.signIn(userName);
 
-        //EntitlementsGetResponse response = testDataProvider.getEntitlement();
-        //assert response.getEntitlements().size() == 0;
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
+        assert libraryResponse.getItems().size() == 0;
     }
 
 }

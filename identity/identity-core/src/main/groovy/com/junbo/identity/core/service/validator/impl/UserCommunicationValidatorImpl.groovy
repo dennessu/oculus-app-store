@@ -51,8 +51,8 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.userId == null && options.communicationId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('userId or communicationId').exception()
+        if (options.userId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         return Promise.pure(null)

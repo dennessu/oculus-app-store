@@ -11,7 +11,7 @@
 
     <!--Data source has the database information -->
     <!--Data source has the database information -->
-    <bean id="subscriptionDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="subscriptionDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${subscription.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/subscription"/>

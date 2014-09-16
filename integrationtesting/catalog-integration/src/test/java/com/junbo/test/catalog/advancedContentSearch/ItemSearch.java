@@ -124,8 +124,8 @@ public class ItemSearch extends BaseTestClass {
         itemRevisionLocaleProperties.setReleaseNotes(releaseNotes);
         itemRevisionLocaleProperties.setLongDescription("longDescription_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         itemRevisionLocaleProperties.setShortDescription("shortDescription_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+
         HashMap<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
-        locales.put("default", itemRevisionLocaleProperties);
         locales.put(defaultLocale, itemRevisionLocaleProperties);
         itemRevisionPrepared.setLocales(locales);
 

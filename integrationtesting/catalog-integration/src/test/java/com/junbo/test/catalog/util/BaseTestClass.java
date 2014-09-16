@@ -106,6 +106,16 @@ public class BaseTestClass extends TestClass {
         return offerRevision;
     }
 
+    protected OfferRevision obsoleteOfferRevision(OfferRevision offerRevision) throws Exception {
+        this.prepareCatalogAdminToken();
+
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
+        //make the offer revision OBSOLETE
+        offerRevision.setStatus(CatalogEntityStatus.OBSOLETE.getEntityStatus());
+        return offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+    }
+
     protected void verifyGetItemsScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... itemId) throws Exception {
 
         ItemService itemService = ItemServiceImpl.instance();

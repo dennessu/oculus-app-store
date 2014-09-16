@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.offerRevision;
 
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.test.catalog.OfferRevisionService;
@@ -74,5 +75,35 @@ public class TestDeleteOfferRevision extends BaseTestClass {
         Assert.assertNotNull(offerRevisionGet);
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Delete v1/offer-revisions/{offerRevisionId}",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test delete an offer revision by offer revision Id whose status is obsolete",
+            steps = {
+                    "1. Prepare an offer revision",
+                    "2. Delete it and verify can't search it",
+                    "3. Post another offer revision, attach to an offer and release it",
+                    "4. Delete the offer revision",
+                    "5. Verify the currentRevisionId of offer is null"
+            }
+    )
+    @Test
+    public void testDeleteObsoleteOfferRevision() throws Exception {
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
+        //Prepare an offer revision
+        OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision();
+        offerRevision = releaseOfferRevision(offerRevision);
+        offerRevision = obsoleteOfferRevision(offerRevision);
+
+        //delete obsolete offer revision should be prohibited.
+        offerRevisionService.deleteOfferRevision(offerRevision.getRevisionId(), 412);
+        OfferRevision offerRevisionGet = offerRevisionService.getOfferRevision(offerRevision.getRevisionId());
+        Assert.assertNotNull(offerRevisionGet);
+        Assert.assertEquals(offerRevisionGet.getStatus(), CatalogEntityStatus.OBSOLETE.name());
+    }
 }
 

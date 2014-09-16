@@ -44,15 +44,34 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
     }
 
     public OfferAttribute getOfferAttribute(String attributeId) throws Exception {
-        return getOfferAttribute(attributeId, 200);
+        return getOfferAttribute(attributeId, null);
     }
 
-    public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception {
+    public OfferAttribute getOfferAttribute(String attributeId, String locale) throws Exception {
+        return getOfferAttribute(attributeId, locale, 200);
+    }
+
+    public OfferAttribute getOfferAttribute(String attributeId, String locale, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + attributeId;
+        if (locale != null && locale.length() > 0) {
+            url = url.concat(String.format("?locale=%s", locale));
+        }
+        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
+        OfferAttribute offerAttribute = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
+        Master.getInstance().addOfferAttribute(attributeId, offerAttribute);
+        return offerAttribute;
+    }
+
+    public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode, boolean isServiceScope) throws Exception {
         String url = catalogServerURL + "/" + attributeId;
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
         OfferAttribute offerAttribute = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
         Master.getInstance().addOfferAttribute(attributeId, offerAttribute);
         return offerAttribute;
+    }
+
+    public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception {
+        return getOfferAttribute(attributeId, expectedResponseCode, isServiceScope);
     }
 
     public Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara) throws Exception {

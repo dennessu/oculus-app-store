@@ -55,7 +55,7 @@ public class TestDeletePriceTier extends BaseTestClass {
 
         //Try to get the pricetier, expected status code is 404.
         try {
-            pricetierService.getPriceTier(pricetier.getId(), 404);
+            pricetierService.getPriceTier(pricetier.getId(), null, 404);
             Assert.fail("Couldn't find the deleted pricetier");
         }
         catch (Exception ex)

@@ -29,7 +29,10 @@
                 "href": "http://static.oculusvr.com/apk-tests/RocketToss.apk",
                 "size": 13937898,
                 "version": "1",
-                "md5": "eb8014a72ea56d6b308e35b9f0d36cd1"
+                "md5": "eb8014a72ea56d6b308e35b9f0d36cd1",
+                "metadata": {
+                    "versionCode": 1
+                }
             }
         },
         "platforms": ["ANDROID"],

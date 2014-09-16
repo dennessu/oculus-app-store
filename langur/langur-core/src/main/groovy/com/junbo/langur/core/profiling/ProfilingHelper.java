@@ -132,13 +132,13 @@ public class ProfilingHelper {
         }
 
         void beginScope(String message, Object... args) {
-            profileOutput.append("[|");
             appendRow(message, args);
+            profileOutput.append("[|");
         }
 
         void endScope(String message, Object... args) {
-            appendRow(message, args);
             profileOutput.append("]|");
+            appendRow(message, args);
         }
     }
 }

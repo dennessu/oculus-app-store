@@ -63,7 +63,7 @@ public class postCredentialAttempts {
         Identity.UserCredentialPostDefault(user.getId(), null, password);
 
         String newPassword = IdentityModel.DefaultPassword();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
             UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
@@ -233,11 +233,11 @@ public class postCredentialAttempts {
 
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(loginName.getUserName(), IdentityModel.DefaultPassword());
             response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                     JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
-            if (i < 3) {
+            if (i < 5) {
                 Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
                 String errorMessage = "User Password Incorrect";
                 Validator.Validate("validate response error message", true,
@@ -375,7 +375,7 @@ public class postCredentialAttempts {
         Identity.UserCredentialPostDefault(user.getId(), null, password);
         String newPassword = IdentityModel.DefaultPassword();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
             UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(

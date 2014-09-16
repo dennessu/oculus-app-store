@@ -12,7 +12,7 @@
 
     <bean id="testHikariDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls"
-                  value="jdbc:postgresql://154.179.137.100|54.179.137.100:6543/postgres?loginTimeout=5;public;0..255;dc0"/>
+                  value="jdbc:postgresql://154.179.137.100|54.179.137.100:6543/postgres;public;0..255;dc0"/>
 
         <property name="uniqueName" value="jdbc/sharding"/>
         <property name="className" value="com.junbo.sharding.hibernate.JunboDataSource"/>

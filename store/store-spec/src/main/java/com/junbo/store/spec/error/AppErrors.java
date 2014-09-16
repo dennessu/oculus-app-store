@@ -79,4 +79,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "117", message = "Section Not Found.")
     AppError sectionNotFound();
+
+    @ErrorDef(httpStatusCode = 412, code = "118", message = "Item Version Code Not Found.")
+    AppError itemVersionCodeNotFound();
 }

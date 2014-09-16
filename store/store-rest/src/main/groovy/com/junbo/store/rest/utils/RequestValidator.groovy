@@ -214,13 +214,8 @@ class RequestValidator {
                             if (appErrorUtils.isAppError(t, ErrorCodes.Identity.UserPasswordIncorrect)) {
                                throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                             }
-                            if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
-                                AppErrorException appError = (AppErrorException)t
-                                if (!CollectionUtils.isEmpty(appError.error.error().getDetails())
-                                 && !StringUtils.isEmpty(appError.error.error().getDetails().get(0).getReason())
-                                 && appError.error.error().getDetails().get(0).getReason().contains('User reaches maximum allowed retry count')) {
-                                    throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-                                }
+                            if (appErrorUtils.isAppError(t, ErrorCodes.Identity.MaximumLoginAttempt)) {
+                                throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                             }
 
                             appErrorUtils.throwUnknownError('updateUserProfile', t)

@@ -5,11 +5,14 @@
  */
 package com.junbo.test.catalog.offerAttribute;
 
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
 import com.junbo.test.catalog.OfferAttributeService;
+import com.junbo.test.catalog.enums.LocaleAccuracy;
 import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
@@ -20,6 +23,7 @@ import org.testng.Assert;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jason
@@ -57,7 +61,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
         //verify the invalid Id scenario
         String invalidId = "0L";
         try {
-            offerAttributeService.getOfferAttribute(invalidId, 404);
+            offerAttributeService.getOfferAttribute(invalidId, null, 404);
             Assert.fail("Shouldn't get offer attribute with wrong id");
         } catch (Exception e) {
             logger.logInfo("Expected exception: couldn't get offer attribute  with wrong id");
@@ -175,6 +179,128 @@ public class TestGetOfferAttribute extends BaseTestClass {
         listOfferAttributeId.add("0000000001");
         paraMap.put("attributeId", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 0);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Get v1/offer-attributes?locale=",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test Get offer attribute(s) with locale option",
+            steps = {
+                    "1. Prepare 3 offer attributes",
+                    "2. Get the offer attributes with locale option"
+            }
+    )
+    @Test
+    public void testGetOfferAttributeWithLocale() throws Exception {
+        prepareCatalogAdminToken();
+
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> listOfferAttributeId = new ArrayList<>();
+        List<String> listType = new ArrayList<>();
+        List<String> listLocale = new ArrayList<>();
+
+        //Prepare some offer attributes
+        OfferAttribute offerAttribute1 = offerAttributeService.postDefaultOfferAttribute();
+        OfferAttribute offerAttribute2 = offerAttributeService.postDefaultOfferAttribute();
+        OfferAttribute offerAttribute3 = offerAttributeService.postDefaultOfferAttribute();
+
+        OfferAttribute offerAttributeRtn1 = offerAttributeService.getOfferAttribute(offerAttribute1.getId());
+        Assert.assertEquals(offerAttributeRtn1.getLocaleAccuracy(), LocaleAccuracy.HIGH.name());
+
+        Map<String, SimpleLocaleProperties> offerAttributeProperty = offerAttributeRtn1.getLocales();
+
+        offerAttributeRtn1 = offerAttributeService.getOfferAttribute(offerAttribute1.getId(), "en_US");
+        Assert.assertEquals(offerAttributeRtn1.getLocaleAccuracy(), LocaleAccuracy.HIGH.name());
+
+        offerAttributeRtn1 = offerAttributeService.getOfferAttribute(offerAttribute1.getId(), "en_CA");
+        Assert.assertEquals(offerAttributeRtn1.getLocaleAccuracy(), LocaleAccuracy.LOW.name());
+
+        SimpleLocaleProperties properties = new SimpleLocaleProperties();
+        properties.setName(RandomFactory.getRandomStringOfAlphabet(10));
+        offerAttributeProperty.put("zh_CN", properties);
+        offerAttributeRtn1.setLocales(offerAttributeProperty);
+
+        offerAttributeService.updateOfferAttribute(offerAttribute1.getId(), offerAttributeRtn1);
+        offerAttributeRtn1 = offerAttributeService.getOfferAttribute(offerAttribute1.getId(), "zh_CN");
+        Assert.assertEquals(offerAttributeRtn1.getLocaleAccuracy(), LocaleAccuracy.MEDIUM.name());
+
+        listOfferAttributeId.add(offerAttribute1.getId());
+        listOfferAttributeId.add(offerAttribute2.getId());
+        listOfferAttributeId.add(offerAttribute3.getId());
+        paraMap.put("attributeId", listOfferAttributeId);
+
+        Results<OfferAttribute> offerAttributeResults = offerAttributeService.getOfferAttributes(paraMap);
+        Assert.assertEquals(offerAttributeResults.getItems().size(), 3);
+        Assert.assertEquals(offerAttributeResults.getItems().get(0).getLocaleAccuracy(), LocaleAccuracy.HIGH.name());
+        Assert.assertEquals(offerAttributeResults.getItems().get(1).getLocaleAccuracy(), LocaleAccuracy.HIGH.name());
+        Assert.assertEquals(offerAttributeResults.getItems().get(2).getLocaleAccuracy(), LocaleAccuracy.HIGH.name());
+
+        listLocale.add("en_US");
+        paraMap.put("locale", listLocale);
+
+        offerAttributeResults = offerAttributeService.getOfferAttributes(paraMap);
+        Assert.assertEquals(offerAttributeResults.getItems().size(), 3);
+        Assert.assertEquals(offerAttributeResults.getItems().get(0).getLocaleAccuracy(), LocaleAccuracy.HIGH.name());
+        Assert.assertEquals(offerAttributeResults.getItems().get(1).getLocaleAccuracy(), LocaleAccuracy.HIGH.name());
+        Assert.assertEquals(offerAttributeResults.getItems().get(2).getLocaleAccuracy(), LocaleAccuracy.HIGH.name());
+
+        listLocale.clear();
+        listLocale.add("zh_CN");
+        paraMap.put("locale", listLocale);
+
+        listOfferAttributeId.clear();
+        listOfferAttributeId.add(offerAttribute1.getId());
+        paraMap.put("attributeId", listOfferAttributeId);
+
+        offerAttributeResults = offerAttributeService.getOfferAttributes(paraMap);
+        Assert.assertEquals(offerAttributeResults.getItems().size(), 1);
+        Assert.assertEquals(offerAttributeResults.getItems().get(0).getLocaleAccuracy(), LocaleAccuracy.MEDIUM.name());
+
+        listOfferAttributeId.clear();
+        listOfferAttributeId.add(offerAttribute2.getId());
+        listOfferAttributeId.add(offerAttribute3.getId());
+        paraMap.put("attributeId", listOfferAttributeId);
+
+        offerAttributeResults = offerAttributeService.getOfferAttributes(paraMap);
+        Assert.assertEquals(offerAttributeResults.getItems().size(), 2);
+        Assert.assertEquals(offerAttributeResults.getItems().get(0).getLocaleAccuracy(), LocaleAccuracy.LOW.name());
+        Assert.assertEquals(offerAttributeResults.getItems().get(1).getLocaleAccuracy(), LocaleAccuracy.LOW.name());
+
+        listLocale.clear();
+        listLocale.add("es_ES");
+        paraMap.put("locale", listLocale);
+        listOfferAttributeId.add(offerAttribute1.getId());
+        paraMap.put("attributeId", listOfferAttributeId);
+
+        offerAttributeResults = offerAttributeService.getOfferAttributes(paraMap);
+        Assert.assertEquals(offerAttributeResults.getItems().size(), 3);
+        Assert.assertEquals(offerAttributeResults.getItems().get(0).getLocaleAccuracy(), LocaleAccuracy.LOW.name());
+        Assert.assertEquals(offerAttributeResults.getItems().get(1).getLocaleAccuracy(), LocaleAccuracy.LOW.name());
+        Assert.assertEquals(offerAttributeResults.getItems().get(2).getLocaleAccuracy(), LocaleAccuracy.LOW.name());
+
+        listOfferAttributeId.clear();
+        listOfferAttributeId.add(offerAttribute2.getId());
+        listOfferAttributeId.add(offerAttribute3.getId());
+        paraMap.put("attributeId", listOfferAttributeId);
+
+        listType.add(CatalogOfferAttributeType.CATEGORY.name());
+        paraMap.put("type", listType);
+
+        offerAttributeResults = offerAttributeService.getOfferAttributes(paraMap);
+        Assert.assertEquals(offerAttributeResults.getItems().size(), 2);
+        Assert.assertEquals(offerAttributeResults.getItems().get(0).getLocaleAccuracy(), LocaleAccuracy.LOW.name());
+        Assert.assertEquals(offerAttributeResults.getItems().get(1).getLocaleAccuracy(), LocaleAccuracy.LOW.name());
+
+        listLocale.clear();
+        listLocale.add("en_US");
+        paraMap.put("locale", listLocale);
+        offerAttributeResults = offerAttributeService.getOfferAttributes(paraMap);
+        Assert.assertEquals(offerAttributeResults.getItems().size(), 2);
+        Assert.assertEquals(offerAttributeResults.getItems().get(0).getLocaleAccuracy(), LocaleAccuracy.HIGH.name());
+        Assert.assertEquals(offerAttributeResults.getItems().get(1).getLocaleAccuracy(), LocaleAccuracy.HIGH.name());
     }
 
     private void verifyGetOfferAttributes(HashMap<String, List<String>> paraMap, int expectedRtnSize, OfferAttribute... OfferAttributes)

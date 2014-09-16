@@ -312,7 +312,7 @@ class CheckoutTests(ut.TestBase):
                         }
                     },
                     "legalInformation": "legalInformation",
-                    "name": "testItem_CartCheckout_Consumable1",
+                    "name": "utItem_CartCheckout_Consumable1",
                     "copyright": "copyright",
                     "knownBugs": "knownBugs",
                     "color": "black",
@@ -436,7 +436,7 @@ class CheckoutTests(ut.TestBase):
                         }
                     },
                     "shortDescription": "short description",
-                    "name": "testOffer_CartCheckout_Consumable1",
+                    "name": "utOffer_CartCheckout_Consumable1",
                     "videos": [
                         {
                             "id": "id of the video",

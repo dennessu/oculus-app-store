@@ -13,6 +13,8 @@ import com.junbo.common.cloudant.model.CloudantResponse
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CloudantId
 import com.junbo.common.util.Utils
+import com.junbo.configuration.reloadable.IntegerConfig
+import com.junbo.configuration.reloadable.impl.ReloadableConfigFactory
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.promise.Promise
 import com.ning.http.client.Realm
@@ -48,29 +50,49 @@ class CloudantClientImpl implements CloudantClientInternal {
     private static JunboAsyncHttpClient asyncHttpClient = JunboAsyncHttpClient.instance()
     private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
 
+    private static IntegerConfig writeCount = ReloadableConfigFactory.create("[common.cloudant.writes]", IntegerConfig.class)
+    private static IntegerConfig acceptedRetryCount = ReloadableConfigFactory.create("[common.cloudant.retries]", IntegerConfig.class)
+    private static IntegerConfig acceptedRetryInterval = ReloadableConfigFactory.create("[common.cloudant.retriesInterval]", IntegerConfig.class)
+
+    private static Map<String, String> getWriteParam(Map<String, String> initial = null) {
+        Integer writeCount = writeCount.get()
+        if (initial == null && writeCount == null) {
+            return Collections.emptyMap()
+        }
+
+        if (initial == null) {
+            initial = [:]
+        }
+        if (writeCount != null) {
+            initial.put("w", writeCount.intValue().toString())
+        }
+        return initial
+    }
+
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
         if (entity.getId() != null) {
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
         }
-        return executeRequest(dbUri, HttpMethod.POST, '', [:], entity).then({ Response response ->
-            checkWriteErrors("create", dbUri, entity, response)
 
-            def cloudantResponse = marshaller.unmarshall(response.responseBody, CloudantResponse)
+        return executeRequest(dbUri, HttpMethod.POST, '', getWriteParam(), entity).then({ Response response ->
+            return checkWriteErrors("create", dbUri, entity, response).then {
+                def cloudantResponse = marshaller.unmarshall(response.responseBody, CloudantResponse)
 
-            Assert.isTrue(cloudantResponse.ok)
-            entity.cloudantId = cloudantResponse.id
-            entity.cloudantRev = cloudantResponse.revision
+                Assert.isTrue(cloudantResponse.ok)
+                entity.cloudantId = cloudantResponse.id
+                entity.cloudantRev = cloudantResponse.revision
 
-            return Promise.pure(entity)
+                return Promise.pure(entity)
+            }
         })
     }
 
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantGet(CloudantDbUri dbUri, Class<T> entityClass, String id) {
         CloudantId.validate(id)
-        return executeRequest(dbUri, HttpMethod.GET, urlEncode(id), [:], null).then({ Response response ->
+        return executeRequest(dbUri, HttpMethod.GET, urlEncode(id), Collections.emptyMap(), null).then({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
@@ -94,17 +116,17 @@ class CloudantClientImpl implements CloudantClientInternal {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
-        return executeRequest(dbUri, HttpMethod.PUT, urlEncode(entity.cloudantId), [:], entity).then({ Response response ->
-            checkWriteErrors("update", dbUri, entity, response)
+        return executeRequest(dbUri, HttpMethod.PUT, urlEncode(entity.cloudantId), getWriteParam(), entity).then({ Response response ->
+            return checkWriteErrors("update", dbUri, entity, response).then {
+                def cloudantResponse = marshaller.unmarshall(response.responseBody, CloudantResponse)
 
-            def cloudantResponse = marshaller.unmarshall(response.responseBody, CloudantResponse)
+                Assert.isTrue(cloudantResponse.ok)
+                Assert.isTrue(entity.cloudantId.equals(cloudantResponse.id))
 
-            Assert.isTrue(cloudantResponse.ok)
-            Assert.isTrue(entity.cloudantId.equals(cloudantResponse.id))
+                entity.cloudantRev = cloudantResponse.revision
 
-            entity.cloudantRev = cloudantResponse.revision
-
-            return Promise.pure(entity)
+                return Promise.pure(entity)
+            }
         })
     }
 
@@ -114,9 +136,8 @@ class CloudantClientImpl implements CloudantClientInternal {
             // force update cloudantId
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
-            return executeRequest(dbUri, HttpMethod.DELETE, urlEncode(entity.cloudantId), ['rev': entity.cloudantRev], null).then({ Response response ->
-                checkWriteErrors("delete", dbUri, entity, response)
-                return Promise.pure(null);
+            return executeRequest(dbUri, HttpMethod.DELETE, urlEncode(entity.cloudantId), getWriteParam(['rev': entity.cloudantRev]), null).then({ Response response ->
+                return checkWriteErrors("delete", dbUri, entity, response)
             })
         }
         return Promise.pure(null);
@@ -409,7 +430,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         return URLEncoder.encode(id, "UTF-8")
     }
 
-    private static void checkViewErrors(String verb, CloudantDbUri dbUri, String viewName, Response response) {
+    private void checkViewErrors(String verb, CloudantDbUri dbUri, String viewName, Response response) {
         if (response.statusCode != HttpStatus.OK.value()) {
             CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
 
@@ -427,7 +448,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         }
     }
 
-    private static void checkWriteErrors(String verb, CloudantDbUri dbUri, CloudantEntity entity, Response response) {
+    private Promise<Void> checkWriteErrors(String verb, CloudantDbUri dbUri, CloudantEntity entity, Response response) {
         if (response.statusCode != HttpStatus.OK.value() &&
                 response.statusCode != HttpStatus.CREATED.value() &&
                 response.statusCode != HttpStatus.ACCEPTED.value()) {
@@ -441,6 +462,53 @@ class CloudantClientImpl implements CloudantClientInternal {
             throw new CloudantException("Failed to $verb object to Cloudant, error: $cloudantError.error," +
                     " reason: $cloudantError.reason")
         }
+        if (response.statusCode == HttpStatus.ACCEPTED.value()) {
+            // log the warning because subsequent GETs and GETs to views may fail.
+            logger.warn("Call $verb $dbUri for ${entity?.cloudantId} returned 202 ACCEPTED.")
+
+            Integer localWriteCount = writeCount.get()
+            if (entity == null || entity.cloudantId == null || writeCount == null) {
+                // no retry logic
+            } else {
+                // wait until the read is successful
+
+                int expectedReadResponse = HttpStatus.OK.value()
+                if ("delete".equalsIgnoreCase(verb)) {
+                    expectedReadResponse = HttpStatus.NOT_FOUND.value()
+                }
+
+                int retry = 0
+                Closure<Promise> retryFunc = null
+                retryFunc = {
+                    Thread.sleep(acceptedRetryInterval.get())
+                    logger.debug("Retrying GET for $dbUri for ${entity?.cloudantId} due to 202 Accepted response. Retry: $retry")
+                    ++retry
+                    if (retry > acceptedRetryCount.get()) {
+                        logger.warn("Retry count exceeded to wait for $expectedReadResponse response for $verb $dbUri for ${entity?.cloudantId} returned 202 ACCEPTED. Retry: $retry")
+                        return Promise.pure(null)
+                    }
+
+                    return executeRequest(dbUri, HttpMethod.GET, urlEncode(entity.cloudantId), ["r": localWriteCount.toString()], null).then({ Response retryResp ->
+                        logger.debug("Retried GET for $dbUri for ${entity?.cloudantId} due to 202 Accepted response. Current response: ${retryResp.statusCode}. Retry: $retry")
+                        if (retryResp.statusCode == expectedReadResponse) {
+                            logger.debug("Succeeded to wait for $expectedReadResponse response for $verb $dbUri for ${entity?.cloudantId} returned 202 ACCEPTED. Retry: $retry")
+                            return Promise.pure(null)
+                        } else {
+                            logger.warn("Failed to wait for $expectedReadResponse response for $verb $dbUri for ${entity?.cloudantId} returned 202 ACCEPTED. Retry: $retry")
+                            return retryFunc()
+                        }
+                    }).recover { Throwable t ->
+                        logger.error("Exception in waiting for $expectedReadResponse response for $verb $dbUri for ${entity?.cloudantId} returned 202 ACCEPTED. Retry: $retry", t)
+                        return retryFunc()
+                    }
+                }
+
+                return retryFunc()
+            }
+
+        }
+
+        return Promise.pure(null)
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

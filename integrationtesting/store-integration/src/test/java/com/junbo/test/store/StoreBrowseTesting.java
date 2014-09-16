@@ -61,8 +61,10 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     @BeforeClass(alwaysRun = true)
     public void setUp() throws Exception {
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+        if (serviceClientEnabled) {
+            oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+        }
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOG);
         storeBrowseValidationHelper = new StoreBrowseValidationHelper(testDataProvider);
 
         if (ConfigHelper.getSetting("explore.items.details.verifyall") != null) {
@@ -171,6 +173,44 @@ public class StoreBrowseTesting extends BaseTestClass {
         // get the item details
         DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId);
         verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+    }
+
+    @Test
+    public void testGetDetailsLocalesFallback() throws Exception {
+        gotoToc();
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_oculus_free1);
+        com.junbo.catalog.spec.model.offer.Offer catalogOffer = offerService.getOffer(offerId);
+        OfferRevision offerRevision = offerRevisionService.getOfferRevision(catalogOffer.getCurrentRevisionId());
+        Assert.assertEquals(offerRevision.getItems().size(), 1);
+        String itemId = offerRevision.getItems().get(0).getItemId();
+
+        // get the item details
+        TestContext.getData().putHeader("Accept-Language", "zh-CN");
+        DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId);
+        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+    }
+
+    @Test
+    public void testGetDeliveryVersionCodeNotFound() throws Exception {
+        // create user and sign in
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+        testDataProvider.signIn(userName);
+
+        // buy offers
+        String offerId;
+        if (offer_iap_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+        MakeFreePurchaseResponse response = testDataProvider.makeFreePurchase(offerId, null);
+        response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
+        ItemId itemId = response.getEntitlements().get(0).getItem();
+        // get delivery
+        testDataProvider.getDelivery(itemId, Integer.MAX_VALUE, 412);
+        assert Master.getInstance().getApiErrorMsg().contains("130.118");
     }
 
     @Test
@@ -395,11 +435,12 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         // get toc
         TocResponse response = testDataProvider.getToc();
-        validationHelper.verifyTocTosChallenge(response.getChallenge());
-
-        // accept the tos
-        AcceptTosResponse tosResponse = testDataProvider.acceptTos(response.getChallenge().getTos().getTosId());
-        Assert.assertEquals(tosResponse.getTos(), response.getChallenge().getTos().getTosId());
+        if (!tosDisabled) {
+            validationHelper.verifyTocTosChallenge(response.getChallenge());
+            // accept the tos
+            AcceptTosResponse tosResponse = testDataProvider.acceptTos(response.getChallenge().getTos().getTosId());
+            Assert.assertEquals(tosResponse.getTos(), response.getChallenge().getTos().getTosId());
+        }
 
         // get the first item in the first section
         return testDataProvider.getToc();
@@ -505,7 +546,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     private void verifyItem(Item item, GetItemMethod method, Boolean ownedByUser) throws Exception {
-        storeBrowseValidationHelper.verifyItem(item);
+        storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled);
         if (method == GetItemMethod.Details) {
             Assert.assertEquals(item.getOwnedByCurrentUser().booleanValue(), ownedByUser.booleanValue());
         } else if (method == GetItemMethod.Library || method == GetItemMethod.Purchase) {

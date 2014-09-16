@@ -43,7 +43,7 @@ if [[ -z "$ENV_PREFIX" ]]; then
   echo
 fi
 
-if [[ -z "SOURCETREE_HOME" ]]; then
+if [[ -z "$SOURCETREE_HOME" ]]; then
   echo -n 'SOURCETREE_HOME: '
   read SOURCETREE_HOME
   export SOURCETREE_HOME

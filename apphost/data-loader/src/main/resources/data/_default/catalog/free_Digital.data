@@ -112,7 +112,10 @@
             "ANDROID": {
                 "href": "http://static.oculusvr.com/apk-tests/VRArcade.apk",
                 "version": "1.1",
-                "size": 1024
+                "size": 1024,
+                "metadata": {
+                    "versionCode": 1
+                }
             }
         }, 
         "downloadName": "download name", 
