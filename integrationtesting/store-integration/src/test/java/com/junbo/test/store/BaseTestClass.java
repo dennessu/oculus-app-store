@@ -51,6 +51,7 @@ public abstract class BaseTestClass {
     protected OfferAttributeService offerAttributeService;
     protected final ThreadLocal<ItemAttributeService> itemAttributeService = new ThreadLocal<>();
     protected OAuthService oAuthTokenService;
+    protected boolean tosDisabled = false;
     protected int listItemPageSize = 2;
 
     protected boolean serviceClientEnabled = false;
@@ -83,7 +84,9 @@ public abstract class BaseTestClass {
         item_digital_oculus_free1 = ConfigHelper.getSetting("testdata.item.digital.oculus.free1");
         item_digital_oculus_free2 = ConfigHelper.getSetting("testdata.item.digital.oculus.free2");
 
-
+        if (ConfigHelper.getSetting("test.tos.verify.disabled") != null) {
+            tosDisabled = Boolean.valueOf(ConfigHelper.getSetting("test.tos.verify.disabled"));
+        }
         if (ConfigHelper.getSetting("test.oauth.service.client.enabled") != null) {
             serviceClientEnabled = Boolean.valueOf(ConfigHelper.getSetting("test.oauth.service.client.enabled"));
         }

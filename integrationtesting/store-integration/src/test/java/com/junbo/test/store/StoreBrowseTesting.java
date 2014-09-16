@@ -420,11 +420,12 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         // get toc
         TocResponse response = testDataProvider.getToc();
-        validationHelper.verifyTocTosChallenge(response.getChallenge());
-
-        // accept the tos
-        AcceptTosResponse tosResponse = testDataProvider.acceptTos(response.getChallenge().getTos().getTosId());
-        Assert.assertEquals(tosResponse.getTos(), response.getChallenge().getTos().getTosId());
+        if (!tosDisabled) {
+            validationHelper.verifyTocTosChallenge(response.getChallenge());
+            // accept the tos
+            AcceptTosResponse tosResponse = testDataProvider.acceptTos(response.getChallenge().getTos().getTosId());
+            Assert.assertEquals(tosResponse.getTos(), response.getChallenge().getTos().getTosId());
+        }
 
         // get the first item in the first section
         return testDataProvider.getToc();
