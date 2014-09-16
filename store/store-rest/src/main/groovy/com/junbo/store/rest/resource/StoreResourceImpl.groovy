@@ -1,4 +1,5 @@
 package com.junbo.store.rest.resource.raw
+
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
@@ -11,7 +12,6 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
@@ -37,6 +37,7 @@ import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.store.clientproxy.FacadeContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
 import com.junbo.store.db.repo.TokenRepository
@@ -54,7 +55,6 @@ import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.model.token.Token
 import com.junbo.store.spec.resource.StoreResource
-import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
@@ -882,25 +882,6 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure(null)
             }
         }.then {
-            if (paymentInstrumentId != null) {
-                Instrument target = CollectionUtils.isEmpty(billingProfile.instruments) ? null : billingProfile.instruments.find { Instrument temp ->
-                    return temp.self == paymentInstrumentId
-                }
-
-                if (target == null) {
-                    return instrumentUtils.getInstrument(user, paymentInstrumentId).then { Instrument temp ->
-                        if (temp != null) {
-                            billingProfile.instruments.add(temp)
-                        }
-
-                        return Promise.pure(null)
-                    }
-                }
-
-                return Promise.pure(null)
-            }
-            return Promise.pure(null)
-        }.then {
             if (offer != null && offer.hasStoreValueItem) {
                 billingProfile.instruments.removeAll {Instrument instrument -> instrument.type == com.junbo.common.id.PIType.STOREDVALUE.name()}
                 billingProfile.paymentOptions.removeAll {PaymentOption paymentOption -> paymentOption.type == com.junbo.common.id.PIType.STOREDVALUE.name()}
@@ -1287,13 +1268,8 @@ class StoreResourceImpl implements StoreResource {
                     throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                 }
 
-                if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
-                    AppErrorException appError = (AppErrorException)t
-                    if (!CollectionUtils.isEmpty(appError.error.error().getDetails())
-                     && !org.springframework.util.StringUtils.isEmpty(appError.error.error().getDetails().get(0).getReason())
-                     && appError.error.error().getDetails().get(0).getReason().contains('User reaches maximum allowed retry count')) {
-                        throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-                    }
+                if (appErrorUtils.isAppError(t, ErrorCodes.Identity.MaximumLoginAttempt)) {
+                    throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                 }
 
                 appErrorUtils.throwUnknownError('purchase', t)
