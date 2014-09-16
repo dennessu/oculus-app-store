@@ -32,6 +32,7 @@
                 <value>X-Request-Id</value>
                 <value>X-Routing-Path</value>
                 <value>Cache-Control</value>
+                <value>oculus-end-user-ip</value>
             </list>
         </property>
     </bean>
