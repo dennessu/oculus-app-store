@@ -6,8 +6,6 @@
 package com.junbo.sharding.pool;
 
 import com.junbo.configuration.ConfigServiceManager;
-import com.junbo.langur.core.promise.Promise;
-import com.junbo.langur.core.webflow.action.Action;
 import com.zaxxer.hikari.util.DriverDataSource;
 import org.postgresql.Driver;
 import org.postgresql.util.HostSpec;
@@ -134,8 +132,8 @@ public class JunboDriverDataSource implements DataSource {
         return false;
     }
 
-    static interface Func<I, O> {
-        public O apply(I input) throws Exception;
+    interface Func<I, O> {
+        O apply(I input) throws Exception;
     }
 
     private static HostSpec[] hostSpecs(Properties props) {
