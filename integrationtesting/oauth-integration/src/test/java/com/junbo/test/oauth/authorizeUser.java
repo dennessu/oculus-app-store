@@ -230,6 +230,21 @@ public class authorizeUser {
         //Oauth.Logout(idToken);
     }
 
+    @Property(environment = "release")
+    @Test(groups = "ppe/prod")
+    public void accessTokenRoute() throws Exception {
+        if (Oauth.DefaultOauthEndpoint.contains("http://localhost:8080")) return;
+        String secondaryDcEndpoint = ConfigHelper.getSetting("secondaryDcEndpoint");
+        if (secondaryDcEndpoint == null) return;
+        String cid = Oauth.GetLoginCid();
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        String loginResponseLink = Oauth.UserLogin(cid, "allEnvLoginUser", Oauth.DefaultUserPwd);
+        String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
+        TokenInfo tokenInfo = HttpclientHelper.SimpleGet(secondaryDcEndpoint + "/oauth2/tokeninfo?access_token=" + accessToken, TokenInfo.class);
+        Validator.Validate("validate getting token from another dc", true, tokenInfo != null);
+    }
+
     @Test(groups = "dailies")
     public void resetPassword() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
