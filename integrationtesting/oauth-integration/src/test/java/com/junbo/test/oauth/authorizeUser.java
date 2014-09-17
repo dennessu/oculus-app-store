@@ -124,7 +124,7 @@ public class authorizeUser {
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, input.getUsername(), "radiant555");
+        String loginResponseLink = Oauth.UserLogin(cid, input.getEmail(), "radiant555");
         String access_Token = Oauth.GetLoginAccessToken(loginResponseLink);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(access_Token);
         Validator.Validate("Validate UserId same", output.getUserId(), tokenInfo.getSub());
@@ -159,7 +159,7 @@ public class authorizeUser {
         cid = Oauth.GetLoginCid();
         currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, userName, null);
+        String loginResponseLink = Oauth.UserLogin(cid, email, null);
         String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
     }
@@ -196,7 +196,7 @@ public class authorizeUser {
         cid = Oauth.GetLoginCid();
         currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, userName, null);
+        String loginResponseLink = Oauth.UserLogin(cid, email, null);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
@@ -220,7 +220,7 @@ public class authorizeUser {
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, "allEnvLoginUser", Oauth.DefaultUserPwd);
+        String loginResponseLink = Oauth.UserLogin(cid, "silkcloudtest+allEnvLoginUser@gmail.com", Oauth.DefaultUserPwd);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
@@ -239,7 +239,7 @@ public class authorizeUser {
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, "allEnvLoginUser", Oauth.DefaultUserPwd);
+        String loginResponseLink = Oauth.UserLogin(cid, "silkcloudtest+allEnvLoginUser@gmail.com", Oauth.DefaultUserPwd);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
         TokenInfo tokenInfo = HttpclientHelper.SimpleGet(secondaryDcEndpoint + "/oauth2/tokeninfo?access_token=" + accessToken, TokenInfo.class);
         Validator.Validate("validate getting token from another dc", true, tokenInfo != null);
@@ -285,7 +285,7 @@ public class authorizeUser {
         cid = Oauth.GetLoginCid();
         currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, userName, newPassword);
+        String loginResponseLink = Oauth.UserLogin(cid, email, newPassword);
         String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
     }

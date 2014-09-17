@@ -296,11 +296,11 @@ public class Oauth {
         }
     }
 
-    public static String UserLogin(String cid, String userName, String password) throws Exception {
+    public static String UserLogin(String cid, String email, String password) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
-        nvps.add(new BasicNameValuePair(DefaultFNLogin, userName));
+        nvps.add(new BasicNameValuePair(DefaultFNLogin, email));
         nvps.add(new BasicNameValuePair(DefaultFNPassword, password == null ? DefaultUserPwd : password));
 
         CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
