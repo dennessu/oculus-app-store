@@ -23,10 +23,10 @@ sudo docker run -d -p 9000:9000 \
   -v /path/to/logs:/inputlogs silkcloud/onebox-elk
 ```
 
-If you want to change the kibana port in your docker host, you also need to specify ENV KIBANA_PORT:
+If you want to change the kibana port in your docker host:
 
 ```
-sudo docker run -d -p 7000:9000 -e KIBANA_PORT=7000 \
+sudo docker run -d -p 7000:9000 \
   -v /path/to/logs:/inputlogs silkcloud/onebox-elk
 ```
 
