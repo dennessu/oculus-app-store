@@ -43,7 +43,7 @@
 
     <bean id="adyenRestClient" class="com.junbo.payment.clientproxy.adyen.proxy.AdyenApiClientProxy"
           parent="rawDataBaseClientproxy">
-        <property name="target" value="https://pal-test.adyen.com/pal/adapter"/>
+        <property name="target" value="${payment.clientproxy.adyen.payment.url}"/>
     </bean>
 
     <bean id="rawDataBaseClientproxy" class="com.junbo.langur.core.client.AbstractClientProxy"
@@ -59,6 +59,17 @@
 
     <bean id="currencyServiceFacade" class="com.junbo.payment.clientproxy.impl.CurrencyServiceFacadeImpl">
         <property name="currencyResource" ref="currencyClient"/>
+    </bean>
+
+    <bean id="facebookPaymentException" class="com.junbo.payment.clientproxy.facebook.FacebookPaymentExceptionHandler">
+        <property name="messageTranscoder" ref="commonIgnoreUnknownTranscoder"/>
+    </bean>
+
+    <bean id="facebookPaymentClient" class="com.junbo.payment.clientproxy.facebook.proxy.FacebookPaymentApiClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${payment.clientproxy.facebook.payment.url}"/>
+        <property name="transcoder" ref="rawDataTranscoder"/>
+        <property name="exceptionHandler" ref="facebookPaymentException"/>
     </bean>
 
 </beans>

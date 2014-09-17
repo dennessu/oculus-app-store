@@ -547,6 +547,13 @@
           }
       }
     },
+    "facebook_payment_account_mapping": {
+        "views": {
+            "by_user_id": {
+                "map": "function(doc) {  emit(doc.userId, doc._id)}"
+            }
+        }
+    },
     "iap_consumption": {},
     "wallet_lot_transaction": {
         "views": {

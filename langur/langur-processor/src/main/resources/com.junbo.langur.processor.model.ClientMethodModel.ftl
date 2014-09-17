@@ -33,9 +33,11 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
         String __accessToken = __accessTokenProvider.getAccessToken();
         __requestBuilder.addHeader("Authorization", "Bearer " + __accessToken);
     } else {
-        String __accessToken = com.junbo.langur.core.context.JunboHttpContext.getRequestHeaders().getFirst("Authorization");
-        if (org.springframework.util.StringUtils.hasText(__accessToken)) {
-            __requestBuilder.addHeader("Authorization", __accessToken);
+        if (com.junbo.langur.core.context.JunboHttpContext.getRequestHeaders() != null){
+            String __accessToken = com.junbo.langur.core.context.JunboHttpContext.getRequestHeaders().getFirst("Authorization");
+            if (org.springframework.util.StringUtils.hasText(__accessToken)) {
+                __requestBuilder.addHeader("Authorization", __accessToken);
+            }
         }
     }
     [/#if]

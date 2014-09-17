@@ -616,4 +616,22 @@
         </sql>
     </changeSet>
 
+    <changeSet id="4" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                        create table facebook_payment_account_mapping(
+                                map_id 				  bigint 	      not null,
+                                user_id 			  bigint 	      not null,
+                                fb_payment_account_id 		  varchar(128)        not null,
+                                created_time                      timestamp           not null,
+                                created_by                        varchar(64)             null,
+                                updated_time                      timestamp               null,
+                                updated_by                        varchar(64)             null,
+
+                                constraint facebook_payment_account_mapping_pk primary key (map_id)
+                                );
+                    ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
