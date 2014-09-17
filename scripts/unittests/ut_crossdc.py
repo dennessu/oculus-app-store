@@ -71,11 +71,49 @@ class CrossDCTests(ut.TestBase):
             'redirect_uri': ut.test_redirect_uri
         })
         access_token = response["access_token"]
+        auth_header = { 'Authorization': 'Bearer ' + access_token }
+        token_info = curlJson('GET', ut.test_remote_uri, '/v1/oauth2/tokeninfo', query = { 'access_token': access_token })
+        user_href = token_info['sub']['href']
 
-        token_info = curlJson('GET', ut.test_remote_uri, '/v1/oauth2/tokeninfo', query = { 'access_token': access_token })
-        token_info = curlJson('GET', ut.test_remote_uri, '/v1/oauth2/tokeninfo', query = { 'access_token': access_token })
-        token_info = curlJson('GET', ut.test_remote_uri, '/v1/oauth2/tokeninfo', query = { 'access_token': access_token })
-        token_info = curlJson('GET', ut.test_remote_uri, '/v1/oauth2/tokeninfo', query = { 'access_token': access_token })
+        user_info = curlJson('GET', ut.test_uri, user_href, headers = auth_header)
+
+        name = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = auth_header, data = {
+            "type": "NAME",
+            "value": {
+                "givenName": "Johann",
+                "middleName": None,
+                "familyName": "Smith"
+            },
+            "user": user_info['self']
+        })
+
+        address = curlJson('POST', ut.test_uri, '/v1/personal-info', headers = auth_header, data = {
+            "type": "ADDRESS",
+            "user": user_info['self'],
+            "value": {
+                "street1": "800 West Campbell Road",
+                "city": "Richardson",
+                "subCountry": "TX",
+                "country": {
+                    "id": "US"
+                },
+                "postalCode": "75080"
+            }
+        })
+
+        user_info.update({
+            "name": name['self'],
+            "addresses": [{
+                "value": address['self'],
+                "isDefault": True,
+                "label": None
+            }]
+        })
+        user_info = curlJson('PUT', ut.test_uri, user_info['self']['href'], headers = auth_header, data = user_info)
+
+        name = curlJson('GET', ut.test_remote_uri, name['self']['href'], headers = auth_header)
+        address = curlJson('GET', ut.test_remote_uri, address['self']['href'], headers = auth_header)
+        user_info = curlJson('GET', ut.test_remote_uri, user_href, headers = auth_header)
 
     def genUserInfo(self):
         user = Object()
