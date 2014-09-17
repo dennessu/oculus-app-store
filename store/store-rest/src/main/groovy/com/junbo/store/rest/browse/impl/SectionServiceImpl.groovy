@@ -85,6 +85,9 @@ class SectionServiceImpl implements SectionService {
                 break;
             case SectionInfoNode.SectionType.CategorySection:
                 OfferAttribute offerAttribute = facadeContainer.catalogFacade.getOfferCategoryByName(sectionInfoNode.category, nameLookupLocale).get()
+                if (offerAttribute == null) {
+                    LOGGER.error('name=Store_Category_Not_Found, category={}', sectionInfoNode.category)
+                }
                 sectionInfoNode.categoryId = offerAttribute?.getId()
                 sectionInfoNode.children = [] as List
                 break;

@@ -283,7 +283,7 @@ class BrowseServiceImpl implements BrowseService {
 
     private SectionInfoNode buildSectionInfoNodeForResponse(SectionInfoNode rawNode, boolean recursive, ApiContext apiContext) {
         SectionInfoNode sectionInfoNode = new SectionInfoNode()
-        if (rawNode.sectionType == SectionInfoNode.SectionType.CategorySection) {
+        if (rawNode.sectionType == SectionInfoNode.SectionType.CategorySection && rawNode?.categoryId != null) {
             OfferAttribute offerAttribute = facadeContainer.catalogFacade.getOfferAttribute(rawNode?.categoryId, apiContext).get()
             SimpleLocaleProperties simpleLocaleProperties = offerAttribute?.locales?.get(apiContext.locale.getId().value)
             sectionInfoNode.name = simpleLocaleProperties?.name
