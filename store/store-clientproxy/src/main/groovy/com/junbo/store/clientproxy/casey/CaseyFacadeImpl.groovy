@@ -5,6 +5,7 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
+import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
@@ -17,15 +18,13 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.spec.model.ApiContext
+import com.junbo.store.spec.model.browse.AddReviewRequest
 import com.junbo.store.spec.model.browse.ReviewsResponse
 import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
-import com.junbo.store.spec.model.external.casey.CaseyResults
-import com.junbo.store.spec.model.external.casey.CaseyReview
-import com.junbo.store.spec.model.external.casey.ReviewSearchParams
+import com.junbo.store.spec.model.external.casey.*
 import com.junbo.store.spec.model.external.casey.cms.CmsPage
 import com.junbo.store.spec.model.external.casey.cms.CmsPageGetParams
 import com.junbo.store.spec.model.external.casey.search.CaseyItem
@@ -236,6 +235,40 @@ class CaseyFacadeImpl implements CaseyFacade {
                 return Promise.pure()
             }
             return Promise.pure(results.items[0])
+        }
+    }
+
+    @Override
+    Promise<Review> addReview(AddReviewRequest request, ApiContext apiContext) {
+        CaseyReview review = new CaseyReview(
+                reviewTitle: request.title,
+                review: request.content,
+                resourceType: 'item',
+                resource: new CaseyLink(
+                        id: request.itemId.value,
+                        href: IdUtil.toHref(request.itemId)
+                ),
+                country: apiContext.country.getId().value,
+                locale: apiContext.locale.getId().value
+        )
+
+        review.ratings = []
+        for (String type : request.starRatings.keySet()) {
+            review.ratings << new CaseyReview.Rating(type: type, score: request.starRatings[type])
+        }
+
+        return resourceContainer.caseyReviewResource.addReview(review).then { CaseyReview newReview ->
+            return resourceContainer.userResource.get(apiContext.user, new UserGetOptions()).then { User user ->
+                return Promise.pure(
+                            new Review(
+                                self: new Link(id: newReview.self.id, href: newReview.self.href),
+                                authorName: user.nickName,
+                                title: newReview.reviewTitle,
+                                content: newReview.review,
+                                starRatings: request.starRatings,
+                                timestamp: newReview.postedDate
+                ))
+            }
         }
     }
 

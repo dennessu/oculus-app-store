@@ -19,6 +19,7 @@ import com.junbo.common.id.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
+import com.junbo.emulator.casey.spec.model.CaseyReviewExtend;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
@@ -671,8 +672,15 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public CaseyEmulatorData postCaseyEmulatorData(List<CaseyReview> caseyReviewList, List<CaseyAggregateRating> ratingList, CmsPage cmsPage) throws Exception {
         CaseyEmulatorData data = new CaseyEmulatorData();
+        List<CaseyReview> reviewList = null;
+        if (caseyReviewList != null) {
+            reviewList = new ArrayList<>();
+            for (CaseyReview caseyReview : caseyReviewList) {
+                reviewList.add(new CaseyReviewExtend(caseyReview));
+            }
+        }
         data.setCaseyAggregateRatings(ratingList);
-        data.setCaseyReviews(caseyReviewList);
+        data.setCaseyReviews(reviewList);
         if (cmsPage != null) {
             data.setCmsPages(Arrays.asList(cmsPage));
         }
@@ -723,6 +731,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public Order getOrder(OrderId orderId) throws Exception {
         orderClient.getOrderByOrderId(IdFormatter.encodeId(orderId));
         return Master.getInstance().getOrder(IdFormatter.encodeId(orderId));
+    }
+
+    public AddReviewResponse addReview(AddReviewRequest request, int expectedCode) throws Exception {
+        return storeClient.addReview(request, expectedCode);
     }
 
 }

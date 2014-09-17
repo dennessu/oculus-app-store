@@ -1,4 +1,6 @@
 package com.junbo.emulator.casey.rest
+
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
 import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
@@ -11,11 +13,12 @@ import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
+import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData
+import com.junbo.emulator.casey.spec.model.CaseyReviewExtend
 import com.junbo.emulator.casey.spec.resource.CaseyEmulatorResource
-import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.common.utils.CommonUtils
@@ -106,7 +109,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
             if (userReview != null) {
                 results.items << userReview
             }
-            return Promise.pure(results)
+            return Promise.pure(process(results))
         } else {
             int pageSize = params.count == null ? defaultPageSize : params.count
             int offset = 0
@@ -119,7 +122,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
                 } catch (NumberFormatException ex) {}
             }
             if (offset >= reviews.size()) {
-                return Promise.pure(results)
+                return Promise.pure(process(results))
             }
 
             results.items = reviews.subList(offset, Math.min(reviews.size(), offset + pageSize))
@@ -127,13 +130,22 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
                 results.count = params.count
                 results.cursor = (offset + pageSize).toString()
             }
-            return Promise.pure(results)
+            return Promise.pure(process(results))
         }
     }
 
     @Override
     Promise<CaseyReview> addReview(CaseyReview review) {
-        throw new RuntimeException('not implemented yet')
+        CaseyEmulatorData caseyEmulatorData = caseyEmulatorDataRepository.get()
+        if (caseyEmulatorData.caseyReviews == null) {
+            caseyEmulatorData.caseyReviews = []
+        }
+
+        review.postedDate = new Date()
+        review.user = new CaseyLink(id: IdFormatter.encodeId(AuthorizeContext.currentUserId), href: IdUtil.toHref(AuthorizeContext.currentUserId))
+        review.self = new CaseyLink(id: UUID.randomUUID().toString())
+        caseyEmulatorData.caseyReviews << review
+        return Promise.pure(new CaseyReviewExtend(review))
     }
 
     @Override
@@ -379,5 +391,11 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         return caseyItem
     }
 
+    private CaseyResults<CaseyReview> process(CaseyResults<CaseyReview> caseyReviewResults) {
+        caseyReviewResults.items = caseyReviewResults.items.collect { CaseyReview caseyReview ->
+            return new CaseyReviewExtend(caseyReview)
+        }
+        return caseyReviewResults
+    }
 }
 

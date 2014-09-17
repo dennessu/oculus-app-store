@@ -7,12 +7,8 @@ import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
-import com.junbo.common.id.util.IdUtil
-import com.junbo.common.model.Link
 import com.junbo.common.model.Results
 import com.junbo.entitlement.spec.model.*
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.priceRating.RatingItem
 import com.junbo.store.clientproxy.FacadeContainer
@@ -26,10 +22,11 @@ import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.*
-import com.junbo.store.spec.model.external.casey.CaseyLink
+import com.junbo.store.spec.model.browse.document.Item
+import com.junbo.store.spec.model.browse.document.Review
+import com.junbo.store.spec.model.browse.document.SectionInfo
+import com.junbo.store.spec.model.browse.document.SectionInfoNode
 import com.junbo.store.spec.model.external.casey.CaseyResults
-import com.junbo.store.spec.model.external.casey.CaseyReview
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -197,34 +194,14 @@ class BrowseServiceImpl implements BrowseService {
 
     @Override
     Promise<AddReviewResponse> addReview(AddReviewRequest request, ApiContext apiContext) {
-        CaseyReview review = new CaseyReview(
-                reviewTitle: request.title,
-                review: request.content,
-                resourceType: 'item',
-                resource: new CaseyLink(
-                        id: request.itemId.value,
-                        href: IdUtil.toHref(request.itemId)
-                )
-        )
-
-        review.ratings = []
-        for (String type : request.starRatings.keySet()) {
-            review.ratings << new CaseyReview.Rating(type: type, score: request.starRatings[type])
-        }
-
-        return resourceContainer.caseyReviewResource.addReview(review).then { CaseyReview newReview ->
-            return resourceContainer.userResource.get(apiContext.user, new UserGetOptions()).then { User user ->
-                return new AddReviewResponse(
-                        review: new Review(
-                                self: new Link(id: newReview.self.id, href: newReview.self.href),
-                                authorName: user.nickName,
-                                deviceName: apiContext.androidId,
-                                title: newReview.reviewTitle,
-                                content: newReview.review,
-                                starRatings: request.starRatings,
-                                timestamp: newReview.postedDate
-                        )
-                )
+        facadeContainer.caseyFacade.getReviews(request.itemId.value, apiContext.user, null, null).then { ReviewsResponse response ->
+            if (!CollectionUtils.isEmpty(response?.reviews)) {
+                throw AppErrors.INSTANCE.reviewAlreadyExists().exception()
+            }
+            return Promise.pure()
+        }.then {
+            return facadeContainer.caseyFacade.addReview(request, apiContext).then { Review review ->
+                return Promise.pure(new AddReviewResponse(review: review))
             }
         }
     }
