@@ -659,6 +659,31 @@ public class TestPutOfferRevision extends BaseTestClass {
         offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
         verifyExpectedFailure(revisionId, offerRevision1, 412);
 
+        //update to pending review, then obsolete -- should fail
+        offerRevision1.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+        offerRevision1 = offerRevisionService.updateOfferRevision(revisionId, offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
+        verifyExpectedFailure(revisionId, offerRevision1, 412);
+
+        //update the status to rejected, then obsolete -- should fail
+        offerRevision1.setStatus(CatalogEntityStatus.REJECTED.name());
+        offerRevision1 = offerRevisionService.updateOfferRevision(revisionId, offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
+        verifyExpectedFailure(revisionId, offerRevision1, 412);
+
+        //update to approved, then obsolete -- should succeed.
+        offerRevision1.setStatus(CatalogEntityStatus.APPROVED.name());
+        offerRevision1 = offerRevisionService.updateOfferRevision(revisionId, offerRevision1);
+        offer1 = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offer1.getCurrentRevisionId(), revisionId);
+
+        offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
+        offerRevisionService.updateOfferRevision(revisionId, offerRevision1);
+        offer1 = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offer1.getCurrentRevisionId(), null);
+
     }
 
     private void verifyExpectedFailure(String offerRevisionId, OfferRevision offerRevision) throws Exception {
