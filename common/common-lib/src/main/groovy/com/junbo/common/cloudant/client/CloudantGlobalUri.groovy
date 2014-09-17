@@ -3,6 +3,7 @@ package com.junbo.common.cloudant.client
 import com.junbo.common.util.Utils
 import com.junbo.configuration.topo.DataCenters
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.StringUtils
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -15,7 +16,7 @@ class CloudantGlobalUri {
     private Map<String, CloudantUri> dcUriMap = new HashMap<>()
     private CloudantUri currentDcUri
 
-    private static String URI_PATTERN_STR = '^(?<protocol>http[s]?://)?((?<username>[^/@:]*):(?<password>[^/@]*)@)?(?<host>[^/:]+)(?<port>:\\d+)?(?<path>(/|\\?).*)?$'
+    private static String URI_PATTERN_STR = '^(?<protocol>http[s]?://)?((?<username>[^/@:]*):((?<account>[^/@:]*):)?(?<password>[^/@:]*)@)?(?<host>[^/:]+)(?<port>:\\d+)?(?<path>(/|\\?).*)?$'
     private static final Pattern URI_PATTERN = Pattern.compile(URI_PATTERN_STR);
 
     public CloudantGlobalUri(String uriConfig) {
@@ -33,6 +34,7 @@ class CloudantGlobalUri {
             cloudantUri.value = safeGetGroup(matcher, "protocol") + safeGetGroup(matcher, "host") + safeGetGroup(matcher, "port") + safeGetGroup(matcher, "path")
             cloudantUri.username = matcher.group("username")
             cloudantUri.password = matcher.group("password")
+            cloudantUri.account = matcher.group("account")
             dcUriMap.put(key, cloudantUri)
         }
         currentDcUri = dcUriMap.get(DataCenters.instance().currentDataCenter())
