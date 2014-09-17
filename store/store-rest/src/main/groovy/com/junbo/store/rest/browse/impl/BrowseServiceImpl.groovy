@@ -304,7 +304,7 @@ class BrowseServiceImpl implements BrowseService {
 
     private Promise<Item> decorateItem(boolean ratePrice, boolean includeDetails, ApiContext apiContext, Item item) {
         Promise.pure().then {
-            if (!ratePrice && item?.offer == null) {
+            if (!ratePrice || item?.offer == null) {
                 return Promise.pure()
             }
             facadeContainer.priceRatingFacade.rateOffer(item.offer.self, apiContext).then { RatingItem ratingItem ->
