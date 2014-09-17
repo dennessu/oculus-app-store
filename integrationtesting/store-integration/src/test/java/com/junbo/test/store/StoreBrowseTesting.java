@@ -395,6 +395,26 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     }
 
+    @Test
+    public void testAddReview() throws Exception {
+        gotoToc();
+        StoreUserProfile userProfile = testDataProvider.getUserProfile().getUserProfile();
+
+        // get item
+        Item item = testDataProvider.getLayout("Game", null, 2).getItems().get(0);
+
+        // add review
+        AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
+        AddReviewResponse reviewResponse = testDataProvider.addReview(addReviewRequest, 200);
+        storeBrowseValidationHelper.validateAddReview(addReviewRequest, reviewResponse.getReview(), userProfile.getNickName());
+
+        // add again should fail
+        testDataProvider.addReview(addReviewRequest, 412);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.119"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("Review already exists."));
+    }
+
+
     private void testGetCategorySection(final String category, String sectionName, List<String> itemNames) throws Exception {
         int pageSize = 2;
         gotoToc();

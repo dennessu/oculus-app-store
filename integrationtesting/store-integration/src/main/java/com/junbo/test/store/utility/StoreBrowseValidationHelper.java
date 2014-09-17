@@ -17,6 +17,7 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.store.spec.model.browse.AddReviewRequest;
 import com.junbo.store.spec.model.browse.Images;
 import com.junbo.store.spec.model.browse.SectionLayoutResponse;
 import com.junbo.store.spec.model.browse.document.*;
@@ -209,6 +210,15 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(sectionLayoutResponse.getName(), expectedName);
         Assert.assertTrue(sectionLayoutResponse.getItems().isEmpty(), "top level feature section should have empty items");
         Assert.assertNull(sectionLayoutResponse.getNext());
+    }
+
+    public void validateAddReview(AddReviewRequest addReviewRequest, Review review, String nickName) {
+        Assert.assertEquals(review.getContent(), addReviewRequest.getContent());
+        Assert.assertEquals(review.getTitle(), addReviewRequest.getTitle());
+        Assert.assertEquals(review.getAuthorName(), nickName);
+        Assert.assertEquals(review.getStarRatings(), addReviewRequest.getStarRatings());
+        Assert.assertNotNull(review.getSelf());
+        Assert.assertNotNull(review.getTimestamp());
     }
 
     private void verifyItem(com.junbo.store.spec.model.browse.document.Item item, Item catalogItem, ItemRevision itemRevision,

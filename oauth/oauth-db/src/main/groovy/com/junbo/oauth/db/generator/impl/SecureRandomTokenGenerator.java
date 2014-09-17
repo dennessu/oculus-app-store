@@ -122,7 +122,7 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
             userDcByte = (byte)((userId >> 2) & 0xF);
         }
 
-        byte dcByte = (byte)(currentDcByte << 4 + userDcByte);
+        byte dcByte = (byte)((currentDcByte << 4) + userDcByte);
 
         byte[] bytes = new byte[length];
         random.nextBytes(bytes);

@@ -82,4 +82,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "118", message = "Item Version Code Not Found.")
     AppError itemVersionCodeNotFound();
+
+    @ErrorDef(httpStatusCode = 412, code = "119", message = "Review already exists.")
+    AppError reviewAlreadyExists();
 }

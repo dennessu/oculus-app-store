@@ -21,6 +21,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.core.util.ExceptionUtil
 import com.junbo.oauth.core.util.ValidatorUtil
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -95,11 +96,23 @@ class CreateUser implements Action {
                     value: ObjectMapperProvider.instance().valueToTree(userLoginName)
             )
 
-            return userPersonalInfoResource.create(userLoginNamePerInfo).then { UserPersonalInfo personalInfo ->
+            return userPersonalInfoResource.create(userLoginNamePerInfo).recover { Throwable throwable ->
+                ExceptionUtil.handleIdentityException(throwable, contextWrapper, false)
+                return Promise.pure(null)
+            }.then { UserPersonalInfo personalInfo ->
+                if (personalInfo == null) {
+                    return Promise.pure(new ActionResult('error'))
+                }
                 newUser.username = personalInfo.getId()
                 newUser.isAnonymous = false
 
-                return userResource.put(newUser.getId(), newUser).then { User createdUser ->
+                return userResource.put(newUser.getId(), newUser).recover { Throwable throwable ->
+                    ExceptionUtil.handleIdentityException(throwable, contextWrapper, false)
+                    return Promise.pure(null)
+                }.then { User createdUser ->
+                    if (createdUser == null) {
+                        return Promise.pure(new ActionResult('error'))
+                    }
                     contextWrapper.user = createdUser
                     contextWrapper.username = username
                     return Promise.pure(new ActionResult('success'))

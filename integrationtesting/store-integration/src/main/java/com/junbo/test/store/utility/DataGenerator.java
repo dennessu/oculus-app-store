@@ -5,6 +5,8 @@
  */
 package com.junbo.test.store.utility;
 
+import com.junbo.common.id.ItemId;
+import com.junbo.store.spec.model.browse.AddReviewRequest;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyLink;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
@@ -60,6 +62,17 @@ public class DataGenerator {
 
         caseyReview.setRatings(Arrays.asList(qualityRating, comfortRating));
         return caseyReview;
+    }
+
+    public AddReviewRequest generateAddReviewRequest(ItemId itemId) {
+        AddReviewRequest request = new AddReviewRequest();
+        request.setItemId(itemId);
+        request.setTitle("Test review title.." + RandomStringUtils.randomAlphabetic(5));
+        request.setContent("Test review content.........." + RandomStringUtils.randomAlphabetic(30));
+        request.setStarRatings(new HashMap<String, Integer>());
+        request.getStarRatings().put("comfort", rand.nextInt(100));
+        request.getStarRatings().put("quality", rand.nextInt(100));
+        return request;
     }
 
     public CaseyAggregateRating generateCaseyAggregateRating(String type) {

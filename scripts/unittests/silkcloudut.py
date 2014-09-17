@@ -34,6 +34,7 @@ class TestBase(unittest.TestCase):
 def setUpModule():
     global opts
     global test_uri
+    global test_remote_uri
     global test_client_id
     global test_client_secret
     global test_service_client_id
@@ -46,16 +47,18 @@ def setUpModule():
 
     if opts is not None:
         test_uri = opts.uri
+        test_remote_uri = opts.remoteuri
         test_client_id = opts.client
         test_client_secret = opts.secret
         test_service_client_id = opts.sclient
         test_service_client_secret = opts.ssecret
-        test_redirect_uri = 'http://localhost'
-        test_logout_redirect_uri = 'http://localhost'
+        test_redirect_uri = opts.redirecturi
+        test_logout_redirect_uri = opts.redirecturi
         test_wildcard_logout_redirect_uri = 'https://www.oculus.com/'
         test_sleep = opts.sleep
     else:
         test_uri = 'http://localhost:8080/'
+        test_remote_uri = 'http://localhost:8080/'
         test_client_id = 'smoketest'
         test_client_secret = 'secret'
         test_service_client_id = 'service'
@@ -82,10 +85,12 @@ def silkcloud_utmain(suite = None):
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://localhost:8080/')
+    parser.add_argument("-remoteuri", nargs = '?', help = "The URI to the silkcloud service in remote dc.", default = 'http://localhost:8080/')
     parser.add_argument("-client", nargs = '?', help = "The client ID used in test cases.", default = 'smoketest')
     parser.add_argument("-secret", nargs = '?', help = "The client secret used in the test cases.", default = 'secret')
     parser.add_argument("-sclient", nargs = '?', help = "The service client ID used in test cases.", default = 'service')
     parser.add_argument("-ssecret", nargs = '?', help = "The service client secret used in the test cases.", default = 'secret')
+    parser.add_argument("-redirecturi", nargs = '?', help = "The redirect URI for the test cases.", default = 'http://localhost')
     parser.add_argument("-sleep", nargs = '?', help = "The sleep between API calls.")
     parser.add_argument('tests', metavar='test', nargs='*', help='The test cases to run.')
 

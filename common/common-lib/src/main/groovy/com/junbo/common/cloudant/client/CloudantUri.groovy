@@ -11,6 +11,7 @@ class CloudantUri {
     String value
     String username
     String password
+    String account
 
     boolean equals(o) {
         if (this.is(o)) return true
@@ -22,6 +23,7 @@ class CloudantUri {
         if (password != that.password) return false
         if (username != that.username) return false
         if (value != that.value) return false
+        if (account != that.account) return false
 
         return true
     }
@@ -32,6 +34,7 @@ class CloudantUri {
         result = 31 * result + value.hashCode()
         result = 31 * result + (username != null ? username.hashCode() : 0)
         result = 31 * result + (password != null ? password.hashCode() : 0)
+        result = 31 * result + (account != null ? account.hashCode() : 0)
         return result
     }
 
@@ -42,7 +45,7 @@ class CloudantUri {
     }
 
     public String getDetail() {
-        return String.format("URL [%s] | DC [%s] | Username [%s]", value, dc, username);
+        return String.format("URL [%s] | DC [%s] | Username [%s] | Account [%s]", value, dc, username, account);
     }
 
     public String getKey() {

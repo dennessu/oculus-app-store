@@ -4,12 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.db.repo.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.client.CloudantDbUri
 import com.junbo.common.cloudant.client.CloudantUri
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.util.Context
+import com.junbo.configuration.topo.DataCenters
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.spec.model.AccessToken
@@ -52,14 +51,15 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
         String tokenHash = tokenGenerator.hashKey(tokenValue)
         AccessToken token = cloudantGetSync(tokenHash)
         if (token == null) {
-            int accessTokenDc = Context.get().dataCenterId
+            Integer accessTokenDc = null
             try {
                 accessTokenDc = getDcFromAccessToken(tokenValue)
             } catch (Exception e) {
                 logger.error("Error occurred while parsing DC id from accessToken $tokenValue", e)
                 return null
             }
-            if (Context.get().dataCenterId == accessTokenDc) {
+            if (DataCenters.instance().currentDataCenterId() == accessTokenDc) {
+                // already in the home dc of the access token, no need to retry
                 return null
             }
             token = (AccessToken) getEffective().cloudantGet(getDbUri(accessTokenDc, tokenValue), entityClass, tokenHash).get()
@@ -67,6 +67,7 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
         if (token != null) {
             token.tokenValue = tokenValue
         }
+
         return token
     }
 
