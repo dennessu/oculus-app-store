@@ -79,8 +79,8 @@ public class postCredentialAttempts {
         UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                 loginName.getUserName(), newPassword, false);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "User reaches maximum allowed retry count";
+        Validator.Validate("validate response error code", 429, response.getStatusLine().getStatusCode());
+        String errorMessage = "User reaches maximum login attempts";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
@@ -99,8 +99,8 @@ public class postCredentialAttempts {
         }
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                 RandomHelper.randomAlphabetic(15), IdentityModel.DefaultPassword(), ip, false);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "User reaches maximum login attempt";
+        Validator.Validate("validate response error code", 429, response.getStatusLine().getStatusCode());
+        String errorMessage = "User reaches maximum login attempts";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
@@ -142,8 +142,8 @@ public class postCredentialAttempts {
             response.close();
         }
         response = Identity.UserCredentialAttemptesPostDefault(email, password, ip, false);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "User reaches maximum login attempt";
+        Validator.Validate("validate response error code", 429, response.getStatusLine().getStatusCode());
+        String errorMessage = "User reaches maximum login attempts";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
@@ -249,8 +249,8 @@ public class postCredentialAttempts {
         UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(loginName.getUserName(), password);
         response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "User reaches maximum allowed retry count";
+        Validator.Validate("validate response error code", 429, response.getStatusLine().getStatusCode());
+        String errorMessage = "User reaches maximum login attempts";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
 
