@@ -35,7 +35,6 @@ import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
@@ -72,7 +71,7 @@ class CaseyFacadeImpl implements CaseyFacade {
             LOGGER.error('name=Store_SearchOffer_Error, searchParams={}', ObjectMapperProvider.instance().writeValueAsString(searchParams), ex)
             return Promise.pure(null)
         }.then { CaseyResults<CaseyOffer> rawResults ->
-            if (rawResults == null) {
+            if (rawResults?.items == null) {
                 return Promise.pure(results)
             }
 

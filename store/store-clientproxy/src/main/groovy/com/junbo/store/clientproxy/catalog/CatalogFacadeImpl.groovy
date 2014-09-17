@@ -255,6 +255,9 @@ class CatalogFacadeImpl implements CatalogFacade {
     }
 
     private Promise<Organization> getOrganization(OrganizationId organizationId) {
+        if (organizationId == null) {
+            return Promise.pure()
+        }
         Promise.pure().then {
             resourceContainer.organizationResource.get(organizationId, new OrganizationGetOptions())
         }.recover { Throwable ex ->
