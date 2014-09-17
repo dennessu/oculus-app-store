@@ -55,8 +55,11 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
             oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.ORDER);
             responseBody = restApiCall(HTTPMethod.POST, orderEventUrl, orderEvent, expectedResponseCode, true);
         }
-        return new JsonMessageTranscoder().decode(new TypeReference<OrderEvent>() {
-        }, responseBody);
+        if(expectedResponseCode == 200) {
+            return new JsonMessageTranscoder().decode(new TypeReference<OrderEvent>() {
+            }, responseBody);
+        }
+        return null;
     }
 
     @Override

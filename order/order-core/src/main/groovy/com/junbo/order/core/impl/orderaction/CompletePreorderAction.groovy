@@ -69,7 +69,7 @@ class CompletePreorderAction extends BaseOrderEventAwareAction {
                     CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT)).syncRecover {
                 Throwable throwable ->
                     LOGGER.error('name=Fail_To_Quote_Balance', throwable)
-                    throw AppErrors.INSTANCE.billingConnectionError().exception()
+                    throw throwable
             }.then { Balance taxedBalance ->
                 if (taxedBalance == null) {
                     LOGGER.info('name=Fail_To_Calculate_Tax_Balance_Not_Found')

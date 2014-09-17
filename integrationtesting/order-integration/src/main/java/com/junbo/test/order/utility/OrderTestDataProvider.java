@@ -269,13 +269,18 @@ public class OrderTestDataProvider {
         return orderEventClient.getOrderEventsByOrderId(orderId);
     }
 
-    public void postOrderEvent(String orderId, EventStatus eventStatus, OrderActionType orderActionType)
+    public void postOrderEvent(String orderId, EventStatus eventStatus, OrderActionType orderActionType, int expectedResponseCode)
             throws Exception {
         OrderEvent orderEvent = new OrderEvent();
         orderEvent.setOrder(new OrderId(IdConverter.hexStringToId(OrderId.class, orderId)));
         orderEvent.setAction(orderActionType.toString());
         orderEvent.setStatus(eventStatus.toString());
-        orderEventClient.postOrderEvent(orderEvent);
+        orderEventClient.postOrderEvent(orderEvent, expectedResponseCode);
+    }
+
+    public void postOrderEvent(String orderId, EventStatus eventStatus, OrderActionType orderActionType)
+            throws Exception {
+        postOrderEvent(orderId, eventStatus, orderActionType, 200);
     }
 
     public OrderInfo getRefundedOrderInfo(OrderInfo orderInfo, Map<String, Integer> refundedOffers,

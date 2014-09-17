@@ -61,6 +61,17 @@
         <property name="personalInfoFacade" ref="personalInfoFacade"/>
     </bean>
 
+    <bean id="facebookPaymentUtil" class="com.junbo.payment.core.provider.facebook.FacebookPaymentUtils">
+        <property name="facebookPaymentApi" ref="facebookPaymentClient"/>
+        <property name="oculusAppId" value="${payment.provider.facebook.appid}"/>
+        <property name="oculusAppSecret" value="${payment.provider.facebook.appsecret}"/>
+    </bean>
+
+    <bean id="facebookCCProviderService" class="com.junbo.payment.core.provider.facebook.FacebookCCProviderServiceImpl">
+        <property name="facebookPaymentUtils" ref="facebookPaymentUtil"/>
+        <property name="oculusAppId" value="${payment.provider.facebook.appid}"/>
+    </bean>
+
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl" depends-on="paymentHandlerRegistry">
         <property name="paymentProviderRepository" ref="paymentProviderRepository" />
     </bean>
@@ -73,6 +84,7 @@
                 <entry key="PayPal" value-ref="paypalProviderService"/>
                 <entry key="Adyen" value-ref="adyenProviderService"/>
                 <entry key="AdyenCC" value-ref="adyenCCProviderService"/>
+                <entry key="FacebookCC" value-ref="facebookCCProviderService"/>
             </util:map>
         </property>
     </bean>

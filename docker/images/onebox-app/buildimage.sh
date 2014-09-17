@@ -20,6 +20,18 @@ if [[ `uname` != 'Linux' ]]; then
 fi
 hash docker >/dev/null 2>&1 || die "!! docker not installed, cannot continue"
 
+while getopts ':yb:' flag; do
+  case "${flag}" in
+    y) confirmflag='true' ;;
+    b) git_branch=$OPTARG ;;
+    :)
+      echo "Option -$OPTARG requires an argument, please specify branch_name." >&2
+      exit 1
+      ;;
+    ?) ;;
+  esac
+done
+
 REPO_ROOT=`git rev-parse --show-toplevel`
 APPHOST_FOLDER=$REPO_ROOT/apphost/apphost-cli/build/install/apphost-cli
 SWAGGER_FOLDER=$REPO_ROOT/apphost/docs-bundle/build/install/docs-bundle
@@ -33,7 +45,7 @@ fi
 git_prop_file=$APPHOST_FOLDER/git.properties
 git_commit_id=`sed "/^\#/d" $git_prop_file | grep 'commit.id.abbrev' | tail -n 1 | cut -d "=" -f2-`
 git_commit_message=`sed "/^\#/d" $git_prop_file | grep 'commit.message.short' | tail -n 1 | cut -d "=" -f2-`
-git_branch=`sed "/^\#/d" $git_prop_file | grep 'branch' | tail -n 1 | cut -d "=" -f2-`
+git_branch=${git_branch:=`sed "/^\#/d" $git_prop_file | grep 'branch' | tail -n 1 | cut -d "=" -f2-`}
 git_commit_date=`sed "/^\#/d" $git_prop_file | grep 'commit.time' | tail -n 1 | cut -d "=" -f2 | cut -d " " -f1 | sed "s/-//g"`
 alternative_tag="$git_branch-$git_commit_date-$git_commit_id"
 
@@ -44,13 +56,6 @@ echo "  branch   = $git_branch"
 echo
 echo "Will build docker image from the drop($APPHOST_FOLDER)"
 echo "Tags will be '$git_branch, $alternative_tag'"
-
-while getopts ':y' flag; do
-  case "${flag}" in
-    y) confirmflag='true' ;;
-    ?) ;;
-  esac
-done
 
 if [ "$confirmflag" != "true" ]; then
   while true; do
@@ -78,3 +83,4 @@ sudo docker tag silkcloud/onebox-app:$git_branch silkcloud/onebox-app:$alternati
 echo "## finished building docker image"
 echo "##   to push, use the following commands:"
 echo "##     sudo docker push silkcloud/onebox-app:$git_branch && sudo docker push silkcloud/onebox-app:$alternative_tag"
+

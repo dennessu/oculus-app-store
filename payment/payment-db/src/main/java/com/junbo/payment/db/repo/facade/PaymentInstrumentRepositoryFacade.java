@@ -5,6 +5,7 @@
  */
 package com.junbo.payment.db.repo.facade;
 
+import com.junbo.payment.spec.internal.FacebookPaymentAccountMapping;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
 
@@ -21,4 +22,6 @@ public interface PaymentInstrumentRepositoryFacade {
     void updateExternalInfo(Long paymentInstrumentId, String externalToken, String label, String num);
     List<PaymentInstrument> getByUserId(Long userId);
     List<PaymentInstrument> search(Long userId, PaymentInstrumentSearchParam searchParam);
+    String getFacebookPaymentAccount(Long userId);
+    String createFBPaymentAccountIfNotExist(FacebookPaymentAccountMapping model);
 }

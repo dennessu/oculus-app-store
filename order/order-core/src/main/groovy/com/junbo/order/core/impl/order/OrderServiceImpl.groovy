@@ -5,11 +5,8 @@
  */
 
 package com.junbo.order.core.impl.order
-
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.OfferRevisionId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
@@ -27,6 +24,7 @@ import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
+import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.model.enums.OrderStatus
 import groovy.transform.CompileStatic
@@ -241,6 +239,12 @@ class OrderServiceImpl implements OrderService {
             case OrderActionType.FULFILL.name():
                 LOGGER.info('name=Update_Fulfillment_Status. orderId: {}, action:{}, status{}',
                         event.order.value, event.action, event.status)
+                if (event.status != EventStatus.COMPLETED.name())
+                {
+                    LOGGER.error('name=Event_Action_Not_Supported. orderId: {}, action:{}, status{}',
+                            event.order.value, event.action, event.status)
+                    throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+                }
                 break
             default:
                 LOGGER.error('name=Event_Action_Not_Supported. orderId: {}, action:{}, status{}',

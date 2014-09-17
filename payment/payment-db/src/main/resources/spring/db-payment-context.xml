@@ -112,6 +112,11 @@
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.SettlementDetailEntity"/>
     </bean>
 
+    <bean id="facebookPaymentAccountDao"
+          class="com.junbo.payment.db.dao.paymentinstrument.FacebookPaymentAccountDao" parent="paymentGenericDao">
+        <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.FacebookPaymentAccountMappingEntity"/>
+    </bean>
+
     <!-- sql repositories -->
     <bean id="sqlCreditCardDetailRepository" class="com.junbo.payment.db.repo.sql.CreditCardDetailRepositorySqlImpl">
         <property name="creditCardPaymentInstrumentDao" ref="ccPaymentInstrumentDao"/>
@@ -148,6 +153,12 @@
         <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
     </bean>
 
+    <bean id="facebookPaymentAccountRepositorySql" class="com.junbo.payment.db.repo.sql.FacebookPaymentAccountRepositorySqlImpl">
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+        <property name="fbPaymentAccountDao" ref="facebookPaymentAccountDao"/>
+        <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
+    </bean>
+
     <!-- cloudant repositories -->
     <bean id="cloudantCreditCardDetailRepository" class="com.junbo.payment.db.repo.cloudant.CreditCardDetailRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="creditcard_detail"/>
@@ -171,6 +182,10 @@
 
     <bean id="cloudantTrackingUuidRepository" class="com.junbo.payment.db.repo.cloudant.TrackingUuidRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="payment_tracking_uuid" />
+    </bean>
+
+    <bean id="cloudantFacebookPaymentAccountRepository" class="com.junbo.payment.db.repo.cloudant.FacebookPaymentAccountRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="facebook_payment_account_mapping" />
     </bean>
 
     <!-- dual write repositories -->
@@ -210,6 +225,12 @@
         <property name="cloudantRepositoryImpl" ref="cloudantTrackingUuidRepository" />
     </bean>
 
+    <bean id="fbPaymentAccountRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.payment.db.repo.FacebookPaymentAccountRepository"/>
+        <property name="sqlRepositoryImpl" ref="facebookPaymentAccountRepositorySql" />
+        <property name="cloudantRepositoryImpl" ref="cloudantFacebookPaymentAccountRepository" />
+    </bean>
+
     <!-- sql only repositories -->
     <bean id="paymentDomainDataRepository" class="com.junbo.payment.db.repository.DomainDataRepository" abstract="true">
     </bean>
@@ -236,6 +257,7 @@
         <property name="paymentInstrumentRepository" ref="paymentInstrumentRepository"/>
         <property name="creditCardDetailRepository" ref="creditCardDetailRepository"/>
         <property name="paymentMapperExtension" ref="paymentMapperExtension"/>
+        <property name="fbPaymentAccountRepository" ref="fbPaymentAccountRepository"/>
     </bean>
 
     <bean id="paymentRepositoryFacade" class="com.junbo.payment.db.repo.facade.impl.PaymentRepositoryFacadeImpl">
