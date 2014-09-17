@@ -15,7 +15,6 @@ include 'crypto-integration'
 include 'drm-integration'
 
 include 'integration-buyerscenario'
-include 'commerce-integration'
 include 'integration-csrscenario'
 include 'store-integration'
 include 'ui-integration'
