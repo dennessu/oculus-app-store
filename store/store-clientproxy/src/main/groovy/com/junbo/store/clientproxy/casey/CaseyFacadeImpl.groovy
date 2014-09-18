@@ -30,8 +30,13 @@ import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
 import com.junbo.store.spec.model.external.casey.*
+import com.junbo.store.spec.model.external.casey.cms.CmsCampaign
+import com.junbo.store.spec.model.external.casey.cms.CmsCampaignGetParam
+import com.junbo.store.spec.model.external.casey.cms.CmsContentSlot
 import com.junbo.store.spec.model.external.casey.cms.CmsPage
 import com.junbo.store.spec.model.external.casey.cms.CmsPageGetParams
+import com.junbo.store.spec.model.external.casey.cms.ContentItem
+import com.junbo.store.spec.model.external.casey.cms.Placement
 import com.junbo.store.spec.model.external.casey.search.CaseyItem
 import com.junbo.store.spec.model.external.casey.search.CaseyOffer
 import com.junbo.store.spec.model.external.casey.search.OfferSearchParams
@@ -239,14 +244,33 @@ class CaseyFacadeImpl implements CaseyFacade {
     }
 
     @Override
-    Promise<CmsPage> getCmsPage(String pageName) {
+    Promise<CmsPage> getCmsPage(String path, String label) {
         resourceContainer.caseyResource.getCmsPages(
-            new CmsPageGetParams(path: "\"/${pageName}\"")
+            new CmsPageGetParams(path: "\"${path}\"", label: "\"${label}\"")
         ).then { CaseyResults<CmsPage> results ->
             if (CollectionUtils.isEmpty(results.items)) {
                 return Promise.pure()
             }
-            return Promise.pure(results.items[0])
+            CmsPage page = results.items[0]
+            if (CollectionUtils.isEmpty(page?.slots)) {
+                return Promise.pure(page)
+            }
+            return fillPageContent(page)
+        }
+    }
+
+    @Override
+    Promise<CmsCampaign> getCmsCampaign(String label) {
+        CaseyResults<CmsCampaign> caseyResults
+        resourceContainer.caseyResource.getCmsCampaigns(new CmsCampaignGetParam(expand: 'results/placements/content')).then { CaseyResults<CmsCampaign> results ->
+            caseyResults = results
+            if (CollectionUtils.isEmpty(caseyResults?.items)) {
+                return Promise.pure()
+            }
+            CmsCampaign result = caseyResults.items.find { CmsCampaign campaign ->
+                return campaign?.status == 'APPROVED' && campaign?.label == label
+            }
+            return Promise.pure(result)
         }
     }
 
@@ -299,7 +323,7 @@ class CaseyFacadeImpl implements CaseyFacade {
         OfferSearchParams offerSearchParams = new OfferSearchParams()
         switch (sectionInfoNode.sectionType) {
             case SectionInfoNode.SectionType.CmsSection:
-                offerSearchParams.cmsPage = sectionInfoNode.cmsPage
+                offerSearchParams.cmsPage = sectionInfoNode.cmsPageSearch
                 offerSearchParams.cmsSlot = sectionInfoNode.cmsSlot
                 break;
             case SectionInfoNode.SectionType.CategorySection:
@@ -315,7 +339,7 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     private boolean canSearch(SectionInfoNode sectionInfoNode) {
         if (sectionInfoNode.sectionType == SectionInfoNode.SectionType.CmsSection) {
-            return !StringUtils.isBlank(sectionInfoNode.cmsPage) && !StringUtils.isBlank(sectionInfoNode.cmsSlot)
+            return !StringUtils.isBlank(sectionInfoNode.cmsPageSearch) && !StringUtils.isBlank(sectionInfoNode.cmsSlot)
         }
         return true
     }
@@ -326,6 +350,49 @@ class CaseyFacadeImpl implements CaseyFacade {
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_Get_Organization_Fail, organization={}', organizationId, ex)
             return Promise.pure()
+        }
+    }
+
+    private Promise<CmsPage> fillPageContent(CmsPage cmsPage) {
+        assert cmsPage?.slots != null, 'cmsPage.slot should not be null'
+        resourceContainer.caseyResource.getCmsCampaigns(new CmsCampaignGetParam(expand: 'results/placements/content')).then { CaseyResults<CmsCampaign> caseyResults ->
+            if (CollectionUtils.isEmpty(caseyResults?.items)) {
+                return Promise.pure(cmsPage)
+            }
+            caseyResults.items.each { CmsCampaign campaign ->
+                if (CollectionUtils.isEmpty(campaign.placements)) {
+                    return
+                }
+                campaign.placements.each { Placement placement ->
+                    if (placement != null) {
+                        fillStringContent(cmsPage, placement)
+                    }
+                }
+            }
+            return Promise.pure(cmsPage)
+        }
+    }
+
+    private static void fillStringContent(CmsPage cmsPage, Placement placement) {
+        assert cmsPage?.slots != null, 'cmsPage.slot should not be null'
+        if (!(placement?.page?.getId() == cmsPage.self.getId() && cmsPage.slots.get(placement.slot) != null)) {
+            return
+        }
+        CmsContentSlot pageSlot = cmsPage.slots.get(placement.slot)
+        if (!CollectionUtils.isEmpty(placement?.content?.contents)) {
+            placement.content.contents.each { Map.Entry<String, ContentItem> placementContent ->
+                if (placementContent?.value?.type != ContentItem.Type.string.name()) { // only interested in string content
+                    return
+                }
+                if (pageSlot.contents.get(placementContent.key) == null) {
+                    pageSlot.contents[placementContent.key] = new ContentItem(type: placementContent.value.type, links: [] as List, strings: [] as List)
+                }
+
+                ContentItem contentItem = pageSlot.contents[placementContent.key]
+                if (!CollectionUtils.isEmpty(placementContent.value.strings)) {
+                    contentItem.strings.addAll(placementContent.value.strings)
+                }
+            }
         }
     }
 }

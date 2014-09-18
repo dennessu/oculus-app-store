@@ -15,6 +15,7 @@ import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsContent;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 import com.junbo.store.spec.model.external.casey.cms.CmsPageGetParams;
+import com.junbo.store.spec.model.external.casey.cms.*;
 import com.junbo.store.spec.model.external.casey.search.CaseyOffer;
 import com.junbo.store.spec.model.external.casey.search.OfferSearchParams;
 
@@ -36,7 +37,7 @@ public interface CaseyResource {
 
     @GET
     @Path("cms-campaigns")
-    Promise<CaseyResults<CmsCampaign>> getCmsCampaigns();
+    Promise<CaseyResults<CmsCampaign>> getCmsCampaigns(@BeanParam CmsCampaignGetParam campaignGetParam);
 
     @GET
     @Path("cms-pages")

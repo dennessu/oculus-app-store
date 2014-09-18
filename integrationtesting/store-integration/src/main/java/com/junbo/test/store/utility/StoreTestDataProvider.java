@@ -29,6 +29,7 @@ import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
+import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
@@ -699,6 +700,16 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         if (cmsPage != null) {
             data.setCmsPages(Arrays.asList(cmsPage));
         }
+        data.setCmsPageOffers(offerIds);
+        return caseyEmulatorClient.postEmulatorData(data);
+    }
+
+    public CaseyEmulatorData postCaseyEmulatorData(List<CmsCampaign> cmsCampaign, List<CmsPage> pages, Map<String, List<OfferId>> offerIds) throws Exception {
+        CaseyEmulatorData data = new CaseyEmulatorData();
+        data.setCaseyAggregateRatings(new ArrayList<CaseyAggregateRating>());
+        data.setCaseyReviews(new ArrayList<CaseyReview>());
+        data.setCmsCampaigns(cmsCampaign);
+        data.setCmsPages(pages);
         data.setCmsPageOffers(offerIds);
         return caseyEmulatorClient.postEmulatorData(data);
     }

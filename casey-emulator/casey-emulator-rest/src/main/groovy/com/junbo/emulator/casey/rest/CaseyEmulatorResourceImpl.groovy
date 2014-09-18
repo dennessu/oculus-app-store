@@ -20,9 +20,7 @@ import com.junbo.emulator.casey.spec.model.CaseyEmulatorData
 import com.junbo.emulator.casey.spec.model.CaseyReviewExtend
 import com.junbo.emulator.casey.spec.resource.CaseyEmulatorResource
 import com.junbo.langur.core.promise.Promise
-import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.common.utils.CommonUtils
-import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.spec.model.external.casey.*
 import com.junbo.store.spec.model.external.casey.cms.*
 import com.junbo.store.spec.model.external.casey.search.*
@@ -32,6 +30,7 @@ import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
+
 /**
  * The CaseyEmulatorResourceImpl class.
  */
@@ -47,19 +46,10 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     @Resource(name = 'caseyEmulatorDataRepository')
     CaseyEmulatorDataRepository caseyEmulatorDataRepository
 
-    @Resource(name = 'storeResourceContainer')
+    @Resource(name = 'caseyResourceContainer')
     ResourceContainer resourceContainer
 
-    @Resource(name = 'storeSectionService')
-    SectionService sectionService
-
-    private CmsCampaign cmsCampaign
-
     private Map<String, CmsContent> cmsContentMap = [:]
-
-    private List<String> offerNames = []
-
-    private List<String> itemNames = []
 
     @Override
     Promise<CaseyResults<CaseyOffer>> searchOffers(OfferSearchParams params) {
@@ -149,26 +139,35 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     @Override
-    Promise<CaseyResults<CmsCampaign>> getCmsCampaigns() {
+    Promise<CaseyResults<CmsCampaign>> getCmsCampaigns(CmsCampaignGetParam cmsCampaignGetParam) {
+        assert cmsCampaignGetParam.expand == 'results/placements/content'
         emulatorUtils.emulateLatency()
-        return Promise.pure(new CaseyResults<CmsCampaign>(
-                items: [getCmsCampaign()],
-                count: 1,
-                totalCount: 1L
-        ))
+        CaseyResults<CmsCampaign> results = new CaseyResults<>()
+        results.items = caseyEmulatorDataRepository.get().cmsCampaigns
+        return Promise.pure(results)
     }
 
     @Override
     Promise<CaseyResults<CmsPage>> getCmsPages(CmsPageGetParams pageGetParams) {
-        CmsPage cmsPage = caseyEmulatorDataRepository.get().cmsPages?.find { CmsPage cmsPage ->
-            return "\"/${cmsPage.path}\"" == pageGetParams.path
-        }
-
-        if (cmsPage != null) {
-            return Promise.pure(new CaseyResults<CmsPage>(items: [cmsPage]))
-        } else {
+        List<CmsPage> pages = caseyEmulatorDataRepository.get().cmsPages
+        if (pages == null) {
             return Promise.pure(new CaseyResults<CmsPage>(items: []))
         }
+        List<CmsPage> cmsPages = pages.findAll() { CmsPage cmsPage ->
+            if (pageGetParams.path != null) {
+                if ("\"${cmsPage.path}\"" != pageGetParams.path) {
+                    return false
+                }
+            }
+            if (pageGetParams.label != null) {
+                if ("\"${cmsPage.label}\"" != pageGetParams.label) {
+                    return false
+                }
+            }
+            return true
+        }.asList()
+
+        return Promise.pure(new CaseyResults<CmsPage>(items: cmsPages))
     }
 
     @Override
@@ -290,37 +289,9 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         return itemResults.items[0].itemId
     }
 
-    private CmsCampaign getCmsCampaign() {
-        if (cmsCampaign != null) {
-            return cmsCampaign
-        }
-
-        synchronized (this) {
-            if (cmsCampaign != null) {
-                return cmsCampaign
-            }
-            CmsCampaign result = new CmsCampaign()
-            result.self = new CaseyLink(id: UUID.randomUUID().toString(), href: 'abc')
-            result.eligibleCountries = [new CaseyLink(id: 'US')]
-            result.status = 'APPROVED'
-
-            result.placements = []
-            CmsContent cmsContent= createContent(offerNames, 'offer', 'offers', 'feature-offers', 'feature offers')
-            addCmsContent(cmsContent)
-            result.placements << new Placement(content: new CaseyLink(id: cmsContent.self.id))
-
-            cmsContent= createContent(itemNames, 'item', 'items', 'feature-items', 'feature items')
-            addCmsContent(cmsContent)
-            result.placements << new Placement(content: new CaseyLink(id: cmsContent.self.id))
-            cmsCampaign = result
-        }
-        return cmsCampaign
-    }
-
     @Override
     Promise<CaseyEmulatorData> postEmulatorData(CaseyEmulatorData caseyEmulatorData) {
         return Promise.pure(caseyEmulatorDataRepository.post(caseyEmulatorData)).then { CaseyEmulatorData result ->
-            sectionService.refreshSectionInfoNode()
             return Promise.pure(result)
         }
     }

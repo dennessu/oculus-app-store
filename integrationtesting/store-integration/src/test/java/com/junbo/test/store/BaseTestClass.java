@@ -40,7 +40,7 @@ public abstract class BaseTestClass {
     protected String item_digital_free;
     protected String item_digital_oculus_free1;
     protected String item_digital_oculus_free2;
-    protected String cmsPagePath;
+    protected String cmsPageName;
 
     protected String featureRootCriteria = "featureRoot";
     protected List<String> cmsSlot1Items;
@@ -112,7 +112,7 @@ public abstract class BaseTestClass {
             useCaseyEmulator = Boolean.valueOf(ConfigHelper.getSetting("casey.useEmulator"));
         }
 
-        cmsPagePath = ConfigHelper.getSetting("testdata.cmspage.path");
+        cmsPageName = ConfigHelper.getSetting("testdata.cmspage.name");
         itemService = ItemServiceImpl.instance();
         itemRevisionService = ItemRevisionServiceImpl.instance();
         offerService = OfferServiceImpl.instance();

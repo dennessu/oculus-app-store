@@ -5,7 +5,6 @@
  */
 package com.junbo.store.spec.model.external.casey.cms;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 import com.junbo.store.spec.model.external.casey.CaseyLink;
 
@@ -18,10 +17,7 @@ public class Placement extends BaseCaseyModel {
 
     private String slot;
 
-    private CaseyLink content;
-
-    @JsonIgnore
-    private CmsContent contentData;
+    private CmsContent content;
 
     public CaseyLink getPage() {
         return page;
@@ -39,19 +35,11 @@ public class Placement extends BaseCaseyModel {
         this.slot = slot;
     }
 
-    public CaseyLink getContent() {
+    public CmsContent getContent() {
         return content;
     }
 
-    public void setContent(CaseyLink content) {
+    public void setContent(CmsContent content) {
         this.content = content;
-    }
-
-    public CmsContent getContentData() {
-        return contentData;
-    }
-
-    public void setContentData(CmsContent contentData) {
-        this.contentData = contentData;
     }
 }

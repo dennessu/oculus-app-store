@@ -23,7 +23,6 @@ import com.junbo.store.spec.model.browse.SectionLayoutResponse;
 import com.junbo.store.spec.model.browse.document.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
-import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 import com.junbo.test.catalog.enums.PriceType;
 import com.junbo.test.common.Validator;
 import org.apache.commons.collections.CollectionUtils;
@@ -184,20 +183,20 @@ public class StoreBrowseValidationHelper {
         verifyItemOffer(item.getOffer(), catalogOffer, offerRevision, isFree);
     }
 
-    public void validateCmsSection(SectionInfoNode sectionInfoNode, CmsPage cmsPage, String slot) {
-        Assert.assertEquals(sectionInfoNode.getCriteria(), cmsPage.getPath() + "-" + slot);
-        Assert.assertEquals(sectionInfoNode.getName(), cmsPage.getSlots().get(slot).getDescription());
+    public void validateCmsSection(SectionInfoNode sectionInfoNode, String name, String cmsPageName, String slot) {
+        Assert.assertEquals(sectionInfoNode.getCriteria(), cmsPageName + "-" + slot);
+        Assert.assertEquals(sectionInfoNode.getName(), name);
         Assert.assertNull(sectionInfoNode.getCategory());
     }
 
-    public void validateCmsSection(SectionInfo sectionInfo, CmsPage cmsPage, String slot) {
-        Assert.assertEquals(sectionInfo.getCriteria(), cmsPage.getPath() + "-" + slot);
-        Assert.assertEquals(sectionInfo.getName(), cmsPage.getSlots().get(slot).getDescription());
+    public void validateCmsSection(SectionInfo sectionInfo, String name, String cmsPageName, String slot) {
+        Assert.assertEquals(sectionInfo.getCriteria(), cmsPageName + "-" + slot);
+        Assert.assertEquals(sectionInfo.getName(), name);
         Assert.assertNull(sectionInfo.getCategory());
     }
 
-    public void validateCmsSection(SectionLayoutResponse sectionLayoutResponse, CmsPage cmsPage, String slot, int numOfItems, boolean hasMoreItems) {
-        Assert.assertEquals(sectionLayoutResponse.getName(), cmsPage.getSlots().get(slot).getDescription());
+    public void validateCmsSection(SectionLayoutResponse sectionLayoutResponse, String name, int numOfItems, boolean hasMoreItems) {
+        Assert.assertEquals(sectionLayoutResponse.getName(), name);
         if (hasMoreItems) {
             Assert.assertEquals(sectionLayoutResponse.getItems().size(), numOfItems);
         }

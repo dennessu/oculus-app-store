@@ -6,6 +6,7 @@
 package com.junbo.store.spec.model.external.casey.cms;
 
 import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
+import com.junbo.store.spec.model.external.casey.CaseyLink;
 
 import java.util.Map;
 
@@ -14,9 +15,18 @@ import java.util.Map;
  */
 public class CmsPage extends BaseCaseyModel {
 
+    private CaseyLink self;
     private String label;
     private String path;
     private Map<String, CmsContentSlot> slots;
+
+    public CaseyLink getSelf() {
+        return self;
+    }
+
+    public void setSelf(CaseyLink self) {
+        this.self = self;
+    }
 
     public String getLabel() {
         return label;

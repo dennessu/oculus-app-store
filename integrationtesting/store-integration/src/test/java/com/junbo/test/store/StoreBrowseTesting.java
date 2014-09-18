@@ -13,8 +13,9 @@ import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.browse.document.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
-import com.junbo.store.spec.model.external.casey.cms.CmsContentSlot;
+import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.casey.cms.Placement;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
@@ -23,6 +24,7 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
@@ -50,6 +52,10 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private boolean verifyAllItemDetailsInExplore = false;
 
+    private String caseyCmsPagePath;
+
+    private String caseyCmsPageLabel;
+
     public enum GetItemMethod {
         List,
         Library,
@@ -70,6 +76,15 @@ public class StoreBrowseTesting extends BaseTestClass {
         if (ConfigHelper.getSetting("explore.items.details.verifyall") != null) {
             verifyAllItemDetailsInExplore = Boolean.valueOf(ConfigHelper.getSetting("explore.items.details.verifyall"));
         }
+
+        if (ConfigHelper.getSetting("casey.emulator.cmspage.path") != null) {
+            caseyCmsPagePath = ConfigHelper.getSetting("casey.emulator.cmspage.path");
+        }
+
+        if (ConfigHelper.getSetting("casey.emulator.cmspage.label") != null) {
+            caseyCmsPageLabel = ConfigHelper.getSetting("casey.emulator.cmspage.label");
+        }
+
     }
 
     @Test
@@ -259,15 +274,15 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     @Test
     public void testGetFeaturedSection() throws Exception {
-        CmsPage cmsPage =  createCmsPageAndOffers(Arrays.asList("slot1", "slot2"), Arrays.asList("test slot1", "test slot2"),
+        setupCmsPageAndOffers(caseyCmsPagePath, caseyCmsPageLabel, Arrays.asList("slot1", "slot2"), Arrays.asList("test slot1", "test slot2"),
                 Arrays.asList(getOfferIds(cmsSlot1Items), getOfferIds(cmsSlot2Items)));
 
         int pageSize = 2;
         TocResponse tocResponse = gotoToc();
         SectionInfo featuredSectionInfo = tocResponse.getSections().get(0).toSectionInfo();
         Assert.assertEquals(featuredSectionInfo.getCriteria(), featureRootCriteria, "section criteria not match");
-        storeBrowseValidationHelper.validateCmsSection(tocResponse.getSections().get(0).getChildren().get(0), cmsPage, "slot1");
-        storeBrowseValidationHelper.validateCmsSection(tocResponse.getSections().get(0).getChildren().get(1), cmsPage, "slot2");
+        storeBrowseValidationHelper.validateCmsSection(tocResponse.getSections().get(0).getChildren().get(0), "test slot1", cmsPageName, "slot1");
+        storeBrowseValidationHelper.validateCmsSection(tocResponse.getSections().get(0).getChildren().get(1), "test slot2", cmsPageName, "slot2");
 
         // validate top level feature section layout
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(featuredSectionInfo.getCategory(), featuredSectionInfo.getCriteria(), pageSize);
@@ -275,14 +290,14 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         SectionInfo slot1Section = sectionLayoutResponse.getChildren().get(0);
         SectionInfo slot2Section = sectionLayoutResponse.getChildren().get(1);
-        storeBrowseValidationHelper.validateCmsSection(slot1Section, cmsPage, "slot1");
-        storeBrowseValidationHelper.validateCmsSection(slot2Section, cmsPage, "slot2");
+        storeBrowseValidationHelper.validateCmsSection(slot1Section, "test slot1", cmsPageName, "slot1");
+        storeBrowseValidationHelper.validateCmsSection(slot2Section, "test slot2", cmsPageName, "slot2");
 
 
         // get slot1 section
         SectionLayoutResponse slot1Layout = testDataProvider.getLayout(null, slot1Section.getCriteria(), pageSize);
         storeBrowseValidationHelper.verifySectionLayoutBreadcrumbs(slot1Layout, sectionLayoutResponse, featuredSectionInfo);
-        storeBrowseValidationHelper.validateCmsSection(slot1Layout, cmsPage, "slot1", pageSize, true);
+        storeBrowseValidationHelper.validateCmsSection(slot1Layout, "test slot1", pageSize, true);
         Assert.assertTrue(slot1Layout.getChildren().isEmpty(), "children should be empty");
 
         List<Item> items = getItemsInSection(slot1Section.getCategory(), slot1Section.getCriteria(), pageSize);
@@ -291,10 +306,43 @@ public class StoreBrowseTesting extends BaseTestClass {
         // get feature-offers section
         SectionLayoutResponse slot2Layout = testDataProvider.getLayout(null, slot2Section.getCriteria(), pageSize);
         storeBrowseValidationHelper.verifySectionLayoutBreadcrumbs(slot2Layout, sectionLayoutResponse, featuredSectionInfo);
-        storeBrowseValidationHelper.validateCmsSection(slot2Layout, cmsPage, "slot2", pageSize, true);
+        storeBrowseValidationHelper.validateCmsSection(slot2Layout, "test slot2", pageSize, true);
         Assert.assertTrue(slot2Layout.getChildren().isEmpty(), "children should be empty");
         items = getItemsInSection(slot2Section.getCategory(), slot2Section.getCriteria(), pageSize);
         storeBrowseValidationHelper.verifyItemsInList(cmsSlot2Items, items, true);
+    }
+
+    @Test
+    public void testGetFeaturedSectionWithLocaleFallback() throws Exception {
+        setupCmsPageAndOffers(caseyCmsPagePath, caseyCmsPageLabel, Arrays.asList("slot1", "slot2"), Arrays.asList("test slot1", "test slot2"),
+                Arrays.asList(getOfferIds(cmsSlot1Items), getOfferIds(cmsSlot2Items)));
+
+        TestContext.getData().putHeader("Accept-Language", "zh-CN");
+        int pageSize = 2;
+        TocResponse tocResponse = gotoToc();
+        SectionInfo featuredSectionInfo = tocResponse.getSections().get(0).toSectionInfo();
+        Assert.assertEquals(featuredSectionInfo.getCriteria(), featureRootCriteria, "section criteria not match");
+        storeBrowseValidationHelper.validateCmsSection(tocResponse.getSections().get(0).getChildren().get(0), "test slot1", cmsPageName, "slot1");
+        storeBrowseValidationHelper.validateCmsSection(tocResponse.getSections().get(0).getChildren().get(1), "test slot2", cmsPageName, "slot2");
+
+        // validate top level feature section layout
+        SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(featuredSectionInfo.getCategory(), featuredSectionInfo.getCriteria(), pageSize);
+        storeBrowseValidationHelper.validateCmsTopLevelSectionLayout(sectionLayoutResponse, 2, "Featured");
+
+        SectionInfo slot1Section = sectionLayoutResponse.getChildren().get(0);
+        SectionInfo slot2Section = sectionLayoutResponse.getChildren().get(1);
+        storeBrowseValidationHelper.validateCmsSection(slot1Section, "test slot1", cmsPageName, "slot1");
+        storeBrowseValidationHelper.validateCmsSection(slot2Section, "test slot2", cmsPageName, "slot2");
+
+        // get slot1 section
+        SectionLayoutResponse slot1Layout = testDataProvider.getLayout(null, slot1Section.getCriteria(), pageSize);
+        storeBrowseValidationHelper.verifySectionLayoutBreadcrumbs(slot1Layout, sectionLayoutResponse, featuredSectionInfo);
+        storeBrowseValidationHelper.validateCmsSection(slot1Layout, "test slot1", pageSize, true);
+
+        // get feature-offers section
+        SectionLayoutResponse slot2Layout = testDataProvider.getLayout(null, slot2Section.getCriteria(), pageSize);
+        storeBrowseValidationHelper.verifySectionLayoutBreadcrumbs(slot2Layout, sectionLayoutResponse, featuredSectionInfo);
+        storeBrowseValidationHelper.validateCmsSection(slot2Layout, "test slot2", pageSize, true);
     }
 
     @Test
@@ -309,7 +357,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     )
     public void testGetFeaturedSectionSmoke() throws Exception {
         if (useCaseyEmulator) {
-            createCmsPageAndOffers(Arrays.asList("slot1", "slot2"), Arrays.asList("test slot1", "test slot2"),
+            setupCmsPageAndOffers(caseyCmsPagePath, caseyCmsPageLabel, Arrays.asList("slot1", "slot2"), Arrays.asList("test slot1", "test slot2"),
                     Arrays.asList(getOfferIds(cmsSlot1Items), getOfferIds(cmsSlot1Items)));
         }
 
@@ -390,7 +438,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertEquals(reviews.size(), 1, "Number of reviews not correct.");
         storeBrowseValidationHelper.verifyReview(reviews.get(0), caseyReviews.get(0), null);
 
-        testDataProvider.postCaseyEmulatorData(null, null, null);
+        testDataProvider.postCaseyEmulatorData((List<CaseyReview> )null, null, null);
         testDataProvider.clearCache();
 
     }
@@ -590,18 +638,24 @@ public class StoreBrowseTesting extends BaseTestClass {
         return offerIds;
     }
 
-    private CmsPage createCmsPageAndOffers(List<String> slots, List<String> slotDescription, List<List<OfferId>> offers) throws Exception {
-        CmsPage cmsPage =  DataGenerator.instance().genCmsPage(cmsPagePath);
-        cmsPage.setSlots(new TreeMap<String, CmsContentSlot>());
+    private void setupCmsPageAndOffers(String path, String label, List<String> slots, List<String> names, List<List<OfferId>> offers) throws Exception {
         Map<String, List<OfferId>> cmsOffers = new HashMap<>();
+        List<Placement> placements = new ArrayList<>();
+        CmsPage cmsPage = DataGenerator.instance().genCmsPage(path, label, slots);
         for (int i = 0;i < slots.size();++i) {
-            CmsContentSlot cmsContentSlot = new CmsContentSlot();
-            cmsContentSlot.setDescription(slotDescription.get(i));
-            cmsPage.getSlots().put(slots.get(i), cmsContentSlot);
-            cmsOffers.put(cmsPage.getPath() + "-" + slots.get(i), offers.get(i));
+            placements.add(
+                    DataGenerator.instance().genStringPlacement(cmsPage.getSelf().getId(), slots.get(i), "category", names.get(i))
+            );
+            cmsOffers.put(cmsPageName + "-" + slots.get(i), offers.get(i));
         }
-        testDataProvider.postCaseyEmulatorData(cmsPage, cmsOffers);
-        return cmsPage;
+        List<CmsCampaign> cmsCampaigns = Arrays.asList(
+                DataGenerator.instance().genCmsCampaign("Android", placements),
+                DataGenerator.instance().genCmsCampaign("test", Arrays.asList(
+                        DataGenerator.instance().genStringPlacement(UUID.randomUUID().toString(), RandomFactory.getRandomStringOfAlphabet(20), "category", "abc"),
+                        DataGenerator.instance().genStringPlacement(cmsPage.getSelf().getId(), RandomFactory.getRandomStringOfAlphabet(20), "category", "abc")
+                ))
+        );
+        testDataProvider.postCaseyEmulatorData(cmsCampaigns, Arrays.asList(cmsPage), cmsOffers);
     }
 
     private void verifyItemsInExplore(List<Item> items) throws Exception {
@@ -615,6 +669,17 @@ public class StoreBrowseTesting extends BaseTestClass {
                 verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), GetItemMethod.Details, false);
             }
         }
+    }
+
+    private String getName(CmsCampaign cmsCampaign, String slot) {
+        Placement placement = null;
+        for (Placement e : cmsCampaign.getPlacements()) {
+            if (e.getSlot().equals(slot)) {
+                placement = e;
+                break;
+            }
+        }
+        return placement.getContent().getContents().get("category").getStrings().get(0).getLocales().get("en_US");
     }
 }
 
