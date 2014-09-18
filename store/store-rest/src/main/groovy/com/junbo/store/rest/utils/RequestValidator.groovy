@@ -1,9 +1,9 @@
 package com.junbo.store.rest.utils
+
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
@@ -20,6 +20,7 @@ import com.junbo.order.spec.model.Order
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
 import com.junbo.store.clientproxy.FacadeContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
@@ -38,7 +39,6 @@ import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
-import com.junbo.store.clientproxy.ResourceContainer
 
 import javax.annotation.Resource
 import java.util.regex.Pattern
@@ -205,7 +205,7 @@ class RequestValidator {
                 }
 
                 if (request?.challengeAnswer?.password != null && request?.challengeAnswer?.type == Constants.ChallengeType.PASSWORD) {
-                    return getUsername(user).then { String username ->
+                    return identityUtils.getVerifiedUserPrimaryMail(user).then { String username ->
                         return resourceContainer.userCredentialVerifyAttemptResource.create(new UserCredentialVerifyAttempt(
                                 username: username,
                                 value: request.challengeAnswer.password,
@@ -462,21 +462,6 @@ class RequestValidator {
             }
 
             return Promise.pure(true)
-        }
-    }
-
-    private Promise<String> getUsername(User user) {
-        if (user.username == null) {
-            return Promise.pure('')
-        }
-
-        return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
-            if (userPersonalInfo == null) {
-                return Promise.pure('')
-            }
-
-            UserLoginName loginName = (UserLoginName)ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, UserLoginName)
-            return Promise.pure(loginName.userName)
         }
     }
 

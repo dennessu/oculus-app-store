@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
+import com.junbo.langur.core.exception.InvalidHeaderException;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
@@ -49,6 +50,8 @@ public class RestExceptionMapper implements ExceptionMapper<Exception>, Applicat
         } else if (e instanceof JsonMappingException) {
             return AppCommonErrors.INSTANCE.fieldInvalid(
                     ((JsonMappingException) e).getPathReference(), e.getMessage()).exception().getResponse();
+        } else if (e instanceof InvalidHeaderException) {
+            return AppCommonErrors.INSTANCE.headerInvalid(((InvalidHeaderException) e).getField(), e.getMessage()).exception().getResponse();
         }
 
         // other exceptions

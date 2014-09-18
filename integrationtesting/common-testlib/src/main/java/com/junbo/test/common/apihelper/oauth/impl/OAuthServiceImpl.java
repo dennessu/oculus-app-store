@@ -261,7 +261,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("dob", userInfo.getDob());
         formParams.put("username", userInfo.getUserName());
         formParams.put("password", userInfo.getPassword());
-        formParams.put("email", userInfo.getEmails().get(0));
+        formParams.put("email", userInfo.getEncodedEmails().get(0));
         formParams.put("pin", userInfo.getPin());
         formParams.put("country", userInfo.getCountry().toString());
 

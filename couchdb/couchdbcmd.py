@@ -11,6 +11,7 @@ import string
 import random
 import AESCipher as cipher
 
+
 def main():
     # Enforce python version
     if sys.version_info[0] != 2 or sys.version_info[1] < 7:
@@ -26,6 +27,7 @@ def main():
     command, env, dbPrefix = readParams()
     executeDbCommand(command, env, dbPrefix)
 
+
 def readParams():
     # Validate command
     def printValidCommands():
@@ -33,6 +35,7 @@ def readParams():
         info(
             "   genkey                  Generate an API key of cloudant\n" +
             "   listdbs                 Show all databases\n" +
+            "   diff                    Show diff info\n" +
             "   dumpdbs                 Show all databases and the views\n" +
             "   createdbs               Create all databases\n" +
             "   dropdbs                 Drop all databases\n" +
@@ -43,7 +46,7 @@ def readParams():
         error("Usage: python ./couchdbcmd.py <command> [<env>] [--yes] [--verbose] [--prefix={prefix}] [--key={key}]\n")
 
     # Read input params
-    sys.argv.pop(0)     # skip argv[0]
+    sys.argv.pop(0)  # skip argv[0]
 
     # Read flags
     global cipherKey
@@ -73,27 +76,31 @@ def readParams():
 
     # Required params
     command = sys.argv.pop(0).strip()
-    def readOptionalArg(default = None):
+
+    def readOptionalArg(default=None):
         if len(sys.argv) > 0:
             return sys.argv.pop(0).strip()
         return default
+
     env = readOptionalArg("onebox")
 
     # Validate params
     command = command.lower()
-    if command not in set(["genkey", "listdbs", "dumpdbs", "createdbs", "dropdbs", "purgedbs", "diffdbs"]):
+    if command not in set(["genkey", "listdbs", "diff", "dumpdbs", "createdbs", "dropdbs", "purgedbs", "diffdbs"]):
         printValidCommands()
         error("Invalid command: " + command)
 
     if command in set(["createdbs", "dropdbs"]) and not confirmed:
         # Ask for confirmation
-        response = readInput("WARNING! The command will make changes to couchdb in env %s. Are you absolutely sure? ('yes'/'no'): " % env)
+        response = readInput(
+            "WARNING! The command will make changes to couchdb in env %s. Are you absolutely sure? ('yes'/'no'): " % env)
         if response.lower() != "yes":
             error("Aborting...")
 
     if command in set(["dropdbs", "purgedbs"]) and env not in set(["onebox", "lt", "onebox.int"]):
         answer = ''.join(random.choice(string.ascii_letters) for _ in range(10))
-        input = readInput("The environment is not test environment. Are you sure you want to delete data? Repeat '%s' to confirm: " % answer)
+        input = readInput(
+            "The environment is not test environment. Are you sure you want to delete data? Repeat '%s' to confirm: " % answer)
         if answer != input:
             # Don't allow dropdbs in these environments
             error("The command " + command + " is now allowed in env " + env)
@@ -101,9 +108,12 @@ def readParams():
     verbose("Read parameters: (command, env, dbPrefix) = (%s, %s, %s)" % (command, env, dbPrefix))
     return (command, env, dbPrefix)
 
+
 dbsConfigKey = 'dbs'
 apiKeysConfigKey = 'apikeys'
 authDbsConfigKey = 'authdbs'
+
+
 def readConfig(env):
     global dbsConfigKey, apiKeysConfigKey, authDbsConfigKey
     verbose("Reading configurations for " + env)
@@ -116,7 +126,7 @@ def readConfig(env):
     encryptedSuffix = ".encrypted"
     for k, v in envConf[dbsConfigKey].items():
         if isinstance(v, basestring):
-            v = [ v ]
+            v = [v]
 
         if k.endswith(encryptedSuffix):
             key = k[0:len(k) - len(encryptedSuffix)]
@@ -134,18 +144,22 @@ def readConfig(env):
 
     return finalEnvConf
 
+
 def readDbs():
     filename = 'changelogs/couchdb.json'
     verbose("Reading couchdb master configuration: " + filename)
     return readJsonFile(filename)
+
 
 def executeDbCommand(command, env, dbPrefix):
     envConf = readConfig(env)
 
     if command == "genkey":
         genkey(envConf)
-    if command == "listdbs":
+    elif command == "listdbs":
         listdbs(envConf, dbPrefix)
+    elif command == "diff":
+        diffdbs(envConf, dbPrefix)
     elif command == "dumpdbs":
         dumpdbs(envConf, dbPrefix)
     elif command == "createdbs":
@@ -155,12 +169,14 @@ def executeDbCommand(command, env, dbPrefix):
     elif command == "purgedbs":
         purgedbs(envConf, dbPrefix)
 
+
 def genkey(envConf):
     global dbsConfigKey
     url = envConf[dbsConfigKey]["cloudant"][0]
     credentials = re.compile("https://(.*)@.*\.cloudant\.com").match(url).group(1)
-    result = curlJson("https://%s@cloudant.com/api/generate_api_key" % credentials, method = 'POST')
-    print json.dumps(result, indent = 2)
+    result = curlJson("https://%s@cloudant.com/api/generate_api_key" % credentials, method='POST')
+    print json.dumps(result, indent=2)
+
 
 def listdbs(envConf, dbPrefix):
     global dbsConfigKey
@@ -172,9 +188,86 @@ def listdbs(envConf, dbPrefix):
     result = []
     for key, list in envConf[dbsConfigKey].items():
         for url in list:
-            result.extend([db for db in curlJson(url + "/_all_dbs") if re.match(dbPattern, db) and not db.startswith("_")])
+            result.extend(
+                [db for db in curlJson(url + "/_all_dbs") if re.match(dbPattern, db) and not db.startswith("_")])
 
     print string.join(sorted(result), "\r\n")
+
+
+def diffdbs(envConf, dbPrefix):
+    result = {}
+    result["newDbs"] = getNewDbs(envConf, dbPrefix)
+    result["viewDiff"] = diffViews(envConf, dbPrefix)
+    print json.dumps(result, indent=2)
+
+
+def getNewDbs(envConf, dbPrefix):
+    global dbsConfigKey
+    if not dbPrefix:
+        dbPattern = '.*'
+    else:
+        dbPattern = dbPrefix
+
+    dbs = readDbs()
+
+    result = []
+    for key, list in envConf[dbsConfigKey].items():
+        url = list[0]
+        existingDbs = [db for db in curlJson(url + "/_all_dbs") if re.match(dbPattern, db) and not db.startswith("_")]
+        currentDbs = [dbPrefix + dbName for dbName in dbs[key].keys()]
+        result.extend([db for db in currentDbs if db not in existingDbs])
+    return result
+
+
+def diffViews(envConf, dbPrefix):
+    global dbsConfigKey
+    if not dbPrefix:
+        dbPrefix = ""
+
+    dbs = readDbs()
+    result = {}
+    for key, list in envConf[dbsConfigKey].items():
+        url = list[0]
+        for db, views in dbs[key].items():
+            fullDbName = dbPrefix + db
+            viewDiffResult = diffViewPerDb(url, fullDbName, views)
+            if viewDiffResult:
+                result[fullDbName] = viewDiffResult
+
+    return result
+
+
+def diffViewPerDb(url, fullDbName, views):
+    existingResponse = curlJson(url + "/" + fullDbName + "/_design/views", raiseOnError=False)
+    existing = {type: existingResponse[type]
+                if "error" not in existingResponse and type in existingResponse else {}
+                for type in ["views", "indexes"]}
+
+    result = {}
+    viewDiff = diffView("views", existing, views)
+    if viewDiff: result["views"] = viewDiff
+    indexDiff = diffView("indexes", existing, views)
+    if indexDiff: result["indexes"] = indexDiff
+
+    return result
+
+
+def diffView(type, existing, new):
+    actions = ["create", "update", "delete"]
+    result = {action: {} for action in actions}
+    if type in new:
+        for key, value in new[type].items():
+            if type in existing and key in existing[type]:
+                if value != existing[type][key]:
+                    result["update"][key] = {"old": existing[type][key], "new": value}
+            else:
+                result["create"][key] = value
+    if type in existing:
+        result["delete"] = {key: existing[type][key] for key in existing[type] if key not in new[type]}
+
+    [result.pop(action) for action in actions if not result[action]]
+    return result
+
 
 def dumpdbs(envConf, dbPrefix):
     global dbsConfigKey
@@ -189,7 +282,7 @@ def dumpdbs(envConf, dbPrefix):
             result[key] = {}
             for db in dbs[key]:
                 fullDbName = dbPrefix + db
-                data = curlJson(url + "/" + fullDbName + "/_design/views", raiseOnError = False)
+                data = curlJson(url + "/" + fullDbName + "/_design/views", raiseOnError=False)
                 result[key][db] = {}
 
                 if "views" in data and any(data["views"]):
@@ -197,9 +290,12 @@ def dumpdbs(envConf, dbPrefix):
                 if "indexes" in data and any(data["indexes"]):
                     result[key][db]["indexes"] = data["indexes"]
 
-    print json.dumps(result, indent = 2, sort_keys = True)
+    print json.dumps(result, indent=2, sort_keys=True)
 
-allRoles = ["_reader","_writer","_admin","_replicator"]
+
+allRoles = ["_reader", "_writer", "_admin", "_replicator"]
+
+
 def createdbs(envConf, dbPrefix):
     global allRoles, dbsConfigKey, apiKeysConfigKey, authDbsConfigKey
     if not dbPrefix: dbPrefix = ''
@@ -217,7 +313,7 @@ def createdbs(envConf, dbPrefix):
 
             if isCloudantUrl(url) and authdbs and username in authdbs:
                 for authdb in authdbs[username]:
-                    authUrl = url.replace(username + '.', authdb + '.') 
+                    authUrl = url.replace(username + '.', authdb + '.')
                     creatdb(authUrl, envConf[apiKeysConfigKey], dbs[key].items(), key, index, authdb, dbPrefix)
             else:
                 creatdb(url, envConf[apiKeysConfigKey], dbs[key].items(), key, index, username, dbPrefix)
@@ -225,6 +321,7 @@ def createdbs(envConf, dbPrefix):
             for db, dbDef in dbs[key].items():
                 fullDbName = dbPrefix + db
                 createviews(dbDef, url, fullDbName)
+
 
 def creatdb(url, apikeyConf, alldbs, key, index, username, dbPrefix):
     existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
@@ -236,6 +333,7 @@ def creatdb(url, apikeyConf, alldbs, key, index, username, dbPrefix):
         else:
             info("DB '%s' of '%s[%d]' in '%s' exists" % (fullDbName, key, index, username))
         grantPermissions(apikeyConf, url, fullDbName, username)
+
 
 def grantPermissions(apikeyConf, url, fullDbName, username):
     if not apikeyConf:
@@ -253,21 +351,27 @@ def grantPermissions(apikeyConf, url, fullDbName, username):
             info("Granting permissions for APIKEY '%s' of DB '%s' in '%s'" % (apikey, fullDbName, username))
             grantPermission(permissionUrl, permissions)
 
+
 def grantPermission(permissionUrl, permissions):
     result = curlJson(permissionUrl, "PUT", json.dumps(permissions))
     if "ok" not in result or result["ok"] is not True:
-        raise Exception(json.dumps(result, indent = 2))
+        raise Exception(json.dumps(result, indent=2))
+
 
 def isCloudantUrl(url):
     return url.find("cloudant.com") != -1
 
+
 userNamePattern = re.compile("https://(.*):.*@.*\.cloudant\.com")
+
+
 def parseUsername(url):
     global userNamePattern
     match = userNamePattern.match(url)
     if not match:
         return None
     return match.group(1)
+
 
 def createviews(dbDef, url, fullDbName):
     viewsResp, status, reason = curlRaw(url + "/" + fullDbName + "/_design/views")
@@ -279,16 +383,28 @@ def createviews(dbDef, url, fullDbName):
 
     needPut = False
     if "views" in dbDef:
+        viewDiff = diffView("views", viewsRequest, dbDef)
+        if "update" in viewDiff or "delete" in viewDiff:
+            raise Exception("update or delete view:\n" + json.dumps(viewDiff, indent=2))
         viewsRequest["views"] = dbDef["views"]
         needPut = True
     if "indexes" in dbDef:
+        indexDiff = diffView("indexes", viewsRequest, dbDef)
+        if "delete" in indexDiff:
+            raise Exception("delete index:\n" + json.dumps(indexDiff, indent=2))
+        if "update" in indexDiff:
+            input = readInput("update index:\n%s\ncontinue? yes/no" % json.dumps(indexDiff, indent=2))
+            if input != "yes":
+                sys.exit(0)
         viewsRequest["indexes"] = dbDef["indexes"]
         needPut = True
 
     if needPut:
+
         info("Creating views for database: " + fullDbName)
-        viewsRequestStr = json.dumps(viewsRequest, indent = 2)
+        viewsRequestStr = json.dumps(viewsRequest, indent=2)
         curl(url + "/" + fullDbName + "/_design/views", "PUT", viewsRequestStr)
+
 
 def dropdbs(envConf, dbPrefix):
     global dbsConfigKey
@@ -305,10 +421,11 @@ def dropdbs(envConf, dbPrefix):
             username = parseUsername(url)
             if isCloudantUrl(url) and authdbs and username in authdbs:
                 for authdb in authdbs[username]:
-                    authUrl = url.replace(username + '.', authdb + '.') 
+                    authUrl = url.replace(username + '.', authdb + '.')
                     dropdb(authUrl, dbs, key, index, authdb, dbPrefix)
             else:
                 dropdb(url, dbs, key, index, username, dbPrefix)
+
 
 def dropdb(url, dbs, key, index, username, dbPrefix):
     existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
@@ -317,6 +434,7 @@ def dropdb(url, dbs, key, index, username, dbPrefix):
         if fullDbName in existingDbs:
             info("Dropping database '%s' from '%s[%d]' in '%s'" % (fullDbName, key, index, username))
             curl(url + "/" + fullDbName, "DELETE")
+
 
 def purgedbs(envConf, dbPrefix):
     global dbsConfigKey
@@ -344,11 +462,12 @@ def purgedbs(envConf, dbPrefix):
                             '_rev': row['value']['rev'],
                             '_deleted': True
                         })
-                    bulkStr = json.dumps({ 'docs': docs }, indent = 2)
+                    bulkStr = json.dumps({'docs': docs}, indent=2)
                     if len(docs) > 0:
                         curlJson(url + "/" + fullDbName + '/_bulk_docs', "POST", bulkStr)
 
-def curlJson(url, method = 'GET', body = None, headers = None, raiseOnError = True):
+
+def curlJson(url, method='GET', body=None, headers=None, raiseOnError=True):
     if headers is None:
         headers = {
             'Content-Type': 'application/json'
@@ -356,10 +475,11 @@ def curlJson(url, method = 'GET', body = None, headers = None, raiseOnError = Tr
 
     response = curl(url, method, body, headers, raiseOnError)
     obj = json.loads(response)
-    verbose(json.dumps(obj, indent = 2))
+    verbose(json.dumps(obj, indent=2))
     return obj
 
-def curl(url, method = 'GET', body = None, headers = None, raiseOnError = True):
+
+def curl(url, method='GET', body=None, headers=None, raiseOnError=True):
     if headers is None: headers = {}
 
     resp, status, reason = curlRaw(url, method, body, headers)
@@ -367,8 +487,11 @@ def curl(url, method = 'GET', body = None, headers = None, raiseOnError = True):
         raise Exception('%s %s in %s %s\n%s' % (status, reason, method, url, resp))
     return resp
 
+
 connCache = {}
-def curlRaw(url, method = 'GET', body = None, headers = None):
+
+
+def curlRaw(url, method='GET', body=None, headers=None):
     if headers is None: headers = {}
 
     conn = None
@@ -405,6 +528,7 @@ def curlRaw(url, method = 'GET', body = None, headers = None):
 
         if userpass:
             import base64
+
             base64String = base64.encodestring(userpass).strip()
             authheader = "Basic %s" % base64String
             headers['Authorization'] = authheader
@@ -428,11 +552,12 @@ def curlRaw(url, method = 'GET', body = None, headers = None):
 
 def executeCommand(command):
     try:
-        returnCode = subprocess.call(command, shell = True)
+        returnCode = subprocess.call(command, shell=True)
         if returnCode != 0:
             error("Return code %d in command: %s" % (returnCode, command))
     except OSError as e:
         error("Error executing command: " + command)
+
 
 def decrypt(value):
     global cipherKey
@@ -440,14 +565,17 @@ def decrypt(value):
         cipherKey = readPassword("Input the password cipher key: ")
     return cipher.decryptData(cipherKey.strip(), value.strip())
 
+
 def safeStrip(value):
     if value is not None:
         return value.strip()
     else:
         return None
 
+
 def isNoneOrEmpty(value):
     return value is None or len(value) == 0
+
 
 def splitRange(param):
     result = set()
@@ -456,38 +584,48 @@ def splitRange(param):
         result.update(range(int(x[0]), int(x[-1]) + 1))
     return sorted(result)
 
+
 def readInput(message):
     sys.stdout.write(message)
     sys.stdout.flush()
     return sys.stdin.readline().strip()
 
+
 def readPassword(message):
     return getpass.getpass(message)
+
 
 def readJsonFile(filename):
     if not os.path.isfile(filename):
         error("File %s not found." % filename)
 
-    with open (filename, "r") as configFile:
+    with open(filename, "r") as configFile:
         data = configFile.read()
         return json.loads(data)
 
+
 gIsVerbose = False
+
+
 def setVerbose(isVerbose):
     global gIsVerbose
     gIsVerbose = isVerbose
+
 
 def verbose(message):
     global gIsVerbose
     if gIsVerbose:
         info(message)
 
+
 def info(message):
     print message
     sys.stdout.flush()
 
+
 def error(message):
     sys.stderr.write("ERROR: " + message + "\n")
     sys.exit(1)
+
 
 main()

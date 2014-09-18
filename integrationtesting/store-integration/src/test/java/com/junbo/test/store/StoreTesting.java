@@ -36,6 +36,8 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import com.junbo.test.store.apihelper.TestContext;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -273,7 +275,7 @@ public class StoreTesting extends BaseTestClass {
         userCredentialRateResponse = testDataProvider.RateUserCredential(password);
         Validator.Validate("validate password strong", "STRONG", userCredentialRateResponse.getStrength());
 
-        AuthTokenResponse newAuthTokenResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        AuthTokenResponse newAuthTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         Validator.Validate("validate token valid", authTokenResponse.getUsername(), newAuthTokenResponse.getUsername());
 
         // todo:    Add other conditions
@@ -305,7 +307,7 @@ public class StoreTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
 
-        AuthTokenResponse signInResponse = testDataProvider.signIn(userName);
+        AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
 
@@ -430,7 +432,7 @@ public class StoreTesting extends BaseTestClass {
         UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckUserName(userName);
         assert !userNameCheckResponse.getIsAvailable();
 
-        authTokenResponse = testDataProvider.SignIn(userName, password);
+        authTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), password);
         assert authTokenResponse.getUsername().equals(userName);
         assert authTokenResponse.getAccessToken() != null;
     }
@@ -459,6 +461,26 @@ public class StoreTesting extends BaseTestClass {
         String password = "Test1234";
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+    }
+
+    @Test
+    public void testAcceptLanguageHeader() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        // locale not found
+        TestContext.getData().putHeader("Accept-Language", "en");
+        testDataProvider.getToc(412);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("131.124"));
+
+        // wildcard locale
+        TestContext.getData().putHeader("Accept-Language", "*");
+        Assert.assertNotNull(testDataProvider.getToc().getChallenge());
+
+        // invalid Accept-Language format
+        TestContext.getData().putHeader("Accept-Language", "en_US");
+        testDataProvider.getToc(400);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("199.001"));
     }
 
 }
