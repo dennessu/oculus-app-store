@@ -21,12 +21,14 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.clientencryption.Card;
-import com.junbo.test.payment.apihelper.clientencryption.Encrypter;
-import com.junbo.test.payment.apihelper.clientencryption.EncrypterException;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Yunlong on 4/4/14.
@@ -207,42 +209,38 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         return dbHelper.executeScalar(sqlStr, DBHelper.DBName.EWALLET);
     }
 
-    /*
+
     public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) {
+
+        Card card = new Card.Builder(new Date())
+                .number(creditCardInfo.getAccountNum())
+                .cvc(creditCardInfo.getEncryptedCVMCode())
+                .expiryMonth("06")
+                .expiryYear("2020")
+                .holderName(creditCardInfo.getAccountNum())
+                .build();
 
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName("javascript");
 
-        Map params = new HashMap();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        String dateFormatted = simpleDateFormat.format(new Date());
-
-        params.put("generationtime", dateFormatted);
-        params.put("expiryYear", "2016");
-        params.put("expiryMonth", "06");
-        params.put("cvc", "737");
-        params.put("holderName", "John");
-        params.put("number", "5555444433331111");
-
-        String json = JSONObject.toJSONString(params);
-
-        String jsFileName = "AdyenEncryptScript";
+        String jsFileName = "AdyenEncrypt.js";
 
         try {
             String script = readFileContent(jsFileName);
             engine.eval(script);
             if (engine instanceof Invocable) {
                 Invocable invoke = (Invocable) engine;
-                Double c = (Double) invoke.invokeFunction("encrypt", json);
+                return (String) invoke.invokeFunction("encryptcc", card.toString());
             }
         } catch (Exception e) {
-            e.toString();
+            throw new TestException(e.getMessage());
         }
 
         return null;
     }
-    */
 
+
+    /*
     public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) throws EncrypterException {
         Encrypter e = new Encrypter(pubKey);
 
@@ -257,6 +255,8 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         return e.encrypt(card.toString());
 
     }
+    */
+
 
     String pubKey = "10001|9699D59B070DBA71B53A696C67B8FB8538C5C9B73D2BF485104858"
             + "DD12BC7D706A096DE6D8508175311A5B15EABE829C51DF269228EC75C8B3"
