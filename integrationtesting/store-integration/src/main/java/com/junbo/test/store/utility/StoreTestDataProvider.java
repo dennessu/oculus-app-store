@@ -620,6 +620,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getTOC();
     }
 
+    public TocResponse getToc(int expectedCode) throws Exception {
+        return storeClient.getTOC(expectedCode);
+    }
+
     public ListResponse getList(ListRequest request) throws Exception {
         return storeClient.getList(request);
     }

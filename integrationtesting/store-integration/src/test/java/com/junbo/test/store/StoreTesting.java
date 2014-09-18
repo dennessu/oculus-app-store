@@ -36,6 +36,8 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import com.junbo.test.store.apihelper.TestContext;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -459,6 +461,26 @@ public class StoreTesting extends BaseTestClass {
         String password = "Test1234";
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+    }
+
+    @Test
+    public void testAcceptLanguageHeader() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        // locale not found
+        TestContext.getData().putHeader("Accept-Language", "en");
+        testDataProvider.getToc(412);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("131.124"));
+
+        // wildcard locale
+        TestContext.getData().putHeader("Accept-Language", "*");
+        Assert.assertNotNull(testDataProvider.getToc().getChallenge());
+
+        // invalid Accept-Language format
+        TestContext.getData().putHeader("Accept-Language", "en_US");
+        testDataProvider.getToc(400);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("199.001"));
     }
 
 }
