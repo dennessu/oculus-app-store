@@ -24,6 +24,7 @@ public class UserInfo {
     private UserInfo() {
         vats = new HashMap<>();
         emails = new ArrayList<>();
+        encodedEmails = new ArrayList<>();
         phones = new ArrayList<>();
         addressInfos = new ArrayList<>();
     }
@@ -140,12 +141,21 @@ public class UserInfo {
         this.vats.put(country, vatId);
     }
 
-    public void addEmail(String emailAddress) {
+    public void addEmail(String emailAddress) throws Exception {
         this.emails.add(emailAddress);
+        this.encodedEmails.add(URLEncoder.encode(emailAddress, "UTF-8"));
     }
 
     public void addPhone(String phone) {
         this.phones.add(phone);
+    }
+
+    public List<String> getEncodedEmails() {
+        return encodedEmails;
+    }
+
+    public void setEncodedEmails(List<String> encodedEmails) {
+        this.encodedEmails = encodedEmails;
     }
 
     /**
@@ -166,12 +176,13 @@ public class UserInfo {
     private Gender gender;
     private Map<String, String> vats;
     private List<String> emails;
+    private List<String> encodedEmails;
     private List<String> phones;
     private List<AddressInfo> addressInfos;
 
     public static UserInfo getRandomUserInfo() throws Exception {
         UserInfo userInfo = new UserInfo();
-        userInfo.setNickName(String.format("SCTest_%s",RandomFactory.getRandomStringOfAlphabet(5)));
+        userInfo.setNickName(String.format("SCTest_%s", RandomFactory.getRandomStringOfAlphabet(5)));
         userInfo.setFirstName(RandomFactory.getRandomStringOfAlphabet(5));
         userInfo.setLastName(RandomFactory.getRandomStringOfAlphabet(5));
         SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd");
@@ -182,7 +193,7 @@ public class UserInfo {
         userInfo.setCountry(Country.DEFAULT);
         userInfo.setGender(Gender.male);
         userInfo.addAddress(AddressInfo.getRandomAddressInfo());
-        userInfo.addEmail(URLEncoder.encode(RandomFactory.getRandomEmailAddress(), "UTF-8"));
+        userInfo.addEmail(RandomFactory.getRandomEmailAddress());
         return userInfo;
     }
 

@@ -33,7 +33,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -916,7 +915,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         testDataProvider.postPayment(uid, creditCardInfo);
 
-        testDataProvider.signIn(URLDecoder.decode(userInfo.getEmails().get(0), "UTF-8"));
+        testDataProvider.signIn(userInfo.getEmails().get(0));
         BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
 
         assert response.getBillingProfile().getInstruments().size() == 1;

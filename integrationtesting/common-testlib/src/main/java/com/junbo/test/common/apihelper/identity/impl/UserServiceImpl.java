@@ -194,7 +194,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         }
 
 
-        String accessToken = oAuthClient.postUserAccessToken(userInfo.getEmails().get(0), userInfo.getPassword());
+        String accessToken = oAuthClient.postUserAccessToken(userInfo.getEncodedEmails().get(0), userInfo.getPassword());
         TokenInfo tokenInfo = oAuthClient.getTokenInfo(accessToken);
         String uid = IdConverter.idToHexString(tokenInfo.getSub());
         Master.getInstance().addUserAccessToken(uid, accessToken);
@@ -235,7 +235,6 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String PostUser() throws Exception {
         return PostUser(UserInfo.getRandomUserInfo(), 200);
     }
-
 
     private UserPersonalInfo postBillingAddress(UserId userId, Address address) throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
