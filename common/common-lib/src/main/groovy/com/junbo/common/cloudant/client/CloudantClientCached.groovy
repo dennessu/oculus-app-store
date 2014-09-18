@@ -7,6 +7,7 @@ import com.junbo.common.id.CloudantId
 import com.junbo.common.memcached.JunboMemcachedClient
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
+import com.junbo.configuration.topo.DataCenters
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
@@ -31,6 +32,7 @@ class CloudantClientCached implements CloudantClientInternal {
     private Integer expiration
     private Integer maxEntitySize
     private boolean storeViewResults
+    private String currentDc
 
     private CloudantClientCached() {
         ConfigService configService = ConfigServiceManager.instance()
@@ -42,6 +44,7 @@ class CloudantClientCached implements CloudantClientInternal {
         this.expiration = safeParseInt(strExpiration)
         this.maxEntitySize = safeParseInt(strMaxEntitySize)
         this.storeViewResults = strStoreViewResults == "true"
+        this.currentDc = DataCenters.instance().currentDataCenter()
     }
 
     @Override
@@ -195,7 +198,8 @@ class CloudantClientCached implements CloudantClientInternal {
         if (entity.getId() != null) {
             entity.setCloudantId(entity.getId().toString())
         }
-        if (entity.getCloudantId() == null) {
+        if (entity.getCloudantId() == null || dbUri.cloudantUri.dc != currentDc) {
+            // Don't cache if dc URI is not for current DC.
             return
         }
 
