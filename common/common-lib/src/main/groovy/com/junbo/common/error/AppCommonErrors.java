@@ -49,6 +49,9 @@ public interface AppCommonErrors {
     @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Header is invalid")
     AppError headerInvalid(String header);
 
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error: {1}", field = "{0}", reason = "Header is invalid")
+    AppError headerInvalid(String header, String message);
+
     @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Field must be null")
     AppError fieldMustBeNull(String field);
 

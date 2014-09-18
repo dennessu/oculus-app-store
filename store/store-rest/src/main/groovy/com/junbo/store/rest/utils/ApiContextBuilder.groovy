@@ -38,7 +38,12 @@ class ApiContextBuilder {
     @Resource(name = 'storeIdentityUtils')
     private IdentityUtils identityUtils
 
+    @Resource(name = 'storeAppErrorUtils')
+    private AppErrorUtils appErrorUtils
+
     private String defaultCountry = 'US'
+
+    private String defaultLocale = 'en_US'
 
     Promise<ApiContext> buildApiContext() {
         ApiContext result = new ApiContext()
@@ -89,7 +94,13 @@ class ApiContextBuilder {
         if (!StringUtils.isEmpty(requestLocale.country)) {
             localeId += "_${requestLocale.country}"
         }
-        resourceContainer.localeResource.get(new LocaleId(localeId), new LocaleGetOptions()).then { com.junbo.identity.spec.v1.model.Locale e ->
+
+        resourceContainer.localeResource.get(new LocaleId(localeId), new LocaleGetOptions()).recover { Throwable ex ->
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.LocaleNotFound)) {
+                return resourceContainer.localeResource.get(new LocaleId(defaultLocale), new LocaleGetOptions())
+            }
+            throw ex
+        }.then { com.junbo.identity.spec.v1.model.Locale e ->
             return Promise.pure(e)
         }
     }

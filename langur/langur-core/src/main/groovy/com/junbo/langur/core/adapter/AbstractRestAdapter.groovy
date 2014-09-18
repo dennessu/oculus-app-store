@@ -3,9 +3,11 @@ package com.junbo.langur.core.adapter
 import com.google.common.base.Function
 import com.junbo.langur.core.IpUtil
 import com.junbo.langur.core.context.JunboHttpContext
+import com.junbo.langur.core.exception.InvalidHeaderException
 import com.junbo.langur.core.routing.Router
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.Request
+import org.glassfish.jersey.message.internal.HeaderValueException
 import org.glassfish.jersey.server.ContainerResponse
 import org.glassfish.jersey.server.internal.process.RespondingContext
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.Context
+import javax.ws.rs.core.HttpHeaders
 
 /**
  * Created by kg on 5/23/2014.
@@ -39,8 +42,13 @@ abstract class AbstractRestAdapter {
                 requestMethod: httpRequestContext.method,
                 requestUri: httpRequestContext.uriInfo.absolutePath,
                 requestHandler: requestHandler,
-                acceptableLanguages: httpRequestContext.acceptableLanguages
         )
+
+        try {
+            httpContextData.acceptableLanguages = httpRequestContext.acceptableLanguages
+        } catch (HeaderValueException ex) {
+            throw new InvalidHeaderException(HttpHeaders.ACCEPT_LANGUAGE, ex.message, ex.cause)
+        }
 
         for (Map.Entry<String, List<String>> entry : httpRequestContext.headers.entrySet()) {
             httpContextData.requestHeaders.addAll(entry.key, entry.value)
