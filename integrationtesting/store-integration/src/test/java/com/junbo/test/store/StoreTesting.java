@@ -273,7 +273,7 @@ public class StoreTesting extends BaseTestClass {
         userCredentialRateResponse = testDataProvider.RateUserCredential(password);
         Validator.Validate("validate password strong", "STRONG", userCredentialRateResponse.getStrength());
 
-        AuthTokenResponse newAuthTokenResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        AuthTokenResponse newAuthTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         Validator.Validate("validate token valid", authTokenResponse.getUsername(), newAuthTokenResponse.getUsername());
 
         // todo:    Add other conditions
@@ -305,7 +305,7 @@ public class StoreTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
 
-        AuthTokenResponse signInResponse = testDataProvider.signIn(userName);
+        AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
 
@@ -430,7 +430,7 @@ public class StoreTesting extends BaseTestClass {
         UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckUserName(userName);
         assert !userNameCheckResponse.getIsAvailable();
 
-        authTokenResponse = testDataProvider.SignIn(userName, password);
+        authTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), password);
         assert authTokenResponse.getUsername().equals(userName);
         assert authTokenResponse.getAccessToken() != null;
     }

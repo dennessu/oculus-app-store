@@ -520,6 +520,14 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             }
         }
 
+        if (StringUtils.isEmpty(userLoginAttempt.username) && userLoginAttempt.userId == null) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
+        }
+
+        if (!StringUtils.isEmpty(userLoginAttempt.username) && !isEmail(userLoginAttempt.username)) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'Only mail login is supported').exception()
+        }
+
         if (userLoginAttempt.value == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
         }

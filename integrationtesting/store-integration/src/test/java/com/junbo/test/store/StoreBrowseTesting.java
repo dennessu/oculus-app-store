@@ -78,7 +78,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
         // get toc
         TocResponse response = testDataProvider.getToc();
@@ -99,7 +99,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
         // call get library and expect empty items
         assert testDataProvider.getLibrary().getItems().isEmpty();
@@ -129,7 +129,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
         // call get library and expect empty items
         assert testDataProvider.getLibrary().getItems().isEmpty();
@@ -196,7 +196,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
         // buy offers
         String offerId;
@@ -451,7 +451,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
         // get toc
         TocResponse response = testDataProvider.getToc();

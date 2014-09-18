@@ -311,13 +311,13 @@ public class LoginResourceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
 
         assert authTokenResponse.getUsername() != null;
-        AuthTokenResponse signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        AuthTokenResponse signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         Validator.Validate("validate createdToken equals to signIn token", authTokenResponse.getUsername(), signInResponse.getUsername());
 
-        signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), RandomHelper.randomAlphabetic(15), 412);
+        signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), RandomHelper.randomAlphabetic(15), 412);
         assert signInResponse == null;
 
-        signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         Validator.Validate("validate createdToken equals to signIn token", authTokenResponse.getUsername(), signInResponse.getUsername());
 
         signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
@@ -346,7 +346,7 @@ public class LoginResourceTesting extends BaseTestClass {
         userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
         assert userProfileUpdateResponse != null;
 
-        signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), newPassword);
+        signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), newPassword);
         Validator.Validate("validate signIn token equals to the current user", createUserRequest.getUsername(), signInResponse.getUsername());
 
         signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), newPassword);
@@ -387,7 +387,7 @@ public class LoginResourceTesting extends BaseTestClass {
         assert error.getDetails().get(0).getField().contains("userCredential.value");
         assert error.getDetails().get(0).getReason().contains("Field is required");
 
-        authTokenResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        authTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert authTokenResponse != null;
         assert authTokenResponse.getUsername().equals(createUserRequest.getUsername());
     }

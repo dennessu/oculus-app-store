@@ -7,6 +7,7 @@ package com.junbo.test.common;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -41,6 +42,10 @@ public class RandomHelper {
         array.add(true);
         array.add(false);
         return Boolean.parseBoolean(randomValueFromList(array).toString());
+    }
+
+    public static String randomEncodeEmail() throws Exception{
+        return URLEncoder.encode(randomEmail(), "UTF-8");
     }
 
     public static String randomEmail() {

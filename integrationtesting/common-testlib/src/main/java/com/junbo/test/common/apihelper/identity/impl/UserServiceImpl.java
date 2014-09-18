@@ -194,7 +194,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         }
 
 
-        String accessToken = oAuthClient.postUserAccessToken(userInfo.getUserName(), userInfo.getPassword());
+        String accessToken = oAuthClient.postUserAccessToken(userInfo.getEmails().get(0), userInfo.getPassword());
         TokenInfo tokenInfo = oAuthClient.getTokenInfo(accessToken);
         String uid = IdConverter.idToHexString(tokenInfo.getSub());
         Master.getInstance().addUserAccessToken(uid, accessToken);
