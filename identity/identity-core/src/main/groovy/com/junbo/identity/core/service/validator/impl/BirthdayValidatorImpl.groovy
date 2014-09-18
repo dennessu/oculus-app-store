@@ -7,6 +7,7 @@ import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
+import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserDOB
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -45,7 +46,7 @@ class BirthdayValidatorImpl implements PiiValidator {
         UserDOB oldUserDOB = (UserDOB)JsonHelper.jsonNodeToObj(oldValue, UserDOB)
 
         if (userDOB != oldUserDOB) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'value can\'t be updated.').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('dob', 'value can\'t be updated.').exception()
         }
 
         return Promise.pure(null)
@@ -60,13 +61,13 @@ class BirthdayValidatorImpl implements PiiValidator {
         def after = Calendar.instance
         after.add(Calendar.YEAR, -timespanMinInYears)
         if (birthday.after(after.time)) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('value.info').exception()
+            throw AppErrors.INSTANCE.ageRestrictionError().exception()
         }
 
         def before = Calendar.instance
         before.add(Calendar.YEAR, -timespanMaxInYears)
         if (birthday.before(before.time)) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('value.info').exception()
+            throw AppErrors.INSTANCE.ageRestrictionError().exception()
         }
     }
 
