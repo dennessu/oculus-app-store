@@ -30,9 +30,6 @@ import java.util.*;
  */
 public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
-    private static String oauthUrl = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/oauth2";
-    private static String identityPiiUrl = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/personal-info";
-
     private static OAuthService instance;
 
     private boolean needAuthHeader;
@@ -50,6 +47,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     private OAuthServiceImpl() {
         componentType = ComponentType.IDENTITY;
         contentType = "application/x-www-form-urlencoded";
+        endPointUrlSuffix = "/oauth2";
     }
 
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
@@ -119,7 +117,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("grant_type", grantType.toString());
 
 
-        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/token",
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/token",
                 convertFormatToRequestString(formParams), expectedResponseCode);
 
         AccessTokenResponse accessTokenResponse = new JsonMessageTranscoder().decode(
@@ -148,7 +146,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("password", pwd);
         formParams.put("username", username);
 
-        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/token",
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/token",
                 convertFormatToRequestString(formParams), expectedResponseCode);
 
         AccessTokenResponse accessTokenResponse = new JsonMessageTranscoder().decode(
@@ -174,7 +172,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("country", country);
         formParams.put("locale", locale);
 
-        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/verify-email",
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/verify-email",
                 convertFormatToRequestString(formParams), expectedResponseCode, true);
 
         return responseBody;
@@ -200,7 +198,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         String url = String.format("/authorize?client_id=%s&response_type=code&scope=identity&redirect_uri=%s",
                 ConfigHelper.getSetting("client_id"), ConfigHelper.getSetting("defaultRedirectURI"));
 
-        String responseBody = restApiCall(HTTPMethod.GET, oauthUrl + url);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + url);
 
         return responseBody.substring(responseBody.indexOf('=') + 1);
     }
@@ -210,7 +208,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         needAuthHeader = false;
         needOverrideRequestEntity = false;
         String url = String.format("/authorize?cid=%s", cid);
-        String responseBody = restApiCall(HTTPMethod.GET, oauthUrl + url);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + url);
     }
 
     @Override
@@ -220,7 +218,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("cid", cid);
         formParams.put("event", "register");
 
-        restApiCall(HTTPMethod.POST, oauthUrl + "/authorize",
+        restApiCall(HTTPMethod.POST, getEndPointUrl() + "/authorize",
                 convertFormatToRequestString(formParams));
     }
 
@@ -242,7 +240,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("pin", "1234");
         formParams.put("country", country.toString());
 
-        restApiCall(HTTPMethod.POST, oauthUrl + "/authorize",
+        restApiCall(HTTPMethod.POST, getEndPointUrl() + "/authorize",
                 convertFormatToRequestString(formParams));
 
     }
@@ -265,7 +263,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("pin", userInfo.getPin());
         formParams.put("country", userInfo.getCountry().toString());
 
-        restApiCall(HTTPMethod.POST, oauthUrl + "/authorize",
+        restApiCall(HTTPMethod.POST, getEndPointUrl() + "/authorize",
                 convertFormatToRequestString(formParams));
     }
 
@@ -280,7 +278,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("password", pwd);
         formParams.put("username", username);
 
-        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/token",
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/token",
                 convertFormatToRequestString(formParams));
 
         AccessTokenResponse accessTokenResponse = new JsonMessageTranscoder().decode(
@@ -296,7 +294,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         needAuthHeader = false;
         needOverrideRequestEntity = false;
         String url = String.format("/tokeninfo?access_token=%s", accessToken);
-        String responseBody = restApiCall(HTTPMethod.GET, oauthUrl + url);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + url);
 
         TokenInfo tokenInfo = new JsonMessageTranscoder().decode(new TypeReference<TokenInfo>() {
         },
@@ -312,7 +310,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("cid", cid);
         formParams.put("event", "skip");
 
-        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/authorize",
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/authorize",
                 convertFormatToRequestString(formParams));
 
         String[] values = responseBody.split("\"");
@@ -330,7 +328,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         needAuthHeader = false;
         needOverrideRequestEntity = false;
         emailVerifyLink = emailVerifyLink.substring(emailVerifyLink.indexOf("verify"));
-        restApiCall(HTTPMethod.GET, oauthUrl + "/" + emailVerifyLink, 302);
+        restApiCall(HTTPMethod.GET, getEndPointUrl() + "/" + emailVerifyLink, 302);
     }
 
     @Override
@@ -338,7 +336,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         needAuthHeader = true;
         needOverrideRequestEntity = false;
         componentType = ComponentType.SMOKETEST;
-        String url = String.format(oauthUrl + "/verify-email/test?userId=%s&locale=en_US&email=%s", uid, URLEncoder.encode(emailAddress, "UTF-8"));
+        String url = String.format(getEndPointUrl() + "/verify-email/test?userId=%s&locale=en_US&email=%s", uid, URLEncoder.encode(emailAddress, "UTF-8"));
         String linkArray = restApiCall(HTTPMethod.GET, url, null, true);
         List<String> links = ObjectMapperProvider.instance().readValue(linkArray, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class));
         return links;

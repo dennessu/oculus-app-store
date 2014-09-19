@@ -528,7 +528,7 @@ public class Master {
 
     public EndPointType getEndPointType() {
         if (endPointType.equals(EndPointType.Random)) {
-            switch (RandomFactory.getRandomInteger(0, 1)) {
+            switch (RandomFactory.getRandomInteger(0, 2)) {
                 case 0:
                     return endPointType.Primary;
                 case 1:

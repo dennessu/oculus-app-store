@@ -350,6 +350,71 @@ public class StoreTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.STORE,
             owner = "ZhaoYunlong",
+            environment = "release",
+            status = Status.Enable,
+            description = "Test iap offer checkout with multi endpoint",
+            steps = {
+                    "1. Create user in west dc",
+                    "2. Sign in",
+                    "3. Get user profile",
+                    "4. Verify response",
+                    "5. Make free purchase",
+                    "6. Verify purchase response",
+                    "8. Get library in east dc",
+                    "9. Verify library response",
+                    "10. Refresh token",
+            }
+    )
+    @Test(groups = "int/ppe/prod/sewer")
+    public void testMakeFreePurchaseWithMultiEndpoint() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+
+        AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
+
+        validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+
+        UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
+
+        validationHelper.verifyUserProfile(userProfileResponse, authTokenResponse);
+
+        String offerId;
+        if (offer_iap_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+            Offer offer = testDataProvider.getOfferByOfferId(offerId);
+            OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
+            Item item = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId());
+            testDataProvider.getItemRevision(item.getCurrentRevisionId());
+        }
+
+        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
+
+        //String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
+
+        if (freePurchaseResponse.getChallenge() != null) {
+            freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+        }
+        Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
+        validationHelper.verifyLibraryResponse(libraryResponse, offerId);
+
+        Master.getInstance().setCurrentUid(null);
+
+        AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());
+
+        validationHelper.verifySignInResponse(signInResponse, tokenResponse);
+
+    }
+
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store checkout",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test iap offer checkout",
             steps = {

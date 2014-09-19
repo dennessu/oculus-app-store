@@ -18,6 +18,7 @@ import com.junbo.test.common.Validator;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
@@ -40,6 +41,7 @@ public class LoginResourceTesting extends BaseTestClass {
     public static String CREDENTIAL_STRENGTH_STRONG = "STRONG";
 
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
+
     @Property(
             priority = Priority.Dailies,
             features = "Store",
@@ -97,14 +99,15 @@ public class LoginResourceTesting extends BaseTestClass {
     @Test
     public void testCheckEmail() throws Exception {
         String invalidEmail = "123Test";
-        UserNameCheckResponse userNameCheckResponse =null;
+        UserNameCheckResponse userNameCheckResponse = null;
         Error error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");
         assert error != null;
         assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
         assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
         invalidEmail = "###1212@silkcloud.com";
-        error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");assert error != null;
+        error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");
+        assert error != null;
         assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
         assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
@@ -120,7 +123,7 @@ public class LoginResourceTesting extends BaseTestClass {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         assert links != null;
-        for(String link : links) {
+        for (String link : links) {
             oAuthClient.accessEmailVerifyLink(link);
         }
         userProfileGetResponse = testDataProvider.getUserProfile();
@@ -367,7 +370,7 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testLoginInvalid() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
-        assert authTokenResponse !=  null;
+        assert authTokenResponse != null;
 
         Error error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PIN", "1234", 400, "130.001");
         assert error != null;
@@ -474,7 +477,7 @@ public class LoginResourceTesting extends BaseTestClass {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
         assert links != null;
-        for(String link : links) {
+        for (String link : links) {
             oAuthClient.accessEmailVerifyLink(link);
         }
 
@@ -675,7 +678,7 @@ public class LoginResourceTesting extends BaseTestClass {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
         assert links != null;
-        for(String link : links) {
+        for (String link : links) {
             oAuthClient.accessEmailVerifyLink(link);
         }
 
@@ -827,7 +830,7 @@ public class LoginResourceTesting extends BaseTestClass {
         links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         assert links != null;
         assert links.size() == 2;
-        for(String link : links) {
+        for (String link : links) {
             try {
                 oAuthClient.accessEmailVerifyLink(link);
             } catch (Exception e) {
@@ -843,4 +846,31 @@ public class LoginResourceTesting extends BaseTestClass {
         assert links != null;
         assert links.size() == 1;
     }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store sign in",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            environment = "release",
+            status = Status.Enable,
+            description = "Test user sign in with multi endpoint",
+            steps = {
+                    "1. Create user in east dc",
+                    "2. Sign in in west dc",
+
+            }
+    )
+    @Test(groups = "int/ppe/prod/sewer")
+    public void testSignInWithMultiEndpoint() throws Exception {
+        Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        String userName = authTokenResponse.getUsername();
+        Master.getInstance().setEndPointType(Master.EndPointType.Primary);
+        AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
+
+        validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+    }
+
 }

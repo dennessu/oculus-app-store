@@ -10,6 +10,7 @@ import com.junbo.test.store.apihelper.TestContext;
 import com.junbo.test.store.utility.StoreTestDataProvider;
 import com.junbo.test.store.utility.StoreValidationHelper;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 import java.util.Arrays;
 import java.util.List;
@@ -123,6 +124,15 @@ public abstract class BaseTestClass {
 
     StoreTestDataProvider testDataProvider = new StoreTestDataProvider();
     StoreValidationHelper validationHelper = new StoreValidationHelper(testDataProvider);
+
+    @BeforeMethod
+    public void initialEnv() {
+        if (ConfigHelper.getSetting("endpoint.random") != null && Boolean.valueOf(ConfigHelper.getSetting("endpoint.random"))) {
+            Master.getInstance().setEndPointType(Master.EndPointType.Random);
+        } else {
+            Master.getInstance().setEndPointType(Master.EndPointType.Primary);
+        }
+    }
 
     @AfterMethod
     public void clear() {
