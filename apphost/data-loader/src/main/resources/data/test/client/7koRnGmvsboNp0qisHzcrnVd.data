@@ -1,0 +1,16 @@
+{
+  "scopes" : [ "identity", "identity.pii", "catalog", "catalog.developer", "openid", "scope.info", "commerce", "offline", "smoketest" ],
+  "client_id" : "7koRnGmvsboNp0qisHzcrnVd",
+  "client_secret" : "9282025E56CA0E902C3304B570620E67#AC61A3317DED457528F1E4B55C99386D5F904E7AF79EF0ECA2AF7389BEB257617A97D9F64A9D87B4FA54DB387F0EADEE",
+  "client_name" : "smoketest",
+  "redirect_uris" : [ "http://localhost:8080", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
+  "default_redirect_uri" : "http://localhost:8080",
+  "default_scopes" : [ "identity", "openid" ],
+  "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
+  "grant_types" : [ "CLIENT_CREDENTIALS", "PASSWORD", "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
+  "id_token_issuer" : "www.silkcloud.com",
+  "logout_redirect_uris" : [ "http://localhost:8080", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
+  "default_logout_redirect_uri" : "http://localhost",
+  "need_consent" : false,
+  "debug_enabled" : true
+}

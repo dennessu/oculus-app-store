@@ -1,0 +1,13 @@
+{
+  "scopes" : [ "identity", "identity.service", "identity.migration" ],
+  "client_id" : "migration",
+  "client_secret" : "20E0233D61996694FFEA17C905466A58#2CBE442250E7E4E14D4CB0E767D298B26A5FD7030E0D6E66C24539F00FB5D6476375B7A9256FE420AEDC0983F378E2AE",
+  "client_name" : "migration",
+  "redirect_uris" : [],
+  "default_scopes" : [ "identity", "identity.service", "identity.migration" ],
+  "response_types" : [],
+  "grant_types" : [ "CLIENT_CREDENTIALS" ],
+  "logout_redirect_uris" : [],
+  "need_consent" : false,
+  "access_token_expiration" : 86400
+}
