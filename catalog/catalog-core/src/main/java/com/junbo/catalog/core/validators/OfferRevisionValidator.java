@@ -7,6 +7,7 @@
 package com.junbo.catalog.core.validators;
 
 import com.google.common.base.Joiner;
+import com.junbo.catalog.clientproxy.OrganizationFacade;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
@@ -33,6 +34,7 @@ public class OfferRevisionValidator extends ValidationSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationSupport.class);
     private OfferRepository offerRepo;
     private ItemRepository itemRepo;
+    private OrganizationFacade organizationFacade;
     private static final Map<String, String> PRODUCT_CODE_MAP = new HashMap<>();
     static {
         PRODUCT_CODE_MAP.put(ItemType.PHYSICAL.name(), "PHYSICAL_GOODS");
@@ -52,6 +54,11 @@ public class OfferRevisionValidator extends ValidationSupport {
     @Required
     public void setItemRepo(ItemRepository itemRepo) {
         this.itemRepo = itemRepo;
+    }
+
+    @Required
+    public void setOrganizationFacade(OrganizationFacade organizationFacade) {
+        this.organizationFacade = organizationFacade;
     }
 
     public void validateFull(OfferRevision revision, OfferRevision oldRevision) {
@@ -86,7 +93,11 @@ public class OfferRevisionValidator extends ValidationSupport {
         List<AppError> errors = new ArrayList<>();
         validateFieldNull("self", revision.getRevisionId(), errors);
         validateFieldNull("rev", revision.getRev(), errors);
-        validateFieldNotNull("publisher", revision.getOwnerId(), errors);
+        if(validateFieldNotNull("publisher", revision.getOwnerId(), errors)) {
+            if (organizationFacade.getOrganization(revision.getOwnerId()) == null) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(revision.getOwnerId())));
+            }
+        }
         validateFieldNull("createdTime", revision.getCreatedTime(), errors);
         validateFieldNull("updatedTime", revision.getUpdatedTime(), errors);
         validateFieldMatch("status", revision.getStatus(), Status.DRAFT.name(), errors);
@@ -106,7 +117,11 @@ public class OfferRevisionValidator extends ValidationSupport {
         validateNotWritable("self", revision.getRevisionId(), oldRevision.getRevisionId(), errors);
         validateNotWritable("rev", revision.getRev(), oldRevision.getRev(), errors);
         validateStatus(revision.getStatus(), errors);
-        validateNotWritable("publisher", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors);
+        if (validateNotWritable("publisher", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors)) {
+            if (organizationFacade.getOrganization(revision.getOwnerId()) == null) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(revision.getOwnerId())));
+            }
+        }
         validateOffer(revision, errors);
         validateLocales(revision.getLocales(), errors);
 
