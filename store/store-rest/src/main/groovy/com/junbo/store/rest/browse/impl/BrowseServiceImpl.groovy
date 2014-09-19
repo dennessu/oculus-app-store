@@ -32,6 +32,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
@@ -62,6 +63,9 @@ class BrowseServiceImpl implements BrowseService {
 
     @Resource(name = 'storeSectionService')
     private SectionService sectionService
+
+    @Resource(name = 'storeLocaleUtils')
+    private LocaleUtils localeUtils
 
     @Override
     Promise<Item> getItem(ItemId itemId, boolean checkAvailable, boolean includeDetails, ApiContext apiContext) {
@@ -265,7 +269,11 @@ class BrowseServiceImpl implements BrowseService {
             SimpleLocaleProperties simpleLocaleProperties = offerAttribute?.locales?.get(apiContext.locale.getId().value)
             sectionInfoNode.name = simpleLocaleProperties?.name
         } else {
-            sectionInfoNode.name = rawNode.name
+            Assert.isTrue(rawNode.sectionType == SectionInfoNode.SectionType.CmsSection)
+            sectionInfoNode.name = localeUtils.getLocaleProperties(rawNode.cmsNames, apiContext.locale) as String
+            if (sectionInfoNode.name == null) {
+                sectionInfoNode.name = rawNode.name
+            }
         }
         sectionInfoNode.category = rawNode.category
         sectionInfoNode.criteria = rawNode.criteria

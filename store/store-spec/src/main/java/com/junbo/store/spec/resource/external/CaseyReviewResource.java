@@ -5,12 +5,10 @@
  */
 package com.junbo.store.spec.resource.external;
 
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
-import com.junbo.store.spec.model.external.casey.CaseyResults;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
-import com.junbo.store.spec.model.external.casey.ReviewSearchParams;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -23,16 +21,9 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface CaseyReviewResource {
-
-    @GET
-    @Path("ratings/item/{itemId}")
-    Promise<CaseyResults<CaseyAggregateRating>> getRatingByItemId(@PathParam("itemId") String itemId);
-
-    @GET
-    @Path("reviews")
-    Promise<CaseyResults<CaseyReview>> getReviews(@BeanParam ReviewSearchParams params);
-
     @POST
     @Path("reviews")
-    Promise<CaseyReview> addReview(CaseyReview review);
+    // This annotation is added since we need to specify self generated access token through the header.
+    @AuthorizationNotRequired
+    Promise<CaseyReview> addReview(@HeaderParam("Authorization") String authorization, CaseyReview review);
 }

@@ -19,11 +19,13 @@ public class ContentItem {
      */
     public enum Type {
         offer,
-        item
+        item,
+        string
     }
 
     private String type;
     private List<CaseyLink> links;
+    private List<CaseyContentItemString> strings;
 
     public String getType() {
         return type;
@@ -39,5 +41,13 @@ public class ContentItem {
 
     public void setLinks(List<CaseyLink> links) {
         this.links = links;
+    }
+
+    public List<CaseyContentItemString> getStrings() {
+        return strings;
+    }
+
+    public void setStrings(List<CaseyContentItemString> strings) {
+        this.strings = strings;
     }
 }

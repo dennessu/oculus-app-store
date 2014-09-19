@@ -12,6 +12,7 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
@@ -26,7 +27,6 @@ import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
-import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -63,6 +63,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -226,7 +227,7 @@ class StoreResourceImpl implements StoreResource {
                 if (!userPendingUpdate) {
                     return Promise.pure()
                 }
-                return resourceContainer.userResource.put(user.getId(), user)
+                return resourceContainer.userUserResource.put(user.getId(), user)
             }.then {
                 return innerGetUserProfile().syncThen { StoreUserProfile userProfileResponse ->
                     return new UserProfileUpdateResponse(userProfile: userProfileResponse)
@@ -250,7 +251,7 @@ class StoreResourceImpl implements StoreResource {
 
             return Promise.pure(null)
         }.then {
-            return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernameInfo ->
+            return resourceContainer.userUserPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernameInfo ->
                 userProfile.username = ObjectMapperProvider.instance().treeToValue(usernameInfo.value, UserLoginName).userName
                 return Promise.pure()
             }
@@ -260,7 +261,7 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure(null)
             }
 
-            return resourceContainer.userPersonalInfoResource.get(emailLink.value, new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo personalInfo ->
+            return resourceContainer.userUserPersonalInfoResource.get(emailLink.value, new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo personalInfo ->
                 def email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
 
                 userProfile.email = new StoreUserEmail(
@@ -268,25 +269,9 @@ class StoreResourceImpl implements StoreResource {
                         isValidated: personalInfo.isValidated
                 )
            }
-        }.then {
-            return resourceContainer.userCredentialResource.list(user.getId(), new UserCredentialListOptions(
-                    type: 'PASSWORD',
-                    active: true
-            )).syncThen { Results<UserCredential> results ->
-                if (!results.items.isEmpty()) {
-                    userProfile.password = '******'
-                }
-            }
-        }.then {
-            return resourceContainer.userCredentialResource.list(user.getId(), new UserCredentialListOptions(
-                    type: 'PIN',
-                    active: true
-            )).syncThen { Results<UserCredential> results ->
-                if (!results.items.isEmpty()) {
-                    userProfile.pin = '****'
-                }
-            }
         }.syncThen {
+            userProfile.password = '******'
+            userProfile.pin = '****'
             return userProfile
         }
     }
@@ -1167,7 +1152,7 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure()
             }
             errorContext.fieldName = 'userProfile.password'
-            return resourceContainer.userCredentialResource.create(userId, new UserCredential(
+            return resourceContainer.userUserCredentialResource.create(userId, new UserCredential(
                     type: 'PASSWORD',
                     currentPassword: request.challengeAnswer.password,
                     value: request.userProfile.password
@@ -1181,7 +1166,7 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure()
             }
             errorContext.fieldName = 'userProfile.pin'
-            return resourceContainer.userCredentialResource.create(userId, new UserCredential(
+            return resourceContainer.userUserCredentialResource.create(userId, new UserCredential(
                     type: 'PIN',
                     currentPassword: request.challengeAnswer.password,
                     value: request.userProfile.pin
@@ -1198,7 +1183,13 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private Promise validateInstrumentForPreparePurchase(User user, PreparePurchaseRequest preparePurchaseRequest) {
-        return resourceContainer.paymentInstrumentResource.getById(preparePurchaseRequest.getInstrument()).then { PaymentInstrument pi ->
+        return resourceContainer.paymentInstrumentResource.getById(preparePurchaseRequest.getInstrument()).recover { AppErrorException e ->
+            if ((int)(e.error.httpStatusCode / 100) == 4) {
+                return Promise.pure(null)
+            } else {
+                throw e
+            }
+        }.then { PaymentInstrument pi ->
             if (pi == null || pi.userId != user.getId().getValue()) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('instrument').exception()
             }

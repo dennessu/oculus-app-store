@@ -22,28 +22,16 @@
         <property name="cacheManager" ref="storeCacheManagerFactory"/>
     </bean>
 
-    <bean id="storeItemDataCache" class="com.junbo.store.common.cache.impl.SimpleCache">
+    <bean id="storeSectionInfoCache" class="com.junbo.store.common.cache.impl.SimpleCache">
         <property name="cacheEnabled" value="${store.cache.enabled}"/>
         <property name="cacheManager" ref="storeCacheManager"/>
-        <property name="cacheName" value="store.itemdata.cache"/>
-    </bean>
-
-    <bean id="storeItemPriceCache" class="com.junbo.store.common.cache.impl.SimpleCache">
-        <property name="cacheEnabled" value="${store.cache.enabled}"/>
-        <property name="cacheManager" ref="storeCacheManager"/>
-        <property name="cacheName" value="store.item.price.cache"/>
-    </bean>
-
-    <bean id="storeOfferToItemCache" class="com.junbo.store.common.cache.impl.SimpleCache">
-        <property name="cacheEnabled" value="${store.cache.enabled}"/>
-        <property name="cacheManager" ref="storeCacheManager"/>
-        <property name="cacheName" value="store.item.offerlookup"/>
+        <property name="cacheName" value="store.item.sectionInfo"/>
     </bean>
 
     <util:list id="storeSectionInfoNodePrototype" value-type="com.junbo.store.spec.model.browse.document.SectionInfoNode">
         <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
             <property name="criteria" value="${store.browse.featured.rootCriteria}"/>
-            <property name="cmsPage" value="${store.browse.featured.page}"/>
+            <property name="cmsPageSearch" value="${store.browse.featured.page.search}"/>
             <property name="name" value="${store.browse.featured.name}"/>
             <property name="sectionType" value="CmsSection"/>
         </bean>

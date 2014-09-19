@@ -6,17 +6,17 @@
 package com.junbo.test.entitlement.impl;
 
 import com.junbo.common.id.ItemId;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.DownloadUrlResponse;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.entitlement.EntitlementService;
-import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.ConfigHelper;
-import com.junbo.common.model.Results;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,7 +30,6 @@ import java.util.Set;
  */
 public class EntitlementServiceImpl extends HttpClientBase implements EntitlementService {
 
-    private String entitlementUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/entitlements";
     private String itemBinariesUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/item-binary";
     private static EntitlementService instance;
     private boolean isServiceScope = true;
@@ -44,6 +43,7 @@ public class EntitlementServiceImpl extends HttpClientBase implements Entitlemen
 
     private EntitlementServiceImpl() {
         componentType = ComponentType.ENTITLEMENT;
+        endPointUrlSuffix = "/entitlements";
     }
 
     public Entitlement grantEntitlement(Entitlement entitlement) throws Exception {
@@ -51,7 +51,7 @@ public class EntitlementServiceImpl extends HttpClientBase implements Entitlemen
     }
 
     public Entitlement grantEntitlement(Entitlement entitlement, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, entitlementUrl, entitlement, expectedResponseCode, isServiceScope);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl(), entitlement, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<Entitlement>() {
         }, responseBody);
     }
@@ -61,7 +61,7 @@ public class EntitlementServiceImpl extends HttpClientBase implements Entitlemen
     }
 
     public Entitlement getEntitlement(String entitlementId, int expectedResponseCode) throws Exception {
-        String entitlementGetUrl = entitlementUrl + "/" + entitlementId;
+        String entitlementGetUrl = getEndPointUrl() + "/" + entitlementId;
         String responseBody = restApiCall(HTTPMethod.GET, entitlementGetUrl, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<Entitlement>() {
         }, responseBody);
@@ -73,7 +73,7 @@ public class EntitlementServiceImpl extends HttpClientBase implements Entitlemen
 
     public Entitlement updateEntitlement(String entitlementId, Entitlement entitlement, int expectedResponseCode)
             throws Exception {
-        String entitlementPutUrl = entitlementUrl + "/" + entitlementId;
+        String entitlementPutUrl = getEndPointUrl() + "/" + entitlementId;
         String responseBody = restApiCall(HTTPMethod.PUT, entitlementPutUrl, entitlement, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<Entitlement>() {
         }, responseBody);
@@ -84,7 +84,7 @@ public class EntitlementServiceImpl extends HttpClientBase implements Entitlemen
     }
 
     public void deleteEntitlement(String entitlementId, int expectedResponseCode) throws Exception {
-        String entitlementDeleteUrl = entitlementUrl + "/" + entitlementId;
+        String entitlementDeleteUrl = getEndPointUrl() + "/" + entitlementId;
         restApiCall(HTTPMethod.DELETE, entitlementDeleteUrl, null, expectedResponseCode, isServiceScope);
     }
 
@@ -131,7 +131,7 @@ public class EntitlementServiceImpl extends HttpClientBase implements Entitlemen
 
     @Override
     public Results<Entitlement> searchEntitlements(EntitlementSearchParam param, String cursor, Integer count, int expectedResponseCode) throws Exception {
-        StringBuilder entitlementSearchUrl = new StringBuilder(entitlementUrl + "?userId=" + IdConverter.idToHexString(param.getUserId()));
+        StringBuilder entitlementSearchUrl = new StringBuilder(getEndPointUrl() + "?userId=" + IdConverter.idToHexString(param.getUserId()));
         if (param.getIsActive() != null) {
             entitlementSearchUrl.append("&isActive=" + param.getIsActive());
         }
@@ -199,7 +199,7 @@ public class EntitlementServiceImpl extends HttpClientBase implements Entitlemen
     }
 
     public Results<Entitlement> getEntitlements(String userId, int expectedResponseCode) throws Exception {
-        String entitlementGetUrl = entitlementUrl + "?userId=" + userId;
+        String entitlementGetUrl = getEndPointUrl() + "?userId=" + userId;
         String responseBody = restApiCall(HTTPMethod.GET, entitlementGetUrl, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<Results<Entitlement>>() {
         }, responseBody);

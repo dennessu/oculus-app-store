@@ -1386,6 +1386,7 @@
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
                 <value>publisherRevenueRatio</value>
+                <value>fbPayoutOrgId</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
@@ -1413,6 +1414,7 @@
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
                 <value>publisherRevenueRatio</value>
+                <value>fbPayoutOrgId</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
                 <value>createdBy</value>
@@ -1438,6 +1440,7 @@
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
                 <value>publisherRevenueRatio</value>
+                <value>fbPayoutOrgId</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>

@@ -4,12 +4,15 @@ import com.junbo.common.enumid.LocaleId
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
+import com.junbo.store.spec.model.external.casey.cms.CaseyContentItemString
 import com.junbo.store.spec.model.external.casey.cms.CmsContentSlot
 import com.junbo.store.spec.model.external.casey.cms.CmsPage
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
 /**
@@ -21,11 +24,7 @@ class SectionServiceImpl implements SectionService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SectionServiceImpl)
 
-    private final Object lockObject = new Object()
-
     private LocaleId nameLookupLocale = new LocaleId('en_US')
-
-    private List<SectionInfoNode> sectionInfoNodes
 
     @Resource(name = 'storeSectionInfoNodePrototype')
     private List<SectionInfoNode> sectionInfoNodesPrototype
@@ -33,27 +32,35 @@ class SectionServiceImpl implements SectionService {
     @Resource(name = 'storeFacadeContainer')
     private FacadeContainer facadeContainer
 
+    @Value('${store.browse.featured.name.content}')
+    private String cmsNameContent
+
+    @Value('${store.browse.featured.page.path}')
+    private String cmsPagePath;
+
+    @Value('${store.browse.featured.page.label}')
+    private String cmsPageLabel;
+
+    @Value('${store.browse.featured.name.slot}')
+    private String cmsFeaturedNameSlot
+
     @Override
     List<SectionInfoNode> getTopLevelSectionInfoNode() {
-        initialize()
-        return sectionInfoNodes
+        return buildSectionInfoNode()
     }
 
     @Override
     public SectionInfoNode getSectionInfoNode(String category, String criteria) {
-        initialize()
-        lookup(category, criteria, sectionInfoNodes)
+        List<SectionInfoNode> nodes = buildSectionInfoNode()
+        lookup(category, criteria, nodes)
     }
 
-    @Override
-    public void refreshSectionInfoNode() {
-        long start = System.currentTimeMillis()
-        List<SectionInfoNode> newResults = []
+    private List<SectionInfoNode> buildSectionInfoNode() {
+        List<SectionInfoNode> results = []
         sectionInfoNodesPrototype.each { SectionInfoNode prototype ->
-            newResults << fromPrototype(prototype)
+            results << fromPrototype(prototype)
         }
-        LOGGER.info('name=Store_SectionInfoNode_Refresh, latency={}ms', System.currentTimeMillis() - start)
-        sectionInfoNodes = newResults
+        return results
     }
 
     private SectionInfoNode lookup(String category, String criteria, List<SectionInfoNode> sectionInfoNodes) {
@@ -74,7 +81,7 @@ class SectionServiceImpl implements SectionService {
         sectionInfoNode.sectionType = prototype.sectionType
         sectionInfoNode.category = prototype.category
         sectionInfoNode.criteria = prototype.criteria
-        sectionInfoNode.cmsPage = prototype.cmsPage
+        sectionInfoNode.cmsPageSearch = prototype.cmsPageSearch
         sectionInfoNode.cmsSlot = prototype.cmsSlot
         sectionInfoNode.name = prototype.name
         sectionInfoNode.parent = null
@@ -97,36 +104,28 @@ class SectionServiceImpl implements SectionService {
 
     private void handleCmsSection(SectionInfoNode root) {
         assert root.cmsSlot == null
-        CmsPage cmsPage = facadeContainer.caseyFacade.getCmsPage(root.cmsPage).get()
+        CmsPage cmsPage = facadeContainer.caseyFacade.getCmsPage(cmsPagePath, cmsPageLabel).get();
         root.children = []
         if (cmsPage == null) {
-            LOGGER.error('name=Store_CmsPage_NotFound, name={}', cmsPage)
+            LOGGER.error('name=Store_CmsPage_NotFound, path={}, label={}', cmsPagePath, cmsPageLabel)
             return
         }
-        if (cmsPage.slots != null) {
-            // make sure in lexicographical order
-            new TreeMap<>(cmsPage.slots).each { Map.Entry<String, CmsContentSlot> entry ->
+        if (!CollectionUtils.isEmpty(cmsPage.slots)) {
+            List<CaseyContentItemString> strings = cmsPage.slots[cmsFeaturedNameSlot]?.contents?.get(cmsNameContent)?.getStrings()
+            root.cmsNames = CollectionUtils.isEmpty(strings) ? null : strings[0]?.locales
+
+            new TreeMap<>(cmsPage.slots).each { Map.Entry<String, CmsContentSlot> slotEntry ->
+                String slot = slotEntry.key
                 SectionInfoNode child = new SectionInfoNode()
-                child.criteria = "${root.cmsPage}-${entry.key}"
-                child.category = null
-                child.cmsPage = root.cmsPage
-                child.cmsSlot = entry.key
-                child.name = entry.value?.description
+                child.criteria = "${root.cmsPageSearch}-${slot}"
+                child.cmsPageSearch = root.cmsPageSearch
+                child.cmsSlot = slot
+                strings = slotEntry?.value?.getContents()?.get(cmsNameContent)?.getStrings()
+                child.cmsNames = CollectionUtils.isEmpty(strings) ? null : strings[0]?.locales
                 child.parent = root
                 child.sectionType = root.sectionType
                 child.children = [] as List
                 root.children << child
-            }
-        }
-    }
-
-    private void initialize() {
-        if (sectionInfoNodes == null) {
-            try {
-                refreshSectionInfoNode()
-            } catch (Exception ex) {
-                sectionInfoNodes = []
-                LOGGER.error('name=Store_Section_Initialize_Error', ex)
             }
         }
     }

@@ -50,6 +50,9 @@ public class AccessTokenRequest {
     @FormParam("user_id")
     private String userId;
 
+    @FormParam("access_token")
+    private String accessToken;
+
     public String getClientId() {
         return clientId;
     }
@@ -144,5 +147,13 @@ public class AccessTokenRequest {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }

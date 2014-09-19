@@ -17,7 +17,4 @@ public interface SectionService {
     List<SectionInfoNode> getTopLevelSectionInfoNode();
 
     SectionInfoNode  getSectionInfoNode(String category, String criteria);
-
-    void refreshSectionInfoNode();
-
 }

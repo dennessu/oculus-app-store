@@ -5,10 +5,12 @@ import com.junbo.test.catalog.impl.*;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.store.apihelper.TestContext;
 import com.junbo.test.store.utility.StoreTestDataProvider;
 import com.junbo.test.store.utility.StoreValidationHelper;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +40,7 @@ public abstract class BaseTestClass {
     protected String item_digital_free;
     protected String item_digital_oculus_free1;
     protected String item_digital_oculus_free2;
-    protected String cmsPagePath;
+    protected String cmsPageName;
 
     protected String featureRootCriteria = "featureRoot";
     protected List<String> cmsSlot1Items;
@@ -61,6 +63,13 @@ public abstract class BaseTestClass {
     public BaseTestClass() {
         super();
         loadOffers();
+        loadEndPointUrl();
+    }
+
+    private void loadEndPointUrl() {
+        Master.getInstance().setPrimaryCommerceEndPointUrl(ConfigHelper.getSetting("defaultCommerceEndpoint"));
+        String secondaryUrl = ConfigHelper.getSetting("secondaryDcEndpoint") != null ? ConfigHelper.getSetting("secondaryDcEndpoint") : Master.getInstance().getPrimaryCommerceEndPointUrl();
+        Master.getInstance().setSecondaryCommerceEndPointUrl(secondaryUrl);
     }
 
     private void loadOffers() {
@@ -103,7 +112,7 @@ public abstract class BaseTestClass {
             useCaseyEmulator = Boolean.valueOf(ConfigHelper.getSetting("casey.useEmulator"));
         }
 
-        cmsPagePath = ConfigHelper.getSetting("testdata.cmspage.path");
+        cmsPageName = ConfigHelper.getSetting("testdata.cmspage.name");
         itemService = ItemServiceImpl.instance();
         itemRevisionService = ItemRevisionServiceImpl.instance();
         offerService = OfferServiceImpl.instance();
@@ -115,6 +124,17 @@ public abstract class BaseTestClass {
 
     StoreTestDataProvider testDataProvider = new StoreTestDataProvider();
     StoreValidationHelper validationHelper = new StoreValidationHelper(testDataProvider);
+
+    @BeforeMethod
+    public void initialEnv() {
+        if (ConfigHelper.getSetting("endpoint.random") == null) {
+            return;
+        } else if (ConfigHelper.getSetting("endpoint.random") != null && Boolean.valueOf(ConfigHelper.getSetting("endpoint.random"))) {
+            Master.getInstance().setEndPointType(Master.EndPointType.Random);
+        } else {
+            Master.getInstance().setEndPointType(Master.EndPointType.Primary);
+        }
+    }
 
     @AfterMethod
     public void clear() {

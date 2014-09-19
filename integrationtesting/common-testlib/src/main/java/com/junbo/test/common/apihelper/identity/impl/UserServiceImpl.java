@@ -8,19 +8,18 @@ package com.junbo.test.common.apihelper.identity.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junbo.common.error.*;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.*;
-import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.Identity.AddressInfo;
 import com.junbo.test.common.Entities.Identity.UserInfo;
-import com.junbo.test.common.Entities.enums.*;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
@@ -29,7 +28,6 @@ import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
-import com.junbo.test.common.JsonHelper;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -41,7 +39,6 @@ import java.util.*;
  */
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
-    private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/users";
     private final String identityPiiURL = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/personal-info";
     private static UserService instance;
     private String userPassword = "Test1234";
@@ -57,6 +54,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     private UserServiceImpl() {
         componentType = ComponentType.IDENTITY;
+        endPointUrlSuffix = "/users";
     }
 
 
@@ -79,7 +77,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             userForPost.setVat(vats);
         }
 
-        String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201, true);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl(), userForPost, 201, true);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
@@ -348,7 +346,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         params.put("type", "PASSWORD");
         params.put("value", password);
         String requestBody = JSONObject.toJSONString(params);
-        restApiCall(HTTPMethod.POST, identityServerURL + "/" + uid + "/" + "change-credentials",
+        restApiCall(HTTPMethod.POST, getEndPointUrl() + "/" + uid + "/" + "change-credentials",
                 requestBody, 201, true);
 
         return password;
@@ -360,7 +358,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     public String PostUser(User user, int expectedResponseCode) throws Exception {
 
-        String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, user, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl(), user, expectedResponseCode);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
@@ -376,7 +374,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         userForPost.setIsAnonymous(true);
         userForPost.setStatus("ACTIVE");
 
-        String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl(), userForPost, 201);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
@@ -426,9 +424,9 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     public String GetUserByUserId(String userId, int expectedResponseCode) throws Exception {
 
-        String url = identityServerURL;
+        String url = getEndPointUrl();
         if (userId != null && !userId.isEmpty()) {
-            url = identityServerURL + "/" + userId;
+            url = getEndPointUrl() + "/" + userId;
         }
 
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
@@ -463,7 +461,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         listUsername.add(userName);
 
         paraMap.put("username", listUsername);
-        String responseBody = restApiCall(HTTPMethod.GET, identityServerURL, null, expectedResponseCode, paraMap, false);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl(), null, expectedResponseCode, paraMap, false);
 
         if (expectedResponseCode != 200) {
             return null;
@@ -499,7 +497,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         listUsername.add(userName);
 
         paraMap.put("username", listUsername);
-        String responseBody = restApiCall(HTTPMethod.GET, identityServerURL, null, expectedResponseCode, paraMap, true);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl(), null, expectedResponseCode, paraMap, true);
 
         Results<User> userGet = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<User>>() {
@@ -531,7 +529,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     public String PutUser(String userId, User user, int expectedResponseCode) throws Exception {
 
-        String putUrl = identityServerURL + "/" + userId;
+        String putUrl = getEndPointUrl() + "/" + userId;
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode);
         User userPut = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
@@ -544,7 +542,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     public com.junbo.common.error.Error PutUserWithError(String userId, User user, int expectedResponseCode, String errorCode) throws Exception {
 
-        String putUrl = identityServerURL + "/" + userId;
+        String putUrl = getEndPointUrl() + "/" + userId;
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode);
         Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
         }, responseBody);

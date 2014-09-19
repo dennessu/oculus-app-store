@@ -9,6 +9,7 @@ import com.junbo.drm.spec.model.LicenseRequest;
 import com.junbo.drm.spec.model.SignedLicense;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteByAccessToken;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -29,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 public interface DrmResource {
 
     @ApiOperation("Grant a license.")
+    @RouteByAccessToken(switchable = true)
     @POST
     @Path("/")
     Promise<SignedLicense> postLicense(LicenseRequest request);

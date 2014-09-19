@@ -12,6 +12,7 @@ import com.junbo.common.model.Results;
 import com.junbo.common.swagger.ApiErrors;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -31,26 +32,31 @@ public interface CartResource {
 
     @ApiOperation("Create a cart")
     @ApiErrors(errors = { "cartAlreadyExists", "fieldInvalid" })
+    @RouteBy(value = "userId", switchable = true)
     @POST
     Promise<Cart> addCart(@PathParam("userId") UserId userId, Cart cart);
 
     @ApiOperation("Get a cart")
     @ApiErrors(errors = "cartNotFound")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     @Path("/{cartId}")
     Promise<Cart> getCart(@PathParam("userId") UserId userId, @PathParam("cartId") CartId cartId);
 
     @ApiOperation("Get the primary cart")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     @Path("/primary")
     Promise<Cart> getCartPrimary(@PathParam("userId") UserId userId);
 
     @ApiOperation("Get cart by name")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     Promise<Results<Cart>> getCartByName(@PathParam("userId") UserId userId, @QueryParam("cartName") String cartName);
 
     @ApiOperation("Update a cart")
     @ApiErrors(errors = { "cartNotFound", "fieldInvalid" })
+    @RouteBy(value = "userId", switchable = true)
     @PUT
     @Path("/{cartId}")
     Promise<Cart> updateCart(@PathParam("userId") UserId userId,

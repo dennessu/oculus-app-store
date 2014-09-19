@@ -15,6 +15,9 @@ public class CmsPageGetParams {
     @QueryParam("path")
     private String path;
 
+    @QueryParam("label")
+    private String label;
+
     public String getPath() {
         return path;
     }
@@ -23,4 +26,11 @@ public class CmsPageGetParams {
         this.path = path;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

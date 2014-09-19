@@ -31,10 +31,15 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
     [#if !authorizationNotRequired]
     if (__accessTokenProvider != null) {
         String __accessToken = __accessTokenProvider.getAccessToken();
-        __requestBuilder.addHeader("Authorization", "Bearer " + __accessToken);
+        if (__attachUserToken && JunboHttpContext.getRequestHeaders() != null) {
+            String __userToken = JunboHttpContext.getRequestHeaders().getFirst("Authorization");
+            __requestBuilder.addHeader("Authorization", __userToken + ',' +  __accessToken);
+        } else {
+            __requestBuilder.addHeader("Authorization", "Bearer " + __accessToken);
+        }
     } else {
-        if (com.junbo.langur.core.context.JunboHttpContext.getRequestHeaders() != null){
-            String __accessToken = com.junbo.langur.core.context.JunboHttpContext.getRequestHeaders().getFirst("Authorization");
+        if (JunboHttpContext.getRequestHeaders() != null){
+            String __accessToken = JunboHttpContext.getRequestHeaders().getFirst("Authorization");
             if (org.springframework.util.StringUtils.hasText(__accessToken)) {
                 __requestBuilder.addHeader("Authorization", __accessToken);
             }
@@ -91,7 +96,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
                 __responseHandler.onResponse(response);
             }
 
-            if (response.getStatusCode() / 100 == 2) {
+            if (response.getStatusCode() / 100 < 4) {
                 try {
                     return Promise.pure(__transcoder.<${returnType}>decode(new TypeReference<${returnType}>() {}, response.getResponseBody()));
                 } catch (java.io.IOException ex) {

@@ -69,7 +69,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
             throw new IllegalArgumentException('userCredential is null')
         }
 
-        def callback = authorizeCallbackFactory.create(userCredential.userId)
+        def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()

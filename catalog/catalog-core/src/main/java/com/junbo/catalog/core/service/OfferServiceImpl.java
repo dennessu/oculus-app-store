@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.clientproxy.OrganizationFacade;
 import com.junbo.catalog.common.util.Configuration;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
@@ -40,6 +41,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private ItemRepository itemRepo;
     private OfferAttributeRepository offerAttributeRepo;
     private OfferRevisionValidator revisionValidator;
+    private OrganizationFacade organizationFacade;
 
     @Autowired
     private Configuration config;
@@ -67,6 +69,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     @Required
     public void setRevisionValidator(OfferRevisionValidator revisionValidator) {
         this.revisionValidator = revisionValidator;
+    }
+
+    @Required
+    public void setOrganizationFacade(OrganizationFacade organizationFacade) {
+        this.organizationFacade = organizationFacade;
     }
 
     @Override
@@ -374,6 +381,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
         if (offer.getOwnerId()==null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("publisher"));
+        } else if (organizationFacade.getOrganization(offer.getOwnerId()) == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(offer.getOwnerId())));
         }
         if (Boolean.TRUE.equals(offer.getPublished())) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
@@ -402,6 +411,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
         if (!oldOffer.getOwnerId().equals(offer.getOwnerId())) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("publisher", Utils.encodeId(offer.getOwnerId()), Utils.encodeId(oldOffer.getOwnerId())));
+        } else if (organizationFacade.getOrganization(offer.getOwnerId()) == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(offer.getOwnerId())));
         }
         if (Boolean.TRUE.equals(offer.getPublished()) && !Boolean.TRUE.equals(oldOffer.getPublished()) && oldOffer.getCurrentRevisionId() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));

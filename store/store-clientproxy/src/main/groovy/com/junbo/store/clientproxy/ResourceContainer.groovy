@@ -63,11 +63,20 @@ class ResourceContainer {
     @Resource(name='store.userResourceClient')
     UserResource userResource
 
+    @Resource(name='store.user.userResourceClient')
+    UserResource userUserResource
+
     @Resource(name='store.userCredentialResourceClient')
     UserCredentialResource userCredentialResource
 
+    @Resource(name='store.user.userCredentialResourceClient')
+    UserCredentialResource userUserCredentialResource
+
     @Resource(name='store.userPersonalInfoResourceClient')
     UserPersonalInfoResource userPersonalInfoResource
+
+    @Resource(name='store.userPersonalInfoResourceClient')
+    UserPersonalInfoResource userUserPersonalInfoResource
 
     @Resource(name='store.userCredentialVerifyAttemptResourceClient')
     UserCredentialVerifyAttemptResource userCredentialVerifyAttemptResource

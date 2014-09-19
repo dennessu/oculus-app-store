@@ -7,6 +7,7 @@
 package com.junbo.catalog.core.service;
 
 import com.google.common.base.Joiner;
+import com.junbo.catalog.clientproxy.OrganizationFacade;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.core.validators.ItemRevisionValidator;
@@ -44,6 +45,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     private ItemAttributeRepository itemAttributeRepo;
     private OfferRepository offerRepo;
     private ItemRevisionValidator revisionValidator;
+    private OrganizationFacade organizationFacade;
 
     @Required
     public void setItemRevisionRepo(ItemRevisionRepository itemRevisionRepo) {
@@ -68,6 +70,11 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     @Required
     public void setRevisionValidator(ItemRevisionValidator revisionValidator) {
         this.revisionValidator = revisionValidator;
+    }
+
+    @Required
+    public void setOrganizationFacade(OrganizationFacade organizationFacade) {
+        this.organizationFacade = organizationFacade;
     }
 
     @Override
@@ -218,6 +225,8 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         }
         if (item.getOwnerId() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("developer"));
+        } else if (organizationFacade.getOrganization(item.getOwnerId()) == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("developer", "Cannot find organization " + Utils.encodeId(item.getOwnerId())));
         }
 
         validateItemCommon(item, errors);
@@ -246,6 +255,8 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         }
         if (!oldItem.getOwnerId().equals(item.getOwnerId())) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("developer", Utils.encodeId(item.getOwnerId()), Utils.encodeId(oldItem.getOwnerId())));
+        } else if (organizationFacade.getOrganization(item.getOwnerId()) == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("developer", "Cannot find organization " + Utils.encodeId(item.getOwnerId())));
         }
 
         validateItemCommon(item, errors);

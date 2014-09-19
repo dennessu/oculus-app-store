@@ -39,11 +39,7 @@
     <bean id="mockUserClient" class="com.junbo.cart.core.client.impl.MockUserClientImpl">
     </bean>
 
-    <bean id="cartService" class="com.junbo.cart.rest.util.CartServiceAdapterFactory" factory-method="newInstance">
-        <constructor-arg ref="rawCartService"/>
-    </bean>
-
-    <bean id="rawCartService" class="com.junbo.cart.core.service.impl.CartServiceImpl">
+    <bean id="cartService" class="com.junbo.cart.core.service.impl.CartServiceImpl">
         <property name="cartPersistService" ref="cartPersistService"/>
         <property name="validation" ref="validation"/>
         <property name="identityClient" ref="identityClient"/>

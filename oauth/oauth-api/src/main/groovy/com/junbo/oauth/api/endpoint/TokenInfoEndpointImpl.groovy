@@ -77,7 +77,7 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint, InitializingBean {
 
         // Throw exception when the tokenValue is invalid or the access token has been expired.
         if (accessToken == null) {
-            throw AppErrors.INSTANCE.invalidAccessToken(tokenValue).exception()
+            throw AppCommonErrors.INSTANCE.invalidId("access_token", tokenValue).exception()
         }
 
         if (accessToken.isExpired()) {
@@ -86,6 +86,7 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint, InitializingBean {
 
         // Return the token information.
         TokenInfo tokenInfo = new TokenInfo(
+                tokenValue: tokenValue,
                 clientId: accessToken.clientId,
                 sub: new UserId(accessToken.userId),
                 scopes: StringUtils.collectionToDelimitedString(accessToken.scopes, ' '),

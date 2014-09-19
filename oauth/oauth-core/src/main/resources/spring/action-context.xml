@@ -88,6 +88,10 @@
         <property name="scopeRepository" ref="scopeRepository"/>
     </bean>
 
+    <bean id="grantTokenByExchange" class="com.junbo.oauth.core.action.GrantTokenByExchange">
+        <property name="tokenService" ref="tokenService"/>
+    </bean>
+
     <bean id="validateGrantType" class="com.junbo.oauth.core.action.ValidateGrantType"/>
 
     <bean id="validateLocale" class="com.junbo.oauth.core.action.ValidateLocale">

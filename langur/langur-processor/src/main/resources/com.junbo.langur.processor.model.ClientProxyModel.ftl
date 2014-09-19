@@ -9,6 +9,7 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.routing.Router;
 import com.junbo.langur.core.async.JunboAsyncHttpClient;
+import com.junbo.langur.core.context.JunboHttpContext;
 import com.ning.http.client.Response;
 
 import javax.ws.rs.core.UriBuilder;

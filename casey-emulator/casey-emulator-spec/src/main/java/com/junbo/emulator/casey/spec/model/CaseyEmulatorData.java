@@ -8,6 +8,7 @@ package com.junbo.emulator.casey.spec.model;
 import com.junbo.common.id.OfferId;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
+import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 
 import java.util.List;
@@ -23,6 +24,8 @@ public class CaseyEmulatorData {
     private List<CaseyReview> caseyReviews;
 
     private List<CmsPage> cmsPages;
+
+    private List<CmsCampaign> cmsCampaigns;
 
     private Map<String, List<OfferId>> cmsPageOffers; // ($pageName + "-" + $slotName) -> list of OfferId
 
@@ -56,5 +59,13 @@ public class CaseyEmulatorData {
 
     public void setCmsPageOffers(Map<String, List<OfferId>> cmsPageOffers) {
         this.cmsPageOffers = cmsPageOffers;
+    }
+
+    public List<CmsCampaign> getCmsCampaigns() {
+        return cmsCampaigns;
+    }
+
+    public void setCmsCampaigns(List<CmsCampaign> cmsCampaigns) {
+        this.cmsCampaigns = cmsCampaigns;
     }
 }

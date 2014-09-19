@@ -29,7 +29,7 @@ class CloudantAuthorizationCodeRepositoryImpl extends CloudantClient<Authorizati
     @Override
     void save(AuthorizationCode code) {
         if (code.code == null) {
-            code.code = tokenGenerator.generateAuthorizationCode()
+            code.code = tokenGenerator.generateAuthorizationCode(code.userId)
             code.hashedCode = tokenGenerator.hashKey(code.code)
         }
 

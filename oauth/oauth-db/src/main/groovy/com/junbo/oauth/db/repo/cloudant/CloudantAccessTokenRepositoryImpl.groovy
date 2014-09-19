@@ -78,7 +78,14 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
     }
 
     private CloudantDbUri getDbUri(int dc, String accessToken) {
-        CloudantUri uri = cloudantGlobalUri.getUri(dc)
+        CloudantUri uri
+        try {
+            uri = cloudantGlobalUri.getUri(dc)
+        } catch (RuntimeException e) {
+            logger.error("Cloudant URI not found for datacenter: $dc accessToken: $accessToken")
+            throw AppCommonErrors.INSTANCE.invalidId("accessToken", accessToken).exception()
+        }
+
         if (uri == null) {
             logger.error("Cloudant URI not found for datacenter: $dc accessToken: $accessToken")
             throw AppCommonErrors.INSTANCE.invalidId("accessToken", accessToken).exception()

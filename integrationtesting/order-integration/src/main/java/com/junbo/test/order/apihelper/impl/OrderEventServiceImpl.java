@@ -9,8 +9,6 @@ import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.order.spec.model.OrderEvent;
-import com.junbo.test.common.ConfigHelper;
-
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
@@ -26,7 +24,6 @@ import com.junbo.test.order.apihelper.OrderEventService;
  */
 public class OrderEventServiceImpl extends HttpClientBase implements OrderEventService {
 
-    private static String orderEventUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/order-events";
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
     private LogHelper logger = new LogHelper(OrderEventServiceImpl.class);
     private static OrderEventService instance;
@@ -41,6 +38,7 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
 
     private OrderEventServiceImpl() {
         componentType = ComponentType.ORDER;
+        endPointUrlSuffix = "/order-events";
     }
 
     public OrderEvent postOrderEvent(OrderEvent orderEvent) throws Exception {
@@ -50,10 +48,10 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
     public OrderEvent postOrderEvent(OrderEvent orderEvent, int expectedResponseCode) throws Exception {
         String responseBody;
         if (orderEvent.getAction().toLowerCase().contains("charge")) {
-            responseBody = restApiCall(HTTPMethod.POST, orderEventUrl, orderEvent, expectedResponseCode);
+            responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl(), orderEvent, expectedResponseCode);
         } else {
             oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.ORDER);
-            responseBody = restApiCall(HTTPMethod.POST, orderEventUrl, orderEvent, expectedResponseCode, true);
+            responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl(), orderEvent, expectedResponseCode, true);
         }
         if(expectedResponseCode == 200) {
             return new JsonMessageTranscoder().decode(new TypeReference<OrderEvent>() {
@@ -70,7 +68,7 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
     @Override
     public Results<OrderEvent> getOrderEventsByOrderId(String orderId, int expectedResponseCode) throws Exception {
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
-        String responseBody = restApiCall(HTTPMethod.GET, orderEventUrl + "?orderId=" + orderId, expectedResponseCode,
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "?orderId=" + orderId, expectedResponseCode,
                 isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<Results<OrderEvent>>() {
         }, responseBody);
@@ -83,7 +81,7 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
 
     @Override
     public OrderEvent getOrderEvent(String orderEventId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, orderEventUrl + "/" + orderEventId, expectedResponseCode, isServiceScope);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/" + orderEventId, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<OrderEvent>() {
         }, responseBody);
     }
