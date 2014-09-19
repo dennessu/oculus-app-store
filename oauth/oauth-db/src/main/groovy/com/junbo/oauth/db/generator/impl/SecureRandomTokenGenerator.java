@@ -145,8 +145,8 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     }
 
     @Override
-    public String generateAuthorizationCode() {
-        return generate(authorizationCodeLength);
+    public String generateAuthorizationCode(Long userId) {
+        return generateWithDc(authorizationCodeLength, userId);
     }
 
     @Override

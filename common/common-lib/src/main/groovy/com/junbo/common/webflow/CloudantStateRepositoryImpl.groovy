@@ -5,6 +5,7 @@
  */
 package com.junbo.common.webflow
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.util.UUIDUtils
 import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.langur.core.webflow.state.StateRepository
 import groovy.transform.CompileStatic
@@ -16,7 +17,7 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
 
     @Override
     Conversation newConversation() {
-        String id = UUID.randomUUID().toString()
+        String id = UUIDUtils.randomUUIDwithDC().toString()
 
         def conversation = new Conversation(
                 id: id,

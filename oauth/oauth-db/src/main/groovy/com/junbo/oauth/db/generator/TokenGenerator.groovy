@@ -17,7 +17,7 @@ interface TokenGenerator {
 
     String generateSessionStateId()
 
-    String generateAuthorizationCode()
+    String generateAuthorizationCode(Long userId)
 
     String generateAccessToken(Long userId)
 
