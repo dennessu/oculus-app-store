@@ -7,7 +7,7 @@
 package com.junbo.payment.core.provider.facebook;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.payment.clientproxy.facebook.FacebookPaymentApi;
+import com.junbo.payment.clientproxy.facebook.FacebookOauthApi;
 import com.junbo.payment.clientproxy.facebook.FacebookTokenRequest;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FacebookPaymentUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(FacebookPaymentUtils.class);
-    private FacebookPaymentApi facebookPaymentApi;
+    private FacebookOauthApi facebookPaymentApi;
     private String oculusAppId;
     private String oculusAppSecret;
 
@@ -43,7 +43,7 @@ public class FacebookPaymentUtils {
         this.oculusAppSecret = oculusAppSecret;
     }
 
-    public void setFacebookPaymentApi(FacebookPaymentApi facebookPaymentApi) {
+    public void setFacebookPaymentApi(FacebookOauthApi facebookPaymentApi) {
         this.facebookPaymentApi = facebookPaymentApi;
     }
 

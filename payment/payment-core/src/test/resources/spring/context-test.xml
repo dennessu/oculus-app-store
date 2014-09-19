@@ -43,4 +43,14 @@
         <property name="personalInfoFacade" ref="mockPersonalInfo"/>
     </bean>
 
+    <!-- mock fb -->
+    <bean id="mockFBPaymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl">
+        <property name="providerRoutingService" ref="mockFBProviderRoutingService"  />
+        <property name="userInfoFacade" ref="mockUserResource"/>
+    </bean>
+
+    <bean id="mockFBProviderRoutingService" class="com.junbo.payment.core.mock.MockFBProviderRoutingServiceImpl">
+        <property name="facebookCCProviderService" ref="facebookCCProviderService" />
+    </bean>
+
 </beans>

@@ -15,6 +15,7 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.internal.FacebookPaymentAccountMapping;
 import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -82,9 +83,14 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 final String accessToken = s;
                 FacebookPaymentAccount fbPaymentAccount = new FacebookPaymentAccount();
                 fbPaymentAccount.setPayerId(request.getUserId().toString());
-                return facebookPaymentApi.createAccount(s, oculusAppId, fbPaymentAccount).then(new Promise.Func<String, Promise<PaymentInstrument>>() {
+                return facebookPaymentApi.createAccount(s, oculusAppId, fbPaymentAccount).then(new Promise.Func<FacebookPaymentAccount, Promise<PaymentInstrument>>() {
                     @Override
-                    public Promise<PaymentInstrument> apply(String s) {
+                    public Promise<PaymentInstrument> apply(FacebookPaymentAccount fbPaymentAccount) {
+                        String fbAccount = fbPaymentAccount.getId();
+                        FacebookPaymentAccountMapping fbPaymentAccountMapping = new FacebookPaymentAccountMapping();
+                        fbPaymentAccountMapping.setUserId(request.getUserId());
+                        fbPaymentAccountMapping.setFbPaymentAccountId(fbAccount);
+                        piRepository.createFBPaymentAccountIfNotExist(fbPaymentAccountMapping);
                         FacebookCreditCard fbCreditCard = new FacebookCreditCard();
                         // Billing address
                         Address address = null;
@@ -95,9 +101,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                         if(address != null){
                             fbCreditCard.setBillingAddress(getFacebookAddress(address, request));
                         }
-                        return facebookPaymentApi.addCreditCard(accessToken, s, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
+                        return facebookPaymentApi.addCreditCard(accessToken, fbAccount, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
                             @Override
                             public Promise<PaymentInstrument> apply(FacebookCreditCard facebookCreditCard) {
+                                //TODO: check the return result
                                 request.setExternalToken(facebookCreditCard.getId());
                                 request.getTypeSpecificDetails().setIssuerIdentificationNumber(facebookCreditCard.getFirst6());
                                 request.getTypeSpecificDetails().setExpireDate(facebookCreditCard.getExpiryYear() + "-" + facebookCreditCard.getExpiryMonth());
@@ -146,6 +153,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
+                        //TODO: check the return result
                         paymentRequest.setExternalToken(fbPayment.getId());
                         paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
                         return Promise.pure(paymentRequest);
@@ -169,6 +177,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
+                        //TODO: check the return result
                         paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
                         return Promise.pure(paymentRequest);
                     }
@@ -202,6 +211,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
+                        //TODO: check the return result
                         paymentRequest.setExternalToken(fbPayment.getId());
                         paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
                         return Promise.pure(paymentRequest);
@@ -221,6 +231,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
+                        //TODO: check the return result
                         paymentRequest.setStatus(PaymentStatus.REVERSED.toString());
                         return Promise.pure(paymentRequest);
                     }
@@ -244,6 +255,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
+                        //TODO: check the return result
                         paymentRequest.setStatus(PaymentStatus.REFUNDED.toString());
                         return Promise.pure(paymentRequest);
                     }

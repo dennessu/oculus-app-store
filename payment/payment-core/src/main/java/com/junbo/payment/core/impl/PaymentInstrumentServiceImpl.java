@@ -71,7 +71,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                     request.setLastValidatedTime(new Date());
                     request.setIsValidated(true);
                 }
-                request.getTypeSpecificDetails().setLastBillingDate(new Date());
                 saveAndCommitPI(request);
                 return Promise.pure(request);
             }

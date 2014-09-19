@@ -68,6 +68,13 @@
     <bean id="facebookPaymentClient" class="com.junbo.payment.clientproxy.facebook.proxy.FacebookPaymentApiClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${payment.clientproxy.facebook.payment.url}"/>
+        <property name="transcoder" ref="commonIgnoreUnknownTranscoder"/>
+        <property name="exceptionHandler" ref="facebookPaymentException"/>
+    </bean>
+
+    <bean id="facebookOauthClient" class="com.junbo.payment.clientproxy.facebook.proxy.FacebookOauthApiClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${payment.clientproxy.facebook.payment.url}"/>
         <property name="transcoder" ref="rawDataTranscoder"/>
         <property name="exceptionHandler" ref="facebookPaymentException"/>
     </bean>
