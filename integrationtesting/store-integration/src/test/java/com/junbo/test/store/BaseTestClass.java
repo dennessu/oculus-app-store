@@ -127,7 +127,9 @@ public abstract class BaseTestClass {
 
     @BeforeMethod
     public void initialEnv() {
-        if (ConfigHelper.getSetting("endpoint.random") != null && Boolean.valueOf(ConfigHelper.getSetting("endpoint.random"))) {
+        if (ConfigHelper.getSetting("endpoint.random") == null) {
+            return;
+        } else if (ConfigHelper.getSetting("endpoint.random") != null && Boolean.valueOf(ConfigHelper.getSetting("endpoint.random"))) {
             Master.getInstance().setEndPointType(Master.EndPointType.Random);
         } else {
             Master.getInstance().setEndPointType(Master.EndPointType.Primary);
