@@ -5,21 +5,23 @@
  */
 package com.junbo.test.common.blueprint;
 
-import com.junbo.catalog.spec.model.attribute.OfferAttribute;
-import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.fulfilment.spec.model.FulfilmentRequest;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.identity.spec.v1.model.Organization;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.identity.spec.v1.model.User;
 import com.junbo.billing.spec.model.Balance;
-import com.junbo.order.spec.model.Order;
 import com.junbo.cart.spec.model.Cart;
+import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.fulfilment.spec.model.FulfilmentRequest;
+import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.identity.spec.v1.model.User;
+import com.junbo.order.spec.model.Order;
+import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.exception.TestException;
+import com.junbo.test.common.libs.RandomFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,6 +78,11 @@ public class Master {
 
     private String apiErrorMsg;
 
+    private String primaryCommerceEndPointUrl;
+    private String secondaryCommerceEndPointUrl;
+
+    private EndPointType endPointType;
+
     public void initializeMaster() {
         this.initializeUsers();
         this.initializeCarts();
@@ -94,6 +101,18 @@ public class Master {
         this.initializeServiceAccessTokens();
         this.initializeOrgnizations();
         this.currentUid = new String();
+        this.endPointType = EndPointType.Primary;
+    }
+
+    /**
+     * Enum for Component name.
+     *
+     * @author Yunlongzhao
+     */
+    public enum EndPointType {
+        Primary,
+        Secondary,
+        Random
     }
 
     public void initializeUsers() {
@@ -181,21 +200,21 @@ public class Master {
     }
 
     public void initializeUserAccessTokens() {
-        if(this.userAccessTokens == null){
+        if (this.userAccessTokens == null) {
             this.userAccessTokens = new HashMap<>();
         }
         this.userAccessTokens.clear();
     }
 
     public void initializeServiceAccessTokens() {
-        if(this.serviceAccessTokens == null){
+        if (this.serviceAccessTokens == null) {
             this.serviceAccessTokens = new HashMap<>();
         }
         this.serviceAccessTokens.clear();
     }
 
     public void initializeOrgnizations() {
-        if(this.organizations == null){
+        if (this.organizations == null) {
             this.organizations = new HashMap<>();
         }
         this.organizations.clear();
@@ -250,7 +269,7 @@ public class Master {
         this.offerRevisions.put(offerRevisionId, offerRevision);
     }
 
-   public void addOrder(String orderId, Order order) {
+    public void addOrder(String orderId, Order order) {
         if (this.orders.containsKey(orderId)) {
             this.orders.remove(orderId);
         }
@@ -301,18 +320,18 @@ public class Master {
         this.fulfilments.put(fulfilmentId, fulfilmentRequest);
     }
 
-    public void addUserAccessToken(String uid, String accessToken){
-        if(this.userAccessTokens.containsKey(uid)){
+    public void addUserAccessToken(String uid, String accessToken) {
+        if (this.userAccessTokens.containsKey(uid)) {
             this.userAccessTokens.remove(uid);
         }
-        this.userAccessTokens.put(uid,accessToken);
+        this.userAccessTokens.put(uid, accessToken);
     }
 
-    public void addServiceAccessToken(ComponentType componentType, String accessToken){
-        if(this.serviceAccessTokens.containsKey(componentType)){
+    public void addServiceAccessToken(ComponentType componentType, String accessToken) {
+        if (this.serviceAccessTokens.containsKey(componentType)) {
             this.serviceAccessTokens.remove(componentType);
         }
-        this.serviceAccessTokens.put(componentType,accessToken);
+        this.serviceAccessTokens.put(componentType, accessToken);
     }
 
     public void addOrganization(String organizationId, Organization organization) {
@@ -371,15 +390,15 @@ public class Master {
         return this.balances.get(balanceId);
     }
 
-    public FulfilmentRequest getFulfilment(String fulfilmentId){
+    public FulfilmentRequest getFulfilment(String fulfilmentId) {
         return this.fulfilments.get(fulfilmentId);
     }
 
-    public String getUserAccessToken(String uid){
+    public String getUserAccessToken(String uid) {
         return this.userAccessTokens.get(uid);
     }
 
-    public String getServiceAccessToken(ComponentType componentType){
+    public String getServiceAccessToken(ComponentType componentType) {
         return this.serviceAccessTokens.get(componentType);
     }
 
@@ -455,8 +474,7 @@ public class Master {
                     if (offerRevision != null && offerRevision.getLocales().get(defaultLocale).getName().equalsIgnoreCase(offerName)) {
                         return key;
                     }
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     return null;
                 }
             }
@@ -476,8 +494,7 @@ public class Master {
                     if (itemRevision != null && itemRevision.getLocales().get(defaultLocale).getName().equalsIgnoreCase(itemName)) {
                         return key;
                     }
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     return null;
                 }
             }
@@ -491,6 +508,40 @@ public class Master {
 
     public void setApiErrorMsg(String apiErrorMsg) {
         this.apiErrorMsg = apiErrorMsg;
+    }
+
+    public String getPrimaryCommerceEndPointUrl() {
+        return primaryCommerceEndPointUrl;
+    }
+
+    public void setPrimaryCommerceEndPointUrl(String primaryCommerceEndPointUrl) {
+        this.primaryCommerceEndPointUrl = primaryCommerceEndPointUrl;
+    }
+
+    public String getSecondaryCommerceEndPointUrl() {
+        return secondaryCommerceEndPointUrl;
+    }
+
+    public void setSecondaryCommerceEndPointUrl(String secondaryCommerceEndPointUrl) {
+        this.secondaryCommerceEndPointUrl = secondaryCommerceEndPointUrl;
+    }
+
+    public EndPointType getEndPointType() {
+        if (endPointType.equals(EndPointType.Random)) {
+            switch (RandomFactory.getRandomInteger(0, 1)) {
+                case 0:
+                    return endPointType.Primary;
+                case 1:
+                    return endPointType.Secondary;
+                default:
+                    throw new TestException("No such endpoint type");
+            }
+        }
+        return endPointType;
+    }
+
+    public void setEndPointType(EndPointType endPointType) {
+        this.endPointType = endPointType;
     }
 
 }

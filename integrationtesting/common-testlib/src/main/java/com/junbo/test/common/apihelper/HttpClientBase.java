@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -36,7 +37,12 @@ public abstract class HttpClientBase {
 
     protected ComponentType componentType;
 
+    protected Master.EndPointType currentEndPointType;
+
+    protected String endPointUrlSuffix = "";
+
     protected String uid = "";
+
 
     /**
      * Enum for http method.
@@ -77,6 +83,10 @@ public abstract class HttpClientBase {
             headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getServiceAccessToken(componentType));
         } else if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
             headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getUserAccessToken(uid));
+        }
+
+        if (currentEndPointType != null && currentEndPointType.equals(Master.EndPointType.Secondary)) {
+            headers.put("Cache-Control", Collections.singletonList("no-cache"));
         }
 
         //for further header, we can set dynamic value from properties here
@@ -206,7 +216,7 @@ public abstract class HttpClientBase {
                         logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
 
                         String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
-                        if (redirectUrl.contains("cid") || redirectUrl.contains("email-verify") ) {
+                        if (redirectUrl.contains("cid") || redirectUrl.contains("email-verify")) {
                             return redirectUrl;
                         }
                         req = new RequestBuilder("GET")
@@ -313,5 +323,18 @@ public abstract class HttpClientBase {
 
     protected boolean isServiceTokenExist() {
         return Master.getInstance().getServiceAccessToken(componentType) != null;
+    }
+
+    protected String getEndPointUrl() {
+        switch (Master.getInstance().getEndPointType()) {
+            case Primary:
+                currentEndPointType = Master.EndPointType.Primary;
+                return Master.getInstance().getPrimaryCommerceEndPointUrl() + endPointUrlSuffix;
+            case Secondary:
+                currentEndPointType = Master.EndPointType.Secondary;
+                return Master.getInstance().getSecondaryCommerceEndPointUrl() + endPointUrlSuffix;
+            default:
+                throw new TestException("No such endpoint type");
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.junbo.test.catalog.impl.*;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.store.apihelper.TestContext;
 import com.junbo.test.store.utility.StoreTestDataProvider;
 import com.junbo.test.store.utility.StoreValidationHelper;
@@ -61,6 +62,13 @@ public abstract class BaseTestClass {
     public BaseTestClass() {
         super();
         loadOffers();
+        loadEndPointUrl();
+    }
+
+    private void loadEndPointUrl() {
+        Master.getInstance().setPrimaryCommerceEndPointUrl(ConfigHelper.getSetting("defaultCommerceEndpoint"));
+        String secondaryUrl = ConfigHelper.getSetting("secondaryDcEndpoint") != null ? ConfigHelper.getSetting("secondaryDcEndpoint") : Master.getInstance().getPrimaryCommerceEndPointUrl();
+        Master.getInstance().setSecondaryCommerceEndPointUrl(secondaryUrl);
     }
 
     private void loadOffers() {
