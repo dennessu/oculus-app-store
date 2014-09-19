@@ -6,19 +6,23 @@
 
 package com.junbo.payment.clientproxy.facebook;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.ws.rs.QueryParam;
 
 /**
  * Facebook Payment Account.
  */
 public class FacebookPaymentAccount {
-    @JsonIgnore
+    @JsonProperty
     private String id;
+    @QueryParam("payer_id")
     @JsonProperty("payer_id")
     private String payerId;
+    @QueryParam("payer_email")
     @JsonProperty("payer_email")
     private String payerEmail;
+    @QueryParam("payer_address")
     @JsonProperty("payer_address")
     private FacebookAddress payerAddress;
 

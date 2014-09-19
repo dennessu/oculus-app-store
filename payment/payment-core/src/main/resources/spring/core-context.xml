@@ -62,7 +62,7 @@
     </bean>
 
     <bean id="facebookPaymentUtil" class="com.junbo.payment.core.provider.facebook.FacebookPaymentUtils">
-        <property name="facebookPaymentApi" ref="facebookPaymentClient"/>
+        <property name="facebookPaymentApi" ref="facebookOauthClient"/>
         <property name="oculusAppId" value="${payment.provider.facebook.appid}"/>
         <property name="oculusAppSecret" value="${payment.provider.facebook.appsecret}"/>
     </bean>

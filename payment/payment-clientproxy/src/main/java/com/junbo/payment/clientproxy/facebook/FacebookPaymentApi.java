@@ -17,14 +17,11 @@ import javax.ws.rs.*;
 @RestResource
 @Path("/")
 public interface FacebookPaymentApi {
-    @GET
-    @Path("oauth/access_token")
-    Promise<String> getAccessToken(@BeanParam FacebookTokenRequest fbTokenRequest);
 
     @POST
     @Path("{oculus-app-id}/payment_accounts")
-    Promise<String> createAccount(@QueryParam("access_token") String accessToken,
-                    @PathParam("oculus-app-id") String oculusAppId, FacebookPaymentAccount fbPaymentAccount);
+    Promise<FacebookPaymentAccount> createAccount(@QueryParam("access_token") String accessToken,
+                    @PathParam("oculus-app-id") String oculusAppId, @BeanParam FacebookPaymentAccount fbPaymentAccount);
 
     @POST
     @Path("{payment-account-id}/credit_cards")
