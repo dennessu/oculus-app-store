@@ -265,6 +265,7 @@ public class CloudantSniffer {
         if (fileName.startsWith(CLASSPATH_PREFIX)) {
             fileName = fileName.substring(CLASSPATH_PREFIX.length());
             inputStream = getClass().getResourceAsStream(fileName);
+            return inputStream;
         }
 
         try {

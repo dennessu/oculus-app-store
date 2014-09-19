@@ -88,11 +88,18 @@ class RestAdapterParser implements RestResourceHandler {
                                 })
                 }
 
-                def routeBy = executableElement.getAnnotation(RouteBy)
-                restMethod.routeParamExprs = new ArrayList<>(Arrays.asList(routeBy?.value() ?: new String[0]))
+                restMethod.routeParamExprs = new ArrayList<>()
 
-                if (executableElement.getAnnotation(RouteByAccessToken) != null) {
+                def routeBy = executableElement.getAnnotation(RouteBy)
+                if (routeBy != null) {
+                    restMethod.routeParamExprs.addAll(routeBy.value() ?: new String[0])
+                    restMethod.routeSwitchable = routeBy.switchable()
+                }
+
+                def routeByAccessToken = executableElement.getAnnotation(RouteByAccessToken)
+                if (routeByAccessToken != null) {
                     restMethod.routeParamExprs.add("TrackContextManager.get().getCurrentUserId()")
+                    restMethod.routeSwitchable = routeByAccessToken.switchable()
                 }
 
                 restMethod.authorizationNotRequired = getAuthorizationNotRequired(mapperType, executableElement)

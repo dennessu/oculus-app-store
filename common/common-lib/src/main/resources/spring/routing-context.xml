@@ -25,10 +25,10 @@
         <property name="topology" ref="routingDefaultTopology" />
         <property name="crossDcRoutingEnabled" value="${common.routing.crossDcRoutingEnabled}" />
         <property name="inDcRoutingEnabled" value="${common.routing.inDcRoutingEnabled}" />
-        <property name="defaultPolicy" value="${common.routing.defaultPolicy}" />
         <property name="forceRoute" value="${common.routing.forceRoute}" />
         <property name="showRoutingPath" value="${common.routing.showRoutingPath}" />
         <property name="maxRoutingHops" value="${common.routing.maxRoutingHops}" />
+        <property name="fullRoute" value="${common.routing.fullRoute}" />
     </bean>
 
     <bean id="routingDefaultTopology" class="com.junbo.configuration.topo.Topology">

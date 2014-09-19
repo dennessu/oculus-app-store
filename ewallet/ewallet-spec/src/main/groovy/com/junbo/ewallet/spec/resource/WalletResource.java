@@ -53,7 +53,7 @@ public interface WalletResource {
     //    @ApiOperation("Credit a wallet")
     @POST
     @Path("/credit")
-    @RouteBy("creditRequest.getUserId()")
+    @RouteBy({"creditRequest.getWalletId()", "creditRequest.getUserId()"})
     Promise<Transaction> credit(CreditRequest creditRequest);
 
     //    @ApiOperation("Debit a wallet")

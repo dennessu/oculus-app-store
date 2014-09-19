@@ -17,7 +17,7 @@ public interface Router {
      * If maxhops are exceeded, throw exception to terminate the routing.
      * @return The target URL for the request to be forwarded. Returns null if the request can be handled locally.
      */
-    String getTargetUrl(Class<?> resourceClass, List<Object> routingParams);
+    String getTargetUrl(Class<?> resourceClass, List<Object> routingParams, boolean switchable);
 
     /**
      * Method to determine the data access policy to the API request in case of in-proc calls.

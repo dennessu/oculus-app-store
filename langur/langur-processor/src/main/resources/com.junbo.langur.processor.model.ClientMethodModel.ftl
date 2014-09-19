@@ -96,7 +96,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
                 __responseHandler.onResponse(response);
             }
 
-            if (response.getStatusCode() / 100 == 2) {
+            if (response.getStatusCode() / 100 < 4) {
                 try {
                     return Promise.pure(__transcoder.<${returnType}>decode(new TypeReference<${returnType}>() {}, response.getResponseBody()));
                 } catch (java.io.IOException ex) {

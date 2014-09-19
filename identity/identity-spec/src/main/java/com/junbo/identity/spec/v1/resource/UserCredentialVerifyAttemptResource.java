@@ -13,6 +13,8 @@ import com.junbo.identity.spec.v1.option.model.UserCredentialAttemptGetOptions;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
+import com.junbo.langur.core.routing.RouteByAccessToken;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -30,10 +32,12 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserCredentialVerifyAttemptResource {
 
+    @RouteBy(value = "userCredentialAttempt.getUserId()", switchable = true)
     @POST
     Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt userCredentialAttempt);
 
     @ApiOperation("Get credential verify attempt.")
+    @RouteByAccessToken(switchable = true)
     @GET
     @Path("/{userCredentialVerifyAttemptId}")
     Promise<UserCredentialVerifyAttempt> get(
@@ -41,6 +45,7 @@ public interface UserCredentialVerifyAttemptResource {
             @BeanParam UserCredentialAttemptGetOptions getOptions);
 
     @ApiOperation("Search login history")
+    @RouteByAccessToken(switchable = true)
     @GET
     Promise<Results<UserCredentialVerifyAttempt>> list(@BeanParam UserCredentialAttemptListOptions listOptions);
 }

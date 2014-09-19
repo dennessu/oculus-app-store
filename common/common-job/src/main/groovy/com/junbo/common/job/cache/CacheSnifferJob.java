@@ -31,6 +31,7 @@ public class CacheSnifferJob implements InitializingBean {
     private static final String FEED_SEPARATOR = "\r\n";
     private static final String SEQ_KEY = "seq";
     private static final String ID_KEY = "id";
+    private static final String CHANGES_KEY = "changes";
     private static final String CLOUDANT_HEARTBEAT_KEY = "common.cloudant.heartbeat";
     private static final String SNIFFER_ENABLED_KEY = "common.jobs.sniffer.enabled";
 
@@ -185,10 +186,51 @@ public class CacheSnifferJob implements InitializingBean {
 
         // evict entity cache
         Object entityId = payload.get(ID_KEY);
+        List changes = (List)payload.get(CHANGES_KEY);
 
         if (entityId != null) {
-            String entityKey = entityId.toString() + ":" + database + ":" + cloudantUri.getDc();
-            deleteCache(entityKey);
+            String entityIdStr = entityId.toString();
+            if (entityIdStr.startsWith("_")) {
+                // system data updated, ignore
+                return;
+            }
+
+            boolean cacheIsValid = false;
+            String entityKey = entityIdStr + ":" + database + ":" + cloudantUri.getDc();
+
+            try {
+                // best effort: don't clear cache if the new rev is already in cache.
+                if (changes != null && changes.size() == 1) {
+                    Map changedFields = (Map) changes.get(0);
+                    if (changedFields != null && changedFields.containsKey("rev")) {
+                        Object revObject = changedFields.get("rev");
+                        String rev = (revObject == null ? null : revObject.toString());
+
+                        if (!StringUtils.isEmpty(rev)) {
+                            String existingValue = getCache(entityKey);
+                            if (existingValue == null) {
+                                // not in cache, so cache is valid
+                                cacheIsValid = true;
+                            } else {
+                                Map<String, Object> entity = SnifferUtils.parse(existingValue, Map.class);
+
+                                if (entity != null && entity.containsKey("_rev")) {
+                                    if (rev.equals(entity.get("_rev"))) {
+                                        cacheIsValid = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                LOGGER.error("Failed to compare cache rev with change. Default to delete existing cache.", ex);
+                cacheIsValid = false;
+            }
+
+            if (!cacheIsValid) {
+                deleteCache(entityKey);
+            }
         }
 
         return;

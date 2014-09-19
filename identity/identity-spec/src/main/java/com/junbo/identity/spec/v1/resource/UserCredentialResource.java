@@ -14,6 +14,7 @@ import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -30,12 +31,14 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserCredentialResource {
+    @RouteBy(value = "userId", switchable = true)
     @POST
     @Path("/{userId}/change-credentials")
     Promise<UserCredential> create(@PathParam("userId") UserId userId,
                                    UserCredential userCredential);
 
     @ApiOperation("Search credential history")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     @Path("/{userId}/credentials")
     Promise<Results<UserCredential>> list(@PathParam("userId") UserId userId,

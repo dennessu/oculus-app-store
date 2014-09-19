@@ -37,8 +37,8 @@ public class RouterImpl implements Router {
     private boolean inDcRoutingEnabled;
     private boolean showRoutingPath;
     private boolean forceRoute;
+    private boolean fullRoute;
     private int maxRoutingHops;
-    private DataAccessPolicy defaultPolicy;
 
     @Required
     public void setTopology(Topology topology) {
@@ -61,16 +61,20 @@ public class RouterImpl implements Router {
         this.forceRoute = forceRoute;
     }
 
+    public void setFullRoute(boolean fullRoute) {
+        this.fullRoute = fullRoute;
+    }
+
     public void setMaxRoutingHops(int maxRoutingHops) {
         this.maxRoutingHops = maxRoutingHops;
     }
 
-    public void setDefaultPolicy(DataAccessPolicy defaultPolicy) {
-        this.defaultPolicy = defaultPolicy;
-    }
-
     @Override
-    public String getTargetUrl(Class<?> resourceClass, List<Object> routingParams) {
+    public String getTargetUrl(Class<?> resourceClass, List<Object> routingParams, boolean switchable) {
+        if (switchable && !fullRoute) {
+            return null;
+        }
+
         String result = getTargetUrlInternal(resourceClass, routingParams);
         if (result != null) {
             logger.info("Routing {} to {}", JunboHttpContext.getRequestUri(), result);
@@ -98,6 +102,25 @@ public class RouterImpl implements Router {
             policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(JunboHttpContext.getRequestMethod(), resourceClass);
         }
 
+        if (fullRoute) {
+            if (policy == null) {
+                policy = DataAccessPolicy.CLOUDANT_ROUTED;
+            }
+
+            // upgrade access level in case of full route
+            switch (policy) {
+                case CLOUDANT_ONLY:
+                    policy = DataAccessPolicy.CLOUDANT_ROUTED;
+                    break;
+                case CLOUDANT_FIRST:
+                    policy = DataAccessPolicy.SQL_FIRST;
+                    break;
+            }
+        }
+        if (policy == null) {
+            policy = DataAccessPolicy.CLOUDANT_ONLY;
+        }
+
         if (policy == DataAccessPolicy.CLOUDANT_FIRST && "GET".equalsIgnoreCase(JunboHttpContext.getRequestMethod())) {
             String cacheControl = requestHeaders.getFirst(CACHE_CONTROL);
             // if the header is passed and it is Get method, will read sql first
@@ -106,9 +129,6 @@ public class RouterImpl implements Router {
             }
         }
 
-        if (policy == null) {
-            policy = defaultPolicy;
-        }
         if (logger.isDebugEnabled()) {
             logger.debug("Setting effective dataAccessPolicy in call. url: {}, policy: {}", JunboHttpContext.getRequestUri(), policy);
         }

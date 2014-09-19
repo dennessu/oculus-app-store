@@ -28,7 +28,7 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
             } catch (NullPointerException ignore) {
             }
             [/#list]
-            String url = __router.getTargetUrl(${adapteeType}.class, routeParams);
+            String url = __router.getTargetUrl(${adapteeType}.class, routeParams, ${routeSwitchable?c});
             if (url != null) {
                 adaptee = __clientFactory.create(url);
                 TrackContextManager.setIsRouted(true);

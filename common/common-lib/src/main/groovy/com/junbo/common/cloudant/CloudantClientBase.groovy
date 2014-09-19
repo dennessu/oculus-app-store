@@ -66,10 +66,12 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         this.dbName = dbName
     }
 
+    @Required
     void setEnableCache(boolean enableCache) {
         this.enableCache = enableCache
     }
 
+    @Required
     void setIncludeDocs(boolean includeDocs) {
         this.includeDocs = includeDocs
     }

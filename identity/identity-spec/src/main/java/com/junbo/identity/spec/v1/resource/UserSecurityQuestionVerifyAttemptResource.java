@@ -14,6 +14,7 @@ import com.junbo.identity.spec.v1.option.model.UserSecurityQuestionAttemptGetOpt
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -32,11 +33,13 @@ import javax.ws.rs.core.MediaType;
 public interface UserSecurityQuestionVerifyAttemptResource {
 
     @ApiOperation("Create one security question attempt")
+    @RouteBy(value = "userId", switchable = true)
     @POST
     Promise<UserSecurityQuestionVerifyAttempt> create(@PathParam("userId") UserId userId,
                                                 UserSecurityQuestionVerifyAttempt userSecurityQuestionAttempt);
 
     @ApiOperation("Get one security question attempt")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     @Path("/{UserSecurityQuestionVerifyAttemptId}")
     Promise<UserSecurityQuestionVerifyAttempt> get(@PathParam("userId") UserId userId,
@@ -44,6 +47,7 @@ public interface UserSecurityQuestionVerifyAttemptResource {
                 @BeanParam UserSecurityQuestionAttemptGetOptions getOptions);
 
     @ApiOperation("Search security question attempt history")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     Promise<Results<UserSecurityQuestionVerifyAttempt>> list(@PathParam("userId") UserId userId,
                                                    @BeanParam UserSecurityQuestionAttemptListOptions listOptions);
