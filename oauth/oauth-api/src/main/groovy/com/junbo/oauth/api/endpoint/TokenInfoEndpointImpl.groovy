@@ -86,6 +86,7 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint, InitializingBean {
 
         // Return the token information.
         TokenInfo tokenInfo = new TokenInfo(
+                tokenValue: tokenValue,
                 clientId: accessToken.clientId,
                 sub: new UserId(accessToken.userId),
                 scopes: StringUtils.collectionToDelimitedString(accessToken.scopes, ' '),

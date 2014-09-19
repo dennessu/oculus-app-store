@@ -1,4 +1,6 @@
 package com.junbo.store.clientproxy.casey
+
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.error.AppErrorException
@@ -15,6 +17,9 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.oauth.spec.model.AccessTokenRequest
+import com.junbo.oauth.spec.model.AccessTokenResponse
+import com.junbo.oauth.spec.model.GrantType
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.spec.model.ApiContext
@@ -34,6 +39,7 @@ import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
@@ -52,6 +58,12 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     @Resource(name = 'storeItemBuilder')
     private ItemBuilder itemBuilder
+
+    @Value('${store.onbehalf.clientId}')
+    private String clientId
+
+    @Value('${store.onbehalf.clientSecret}')
+    private String clientSecret
 
     @Override
     Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext) {
@@ -108,7 +120,7 @@ class CaseyFacadeImpl implements CaseyFacade {
     @Override
     Promise<List<AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext) {
         List<AggregatedRatings> aggregatedRatingsList = null
-        resourceContainer.caseyReviewResource.getRatingByItemId(itemId.value).then { CaseyResults<CaseyAggregateRating> results ->
+        resourceContainer.caseyResource.getRatingByItemId(itemId.value).then { CaseyResults<CaseyAggregateRating> results ->
             aggregatedRatingsList = results.items.collect { CaseyAggregateRating rating ->
                 AggregatedRatings aggregatedRatings = new AggregatedRatings(
                         type: rating.type,
@@ -143,7 +155,7 @@ class CaseyFacadeImpl implements CaseyFacade {
                 count: count
         )
 
-        return resourceContainer.caseyReviewResource.getReviews(params).recover { Throwable ex ->
+        return resourceContainer.caseyResource.getReviews(params).recover { Throwable ex ->
             LOGGER.error('name=Get_Casey_Review_Fail', ex)
             return Promise.pure()
         }.then { CaseyResults<CaseyReview> results ->
@@ -257,17 +269,28 @@ class CaseyFacadeImpl implements CaseyFacade {
             review.ratings << new CaseyReview.Rating(type: type, score: request.starRatings[type])
         }
 
-        return resourceContainer.caseyReviewResource.addReview(review).then { CaseyReview newReview ->
-            return resourceContainer.userResource.get(apiContext.user, new UserGetOptions()).then { User user ->
-                return Promise.pure(
+        // Create an access token with this user and catalog scope.
+        return resourceContainer.tokenEndpoint.postToken(
+                new AccessTokenRequest(
+                        accessToken: AuthorizeContext.currentAccessToken,
+                        clientId: clientId,
+                        clientSecret: clientSecret,
+                        grantType: GrantType.EXCHANGE.name(),
+                        scope: 'catalog'
+                )
+        ).then { AccessTokenResponse accessTokenResponse ->
+            return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).then { CaseyReview newReview ->
+                return resourceContainer.userResource.get(apiContext.user, new UserGetOptions()).then { User user ->
+                    return Promise.pure(
                             new Review(
-                                self: new Link(id: newReview.self.id, href: newReview.self.href),
-                                authorName: user.nickName,
-                                title: newReview.reviewTitle,
-                                content: newReview.review,
-                                starRatings: request.starRatings,
-                                timestamp: newReview.postedDate
-                ))
+                                    self: new Link(id: newReview.self.id, href: newReview.self.href),
+                                    authorName: user.nickName,
+                                    title: newReview.reviewTitle,
+                                    content: newReview.review,
+                                    starRatings: request.starRatings,
+                                    timestamp: newReview.postedDate
+                            ))
+                }
             }
         }
     }

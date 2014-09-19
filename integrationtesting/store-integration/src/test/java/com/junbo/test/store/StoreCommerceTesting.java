@@ -523,7 +523,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert preparePurchaseResponse.getChallenge() != null;
         assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false, 412);
+        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false, 400);
         assert preparePurchaseResponse == null;
     }
 

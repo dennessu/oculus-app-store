@@ -135,7 +135,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     @Override
-    Promise<CaseyReview> addReview(CaseyReview review) {
+    Promise<CaseyReview> addReview(String authorization, CaseyReview review) {
         CaseyEmulatorData caseyEmulatorData = caseyEmulatorDataRepository.get()
         if (caseyEmulatorData.caseyReviews == null) {
             caseyEmulatorData.caseyReviews = []

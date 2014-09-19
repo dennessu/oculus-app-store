@@ -136,7 +136,7 @@ class LoginResourceImpl implements LoginResource {
                 appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
                 if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
                         ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
-                        ErrorCodes.Identity.FieldDuplicate)) {
+                        ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction)) {
                     throw ex
                 }
                 appErrorUtils.throwUnknownError('createUser', ex)

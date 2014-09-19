@@ -18,6 +18,7 @@ class ErrorCodes {
         static final String InvalidPin = '131.110'
         static final String InvalidField = '131.001'
         static final String MaximumLoginAttempt = '131.139'
+        static final String AgeRestriction = '131.140'
     }
 
     class OAuth {

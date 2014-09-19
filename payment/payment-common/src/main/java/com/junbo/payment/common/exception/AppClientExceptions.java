@@ -45,7 +45,7 @@ public interface AppClientExceptions {
             , field = "payment_instrument_type")
     AppError invalidPIType(String piType);
 
-    @ErrorDef(httpStatusCode = 412, code = "108", message = "Payment Instrument Not Found.",
+    @ErrorDef(httpStatusCode = 404, code = "108", message = "Payment Instrument Not Found.",
             reason = "The payment id {0} is not found", field = "payment_id")
     AppError paymentInstrumentNotFound(String paymentId);
 

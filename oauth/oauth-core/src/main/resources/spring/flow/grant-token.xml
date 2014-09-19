@@ -15,6 +15,7 @@
             <wf:transition on="REFRESH_TOKEN" to="refreshTokenBranch"/>
             <wf:transition on="CLIENT_CREDENTIALS" to="clientCredentialsBranch"/>
             <wf:transition on="CLIENT_CREDENTIALS_WITH_USER_ID" to="clientCredentialsWithUserIdBranch"/>
+            <wf:transition on="EXCHANGE" to="exchangeBranch"/>
         </wf:action-state>
 
         <wf:action-state id="authorizationCodeBranch">
@@ -46,6 +47,12 @@
         <wf:action-state id="clientCredentialsWithUserIdBranch">
             <wf:action ref="validateScope"/>
             <wf:action ref="grantTokenByUserId"/>
+            <wf:transition on="*" to="grantRefreshToken"/>
+        </wf:action-state>
+
+        <wf:action-state id="exchangeBranch">
+            <wf:action ref="validateScope"/>
+            <wf:action ref="grantTokenByExchange"/>
             <wf:transition on="*" to="grantRefreshToken"/>
         </wf:action-state>
 

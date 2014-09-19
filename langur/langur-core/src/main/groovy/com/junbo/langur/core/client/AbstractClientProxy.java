@@ -41,6 +41,8 @@ public abstract class AbstractClientProxy {
 
     protected AccessTokenProvider __accessTokenProvider;
 
+    protected boolean __attachUserToken = false;
+
     protected boolean __inProcessCallable;
 
     @Autowired(required = false)
@@ -99,6 +101,10 @@ public abstract class AbstractClientProxy {
 
     public void setInProcessCallable(boolean inProcessCallable) {
         this.__inProcessCallable = inProcessCallable;
+    }
+
+    public void setAttachUserToken(boolean __attachUserToken) {
+        this.__attachUserToken = __attachUserToken;
     }
 
     public void setJunboHttpContextScopeListeners(JunboHttpContextScopeListeners __junboHttpContextScopeListeners) {

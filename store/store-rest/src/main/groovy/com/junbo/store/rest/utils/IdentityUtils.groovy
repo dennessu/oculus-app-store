@@ -36,7 +36,7 @@ class IdentityUtils {
         return resourceContainer.userPersonalInfoResource.list(new UserPersonalInfoListOptions(type: 'PHONE', phoneNumber: updatePhone.info)).then { Results<UserPersonalInfo> results ->
             UserPersonalInfo result = results.items.find {UserPersonalInfo e -> e.userId == userId}
             if (result == null) {
-                return resourceContainer.userPersonalInfoResource.create(
+                return resourceContainer.userUserPersonalInfoResource.create(
                         new UserPersonalInfo(userId: userId, type: 'PHONE', value: phoneInfo.value)
                 )
             } else {
@@ -49,7 +49,7 @@ class IdentityUtils {
 
     public Promise<User> getActiveUserFromToken() {
         UserId userId = AuthorizeContext.currentUserId
-        return resourceContainer.userResource.get(userId, new UserGetOptions()).then { User user ->
+        return resourceContainer.userUserResource.get(userId, new UserGetOptions()).then { User user ->
             if (user.isAnonymous || user.status != Constants.UserStatus.ACTIVE) {
                 throw AppErrors.INSTANCE.invalidUserStatus().exception()
             }
@@ -72,7 +72,7 @@ class IdentityUtils {
                 throw AppErrors.INSTANCE.userEmailPrimaryEmailNotFound().exception()
             }
 
-            return resourceContainer.userPersonalInfoResource.get(link.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo pii ->
+            return resourceContainer.userUserPersonalInfoResource.get(link.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo pii ->
                 if (!pii.isValidated) {
                     throw AppErrors.INSTANCE.userPrimaryEmailNotVerified().exception()
                 }
@@ -95,7 +95,7 @@ class IdentityUtils {
             throw AppErrors.INSTANCE.userEmailPrimaryEmailNotFound().exception()
         }
 
-        return resourceContainer.userPersonalInfoResource.get(link.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo pii ->
+        return resourceContainer.userUserPersonalInfoResource.get(link.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo pii ->
             if (!pii.isValidated) {
                 throw AppErrors.INSTANCE.userPrimaryEmailNotVerified().exception()
             }

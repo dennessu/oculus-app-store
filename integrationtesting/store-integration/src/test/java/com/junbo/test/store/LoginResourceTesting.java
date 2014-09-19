@@ -205,12 +205,12 @@ public class LoginResourceTesting extends BaseTestClass {
         createUserRequest.setPin(oldPin);
         Date oldDob = createUserRequest.getDob();
         createUserRequest.setDob(DateUtils.addYears(new Date(), 100));
-        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 412, "131.140");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("dob");
 
         createUserRequest.setDob(DateUtils.addYears(new Date(), -11));
-        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 412, "131.140");
         assert error != null;
 
 

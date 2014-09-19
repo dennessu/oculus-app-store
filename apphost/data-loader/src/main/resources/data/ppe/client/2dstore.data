@@ -9,8 +9,8 @@
   "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home" ],
   "default_logout_redirect_uri" : "http://localhost",
 
-  "scopes" : ["offline", "storeapi", "entitlement", "catalog" ],
-  "default_scopes" : [ "offline", "storeapi", "entitlement", "catalog" ],
+  "scopes" : ["offline", "storeapi"],
+  "default_scopes" : [ "offline", "storeapi"],
 
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "CLIENT_CREDENTIALS_WITH_USER_ID", "PASSWORD", "REFRESH_TOKEN" ],
