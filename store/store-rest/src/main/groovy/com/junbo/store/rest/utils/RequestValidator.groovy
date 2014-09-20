@@ -21,6 +21,8 @@ import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
@@ -41,7 +43,6 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
-import java.util.regex.Pattern
 
 /**
  * The RequestValidator class.
@@ -71,14 +72,8 @@ class RequestValidator {
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
 
-    private final Pattern androidIdPattern = Pattern.compile('[a-fA-F\\d]{16}')
-
     RequestValidator validateRequiredApiHeaders() {
         validateHeader(StoreApiHeader.ANDROID_ID, StoreApiHeader.USER_AGENT, StoreApiHeader.ACCEPT_LANGUAGE)
-        String androidId = JunboHttpContext.requestHeaders.getFirst(StoreApiHeader.ANDROID_ID.value)
-        if (!androidIdPattern.matcher(androidId).matches()) {
-            throw AppCommonErrors.INSTANCE.headerInvalid(StoreApiHeader.ANDROID_ID.value).exception()
-        }
         return this
     }
 
@@ -407,6 +402,13 @@ class RequestValidator {
         notEmpty(request.tosId, 'tosId')
     }
 
+    public RequestValidator validateRequestBody(Object request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+        return this
+    }
+
     public void validateDetailsRequest(DetailsRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
@@ -425,11 +427,6 @@ class RequestValidator {
 
     public void validateDeliveryRequest(DeliveryRequest request) {
         notEmpty(request.itemId, 'itemId')
-    }
-
-    public void validateAddReviewRequest(AddReviewRequest request) {
-        notEmpty(request.itemId, 'itemId')
-        notEmpty(request.title, 'title')
     }
 
     public void validateReviewsRequest(ReviewsRequest request) {

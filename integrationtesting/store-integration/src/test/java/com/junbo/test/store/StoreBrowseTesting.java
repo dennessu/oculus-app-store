@@ -150,12 +150,8 @@ public class StoreBrowseTesting extends BaseTestClass {
         assert testDataProvider.getLibrary().getItems().isEmpty();
 
         // buy offers
-        String offerId;
-        if (offer_iap_free.toLowerCase().contains("test")) {
-            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
-        } else {
-            offerId = offer_digital_free;
-        }
+        com.junbo.catalog.spec.model.item.Item item = testDataProvider.getItemByName(item_digital_oculus_free1);
+        String offerId = testDataProvider.getOfferByItem(item.getItemId()).getOfferId();
         MakeFreePurchaseResponse response = testDataProvider.makeFreePurchase(offerId, null);
         response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
         Assert.assertNotNull(response.getEntitlements().get(0).getItemDetails(), "itemDetails in entitlement should not be null");
@@ -164,16 +160,22 @@ public class StoreBrowseTesting extends BaseTestClass {
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
         assert libraryResponse.getItems().size() == 1;
         ItemId itemId = libraryResponse.getItems().get(0).getSelf();
+        Assert.assertNotNull(libraryResponse.getItems().get(0).getOffer());
 
         DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId.getValue());
         verifyItem(response.getEntitlements().get(0).getItemDetails(), GetItemMethod.Details, true);
         Assert.assertTrue(detailsResponse.getItem().getOwnedByCurrentUser());
         Assert.assertTrue(detailsResponse.getItem().getOffer().getIsFree());
 
-
         // get delivery
         DeliveryResponse deliveryResponse = testDataProvider.getDelivery(itemId);
         Assert.assertTrue(deliveryResponse.getDownloadUrl() != null);
+
+        // switch to country that does not purchasable and get library, verify the offer is null
+        TestContext.getData().putHeader("oculus-geoip-country-code", "CN");
+        libraryResponse = testDataProvider.getLibrary();
+        assert libraryResponse.getItems().size() == 1;
+        Assert.assertNull(libraryResponse.getItems().get(0).getOffer());
     }
 
     @Test
@@ -444,6 +446,15 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     @Test
+    @Property(
+            priority = Priority.BVT,
+            features = "Store browse",
+            component = Component.STORE,
+            owner = "fzhang",
+            status = Status.Enable,
+            environment = "release",
+            description = "Test the add review function"
+    )
     public void testAddReview() throws Exception {
         gotoToc();
         StoreUserProfile userProfile = testDataProvider.getUserProfile().getUserProfile();
@@ -451,10 +462,20 @@ public class StoreBrowseTesting extends BaseTestClass {
         // get item
         Item item = testDataProvider.getLayout("Game", null, 2).getItems().get(0);
 
-        // add review
+        // add review not purchased
         AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
+        testDataProvider.addReview(addReviewRequest, 412);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.120"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("Could not review an item that not purchased."));
+
+        // purchase & add again
+        testDataProvider.makeFreePurchase(item.getOffer().getSelf().getValue(), null, 200);
         AddReviewResponse reviewResponse = testDataProvider.addReview(addReviewRequest, 200);
         storeBrowseValidationHelper.validateAddReview(addReviewRequest, reviewResponse.getReview(), userProfile.getNickName());
+
+        // validate with current user review
+        item = testDataProvider.getItemDetails(item.getSelf().getValue()).getItem();
+        storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
 
         // add again should fail
         testDataProvider.addReview(addReviewRequest, 412);
@@ -462,6 +483,71 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("Review already exists."));
     }
 
+    @Test
+    public void testAddReviewInvalidRequest() throws Exception {
+        // ratings missing
+        gotoToc();
+        Item item = testDataProvider.getLayout("Game", null, 2).getItems().get(0);
+
+        AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
+
+        // item empty
+        addReviewRequest.setItemId(null);
+        testDataProvider.addReview(addReviewRequest, 400);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.009"));
+
+        // start ratings empty
+        addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
+        addReviewRequest.setStarRatings(null);
+        testDataProvider.addReview(addReviewRequest, 400);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.009"));
+
+        // invalid type
+        addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
+        addReviewRequest.setStarRatings(Collections.singletonMap("test", 1));
+        testDataProvider.addReview(addReviewRequest, 400);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.001"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("invalid rating type: test"));
+
+        // sore invalid
+        addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
+        addReviewRequest.setStarRatings(Collections.singletonMap("quality", 6));
+        testDataProvider.addReview(addReviewRequest, 400);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.001"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("value must in range [1,5]"));
+    }
+
+
+    @Test
+    public void testAcceptLanguageHeader() throws Exception {
+        gotoToc();
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_oculus_free1);
+        com.junbo.catalog.spec.model.offer.Offer catalogOffer = offerService.getOffer(offerId);
+        OfferRevision offerRevision = offerRevisionService.getOfferRevision(catalogOffer.getCurrentRevisionId());
+        Assert.assertEquals(offerRevision.getItems().size(), 1);
+        String itemId = offerRevision.getItems().get(0).getItemId();
+
+        // locale not found, fall back to en_US
+        TestContext.getData().putHeader("Accept-Language", "en");
+        DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId);
+        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+
+        // wildcard locale
+        TestContext.getData().putHeader("Accept-Language", "*");
+        detailsResponse = testDataProvider.getItemDetails(itemId);
+        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+
+        // invalid Accept-Language format, fall back to en_US
+        TestContext.getData().putHeader("Accept-Language", "en_US");
+        detailsResponse = testDataProvider.getItemDetails(itemId);
+        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+    }
+
+    @Test
+    public void testInvalidAndroidId() throws Exception { // API does not fail even the android id is invalid
+        TestContext.getData().putHeader("X-ANDROID-ID", "1233a2azzdfasdd22addda22");
+        gotoToc();
+    }
 
     private void testGetCategorySection(final String category, String sectionName, List<String> itemNames) throws Exception {
         int pageSize = 2;
@@ -521,7 +607,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(category, criteria, listItemPageSize);
         numOfItems += sectionLayoutResponse.getItems().size();
         verifyItemsInExplore(sectionLayoutResponse.getItems());
-        if (sectionLayoutResponse.getNext() != null) { // get rest of the items by get list
+        if (sectionLayoutResponse.getNext() != null && sectionLayoutResponse.getItems().size() > 0) { // get rest of the items by get list
             Assert.assertEquals(category, sectionLayoutResponse.getNext().getCategory());
             Assert.assertEquals(criteria, sectionLayoutResponse.getNext().getCriteria());
             numOfItems += listAllItems(category, criteria, listItemPageSize, sectionLayoutResponse.getNext().getCursor());

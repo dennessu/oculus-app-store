@@ -18,6 +18,7 @@ import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.CatalogUtils
+import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
@@ -67,22 +68,27 @@ class BrowseServiceImpl implements BrowseService {
     @Resource(name = 'storeLocaleUtils')
     private LocaleUtils localeUtils
 
+    @Resource(name = 'storeReviewValidator')
+    private ReviewValidator reviewValidator
+
+    private Set<String> libraryItemTypes = [
+            ItemType.APP.name()
+    ] as Set
+
     @Override
-    Promise<Item> getItem(ItemId itemId, boolean checkAvailable, boolean includeDetails, ApiContext apiContext) {
+    Promise<Item> getItem(ItemId itemId, boolean useSearch, boolean includeDetails, ApiContext apiContext) {
         Promise.pure().then {
-            if (!checkAvailable) {
-                return Promise.pure()
+            if (!useSearch) {
+                return facadeContainer.catalogFacade.getItem(itemId, apiContext)
             }
-            facadeContainer.caseyFacade.itemAvailable(itemId, apiContext).then { Boolean available ->
-                if (!available) {
+            facadeContainer.caseyFacade.search(itemId, apiContext).then { CaseyResults<Item> results ->
+                if (CollectionUtils.isEmpty(results?.items)) {
                     throw AppCommonErrors.INSTANCE.resourceNotFound('Item', itemId).exception()
                 }
-                return Promise.pure()
+                return Promise.pure(results.items[0])
             }
-        }.then {
-            facadeContainer.catalogFacade.getItem(itemId, apiContext).then { Item item ->
-                decorateItem(true, includeDetails, apiContext, item)
-            }
+        }.then { Item item ->
+            decorateItem(true, includeDetails, apiContext, item)
         }
     }
 
@@ -152,7 +158,7 @@ class BrowseServiceImpl implements BrowseService {
                         return Promise.pure()
                     }
                     itemIdSet << entitlement.itemId
-                    getAppItemFromEntitlement(entitlement, apiContext).then { Item item ->
+                    getLibraryItemFromEntitlement(entitlement, apiContext).then { Item item ->
                         if (item != null) {
                             result.items << item
                         }
@@ -198,12 +204,7 @@ class BrowseServiceImpl implements BrowseService {
 
     @Override
     Promise<AddReviewResponse> addReview(AddReviewRequest request, ApiContext apiContext) {
-        facadeContainer.caseyFacade.getReviews(request.itemId.value, apiContext.user, null, null).then { ReviewsResponse response ->
-            if (!CollectionUtils.isEmpty(response?.reviews)) {
-                throw AppErrors.INSTANCE.reviewAlreadyExists().exception()
-            }
-            return Promise.pure()
-        }.then {
+        reviewValidator.validateAddReview(request, apiContext).then {
             return facadeContainer.caseyFacade.addReview(request, apiContext).then { Review review ->
                 return Promise.pure(new AddReviewResponse(review: review))
             }
@@ -250,12 +251,12 @@ class BrowseServiceImpl implements BrowseService {
         return null
     }
 
-    private Promise<Item> getAppItemFromEntitlement(Entitlement entitlement, ApiContext apiContext) {
+    private Promise<Item> getLibraryItemFromEntitlement(Entitlement entitlement, ApiContext apiContext) {
         resourceContainer.itemResource.getItem(entitlement.itemId).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
-            if (catalogItem.type != ItemType.APP.name()) {
+            if (!libraryItemTypes.contains(catalogItem.type)) {
                 return Promise.pure(null)
             }
-            getItem(new ItemId(catalogItem.getItemId()), false, false, apiContext).then { Item item ->
+            getItem(new ItemId(entitlement.itemId), false, false, apiContext).then { Item item ->
                 item.ownedByCurrentUser = true
                 return Promise.pure(item)
             }
@@ -278,7 +279,9 @@ class BrowseServiceImpl implements BrowseService {
         sectionInfoNode.category = rawNode.category
         sectionInfoNode.criteria = rawNode.criteria
         sectionInfoNode.children = []
-
+        if (sectionInfoNode.name == null) {
+            sectionInfoNode.name = StringUtils.isEmpty(sectionInfoNode.category) ? sectionInfoNode.criteria :  sectionInfoNode.category
+        }
         if (recursive) {
             sectionInfoNode.children = rawNode.children.collect { SectionInfoNode e ->
                 return buildSectionInfoNodeForResponse(e, recursive, apiContext)

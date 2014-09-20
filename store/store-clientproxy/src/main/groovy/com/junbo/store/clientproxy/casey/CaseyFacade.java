@@ -19,7 +19,7 @@ import com.junbo.store.spec.model.external.casey.CaseyResults;
 import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * The CaseyFacade interface.
@@ -28,7 +28,9 @@ public interface CaseyFacade {
 
     Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext);
 
-    Promise<List<AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext);
+    Promise<CaseyResults<Item>> search(ItemId itemId, ApiContext apiContext);
+
+    Promise<Map<String, AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext);
 
     Promise<ReviewsResponse> getReviews(String itemId, UserId userId, String cursor, Integer count);
 

@@ -110,27 +110,26 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(review.getTitle(), caseyReview.getReviewTitle());
         Assert.assertEquals(review.getStarRatings().size(), caseyReview.getRatings().size());
         for (CaseyReview.Rating rating : caseyReview.getRatings()) {
-            Assert.assertEquals(review.getStarRatings().get(rating.getType()), rating.getScore(), "rating result not correct");
+            Assert.assertEquals(review.getStarRatings().get(rating.getType()).intValue(), rating.getScore() / 20, "rating result not correct");
         }
     }
 
-    public void verifyAggregateRatings(List<AggregatedRatings> aggregatedRatings, List<CaseyAggregateRating> caseyAggregatedRatings) {
-        Assert.assertEquals(aggregatedRatings.size(), caseyAggregatedRatings.size());
-        for (final AggregatedRatings rating : aggregatedRatings) {
+    public void verifyAggregateRatings(Map<String, AggregatedRatings> aggregatedRatings, List<CaseyAggregateRating> caseyAggregatedRatings) {
+        for (final Map.Entry<String, AggregatedRatings> entry : aggregatedRatings.entrySet()) {
             CaseyAggregateRating caseyAggregateRating = (CaseyAggregateRating) CollectionUtils.find(caseyAggregatedRatings, new Predicate() {
                 @Override
                 public boolean evaluate(Object object) {
-                    return ObjectUtils.nullSafeEquals(((CaseyAggregateRating) object).getType(), rating.getType());
+                    return ObjectUtils.nullSafeEquals(((CaseyAggregateRating) object).getType(), entry.getKey());
                 }
             });
-
-            Assert.assertEquals(rating.getAverageRating(), caseyAggregateRating.getAverage(), "average rating not correct");
+            AggregatedRatings rating = entry.getValue();
+            Assert.assertEquals(rating.getAverageRating(), caseyAggregateRating.getAverage() / 20, 0.00001, "average rating not correct");
             Assert.assertEquals(rating.getRatingsCount(), caseyAggregateRating.getCount(), "rating count not correct");
-            Assert.assertEquals(rating.getType(), caseyAggregateRating.getType(), "type not correct");
             Assert.assertNull(rating.getCommentsCount(), "comments count should be null");
 
-            for (int i = 0;i < caseyAggregateRating.getHistogram().length; ++i) {
-                Assert.assertEquals(rating.getRatingsHistogram().get(i), caseyAggregateRating.getHistogram()[i], "rating histogram not correct");
+            for (int i = 0;i < caseyAggregateRating.getHistogram().length; i += 2) {
+                Assert.assertEquals(rating.getRatingsHistogram().get(i / 2).longValue(),
+                        (caseyAggregateRating.getHistogram()[i] + caseyAggregateRating.getHistogram()[i + 1]), "rating histogram not correct");
             }
         }
     }
@@ -140,9 +139,9 @@ public class StoreBrowseValidationHelper {
         ItemRevision currentItemRevision = null;
         com.junbo.catalog.spec.model.offer.Offer catalogOffer =
                 storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue());
-        OfferRevision offerRevision = storeTestDataProvider.getOfferRevision(catalogOffer.getCurrentRevisionId());
+        OfferRevision offerRevision = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
         com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue());
-        ItemRevision itemRevision = storeTestDataProvider.getItemRevision(catalogItem.getCurrentRevisionId());
+        ItemRevision itemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevision().getValue());
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
         List<OfferRevision> offerRevisions = getOfferRevisions(catalogOffer);

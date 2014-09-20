@@ -135,4 +135,12 @@ public class CaseyReview extends BaseCaseyModel {
             this.type = type;
         }
     }
+
+    /**
+     * Rating type.
+     */
+    public static enum  RatingType {
+        quality,
+        comfort
+    }
 }

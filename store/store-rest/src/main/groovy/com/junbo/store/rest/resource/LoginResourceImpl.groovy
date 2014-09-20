@@ -13,9 +13,9 @@ import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.model.GrantType
 import com.junbo.oauth.spec.model.TokenInfo
-import com.junbo.store.rest.context.ErrorContext
-import com.junbo.store.rest.utils.AppErrorUtils
-import com.junbo.store.rest.utils.ErrorCodes
+import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.clientproxy.error.ErrorCodes
+import com.junbo.store.clientproxy.error.ErrorContext
 import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.model.login.*

@@ -8,21 +8,21 @@ package com.junbo.store.spec.model.catalog.data;
 import com.junbo.store.spec.model.browse.ReviewsResponse;
 import com.junbo.store.spec.model.browse.document.AggregatedRatings;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * CaseyData.
  */
 public class CaseyData {
-    private List<AggregatedRatings> aggregatedRatings;
+    private Map<String, AggregatedRatings> aggregatedRatings;
 
     private ReviewsResponse reviewsResponse;
 
-    public List<AggregatedRatings> getAggregatedRatings() {
+    public Map<String, AggregatedRatings> getAggregatedRatings() {
         return aggregatedRatings;
     }
 
-    public void setAggregatedRatings(List<AggregatedRatings> aggregatedRatings) {
+    public void setAggregatedRatings(Map<String, AggregatedRatings> aggregatedRatings) {
         this.aggregatedRatings = aggregatedRatings;
     }
 

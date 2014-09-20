@@ -528,24 +528,4 @@ public class StoreTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
     }
 
-    @Test
-    public void testAcceptLanguageHeader() throws Exception {
-        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
-        testDataProvider.CreateUser(createUserRequest, true);
-
-        // locale not found
-        TestContext.getData().putHeader("Accept-Language", "en");
-        testDataProvider.getToc(412);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("131.124"));
-
-        // wildcard locale
-        TestContext.getData().putHeader("Accept-Language", "*");
-        Assert.assertNotNull(testDataProvider.getToc().getChallenge());
-
-        // invalid Accept-Language format
-        TestContext.getData().putHeader("Accept-Language", "en_US");
-        testDataProvider.getToc(400);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("199.001"));
-    }
-
 }

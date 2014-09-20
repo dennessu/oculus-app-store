@@ -3,10 +3,10 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.store.rest.context;
+package com.junbo.store.clientproxy.error;
 
 /**
- * The ErrorInfo class.
+ * The ErrorContext class.
  */
 public class ErrorContext {
 
@@ -19,4 +19,5 @@ public class ErrorContext {
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
+
 }

@@ -3,25 +3,26 @@ package com.junbo.langur.core.adapter
 import com.google.common.base.Function
 import com.junbo.langur.core.IpUtil
 import com.junbo.langur.core.context.JunboHttpContext
-import com.junbo.langur.core.exception.InvalidHeaderException
 import com.junbo.langur.core.routing.Router
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.Request
-import org.glassfish.jersey.message.internal.HeaderValueException
 import org.glassfish.jersey.server.ContainerResponse
 import org.glassfish.jersey.server.internal.process.RespondingContext
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.Context
-import javax.ws.rs.core.HttpHeaders
 
 /**
  * Created by kg on 5/23/2014.
  */
 @CompileStatic
 abstract class AbstractRestAdapter {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractRestAdapter.class)
 
     @Context
     private ContainerRequestContext httpRequestContext
@@ -46,8 +47,8 @@ abstract class AbstractRestAdapter {
 
         try {
             httpContextData.acceptableLanguages = httpRequestContext.acceptableLanguages
-        } catch (HeaderValueException ex) {
-            throw new InvalidHeaderException(HttpHeaders.ACCEPT_LANGUAGE, ex.message, ex.cause)
+        } catch (Exception ex) {
+            LOGGER.warn("name=Invalid_AcceptLanguage_Header", ex)
         }
 
         for (Map.Entry<String, List<String>> entry : httpRequestContext.headers.entrySet()) {

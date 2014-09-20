@@ -50,11 +50,11 @@ public class DataGenerator {
 
         CaseyReview.Rating qualityRating = new CaseyReview.Rating();
         qualityRating.setType("quality");
-        qualityRating.setScore(rand.nextInt(10));
+        qualityRating.setScore(rand.nextInt(100));
 
         CaseyReview.Rating comfortRating = new CaseyReview.Rating();
         comfortRating.setType("comfort");
-        comfortRating.setScore(rand.nextInt(10));
+        comfortRating.setScore(rand.nextInt(100));
 
         caseyReview.setRatings(Arrays.asList(qualityRating, comfortRating));
         return caseyReview;
@@ -66,14 +66,14 @@ public class DataGenerator {
         request.setTitle("Test review title.." + RandomStringUtils.randomAlphabetic(5));
         request.setContent("Test review content.........." + RandomStringUtils.randomAlphabetic(30));
         request.setStarRatings(new HashMap<String, Integer>());
-        request.getStarRatings().put("comfort", rand.nextInt(100));
-        request.getStarRatings().put("quality", rand.nextInt(100));
+        request.getStarRatings().put("comfort", rand.nextInt(5) + 1);
+        request.getStarRatings().put("quality", rand.nextInt(5) + 1);
         return request;
     }
 
     public CaseyAggregateRating generateCaseyAggregateRating(String type) {
         CaseyAggregateRating aggregateRating = new CaseyAggregateRating();
-        aggregateRating.setAverage((double) rand.nextInt(10));
+        aggregateRating.setAverage((double) rand.nextInt(100));
         aggregateRating.setCount((long) rand.nextInt(10000));
         aggregateRating.setType(type);
         aggregateRating.setHistogram(new Long[10]);

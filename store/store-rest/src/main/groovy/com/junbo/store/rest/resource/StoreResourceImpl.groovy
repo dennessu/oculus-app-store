@@ -38,12 +38,14 @@ import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.clientproxy.error.ErrorCodes
+import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.clientproxy.error.ErrorContext
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
 import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.challenge.ChallengeHelper
-import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.rest.utils.*
 import com.junbo.store.spec.error.AppErrors
@@ -63,7 +65,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -819,7 +820,7 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<AddReviewResponse> addReview(AddReviewRequest request) {
-        requestValidator.validateRequiredApiHeaders().validateAddReviewRequest(request)
+        requestValidator.validateRequiredApiHeaders().validateRequestBody(request)
         prepareBrowse().then { ApiContext apiContext ->
             return browseService.addReview(request, apiContext)
         }

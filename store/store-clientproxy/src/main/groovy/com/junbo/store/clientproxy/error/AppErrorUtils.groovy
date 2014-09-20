@@ -1,10 +1,9 @@
-package com.junbo.store.rest.utils
+package com.junbo.store.clientproxy.error
 
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppError
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.error.ErrorDetail
-import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
