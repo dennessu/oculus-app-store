@@ -5,8 +5,8 @@
     <conversionRule conversionWord="clr" converterClass="com.junbo.apphost.core.logging.ColorConverter"/>
     <conversionRule conversionWord="wex" converterClass="com.junbo.apphost.core.logging.WhitespaceThrowableProxyConverter"/>
 
-    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{[yyyy-MM-dd HH:mm:ss.SSS Z]}){bold} %clr(%5p) %clr(${PID:- }){magenta} %clr([%15.15t{14}]){bold} %clr([%36.36X{oculus-request-id:- }]){bold} %clr(---){bold} %clr(%-40.40logger{39}){cyan} %clr(:){bold} %m%n%wex"/>
-    <property name="FILE_LOG_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %5p ${PID:- } [%15.15t{14}] [%36.36X{oculus-request-id:- }] --- %-40.40logger{39} : %m%n%wex"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{[yyyy-MM-dd HH:mm:ss.SSS Z]}){bold} %clr(%5p) %clr(${PID:- }){magenta} %clr([%.20t]){bold} %clr([%.36X{oculus-request-id:- }]){bold} %clr(---){bold} %clr(%.40logger{39}){cyan} %clr(:){bold} %m%n%wex"/>
+    <property name="FILE_LOG_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %5p ${PID:- } [%.20t] [%.36X{oculus-request-id:- }] --- %.40logger{39} : %m%n%wex"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -79,8 +79,8 @@
     <logger name="org.glassfish.grizzly.http.server.HttpHandlerChain" level="DEBUG" />
 
     <!-- ACCESS LOG -->
-    <property name="CONSOLE_ACCESS_LOG_PATTERN" value="%m %clr([%8.8X{X-Request-Id:- }]){bold}%n"/>
-    <property name="FILE_ACCESS_LOG_PATTERN" value="%m [%8.8X{X-Request-Id:- }]%n"/>
+    <property name="CONSOLE_ACCESS_LOG_PATTERN" value="%m %clr([%.36X{oculus-request-id:- }]){bold}%n"/>
+    <property name="FILE_ACCESS_LOG_PATTERN" value="%m [%.36X{oculus-request-id:- }]%n"/>
 
     <appender name="CONSOLE_ACCESS_LOG" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
