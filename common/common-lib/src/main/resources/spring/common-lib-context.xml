@@ -29,7 +29,7 @@
     <bean id="commonClientProxyHeadersProvider" class="com.junbo.common.client.ClientProxyHeadersProvider">
         <property name="forwardedHeaders">
             <list>
-                <value>X-Request-Id</value>
+                <value>oculus-request-id</value>
                 <value>X-Routing-Path</value>
                 <value>Cache-Control</value>
                 <value>oculus-end-user-ip</value>

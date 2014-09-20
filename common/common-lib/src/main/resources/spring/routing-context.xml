@@ -14,7 +14,7 @@
     <bean id="routingResponseHandler" class="com.junbo.common.routing.RoutingResponseHandler">
         <property name="blacklistHeaders">
             <list>
-                <value>X-Request-Id</value>
+                <value>oculus-request-id</value>
                 <value>Content-Length</value>
                 <value>Cache-Control</value>
             </list>
