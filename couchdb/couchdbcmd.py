@@ -207,7 +207,8 @@ def getNewDbs(envConf, dbPrefix):
         dbPattern = '.*'
     else:
         dbPattern = dbPrefix
-
+    if not dbPrefix:
+        dbPrefix = ""
     dbs = readDbs()
 
     result = []
