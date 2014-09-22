@@ -623,6 +623,7 @@
                                 map_id 				  bigint 	      not null,
                                 user_id 			  bigint 	      not null,
                                 fb_payment_account_id 		  varchar(128)        not null,
+                                resource_age                      bigint              not null,
                                 created_time                      timestamp           not null,
                                 created_by                        varchar(64)             null,
                                 updated_time                      timestamp               null,
