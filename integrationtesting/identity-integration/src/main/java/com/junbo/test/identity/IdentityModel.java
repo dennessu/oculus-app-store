@@ -9,6 +9,7 @@ package com.junbo.test.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.*;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.identity.spec.v1.model.*;
@@ -248,6 +249,14 @@ public class IdentityModel {
         userPersonalInfo.setType(UserPersonalInfoType.USERNAME.toString());
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(loginName));
         return userPersonalInfo;
+    }
+
+    public static Group DefaultGroup(OrganizationId organizationId) throws Exception {
+        Group group = new Group();
+        group.setName(RandomHelper.randomAlphabetic(15));
+        group.setActive(true);
+        group.setOrganizationId(organizationId);
+        return group;
     }
 
     public static Organization DefaultOrganization() throws Exception {

@@ -6,6 +6,7 @@
 package com.junbo.test.identity;
 
 import com.junbo.common.model.Results;
+import com.junbo.identity.spec.v1.model.Group;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
@@ -106,5 +107,19 @@ public class postOrganization {
         Validator.Validate("validate total organization size", 10L, results.getTotal());
         Validator.Validate("validate organization count", true, results.getNext().getHref().contains("count=1"));
         Validator.Validate("validate organization cursor", true, results.getNext().getHref().contains("cursor=3"));
+    }
+
+    @Test(groups = "dailies")
+    //https://oculus.atlassian.net/browse/SER-610
+    //https://oculus.atlassian.net/browse/SER-605
+    public void testGroupDelete() throws Exception {
+        Organization org = IdentityModel.DefaultOrganization();
+        org = Identity.OrganizationPostDefault(org);
+
+        Group group = IdentityModel.DefaultGroup(org.getId());
+
+        group = Identity.GroupPostDefault(group);
+
+        Identity.GroupDelete(group);
     }
 }
