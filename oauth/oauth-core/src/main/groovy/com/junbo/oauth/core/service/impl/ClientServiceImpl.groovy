@@ -6,7 +6,7 @@
 package com.junbo.oauth.core.service.impl
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.ClientService
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.service.ScopeService

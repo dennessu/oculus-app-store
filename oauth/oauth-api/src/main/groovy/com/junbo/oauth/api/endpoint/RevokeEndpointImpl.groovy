@@ -11,7 +11,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Link
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.db.repo.ClientRepository

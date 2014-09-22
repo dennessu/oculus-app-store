@@ -2,7 +2,6 @@ package com.junbo.oauth.api.mapper
 
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.webflow.ConversationNotfFoundException
-import com.junbo.oauth.core.exception.AppErrors
 import groovy.transform.CompileStatic
 
 import javax.ws.rs.core.Response
