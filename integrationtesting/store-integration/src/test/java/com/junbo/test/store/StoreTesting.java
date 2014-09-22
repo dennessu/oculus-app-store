@@ -372,47 +372,52 @@ public class StoreTesting extends BaseTestClass {
     )
     @Test(groups = "int/ppe/prod/sewer")
     public void testMakeFreePurchaseWithMultiEndpoint() throws Exception {
-        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
-        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
-        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
-        String userName = authTokenResponse.getUsername();
+        try {
+            CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+            AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+            validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
+            String userName = authTokenResponse.getUsername();
 
-        AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
+            AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
-        validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
-        validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
+            validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+            validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
-        UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
+            UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
 
-        validationHelper.verifyUserProfile(userProfileResponse, authTokenResponse);
+            validationHelper.verifyUserProfile(userProfileResponse, authTokenResponse);
 
-        String offerId;
-        if (offer_iap_free.toLowerCase().contains("test")) {
-            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
-        } else {
-            offerId = offer_digital_free;
-            Offer offer = testDataProvider.getOfferByOfferId(offerId);
-            OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
-            Item item = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId());
-            testDataProvider.getItemRevision(item.getCurrentRevisionId());
+            String offerId;
+            if (offer_iap_free.toLowerCase().contains("test")) {
+                offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+            } else {
+                offerId = offer_digital_free;
+                Offer offer = testDataProvider.getOfferByOfferId(offerId);
+                OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
+                Item item = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId());
+                testDataProvider.getItemRevision(item.getCurrentRevisionId());
+            }
+
+            MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
+
+            //String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
+
+            if (freePurchaseResponse.getChallenge() != null) {
+                freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+            }
+            Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
+            LibraryResponse libraryResponse = testDataProvider.getLibrary();
+            validationHelper.verifyLibraryResponse(libraryResponse, offerId);
+
+            Master.getInstance().setCurrentUid(null);
+
+            AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());
+            validationHelper.verifyEmailInAuthResponse(tokenResponse, createUserRequest.getEmail(), true);
+            validationHelper.verifySignInResponse(signInResponse, tokenResponse);
+        } catch (Exception ex) {
+        } finally {
+            Master.getInstance().setEndPointType(Master.EndPointType.Primary);
         }
-
-        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
-
-        //String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
-
-        if (freePurchaseResponse.getChallenge() != null) {
-            freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
-        }
-        Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
-        LibraryResponse libraryResponse = testDataProvider.getLibrary();
-        validationHelper.verifyLibraryResponse(libraryResponse, offerId);
-
-        Master.getInstance().setCurrentUid(null);
-
-        AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());
-        validationHelper.verifyEmailInAuthResponse(tokenResponse, createUserRequest.getEmail(), true);
-        validationHelper.verifySignInResponse(signInResponse, tokenResponse);
 
     }
 
@@ -473,7 +478,7 @@ public class StoreTesting extends BaseTestClass {
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
-        assert libraryResponse.getItems().size() == 0 ;
+        assert libraryResponse.getItems().size() == 0;
 
     }
 
