@@ -503,13 +503,13 @@ public class StoreBrowseTesting extends BaseTestClass {
         // item empty
         addReviewRequest.setItemId(null);
         testDataProvider.addReview(addReviewRequest, 400);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.009"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.001"));
 
         // start ratings empty
         addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
         addReviewRequest.setStarRatings(null);
         testDataProvider.addReview(addReviewRequest, 400);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.009"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.001"));
 
         // invalid type
         addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
