@@ -36,8 +36,6 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import com.junbo.test.store.apihelper.TestContext;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -74,6 +72,7 @@ public class StoreTesting extends BaseTestClass {
     public void testIAPCheckoutByCreditCard() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
 
@@ -139,6 +138,7 @@ public class StoreTesting extends BaseTestClass {
     public void testPreparePurchaseDigitalGood() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
 
@@ -242,6 +242,7 @@ public class StoreTesting extends BaseTestClass {
     public void testPrivilege() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
 
         Validator.Validate("validate authtoken response correct", createUserRequest.getUsername(), authTokenResponse.getUsername());
 
@@ -276,6 +277,7 @@ public class StoreTesting extends BaseTestClass {
         Validator.Validate("validate password strong", "STRONG", userCredentialRateResponse.getStrength());
 
         AuthTokenResponse newAuthTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        validationHelper.verifyEmailInAuthResponse(newAuthTokenResponse, createUserRequest.getEmail(), false);
         Validator.Validate("validate token valid", authTokenResponse.getUsername(), newAuthTokenResponse.getUsername());
 
         // todo:    Add other conditions
@@ -305,11 +307,13 @@ public class StoreTesting extends BaseTestClass {
     public void testMakeFreePurchase() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
         String userName = authTokenResponse.getUsername();
 
         AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+        validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
         UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
 
@@ -341,6 +345,7 @@ public class StoreTesting extends BaseTestClass {
 
         AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());
 
+        validationHelper.verifyEmailInAuthResponse(tokenResponse, createUserRequest.getEmail(), true);
         validationHelper.verifySignInResponse(signInResponse, tokenResponse);
 
     }
@@ -369,11 +374,13 @@ public class StoreTesting extends BaseTestClass {
     public void testMakeFreePurchaseWithMultiEndpoint() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
         String userName = authTokenResponse.getUsername();
 
         AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+        validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
         UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
 
@@ -404,7 +411,7 @@ public class StoreTesting extends BaseTestClass {
         Master.getInstance().setCurrentUid(null);
 
         AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());
-
+        validationHelper.verifyEmailInAuthResponse(tokenResponse, createUserRequest.getEmail(), true);
         validationHelper.verifySignInResponse(signInResponse, tokenResponse);
 
     }
@@ -490,6 +497,7 @@ public class StoreTesting extends BaseTestClass {
         String password = "Test1234";
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
 
         assert authTokenResponse.getUsername().equals(userName);
         assert authTokenResponse.getAccessToken() != null;
@@ -498,6 +506,7 @@ public class StoreTesting extends BaseTestClass {
         assert !userNameCheckResponse.getIsAvailable();
 
         authTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), password);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), true);
         assert authTokenResponse.getUsername().equals(userName);
         assert authTokenResponse.getAccessToken() != null;
     }

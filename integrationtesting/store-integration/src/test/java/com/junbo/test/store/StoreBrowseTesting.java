@@ -460,21 +460,30 @@ public class StoreBrowseTesting extends BaseTestClass {
         StoreUserProfile userProfile = testDataProvider.getUserProfile().getUserProfile();
 
         // get item
-        Item item = testDataProvider.getLayout("Game", null, 2).getItems().get(0);
+        String offerId;
+        String itemId;
+        if (offer_digital_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+        com.junbo.catalog.spec.model.offer.Offer offer = testDataProvider.getOfferByOfferId(offerId);
+        OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
+        itemId = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId()).getItemId();
 
         // add review not purchased
-        AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
+        AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
         testDataProvider.addReview(addReviewRequest, 412);
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.120"));
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("Could not review an item that not purchased."));
 
         // purchase & add again
-        testDataProvider.makeFreePurchase(item.getOffer().getSelf().getValue(), null, 200);
+        testDataProvider.makeFreePurchase(offerId, null, 200);
         AddReviewResponse reviewResponse = testDataProvider.addReview(addReviewRequest, 200);
         storeBrowseValidationHelper.validateAddReview(addReviewRequest, reviewResponse.getReview(), userProfile.getNickName());
 
         // validate with current user review
-        item = testDataProvider.getItemDetails(item.getSelf().getValue()).getItem();
+        Item item = testDataProvider.getItemDetails(itemId).getItem();
         storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
 
         // add again should fail
