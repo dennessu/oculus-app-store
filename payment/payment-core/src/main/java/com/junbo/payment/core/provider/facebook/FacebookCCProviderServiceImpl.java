@@ -8,6 +8,7 @@ package com.junbo.payment.core.provider.facebook;
 
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.clientproxy.facebook.*;
 import com.junbo.payment.common.CommonUtil;
@@ -22,7 +23,12 @@ import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -39,6 +45,8 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     private FacebookPaymentApi facebookPaymentApi;
     private PersonalInfoFacade personalInfoFacade;
     private PaymentInstrumentRepositoryFacade piRepository;
+    @Autowired
+    protected PlatformTransactionManager transactionManager;
     @Override
     public String getProviderName() {
         return PROVIDER_NAME;
@@ -81,6 +89,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             @Override
             public Promise<PaymentInstrument> apply(String s) {
                 final String accessToken = s;
+                String existingAccount = getFacebookPaymentAccount(request.getUserId());
+                if(!CommonUtil.isNullOrEmpty(existingAccount)){
+                    return addCreditCard(accessToken, existingAccount, request);
+                }
                 FacebookPaymentAccount fbPaymentAccount = new FacebookPaymentAccount();
                 fbPaymentAccount.setPayerId(request.getUserId().toString());
                 return facebookPaymentApi.createAccount(s, oculusAppId, fbPaymentAccount).then(new Promise.Func<FacebookPaymentAccount, Promise<PaymentInstrument>>() {
@@ -90,30 +102,34 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                         FacebookPaymentAccountMapping fbPaymentAccountMapping = new FacebookPaymentAccountMapping();
                         fbPaymentAccountMapping.setUserId(request.getUserId());
                         fbPaymentAccountMapping.setFbPaymentAccountId(fbAccount);
-                        piRepository.createFBPaymentAccountIfNotExist(fbPaymentAccountMapping);
-                        FacebookCreditCard fbCreditCard = new FacebookCreditCard();
-                        // Billing address
-                        Address address = null;
-                        if(request.getBillingAddressId() != null){
-                            address = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
-                            address.setId(request.getBillingAddressId());
-                        }
-                        if(address != null){
-                            fbCreditCard.setBillingAddress(getFacebookAddress(address, request));
-                        }
-                        return facebookPaymentApi.addCreditCard(accessToken, fbAccount, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
-                            @Override
-                            public Promise<PaymentInstrument> apply(FacebookCreditCard facebookCreditCard) {
-                                //TODO: check the return result
-                                request.setExternalToken(facebookCreditCard.getId());
-                                request.getTypeSpecificDetails().setIssuerIdentificationNumber(facebookCreditCard.getFirst6());
-                                request.getTypeSpecificDetails().setExpireDate(facebookCreditCard.getExpiryYear() + "-" + facebookCreditCard.getExpiryMonth());
-                                request.setAccountNumber(facebookCreditCard.getLast4());
-                                return Promise.pure(request);
-                            }
-                        });
+                        createFBPaymentAccountIfNotExist(fbPaymentAccountMapping);
+                        return addCreditCard(accessToken, fbAccount, request);
                     }
                 });
+            }
+        });
+    }
+
+    private Promise<PaymentInstrument> addCreditCard(String accessToken, String fbAccount, final PaymentInstrument request) {
+        FacebookCreditCard fbCreditCard = new FacebookCreditCard();
+        // Billing address
+        Address address = null;
+        if(request.getBillingAddressId() != null){
+            address = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
+            address.setId(request.getBillingAddressId());
+        }
+        if(address != null){
+            fbCreditCard.setBillingAddress(getFacebookAddress(address, request));
+        }
+        return facebookPaymentApi.addCreditCard(accessToken, fbAccount, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
+            @Override
+            public Promise<PaymentInstrument> apply(FacebookCreditCard facebookCreditCard) {
+                //TODO: check the return result
+                request.setExternalToken(facebookCreditCard.getId());
+                request.getTypeSpecificDetails().setIssuerIdentificationNumber(facebookCreditCard.getFirst6());
+                request.getTypeSpecificDetails().setExpireDate(facebookCreditCard.getExpiryYear() + "-" + facebookCreditCard.getExpiryMonth());
+                request.setAccountNumber(facebookCreditCard.getLast4());
+                return Promise.pure(request);
             }
         });
     }
@@ -138,7 +154,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(String s) {
-                String fbPaymentAccount = piRepository.getFacebookPaymentAccount(pi.getUserId());
+                String fbPaymentAccount = getFacebookPaymentAccount(pi.getUserId());
                 if(CommonUtil.isNullOrEmpty(fbPaymentAccount)){
                     LOGGER.error("not able to find facebook payment account for user:" + pi.getUserId());
                     throw AppServerExceptions.INSTANCE.invalidProviderAccount("").exception();
@@ -196,7 +212,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(String s) {
-                String fbPaymentAccount = piRepository.getFacebookPaymentAccount(pi.getUserId());
+                String fbPaymentAccount = getFacebookPaymentAccount(pi.getUserId());
                 if(CommonUtil.isNullOrEmpty(fbPaymentAccount)){
                     LOGGER.error("not able to find facebook payment account for user:" + pi.getUserId());
                     throw AppServerExceptions.INSTANCE.invalidProviderAccount("").exception();
@@ -295,6 +311,27 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         fbAddress.setFirstName(request.getUserInfo().getFirstName());
         fbAddress.setLastName(request.getUserInfo().getLastName());
         return fbAddress;
+    }
+
+    protected String createFBPaymentAccountIfNotExist(final FacebookPaymentAccountMapping model){
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<String>() {
+            public String doInTransaction(TransactionStatus txnStatus) {
+                return piRepository.createFBPaymentAccountIfNotExist(model);
+            }
+        });
+
+    }
+
+    protected String getFacebookPaymentAccount(final Long userId ){
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<String>() {
+            public String doInTransaction(TransactionStatus txnStatus) {
+                return piRepository.getFacebookPaymentAccount(userId);
+            }
+        });
     }
 
     @Required

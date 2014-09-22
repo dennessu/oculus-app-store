@@ -19,11 +19,15 @@ import org.slf4j.LoggerFactory;
  */
 public class FacebookPaymentUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(FacebookPaymentUtils.class);
+    private String token;
     private FacebookOauthApi facebookPaymentApi;
     private String oculusAppId;
     private String oculusAppSecret;
 
     public Promise<String> getAccessToken(){
+        if(!CommonUtil.isNullOrEmpty(token)){
+            return Promise.pure(token);
+        }
         FacebookTokenRequest tokenRequest = new FacebookTokenRequest();
         tokenRequest.setClientId(oculusAppId);
         tokenRequest.setClientSecret(oculusAppSecret);
@@ -34,9 +38,14 @@ public class FacebookPaymentUtils {
                     LOGGER.error("unable to get the access token for facebook graph API");
                     throw AppServerExceptions.INSTANCE.unAuthorized("facebook graph API").exception();
                 }
-                return Promise.pure(s.replace("access_token=", ""));
+                token = s.replace("access_token=", "");
+                return Promise.pure(token);
             }
         });
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public void setOculusAppSecret(String oculusAppSecret) {
