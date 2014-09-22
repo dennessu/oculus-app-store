@@ -21,6 +21,8 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.clientencryption.Card;
+import com.junbo.test.payment.apihelper.clientencryption.Encrypter;
+import com.junbo.test.payment.apihelper.clientencryption.EncrypterException;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
 import javax.script.Invocable;
@@ -209,7 +211,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         return dbHelper.executeScalar(sqlStr, DBHelper.DBName.EWALLET);
     }
 
-
+    /*
     public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) {
 
         Card card = new Card.Builder(new Date())
@@ -238,9 +240,9 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
         return null;
     }
+    */
 
 
-    /*
     public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) throws EncrypterException {
         Encrypter e = new Encrypter(pubKey);
 
@@ -255,7 +257,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         return e.encrypt(card.toString());
 
     }
-    */
+
 
 
     String pubKey = "10001|9699D59B070DBA71B53A696C67B8FB8538C5C9B73D2BF485104858"
