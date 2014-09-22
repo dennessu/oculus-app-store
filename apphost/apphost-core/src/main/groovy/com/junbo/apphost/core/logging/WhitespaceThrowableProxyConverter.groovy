@@ -65,7 +65,7 @@ class WhitespaceThrowableProxyConverter extends ThrowableHandlingConverter {
         int ignoredCount = 0;
         for (int i = 0; i < maxIndex; i++) {
             String string = stepArray[i].toString();
-            if (!isIgnoredStackTraceLine(string)) {
+            if (i == 0 || !isIgnoredStackTraceLine(string)) {
                 ThrowableProxyUtil.indent(sb, indent);
                 sb.append(string);
                 if (ignoredCount > 0) {
