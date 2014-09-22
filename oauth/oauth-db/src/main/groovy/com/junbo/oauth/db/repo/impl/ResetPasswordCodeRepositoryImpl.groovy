@@ -35,7 +35,7 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
     }
 
     @Override
-    ResetPasswordCode getByHash(String hash) {
+    ResetPasswordCode getByHash(String hash, Integer dc) {
         throw new NotSupportedException()
     }
 

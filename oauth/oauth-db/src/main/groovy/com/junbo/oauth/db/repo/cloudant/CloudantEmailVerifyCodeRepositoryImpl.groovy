@@ -4,30 +4,19 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.db.repo.cloudant
-
-import com.junbo.common.cloudant.CloudantClient
 import com.junbo.configuration.crypto.CipherService
-import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.spec.model.EmailVerifyCode
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
-
 /**
  * CloudantEmailVerifyCodeRepositoryImpl.
  */
 @CompileStatic
-class CloudantEmailVerifyCodeRepositoryImpl extends CloudantClient<EmailVerifyCode>
-        implements EmailVerifyCodeRepository {
-    private TokenGenerator tokenGenerator
-
+class CloudantEmailVerifyCodeRepositoryImpl
+        extends CloudantTokenRepositoryBase<EmailVerifyCode> implements EmailVerifyCodeRepository {
     private CipherService cipherService
-
-    @Required
-    void setTokenGenerator(TokenGenerator tokenGenerator) {
-        this.tokenGenerator = tokenGenerator
-    }
 
     @Required
     void setCipherService(CipherService cipherService) {

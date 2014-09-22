@@ -15,6 +15,9 @@ class ResetPasswordCode extends ResourceMeta<String> {
 
     @JsonIgnore
     String hashedCode
+    @JsonIgnore
+    Integer dc
+
     String email
     Long userId
 
