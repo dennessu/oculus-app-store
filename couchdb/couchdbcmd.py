@@ -348,7 +348,7 @@ def grantPermissions(apikeyConf, url, fullDbName, username):
                 permissions['cloudant'] = {}
                 permissions['cloudant'][username] = allRoles
                 permissions['_id'] = "_security"
-                permissions['cloudant'][apikey] = [role for role in conf['roles']]
+            permissions['cloudant'][apikey] = [role for role in conf['roles']]
             info("Granting permissions for APIKEY '%s' of DB '%s' in '%s'" % (apikey, fullDbName, username))
             grantPermission(permissionUrl, permissions)
 
