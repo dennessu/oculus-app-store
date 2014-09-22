@@ -1,7 +1,8 @@
 package com.junbo.emulator.casey.rest.resource
-import com.junbo.authorization.AuthorizeContext
-import com.junbo.catalog.spec.model.offer.Offer
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
+
+import com.junbo.catalog.spec.enums.ItemType
+import com.junbo.catalog.spec.model.item.Item
+import com.junbo.catalog.spec.model.offer.*
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.ItemId
@@ -92,17 +93,22 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
         }
 
         String userIdText = JunboHttpContext.getData().getRequestHeaders().getFirst(EmulatorHeaders.X_REVIEW_USER_ID.name())
-        ArrayList<UserId> userIds = [AuthorizeContext.currentUserId] as ArrayList
+        ArrayList<UserId> userIds = []
         if (!StringUtils.isBlank(userIdText)) {
             for(String s : userIdText.split(',')) {
                 userIds.add(new UserId(IdFormatter.decodeId(UserId, s)));
             }
         }
         int num = 10
-        CaseyResults<CaseyReview> results = new CaseyResults<>(items: [])
+        CaseyResults<CaseyReview> results = new CaseyResults<CaseyReview>(items: [] as List)
         for (int i = 0; i < num; ++i) {
-            results.items << dataGenerator.generateCaseyReview(params.resourceType, params.resourceId, userIds.get(dataGenerator.random.nextInt(userIds.size())))
+            results.items << dataGenerator.generateCaseyReview(params.resourceType, params.resourceId, userIds.isEmpty() ? null : userIds.get(dataGenerator.random.nextInt(userIds.size())))
         }
+
+        if (dataGenerator.random.nextBoolean()) {
+            results.cursor = UUID.randomUUID().toString()
+        }
+        return Promise.pure(results)
     }
 
     @Override
@@ -140,7 +146,10 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
         String cursor = null
         while (true) {
             Results<Offer> offerResults =  resourceContainer.offerResource.getOffers(new OffersGetOptions(published: true, cursor: cursor)).get()
-            for (Offer offer: offerResults.items) {
+            offerResults.items.each { Offer offer ->
+                if (!isValidOffer(offer)) {
+                    return
+                }
                 CaseyOffer caseyOffer = emulatorUtils.buildCaseyOffer(offer, new LocaleId('en_US'), new CountryId('US')) { ItemId itemId ->
                     getRatingByItemId(itemId.value).get()
                 }
@@ -154,7 +163,7 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
         }
 
         caseyOffers.each { CaseyOffer caseyOffer ->
-            if (CollectionUtils.isEmpty(caseyOffer?.items)) {
+            if (!CollectionUtils.isEmpty(caseyOffer?.items)) {
                 itemIdCaseyOfferMap.put(caseyOffer.items[0].self, caseyOffer)
             }
         }
@@ -163,4 +172,20 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
         this.itemIdCaseyOfferMap = itemIdCaseyOfferMap
     }
 
+    private boolean isValidOffer(Offer offer) {
+        if (offer.currentRevisionId == null) {
+            return false
+        }
+        OfferRevision offerRevision = resourceContainer.offerRevisionResource.getOfferRevision(offer.currentRevisionId, new OfferRevisionGetOptions()).get()
+        if (CollectionUtils.isEmpty(offerRevision.items)) {
+            return false
+        }
+        for (ItemEntry entry : offerRevision.items) {
+            Item item = resourceContainer.itemResource.getItem(entry.itemId).get()
+            if (item.type != ItemType.APP.name()) {
+                return false
+            }
+        }
+        return true
+    }
 }

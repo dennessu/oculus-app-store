@@ -1,6 +1,7 @@
 package com.junbo.emulator.casey.rest
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
+import com.junbo.emulator.casey.spec.model.CaseyReviewExtend
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
 import com.junbo.store.spec.model.external.casey.CaseyLink
 import com.junbo.store.spec.model.external.casey.CaseyReview
@@ -38,8 +39,8 @@ class DataGenerator {
                 average: (random.nextInt(10001) / 100.0) as Double,
                 sum: random.nextInt(100000) as long,
                 count: random.nextInt(100000) as long,
-                maximum: random.nextInt(100000) as long,
-                minimum: random.nextInt(100000) as long,
+                maximum: random.nextInt(100000) as int,
+                minimum: random.nextInt(100000) as int,
                 variance: (random.nextInt(10001) / 100.0) as Double,
                 resourceType: 'item',
                 resourceId: itemId,
@@ -60,16 +61,13 @@ class DataGenerator {
                 resourceType: resourceType,
                 resource: new CaseyLink(id : resourceId),
                 postedDate: new Date(),
-                user:  new CaseyLink(id : IdFormatter.encodeId(userId)),
+                user:  userId == null ? null : new CaseyLink(id : IdFormatter.encodeId(userId)),
                 country: 'US',
                 locale: 'en_US',
                 self: new CaseyLink(id : UUID.randomUUID().toString()),
-                ratings: [new CaseyReview.Rating(type: CaseyReview.RatingType.quality, score: random.nextInt(101)),
-                          new CaseyReview.Rating(type: CaseyReview.RatingType.comfort, score: random.nextInt(101))]
+                ratings: [new CaseyReview.Rating(type: CaseyReview.RatingType.quality.name(), score: random.nextInt(101)),
+                          new CaseyReview.Rating(type: CaseyReview.RatingType.comfort.name(), score: random.nextInt(101))]
         )
-        return caseyReview
+        return new CaseyReviewExtend(caseyReview)
     }
-
-
-
 }
