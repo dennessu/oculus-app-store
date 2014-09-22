@@ -9,25 +9,35 @@ package com.junbo.payment.clientproxy.facebook;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.ws.rs.QueryParam;
+
 /**
  * Facebook CreditCard.
  */
 public class FacebookCreditCard {
     private String id;
+    @QueryParam("cc_number")
     @JsonProperty("cc_number")
     private String ccNumber;
+    @QueryParam("cvv")
     @JsonProperty
     private String cvv;
+    @QueryParam("card_holder_name")
     @JsonProperty("card_holder_name")
     private String cardHolderName;
+    @QueryParam("expiry_month")
     @JsonProperty("expiry_month")
     private String expiryMonth;
+    @QueryParam("expiry_year")
     @JsonProperty("expiry_year")
     private String expiryYear;
+    @QueryParam("billing_address")
     @JsonProperty("billing_address")
     private FacebookAddress billingAddress;
+    @QueryParam("payer_email")
     @JsonProperty("payer_email")
     private String payerEmail;
+    @QueryParam("payer_ip")
     @JsonProperty("payer_ip")
     private String payerIp;
 
