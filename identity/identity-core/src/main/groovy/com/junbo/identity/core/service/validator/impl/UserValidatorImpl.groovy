@@ -101,6 +101,10 @@ class UserValidatorImpl implements UserValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('active').exception()
         }
 
+        if (oldUser.status == UserStatus.DELETED.toString()) {
+            throw AppCommonErrors.INSTANCE.invalidOperation('Can\'t update delete user').exception()
+        }
+
         if (user.isAnonymous == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('isAnonymous').exception()
         }
