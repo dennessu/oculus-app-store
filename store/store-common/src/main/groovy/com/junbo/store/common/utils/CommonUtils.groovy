@@ -37,5 +37,12 @@ class CommonUtils {
         }
     }
 
+    public static int safeInt(Number number) {
+        return number == null ? 0 : number.intValue()
+    }
+
+    public static long safeLong(Number number) {
+        return number == null ? 0 : number.longValue()
+    }
 
 }

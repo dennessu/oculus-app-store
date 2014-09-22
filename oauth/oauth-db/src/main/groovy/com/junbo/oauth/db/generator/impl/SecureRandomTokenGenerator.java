@@ -6,6 +6,7 @@
 package com.junbo.oauth.db.generator.impl;
 
 import com.junbo.common.error.AppCommonErrors;
+import com.junbo.common.util.UUIDUtils;
 import com.junbo.configuration.topo.DataCenters;
 import com.junbo.oauth.db.generator.TokenGenerator;
 import org.apache.commons.codec.binary.Base64;
@@ -19,7 +20,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -49,6 +49,8 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
     private int emailVerifyCodeLength;
     private int resetPasswordCodeLength;
+
+    private int currentDc = DataCenters.instance().currentDataCenterId();
 
     @Required
     public void setAuthorizationCodeLength(int authorizationCodeLength) {
@@ -106,17 +108,14 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     }
 
     private String generate(int length) {
-        byte[] bytes = new byte[length];
-        random.nextBytes(bytes);
-
-        return Base64.encodeBase64URLSafeString(bytes).replace('_', '~');
+        return generateWithDc(length, null);
     }
 
     private String generateWithDc(int length, Long userId) {
-        byte currentDcByte = (byte)(DataCenters.instance().currentDataCenterId());
+        byte currentDcByte = (byte)currentDc;
         byte userDcByte;
 
-        if (userId == 0L) {
+        if (userId == null || userId == 0L) {
             userDcByte = currentDcByte;
         } else {
             userDcByte = (byte)((userId >> 2) & 0xF);
@@ -136,12 +135,12 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
     @Override
     public String generateLoginStateId() {
-        return UUID.randomUUID().toString();
+        return UUIDUtils.randomUUIDwithDC().toString();
     }
 
     @Override
     public String generateSessionStateId() {
-        return UUID.randomUUID().toString();
+        return UUIDUtils.randomUUIDwithDC().toString();
     }
 
     @Override
@@ -249,7 +248,26 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     }
 
     @Override
-    public int getAccessTokenLength() {
-        return this.accessTokenLength;
+    public int getTokenDc(String token) {
+        try {
+            byte[] originalBytes = Base64.decodeBase64(token.replace("~", "_"));
+            byte dcByte = originalBytes[originalBytes.length - 1];
+            return dcByte >> 4;
+        } catch (Exception ex) {
+            LOGGER.warn("Failed to get DC from token: {}", token);
+            return currentDc;
+        }
+    }
+
+    @Override
+    public int getTokenUserDc(String token) {
+        try {
+            byte[] originalBytes = Base64.decodeBase64(token.replace("~", "_"));
+            byte dcByte = originalBytes[originalBytes.length - 1];
+            return dcByte & 0xF;
+        } catch (Exception ex) {
+            LOGGER.warn("Failed to get user DC from token: {}", token);
+            return currentDc;
+        }
     }
 }

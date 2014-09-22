@@ -66,8 +66,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             }
 
             return userCommunicationRepository.searchByUserIdAndCommunicationId(userCommunication.userId,
-                    userCommunication.communicationId, Integer.MAX_VALUE, 0
-            ).then { List<UserCommunication> existing ->
+                    userCommunication.communicationId, 1, 0).then { List<UserCommunication> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                 }
@@ -106,7 +105,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
 
             if (userCommunication.communicationId != oldUserCommunication.communicationId) {
                 return userCommunicationRepository.searchByUserIdAndCommunicationId(userCommunication.userId,
-                        userCommunication.communicationId, Integer.MAX_VALUE, 0).then { List<UserCommunication> existing ->
+                        userCommunication.communicationId, 1, 0).then { List<UserCommunication> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                     }

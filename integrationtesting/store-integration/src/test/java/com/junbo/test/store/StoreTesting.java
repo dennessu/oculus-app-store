@@ -36,8 +36,6 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import com.junbo.test.store.apihelper.TestContext;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -74,6 +72,7 @@ public class StoreTesting extends BaseTestClass {
     public void testIAPCheckoutByCreditCard() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
 
@@ -139,6 +138,7 @@ public class StoreTesting extends BaseTestClass {
     public void testPreparePurchaseDigitalGood() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
 
@@ -242,6 +242,7 @@ public class StoreTesting extends BaseTestClass {
     public void testPrivilege() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
 
         Validator.Validate("validate authtoken response correct", createUserRequest.getUsername(), authTokenResponse.getUsername());
 
@@ -276,6 +277,7 @@ public class StoreTesting extends BaseTestClass {
         Validator.Validate("validate password strong", "STRONG", userCredentialRateResponse.getStrength());
 
         AuthTokenResponse newAuthTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        validationHelper.verifyEmailInAuthResponse(newAuthTokenResponse, createUserRequest.getEmail(), false);
         Validator.Validate("validate token valid", authTokenResponse.getUsername(), newAuthTokenResponse.getUsername());
 
         // todo:    Add other conditions
@@ -305,11 +307,13 @@ public class StoreTesting extends BaseTestClass {
     public void testMakeFreePurchase() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
         String userName = authTokenResponse.getUsername();
 
         AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+        validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
         UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
 
@@ -341,6 +345,7 @@ public class StoreTesting extends BaseTestClass {
 
         AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());
 
+        validationHelper.verifyEmailInAuthResponse(tokenResponse, createUserRequest.getEmail(), true);
         validationHelper.verifySignInResponse(signInResponse, tokenResponse);
 
     }
@@ -367,45 +372,52 @@ public class StoreTesting extends BaseTestClass {
     )
     @Test(groups = "int/ppe/prod/sewer")
     public void testMakeFreePurchaseWithMultiEndpoint() throws Exception {
-        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
-        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
-        String userName = authTokenResponse.getUsername();
+        try {
+            CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+            AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+            validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
+            String userName = authTokenResponse.getUsername();
 
-        AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
+            AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
-        validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+            validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+            validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
-        UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
+            UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
 
-        validationHelper.verifyUserProfile(userProfileResponse, authTokenResponse);
+            validationHelper.verifyUserProfile(userProfileResponse, authTokenResponse);
 
-        String offerId;
-        if (offer_iap_free.toLowerCase().contains("test")) {
-            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
-        } else {
-            offerId = offer_digital_free;
-            Offer offer = testDataProvider.getOfferByOfferId(offerId);
-            OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
-            Item item = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId());
-            testDataProvider.getItemRevision(item.getCurrentRevisionId());
+            String offerId;
+            if (offer_iap_free.toLowerCase().contains("test")) {
+                offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+            } else {
+                offerId = offer_digital_free;
+                Offer offer = testDataProvider.getOfferByOfferId(offerId);
+                OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
+                Item item = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId());
+                testDataProvider.getItemRevision(item.getCurrentRevisionId());
+            }
+
+            MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
+
+            //String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
+
+            if (freePurchaseResponse.getChallenge() != null) {
+                freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+            }
+            Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
+            LibraryResponse libraryResponse = testDataProvider.getLibrary();
+            validationHelper.verifyLibraryResponse(libraryResponse, offerId);
+
+            Master.getInstance().setCurrentUid(null);
+
+            AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());
+            validationHelper.verifyEmailInAuthResponse(tokenResponse, createUserRequest.getEmail(), true);
+            validationHelper.verifySignInResponse(signInResponse, tokenResponse);
+        } catch (Exception ex) {
+        } finally {
+            Master.getInstance().setEndPointType(Master.EndPointType.Primary);
         }
-
-        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
-
-        //String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
-
-        if (freePurchaseResponse.getChallenge() != null) {
-            freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
-        }
-        Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
-        LibraryResponse libraryResponse = testDataProvider.getLibrary();
-        validationHelper.verifyLibraryResponse(libraryResponse, offerId);
-
-        Master.getInstance().setCurrentUid(null);
-
-        AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());
-
-        validationHelper.verifySignInResponse(signInResponse, tokenResponse);
 
     }
 
@@ -466,7 +478,7 @@ public class StoreTesting extends BaseTestClass {
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
-        assert libraryResponse.getItems().size() == 0 ;
+        assert libraryResponse.getItems().size() == 0;
 
     }
 
@@ -490,6 +502,7 @@ public class StoreTesting extends BaseTestClass {
         String password = "Test1234";
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
 
         assert authTokenResponse.getUsername().equals(userName);
         assert authTokenResponse.getAccessToken() != null;
@@ -498,6 +511,7 @@ public class StoreTesting extends BaseTestClass {
         assert !userNameCheckResponse.getIsAvailable();
 
         authTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), password);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), true);
         assert authTokenResponse.getUsername().equals(userName);
         assert authTokenResponse.getAccessToken() != null;
     }
@@ -526,26 +540,6 @@ public class StoreTesting extends BaseTestClass {
         String password = "Test1234";
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
-    }
-
-    @Test
-    public void testAcceptLanguageHeader() throws Exception {
-        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
-        testDataProvider.CreateUser(createUserRequest, true);
-
-        // locale not found
-        TestContext.getData().putHeader("Accept-Language", "en");
-        testDataProvider.getToc(412);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("131.124"));
-
-        // wildcard locale
-        TestContext.getData().putHeader("Accept-Language", "*");
-        Assert.assertNotNull(testDataProvider.getToc().getChallenge());
-
-        // invalid Accept-Language format
-        TestContext.getData().putHeader("Accept-Language", "en_US");
-        testDataProvider.getToc(400);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("199.001"));
     }
 
 }

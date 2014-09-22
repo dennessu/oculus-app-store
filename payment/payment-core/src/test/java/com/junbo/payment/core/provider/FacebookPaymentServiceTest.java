@@ -45,6 +45,8 @@ public class FacebookPaymentServiceTest extends BaseTest {
     @Test(enabled = false)
     public void testAddFacebookPI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
+        //hard code user to avoid create too many test users
+        request.setUserId(83886144L);
         PaymentInstrument result = null;
         result = mockFBPiService.add(request).get();
         Assert.assertNotNull(result);

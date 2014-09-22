@@ -14,14 +14,19 @@ import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserLoginName
+import com.junbo.identity.spec.v1.model.UserName
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.model.GrantType
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.utils.ItemBuilder
+import com.junbo.store.clientproxy.utils.ReviewBuilder
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
 import com.junbo.store.spec.model.browse.ReviewsResponse
@@ -64,6 +69,9 @@ class CaseyFacadeImpl implements CaseyFacade {
     @Resource(name = 'storeItemBuilder')
     private ItemBuilder itemBuilder
 
+    @Resource(name = 'storeReviewBuilder')
+    private ReviewBuilder reviewBuilder
+
     @Value('${store.onbehalf.clientId}')
     private String clientId
 
@@ -82,71 +90,30 @@ class CaseyFacadeImpl implements CaseyFacade {
             return Promise.pure(results)
         }
         OfferSearchParams searchParams = buildOfferSearchParams(sectionInfoNode, cursor, count, apiContext)
-
-        resourceContainer.caseyResource.searchOffers(searchParams).recover { Throwable ex ->
-            LOGGER.error('name=Store_SearchOffer_Error, searchParams={}', ObjectMapperProvider.instance().writeValueAsString(searchParams), ex)
-            return Promise.pure(null)
-        }.then { CaseyResults<CaseyOffer> rawResults ->
-            if (rawResults?.items == null) {
-                return Promise.pure(results)
-            }
-
-            results.cursor = rawResults.cursor
-            results.count = rawResults.count
-            results.totalCount = rawResults.totalCount
-            Promise.each (rawResults.items) { CaseyOffer caseyOffer ->
-                CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer.items) ? null : caseyOffer.items[0]
-                Organization publisher, developer
-                Promise.pure().then {
-                    getOrganization(caseyOffer.publisher).then { Organization organization ->
-                        publisher = organization
-                        return Promise.pure()
-                    }
-                }.then {
-                    getOrganization(caseyItem?.developer).then { Organization organization ->
-                        developer = organization
-                        return Promise.pure()
-                    }
-                }.then {
-                    if (CollectionUtils.isEmpty(caseyOffer?.items)) {
-                        return Promise.pure()
-                    }
-                    getAggregatedRatings(caseyOffer.items.get(0).self, apiContext)
-                }.then { List<AggregatedRatings> aggregatedRatings ->
-                    results.items << itemBuilder.buildItem(caseyOffer, aggregatedRatings, publisher, developer, apiContext)
-                    return Promise.pure()
-                }
-            }then {
-                return Promise.pure(results)
-            }
-        }
+        return doSearch(searchParams, apiContext)
     }
 
     @Override
-    Promise<List<AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext) {
-        List<AggregatedRatings> aggregatedRatingsList = null
+    Promise<CaseyResults<Item>> search(ItemId itemId, ApiContext apiContext) {
+        OfferSearchParams searchParams = buildOfferSearchParams(itemId, apiContext)
+        return doSearch(searchParams, apiContext)
+    }
+
+    @Override
+    Promise<Map<String, AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext) {
+        Map<String, AggregatedRatings> aggregatedRatingsMap = [:]
         resourceContainer.caseyResource.getRatingByItemId(itemId.value).then { CaseyResults<CaseyAggregateRating> results ->
-            aggregatedRatingsList = results.items.collect { CaseyAggregateRating rating ->
-                AggregatedRatings aggregatedRatings = new AggregatedRatings(
-                        type: rating.type,
-                        averageRating: rating.average,
-                        ratingsCount: rating.count,
-                )
-
-                Map<Integer, Long> histogram = new HashMap<>()
-                for (int i = 0; i < rating.histogram.length; i++) {
-                    histogram.put(i, rating.histogram[i])
+            results.items.each { CaseyAggregateRating caseyAggregateRating ->
+                if (caseyAggregateRating.type != null) {
+                    aggregatedRatingsMap[caseyAggregateRating.type] = reviewBuilder.buildAggregatedRatings(caseyAggregateRating)
                 }
-                aggregatedRatings.ratingsHistogram = histogram
-
-                return aggregatedRatings
             }
             return Promise.pure()
         }.recover { Throwable throwable ->
             LOGGER.error('name=Get_AggregateRating_Fail, item=', itemId, throwable)
             return Promise.pure()
         }.then {
-            return Promise.pure(aggregatedRatingsList)
+            return Promise.pure(aggregatedRatingsMap)
         }
     }
 
@@ -181,31 +148,8 @@ class CaseyFacadeImpl implements CaseyFacade {
 
             reviews.reviews = []
             Promise.each(results.items) { CaseyReview caseyReview ->
-                Review review = new Review(
-                        self: new Link(id: caseyReview.self.id, href: caseyReview.self.href),
-                        title: caseyReview.reviewTitle,
-                        content: caseyReview.review,
-                        timestamp: caseyReview.postedDate
-                )
-                review.starRatings = [:] as Map<String, Integer>
-                for (CaseyReview.Rating rating : caseyReview.ratings) {
-                    review.starRatings[rating.type] = rating.score
-                }
-
-                Promise.pure().then {
-                    resourceContainer.userResource.get(new UserId(IdFormatter.decodeId(UserId, caseyReview.user.getId())), new UserGetOptions())
-                }.recover { Throwable e ->
-                    if (e instanceof AppErrorException) {
-                        return Promise.pure(null)
-                    } else {
-                        LOGGER.error('Exception happened while calling identity', e)
-                        return Promise.pure(null)
-                    }
-                }.then { User user ->
-                    if (user != null) {
-                        review.authorName = user.nickName
-                    }
-
+                getReviewAuthorName(caseyReview).then { String author ->
+                    Review review = reviewBuilder.buildReview(caseyReview, author)
                     reviews.reviews << review
                     return Promise.pure()
                 }
@@ -248,7 +192,7 @@ class CaseyFacadeImpl implements CaseyFacade {
         resourceContainer.caseyResource.getCmsPages(
             new CmsPageGetParams(path: "\"${path}\"", label: "\"${label}\"")
         ).then { CaseyResults<CmsPage> results ->
-            if (CollectionUtils.isEmpty(results.items)) {
+            if (CollectionUtils.isEmpty(results?.items)) {
                 return Promise.pure()
             }
             CmsPage page = results.items[0]
@@ -276,22 +220,7 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     @Override
     Promise<Review> addReview(AddReviewRequest request, ApiContext apiContext) {
-        CaseyReview review = new CaseyReview(
-                reviewTitle: request.title,
-                review: request.content,
-                resourceType: 'item',
-                resource: new CaseyLink(
-                        id: request.itemId.value,
-                        href: IdUtil.toHref(request.itemId)
-                ),
-                country: apiContext.country.getId().value,
-                locale: apiContext.locale.getId().value
-        )
-
-        review.ratings = []
-        for (String type : request.starRatings.keySet()) {
-            review.ratings << new CaseyReview.Rating(type: type, score: request.starRatings[type])
-        }
+        CaseyReview review = reviewBuilder.buildCaseyReview(request, apiContext)
 
         // Create an access token with this user and catalog scope.
         return resourceContainer.tokenEndpoint.postToken(
@@ -304,17 +233,49 @@ class CaseyFacadeImpl implements CaseyFacade {
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
             return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).then { CaseyReview newReview ->
-                return resourceContainer.userResource.get(apiContext.user, new UserGetOptions()).then { User user ->
-                    return Promise.pure(
-                            new Review(
-                                    self: new Link(id: newReview.self.id, href: newReview.self.href),
-                                    authorName: user.nickName,
-                                    title: newReview.reviewTitle,
-                                    content: newReview.review,
-                                    starRatings: request.starRatings,
-                                    timestamp: newReview.postedDate
-                            ))
+                getReviewAuthorName(newReview).then { String author ->
+                    return Promise.pure(reviewBuilder.buildReview(newReview, author))
                 }
+            }
+        }
+    }
+
+    private Promise<CaseyResults<Item>> doSearch(OfferSearchParams searchParams, ApiContext apiContext) {
+        CaseyResults<Item> results = new CaseyResults<Item>(
+                items: [] as List,
+                cursor: null as String
+        )
+        resourceContainer.caseyResource.searchOffers(searchParams).then { CaseyResults<CaseyOffer> rawResults ->
+            if (rawResults?.items == null) {
+                return Promise.pure(results)
+            }
+
+            results.cursor = rawResults.cursor
+            results.count = rawResults.count
+            results.totalCount = rawResults.totalCount
+            Promise.each (rawResults.items) { CaseyOffer caseyOffer ->
+                CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer.items) ? null : caseyOffer.items[0]
+                Organization publisher, developer
+                Promise.pure().then {
+                    getOrganization(caseyOffer.publisher).then { Organization organization ->
+                        publisher = organization
+                        return Promise.pure()
+                    }
+                }.then {
+                    getOrganization(caseyItem?.developer).then { Organization organization ->
+                        developer = organization
+                        return Promise.pure()
+                    }
+                }.then {
+                    Map<String, AggregatedRatings> aggregatedRatings = [:] as Map
+                    if (caseyItem?.qualityRating != null) {
+                        aggregatedRatings[CaseyReview.RatingType.quality.name()] = reviewBuilder.buildAggregatedRatings(caseyItem.qualityRating)
+                    }
+                    results.items << itemBuilder.buildItem(caseyOffer, aggregatedRatings, publisher, developer, apiContext)
+                    return Promise.pure()
+                }
+            }then {
+                return Promise.pure(results)
             }
         }
     }
@@ -334,6 +295,15 @@ class CaseyFacadeImpl implements CaseyFacade {
         offerSearchParams.count = count
         offerSearchParams.cursor = cursor
         offerSearchParams.platform = apiContext.platform.value
+        return offerSearchParams
+    }
+
+    private OfferSearchParams buildOfferSearchParams(ItemId itemId, ApiContext apiContext) {
+        OfferSearchParams offerSearchParams = new OfferSearchParams()
+        offerSearchParams.locale = apiContext.locale.getId().value
+        offerSearchParams.country = apiContext.country.getId().value
+        offerSearchParams.platform = apiContext.platform.value
+        offerSearchParams.itemId = itemId
         return offerSearchParams
     }
 
@@ -393,6 +363,22 @@ class CaseyFacadeImpl implements CaseyFacade {
                     contentItem.strings.addAll(placementContent.value.strings)
                 }
             }
+        }
+    }
+
+    Promise<String> getReviewAuthorName(CaseyReview caseyReview) {
+        Promise.pure().then {
+            resourceContainer.userResource.get(new UserId(IdFormatter.decodeId(UserId, caseyReview.user.getId())), new UserGetOptions()).then { User user ->
+                if (!StringUtils.isBlank(user.nickName)) {
+                    return Promise.pure(user.nickName)
+                }
+                return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo username ->
+                    return Promise.pure(ObjectMapperProvider.instance().treeToValue(username.value, UserLoginName).userName)
+                }
+            }
+        }.recover { Throwable e ->
+            LOGGER.error('Exception happened while getting review author', e)
+            return Promise.pure(null)
         }
     }
 }

@@ -22,8 +22,12 @@ public class UUIDUtils {
     }
 
     public static int getDCFromUUID(String id) {
-        UUID uuid = UUID.fromString(id);
-        long leastSigBits = uuid.getLeastSignificantBits();
-        return (int)(leastSigBits & 0xf);
+        try {
+            UUID uuid = UUID.fromString(id);
+            long leastSigBits = uuid.getLeastSignificantBits();
+            return (int) (leastSigBits & 0xf);
+        } catch (Exception ex) {
+            return DataCenters.instance().currentDataCenterId();
+        }
     }
 }

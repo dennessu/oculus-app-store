@@ -7,6 +7,7 @@ package com.junbo.store.spec.model.external.casey.search;
 
 import com.junbo.catalog.spec.model.offer.CountryProperties;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 
@@ -26,6 +27,7 @@ public class CaseyOffer extends BaseCaseyModel {
     private Map<String, CountryProperties> regions;
     private String shortDescription;
     private String longDescription;
+    private OfferRevisionId currentRevision;
 
     public OfferId getSelf() {
         return self;
@@ -89,5 +91,13 @@ public class CaseyOffer extends BaseCaseyModel {
 
     public void setLongDescription(String longDescription) {
         this.longDescription = longDescription;
+    }
+
+    public OfferRevisionId getCurrentRevision() {
+        return currentRevision;
+    }
+
+    public void setCurrentRevision(OfferRevisionId currentRevision) {
+        this.currentRevision = currentRevision;
     }
 }

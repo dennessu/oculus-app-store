@@ -58,6 +58,8 @@ class UserValidatorImpl implements UserValidator {
     private PITypeRepository piTypeRepository
 
     private Boolean enableVatValidation
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     @Override
     Promise<Void> validateForCreate(User user) {
@@ -97,6 +99,10 @@ class UserValidatorImpl implements UserValidator {
 
         if (user.status == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('active').exception()
+        }
+
+        if (oldUser.status == UserStatus.DELETED.toString()) {
+            throw AppCommonErrors.INSTANCE.invalidOperation('Can\'t update delete user').exception()
         }
 
         if (user.isAnonymous == null) {
@@ -154,6 +160,10 @@ class UserValidatorImpl implements UserValidator {
                 return Promise.pure(null)
             }
 
+            if (userPersonalInfoList.size() >= maximumFetchSize) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('email').exception()
+            }
+
             return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
                 return userRepository.get(userPersonalInfo.getUserId()).then { User existingUser ->
                     if (CollectionUtils.isEmpty(existingUser.emails)) {
@@ -183,6 +193,10 @@ class UserValidatorImpl implements UserValidator {
         return userPersonalInfoRepository.searchByCanonicalUsername(normalizeService.normalize(username), Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
             if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                 return Promise.pure(null)
+            }
+
+            if (userPersonalInfoList.size() >= maximumFetchSize) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('username').exception()
             }
 
             return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
@@ -321,6 +335,10 @@ class UserValidatorImpl implements UserValidator {
                 0).then { List<UserPersonalInfo> existing ->
             if (CollectionUtils.isEmpty(existing)) {
                 return Promise.pure(null)
+            }
+
+            if (existing.size() >= maximumFetchSize) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('email').exception()
             }
 
             existing.removeAll { UserPersonalInfo info ->
@@ -611,6 +629,10 @@ class UserValidatorImpl implements UserValidator {
                     return Promise.pure(null)
                 }
 
+                if (userPersonalInfoList.size() >= maximumFetchSize) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('username').exception()
+                }
+
                 List<UserPersonalInfo> userPersonalInfos = new ArrayList<>()
                 return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo personalInfo ->
                     return userRepository.get(personalInfo.userId).then { User existing ->
@@ -738,4 +760,8 @@ class UserValidatorImpl implements UserValidator {
         this.enableVatValidation = enableVatValidation
     }
 
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
+    }
 }

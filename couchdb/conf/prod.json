@@ -11,6 +11,10 @@
         {
             "roles": ["_reader", "_writer", "_design"],
             "key": "soingreledgeamandiestere"
+        },
+        {
+            "roles": ["_reader"],
+            "key": "dingstureanoreatlessaing"
         }
     ],
     "authdbs": {

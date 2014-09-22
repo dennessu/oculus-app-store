@@ -1,4 +1,4 @@
-package com.junbo.store.rest.utils
+package com.junbo.store.clientproxy.error
 
 import com.junbo.store.spec.error.AppErrors
 import groovy.transform.CompileStatic
@@ -25,6 +25,10 @@ class ErrorCodes {
         static final String InvalidCredential = '132.103'
         static final String RefreshTokenInvalid = '132.001'
         static final String RefreshTokenExpired = '132.104 '
+    }
+
+    class Catalog {
+        static final String ResourceNotFound = '123.004'
     }
 
     class Store {

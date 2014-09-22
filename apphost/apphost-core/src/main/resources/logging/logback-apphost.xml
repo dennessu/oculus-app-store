@@ -5,8 +5,20 @@
     <conversionRule conversionWord="clr" converterClass="com.junbo.apphost.core.logging.ColorConverter"/>
     <conversionRule conversionWord="wex" converterClass="com.junbo.apphost.core.logging.WhitespaceThrowableProxyConverter"/>
 
-    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{[yyyy-MM-dd HH:mm:ss.SSS Z]}){bold} %clr(%5p) %clr(${PID:- }){magenta} %clr([%.20t]){bold} %clr([%.36X{oculus-request-id:- }]){bold} %clr(---){bold} %clr(%.40logger{39}){cyan} %clr(:){bold} %m%n%wex"/>
-    <property name="FILE_LOG_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %5p ${PID:- } [%.20t] [%.36X{oculus-request-id:- }] --- %.40logger{39} : %m%n%wex"/>
+    <property name="EXCEPTION_IGNORED_PACKAGES" value="
+            sun.reflect,
+            java.lang.reflect,
+            groovy.lang,
+            org.codehaus.groovy,
+            org.glassfish.jersey,
+            org.glassfish.grizzly,
+            org.springframework.aop,
+            org.springframework.transaction,
+            com.sun.proxy,
+            com.google.common.util.concurrent,
+            com.junbo.langur.core.promise" />
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{[yyyy-MM-dd HH:mm:ss.SSS Z]}){bold} %clr(%5p) %clr(${PID:- }){magenta} %clr([%.20t]){bold} %clr([%.36X{oculus-request-id:- }]){bold} %clr(---){bold} %clr(%.40logger{39}){cyan} %clr(:){bold} %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
+    <property name="FILE_LOG_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %5p ${PID:- } [%.20t] [%.36X{oculus-request-id:- }] --- %.40logger{39} : %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

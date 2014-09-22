@@ -34,6 +34,8 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     private UserPersonalInfoRepository userPersonalInfoRepository
     private Integer maxUserNumberPerPhone
     private Integer maxNewPhoneNumberPerMonth
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     @Override
     boolean handles(String type) {
@@ -91,7 +93,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     }
 
     private Promise<Void> checkAdvanceUserPhone(PhoneNumber phoneNumber, UserId userId) {
-        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.info, null, Integer.MAX_VALUE, 0).then {
+        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.info, null, maximumFetchSize, 0).then {
             List<UserPersonalInfo> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     // check this phone number is not used by this user
@@ -116,7 +118,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
                 }
 
                 return userPersonalInfoRepository.searchByUserIdAndType(userId, UserPersonalInfoType.PHONE.toString(),
-                        Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                        maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
 
                     if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                         return Promise.pure(null)
@@ -183,5 +185,10 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     @Required
     void setMaxNewPhoneNumberPerMonth(Integer maxNewPhoneNumberPerMonth) {
         this.maxNewPhoneNumberPerMonth = maxNewPhoneNumberPerMonth
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }

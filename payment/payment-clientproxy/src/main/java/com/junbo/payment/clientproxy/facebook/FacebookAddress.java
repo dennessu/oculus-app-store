@@ -7,6 +7,9 @@
 package com.junbo.payment.clientproxy.facebook;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.payment.common.exception.AppServerExceptions;
 
 /**
  * Facebook Address.
@@ -25,6 +28,15 @@ public class FacebookAddress {
     @JsonProperty("country_code")
     private String countryCode;
 
+    @Override
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this) ;
+        } catch (JsonProcessingException e) {
+            throw AppServerExceptions.INSTANCE.errorSerialize("address").exception();
+        }
+    }
 
     public String getCountryCode() {
         return countryCode;

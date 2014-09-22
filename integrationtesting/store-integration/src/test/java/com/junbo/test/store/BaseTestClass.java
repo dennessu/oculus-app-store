@@ -125,7 +125,7 @@ public abstract class BaseTestClass {
     StoreTestDataProvider testDataProvider = new StoreTestDataProvider();
     StoreValidationHelper validationHelper = new StoreValidationHelper(testDataProvider);
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void initialEnv() {
         if (ConfigHelper.getSetting("endpoint.random") == null) {
             return;
@@ -136,7 +136,7 @@ public abstract class BaseTestClass {
         }
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void clear() {
         TestContext.clear();
     }

@@ -51,5 +51,7 @@ interface TokenGenerator {
 
     boolean isValidResetPasswordCode(String codeValue)
 
-    int getAccessTokenLength()
+    int getTokenDc(String token)
+
+    int getTokenUserDc(String token)
 }

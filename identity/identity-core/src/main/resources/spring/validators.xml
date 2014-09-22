@@ -28,6 +28,7 @@
         <property name="userPasswordRepository" ref="userPasswordRepository"/>
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userPinValidator" class="com.junbo.identity.core.service.validator.impl.UserPinValidatorImpl">
@@ -36,6 +37,7 @@
         <property name="allowedPattern" value="[0-9]{4}" />
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userCredentialValidator"
@@ -88,12 +90,14 @@
         <property name="emailTemplateResource" ref="identityEmailTemplateResource" />
         <property name="transactionManager" ref="transactionManager" />
         <property name="ip4WhiteList" value="${identity.conf.ipWhiteList}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">
         <property name="groupRepository" ref="groupRepository"/>
         <property name="userGroupRepository" ref="userGroupRepository"/>
         <property name="userRepository" ref="userRepository"/>
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="usernameValidator" class="com.junbo.identity.core.service.validator.impl.UsernameValidatorImpl">
@@ -123,6 +127,7 @@
         <property name="piTypeRepository" ref="piTypeRepository" />
         <property name="paymentInstrumentResource" ref="identityPaymentInstrumentResource" />
         <property name="enableVatValidation" value="${identity.conf.enableVatValidation}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userSecurityQuestionValidator"
@@ -135,6 +140,7 @@
         <property name="maxSecurityQuestionLength" value="255" />
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userSecurityQuestionAttemptValidator"
@@ -246,6 +252,7 @@
         <property name="emailValidator" ref="identityEmailValidator" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userSSNValidator" class="com.junbo.identity.core.service.validator.impl.UserSSNValidatorImpl">
@@ -282,6 +289,7 @@
         <property name="maxUserNumberPerPhone" value="${identity.conf.maxUsersPerPhoneNumber}" />
         <property name="maxNewPhoneNumberPerMonth" value="${identity.conf.maxNewPhoneNumberPerMonth}" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userWhatsAppValidator" class="com.junbo.identity.core.service.validator.impl.UserWhatsAppValidatorImpl">
@@ -589,6 +597,7 @@
         <property name="minVerifyCodeLength" value="1" />
         <property name="maxVerifyCodeLength" value="255" />
         <property name="maxRetryCount" value="${identity.conf.maxTeleCodeAttemptNumber}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="organizationValidator" class="com.junbo.identity.core.service.validator.impl.OrganizationValidatorImpl">

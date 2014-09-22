@@ -98,6 +98,11 @@ public class StoreValidationHelper extends BaseValidationHelper {
         verifyEqual(signInResponse.getUserId().getValue(), createResponse.getUserId().getValue(), "verify user id");
     }
 
+    public void verifyEmailInAuthResponse(AuthTokenResponse authTokenResponse, String email, boolean isValidated) {
+        Assert.assertEquals(authTokenResponse.getEmail().getValue(), email);
+        Assert.assertEquals(authTokenResponse.getEmail().getIsValidated().booleanValue(), isValidated);
+    }
+
     public void verifyUserProfile(UserProfileGetResponse userProfileGetResponse, AuthTokenResponse createResponse) {
         StoreUserProfile userProfile = userProfileGetResponse.getUserProfile();
         verifyEqual(userProfile.getUserId().getValue(), createResponse.getUserId().getValue(), "verify user id");

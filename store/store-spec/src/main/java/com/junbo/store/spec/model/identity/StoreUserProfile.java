@@ -7,6 +7,7 @@ package com.junbo.store.spec.model.identity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 
 /**
  * The UserProfile class.
@@ -32,6 +33,7 @@ public class StoreUserProfile {
 
     private Double height;
 
+    @XSSFreeString
     private String headline;
 
     private String avatar;

@@ -207,7 +207,8 @@ def getNewDbs(envConf, dbPrefix):
         dbPattern = '.*'
     else:
         dbPattern = dbPrefix
-
+    if not dbPrefix:
+        dbPrefix = ""
     dbs = readDbs()
 
     result = []
@@ -347,7 +348,7 @@ def grantPermissions(apikeyConf, url, fullDbName, username):
                 permissions['cloudant'] = {}
                 permissions['cloudant'][username] = allRoles
                 permissions['_id'] = "_security"
-                permissions['cloudant'][apikey] = [role for role in conf['roles']]
+            permissions['cloudant'][apikey] = [role for role in conf['roles']]
             info("Granting permissions for APIKEY '%s' of DB '%s' in '%s'" % (apikey, fullDbName, username))
             grantPermission(permissionUrl, permissions)
 
@@ -392,10 +393,6 @@ def createviews(dbDef, url, fullDbName):
         indexDiff = diffView("indexes", viewsRequest, dbDef)
         if "delete" in indexDiff:
             raise Exception("delete index:\n" + json.dumps(indexDiff, indent=2))
-        if "update" in indexDiff:
-            input = readInput("update index:\n%s\ncontinue? ('yes'/'no'):" % json.dumps(indexDiff, indent=2))
-            if input != "yes":
-                sys.exit(0)
         viewsRequest["indexes"] = dbDef["indexes"]
         needPut = True
 

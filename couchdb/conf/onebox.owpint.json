@@ -8,6 +8,10 @@
         {
             "roles": ["_reader", "_writer", "_design"],
             "key": "yedifiretheneasequesmarb"
+        },
+        {
+            "roles": ["_reader"],
+            "key": "andaysedisheorniansheenc"
         }
     ]
 }

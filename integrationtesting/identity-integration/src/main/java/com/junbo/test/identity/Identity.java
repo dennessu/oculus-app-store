@@ -426,6 +426,14 @@ public class Identity {
                 IdentityV1OrganizationURI + "?name=" + name.toLowerCase() + buildIdentityCount(limit) + buildIdentityCursor(offset), Results.class);
     }
 
+    public static Group GroupPostDefault(Group group) throws Exception {
+        return IdentityPost(IdentityV1GroupURI, JsonHelper.JsonSerializer(group), Group.class);
+    }
+
+    public static void GroupDelete(Group group) throws Exception {
+        IdentityDelete(IdentityV1GroupURI + "/" + group.getId());
+    }
+
     public static DeviceType DeviceTypeDefault(DeviceType deviceType) throws Exception {
         DeviceType type = deviceType == null ? IdentityModel.DefaultDeviceType(null) : deviceType;
         return IdentityPost(IdentityV1DeviceTypeURI, JsonHelper.JsonSerializer(type), DeviceType.class);

@@ -63,7 +63,7 @@ class CreateUserCredential implements Action {
         )
         ResetPasswordCode resetPasswordCode = contextWrapper.resetPasswordCode
         if (resetPasswordCode != null) {
-            def code = resetPasswordCodeRepository.getByHash(resetPasswordCode.hashedCode)
+            def code = resetPasswordCodeRepository.getByHash(resetPasswordCode.hashedCode, resetPasswordCode.dc)
             if (code == null)  {
                 contextWrapper.errors.add(AppErrors.INSTANCE.resetPasswordCodeAlreadyUsed().error())
                 return Promise.pure(new ActionResult('error'))

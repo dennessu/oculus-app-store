@@ -91,8 +91,8 @@ class GroupValidatorImpl implements GroupValidator {
     @Override
     Promise<Void> validateForCreate(Group group) {
         basicCheckForGroup(group)
-        if (group.active != null) {
-            throw AppCommonErrors.INSTANCE.fieldMustBeNull('active').exception()
+        if (group.active != null && !group.active) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('active', 'active must be true during group creation').exception()
         }
         if (group.id != null) {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
@@ -107,7 +107,7 @@ class GroupValidatorImpl implements GroupValidator {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('organization').exception()
             }
 
-            return groupRepository.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Group existing ->
+            return groupRepository.searchByOrganizationIdAndName(group.organizationId, group.name, 1, 0).then { Group existing ->
                 if (existing != null) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
                 }

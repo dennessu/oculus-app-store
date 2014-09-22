@@ -10,7 +10,9 @@ import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties
 import com.junbo.common.id.ItemId
+import com.junbo.common.id.ItemRevisionId
 import com.junbo.common.id.OfferId
+import com.junbo.common.id.OfferRevisionId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.store.spec.model.ApiContext
@@ -59,9 +61,10 @@ class ItemBuilder {
         }
     }
 
-    public Item buildItem(CaseyOffer caseyOffer, List<AggregatedRatings> aggregatedRatings, Organization publisher, Organization developer, ApiContext apiContext) {
+    public Item buildItem(CaseyOffer caseyOffer, Map<String, AggregatedRatings> aggregatedRatings, Organization publisher, Organization developer, ApiContext apiContext) {
         Item result = new Item()
         CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer?.items) ? null : caseyOffer.items[0]
+        result.currentRevision = caseyItem?.currentRevision
         result.title = caseyItem?.name
         result.itemType = caseyItem?.type
         result.descriptionHtml = caseyItem?.longDescription
@@ -82,6 +85,7 @@ class ItemBuilder {
         Item item = new Item()
         item.self = new ItemId(itemData.item.getId())
         item.itemType = itemData.item.type
+        item.currentRevision = itemData.item.currentRevisionId == null ? null : new ItemRevisionId(itemData.item.currentRevisionId)
 
         ItemRevisionLocaleProperties itemLocaleProperties = itemData.currentRevision?.locales?.get(apiContext.locale.getId().value)
         item.title = itemLocaleProperties?.name
@@ -96,6 +100,7 @@ class ItemBuilder {
         if (itemData.offer != null) {
             item.offer = new Offer()
             item.offer.self = new OfferId(itemData.offer.offer.getId())
+            item.offer.currentRevision = itemData.offer.offer.currentRevisionId == null ? null : new OfferRevisionId(itemData.offer.offer.currentRevisionId)
             item.offer.currency = apiContext.currency.getId()
             OfferRevisionLocaleProperties localeProperties = itemData.offer?.offerRevision?.locales?.get(apiContext.locale.getId().value)
             item.offer.formattedDescription = localeProperties?.shortDescription
@@ -220,11 +225,12 @@ class ItemBuilder {
             return null
         }
         Offer offer = new Offer()
+        offer.currentRevision = caseyOffer.currentRevision
         offer.currency = apiContext.currency.getId()
-        offer.price = caseyOffer?.price?.amount
-        offer.self = caseyOffer?.self
-        offer.isFree = caseyOffer?.price?.isFree
-        offer.formattedDescription = caseyOffer?.shortDescription
+        offer.price = caseyOffer.price?.amount
+        offer.self = caseyOffer.self
+        offer.isFree = caseyOffer.price?.isFree
+        offer.formattedDescription = caseyOffer.shortDescription
         return offer
     }
 

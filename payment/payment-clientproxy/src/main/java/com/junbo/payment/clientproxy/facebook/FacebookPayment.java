@@ -8,6 +8,7 @@ package com.junbo.payment.clientproxy.facebook;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.ws.rs.QueryParam;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -16,15 +17,23 @@ import java.util.List;
  */
 public class FacebookPayment {
     //input request
+    @QueryParam("credential")
     private String credential;
+    @QueryParam("amount")
     private BigDecimal amount;
+    @QueryParam("currency")
     private String currency;
+    @QueryParam("action")
     private FacebookPaymentActionType action;
+    @QueryParam("payer_ip")
     @JsonProperty("payer_ip")
     private String payerIp;
+    @QueryParam("payment_description")
     @JsonProperty("payment_description")
     private String paymentDescription;
+    @QueryParam("refund_reason")
     @JsonProperty("refund_reason")
+
     private String refundReason;
     //output response
     private String id;

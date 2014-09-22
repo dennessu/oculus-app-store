@@ -35,6 +35,8 @@ class UserGroupValidatorImpl implements UserGroupValidator {
     private UserRepository userRepository
 
     private GroupRepository groupRepository
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     @Override
     Promise<UserGroup> validateForGet(UserGroupId userGroupId) {
@@ -72,8 +74,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
 
-            return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
-                    Integer.MAX_VALUE, 0).then { List<UserGroup> existing ->
+            return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId, 1, 0).then { List<UserGroup> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('groupId').exception()
                 }
@@ -102,8 +103,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
             }
 
             if (userGroup.groupId != oldUserGroup.groupId || userGroup.userId != oldUserGroup.userId) {
-                return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
-                        Integer.MAX_VALUE, 0).then { List<UserGroup> existing ->
+                return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId, 1, 0).then { List<UserGroup> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('groupId or userId').exception()
                     }
@@ -147,7 +147,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 }
 
                 return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
-                        Integer.MAX_VALUE, 0).then { List<UserGroup> existingUserGroupList ->
+                        maximumFetchSize, 0).then { List<UserGroup> existingUserGroupList ->
                     if (CollectionUtils.isEmpty(existingUserGroupList)) {
                         return Promise.pure(null)
                     }
@@ -182,4 +182,8 @@ class UserGroupValidatorImpl implements UserGroupValidator {
         this.groupRepository = groupRepository
     }
 
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
+    }
 }

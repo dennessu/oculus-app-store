@@ -13,13 +13,13 @@ package com.junbo.common.error;
 public interface AppCommonErrors {
     AppCommonErrors INSTANCE = ErrorProxy.newProxyInstance(AppCommonErrors.class);
 
-    @ErrorDef(httpStatusCode = 400, code = "000", message = "Invalid Json", field = "{0}", reason = "Invalid Json: {1}")
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "invalid Json: {1}")
     AppError invalidJson(String field, String detail);
 
-    @ErrorDef(httpStatusCode = 400, code = "000", message = "Invalid Identifier", field = "{0}", reason = "Invalid identifier format: {0}")
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Invalid identifier format: {0}")
     AppError invalidId(String field, String id);
 
-    @ErrorDef(httpStatusCode = 400, code = "000", message = "Request body is required")
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Request body is required")
     AppError requestBodyRequired();
 
     @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error")
@@ -33,6 +33,36 @@ public interface AppCommonErrors {
 
     @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Field value is invalid. Allowed values: {1}")
     AppError fieldInvalidEnum(String field, String allowedValues);
+
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Field too short. Min length is {1}")
+    AppError fieldTooShort(String field, Integer minLength);
+
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Field too long. Max length is {1}")
+    AppError fieldTooLong(String field, Integer maxLength);
+
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Field is required")
+    AppError fieldRequired(String field);
+
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Header is missing")
+    AppError headerRequired(String header);
+
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Header is invalid")
+    AppError headerInvalid(String header);
+
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error: {1}", field = "{0}", reason = "Header is invalid")
+    AppError headerInvalid(String header, String message);
+
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Field must be null")
+    AppError fieldMustBeNull(String field);
+
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Query parameter is required")
+    AppError parameterRequired(String paraName);
+
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Query parameter is invalid.")
+    AppError parameterInvalid(String field);
+
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Query parameter is invalid. {1}")
+    AppError parameterInvalid(String field, String message);
 
     @ErrorDef(httpStatusCode = 409, code = "002", message = "Input Validation Failure", field = "{0}", reason = "Field is not writable")
     AppError fieldNotWritable(String field);
@@ -70,36 +100,6 @@ public interface AppCommonErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "006", message = "Invalid Operation", field = "cause", reason = "{0}")
     AppError invalidOperation(String message);
-
-    @ErrorDef(httpStatusCode = 400, code = "007", message = "Field Too Short", field = "{0}", reason = "Field too short. Min length is {1}")
-    AppError fieldTooShort(String field, Integer minLength);
-
-    @ErrorDef(httpStatusCode = 400, code = "008", message = "Field Too Long", field = "{0}", reason = "Field too long. Max length is {1}")
-    AppError fieldTooLong(String field, Integer maxLength);
-
-    @ErrorDef(httpStatusCode = 400, code = "009", message = "Field Missing", field = "{0}", reason = "Field is required")
-    AppError fieldRequired(String field);
-
-    @ErrorDef(httpStatusCode = 400, code = "010", message = "Header Missing", field = "{0}", reason = "Header is missing")
-    AppError headerRequired(String header);
-
-    @ErrorDef(httpStatusCode = 400, code = "011", message = "Header Invalid", field = "{0}", reason = "Header is invalid")
-    AppError headerInvalid(String header);
-
-    @ErrorDef(httpStatusCode = 400, code = "011", message = "Header Invalid: {1}", field = "{0}", reason = "Header is invalid")
-    AppError headerInvalid(String header, String message);
-
-    @ErrorDef(httpStatusCode = 400, code = "012", message = "Field Must Be Null", field = "{0}", reason = "Field must be null")
-    AppError fieldMustBeNull(String field);
-
-    @ErrorDef(httpStatusCode = 400, code = "013", message = "Query Param Missing", field = "{0}", reason = "Query parameter is required")
-    AppError parameterRequired(String paraName);
-
-    @ErrorDef(httpStatusCode = 400, code = "014", message = "Query Param Invalid", field = "{0}", reason = "Query parameter is invalid.")
-    AppError parameterInvalid(String field);
-
-    @ErrorDef(httpStatusCode = 400, code = "014", message = "Query Param Invalid", field = "{0}", reason = "Query parameter is invalid. {1}")
-    AppError parameterInvalid(String field, String message);
 
     // 500 errors
     @ErrorDef(httpStatusCode = 500, code = "999", message = "Internal Server Error", field = "cause", reason = "{0}")

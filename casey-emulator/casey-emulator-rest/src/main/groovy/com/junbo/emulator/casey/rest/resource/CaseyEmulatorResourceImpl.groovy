@@ -1,13 +1,9 @@
-package com.junbo.emulator.casey.rest
-
+package com.junbo.emulator.casey.rest.resource
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.catalog.spec.enums.PriceType
-import com.junbo.catalog.spec.model.attribute.ItemAttribute
-import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
-import com.junbo.catalog.spec.model.attribute.OfferAttribute
-import com.junbo.catalog.spec.model.attribute.OfferAttributeGetOptions
-import com.junbo.catalog.spec.model.item.*
-import com.junbo.catalog.spec.model.offer.*
+import com.junbo.catalog.spec.model.item.Item
+import com.junbo.catalog.spec.model.item.ItemsGetOptions
+import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
@@ -16,6 +12,9 @@ import com.junbo.common.id.OfferId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
+import com.junbo.emulator.casey.rest.CaseyEmulatorDataRepository
+import com.junbo.emulator.casey.rest.EmulatorUtils
+import com.junbo.emulator.casey.rest.ResourceContainer
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData
 import com.junbo.emulator.casey.spec.model.CaseyReviewExtend
 import com.junbo.emulator.casey.spec.resource.CaseyEmulatorResource
@@ -23,14 +22,15 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.external.casey.*
 import com.junbo.store.spec.model.external.casey.cms.*
-import com.junbo.store.spec.model.external.casey.search.*
+import com.junbo.store.spec.model.external.casey.search.CaseyOffer
+import com.junbo.store.spec.model.external.casey.search.OfferSearchParams
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
-
 /**
  * The CaseyEmulatorResourceImpl class.
  */
@@ -49,23 +49,38 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     @Resource(name = 'caseyResourceContainer')
     ResourceContainer resourceContainer
 
+    @Resource(name = 'randomCaseyEmulatorResource')
+    CaseyEmulatorResource randomCaseyEmulatorResource
+
+    @Value('${emulator.casey.random.enabled}')
+    private boolean randomData
+
     private Map<String, CmsContent> cmsContentMap = [:]
 
     @Override
     Promise<CaseyResults<CaseyOffer>> searchOffers(OfferSearchParams params) {
+        emulatorUtils.emulateLatency()
+        if (randomData) {
+            return randomCaseyEmulatorResource.searchOffers(params)
+        }
+
         params.count = params.count == null ? 10 : params.count
         if (params.offerId != null) {
             return Promise.pure(searchByOfferId(params))
         } else if (!StringUtils.isEmpty(params.cmsPage)) {
             return Promise.pure(searchFromCms(params))
         } else {
-            return Promise.pure(searchByCategory(params))
+            return Promise.pure(searchOffer(params))
         }
     }
 
     @Override
     Promise<CaseyResults<CaseyAggregateRating>> getRatingByItemId(String itemId) {
         emulatorUtils.emulateLatency()
+        if (randomData) {
+            return randomCaseyEmulatorResource.getRatingByItemId(itemId)
+        }
+
         def items = caseyEmulatorDataRepository.get().caseyAggregateRatings
         if (items == null) {
             items = []
@@ -84,9 +99,13 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
 
     @Override
     Promise<CaseyResults<CaseyReview>> getReviews(ReviewSearchParams params) {
+        emulatorUtils.emulateLatency()
+        if (randomData) {
+            return randomCaseyEmulatorResource.getReviews(params)
+        }
+
         CaseyResults<CaseyReview> results = new CaseyResults<CaseyReview>()
         results.items = []
-        emulatorUtils.emulateLatency()
         List reviews = caseyEmulatorDataRepository.get().caseyReviews
         if (CollectionUtils.isEmpty(reviews)) {
             return Promise.pure(results)
@@ -126,6 +145,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
 
     @Override
     Promise<CaseyReview> addReview(String authorization, CaseyReview review) {
+        emulatorUtils.emulateLatency()
         CaseyEmulatorData caseyEmulatorData = caseyEmulatorDataRepository.get()
         if (caseyEmulatorData.caseyReviews == null) {
             caseyEmulatorData.caseyReviews = []
@@ -140,6 +160,8 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
 
     @Override
     Promise<CaseyResults<CmsCampaign>> getCmsCampaigns(CmsCampaignGetParam cmsCampaignGetParam) {
+        emulatorUtils.emulateLatency()
+
         assert cmsCampaignGetParam.expand == 'results/placements/content'
         emulatorUtils.emulateLatency()
         CaseyResults<CmsCampaign> results = new CaseyResults<>()
@@ -149,6 +171,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
 
     @Override
     Promise<CaseyResults<CmsPage>> getCmsPages(CmsPageGetParams pageGetParams) {
+        emulatorUtils.emulateLatency()
         List<CmsPage> pages = caseyEmulatorDataRepository.get().cmsPages
         if (pages == null) {
             return Promise.pure(new CaseyResults<CmsPage>(items: []))
@@ -205,9 +228,11 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         return new CaseyResults<CaseyOffer>(items: [])
     }
 
-    private CaseyResults<CaseyOffer> searchByCategory(OfferSearchParams searchParams) {
+    private CaseyResults<CaseyOffer> searchOffer(OfferSearchParams searchParams) {
         while (true) {
-            Results<Offer> offerResults = resourceContainer.offerResource.getOffers(new OffersGetOptions(published: true, category: searchParams.category, cursor: searchParams.cursor, size: searchParams.count)).get()
+            Results<Offer> offerResults = resourceContainer.offerResource.getOffers(new OffersGetOptions(published: true,
+                    itemId: searchParams.itemId?.value,
+                    category: searchParams.category, cursor: searchParams.cursor, size: searchParams.count)).get()
             CaseyResults<CaseyOffer> results = new CaseyResults<CaseyOffer>()
             results.items = offerResults.items.collect { Offer offer ->
                 buildCaseyOffer(offer, new LocaleId(searchParams.locale), new CountryId(searchParams.country))
@@ -301,65 +326,9 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     private CaseyOffer buildCaseyOffer(Offer offer, LocaleId localeId, CountryId countryId) {
-        CaseyOffer caseyOffer = new CaseyOffer()
-        caseyOffer.self = new OfferId(offer.getId())
-        caseyOffer.categories = offer.categories?.collect { String categoryId ->
-            OfferAttribute offerAttribute = resourceContainer.offerAttributeResource.getAttribute(categoryId, new OfferAttributeGetOptions(locale: localeId.value)).get()
-            CatalogAttribute catalogAttribute = new CatalogAttribute()
-            catalogAttribute.attributeId = categoryId
-            catalogAttribute.name = offerAttribute.locales?.get(localeId.value)?.getName()
-            return catalogAttribute
+        return emulatorUtils.buildCaseyOffer(offer, localeId, countryId) { ItemId itemId ->
+            getRatingByItemId(itemId.value).get()
         }
-
-        if (offer.currentRevisionId != null) {
-            OfferRevision offerRevision = resourceContainer.offerRevisionResource.getOfferRevision(offer.currentRevisionId, new OfferRevisionGetOptions(locale: localeId.value)).get();
-            caseyOffer.longDescription = offerRevision.locales?.get(localeId.value)?.longDescription
-            caseyOffer.shortDescription = offerRevision.locales?.get(localeId.value)?.shortDescription
-            caseyOffer.regions = offerRevision.countries
-            caseyOffer.price = new CaseyPrice()
-            caseyOffer.price.isFree = offerRevision.price?.priceType == PriceType.FREE.name()
-            // Set<String> currencies = offerRevision.price?.prices?.get(countryId.value)?.keySet()
-            // todo set the price
-            caseyOffer.items = offerRevision?.items?.collect { ItemEntry itemEntry ->
-                return getCaseyItem(new ItemId(itemEntry.itemId), localeId)
-            }
-        }
-
-        caseyOffer.publisher = offer.ownerId
-        return caseyOffer
-    }
-
-
-    private CaseyItem getCaseyItem(ItemId itemId, LocaleId localeId) {
-        CaseyItem caseyItem = new CaseyItem()
-        Item item = resourceContainer.itemResource.getItem(itemId.value).get()
-        caseyItem.self = itemId
-        caseyItem.type = item.type
-        caseyItem.developer = item.ownerId
-        caseyItem.genres = item.genres?.collect { String genreId ->
-            ItemAttribute itemAttribute = resourceContainer.itemAttributeResource.getAttribute(genreId, new ItemAttributeGetOptions(locale: localeId.value)).get()
-            CatalogAttribute catalogAttribute = new CatalogAttribute()
-            catalogAttribute.attributeId = genreId
-            catalogAttribute.name = itemAttribute.locales?.get(localeId.value)?.getName()
-            return catalogAttribute
-        }
-
-        if (item.currentRevisionId != null) {
-            ItemRevision itemRevision = resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions(locale: localeId.value)).get()
-            caseyItem.packageName = itemRevision.packageName
-            caseyItem.supportedLocales = itemRevision.supportedLocales
-            caseyItem.binaries = itemRevision.binaries
-            ItemRevisionLocaleProperties localeProperties = itemRevision.locales?.get(localeId.value)
-            caseyItem.releaseNotes = localeProperties?.releaseNotes
-            caseyItem.name = localeProperties?.name
-            caseyItem.longDescription = localeProperties?.longDescription
-            caseyItem.supportEmail = localeProperties?.supportEmail
-            caseyItem.website = localeProperties?.website
-            caseyItem.communityForumLink = localeProperties?.communityForumLink
-            caseyItem.images = localeProperties?.images
-        }
-
-        return caseyItem
     }
 
     private CaseyResults<CaseyReview> process(CaseyResults<CaseyReview> caseyReviewResults) {
