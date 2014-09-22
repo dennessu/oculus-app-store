@@ -5,6 +5,7 @@ import com.junbo.store.spec.model.external.casey.CaseyLink
 import com.junbo.store.spec.model.external.casey.cms.CaseyContentItemString
 import com.junbo.store.spec.model.external.casey.cms.CmsCampaign
 import com.junbo.store.spec.model.external.casey.cms.CmsContent
+import com.junbo.store.spec.model.external.casey.cms.CmsContentSlot
 import com.junbo.store.spec.model.external.casey.cms.CmsPage
 import com.junbo.store.spec.model.external.casey.cms.ContentItem
 import com.junbo.store.spec.model.external.casey.cms.Placement
@@ -22,6 +23,9 @@ class CaseyEmulatorDataRepository implements InitializingBean {
 
     @Value('${store.browse.featured.page.path}')
     private String defaultPagePath;
+
+    @Value('${store.browse.featured.page.label}')
+    private String defaultPageLabel
 
     private CaseyEmulatorData caseyEmulatorData = new CaseyEmulatorData(
         caseyAggregateRatings: [],
@@ -49,19 +53,26 @@ class CaseyEmulatorDataRepository implements InitializingBean {
 
     @Override
     void afterPropertiesSet() throws Exception {
-        String pageId = UUID.randomUUID().toString()
+        CmsPage page = generateDefaultCmsPage()
         caseyEmulatorData = new CaseyEmulatorData(
                 caseyAggregateRatings: [],
                 caseyReviews: [],
-                cmsPages: [ new CmsPage(
-                        path: defaultPagePath,
-                        slots: [:] as Map,
-                        self: new CaseyLink(
-                                id: pageId
-                        )
-                ) ] as List,
-                cmsCampaigns: [generateDefaultCmsCampaigns(pageId), generateDefaultCmsCampaigns('iOS')]
+                cmsPages: [page] as List,
+                cmsCampaigns: [generateDefaultCmsCampaigns(page.self.getId()), generateDefaultCmsCampaigns('iOS')]
         )
+    }
+
+    private CmsPage generateDefaultCmsPage() {
+        CmsPage page =  new CmsPage(
+                path: defaultPagePath,
+                label: defaultPageLabel,
+                slots: [:] as Map,
+                self: new CaseyLink(
+                        id:  UUID.randomUUID().toString()
+                ))
+        page.slots['slot1'] = new CmsContentSlot(description: 'slot1 description')
+        page.slots['slot2'] = new CmsContentSlot(description: 'slot2 description')
+        return page
     }
 
     private CmsCampaign generateDefaultCmsCampaigns(String pageId) {
