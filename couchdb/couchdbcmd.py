@@ -393,10 +393,6 @@ def createviews(dbDef, url, fullDbName):
         indexDiff = diffView("indexes", viewsRequest, dbDef)
         if "delete" in indexDiff:
             raise Exception("delete index:\n" + json.dumps(indexDiff, indent=2))
-        if "update" in indexDiff:
-            input = readInput("update index:\n%s\ncontinue? ('yes'/'no'):" % json.dumps(indexDiff, indent=2))
-            if input != "yes":
-                sys.exit(0)
         viewsRequest["indexes"] = dbDef["indexes"]
         needPut = True
 
