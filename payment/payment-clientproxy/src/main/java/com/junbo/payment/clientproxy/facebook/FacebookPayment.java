@@ -33,6 +33,7 @@ public class FacebookPayment {
     private String paymentDescription;
     @QueryParam("refund_reason")
     @JsonProperty("refund_reason")
+
     private String refundReason;
     //output response
     private String id;

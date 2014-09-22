@@ -321,10 +321,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return piRepository.createFBPaymentAccountIfNotExist(model);
             }
         });
-
     }
 
-    protected String getFacebookPaymentAccount(final Long userId ){
+    protected String getFacebookPaymentAccount(final Long userId){
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<String>() {
