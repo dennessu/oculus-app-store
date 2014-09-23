@@ -316,6 +316,7 @@ public class authorizeUser {
     @Property(environment = "release")
     @Test(groups = "ppe/prod")
     public void resetPasswordRoute() throws Exception {
+        if (Oauth.DefaultOauthSecondaryEndpoint == null) return;
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
 
