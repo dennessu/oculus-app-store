@@ -211,7 +211,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
         } else if (listOptions.tosId != null) {
             return userTosRepository.searchByTosId(listOptions.tosId, listOptions.limit, listOptions.offset)
         } else {
-            throw AppCommonErrors.INSTANCE.invalidOperation('unsupported search operation')
+            throw AppCommonErrors.INSTANCE.invalidOperation('unsupported search operation').exception()
         }
     }
 }
