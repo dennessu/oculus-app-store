@@ -13,6 +13,7 @@ import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.*;
+import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
 import com.junbo.test.identity.IdentityModel;
@@ -347,6 +348,8 @@ public class authorizeUser {
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         String resetPasswordLink = Oauth.PostResetPassword(
                 Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        LogHelper logHelper = new LogHelper(authorizeUser.class);
+        logHelper.logInfo("reset password link: "+ resetPasswordLink);
         String resetPasswordCid = Oauth.GetResetPasswordCid(resetPasswordLink);
         Oauth.GetResetPasswordView(resetPasswordCid);
         Oauth.PostResetPasswordWithNewPassword(resetPasswordCid, newPassword);
