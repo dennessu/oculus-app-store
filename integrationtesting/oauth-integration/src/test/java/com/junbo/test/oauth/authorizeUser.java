@@ -314,7 +314,7 @@ public class authorizeUser {
 
     }
 
-    @Property(environment = "release")
+    @Property
     @Test(groups = "ppe/prod")
     public void resetPasswordRoute() throws Exception {
         if (Oauth.DefaultOauthSecondaryEndpoint == null) return;
