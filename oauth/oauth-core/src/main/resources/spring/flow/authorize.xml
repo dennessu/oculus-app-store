@@ -87,6 +87,7 @@
 
         <wf:action-state id="CHECK_SCOPE_AFTER_LOGIN">
             <wf:action ref="validateScopeAfterLogin"/>
+            <wf:action ref="validateClientAfterLoginAuthorize"/>
             <wf:transition on="tfaRequired" to="REDIRECT_TO_TFA_REQUIRED_VIEW"/>
             <wf:transition on="forbidden" to="ACCESS_DENIED"/>
             <wf:transition on="success" to="CHECK_CONSENT"/>
@@ -523,5 +524,10 @@
 
     <bean id="tfaRequiredView" class="com.junbo.oauth.core.view.TFARequiredView">
         <property name="debugEnabled" value="${common.conf.debugMode}"/>
+    </bean>
+
+    <bean id="validateClientAfterLoginAuthorize" class="com.junbo.oauth.core.action.ValidateClientAfterLogin">
+        <property name="groupUtil" ref="groupUtil"/>
+        <property name="isAuthorizeFlow" value="true"/>
     </bean>
 </beans>

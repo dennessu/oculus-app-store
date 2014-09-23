@@ -109,7 +109,7 @@ class ValidateScopeAfterLogin implements Action {
             }
 
             if (allowed) {
-                return Promise.pure(new ActionResult('success'))
+                return Promise.pure(new ActionResult('next'))
             } else {
                 if (!isAuthorizeFlow) {
                     throw AppCommonErrors.INSTANCE
@@ -128,6 +128,6 @@ class ValidateScopeAfterLogin implements Action {
             return Promise.pure(new ActionResult('tfaRequired'))
         }
 
-        return Promise.pure(new ActionResult('success'))
+        return Promise.pure(new ActionResult('next'))
     }
 }

@@ -497,6 +497,70 @@ class OAuthTests(ut.TestBase):
         assert view["model"]["reset_password_success"] == "true"
         pass
 
+    def testClientGroup(self):
+        user = self.testRegister()
+
+        adminToken = self.getServiceAccessToken('identity.service')
+
+        organization = curlJson('GET', ut.test_uri, '/v1/organizations?name=Oculus', headers = {
+            "Authorization": "Bearer " + adminToken
+        })
+
+        groups = curlJson('GET', ut.test_uri, '/v1/groups?name=ShareAdmin&organizationId=' + organization['results'][0]['self']['id'], headers = {
+            "Authorization": "Bearer " + adminToken
+        })
+
+        group = groups['results'][0]
+
+        # create the group membership
+        groupMembership = curlJson('POST', ut.test_uri, '/v1/user-group-memberships', headers =  {
+            "Authorization": "Bearer " + adminToken
+        }, data = {
+            "user": {
+                "href": user.href,
+                "id": user.id
+            },
+            "group": {
+                "href": group['self']['href'],
+                "id": group['self']['id']
+            }
+        })
+
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': 'share-admin-tool',
+            'response_type': 'token id_token',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'test'
+        })
+
+        assert getqueryparam(location, 'access_token') is not None
+        assert getqueryparam(location, 'cid') is None
+
+        id_token = getqueryparam(location, 'id_token')
+
+        # logout
+        curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
+            'post_logout_redirect_uri': ut.test_redirect_uri,
+            'id_token_hint': id_token
+        })
+
+        # create normal user
+        user1 = self.testRegister()
+
+        # try get token for share-admin-tool
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': 'share-admin-tool',
+            'response_type': 'token',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'test'
+        })
+
+        # expect access_denied error
+        assert getqueryparam(location, 'error') == 'access_denied'
+        pass
+
     def testGetCountries(self):
         return curlJson('GET', ut.test_uri, '/v1/countries')
 
