@@ -328,10 +328,7 @@ public class IdentityModel {
     public static UserTFA DefaultUserTFA() throws Exception {
         UserTFA userTFA = new UserTFA();
         userTFA.setVerifyType(RandomTFAVerifyType());
-        //userTFA.setVerifyType(TFAVerifyType.CALL.name());
-        if (!userTFA.getVerifyType().equals(TFAVerifyType.EMAIL.name())) {
-            userTFA.setTemplate(RandomHelper.randomAlphabetic(100));
-        }
+        userTFA.setTemplate(RandomHelper.randomAlphabetic(100));
         return userTFA;
     }
 

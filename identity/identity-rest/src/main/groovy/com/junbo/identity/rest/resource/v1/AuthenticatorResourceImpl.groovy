@@ -234,7 +234,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
             return userAuthenticatorRepository.searchByExternalId(listOptions.externalId, listOptions.limit,
                     listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Unsupported search operation')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()
         }
     }
 }

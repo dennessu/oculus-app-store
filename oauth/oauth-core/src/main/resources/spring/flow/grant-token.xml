@@ -28,6 +28,7 @@
             <wf:action ref="validateScope"/>
             <wf:action ref="authenticateUserToken"/>
             <wf:action ref="validateScopeAfterLoginToken"/>
+            <wf:action ref="validateClientAfterLoginToken"/>
             <wf:action ref="grantTokenByPassword"/>
             <wf:transition on="grantRefreshToken" to="grantRefreshToken"/>
         </wf:action-state>
@@ -80,4 +81,8 @@
         <property name="isAuthorizeFlow" value="false"/>
     </bean>
 
+    <bean id="validateClientAfterLoginToken" class="com.junbo.oauth.core.action.ValidateClientAfterLogin">
+        <property name="groupUtil" ref="groupUtil"/>
+        <property name="isAuthorizeFlow" value="false"/>
+    </bean>
 </beans>

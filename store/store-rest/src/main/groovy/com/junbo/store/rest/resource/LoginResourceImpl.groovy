@@ -148,7 +148,7 @@ class LoginResourceImpl implements LoginResource {
                 appErrorUtils.throwUnknownError('createUser', ex)
             }
         }.then {
-            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(request.preferredLocale, request.cor, apiContext.user.getId(), null)
+            return resourceContainer.emailVerifyEndpoint.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId())
         }.then {
             // get the auth token
             innerSignIn(apiContext.user.getId(), storeUserEmail)

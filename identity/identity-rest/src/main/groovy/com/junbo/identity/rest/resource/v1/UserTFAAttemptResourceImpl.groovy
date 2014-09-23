@@ -116,7 +116,11 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
     @Override
     Promise<Results<UserTFAAttempt>> list(UserId userId, UserTFAAttemptListOptions listOptions) {
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (listOptions == null) {
+            throw new IllegalArgumentException('listOptions is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -160,7 +164,7 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
         } else if (listOptions.userId != null) {
             return userTFAAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Nosupported search operation.')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Nosupported search operation').exception()
         }
     }
 }

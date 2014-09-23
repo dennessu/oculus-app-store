@@ -122,6 +122,10 @@
     <bean id="validateIpAddress" class="com.junbo.oauth.core.action.ValidateIpAddress"/>
 
     <bean id="scopePreconditionFactory" class="com.junbo.oauth.core.action.ScopePreconditionFactory">
+        <property name="groupUtil" ref="groupUtil"/>
+    </bean>
+
+    <bean id="groupUtil" class="com.junbo.oauth.core.util.GroupUtil">
         <property name="groupResource" ref="oauth_groupResource"/>
         <property name="organizationResource" ref="oauth_organizationResource"/>
         <property name="userGroupMembershipResource" ref="oauth_userGroupResource"/>

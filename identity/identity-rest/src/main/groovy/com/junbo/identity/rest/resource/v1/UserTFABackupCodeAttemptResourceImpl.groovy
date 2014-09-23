@@ -94,7 +94,11 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (userTFABackupCodeAttemptId == null) {
+            throw new IllegalArgumentException('userTFABackupCodeAttemptId is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -116,7 +120,10 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
     @Override
     Promise<Results<UserTFABackupCodeAttempt>> list(UserId userId, UserTFABackupCodeAttemptListOptions listOptions) {
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw new IllegalArgumentException('userId is null')
+        }
+        if (listOptions == null) {
+            throw new IllegalArgumentException('listOptions is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -157,7 +164,7 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
             return userTFABackupCodeAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Nosupported search operation.')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Not Supported search operation').exception()
         }
     }
 }

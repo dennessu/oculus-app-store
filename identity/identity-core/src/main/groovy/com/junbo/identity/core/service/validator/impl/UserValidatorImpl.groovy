@@ -98,11 +98,15 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (user.status == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('active').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('status').exception()
         }
 
         if (oldUser.status == UserStatus.DELETED.toString()) {
             throw AppCommonErrors.INSTANCE.invalidOperation('Can\'t update delete user').exception()
+        }
+
+        if (user.status == UserStatus.DELETED.toString()) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('status', 'Can\'t update user status to Delete').exception()
         }
 
         if (user.isAnonymous == null) {
@@ -146,6 +150,10 @@ class UserValidatorImpl implements UserValidator {
 
         if (options.username != null && options.groupId != null) {
             throw AppCommonErrors.INSTANCE.parameterInvalid('username and groupId', 'username and groupId can\'t search together.').exception()
+        }
+
+        if (options.username != null && StringUtils.isEmpty(normalizeService.normalize(options.username))) {
+            throw AppCommonErrors.INSTANCE.parameterInvalid('username', 'username can\'t be empty').exception()
         }
 
         return Promise.pure(null)

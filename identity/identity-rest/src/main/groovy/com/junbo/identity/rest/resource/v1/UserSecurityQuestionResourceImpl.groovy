@@ -73,6 +73,14 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     @Override
     Promise<UserSecurityQuestion> get(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
                                       UserSecurityQuestionGetOptions getOptions) {
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (userSecurityQuestionId == null) {
+            throw new IllegalArgumentException('userSecurityQuestionId is null')
+        }
+
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -98,6 +106,10 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
                                         UserSecurityQuestion userSecurityQuestion) {
         if (userSecurityQuestionId == null) {
             throw new IllegalArgumentException('userSecurityQuestionId is null')
+        }
+
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
         }
 
         if (userSecurityQuestion == null) {
@@ -137,6 +149,10 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
                                       UserSecurityQuestion userSecurityQuestion) {
         if (userSecurityQuestionId == null) {
             throw new IllegalArgumentException('userSecurityQuestionId is null')
+        }
+
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
         }
 
         if (userSecurityQuestion == null) {
@@ -232,7 +248,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             return userSecurityQuestionRepository.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)
         } else {
-            throw new IllegalArgumentException("Unsupported search operation.")
+            throw AppCommonErrors.INSTANCE.invalidOperation("Unsupported search operation.").exception()
         }
     }
 }

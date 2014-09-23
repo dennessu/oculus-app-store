@@ -43,7 +43,7 @@ import java.util.regex.Pattern
 class CsrUserResourceImpl implements CsrUserResource {
     private static final String CSR_INVITATION_PATH = 'csr-users/invite'
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String CSR_INVITATION_ACTION = 'CsrInvitation'
+    private static final String CSR_INVITATION_ACTION = 'CsrInvitation_V1'
 
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$', Pattern.CASE_INSENSITIVE);

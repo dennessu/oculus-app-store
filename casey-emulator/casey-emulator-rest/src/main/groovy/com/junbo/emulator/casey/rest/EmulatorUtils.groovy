@@ -50,7 +50,7 @@ public class EmulatorUtils {
     private int defaultSimulateLatency
 
     void emulateLatency() {
-        String latency = JunboHttpContext.getData().getRequestHeaders().getFirst(EmulatorHeaders.X_EMULATE_LATENCY.name())
+        String latency = JunboHttpContext.getData().getRequestHeaders().getFirst(EmulatorHeaders.X_QA_CASEY_EMULATE_LATENCY.name())
         long val = defaultSimulateLatency
         if (!StringUtils.isEmpty(latency)) {
             try {

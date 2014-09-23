@@ -371,7 +371,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         // validate top level feature section layout
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(featuredSectionInfo.getCategory(), featuredSectionInfo.getCriteria(), pageSize);
         Assert.assertTrue(sectionLayoutResponse.getBreadcrumbs().isEmpty(), "top level section's breadcrumbs should be empty");
-        Assert.assertEquals(sectionLayoutResponse.getChildren().size(), 2);
+        Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0);
         Assert.assertEquals(sectionLayoutResponse.getName(), "Featured");
         Assert.assertTrue(sectionLayoutResponse.getItems().isEmpty(), "top level feature section should have empty items");
         Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0, "Child under feature section is empty");

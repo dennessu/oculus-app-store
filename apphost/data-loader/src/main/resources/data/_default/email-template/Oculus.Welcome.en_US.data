@@ -1,7 +1,7 @@
 {
     "source" : "Oculus",
-    "action" : "Welcome",
+    "action" : "Welcome_V1",
     "locale" : "en_US",
     "providerName" : "mandrill",
-    "placeholderNames" : [ "name" , "link"]
+    "placeholderNames" : [ "firstName", "accountName", "link"]
 }

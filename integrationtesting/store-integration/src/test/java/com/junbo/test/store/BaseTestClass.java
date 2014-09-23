@@ -6,6 +6,7 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.store.apihelper.TestContext;
 import com.junbo.test.store.utility.StoreTestDataProvider;
 import com.junbo.test.store.utility.StoreValidationHelper;
@@ -59,6 +60,8 @@ public abstract class BaseTestClass {
     protected boolean serviceClientEnabled = false;
 
     protected boolean useCaseyEmulator = false;
+
+    LogHelper logger = new LogHelper(BaseTestClass.class);
 
     public BaseTestClass() {
         super();
@@ -130,9 +133,13 @@ public abstract class BaseTestClass {
         if (ConfigHelper.getSetting("endpoint.random") == null) {
             return;
         } else if (ConfigHelper.getSetting("endpoint.random") != null && Boolean.valueOf(ConfigHelper.getSetting("endpoint.random"))) {
+            logger.logInfo(String.format("Set endpoint type = Random"));
             Master.getInstance().setEndPointType(Master.EndPointType.Random);
+            logger.logInfo(String.format("Current endpoint type = %s", Master.getInstance().getCurrentEndPointType()));
         } else {
+            logger.logInfo(String.format("Set endpoint type = Primary"));
             Master.getInstance().setEndPointType(Master.EndPointType.Primary);
+            logger.logInfo(String.format("Current endpoint type = %s", Master.getInstance().getCurrentEndPointType()));
         }
     }
 

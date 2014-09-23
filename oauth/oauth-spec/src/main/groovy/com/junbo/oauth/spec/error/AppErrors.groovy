@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.oauth.core.exception
+package com.junbo.oauth.spec.error
 
 import com.junbo.common.error.AppError
 import com.junbo.common.error.ErrorDef

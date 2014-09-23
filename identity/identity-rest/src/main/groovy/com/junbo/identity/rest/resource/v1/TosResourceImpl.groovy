@@ -39,7 +39,9 @@ class TosResourceImpl implements TosResource {
 
     @Override
     Promise<Tos> create(Tos tos) {
-
+        if (tos == null) {
+            throw new IllegalArgumentException('tos is null')
+        }
         tos = tosFilter.filterForCreate(tos)
 
         return tosValidator.validateForCreate(tos).then {
@@ -54,6 +56,9 @@ class TosResourceImpl implements TosResource {
 
     @Override
     Promise<Tos> get(TosId tosId, TosGetOptions getOptions) {
+        if (tosId == null) {
+            throw new IllegalArgumentException('tosId is null')
+        }
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }

@@ -14,7 +14,7 @@ import com.junbo.oauth.clientproxy.facebook.FacebookAccount
 import com.junbo.oauth.clientproxy.facebook.FacebookApi
 import com.junbo.oauth.clientproxy.facebook.FacebookException
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.spec.model.ThirdPartyAccount
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic

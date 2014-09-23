@@ -92,7 +92,7 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
             ))
         }
 
-        String userIdText = JunboHttpContext.getData().getRequestHeaders().getFirst(EmulatorHeaders.X_REVIEW_USER_ID.name())
+        String userIdText = JunboHttpContext.getData().getRequestHeaders().getFirst(EmulatorHeaders.X_QA_CASEY_REVIEW_USER_ID_LIST.name())
         ArrayList<UserId> userIds = []
         if (!StringUtils.isBlank(userIdText)) {
             for(String s : userIdText.split(',')) {

@@ -53,7 +53,7 @@ class EmailFacadeImpl implements EmailFacade {
             LOGGER.info('name=Email_Info_Not_Sufficient')
             return Promise.pure(null)
         }
-        return getEmailTemplates('Oculus', 'OrderConfirmation', 'en_US').recover {
+        return getEmailTemplates('Oculus', 'OrderConfirmation_V1', 'en_US').recover {
             LOGGER.info('name=Get_Email_Template_Error')
             return Promise.pure(null)
         }.then { List<EmailTemplate> templates ->

@@ -540,6 +540,10 @@ public class Master {
         return endPointType;
     }
 
+    public EndPointType getCurrentEndPointType() {
+        return endPointType;
+    }
+
     public void setEndPointType(EndPointType endPointType) {
         this.endPointType = endPointType;
     }

@@ -1,0 +1,21 @@
+{
+  "client_id" : "share-admin-tool",
+  "client_secret" : "795A738DE82A7706A5F1212C164DA6EA#89225CFF971D251AFA7EE4A006F7155DFD0E73B57E7FB06002BE4DE22FE6C113620A6257FD6690CF66D68AF80EC6E10A",
+  "client_name" : "share-admin-tool",
+
+  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
+  "default_redirect_uri" : "http://localhost",
+
+  "logout_redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
+  "default_logout_redirect_uri" : "http://localhost",
+
+  "scopes" : [ "identity", "identity.service", "identity.pii", "openid", "offline" ],
+  "default_scopes" : [ "identity", "identity.service", "identity.pii", "openid", "offline" ],
+
+  "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
+  "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
+
+  "id_token_issuer" : "api.oculus.com",
+  "need_consent" : false,
+  "allowed_groups" : [ "Oculus.ShareAdmin" ]
+}

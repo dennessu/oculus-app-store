@@ -1,21 +1,16 @@
 package com.junbo.store.clientproxy.casey
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
-import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
-import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.common.model.Link
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserLoginName
-import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
@@ -34,14 +29,11 @@ import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
-import com.junbo.store.spec.model.external.casey.*
-import com.junbo.store.spec.model.external.casey.cms.CmsCampaign
-import com.junbo.store.spec.model.external.casey.cms.CmsCampaignGetParam
-import com.junbo.store.spec.model.external.casey.cms.CmsContentSlot
-import com.junbo.store.spec.model.external.casey.cms.CmsPage
-import com.junbo.store.spec.model.external.casey.cms.CmsPageGetParams
-import com.junbo.store.spec.model.external.casey.cms.ContentItem
-import com.junbo.store.spec.model.external.casey.cms.Placement
+import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
+import com.junbo.store.spec.model.external.casey.CaseyResults
+import com.junbo.store.spec.model.external.casey.CaseyReview
+import com.junbo.store.spec.model.external.casey.ReviewSearchParams
+import com.junbo.store.spec.model.external.casey.cms.*
 import com.junbo.store.spec.model.external.casey.search.CaseyItem
 import com.junbo.store.spec.model.external.casey.search.CaseyOffer
 import com.junbo.store.spec.model.external.casey.search.OfferSearchParams
@@ -189,17 +181,21 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     @Override
     Promise<CmsPage> getCmsPage(String path, String label) {
+        CmsPage page
         resourceContainer.caseyResource.getCmsPages(
-            new CmsPageGetParams(path: "\"${path}\"", label: "\"${label}\"")
+            new CmsPageGetParams(path: "\"${path}\"", label: label == null ? null : "\"${label}\"")
         ).then { CaseyResults<CmsPage> results ->
             if (CollectionUtils.isEmpty(results?.items)) {
                 return Promise.pure()
             }
-            CmsPage page = results.items[0]
+            page = results.items[0]
             if (CollectionUtils.isEmpty(page?.slots)) {
                 return Promise.pure(page)
             }
             return fillPageContent(page)
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_GetCmsPage_Error, path={}, label={}', path, label, ex)
+            return Promise.pure(page)
         }
     }
 

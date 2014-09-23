@@ -214,7 +214,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
         } else if (listOptions.groupId != null) {
             return userGroupRepository.searchByGroupId(listOptions.groupId, listOptions.limit, listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Unsupported search operation.')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()
         }
     }
 }
