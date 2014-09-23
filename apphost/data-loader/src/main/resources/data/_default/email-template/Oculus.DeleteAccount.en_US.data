@@ -1,6 +1,6 @@
 {
     "source" : "Oculus",
-    "action" : "DeleteAccount",
+    "action" : "DeleteAccount_V1",
     "locale" : "en_US",
     "providerName" : "mandrill",
     "placeholderNames" : ["name", "username"]

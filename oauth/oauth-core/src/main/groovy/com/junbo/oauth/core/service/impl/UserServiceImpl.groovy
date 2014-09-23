@@ -30,12 +30,12 @@ import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.ResetPasswordCode
@@ -56,9 +56,9 @@ import javax.ws.rs.core.UriBuilder
 class UserServiceImpl implements UserService {
 
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String VERIFY_EMAIL_ACTION = 'EmailVerification'
-    private static final String WELCOME_ACTION = 'Welcome'
-    private static final String RESET_PASSWORD_ACTION = 'PasswordReset'
+    private static final String VERIFY_EMAIL_ACTION = 'EmailVerification_V1'
+    private static final String WELCOME_ACTION = 'Welcome_V1'
+    private static final String RESET_PASSWORD_ACTION = 'PasswordReset_V1'
     private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
     private static final String EMAIL_RESET_PASSWORD_PATH = 'oauth2/reset-password'
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl)

@@ -50,10 +50,10 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class UserResourceImpl implements UserResource {
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String EMAIL_DEACTIVATE_ACCOUNT_ACTION = 'DeactivateAccount'
-    private static final String EMAIL_REACTIVATE_ACCOUNT_ACTION = 'ReactivateAccount'
-    private static final String EMAIL_DELETE_ACCOUNT_ACTION = 'DeleteAccount'
-    private static final String EMAIL_PII_CHANGE_ACTION = 'UserPersonalInfoChange'
+    private static final String EMAIL_DEACTIVATE_ACCOUNT_ACTION = 'DeactivateAccount_V1'
+    private static final String EMAIL_REACTIVATE_ACCOUNT_ACTION = 'ReactivateAccount_V1'
+    private static final String EMAIL_DELETE_ACCOUNT_ACTION = 'DeleteAccount_V1'
+    private static final String EMAIL_PII_CHANGE_ACTION = 'UserPersonalInfoChange_V1'
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserResource)
 

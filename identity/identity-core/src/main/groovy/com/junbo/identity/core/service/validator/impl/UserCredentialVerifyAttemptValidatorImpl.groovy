@@ -53,7 +53,7 @@ import java.util.regex.Pattern
 @SuppressWarnings('UnnecessaryGetter')
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String EMAIL_ACTION = 'UserLockout'
+    private static final String EMAIL_ACTION = 'UserLockout_V1'
     private static final String MAIL_IDENTIFIER = "@"
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCredentialVerifyAttemptValidatorImpl)
