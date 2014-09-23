@@ -105,6 +105,9 @@ class SectionServiceImpl implements SectionService {
     private void handleCmsSection(SectionInfoNode root) {
         assert root.cmsSlot == null
         CmsPage cmsPage = facadeContainer.caseyFacade.getCmsPage(cmsPagePath, cmsPageLabel).get();
+        if (cmsPage == null) {
+            cmsPage = facadeContainer.caseyFacade.getCmsPage(cmsPagePath, null).get(); // try to get without label
+        }
         root.children = []
         if (cmsPage == null) {
             LOGGER.error('name=Store_CmsPage_NotFound, path={}, label={}', cmsPagePath, cmsPageLabel)
