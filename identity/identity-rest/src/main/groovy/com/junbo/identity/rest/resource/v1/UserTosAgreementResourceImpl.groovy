@@ -49,7 +49,6 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
             throw new IllegalArgumentException('userTos is null')
         }
 
-
         userTos = userTosFilter.filterForCreate(userTos)
 
         return userTosValidator.validateForCreate(userTos).then {
@@ -73,6 +72,10 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     Promise<UserTosAgreement> get(UserTosAgreementId userTosAgreementId, UserTosAgreementGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
+        }
+
+        if (userTosAgreementId == null) {
+            throw new IllegalArgumentException('userTosAgreementId is null')
         }
 
         return userTosValidator.validateForGet(userTosAgreementId).then { UserTosAgreement newUserTos ->
@@ -207,6 +210,8 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
             return userTosRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else if (listOptions.tosId != null) {
             return userTosRepository.searchByTosId(listOptions.tosId, listOptions.limit, listOptions.offset)
+        } else {
+            throw AppCommonErrors.INSTANCE.invalidOperation('unsupported search operation')
         }
     }
 }

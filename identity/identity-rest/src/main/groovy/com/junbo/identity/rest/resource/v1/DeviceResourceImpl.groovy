@@ -54,7 +54,7 @@ class DeviceResourceImpl implements DeviceResource {
     @Override
     Promise<Device> put(DeviceId deviceId, Device device) {
         if (deviceId == null) {
-            throw new IllegalArgumentException()
+            throw new IllegalArgumentException('device is null')
         }
         return deviceRepository.get(deviceId).then { Device oldDevice ->
             if (oldDevice == null) {
@@ -97,7 +97,7 @@ class DeviceResourceImpl implements DeviceResource {
     @Override
     Promise<Device> get(DeviceId deviceId, DeviceGetOptions getOptions) {
         if (getOptions == null) {
-            throw new IllegalArgumentException()
+            throw new IllegalArgumentException('getOptions is null')
         }
         return deviceValidator.validateForGet(deviceId).then {
             return deviceRepository.get(deviceId).then { Device newDevice ->

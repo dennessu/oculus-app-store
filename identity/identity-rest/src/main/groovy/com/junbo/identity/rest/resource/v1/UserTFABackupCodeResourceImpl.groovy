@@ -52,7 +52,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw new IllegalArgumentException('userId is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -82,7 +82,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw new IllegalArgumentException('userId is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -183,7 +183,11 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     @Override
     Promise<Void> delete(UserId userId, UserTFABackupCodeId userTFABackupCodeId) {
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (userTFABackupCodeId == null) {
+            throw new IllegalArgumentException('userTFABackupCodeId is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -201,7 +205,11 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     @Override
     Promise<Results<UserTFABackupCode>> list(UserId userId, UserTFABackupCodeListOptions listOptions) {
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (listOptions == null) {
+            throw new IllegalArgumentException('listOptions is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -235,7 +243,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
         } else if (listOptions.userId != null) {
             return userTFABackupCodeRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Unsupported search operation')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()
         }
     }
 }

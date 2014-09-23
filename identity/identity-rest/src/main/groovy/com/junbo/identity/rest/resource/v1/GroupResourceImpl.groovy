@@ -54,6 +54,9 @@ class GroupResourceImpl implements GroupResource {
 
     @Override
     Promise<Group> create(Group group) {
+        if (group == null) {
+            throw new IllegalArgumentException('group is null')
+        }
         group = groupFilter.filterForCreate(group)
 
         return groupValidator.validateForCreate(group).then {
@@ -75,7 +78,9 @@ class GroupResourceImpl implements GroupResource {
 
     @Override
     Promise<Group> put(GroupId groupId, Group group) {
-
+        if (group == null) {
+            throw new IllegalArgumentException('group is null')
+        }
         return groupValidator.validateForGet(groupId).then { Group oldGroup ->
             if (oldGroup == null) {
                 throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
@@ -101,7 +106,9 @@ class GroupResourceImpl implements GroupResource {
 
     @Override
     Promise<Group> patch(GroupId groupId, Group group) {
-
+        if (group == null) {
+            throw new IllegalArgumentException('group is null')
+        }
         return groupValidator.validateForGet(groupId).then { Group oldGroup ->
             if (oldGroup == null) {
                 throw AppErrors.INSTANCE.groupNotFound(groupId).exception()

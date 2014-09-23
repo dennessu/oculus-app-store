@@ -114,7 +114,7 @@ class UserResourceImpl implements UserResource {
     @Override
     Promise<User> create(User user) {
         if (user == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+            throw new IllegalArgumentException('user is null')
         }
 
         def callback = userAuthorizeCallbackFactory.create(user)
