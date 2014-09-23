@@ -1,7 +1,7 @@
 {
     "source" : "Oculus",
-    "action" : "EmailVerification",
+    "action" : "DeleteAccount",
     "locale" : "en_US",
     "providerName" : "mandrill",
-    "placeholderNames" : [ "firstName", "link" ]
+    "placeholderNames" : ["name", "username"]
 }

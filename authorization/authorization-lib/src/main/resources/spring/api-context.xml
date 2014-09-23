@@ -99,6 +99,7 @@
                 <entry key="ScopeEndpoint.getScope" value="scope.info"/>
                 <entry key="ScopeEndpoint.getByScopeNames" value="scope.info"/>
                 <entry key="EmailVerifyEndpoint.sendVerifyEmail" value="csr identity.service"/>
+                <entry key="EmailVerfiyEndpoint.sendWelcomeEmail" value="identity.service" />
                 <entry key="EmailVerifyEndpoint.getVerifyEmailLink" value="smoketest" />
                 <!-- order -->
                 <entry key="OrderEventResource" value="commerce order.service csr"/>

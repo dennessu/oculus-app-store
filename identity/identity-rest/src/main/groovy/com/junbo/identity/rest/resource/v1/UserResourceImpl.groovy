@@ -52,6 +52,7 @@ class UserResourceImpl implements UserResource {
     private static final String EMAIL_SOURCE = 'Oculus'
     private static final String EMAIL_DEACTIVATE_ACCOUNT_ACTION = 'DeactivateAccount'
     private static final String EMAIL_REACTIVATE_ACCOUNT_ACTION = 'ReactivateAccount'
+    private static final String EMAIL_DELETE_ACCOUNT_ACTION = 'DeleteAccount'
     private static final String EMAIL_PII_CHANGE_ACTION = 'UserPersonalInfoChange'
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserResource)
@@ -361,7 +362,10 @@ class UserResourceImpl implements UserResource {
 
                 user.setStatus(UserStatus.DELETED.toString())
                 return userRepository.update(user, user).then {
-                    return Promise.pure(null)
+                    return sendAccountDeleteEmail(user).recover {
+                        LOGGER.error("Send delete account mail failure")
+                        return Promise.pure(null)
+                    }
                 }
             }
         }
@@ -752,6 +756,50 @@ class UserResourceImpl implements UserResource {
         if (!flag) return true
     }
 
+    private Promise<Void> sendAccountDeleteEmail(User user) {
+        QueryParam queryParam = new QueryParam(
+                source: EMAIL_SOURCE,
+                action: EMAIL_DELETE_ACCOUNT_ACTION,
+                locale: 'en_US'
+        )
+
+        if (CollectionUtils.isEmpty(user.emails) || user.username == null) {
+            return Promise.pure(null)
+        }
+
+        return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
+            if (results.items.isEmpty()) {
+                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(EMAIL_DELETE_ACCOUNT_ACTION + ' with locale: en_US template not found')).exception()
+            }
+            EmailTemplate template = results.items.get(0)
+
+            return getUserNameStr(user).then { String displayUsername ->
+                return getEmailStr(user).then { String userMail ->
+                    if (StringUtils.isEmpty(userMail)) {
+                        throw AppErrors.INSTANCE.userInInvalidStatus(user.getId()).exception()
+                    }
+
+                    com.junbo.email.spec.model.Email emailToSend = new com.junbo.email.spec.model.Email(
+                            userId: user.getId(),
+                            templateId: template.getId(),
+                            recipients: [userMail].asList(),
+                            replacements: [
+                                    'name': displayUsername,
+                                    'username': getUserLoginNameStr(user).get()
+                            ]
+                    )
+
+                    return emailResource.postEmail(emailToSend).then { Email emailSent ->
+                        if (emailSent == null) {
+                            throw AppCommonErrors.INSTANCE.internalServerError(new Exception('Failed to send mail')).exception()
+                        }
+                        return Promise.pure(null)
+                    }
+                }
+            }
+        }
+    }
+
     private Promise<Void> sendPIIChangeEmail(User user, String piiType) {
         QueryParam queryParam = new QueryParam(
                 source: EMAIL_SOURCE,
@@ -759,12 +807,8 @@ class UserResourceImpl implements UserResource {
                 locale: 'en_US'
         )
 
-        if (CollectionUtils.isEmpty(user.emails)) {
+        if (CollectionUtils.isEmpty(user.emails) || user.username == null) {
             return Promise.pure(null)
-        }
-
-        if (user.username == null) {
-            throw AppCommonErrors.INSTANCE.internalServerError(new Exception('username is missing')).exception()
         }
 
         return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->

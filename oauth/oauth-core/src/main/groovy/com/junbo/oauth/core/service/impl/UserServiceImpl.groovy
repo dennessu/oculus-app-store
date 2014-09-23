@@ -300,7 +300,7 @@ class UserServiceImpl implements UserService {
                 }
 
                 String link = uriBuilder.build().toString()
-                return this.sendEmail(queryParam, user, email, link)
+                return this.sendEmail(queryParam, user, email, link, buildReplacements(user, queryParam.action, link, email))
             }
         }
     }
@@ -360,7 +360,8 @@ class UserServiceImpl implements UserService {
                         locale: locale
                 )
 
-                return this.sendEmail(queryParam, user, email, uriBuilder.build().toString())
+                String uri = uriBuilder.build().toString()
+                return this.sendEmail(queryParam, user, email, uri, buildReplacements(user, queryParam.action, uri, email))
             }
         }
     }
@@ -428,7 +429,7 @@ class UserServiceImpl implements UserService {
         }
     }
 
-    private Promise<String> sendEmail(QueryParam queryParam, User user, String email, String uri) {
+    private Promise<String> sendEmail(QueryParam queryParam, User user, String email, String uri, Map<String, String> replacements) {
         // todo: remove this hard coded after email template has been setup
         queryParam.locale = 'en_US'
 
@@ -445,10 +446,7 @@ class UserServiceImpl implements UserService {
                     userId: user.id as UserId,
                     templateId: template.id as EmailTemplateId,
                     recipients: [email].asList(),
-                    replacements: [
-                            'name': getName(user).get(),
-                            'link': uri
-                    ]
+                    replacements: replacements
             )
 
             return emailResource.postEmail(emailToSend).then { Email emailSent ->
@@ -480,11 +478,49 @@ class UserServiceImpl implements UserService {
         }
     }
 
+    private Promise<String> getFirstName(User user) {
+        if (user.name == null) {
+            return Promise.pure('')
+        } else {
+            return userPersonalInfoResource.get(user.name, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return Promise.pure('')
+                }
+
+                UserName userName = (UserName)jsonNodeToObj(userPersonalInfo.value, UserName)
+                return Promise.pure(userName.givenName)
+            }
+        }
+    }
+
     public static Object jsonNodeToObj(JsonNode jsonNode, Class cls) {
         try {
             return ObjectMapperProvider.instance().treeToValue(jsonNode, cls);
         } catch (Exception e) {
             throw AppCommonErrors.INSTANCE.internalServerError(new Exception('Cannot convert JsonObject to ' + cls.toString() + ' e: ' + e.getMessage())).exception()
+        }
+    }
+
+    // todo:    We may need to refine the code here to use interface...
+    private Map<String, String> buildReplacements(User user, String action, String link, String email) {
+        if (action == VERIFY_EMAIL_ACTION) {
+            return [
+                'firstName': getFirstName(user).get(),
+                'link': link
+            ]
+        } else if (action == WELCOME_ACTION) {
+            return [
+                'firstName': getFirstName(user).get(),
+                'accountName': email,
+                'link': link
+            ]
+        } else if (action == RESET_PASSWORD_ACTION) {
+            return [
+                'name': getName(user).get(),
+                'link': link
+            ]
+        } else {
+            throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported operation').exception()
         }
     }
 }

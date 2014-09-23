@@ -205,6 +205,14 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         }
     }
 
+    @Override
+    Promise<Response> sendWelcomeEmail(String locale, String country, UserId userId) {
+        return userService.sendVerifyEmail(userId, locale, country, null, true).then {
+            // CSR shouldn't invoke send welcome email
+            return Promise.pure(Response.noContent().build())
+        }
+    }
+
     private void csrActionAudit(UserId userId) {
         if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
             String email = userService.getUserEmailByUserId(userId).get()
