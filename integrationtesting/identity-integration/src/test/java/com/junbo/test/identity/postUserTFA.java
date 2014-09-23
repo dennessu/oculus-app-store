@@ -40,9 +40,28 @@ public class postUserTFA {
     @Test(groups = "bvt")
     public void postUserTFA() throws Exception {
         User user = Identity.UserPostDefault();
-        User storedUser = Identity.UserGetByUserId(user.getId());
         UserTFA userTFA = IdentityModel.DefaultUserTFA();
-        UserPersonalInfo upi = null;
+        UserPersonalInfo upiEmail = null, upiPhone = null;
+
+        List<UserPersonalInfoLink> upiLinkEmail = new ArrayList<>();
+        UserPersonalInfoLink userPersonalInfoLinkEmail = new UserPersonalInfoLink();
+        userPersonalInfoLinkEmail.setUserId(user.getId());
+        userPersonalInfoLinkEmail.setIsDefault(true);
+        upiEmail = Identity.UserPersonalInfoPost(user.getId(), IdentityModel.DefaultUserPersonalInfoEmail());
+        userPersonalInfoLinkEmail.setValue(upiEmail.getId());
+        upiLinkEmail.add(userPersonalInfoLinkEmail);
+        user.setEmails(upiLinkEmail);
+        user = Identity.UserPut(user);
+
+        List<UserPersonalInfoLink> upiLinkPhone = new ArrayList<>();
+        UserPersonalInfoLink userPersonalInfoLinkPhone = new UserPersonalInfoLink();
+        userPersonalInfoLinkPhone.setUserId(user.getId());
+        userPersonalInfoLinkPhone.setIsDefault(true);
+        upiPhone = Identity.UserPersonalInfoPost(user.getId(), IdentityModel.DefaultUserPersonalInfoPhone());
+        userPersonalInfoLinkPhone.setValue(upiPhone.getId());
+        upiLinkPhone.add(userPersonalInfoLinkPhone);
+        user.setPhones(upiLinkPhone);
+        user = Identity.UserPut(user);
 
         List<String> array = new ArrayList<>();
         array.add(IdentityModel.TFAVerifyType.CALL.name());
@@ -50,24 +69,11 @@ public class postUserTFA {
         array.add(IdentityModel.TFAVerifyType.SMS.name());
         for (int i = 0; i < array.size(); i++) {
             userTFA.setVerifyType(array.get(i));
-            List<UserPersonalInfoLink> upiLink = new ArrayList<>();
-            UserPersonalInfoLink userPersonalInfoLink = new UserPersonalInfoLink();
-            userPersonalInfoLink.setUserId(user.getId());
-            userPersonalInfoLink.setIsDefault(true);
-            if (userTFA.getVerifyType().equals(IdentityModel.TFAVerifyType.EMAIL.name())) {
-                upi = Identity.UserPersonalInfoPost(user.getId(), IdentityModel.DefaultUserPersonalInfoEmail());
-                userPersonalInfoLink.setValue(upi.getId());
-                upiLink.add(userPersonalInfoLink);
-                storedUser.setEmails(upiLink);
+            if (array.get(i).equals(IdentityModel.TFAVerifyType.EMAIL.name())) {
+                userTFA.setPersonalInfo(upiEmail.getId());
             } else {
-                upi = Identity.UserPersonalInfoPost(user.getId(), IdentityModel.DefaultUserPersonalInfoPhone());
-                userPersonalInfoLink.setValue(upi.getId());
-                upiLink.add(userPersonalInfoLink);
-                storedUser.setPhones(upiLink);
+                userTFA.setPersonalInfo(upiPhone.getId());
             }
-            Identity.UserPut(storedUser);
-            userTFA.setPersonalInfo(upi.getId());
-
             Identity.UserTFAPost(user.getId(), userTFA);
         }
     }
