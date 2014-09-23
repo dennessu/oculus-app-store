@@ -44,24 +44,31 @@ public class postUserTFA {
         UserTFA userTFA = IdentityModel.DefaultUserTFA();
         UserPersonalInfo upi = null;
 
-        List<UserPersonalInfoLink> upiLink = new ArrayList<>();
-        UserPersonalInfoLink userPersonalInfoLink = new UserPersonalInfoLink();
-        userPersonalInfoLink.setUserId(user.getId());
-        userPersonalInfoLink.setIsDefault(true);
-        if (userTFA.getVerifyType().equals(IdentityModel.TFAVerifyType.EMAIL.name())) {
-            upi = Identity.UserPersonalInfoPost(user.getId(), IdentityModel.DefaultUserPersonalInfoEmail());
-            userPersonalInfoLink.setValue(upi.getId());
-            upiLink.add(userPersonalInfoLink);
-            storedUser.setEmails(upiLink);
-        } else {
-            upi = Identity.UserPersonalInfoPost(user.getId(), IdentityModel.DefaultUserPersonalInfoPhone());
-            userPersonalInfoLink.setValue(upi.getId());
-            upiLink.add(userPersonalInfoLink);
-            storedUser.setPhones(upiLink);
-        }
-        Identity.UserPut(storedUser);
-        userTFA.setPersonalInfo(upi.getId());
+        List<String> array = new ArrayList<>();
+        array.add(IdentityModel.TFAVerifyType.CALL.name());
+        array.add(IdentityModel.TFAVerifyType.EMAIL.name());
+        array.add(IdentityModel.TFAVerifyType.SMS.name());
+        for (int i = 0; i < array.size(); i++) {
+            userTFA.setVerifyType(array.get(i));
+            List<UserPersonalInfoLink> upiLink = new ArrayList<>();
+            UserPersonalInfoLink userPersonalInfoLink = new UserPersonalInfoLink();
+            userPersonalInfoLink.setUserId(user.getId());
+            userPersonalInfoLink.setIsDefault(true);
+            if (userTFA.getVerifyType().equals(IdentityModel.TFAVerifyType.EMAIL.name())) {
+                upi = Identity.UserPersonalInfoPost(user.getId(), IdentityModel.DefaultUserPersonalInfoEmail());
+                userPersonalInfoLink.setValue(upi.getId());
+                upiLink.add(userPersonalInfoLink);
+                storedUser.setEmails(upiLink);
+            } else {
+                upi = Identity.UserPersonalInfoPost(user.getId(), IdentityModel.DefaultUserPersonalInfoPhone());
+                userPersonalInfoLink.setValue(upi.getId());
+                upiLink.add(userPersonalInfoLink);
+                storedUser.setPhones(upiLink);
+            }
+            Identity.UserPut(storedUser);
+            userTFA.setPersonalInfo(upi.getId());
 
-        Identity.UserTFAPost(user.getId(), userTFA);
+            Identity.UserTFAPost(user.getId(), userTFA);
+        }
     }
 }
