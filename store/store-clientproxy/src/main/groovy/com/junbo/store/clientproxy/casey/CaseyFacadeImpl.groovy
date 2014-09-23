@@ -181,17 +181,21 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     @Override
     Promise<CmsPage> getCmsPage(String path, String label) {
+        CmsPage page
         resourceContainer.caseyResource.getCmsPages(
             new CmsPageGetParams(path: "\"${path}\"", label: label == null ? null : "\"${label}\"")
         ).then { CaseyResults<CmsPage> results ->
             if (CollectionUtils.isEmpty(results?.items)) {
                 return Promise.pure()
             }
-            CmsPage page = results.items[0]
+            page = results.items[0]
             if (CollectionUtils.isEmpty(page?.slots)) {
                 return Promise.pure(page)
             }
             return fillPageContent(page)
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_GetCmsPage_Error, path={}, label={}', path, label, ex)
+            return Promise.pure(page)
         }
     }
 
