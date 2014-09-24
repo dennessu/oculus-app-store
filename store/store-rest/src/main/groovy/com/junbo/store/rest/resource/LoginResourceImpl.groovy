@@ -14,6 +14,7 @@ import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.error.ErrorContext
+import com.junbo.store.clientproxy.sentry.SentryFacade
 import com.junbo.store.rest.utils.ApiContextBuilder
 import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.spec.model.identity.StoreUserEmail
@@ -61,6 +62,9 @@ class LoginResourceImpl implements LoginResource {
 
     @Resource(name = 'storeContextBuilder')
     private ApiContextBuilder apiContextBuilder
+
+    @Resource(name = 'storeSentryFacade')
+    private SentryFacade sentryFacade
 
     private class ApiContext {
         User user
@@ -120,6 +124,9 @@ class LoginResourceImpl implements LoginResource {
 
         requestValidator.validateAndGetCountry(new CountryId(request.cor)).then {
             requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
+        }.then {
+            // todo:    Here we need to define the parameters here
+            sentryFacade.doSentryCheck(null, null, null, null, null, null)
         }.then {
             createUserBasic(request, apiContext, errorContext)
         }.then {

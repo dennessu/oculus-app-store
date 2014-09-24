@@ -204,6 +204,13 @@
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
+    <bean id="store.sentryClientProxy"
+          class="com.junbo.store.spec.resource.external.proxy.SentryResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.sentry.url}" />
+        <!-- In our internal service, we will have different accessTokenProvider to call different component -->
+        <!-- In this scenario, we should have the ability to call fb side, but how can we get the access token-->
+    </bean>
+
     <bean id="store.caseyReviewClientProxy"
           class="com.junbo.store.spec.resource.external.proxy.CaseyReviewResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.casey.url}"/>
