@@ -150,7 +150,7 @@ Please notice that links must be specified, and the aliases(2nd part) must be ps
 If there is no error, you will see `#### finished preparing databases.`, then you can continue to run the apphost service:
 
 ```bash
-sudo docker run -d -p 8080:8080 -p 8081:8081 \
+sudo docker run -d -p 8079:8079 -p 8080:8080 -p 8081:8081 \
   --link psql:psql --link couchdb:couchdb --name=onebox-app \
   -v $(pwd)/appconfig:/etc/silkcloud -v $(pwd)/applogs:/var/silkcloud/logs \
   silkcloud/onebox-app:master
@@ -158,6 +158,6 @@ sudo docker run -d -p 8080:8080 -p 8081:8081 \
 
 Memcached service is also included in `onebox-app`, you can use Environment Var to control its config: `MAX_MEM` (default 64), `MAX_CONN` (default 1024)
 
-It would take about 1 minute to start up, after that, it would listen at 8080 and 8081 port. Open `http://localhost:8080/v1/offers` to check.
+It would take about 1 minute to start up, after that, it would listen at 8079, 8080 and 8081 port. Open `http://localhost:8080/v1/offers` to check.
 
 If the container stops after a while, means it failed to boot, use `sudo docker logs onebox-app` to check what happened.
