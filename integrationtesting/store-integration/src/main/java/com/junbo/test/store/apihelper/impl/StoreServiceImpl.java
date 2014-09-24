@@ -70,7 +70,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public VerifyEmailResponse verifyEmail(VerifyEmailRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/verify-email", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/resend-confirmation-email", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             VerifyEmailResponse response = new JsonMessageTranscoder().decode(new TypeReference<VerifyEmailResponse>() {
             }, responseBody);

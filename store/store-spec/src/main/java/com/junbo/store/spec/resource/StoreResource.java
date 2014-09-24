@@ -31,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 public interface StoreResource {
 
     @POST
-    @Path("/verify-email")
+    @Path("/resend-confirmation-email")
     @RouteByAccessToken(switchable = true)
     // This doesn't require email verification
     Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request);
