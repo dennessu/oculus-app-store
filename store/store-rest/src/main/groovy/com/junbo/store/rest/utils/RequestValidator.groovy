@@ -1,9 +1,9 @@
 package com.junbo.store.rest.utils
+
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
@@ -20,6 +20,9 @@ import com.junbo.order.spec.model.Order
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
 import com.junbo.store.clientproxy.FacadeContainer
+import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
@@ -38,10 +41,8 @@ import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
-import com.junbo.store.clientproxy.ResourceContainer
 
 import javax.annotation.Resource
-import java.util.regex.Pattern
 
 /**
  * The RequestValidator class.
@@ -71,14 +72,8 @@ class RequestValidator {
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
 
-    private final Pattern androidIdPattern = Pattern.compile('[a-fA-F\\d]{16}')
-
     RequestValidator validateRequiredApiHeaders() {
         validateHeader(StoreApiHeader.ANDROID_ID, StoreApiHeader.USER_AGENT, StoreApiHeader.ACCEPT_LANGUAGE)
-        String androidId = JunboHttpContext.requestHeaders.getFirst(StoreApiHeader.ANDROID_ID.value)
-        if (!androidIdPattern.matcher(androidId).matches()) {
-            throw AppCommonErrors.INSTANCE.headerInvalid(StoreApiHeader.ANDROID_ID.value).exception()
-        }
         return this
     }
 
@@ -205,7 +200,7 @@ class RequestValidator {
                 }
 
                 if (request?.challengeAnswer?.password != null && request?.challengeAnswer?.type == Constants.ChallengeType.PASSWORD) {
-                    return getUsername(user).then { String username ->
+                    return identityUtils.getVerifiedUserPrimaryMail(user).then { String username ->
                         return resourceContainer.userCredentialVerifyAttemptResource.create(new UserCredentialVerifyAttempt(
                                 username: username,
                                 value: request.challengeAnswer.password,
@@ -214,13 +209,8 @@ class RequestValidator {
                             if (appErrorUtils.isAppError(t, ErrorCodes.Identity.UserPasswordIncorrect)) {
                                throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                             }
-                            if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
-                                AppErrorException appError = (AppErrorException)t
-                                if (!CollectionUtils.isEmpty(appError.error.error().getDetails())
-                                 && !StringUtils.isEmpty(appError.error.error().getDetails().get(0).getReason())
-                                 && appError.error.error().getDetails().get(0).getReason().contains('User reaches maximum allowed retry count')) {
-                                    throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-                                }
+                            if (appErrorUtils.isAppError(t, ErrorCodes.Identity.MaximumLoginAttempt)) {
+                                throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                             }
 
                             appErrorUtils.throwUnknownError('updateUserProfile', t)
@@ -247,7 +237,7 @@ class RequestValidator {
                             type: 'EMAIL',
                             value: ObjectMapperProvider.instance().valueToTree(email)
                     )
-                    return resourceContainer.userPersonalInfoResource.create(emailPii).then { UserPersonalInfo userPersonalInfo ->
+                    return resourceContainer.userUserPersonalInfoResource.create(emailPii).then { UserPersonalInfo userPersonalInfo ->
                         return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), userPersonalInfo.getId()).then {
                             return Promise.pure(null)
                         }
@@ -412,6 +402,13 @@ class RequestValidator {
         notEmpty(request.tosId, 'tosId')
     }
 
+    public RequestValidator validateRequestBody(Object request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+        return this
+    }
+
     public void validateDetailsRequest(DetailsRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
@@ -430,11 +427,6 @@ class RequestValidator {
 
     public void validateDeliveryRequest(DeliveryRequest request) {
         notEmpty(request.itemId, 'itemId')
-    }
-
-    public void validateAddReviewRequest(AddReviewRequest request) {
-        notEmpty(request.itemId, 'itemId')
-        notEmpty(request.title, 'title')
     }
 
     public void validateReviewsRequest(ReviewsRequest request) {
@@ -467,21 +459,6 @@ class RequestValidator {
             }
 
             return Promise.pure(true)
-        }
-    }
-
-    private Promise<String> getUsername(User user) {
-        if (user.username == null) {
-            return Promise.pure('')
-        }
-
-        return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
-            if (userPersonalInfo == null) {
-                return Promise.pure('')
-            }
-
-            UserLoginName loginName = (UserLoginName)ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, UserLoginName)
-            return Promise.pure(loginName.userName)
         }
     }
 

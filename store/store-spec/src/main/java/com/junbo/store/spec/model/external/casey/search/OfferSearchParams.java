@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.external.casey.search;
 
+import com.junbo.common.id.ItemId;
 import com.junbo.store.spec.model.external.casey.CaseySearchParams;
 
 import javax.ws.rs.QueryParam;
@@ -40,6 +41,9 @@ public class OfferSearchParams extends CaseySearchParams {
 
     @QueryParam("minimal")
     private Boolean minimal;
+
+    @QueryParam("itemId")
+    private ItemId itemId;
 
     public String getCountry() {
         return country;
@@ -111,5 +115,13 @@ public class OfferSearchParams extends CaseySearchParams {
 
     public void setMinimal(Boolean minimal) {
         this.minimal = minimal;
+    }
+
+    public ItemId getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(ItemId itemId) {
+        this.itemId = itemId;
     }
 }

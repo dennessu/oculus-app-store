@@ -8,7 +8,7 @@ package com.junbo.oauth.api.endpoint
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.oauth.spec.model.AccessToken
@@ -86,6 +86,7 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint, InitializingBean {
 
         // Return the token information.
         TokenInfo tokenInfo = new TokenInfo(
+                tokenValue: tokenValue,
                 clientId: accessToken.clientId,
                 sub: new UserId(accessToken.userId),
                 scopes: StringUtils.collectionToDelimitedString(accessToken.scopes, ' '),

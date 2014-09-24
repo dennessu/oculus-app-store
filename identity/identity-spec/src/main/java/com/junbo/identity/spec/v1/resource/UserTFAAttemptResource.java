@@ -14,6 +14,7 @@ import com.junbo.identity.spec.v1.option.model.UserTFAAttemptGetOptions;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -32,10 +33,12 @@ import javax.ws.rs.core.MediaType;
 public interface UserTFAAttemptResource {
 
     @ApiOperation("Create one user tfa attempt resource")
+    @RouteBy(value = "userId", switchable = true)
     @POST
     Promise<UserTFAAttempt> create(@PathParam("userId") UserId userId, UserTFAAttempt userTeleAttempt);
 
     @ApiOperation("Get one user tfa attempt resource")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     @Path("/{userTFAAttemptId}")
     Promise<UserTFAAttempt> get(@PathParam("userId") UserId userId,
@@ -43,6 +46,7 @@ public interface UserTFAAttemptResource {
                           @BeanParam UserTFAAttemptGetOptions getOptions);
 
     @ApiOperation("Search user tfa attempt resource")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     Promise<Results<UserTFAAttempt>> list(@PathParam("userId") UserId userId,
                                            @BeanParam UserTFAAttemptListOptions listOptions);

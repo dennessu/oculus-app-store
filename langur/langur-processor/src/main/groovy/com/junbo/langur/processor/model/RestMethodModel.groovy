@@ -26,5 +26,7 @@ class RestMethodModel {
 
     List<String> routeParamExprs
 
+    boolean routeSwitchable
+
     boolean authorizationNotRequired
 }

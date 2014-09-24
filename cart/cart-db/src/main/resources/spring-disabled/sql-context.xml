@@ -12,7 +12,7 @@
         <property name="dataMapper" ref="dataMapper"/>
     </bean>
 
-    <bean id="cartDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="cartDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${cart.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/cart"/>

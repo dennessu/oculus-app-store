@@ -45,6 +45,6 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
 
     @Override
     Promise<Void> delete(GroupId id) {
-        throw new IllegalStateException('delete group not support')
+        return cloudantDelete(id.toString())
     }
 }

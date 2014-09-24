@@ -1,6 +1,6 @@
 {
     "source" : "Oculus",
-    "action" : "TFAVerificationCode",
+    "action" : "TFAVerificationCode_V1",
     "locale" : "en_US",
     "providerName" : "mandrill",
     "placeholderNames" : [ "name", "code" ]

@@ -10,13 +10,12 @@ import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.AuthorizeEndpoint
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 

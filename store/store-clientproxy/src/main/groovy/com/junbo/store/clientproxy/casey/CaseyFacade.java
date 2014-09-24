@@ -9,14 +9,17 @@ import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
+import com.junbo.store.spec.model.browse.AddReviewRequest;
 import com.junbo.store.spec.model.browse.ReviewsResponse;
 import com.junbo.store.spec.model.browse.document.AggregatedRatings;
 import com.junbo.store.spec.model.browse.document.Item;
+import com.junbo.store.spec.model.browse.document.Review;
 import com.junbo.store.spec.model.browse.document.SectionInfoNode;
 import com.junbo.store.spec.model.external.casey.CaseyResults;
+import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * The CaseyFacade interface.
@@ -25,11 +28,17 @@ public interface CaseyFacade {
 
     Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext);
 
-    Promise<List<AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext);
+    Promise<CaseyResults<Item>> search(ItemId itemId, ApiContext apiContext);
+
+    Promise<Map<String, AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext);
 
     Promise<ReviewsResponse> getReviews(String itemId, UserId userId, String cursor, Integer count);
 
     Promise<Boolean> itemAvailable(ItemId itemId, ApiContext apiContext);
 
-    Promise<CmsPage> getCmsPage(String pageName);
+    Promise<CmsPage> getCmsPage(String path, String label);
+
+    Promise<CmsCampaign> getCmsCampaign(String label);
+
+    Promise<Review> addReview(AddReviewRequest request, ApiContext apiContext);
 }

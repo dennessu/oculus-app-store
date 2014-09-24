@@ -8,7 +8,7 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!-- Email source -->
-    <bean id="emailDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="emailDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${email.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/email"/>
@@ -44,7 +44,7 @@
     </bean>
 
     <!-- Email template source -->
-    <bean id="emailTemplateSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="emailTemplateSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${config.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/emailconfig"/>

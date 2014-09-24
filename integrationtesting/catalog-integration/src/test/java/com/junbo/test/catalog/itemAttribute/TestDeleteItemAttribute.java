@@ -48,7 +48,7 @@ public class TestDeleteItemAttribute extends BaseTestClass {
 
         //Try to get the item, expected status code is 404.
         try {
-            itemAttributeService.getItemAttribute(itemAttribute.getId(), 404);
+            itemAttributeService.getItemAttribute(itemAttribute.getId(), null, 404);
             Assert.fail("Couldn't find the deleted item attribute");
         }
         catch (Exception ex)

@@ -13,6 +13,8 @@ import com.junbo.oauth.spec.model.LoginState
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
+import javax.ws.rs.NotSupportedException
+
 /**
  * Javadoc.
  */
@@ -62,11 +64,16 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
     }
 
     @Override
-    void delete(String id) {
+    void remove(String id) {
         def entity = loginStateDAO.get(id)
         if (entity != null) {
             loginStateDAO.delete(entity)
         }
+    }
+
+    @Override
+    void removeByHash(String id) {
+        throw new NotSupportedException()
     }
 
     private static LoginStateEntity unwrap(LoginState loginState) {

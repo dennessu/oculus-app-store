@@ -19,8 +19,20 @@ import java.util.List;
 public class ClientProxyHeadersProvider implements HeadersProvider {
     private List<String> forwardedHeaders = new ArrayList<>();
 
+    private List<String> forwardedQAHeaders = new ArrayList<>();
+
+    private boolean forwardedQAHeadersEnabled;
+
     public void setForwardedHeaders(List<String> forwardedHeaders) {
         this.forwardedHeaders = forwardedHeaders;
+    }
+
+    public void setForwardedQAHeaders(List<String> forwardedQAHeaders) {
+        this.forwardedQAHeaders = forwardedQAHeaders;
+    }
+
+    public void setForwardedQAHeadersEnabled(boolean forwardedQAHeadersEnabled) {
+        this.forwardedQAHeadersEnabled = forwardedQAHeadersEnabled;
     }
 
     @Override
@@ -33,6 +45,14 @@ public class ClientProxyHeadersProvider implements HeadersProvider {
                 List<String> value = source.get(key);
                 if (value != null) {
                     result.put(key, value);
+                }
+            }
+            if (forwardedQAHeadersEnabled) {
+                for (String key : forwardedQAHeaders) {
+                    List<String> value = source.get(key);
+                    if (value != null) {
+                        result.put(key, value);
+                    }
                 }
             }
         }

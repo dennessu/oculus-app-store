@@ -434,6 +434,45 @@ public class CartCheckout extends BaseTestClass {
             component = Component.Order,
             environment = "release",
             owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test checkout free offer with multi endpoint",
+            steps = {
+                    "1. Post a new user in west dc",
+                    "2. Add free digital offer to user's primary cart",
+                    "3. Post new credit card to new user.",
+                    "4. Post order to checkout",
+                    "5. Verify the order response info",
+                    "6. Empty the primary cart",
+                    "7. Update order tentative to false in east dc",
+                    "8. Get the entitlements by uid ",
+                    "9. Verify the entitlements are active",
+            }
+    )
+    @Test(groups = "int/ppe/prod/sewer")
+    public void testCheckoutFreeDigitalWithMultiEndpoint() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_free, 1);
+
+        String orderId = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.FREE, null, false, offerList);
+
+        Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
+
+        orderId = testDataProvider.updateOrderTentative(orderId, false);
+
+        validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.FREE, false);
+
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            environment = "release",
+            owner = "ZhaoYunlong",
             status = Status.Disable,
             description = "Test checkout free offer",
             steps = {

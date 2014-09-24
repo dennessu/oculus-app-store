@@ -8,6 +8,7 @@ package com.junbo.subscription.spec.resource;
 import com.junbo.common.id.SubscriptionId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.junbo.subscription.spec.model.Subscription;
 
 import javax.validation.Valid;
@@ -25,10 +26,12 @@ import javax.ws.rs.core.MediaType;
 public interface SubscriptionResource {
     @POST
     @Path("/")
+    @RouteBy("request.getUserId()")
     Promise<Subscription> postSubscription(@Valid Subscription request);
 
     @GET
     @Path("/{subscriptionId}")
+    @RouteBy("subscriptionId")
     Promise<Subscription> getSubscriptionById(@PathParam("subscriptionId") SubscriptionId subscriptionId);
 
 }

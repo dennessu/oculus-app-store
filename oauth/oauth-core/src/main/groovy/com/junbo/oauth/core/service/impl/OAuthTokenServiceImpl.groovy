@@ -10,7 +10,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.oauth.common.JsonMarshaller
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.core.util.UriUtil
@@ -154,7 +154,7 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
 
     @Override
     AccessToken updateAccessToken(AccessToken accessToken) {
-        def oldAccessToken = accessTokenRepository.get(accessToken.getId())
+        def oldAccessToken = accessTokenRepository.get(accessToken.tokenValue)
         return accessTokenRepository.update(accessToken, oldAccessToken)
     }
 
@@ -323,7 +323,7 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
 
         def accessTokens = accessTokenRepository.findByRefreshToken(tokenValue)
         accessTokens.each { AccessToken token ->
-            accessTokenRepository.remove(token.tokenValue)
+            accessTokenRepository.removeByHash(token.hashedTokenValue)
         }
     }
 

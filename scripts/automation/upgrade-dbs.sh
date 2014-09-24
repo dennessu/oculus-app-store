@@ -16,6 +16,10 @@ APP_NAME=apphost-cli-0.0.1-SNAPSHOT
 : ${ENV?"Need to set ENV"}
 : ${ENV_BASE?"Need to set ENV_BASE"}
 
+# remove blue suffix
+ENV=$(echo $ENV | sed s/-blue//)
+echo Effective ENV: $ENV
+
 echo Copying files...
 LIQUIBASE_SETUP_SERVER=`head -n 1 $ENV/liquibase.txt`
 cp $SOURCETREE_HOME/apphost/apphost-cli/build/distributions/$APP_NAME.zip /home/silkcloud

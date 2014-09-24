@@ -87,6 +87,7 @@
 
         <wf:action-state id="CHECK_SCOPE_AFTER_LOGIN">
             <wf:action ref="validateScopeAfterLogin"/>
+            <wf:action ref="validateClientAfterLoginAuthorize"/>
             <wf:transition on="tfaRequired" to="REDIRECT_TO_TFA_REQUIRED_VIEW"/>
             <wf:transition on="forbidden" to="ACCESS_DENIED"/>
             <wf:transition on="success" to="CHECK_CONSENT"/>
@@ -128,6 +129,7 @@
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
                 <wf:action ref="createUserTosAgreement"/>
+                <wf:action ref="createUserCommunication" />
                 <wf:action ref="sendWelcomeEmail"/>
             </wf:transition>
             <wf:transition on="next2" to="EMAIL_VERIFY_REQUIRED_VIEW">
@@ -137,6 +139,7 @@
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
                 <wf:action ref="createUserTosAgreement"/>
+                <wf:action ref="createUserCommunication" />
                 <wf:action ref="sendAccountVerifyEmail"/>
             </wf:transition>
             <wf:transition on="login" to="LOGIN_VIEW" />
@@ -494,6 +497,11 @@
         <property name="userTosAgreementResource" ref="oauth_userTosAgreementResource"/>
     </bean>
 
+    <bean id="createUserCommunication" class="com.junbo.oauth.core.action.CreateUserCommunication">
+        <property name="communicationResource" ref="oauth_communicationResource"/>
+        <property name="userCommunicationResource" ref="oauth_userCommunicationResource"/>
+    </bean>
+
     <bean id="redirectToTFARequired" class="com.junbo.oauth.core.view.RedirectToPage">
         <property name="pageUrl" value="${oauth.core.portal.loginUri}"/>
     </bean>
@@ -516,5 +524,10 @@
 
     <bean id="tfaRequiredView" class="com.junbo.oauth.core.view.TFARequiredView">
         <property name="debugEnabled" value="${common.conf.debugMode}"/>
+    </bean>
+
+    <bean id="validateClientAfterLoginAuthorize" class="com.junbo.oauth.core.action.ValidateClientAfterLogin">
+        <property name="groupUtil" ref="groupUtil"/>
+        <property name="isAuthorizeFlow" value="true"/>
     </bean>
 </beans>

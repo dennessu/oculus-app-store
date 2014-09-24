@@ -6,13 +6,12 @@
 package com.junbo.oauth.api.endpoint
 
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.endpoint.AccessTokenResource
 import com.junbo.oauth.spec.model.AccessToken
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 /**

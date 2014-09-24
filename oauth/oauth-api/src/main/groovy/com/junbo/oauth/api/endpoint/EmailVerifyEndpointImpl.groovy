@@ -24,7 +24,7 @@ import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.CookieUtil
 import com.junbo.oauth.core.util.ValidatorUtil
@@ -164,7 +164,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
             loginStateRepository.save(loginState)
             def responseBuilder = response(successUri, true, locale, null)
-            CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.getId(), -1)
+            CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.loginStateId, -1)
             CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
                     loginState.sessionId, -1, false)
 
@@ -201,6 +201,14 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         return userService.sendVerifyEmail(userId, locale, country, targetMail, null).then {
             // audit csr action on success
             csrActionAudit(userId)
+            return Promise.pure(Response.noContent().build())
+        }
+    }
+
+    @Override
+    Promise<Response> sendWelcomeEmail(String locale, String country, UserId userId) {
+        return userService.sendVerifyEmail(userId, locale, country, null, true).then {
+            // CSR shouldn't invoke send welcome email
             return Promise.pure(Response.noContent().build())
         }
     }

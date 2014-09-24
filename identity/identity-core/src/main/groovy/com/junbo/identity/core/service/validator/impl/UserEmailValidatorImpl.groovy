@@ -101,7 +101,7 @@ class UserEmailValidatorImpl implements PiiValidator {
                             Email existingEmail = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
 
                             if (existingEmail.info.toLowerCase(Locale.ENGLISH) == email.info.toLowerCase(Locale.ENGLISH)) {
-                                throw AppCommonErrors.INSTANCE.fieldInvalid('value.info', 'Mail is already used.').exception()
+                                throw AppCommonErrors.INSTANCE.fieldInvalid('email', 'Mail is already used.').exception()
                             }
 
                             return Promise.pure(null)

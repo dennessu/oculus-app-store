@@ -5,39 +5,31 @@
  */
 package com.junbo.oauth.db.repo.cloudant
 
-import com.junbo.common.cloudant.CloudantClient
-import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.RefreshTokenRepository
 import com.junbo.oauth.spec.model.RefreshToken
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
-
+import org.springframework.util.StringUtils
 /**
  * CloudantRefreshTokenRepositoryImpl.
  */
 @CompileStatic
-class CloudantRefreshTokenRepositoryImpl extends CloudantClient<RefreshToken>
-        implements RefreshTokenRepository {
+class CloudantRefreshTokenRepositoryImpl
+        extends CloudantTokenRepositoryBase<RefreshToken> implements RefreshTokenRepository {
     private static final String DELIMITER = '.'
-
-    private TokenGenerator tokenGenerator
-
-    @Required
-    void setTokenGenerator(TokenGenerator tokenGenerator) {
-        this.tokenGenerator = tokenGenerator
-    }
 
     @Override
     RefreshToken save(RefreshToken refreshToken) {
         if (refreshToken.tokenValue == null) {
             refreshToken.tokenValue = tokenGenerator.generateRefreshToken() +
                     DELIMITER + tokenGenerator.generateRefreshTokenSeries()
+            refreshToken.hashedTokenValue = tokenGenerator.hashKey(refreshToken.tokenValue)
         } else {
             String[] tokens = refreshToken.tokenValue.split('\\.')
             Assert.isTrue(tokens.length == 2)
 
             refreshToken.tokenValue = tokens[0] + DELIMITER + tokenGenerator.generateRefreshTokenSeries()
+            refreshToken.hashedTokenValue = tokenGenerator.hashKey(refreshToken.tokenValue)
         }
 
         return cloudantPostSync(refreshToken)
@@ -45,7 +37,16 @@ class CloudantRefreshTokenRepositoryImpl extends CloudantClient<RefreshToken>
 
     @Override
     RefreshToken get(String tokenValue) {
-        return cloudantGetSync(tokenValue)
+        if (StringUtils.isEmpty(tokenValue)) {
+            return null
+        }
+
+        RefreshToken token = cloudantGetSyncWithFallback(tokenValue, tokenGenerator.hashKey(tokenValue))
+        if (token != null) {
+            token.tokenValue = tokenValue
+        }
+
+        return token
     }
 
     @Override
@@ -55,8 +56,17 @@ class CloudantRefreshTokenRepositoryImpl extends CloudantClient<RefreshToken>
 
     @Override
     RefreshToken getAndRemove(String tokenValue) {
-        RefreshToken entity = cloudantGetSync(tokenValue)
-        cloudantDelete(tokenValue)
+        if (StringUtils.isEmpty(tokenValue)) {
+            return null
+        }
+
+        String hashed = tokenGenerator.hashKey(tokenValue)
+        RefreshToken entity = cloudantGetSyncWithFallback(tokenValue, hashed)
+        if (entity != null) {
+            entity.tokenValue = tokenValue
+        }
+
+        cloudantDeleteSync(hashed)
         return entity
     }
 

@@ -1,4 +1,5 @@
 package com.junbo.store.rest.resource.raw
+
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
@@ -26,7 +27,6 @@ import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
-import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -37,12 +37,15 @@ import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.store.clientproxy.FacadeContainer
+import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.clientproxy.error.ErrorCodes
+import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.clientproxy.error.ErrorContext
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
 import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.challenge.ChallengeHelper
-import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.rest.utils.*
 import com.junbo.store.spec.error.AppErrors
@@ -54,7 +57,6 @@ import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.model.token.Token
 import com.junbo.store.spec.resource.StoreResource
-import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
@@ -226,7 +228,7 @@ class StoreResourceImpl implements StoreResource {
                 if (!userPendingUpdate) {
                     return Promise.pure()
                 }
-                return resourceContainer.userResource.put(user.getId(), user)
+                return resourceContainer.userUserResource.put(user.getId(), user)
             }.then {
                 return innerGetUserProfile().syncThen { StoreUserProfile userProfileResponse ->
                     return new UserProfileUpdateResponse(userProfile: userProfileResponse)
@@ -250,7 +252,7 @@ class StoreResourceImpl implements StoreResource {
 
             return Promise.pure(null)
         }.then {
-            return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernameInfo ->
+            return resourceContainer.userUserPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernameInfo ->
                 userProfile.username = ObjectMapperProvider.instance().treeToValue(usernameInfo.value, UserLoginName).userName
                 return Promise.pure()
             }
@@ -260,7 +262,7 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure(null)
             }
 
-            return resourceContainer.userPersonalInfoResource.get(emailLink.value, new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo personalInfo ->
+            return resourceContainer.userUserPersonalInfoResource.get(emailLink.value, new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo personalInfo ->
                 def email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
 
                 userProfile.email = new StoreUserEmail(
@@ -268,25 +270,9 @@ class StoreResourceImpl implements StoreResource {
                         isValidated: personalInfo.isValidated
                 )
            }
-        }.then {
-            return resourceContainer.userCredentialResource.list(user.getId(), new UserCredentialListOptions(
-                    type: 'PASSWORD',
-                    active: true
-            )).syncThen { Results<UserCredential> results ->
-                if (!results.items.isEmpty()) {
-                    userProfile.password = '******'
-                }
-            }
-        }.then {
-            return resourceContainer.userCredentialResource.list(user.getId(), new UserCredentialListOptions(
-                    type: 'PIN',
-                    active: true
-            )).syncThen { Results<UserCredential> results ->
-                if (!results.items.isEmpty()) {
-                    userProfile.pin = '****'
-                }
-            }
         }.syncThen {
+            userProfile.password = '******'
+            userProfile.pin = '****'
             return userProfile
         }
     }
@@ -834,7 +820,7 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<AddReviewResponse> addReview(AddReviewRequest request) {
-        requestValidator.validateRequiredApiHeaders().validateAddReviewRequest(request)
+        requestValidator.validateRequiredApiHeaders().validateRequestBody(request)
         prepareBrowse().then { ApiContext apiContext ->
             return browseService.addReview(request, apiContext)
         }
@@ -881,25 +867,6 @@ class StoreResourceImpl implements StoreResource {
                 }
                 return Promise.pure(null)
             }
-        }.then {
-            if (paymentInstrumentId != null) {
-                Instrument target = CollectionUtils.isEmpty(billingProfile.instruments) ? null : billingProfile.instruments.find { Instrument temp ->
-                    return temp.self == paymentInstrumentId
-                }
-
-                if (target == null) {
-                    return instrumentUtils.getInstrument(user, paymentInstrumentId).then { Instrument temp ->
-                        if (temp != null) {
-                            billingProfile.instruments.add(temp)
-                        }
-
-                        return Promise.pure(null)
-                    }
-                }
-
-                return Promise.pure(null)
-            }
-            return Promise.pure(null)
         }.then {
             if (offer != null && offer.hasStoreValueItem) {
                 billingProfile.instruments.removeAll {Instrument instrument -> instrument.type == com.junbo.common.id.PIType.STOREDVALUE.name()}
@@ -1186,7 +1153,7 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure()
             }
             errorContext.fieldName = 'userProfile.password'
-            return resourceContainer.userCredentialResource.create(userId, new UserCredential(
+            return resourceContainer.userUserCredentialResource.create(userId, new UserCredential(
                     type: 'PASSWORD',
                     currentPassword: request.challengeAnswer.password,
                     value: request.userProfile.password
@@ -1200,7 +1167,7 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure()
             }
             errorContext.fieldName = 'userProfile.pin'
-            return resourceContainer.userCredentialResource.create(userId, new UserCredential(
+            return resourceContainer.userUserCredentialResource.create(userId, new UserCredential(
                     type: 'PIN',
                     currentPassword: request.challengeAnswer.password,
                     value: request.userProfile.pin
@@ -1217,7 +1184,13 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private Promise validateInstrumentForPreparePurchase(User user, PreparePurchaseRequest preparePurchaseRequest) {
-        return resourceContainer.paymentInstrumentResource.getById(preparePurchaseRequest.getInstrument()).then { PaymentInstrument pi ->
+        return resourceContainer.paymentInstrumentResource.getById(preparePurchaseRequest.getInstrument()).recover { AppErrorException e ->
+            if ((int)(e.error.httpStatusCode / 100) == 4) {
+                return Promise.pure(null)
+            } else {
+                throw e
+            }
+        }.then { PaymentInstrument pi ->
             if (pi == null || pi.userId != user.getId().getValue()) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('instrument').exception()
             }
@@ -1287,13 +1260,8 @@ class StoreResourceImpl implements StoreResource {
                     throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                 }
 
-                if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
-                    AppErrorException appError = (AppErrorException)t
-                    if (!CollectionUtils.isEmpty(appError.error.error().getDetails())
-                     && !org.springframework.util.StringUtils.isEmpty(appError.error.error().getDetails().get(0).getReason())
-                     && appError.error.error().getDetails().get(0).getReason().contains('User reaches maximum allowed retry count')) {
-                        throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-                    }
+                if (appErrorUtils.isAppError(t, ErrorCodes.Identity.MaximumLoginAttempt)) {
+                    throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                 }
 
                 appErrorUtils.throwUnknownError('purchase', t)

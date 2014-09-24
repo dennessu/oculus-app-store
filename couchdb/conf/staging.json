@@ -11,6 +11,10 @@
         {
             "roles": ["_reader", "_writer", "_design"],
             "key": "allydrotherearetallestal"
+        },
+        {
+            "roles": ["_reader"],
+            "key": "burnfericelandstookedsom"
         }
     ],
     "authdbs": {

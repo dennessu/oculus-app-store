@@ -11,7 +11,6 @@ import java.util.Map;
  * The AggregatedRatings class.
  */
 public class AggregatedRatings {
-    private String type;
 
     private Double averageRating;
 
@@ -20,14 +19,6 @@ public class AggregatedRatings {
     private Long commentsCount;
 
     private Map<Integer, Long> ratingsHistogram;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public Double getAverageRating() {
         return averageRating;

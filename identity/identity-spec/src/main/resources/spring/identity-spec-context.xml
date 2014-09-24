@@ -58,8 +58,19 @@
         <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 
+    <bean id="communicationResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.CommunicationResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
     <bean id="userTosAgreementResourceClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="userCommunicationResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserCommunicationResourceClientProxy"
           parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.identity.url}"/>
     </bean>

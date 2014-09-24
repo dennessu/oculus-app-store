@@ -7,6 +7,7 @@ package com.junbo.store.spec.model.browse.document;
 
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OfferRevisionId;
 
 import java.math.BigDecimal;
 
@@ -24,6 +25,8 @@ public class Offer {
     private String formattedDescription;
 
     private CurrencyId currency;
+
+    private OfferRevisionId currentRevision;
 
     public OfferId getSelf() {
         return self;
@@ -63,5 +66,13 @@ public class Offer {
 
     public void setCurrency(CurrencyId currency) {
         this.currency = currency;
+    }
+
+    public OfferRevisionId getCurrentRevision() {
+        return currentRevision;
+    }
+
+    public void setCurrentRevision(OfferRevisionId currentRevision) {
+        this.currentRevision = currentRevision;
     }
 }

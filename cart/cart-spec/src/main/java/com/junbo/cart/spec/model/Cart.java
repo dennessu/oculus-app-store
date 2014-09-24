@@ -12,6 +12,7 @@ import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CartId;
 import com.junbo.common.id.CouponId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.id.util.ResourcePathPlaceHolderAware;
 import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -25,7 +26,7 @@ import java.util.List;
 /**
  * Created by fzhang@wan-san.com on 14-1-17.
  */
-public class Cart extends ResourceMeta<CartId> {
+public class Cart extends ResourceMeta<CartId> implements ResourcePathPlaceHolderAware {
 
     @ApiModelProperty(required = true, position = 1, value = "[Client Immutable] The shopping cart ID.")
     @JsonProperty("self")
@@ -115,5 +116,11 @@ public class Cart extends ResourceMeta<CartId> {
 
     public void setCoupons(List<CouponId> coupons) {
         this.coupons = coupons;
+    }
+
+    public void resolveResourcePathPlaceHolders() {
+        if (id != null) {
+            id.getResourcePathPlaceHolder().put("userId", this.user);
+        }
     }
 }

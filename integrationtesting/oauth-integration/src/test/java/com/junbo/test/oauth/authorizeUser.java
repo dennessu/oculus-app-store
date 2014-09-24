@@ -13,6 +13,7 @@ import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.*;
+import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
 import com.junbo.test.identity.IdentityModel;
@@ -77,6 +78,44 @@ public class authorizeUser {
                 ((UserLoginName) JsonHelper.JsonNodeToObject(storedUPI.getValue(), UserLoginName.class)).getUserName());
     }
 
+    @Property(environment = "release")
+    @Test(groups = "ppe/prod")
+    public void authorizeUserRoute() throws Exception {
+        if (Oauth.DefaultOauthSecondaryEndpoint == null) return;
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAfterRegisterUser);
+        String authCode = Oauth.GetAuthCodeAfterRegisterUser(cid);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetAccessTokenByAuthCode);
+        String accessToken = Oauth.GetAccessToken(authCode, Oauth.DefaultOauthSecondaryEndpoint + "/oauth2/token");
+        Oauth.StartLoggingAPISample(Oauth.MessageGetTokenInfoByAccessToken);
+        TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken, Oauth.DefaultOauthSecondaryEndpoint + "/oauth2/tokeninfo");
+        Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
+        Validator.Validate("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
+
+    }
+
     @Test(groups = "bvt")
     public void userSSO() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
@@ -124,7 +163,7 @@ public class authorizeUser {
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, input.getUsername(), "radiant555");
+        String loginResponseLink = Oauth.UserLogin(cid, input.getEmail(), "radiant555");
         String access_Token = Oauth.GetLoginAccessToken(loginResponseLink);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(access_Token);
         Validator.Validate("Validate UserId same", output.getUserId(), tokenInfo.getSub());
@@ -159,7 +198,7 @@ public class authorizeUser {
         cid = Oauth.GetLoginCid();
         currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, userName, null);
+        String loginResponseLink = Oauth.UserLogin(cid, email, null);
         String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
     }
@@ -196,7 +235,7 @@ public class authorizeUser {
         cid = Oauth.GetLoginCid();
         currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, userName, null);
+        String loginResponseLink = Oauth.UserLogin(cid, email, null);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
@@ -220,7 +259,7 @@ public class authorizeUser {
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, "allEnvLoginUser", Oauth.DefaultUserPwd);
+        String loginResponseLink = Oauth.UserLogin(cid, "silkcloudtest+allEnvLoginUser@gmail.com", Oauth.DefaultUserPwd);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
@@ -228,6 +267,101 @@ public class authorizeUser {
         //Oauth.UserLogin(cid, RandomHelper.randomAlphabetic(10), "Welcome123");
         //String idToken = Oauth.GetLoginUser(loginResponseLink);
         //Oauth.Logout(idToken);
+    }
+
+    @Property(environment = "release")
+    @Test(groups = "ppe/prod")
+    public void accessTokenRoute() throws Exception {
+        if (Oauth.DefaultOauthEndpoint.contains("http://localhost:8080")) return;
+        String secondaryDcEndpoint = ConfigHelper.getSetting("secondaryDcEndpoint");
+        if (secondaryDcEndpoint == null) return;
+        String cid = Oauth.GetLoginCid();
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        String loginResponseLink = Oauth.UserLogin(cid, "silkcloudtest+allEnvLoginUser@gmail.com", Oauth.DefaultUserPwd);
+        String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
+        TokenInfo tokenInfo = HttpclientHelper.SimpleGet(secondaryDcEndpoint + "/oauth2/tokeninfo?access_token=" + accessToken, TokenInfo.class);
+        Validator.Validate("validate getting token from another dc", true, tokenInfo != null);
+    }
+
+    @Property(environment = "release")
+    @Test(groups = "ppe/prod")
+    public void verifyEmailRoute() throws Exception {
+        if (Oauth.DefaultOauthSecondaryEndpoint == null) return;
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, false, false);
+        Oauth.VerifyEmail(cid, Oauth.DefaultOauthSecondaryEndpoint);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
+
+    }
+
+    @Property(environment = "release")
+    @Test(groups = "ppe/prod")
+    public void resetPasswordRoute() throws Exception {
+        if (Oauth.DefaultOauthSecondaryEndpoint == null) return;
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
+
+        HttpclientHelper.ResetHttpClient();
+        String newPassword = "ASDFqwer1234";
+        // set identity authorization header
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
+        UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
+        String resetPasswordLink = Oauth.PostResetPassword(
+                Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        LogHelper logHelper = new LogHelper(authorizeUser.class);
+        logHelper.logInfo("reset password link: "+ resetPasswordLink);
+        String resetPasswordCid = Oauth.GetResetPasswordCid(resetPasswordLink);
+        Oauth.GetResetPasswordView(resetPasswordCid);
+        Oauth.PostResetPasswordWithNewPassword(resetPasswordCid, newPassword);
+
+        HttpclientHelper.ResetHttpClient();
+        cid = Oauth.GetLoginCid();
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        String loginResponseLink = Oauth.UserLogin(cid, email, newPassword, Oauth.DefaultOauthSecondaryEndpoint + "/oauth2/authorize");
+        String idToken = Oauth.GetLoginUser(loginResponseLink, Oauth.DefaultOauthSecondaryEndpoint).get(Oauth.DefaultFNIdToken);
+        Oauth.Logout(idToken);
+
     }
 
     @Test(groups = "dailies")
@@ -270,7 +404,7 @@ public class authorizeUser {
         cid = Oauth.GetLoginCid();
         currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, userName, newPassword);
+        String loginResponseLink = Oauth.UserLogin(cid, email, newPassword);
         String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
     }

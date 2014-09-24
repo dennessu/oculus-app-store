@@ -5,30 +5,12 @@
 
     <diskStore path="java.io.tmpdir"/>
 
-    <cache name="store.itemdata.cache"
-           maxElementsInMemory="1000"
-           maxElementsOnDisk="0"
-           overflowToDisk="false"
-           memoryStoreEvictionPolicy="LRU"
-           eternal="false"
-           timeToLiveSeconds="1200"
-           timeToIdleSeconds="180"/>
-
-    <cache name="store.item.price.cache"
+    <cache name="store.item.sectionInfo"
            maxElementsInMemory="5000"
            maxElementsOnDisk="0"
            overflowToDisk="false"
            memoryStoreEvictionPolicy="LRU"
            eternal="false"
-           timeToLiveSeconds="600"
-           timeToIdleSeconds="180"/>
-
-    <cache name="store.item.offerlookup"
-           maxElementsInMemory="5000"
-           maxElementsOnDisk="0"
-           overflowToDisk="false"
-           memoryStoreEvictionPolicy="LRU"
-           eternal="false"
-           timeToLiveSeconds="1200"
-           timeToIdleSeconds="180"/>
+           timeToLiveSeconds="60"
+           timeToIdleSeconds="60"/>
 </ehcache>

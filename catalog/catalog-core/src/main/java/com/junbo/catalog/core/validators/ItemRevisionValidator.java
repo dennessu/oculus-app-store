@@ -7,6 +7,7 @@
 package com.junbo.catalog.core.validators;
 
 import com.google.common.base.Joiner;
+import com.junbo.catalog.clientproxy.OrganizationFacade;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
@@ -38,6 +39,7 @@ public class ItemRevisionValidator extends ValidationSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationSupport.class);
     private ItemRepository itemRepo;
     private ItemRevisionRepository itemRevisionRepo;
+    private OrganizationFacade organizationFacade;
     private static final List<String> ALL_STATUS = Arrays.asList("DRAFT", "PENDING_REVIEW", "APPROVED", "REJECTED");
 
     @Required
@@ -48,6 +50,11 @@ public class ItemRevisionValidator extends ValidationSupport {
     @Required
     public void setItemRevisionRepo(ItemRevisionRepository itemRevisionRepo) {
         this.itemRevisionRepo = itemRevisionRepo;
+    }
+
+    @Required
+    public void setOrganizationFacade(OrganizationFacade organizationFacade) {
+        this.organizationFacade = organizationFacade;
     }
 
     public void validateFull(ItemRevision revision, ItemRevision oldRevision) {
@@ -67,7 +74,7 @@ public class ItemRevisionValidator extends ValidationSupport {
         validateSupportedInputDevices(revision.getSupportedInputDevices(), errors);
         validatePackageName(revision.getPackageName(), revision.getItemId(), errors);
         validateLocales(revision.getLocales(), errors);
-        validateCountryCodes("countries", revision.getCountries().keySet(), errors);
+        validateCountryCodes("regions", revision.getCountries().keySet(), errors);
 
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
 
@@ -86,7 +93,11 @@ public class ItemRevisionValidator extends ValidationSupport {
         validateFieldNull("createdTime", revision.getCreatedTime(), errors);
         validateFieldNull("updatedTime", revision.getUpdatedTime(), errors);
         validateFieldNull("localeAccuracy", revision.getLocaleAccuracy(), errors);
-        validateFieldNotNull("developer", revision.getOwnerId(), errors);
+        if(validateFieldNotNull("developer", revision.getOwnerId(), errors)) {
+            if (organizationFacade.getOrganization(revision.getOwnerId()) == null) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("developer", "Cannot find organization " + Utils.encodeId(revision.getOwnerId())));
+            }
+        }
         validateFieldMatch("status", revision.getStatus(), Status.DRAFT.name(), errors);
         validateItem(revision, errors);
 
@@ -111,7 +122,11 @@ public class ItemRevisionValidator extends ValidationSupport {
         validateNotWritable("self", revision.getRevisionId(), oldRevision.getRevisionId(), errors);
         validateNotWritable("rev", revision.getRev(), oldRevision.getRev(), errors);
         validateStatus(revision.getStatus(), errors);
-        validateNotWritable("developer", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors);
+        if (validateNotWritable("developer", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors)) {
+            if (organizationFacade.getOrganization(revision.getOwnerId()) == null) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("developer", "Cannot find organization " + Utils.encodeId(revision.getOwnerId())));
+            }
+        }
         validateItem(revision, errors);
 
         validatePlatforms(revision.getPlatforms(), errors);

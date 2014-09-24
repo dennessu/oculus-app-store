@@ -303,8 +303,8 @@ class BootstrapPlugin implements Plugin<Project> {
         rootProject.apply plugin: "sonar-runner"
         rootProject.sonarRunner {
             sonarProperties {
-                property "sonar.host.url", "http://sonar.wansan.internal:9000"
-                property "sonar.jdbc.url", "jdbc:mysql://sonar.wansan.internal:3306/sonar"
+                property "sonar.host.url", "http://10.0.0.117:9000"
+                property "sonar.jdbc.url", "jdbc:mysql://10.0.0.117:3306/sonar"
                 property "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
                 property "sonar.jdbc.username", "root"
                 property "sonar.jdbc.password", ""

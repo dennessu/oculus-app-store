@@ -57,7 +57,7 @@ class WebPaymentCallbackAction extends BaseOrderEventAwareAction {
                     return facadeContainer.paymentFacade.postPaymentProperties(data).recover {
                         Throwable throwable ->
                             LOGGER.error('name=Post_Payment_Callback_Error', throwable)
-                            throw AppErrors.INSTANCE.paymentConnectionError().exception()
+                            throw throwable
                     }.then {
                         LOGGER.info('name=Post_Payment_Callback, order event map=' + eventMap)
                         return Promise.pure(null)

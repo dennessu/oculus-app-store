@@ -18,5 +18,5 @@ public interface OrganizationService {
     Organization postDefaultOrganization(String userId) throws Exception;
     Organization postOrganization(Organization organization) throws Exception;
     Organization postOrganization(Organization organization, int expectedResponseCode) throws Exception;
-    Organization getOrganization(OrganizationId organizationId) throws Exception;
+    Organization getOrganization(OrganizationId organizationId, int expectedResponseCode) throws Exception;
 }

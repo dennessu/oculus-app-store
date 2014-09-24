@@ -5,21 +5,28 @@
  */
 package com.junbo.oauth.db.generator.impl;
 
+import com.junbo.common.error.AppCommonErrors;
+import com.junbo.common.util.UUIDUtils;
 import com.junbo.configuration.topo.DataCenters;
 import com.junbo.oauth.db.generator.TokenGenerator;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
  * Javadoc.
  */
 public class SecureRandomTokenGenerator implements TokenGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecureRandomTokenGenerator.class);
 
     private static final Pattern DEFAULT_CODEC_PATTERN = Pattern.compile("[0-9A-Za-z=\\-~]+");
 
@@ -42,6 +49,8 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
     private int emailVerifyCodeLength;
     private int resetPasswordCodeLength;
+
+    private int currentDc = DataCenters.instance().currentDataCenterId();
 
     @Required
     public void setAuthorizationCodeLength(int authorizationCodeLength) {
@@ -99,23 +108,20 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     }
 
     private String generate(int length) {
-        byte[] bytes = new byte[length];
-        random.nextBytes(bytes);
-
-        return Base64.encodeBase64URLSafeString(bytes).replace('_', '~');
+        return generateWithDc(length, null);
     }
 
     private String generateWithDc(int length, Long userId) {
-        byte currentDcByte = (byte)(DataCenters.instance().currentDataCenterId());
+        byte currentDcByte = (byte)currentDc;
         byte userDcByte;
 
-        if (userId == 0L) {
+        if (userId == null || userId == 0L) {
             userDcByte = currentDcByte;
         } else {
             userDcByte = (byte)((userId >> 2) & 0xF);
         }
 
-        byte dcByte = (byte)(currentDcByte << 4 + userDcByte);
+        byte dcByte = (byte)((currentDcByte << 4) + userDcByte);
 
         byte[] bytes = new byte[length];
         random.nextBytes(bytes);
@@ -129,17 +135,17 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
     @Override
     public String generateLoginStateId() {
-        return UUID.randomUUID().toString();
+        return UUIDUtils.randomUUIDwithDC().toString();
     }
 
     @Override
     public String generateSessionStateId() {
-        return UUID.randomUUID().toString();
+        return UUIDUtils.randomUUIDwithDC().toString();
     }
 
     @Override
-    public String generateAuthorizationCode() {
-        return generate(authorizationCodeLength);
+    public String generateAuthorizationCode(Long userId) {
+        return generateWithDc(authorizationCodeLength, userId);
     }
 
     @Override
@@ -180,6 +186,20 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     @Override
     public String generateSalt() {
         return generate(saltLength);
+    }
+
+    @Override
+    public String hashKey(String key) {
+        try {
+            // MessageDigest is not thread safe, always create new instance per usage.
+            // getInstance is not that expensive.
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            return Hex.encodeHexString(md.digest(key.getBytes()));
+        } catch (NoSuchAlgorithmException e) {
+            LOGGER.error("Error happened while hashing the key", e);
+            throw AppCommonErrors.INSTANCE.internalServerError(e).exception();
+        }
     }
 
     @Override
@@ -225,5 +245,29 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
         Assert.notNull(codeValue);
 
         return DEFAULT_CODEC_PATTERN.matcher(codeValue).matches();
+    }
+
+    @Override
+    public int getTokenDc(String token) {
+        try {
+            byte[] originalBytes = Base64.decodeBase64(token.replace("~", "_"));
+            byte dcByte = originalBytes[originalBytes.length - 1];
+            return dcByte >> 4;
+        } catch (Exception ex) {
+            LOGGER.warn("Failed to get DC from token: {}", token);
+            return currentDc;
+        }
+    }
+
+    @Override
+    public int getTokenUserDc(String token) {
+        try {
+            byte[] originalBytes = Base64.decodeBase64(token.replace("~", "_"));
+            byte dcByte = originalBytes[originalBytes.length - 1];
+            return dcByte & 0xF;
+        } catch (Exception ex) {
+            LOGGER.warn("Failed to get user DC from token: {}", token);
+            return currentDc;
+        }
     }
 }

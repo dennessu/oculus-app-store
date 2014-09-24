@@ -39,6 +39,24 @@
                 ],
                 "scriptType": "SPEL"
             }
+        ],
+        "catalog.admin": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "catalog.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            }
         ]
     }
 }

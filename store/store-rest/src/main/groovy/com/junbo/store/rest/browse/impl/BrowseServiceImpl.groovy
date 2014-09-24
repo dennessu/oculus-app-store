@@ -7,12 +7,8 @@ import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
-import com.junbo.common.id.util.IdUtil
-import com.junbo.common.model.Link
 import com.junbo.common.model.Results
 import com.junbo.entitlement.spec.model.*
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.priceRating.RatingItem
 import com.junbo.store.clientproxy.FacadeContainer
@@ -22,19 +18,22 @@ import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.CatalogUtils
+import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.*
-import com.junbo.store.spec.model.external.casey.CaseyLink
+import com.junbo.store.spec.model.browse.document.Item
+import com.junbo.store.spec.model.browse.document.Review
+import com.junbo.store.spec.model.browse.document.SectionInfo
+import com.junbo.store.spec.model.browse.document.SectionInfoNode
 import com.junbo.store.spec.model.external.casey.CaseyResults
-import com.junbo.store.spec.model.external.casey.CaseyReview
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
@@ -66,22 +65,30 @@ class BrowseServiceImpl implements BrowseService {
     @Resource(name = 'storeSectionService')
     private SectionService sectionService
 
+    @Resource(name = 'storeLocaleUtils')
+    private LocaleUtils localeUtils
+
+    @Resource(name = 'storeReviewValidator')
+    private ReviewValidator reviewValidator
+
+    private Set<String> libraryItemTypes = [
+            ItemType.APP.name()
+    ] as Set
+
     @Override
-    Promise<Item> getItem(ItemId itemId, boolean checkAvailable, boolean includeDetails, ApiContext apiContext) {
+    Promise<Item> getItem(ItemId itemId, boolean useSearch, boolean includeDetails, ApiContext apiContext) {
         Promise.pure().then {
-            if (!checkAvailable) {
-                return Promise.pure()
+            if (!useSearch) {
+                return facadeContainer.catalogFacade.getItem(itemId, apiContext)
             }
-            facadeContainer.caseyFacade.itemAvailable(itemId, apiContext).then { Boolean available ->
-                if (!available) {
+            facadeContainer.caseyFacade.search(itemId, apiContext).then { CaseyResults<Item> results ->
+                if (CollectionUtils.isEmpty(results?.items)) {
                     throw AppCommonErrors.INSTANCE.resourceNotFound('Item', itemId).exception()
                 }
-                return Promise.pure()
+                return Promise.pure(results.items[0])
             }
-        }.then {
-            facadeContainer.catalogFacade.getItem(itemId, apiContext).then { Item item ->
-                decorateItem(true, includeDetails, apiContext, item)
-            }
+        }.then { Item item ->
+            decorateItem(true, includeDetails, apiContext, item)
         }
     }
 
@@ -151,7 +158,7 @@ class BrowseServiceImpl implements BrowseService {
                         return Promise.pure()
                     }
                     itemIdSet << entitlement.itemId
-                    getAppItemFromEntitlement(entitlement, apiContext).then { Item item ->
+                    getLibraryItemFromEntitlement(entitlement, apiContext).then { Item item ->
                         if (item != null) {
                             result.items << item
                         }
@@ -175,7 +182,10 @@ class BrowseServiceImpl implements BrowseService {
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request, ApiContext apiContext) {
         ItemRevision itemRevision
         DeliveryResponse result = new DeliveryResponse()
-        facadeContainer.catalogFacade.getAppItemRevision(request.itemId, request.desiredVersionCode).then { ItemRevision e ->
+        facadeContainer.catalogFacade.getAppItemRevision(request.itemId, request.desiredVersionCode, apiContext).then { ItemRevision e ->
+            if (e == null) {
+                throw AppErrors.INSTANCE.itemVersionCodeNotFound().exception()
+            }
             itemRevision = e
             return resourceContainer.downloadUrlResource.getDownloadUrl(request.itemId, new DownloadUrlGetOptions(itemRevisionId: e.getRevisionId(), platform: apiContext.platform.value)).then { DownloadUrlResponse response ->
                 result.downloadUrl = response.redirectUrl
@@ -194,34 +204,9 @@ class BrowseServiceImpl implements BrowseService {
 
     @Override
     Promise<AddReviewResponse> addReview(AddReviewRequest request, ApiContext apiContext) {
-        CaseyReview review = new CaseyReview(
-                reviewTitle: request.title,
-                review: request.content,
-                resourceType: 'item',
-                resource: new CaseyLink(
-                        id: request.itemId.value,
-                        href: IdUtil.toHref(request.itemId)
-                )
-        )
-
-        review.ratings = []
-        for (String type : request.starRatings.keySet()) {
-            review.ratings << new CaseyReview.Rating(type: type, score: request.starRatings[type])
-        }
-
-        return resourceContainer.caseyReviewResource.addReview(review).then { CaseyReview newReview ->
-            return resourceContainer.userResource.get(apiContext.user, new UserGetOptions()).then { User user ->
-                return new AddReviewResponse(
-                        review: new Review(
-                                self: new Link(id: newReview.self.id, href: newReview.self.href),
-                                authorName: user.nickName,
-                                deviceName: apiContext.androidId,
-                                title: newReview.reviewTitle,
-                                content: newReview.review,
-                                starRatings: request.starRatings,
-                                timestamp: newReview.postedDate
-                        )
-                )
+        reviewValidator.validateAddReview(request, apiContext).then {
+            return facadeContainer.caseyFacade.addReview(request, apiContext).then { Review review ->
+                return Promise.pure(new AddReviewResponse(review: review))
             }
         }
     }
@@ -266,12 +251,12 @@ class BrowseServiceImpl implements BrowseService {
         return null
     }
 
-    private Promise<Item> getAppItemFromEntitlement(Entitlement entitlement, ApiContext apiContext) {
+    private Promise<Item> getLibraryItemFromEntitlement(Entitlement entitlement, ApiContext apiContext) {
         resourceContainer.itemResource.getItem(entitlement.itemId).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
-            if (catalogItem.type != ItemType.APP.name()) {
+            if (!libraryItemTypes.contains(catalogItem.type)) {
                 return Promise.pure(null)
             }
-            getItem(new ItemId(catalogItem.getItemId()), false, false, apiContext).then { Item item ->
+            getItem(new ItemId(entitlement.itemId), false, false, apiContext).then { Item item ->
                 item.ownedByCurrentUser = true
                 return Promise.pure(item)
             }
@@ -281,16 +266,24 @@ class BrowseServiceImpl implements BrowseService {
     private SectionInfoNode buildSectionInfoNodeForResponse(SectionInfoNode rawNode, boolean recursive, ApiContext apiContext) {
         SectionInfoNode sectionInfoNode = new SectionInfoNode()
         if (rawNode.sectionType == SectionInfoNode.SectionType.CategorySection) {
-            OfferAttribute offerAttribute = facadeContainer.catalogFacade.getOfferAttribute(rawNode?.categoryId, apiContext).get()
-            SimpleLocaleProperties simpleLocaleProperties = offerAttribute?.locales?.get(apiContext.locale.getId().value)
-            sectionInfoNode.name = simpleLocaleProperties?.name
+            if (rawNode?.categoryId != null) {
+                OfferAttribute offerAttribute = facadeContainer.catalogFacade.getOfferAttribute(rawNode?.categoryId, apiContext).get()
+                SimpleLocaleProperties simpleLocaleProperties = offerAttribute?.locales?.get(apiContext.locale.getId().value)
+                sectionInfoNode.name = simpleLocaleProperties?.name
+            }
         } else {
-            sectionInfoNode.name = rawNode.name
+            Assert.isTrue(rawNode.sectionType == SectionInfoNode.SectionType.CmsSection)
+            sectionInfoNode.name = localeUtils.getLocaleProperties(rawNode.cmsNames, apiContext.locale) as String
+            if (sectionInfoNode.name == null) {
+                sectionInfoNode.name = rawNode.name
+            }
         }
         sectionInfoNode.category = rawNode.category
         sectionInfoNode.criteria = rawNode.criteria
         sectionInfoNode.children = []
-
+        if (sectionInfoNode.name == null) {
+            sectionInfoNode.name = StringUtils.isEmpty(sectionInfoNode.category) ? sectionInfoNode.criteria :  sectionInfoNode.category
+        }
         if (recursive) {
             sectionInfoNode.children = rawNode.children.collect { SectionInfoNode e ->
                 return buildSectionInfoNodeForResponse(e, recursive, apiContext)
@@ -301,7 +294,7 @@ class BrowseServiceImpl implements BrowseService {
 
     private Promise<Item> decorateItem(boolean ratePrice, boolean includeDetails, ApiContext apiContext, Item item) {
         Promise.pure().then {
-            if (!ratePrice && item?.offer != null) {
+            if (!ratePrice || item?.offer == null) {
                 return Promise.pure()
             }
             facadeContainer.priceRatingFacade.rateOffer(item.offer.self, apiContext).then { RatingItem ratingItem ->

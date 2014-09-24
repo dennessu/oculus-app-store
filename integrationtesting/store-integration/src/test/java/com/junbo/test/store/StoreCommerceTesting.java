@@ -33,6 +33,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -102,7 +103,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store commerce",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test add new credit card with invalid billing address",
             steps = {
                     "1. Create user",
@@ -359,7 +360,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
 
-        AuthTokenResponse signInResponse = testDataProvider.signIn(userName);
+        AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
 
@@ -522,7 +523,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert preparePurchaseResponse.getChallenge() != null;
         assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false, 412);
+        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false, 400);
         assert preparePurchaseResponse == null;
     }
 
@@ -742,7 +743,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
 
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
         String offerId;
         if (offer_iap_free.toLowerCase().contains("test")) {
@@ -786,7 +787,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
 
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
         String offerId;
         if (offer_iap_free.toLowerCase().contains("test")) {
@@ -808,7 +809,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
         String country = "JP";
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
         TestContext.getData().putHeader("oculus-geoip-country-code", "JP");
 
         String offerId;
@@ -824,7 +825,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         }
 
         Master.getInstance().setCurrentUid(IdFormatter.encodeId(authTokenResponse.getUserId()));
-        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()), testDataProvider.getUserAccessToken(createUserRequest.getUsername(), createUserRequest.getPassword()));
+        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()),
+                testDataProvider.getUserAccessToken(URLEncoder.encode(createUserRequest.getEmail(), "UTF-8"), createUserRequest.getPassword()));
 
         Order order = testDataProvider.getOrder(response.getOrder());
         Assert.assertEquals(order.getCountry(), new CountryId(country));
@@ -835,7 +837,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
         TestContext.getData().putHeader("oculus-geoip-country-code", "JPA");
 
         String offerId;
@@ -851,7 +853,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         }
 
         Master.getInstance().setCurrentUid(IdFormatter.encodeId(authTokenResponse.getUserId()));
-        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()), testDataProvider.getUserAccessToken(createUserRequest.getUsername(), createUserRequest.getPassword()));
+        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()),
+                testDataProvider.getUserAccessToken(URLEncoder.encode(createUserRequest.getEmail(), "UTF-8"), createUserRequest.getPassword()));
 
         Order order = testDataProvider.getOrder(response.getOrder());
         Assert.assertEquals(order.getCountry(), new CountryId("US"));
@@ -912,7 +915,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         testDataProvider.postPayment(uid, creditCardInfo);
 
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(userInfo.getEmails().get(0));
         BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
 
         assert response.getBillingProfile().getInstruments().size() == 1;
@@ -938,7 +941,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
         assert libraryResponse.getItems().size() == 0;

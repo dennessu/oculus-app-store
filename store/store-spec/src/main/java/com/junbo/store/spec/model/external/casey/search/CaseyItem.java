@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.common.RevisionNotes;
 import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.SupportedLocale;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.ItemRevisionId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 
@@ -29,12 +30,14 @@ public class CaseyItem extends BaseCaseyModel {
     private Map<String, SupportedLocale> supportedLocales;
     private List<CatalogAttribute> genres;
     private RevisionNotes releaseNotes;
+    private CaseyRating qualityRating;
     private String name;
     private String longDescription;
     private String supportEmail;
     private String website;
     private String communityForumLink;
     private Images images;
+    private ItemRevisionId currentRevision;
 
     public ItemId getSelf() {
         return self;
@@ -100,6 +103,14 @@ public class CaseyItem extends BaseCaseyModel {
         this.releaseNotes = releaseNotes;
     }
 
+    public CaseyRating getQualityRating() {
+        return qualityRating;
+    }
+
+    public void setQualityRating(CaseyRating qualityRating) {
+        this.qualityRating = qualityRating;
+    }
+
     public String getName() {
         return name;
     }
@@ -146,5 +157,13 @@ public class CaseyItem extends BaseCaseyModel {
 
     public void setImages(Images images) {
         this.images = images;
+    }
+
+    public ItemRevisionId getCurrentRevision() {
+        return currentRevision;
+    }
+
+    public void setCurrentRevision(ItemRevisionId currentRevision) {
+        this.currentRevision = currentRevision;
     }
 }

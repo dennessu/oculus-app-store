@@ -10,8 +10,7 @@ import org.slf4j.MDC;
 import javax.annotation.Priority;
 import javax.ws.rs.container.*;
 import java.io.IOException;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 /**
  * SequenceIdFilter.
@@ -20,9 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Priority(Integer.MIN_VALUE)
 public class SequenceIdFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
-    public static final String X_REQUEST_ID = "X-Request-Id";
-
-    private final AtomicInteger sequenceId = new AtomicInteger(new Random().nextInt());
+    public static final String X_REQUEST_ID = "oculus-request-id";
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -30,7 +27,7 @@ public class SequenceIdFilter implements ContainerRequestFilter, ContainerRespon
         String requestId = requestContext.getHeaders().getFirst(X_REQUEST_ID);
 
         if (requestId == null) {
-            requestId = Integer.toHexString(sequenceId.getAndIncrement());
+            requestId = UUID.randomUUID().toString();
             requestContext.getHeaders().putSingle(X_REQUEST_ID, requestId);
         }
         MDC.put(X_REQUEST_ID, requestId);

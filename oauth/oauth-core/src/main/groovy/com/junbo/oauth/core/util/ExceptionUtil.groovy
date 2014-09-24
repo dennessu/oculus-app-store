@@ -8,7 +8,7 @@ package com.junbo.oauth.core.util
 import com.junbo.common.error.AppError
 import com.junbo.common.error.AppErrorException
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

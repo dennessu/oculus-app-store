@@ -547,6 +547,13 @@
           }
       }
     },
+    "facebook_payment_account_mapping": {
+        "views": {
+            "by_user_id": {
+                "map": "function(doc) {  emit(doc.userId, doc._id)}"
+            }
+        }
+    },
     "iap_consumption": {},
     "wallet_lot_transaction": {
         "views": {
@@ -652,7 +659,7 @@
     "entitlement": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('userId', doc.userId);index('isDeleted', doc.isDeleted);index('type', doc.type);index('isBanned', doc.isBanned);index('itemId', doc.itemId);if (doc.useCount) index('useCount', doc.useCount);index('grantTime', doc.grantTime);if (doc.expirationTime) index('expirationTime', doc.expirationTime);index('updatedTime', doc.updatedTime || doc.createdTime);}"
+          "index": "function(doc) {index('userId', doc.userId);index('isDeleted', doc.isDeleted);index('type', doc.type);index('isBanned', doc.isBanned);index('itemId', doc.itemId);index('useCount', doc.useCount);index('grantTime', doc.grantTime);index('expirationTime', doc.expirationTime);index('updatedTime', doc.updatedTime || doc.createdTime);}"
         }
       }, 
       "views": {

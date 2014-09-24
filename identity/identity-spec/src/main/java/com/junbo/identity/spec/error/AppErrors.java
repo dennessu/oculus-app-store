@@ -172,4 +172,12 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "138", message = "ErrorInfo Not Found",
             field = "errorIdentifier", reason = "ErrorInfo with ID {0} is not found")
     AppError errorInfoNotFound(ErrorIdentifier errorIdentifier);
+
+    @ErrorDef(httpStatusCode = 429, code = "139", message = "User reaches maximum login attempts",
+            field = "username", reason = "User reaches maximum login attempts")
+    AppError maximumLoginAttempt();
+
+    @ErrorDef(httpStatusCode = 412, code = "140", message = "Age restriction error",
+            field = "dob", reason = "Age restriction error")
+    AppError ageRestrictionError();
 }

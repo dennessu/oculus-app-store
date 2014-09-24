@@ -12,7 +12,7 @@
     <tx:annotation-driven />
 
     <!--Data source has the database information -->
-    <bean id="billingDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="billingDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${billing.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/billing"/>
         <property name="className" value="${billing.db.driverClassName}"/>

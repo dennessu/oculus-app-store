@@ -8,6 +8,7 @@ package com.junbo.store.spec.model.login;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.store.spec.model.Challenge;
+import com.junbo.store.spec.model.identity.StoreUserEmail;
 
 /**
  * The AuthTokenResponse class.
@@ -20,6 +21,8 @@ public class AuthTokenResponse {
     private UserId userId;
 
     private String username;
+
+    private StoreUserEmail email;
 
     private String accessToken;
 
@@ -49,6 +52,14 @@ public class AuthTokenResponse {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public StoreUserEmail getEmail() {
+        return email;
+    }
+
+    public void setEmail(StoreUserEmail email) {
+        this.email = email;
     }
 
     public String getAccessToken() {

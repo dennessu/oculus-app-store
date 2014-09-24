@@ -7,6 +7,7 @@
 package com.junbo.payment.db.mapper;
 
 import com.junbo.common.util.EnumRegistry;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
 import com.junbo.payment.spec.enums.*;
@@ -26,7 +27,7 @@ public class CommonMapper {
     private PaymentProviderRepository paymentProviderRepository;
 
     public Long fromStringToLong(String source) {
-        return source == null ? null : Long.parseLong(source);
+        return CommonUtil.isNullOrEmpty(source) ? null : Long.parseLong(source);
     }
 
     public String fromLongToString(Long source) {

@@ -13,6 +13,5 @@ integration-buyerscenario
 integration-catalogscenario
 integration-csrscenario
 token-integration
-commerce-integration
 store-integration
 ui-integration

@@ -47,27 +47,29 @@ public class postCredentialAttempts {
 
     @Test(groups = "bvt")
     public void postUserCredentitalAttempts() throws Exception {
-        User user = Identity.UserPostDefault();
+        String email = RandomHelper.randomEmail();
+        User user = Identity.UserPostDefaultWithMail(15, email);
         String password = IdentityModel.DefaultPassword();
         Identity.UserCredentialPostDefault(user.getId(), null, password);
         UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
         UserLoginName loginName = (UserLoginName) JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), UserLoginName.class);
-        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password);
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(email, password);
         Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
     }
 
     @Test(groups = "dailies")
     public void postUserCredentitalAttemptsMaxRetrySameUser() throws Exception {
-        User user = Identity.UserPostDefault();
+        String email = RandomHelper.randomEmail();
+        User user = Identity.UserPostDefaultWithMail(15, email);
         String password = IdentityModel.DefaultPassword();
         Identity.UserCredentialPostDefault(user.getId(), null, password);
 
         String newPassword = IdentityModel.DefaultPassword();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
             UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
-                    loginName.getUserName(), newPassword, false);
+                    email, newPassword, false);
             Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
             String errorMessage = "User Password Incorrect";
             Validator.Validate("validate response error message", true,
@@ -78,9 +80,9 @@ public class postCredentialAttempts {
         UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
         UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
-                loginName.getUserName(), newPassword, false);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "User reaches maximum allowed retry count";
+                email, newPassword, false);
+        Validator.Validate("validate response error code", 429, response.getStatusLine().getStatusCode());
+        String errorMessage = "User reaches maximum login attempts";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
@@ -91,16 +93,16 @@ public class postCredentialAttempts {
         String ip = RandomHelper.randomIP();
         for (int i = 0; i < 101; i++) {
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
-                    RandomHelper.randomAlphabetic(15), IdentityModel.DefaultPassword(), ip, false);
+                    RandomHelper.randomEmail(), IdentityModel.DefaultPassword(), ip, false);
             if (i < 100) {
                 Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
             }
             response.close();
         }
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
-                RandomHelper.randomAlphabetic(15), IdentityModel.DefaultPassword(), ip, false);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "User reaches maximum login attempt";
+                RandomHelper.randomEmail(), IdentityModel.DefaultPassword(), ip, false);
+        Validator.Validate("validate response error code", 429, response.getStatusLine().getStatusCode());
+        String errorMessage = "User reaches maximum login attempts";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
@@ -108,7 +110,7 @@ public class postCredentialAttempts {
         ip = "0.0.0.0";
         for (int i = 0; i<101; i++) {
             response = Identity.UserCredentialAttemptesPostDefault(
-                    RandomHelper.randomAlphabetic(15), IdentityModel.DefaultPassword(), ip, false);
+                    RandomHelper.randomEmail(), IdentityModel.DefaultPassword(), ip, false);
             if (i < 100) {
                 Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
             }
@@ -116,7 +118,7 @@ public class postCredentialAttempts {
         }
 
         response = Identity.UserCredentialAttemptesPostDefault(
-                RandomHelper.randomAlphabetic(15), IdentityModel.DefaultPassword(), ip, false);
+                RandomHelper.randomEmail(), IdentityModel.DefaultPassword(), ip, false);
         errorMessage = "User Name Not Found";
         Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
         Validator.Validate("validate response error message", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
@@ -142,8 +144,8 @@ public class postCredentialAttempts {
             response.close();
         }
         response = Identity.UserCredentialAttemptesPostDefault(email, password, ip, false);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "User reaches maximum login attempt";
+        Validator.Validate("validate response error code", 429, response.getStatusLine().getStatusCode());
+        String errorMessage = "User reaches maximum login attempts";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
@@ -163,14 +165,15 @@ public class postCredentialAttempts {
     // https://oculus.atlassian.net/browse/SER-436
     // We will force a password change for a username change
     public void testPasswordNotInUsername() throws Exception {
-        User postedUser = Identity.UserPostDefault(5);
+        String email = RandomHelper.randomEmail();
+        User postedUser = Identity.UserPostDefaultWithMail(5, email);
         String password = RandomHelper.randomAlphabetic(3).toLowerCase() +
                 RandomHelper.randomNumeric(3) +
                 RandomHelper.randomAlphabetic(3).toUpperCase();
         Identity.UserCredentialPostDefault(postedUser.getId(), null, password);
         UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(postedUser.getUsername());
         UserLoginName loginName = (UserLoginName) JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), UserLoginName.class);
-        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password);
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(email, password);
         Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
         response.close();
 
@@ -189,7 +192,7 @@ public class postCredentialAttempts {
         password = IdentityModel.DefaultPassword();
         response = Identity.UserCredentialPostDefault(postedUser.getId(), null, password);
         response.close();
-        response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password);
+        response = Identity.UserCredentialAttemptesPostDefault(email, password);
         response.close();
 
         // change username, all credential should be invalid.
@@ -201,7 +204,7 @@ public class postCredentialAttempts {
         userPersonalInfo = Identity.UserPersonalInfoPost(postedUser.getId(), userPersonalInfo);
         postedUser.setUsername(userPersonalInfo.getId());
         User updatedUser = Identity.UserPut(postedUser);
-        UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(loginName.getUserName(), password);
+        UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, password);
         response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
@@ -212,7 +215,7 @@ public class postCredentialAttempts {
         password = IdentityModel.DefaultPassword();
         response = Identity.UserCredentialPostDefault(postedUser.getId(), null, password);
         response.close();
-        response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password);
+        response = Identity.UserCredentialAttemptesPostDefault(email, password);
         response.close();
     }
 
@@ -221,23 +224,24 @@ public class postCredentialAttempts {
     // If the attempt fails three times in succession, it will be lockout.
     // The only way is to reset password
     public void testPasswordRetry() throws Exception {
-        User postedUser = Identity.UserPostDefault();
+        String email = RandomHelper.randomEmail();
+        User postedUser = Identity.UserPostDefaultWithMail(15, email);
         String password = IdentityModel.DefaultPassword();
         UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(postedUser.getUsername());
         UserLoginName loginName = (UserLoginName) JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), UserLoginName.class);
         CloseableHttpResponse response = Identity.UserCredentialPostDefault(postedUser.getId(), null, password);
         response.close();
 
-        response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password);
+        response = Identity.UserCredentialAttemptesPostDefault(email, password);
         response.close();
 
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        for (int i = 0; i < 4; i++) {
-            UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(loginName.getUserName(), IdentityModel.DefaultPassword());
+        for (int i = 0; i < 6; i++) {
+            UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, IdentityModel.DefaultPassword());
             response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                     JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
-            if (i < 3) {
+            if (i < 5) {
                 Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
                 String errorMessage = "User Password Incorrect";
                 Validator.Validate("validate response error message", true,
@@ -246,11 +250,11 @@ public class postCredentialAttempts {
             response.close();
         }
 
-        UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(loginName.getUserName(), password);
+        UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, password);
         response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "User reaches maximum allowed retry count";
+        Validator.Validate("validate response error code", 429, response.getStatusLine().getStatusCode());
+        String errorMessage = "User reaches maximum login attempts";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
 
@@ -265,7 +269,7 @@ public class postCredentialAttempts {
         Boolean success = false;
         for (int i = 0; i < 12; i++) {
             Thread.sleep(i * 2 * 100);
-            response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password, false);
+            response = Identity.UserCredentialAttemptesPostDefault(email, password, false);
             if (response.getStatusLine().getStatusCode() == 201) {
                 success = true;
                 break;
@@ -279,7 +283,8 @@ public class postCredentialAttempts {
     // https://oculus.atlassian.net/browse/SER-436
     // If the attempt fails three times not in succession, it still can be used.
     public void testPasswordNotSuccessionRetry() throws Exception {
-        User postedUser = Identity.UserPostDefault();
+        String email = RandomHelper.randomEmail();
+        User postedUser = Identity.UserPostDefaultWithMail(15, email);
         String password = IdentityModel.DefaultPassword();
         UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(postedUser.getUsername());
         UserLoginName loginName = (UserLoginName) JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), UserLoginName.class);
@@ -289,7 +294,7 @@ public class postCredentialAttempts {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         for (int i = 0; i < 2; i++) {
-            UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(loginName.getUserName(), IdentityModel.DefaultPassword());
+            UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, IdentityModel.DefaultPassword());
             response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                     JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
             if (i < 2) {
@@ -301,11 +306,11 @@ public class postCredentialAttempts {
             response.close();
         }
 
-        response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password, true);
+        response = Identity.UserCredentialAttemptesPostDefault(email, password, true);
         response.close();
 
         for (int i = 0; i < 2; i++) {
-            UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(loginName.getUserName(), IdentityModel.DefaultPassword());
+            UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, IdentityModel.DefaultPassword());
             response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                     JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
             if (i < 2) {
@@ -317,37 +322,38 @@ public class postCredentialAttempts {
             response.close();
         }
 
-        response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password, true);
+        response = Identity.UserCredentialAttemptesPostDefault(email, password, true);
         response.close();
     }
 
     @Test(groups = "dailies")
     public void testUserPinAttempts() throws Exception {
-        User user = Identity.UserPostDefault();
+        String email = RandomHelper.randomEmail();
+        User user = Identity.UserPostDefaultWithMail(15, email);
         String password = IdentityModel.DefaultPassword();
         Identity.UserCredentialPostDefault(user.getId(), null, password);
         UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
         UserLoginName loginName = (UserLoginName) JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), UserLoginName.class);
-        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password);
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(email, password);
         Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
         response.close();
 
         String pin = IdentityModel.DefaultPin();
         response = Identity.UserPinCredentialPostDefault(user.getId(), password, pin, true);
         response.close();
-        response = Identity.UserPinCredentialAttemptPostDefault(loginName.getUserName(), pin);
+        response = Identity.UserPinCredentialAttemptPostDefault(email, pin);
         response.close();
 
         pin = IdentityModel.DefaultPin();
         response = Identity.UserPinCredentialPostDefault(user.getId(), null, pin, true);
         response.close();
-        response = Identity.UserPinCredentialAttemptPostDefault(loginName.getUserName(), pin);
+        response = Identity.UserPinCredentialAttemptPostDefault(email, pin);
         response.close();
 
         pin = IdentityModel.DefaultPin();
         response = Identity.UserPinCredentialPostDefault(user.getId(), password, pin, true);
         response.close();
-        response = Identity.UserPinCredentialAttemptPostDefault(loginName.getUserName(), pin);
+        response = Identity.UserPinCredentialAttemptPostDefault(email, pin);
         response.close();
     }
 
@@ -370,16 +376,17 @@ public class postCredentialAttempts {
 
     @Test(groups = "dailies")
     public void testUserCredentialAttemptsWithoutMail() throws Exception {
-        User user = Identity.UserPostDefault();
+        String email = RandomHelper.randomEmail();
+        User user = Identity.UserPostDefaultWithMail(15, email);
         String password = IdentityModel.DefaultPassword();
         Identity.UserCredentialPostDefault(user.getId(), null, password);
         String newPassword = IdentityModel.DefaultPassword();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
             UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
-                    loginName.getUserName(), newPassword, false);
+                    email, newPassword, false);
             Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
             String errorMessage = "User Password Incorrect";
             Validator.Validate("validate response error message", true,

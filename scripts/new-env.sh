@@ -6,6 +6,9 @@ set -e
 : ${CLOUDANT_MH_URI:?'CLOUDANT_MH_URI must be defined.'}
 : ${CLOUDANT_USWEST_URI:?'CLOUDANT_USWEST_URI must be defined.'}
 : ${CLOUDANT_USEAST_URI:?'CLOUDANT_USEAST_URI must be defined.'}
+: ${CLOUDANT_MH_URI_WITH_API_KEY:?'CLOUDANT_MH_URI_WITH_API_KEY must be defined.'}
+: ${CLOUDANT_USWEST_URI_WITH_API_KEY:?'CLOUDANT_USWEST_URI_WITH_API_KEY must be defined.'}
+: ${CLOUDANT_USEAST_URI_WITH_API_KEY:?'CLOUDANT_USEAST_URI_WITH_API_KEY must be defined.'}
 : ${DB_MASTER_USEAST:?'DB_MASTER_USEAST must be defined.'}
 : ${DB_MASTER_USWEST:?'DB_MASTER_USWEST must be defined.'}
 : ${DB_SLAVE_USEAST:?'DB_SLAVE_USEAST must be defined.'}
@@ -62,12 +65,14 @@ export ONEBOX_CRYPTO_KEY=D58BA755FF96B35A6DABA7298F7A8CE2
 export CRYPTO_KEY=`genkey`
 export OAUTH_CRYPTO_KEY=`genkey`
 export DATABASE_PASSWORD=`genpwd`
-export DATABASE_PASSWORD_HASH=`md5 -s "${DATABASE_PASSWORD}silkcloud"`
+export DATABASE_PASSWORD_HASH=`md5 -s "${DATABASE_PASSWORD}silkcloud"|sed 's/\(.*\)= \(.*\)/\2/g'`
 export JKS_PASSWORD=`genpwd`
 export JKS_CERT_ALIAS=silkcloud
 export JKS_CERT_PASSWORD=`genpwd`
 export CLOUDANT_URIS="$CLOUDANT_MH_URI;us-west,$CLOUDANT_MH_URI;us-east"
 export CLOUDANT_PII_URIS="$CLOUDANT_USWEST_URI;us-west,$CLOUDANT_USEAST_URI;us-east"
+export CLOUDANT_URIS_WITH_API_KEY="$CLOUDANT_MH_URI_WITH_API_KEY;us-west,$CLOUDANT_MH_URI_WITH_API_KEY;us-east"
+export CLOUDANT_PII_URIS_WITH_API_KEY="$CLOUDANT_USWEST_URI_WITH_API_KEY;us-west,$CLOUDANT_USEAST_URI_WITH_API_KEY;us-east"
 
 export ACTIVEMQ_PASSWORD=`genkey`
 
@@ -90,6 +95,9 @@ export MIGRATION_CLIENT_SECRET=`genkey`
 export SEWER_CLIENT_SECRET=`genkey`
 export SHOP_CLIENT_SECRET=`genkey`
 export STORE_CLIENT_SECRET=`genkey`
+export ID_CLIENT_SECRET=`genkey`
+export SHARE_CLIENT_SECRET=`genkey`
+export TECHNODROME_CLIENT_SECRET=`genkey`
 export IDENTITY_INDEX_HASH_SALT=`./skeygen.sh 20`
 
 mkdir -p build/$ENV
@@ -111,10 +119,15 @@ export JKS_CERT_ALIAS=$JKS_CERT_ALIAS
 export JKS_CERT_PASSWORD='$JKS_CERT_PASSWORD'
 export CLOUDANT_URIS='$CLOUDANT_URIS'
 export CLOUDANT_PII_URIS='$CLOUDANT_PII_URIS'
+export CLOUDANT_URIS_WITH_API_KEY='$CLOUDANT_URIS_WITH_API_KEY'
+export CLOUDANT_PII_URIS_WITH_API_KEY='$CLOUDANT_PII_URIS_WITH_API_KEY'
 
 export CLOUDANT_MH_URI='$CLOUDANT_MH_URI'
 export CLOUDANT_USWEST_URI='$CLOUDANT_USWEST_URI'
 export CLOUDANT_USEAST_URI='$CLOUDANT_USEAST_URI'
+export CLOUDANT_MH_URI_WITH_API_KEY='$CLOUDANT_MH_URI_WITH_API_KEY'
+export CLOUDANT_USWEST_URI_WITH_API_KEY='$CLOUDANT_USWEST_URI_WITH_API_KEY'
+export CLOUDANT_USEAST_URI_WITH_API_KEY='$CLOUDANT_USEAST_URI_WITH_API_KEY'
 
 export ACTIVEMQ_PASSWORD='$ACTIVEMQ_PASSWORD'
 
@@ -137,6 +150,9 @@ export MIGRATION_CLIENT_SECRET=$MIGRATION_CLIENT_SECRET
 export SEWER_CLIENT_SECRET=$SEWER_CLIENT_SECRET
 export SHOP_CLIENT_SECRET=$SHOP_CLIENT_SECRET
 export STORE_CLIENT_SECRET=$STORE_CLIENT_SECRET
+export ID_CLIENT_SECRET=$ID_CLIENT_SECRET
+export SHARE_CLIENT_SECRET=$SHARE_CLIENT_SECRET
+export TECHNODROME_CLIENT_SECRET=$TECHNODROME_CLIENT_SECRET
 
 # identity
 export IDENTITY_INDEX_HASH_SALT='$IDENTITY_INDEX_HASH_SALT'
@@ -240,17 +256,53 @@ EOF
 cat <<EOF > $ENV/cloudant.properties
 # cloudant URIs
 common.cloudant.dbNamePrefix=
-common.cloudant.url.encrypted=`encrypt $CLOUDANT_URIS`
-common.cloudantWithSearch.url.encrypted=`encrypt $CLOUDANT_URIS`
+common.cloudant.url.encrypted=`encrypt $CLOUDANT_URIS_WITH_API_KEY`
+common.cloudantWithSearch.url.encrypted=`encrypt $CLOUDANT_URIS_WITH_API_KEY`
 
-encrypt.user.personalinfo.cloudant.url.encrypted=`encrypt $CLOUDANT_PII_URIS`
+encrypt.user.personalinfo.cloudant.url.encrypted=`encrypt $CLOUDANT_PII_URIS_WITH_API_KEY`
 
-crypto.userkey.cloudant.url.encrypted=`encrypt $CLOUDANT_URIS`
-crypto.itemCryptoKey.cloudant.url.encrypted=`encrypt $CLOUDANT_URIS`
+crypto.userkey.cloudant.url.encrypted=`encrypt $CLOUDANT_URIS_WITH_API_KEY`
+crypto.itemCryptoKey.cloudant.url.encrypted=`encrypt $CLOUDANT_URIS_WITH_API_KEY`
 
 # configuration
 common.cloudant.cache.enabled=true
 common.cloudant.cache.includeDocs=false
+common.cloudant.cache.storeviewresults=false
+common.cloudant.cache.maxentitysize=10000
+common.cloudant.cache.expiration=3600
+EOF
+
+cat <<EOF > $ENV/common.properties
+apphost.fastboot=false
+apphost.gracePeriod=40
+
+# authorization
+authorization.lib.allowTestAccessToken=false
+authorization.lib.service.disabled=false
+
+# common
+common.conf.debugMode=false
+common.routing.crossDcRoutingEnabled=true
+common.routing.inDcRoutingEnabled=true
+common.routing.forceRoute=false
+common.routing.showRoutingPath=false
+
+common.accesscontrol.allowOrigin=*
+common.accesscontrol.allowHeader=Authorization, Origin, X-Requested-With, Content-Type, X-Email-Notification
+common.accesscontrol.exposeHeaders=Location, Content-Disposition
+common.accesscontrol.allowMethods=POST, PUT, GET, DELETE, HEAD, OPTIONS
+
+# memcached
+common.memcached.enabled=true
+common.memcached.timeout=100
+# per data center, configured in sub environments
+# common.memcached.servers=127.0.0.1:11211
+common.memcached.compressionThreshold=
+
+# keep username empty to disable auth
+common.memcached.auth=CRAM-MD5
+common.memcached.username=
+common.memcached.password=
 EOF
 
 cat <<EOF > $ENV/crypto.properties
@@ -340,6 +392,7 @@ common.newrelic.insights.key.encrypted=`encrypt $NEWRELIC_KEY`
 common.newrelic.insights.log.enable=false
 
 # kount
+order.risk.enable=false
 order.risk.kount.merchantId=600900
 order.risk.kount.url=https://risk.test.kount.net
 order.risk.kount.keyFileName=ris_kount_test.p12
@@ -356,13 +409,14 @@ oauth.core.recaptcha.private.key.encrypted=`encrypt $RECAPTCHA_PRIVATE_KEY`
 oauth.core.recaptcha.verify.endpoint=http://www.google.com/recaptcha/api/verify
 
 # email
+email.client.mandrill.enabled = true
 email.client.mandrill.url=https://mandrillapp.com/api/1.0/messages/send-template
 email.client.mandrill.key.encrypted=`encrypt $MANDRILL_KEY`
 
 # entitlement
 entitlement.aws.accesskeyId=AKIAI7OBWYUIU6SPIBDA
 entitlement.aws.secretAccessKey.encrypted=`encrypt $ENTITLEMENT_AWS_SECRET_ACCESS_KEY`
-entitlement.aws.bucketNames=static.oculusvr.com
+entitlement.aws.bucketNames=static.oculusvr.com,ovr_ink_uploader
 entitlement.aws.cloudFrontDomains=d1aifagf6hhneo.cloudfront.net,d39nlaid7cu5vo.cloudfront.net
 
 EOF
@@ -399,7 +453,7 @@ payment.provider.adyen.notifyUser=notifyUser
 payment.provider.adyen.notifyPassword.encrypted=`encrypt $ADYEN_NOTIFYPASSWORD`
 
 # not used yet
-payment.jobs.batch.batchDirectory=\\dummy\batch
+payment.jobs.batch.batchDirectory=/dummy/batch
 
 EOF
 
@@ -443,18 +497,23 @@ legacyDeveloperCenter-server: `encryptclient $LEGACY_DEVELOPER_CENTER_SERVER_CLI
 migration: `encryptclient $MIGRATION_CLIENT_SECRET`
 sewer: `encryptclient $SEWER_CLIENT_SECRET`
 shop: `encryptclient $SHOP_CLIENT_SECRET`
+id: `encryptclient $ID_CLIENT_SECRET`
+share: `encryptclient $SHARE_CLIENT_SECRET`
+technodrome: `encryptclient $TECHNODROME_CLIENT_SECRET`
 EOF
 
 # couchdb conf
 mkdir -p couchdb/conf
 cat <<EOF > couchdb/conf/${ENV}.json
 {
-    "couchdb.encrypted": "`encrypt $CLOUDANT_MH_URI`",
-    "pii.encrypted": [
-        "`encrypt $CLOUDANT_USEAST_URI`",
-        "`encrypt $CLOUDANT_USWEST_URI`"
-    ],
-    "cloudant.encrypted": "`encrypt $CLOUDANT_MH_URI`"
+    "dbs":{
+        "couchdb.encrypted": "`encrypt $CLOUDANT_MH_URI`",
+        "pii.encrypted": [
+            "`encrypt $CLOUDANT_USEAST_URI`",
+            "`encrypt $CLOUDANT_USWEST_URI`"
+        ],
+        "cloudant.encrypted": "`encrypt $CLOUDANT_MH_URI`"
+    }
 }
 EOF
 

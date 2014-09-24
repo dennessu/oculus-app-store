@@ -1,5 +1,8 @@
 package com.junbo.common.cloudant
 
+import com.junbo.common.cloudant.client.CloudantDbUri
+import com.junbo.common.cloudant.client.CloudantUri
+import com.junbo.configuration.topo.DataCenters
 import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -32,5 +35,23 @@ abstract class CloudantClient<T extends CloudantEntity> extends CloudantClientBa
         entity.updatedByClient = trackContext.currentClientId ?: ""
         entity.updatedTime = new Date()
         return super.cloudantPut(entity, oldEntity)
+    }
+
+    protected CloudantDbUri getDbUriByDc(int dc) {
+        CloudantUri uri
+        if (!DataCenters.instance().hasDataCenter(dc)) {
+            return null
+        }
+
+        try {
+            uri = cloudantGlobalUri.getUri(dc)
+        } catch (RuntimeException e) {
+            return null
+        }
+
+        if (uri == null) {
+            return null
+        }
+        return new CloudantDbUri(cloudantUri: uri, dbName: dbName, fullDbName: cloudantDbUri.fullDbName)
     }
 }

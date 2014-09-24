@@ -11,6 +11,7 @@ import com.junbo.langur.core.context.JunboHttpContextScopeListeners;
 import com.junbo.langur.core.track.TrackContextManager;
 import com.junbo.langur.core.track.UserLogProcessor;
 import java.util.List;
+import java.util.ArrayList;
 
 @org.springframework.stereotype.Component
 @org.springframework.context.annotation.Scope("prototype")

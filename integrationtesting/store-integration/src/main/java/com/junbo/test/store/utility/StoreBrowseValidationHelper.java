@@ -14,18 +14,21 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.store.spec.model.browse.AddReviewRequest;
 import com.junbo.store.spec.model.browse.Images;
 import com.junbo.store.spec.model.browse.SectionLayoutResponse;
 import com.junbo.store.spec.model.browse.document.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
-import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 import com.junbo.test.catalog.enums.PriceType;
 import com.junbo.test.common.Validator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 import org.testng.Assert;
 
@@ -38,6 +41,8 @@ import java.util.regex.Pattern;
  * The StoreBrowseValidationHelper class.
  */
 public class StoreBrowseValidationHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StoreBrowseValidationHelper.class);
 
     private static final String Platform = "ANDROID";
 
@@ -105,43 +110,42 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(review.getTitle(), caseyReview.getReviewTitle());
         Assert.assertEquals(review.getStarRatings().size(), caseyReview.getRatings().size());
         for (CaseyReview.Rating rating : caseyReview.getRatings()) {
-            Assert.assertEquals(review.getStarRatings().get(rating.getType()), rating.getScore(), "rating result not correct");
+            Assert.assertEquals(review.getStarRatings().get(rating.getType()).intValue(), rating.getScore() / 20, "rating result not correct");
         }
     }
 
-    public void verifyAggregateRatings(List<AggregatedRatings> aggregatedRatings, List<CaseyAggregateRating> caseyAggregatedRatings) {
-        Assert.assertEquals(aggregatedRatings.size(), caseyAggregatedRatings.size());
-        for (final AggregatedRatings rating : aggregatedRatings) {
+    public void verifyAggregateRatings(Map<String, AggregatedRatings> aggregatedRatings, List<CaseyAggregateRating> caseyAggregatedRatings) {
+        for (final Map.Entry<String, AggregatedRatings> entry : aggregatedRatings.entrySet()) {
             CaseyAggregateRating caseyAggregateRating = (CaseyAggregateRating) CollectionUtils.find(caseyAggregatedRatings, new Predicate() {
                 @Override
                 public boolean evaluate(Object object) {
-                    return ObjectUtils.nullSafeEquals(((CaseyAggregateRating) object).getType(), rating.getType());
+                    return ObjectUtils.nullSafeEquals(((CaseyAggregateRating) object).getType(), entry.getKey());
                 }
             });
-
-            Assert.assertEquals(rating.getAverageRating(), caseyAggregateRating.getAverage(), "average rating not correct");
+            AggregatedRatings rating = entry.getValue();
+            Assert.assertEquals(rating.getAverageRating(), caseyAggregateRating.getAverage() / 20, 0.00001, "average rating not correct");
             Assert.assertEquals(rating.getRatingsCount(), caseyAggregateRating.getCount(), "rating count not correct");
-            Assert.assertEquals(rating.getType(), caseyAggregateRating.getType(), "type not correct");
             Assert.assertNull(rating.getCommentsCount(), "comments count should be null");
 
-            for (int i = 0;i < caseyAggregateRating.getHistogram().length; ++i) {
-                Assert.assertEquals(rating.getRatingsHistogram().get(i), caseyAggregateRating.getHistogram()[i], "rating histogram not correct");
+            for (int i = 0;i < caseyAggregateRating.getHistogram().length; i += 2) {
+                Assert.assertEquals(rating.getRatingsHistogram().get(i / 2).longValue(),
+                        (caseyAggregateRating.getHistogram()[i] + caseyAggregateRating.getHistogram()[i + 1]), "rating histogram not correct");
             }
         }
     }
 
-    public void verifyItem(com.junbo.store.spec.model.browse.document.Item item) throws Exception {
+    public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled) throws Exception {
         OfferRevision currentOfferRevision = null;
         ItemRevision currentItemRevision = null;
         com.junbo.catalog.spec.model.offer.Offer catalogOffer =
                 storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue());
-        OfferRevision offerRevision = storeTestDataProvider.getOfferRevision(catalogOffer.getCurrentRevisionId());
+        OfferRevision offerRevision = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
         com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue());
-        ItemRevision itemRevision = storeTestDataProvider.getItemRevision(catalogItem.getCurrentRevisionId());
+        ItemRevision itemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevision().getValue());
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
         List<OfferRevision> offerRevisions = getOfferRevisions(catalogOffer);
-        List<ItemRevision> itemRevisions = getItemRevisions(catalogItem);
+        List<ItemRevision> itemRevisions =  Arrays.asList(itemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
 
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
             for (String id : catalogOffer.getCategories()) {
@@ -167,30 +171,31 @@ public class StoreBrowseValidationHelper {
         }
 
         ItemRevisionLocaleProperties localeProperties = currentItemRevision.getLocales().get(locale);
-        Organization developer = storeTestDataProvider.getOrganization(catalogItem.getOwnerId());
-        Organization publisher = storeTestDataProvider.getOrganization(catalogOffer.getOwnerId());
-        verifyItem(item, catalogItem, currentItemRevision, developer);
+        Organization developer = getOrganization(catalogItem.getOwnerId(), serviceClientEnabled);
+        Organization publisher = getOrganization(catalogOffer.getOwnerId(), serviceClientEnabled);
+
+        verifyItem(item, catalogItem, currentItemRevision, developer, serviceClientEnabled);
         verifyItemImages(item.getImages(), localeProperties.getImages());
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
-                developer, publisher);
+                developer, publisher, serviceClientEnabled);
         boolean isFree = PriceType.FREE.name().equals(offerRevision.getPrice().getPriceType());
         verifyItemOffer(item.getOffer(), catalogOffer, offerRevision, isFree);
     }
 
-    public void validateCmsSection(SectionInfoNode sectionInfoNode, CmsPage cmsPage, String slot) {
-        Assert.assertEquals(sectionInfoNode.getCriteria(), cmsPage.getPath() + "-" + slot);
-        Assert.assertEquals(sectionInfoNode.getName(), cmsPage.getSlots().get(slot).getDescription());
+    public void validateCmsSection(SectionInfoNode sectionInfoNode, String name, String cmsPageName, String slot) {
+        Assert.assertEquals(sectionInfoNode.getCriteria(), cmsPageName + "-" + slot);
+        Assert.assertEquals(sectionInfoNode.getName(), name);
         Assert.assertNull(sectionInfoNode.getCategory());
     }
 
-    public void validateCmsSection(SectionInfo sectionInfo, CmsPage cmsPage, String slot) {
-        Assert.assertEquals(sectionInfo.getCriteria(), cmsPage.getPath() + "-" + slot);
-        Assert.assertEquals(sectionInfo.getName(), cmsPage.getSlots().get(slot).getDescription());
+    public void validateCmsSection(SectionInfo sectionInfo, String name, String cmsPageName, String slot) {
+        Assert.assertEquals(sectionInfo.getCriteria(), cmsPageName + "-" + slot);
+        Assert.assertEquals(sectionInfo.getName(), name);
         Assert.assertNull(sectionInfo.getCategory());
     }
 
-    public void validateCmsSection(SectionLayoutResponse sectionLayoutResponse, CmsPage cmsPage, String slot, int numOfItems, boolean hasMoreItems) {
-        Assert.assertEquals(sectionLayoutResponse.getName(), cmsPage.getSlots().get(slot).getDescription());
+    public void validateCmsSection(SectionLayoutResponse sectionLayoutResponse, String name, int numOfItems, boolean hasMoreItems) {
+        Assert.assertEquals(sectionLayoutResponse.getName(), name);
         if (hasMoreItems) {
             Assert.assertEquals(sectionLayoutResponse.getItems().size(), numOfItems);
         }
@@ -205,15 +210,27 @@ public class StoreBrowseValidationHelper {
         Assert.assertNull(sectionLayoutResponse.getNext());
     }
 
+    public void validateAddReview(AddReviewRequest addReviewRequest, Review review, String nickName) {
+        Assert.assertEquals(review.getContent(), addReviewRequest.getContent());
+        Assert.assertEquals(review.getTitle(), addReviewRequest.getTitle());
+        Assert.assertEquals(review.getAuthorName(), nickName);
+        Assert.assertEquals(review.getStarRatings(), addReviewRequest.getStarRatings());
+        Assert.assertNotNull(review.getSelf());
+        Assert.assertNotNull(review.getTimestamp());
+    }
+
     private void verifyItem(com.junbo.store.spec.model.browse.document.Item item, Item catalogItem, ItemRevision itemRevision,
-                            Organization developer) {
+                            Organization developer, boolean serviceClientEnabled) {
         Assert.assertEquals(item.getSelf(), new ItemId(catalogItem.getItemId()));
         Assert.assertEquals(item.getItemType(), catalogItem.getType());
         ItemRevisionLocaleProperties localeProperties = itemRevision.getLocales().get(locale);
         Assert.assertEquals(item.getTitle(), localeProperties.getName(), "item title not match");
         Assert.assertEquals(item.getDescriptionHtml(), localeProperties.getLongDescription(), "description html not match");
         verifySupportedLocaleEquals(item.getSupportedLocales(), itemRevision.getSupportedLocales());
-        Assert.assertEquals(item.getCreator(), developer.getName());
+
+        if (serviceClientEnabled) {
+            Assert.assertEquals(item.getCreator(), developer == null ? null : developer.getName());
+        }
     }
 
     private void verifyItemImages(Images images, com.junbo.catalog.spec.model.common.Images catalogImages) {
@@ -238,7 +255,7 @@ public class StoreBrowseValidationHelper {
 
     private void verifyAppDetails(AppDetails appDetails, List<OfferAttribute> categories, List<ItemAttribute> genres,
                                   OfferRevision offerRevision, ItemRevision itemRevision, List<ItemRevision> itemRevisions,
-                                  Organization developer, Organization publisher) {
+                                  Organization developer, Organization publisher, boolean serviceClientEnabled) {
         // verify categories
         ItemRevisionLocaleProperties localeProperties = itemRevision.getLocales().get(locale);
         if (categories == null) {
@@ -262,8 +279,11 @@ public class StoreBrowseValidationHelper {
             }
         }
 
-        Assert.assertEquals(appDetails.getPublisherName(), publisher.getName());
-        Assert.assertEquals(appDetails.getDeveloperName(), developer.getName());
+        if (serviceClientEnabled) {
+            Assert.assertEquals(appDetails.getPublisherName(), publisher == null ? null : publisher.getName());
+            Assert.assertEquals(appDetails.getDeveloperName(), developer == null ? null : developer.getName());
+        }
+
         Assert.assertEquals(appDetails.getWebsite(), localeProperties.getWebsite());
         Assert.assertEquals(appDetails.getForumUrl(), localeProperties.getCommunityForumLink());
         Assert.assertEquals(appDetails.getDeveloperEmail(), localeProperties.getSupportEmail());
@@ -273,6 +293,8 @@ public class StoreBrowseValidationHelper {
             Binary binary = itemRevision.getBinaries().get(Platform);
             Assert.assertEquals(appDetails.getVersionString(), binary.getVersion());
             Assert.assertEquals(appDetails.getInstallationSize(), binary.getSize());
+            Assert.assertEquals(appDetails.getVersionCode(), binary.getMetadata() == null
+                    || binary.getMetadata().get("versionCode") == null ? null : binary.getMetadata().get("versionCode").asInt());
         }
         if (offerRevision.getCountries() != null && offerRevision.getCountries().get(country) != null) {
             if (offerRevision.getCountries() == null && offerRevision.getCountries().get(country) == null &&
@@ -312,6 +334,8 @@ public class StoreBrowseValidationHelper {
 
             Assert.assertEquals(revisionNote.getTitle(), historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getShortNotes());
             Assert.assertEquals(revisionNote.getDescription(), historyLocalProperties == null ? null :  historyLocalProperties.getReleaseNotes().getLongNotes());
+            Assert.assertEquals(revisionNote.getVersionCode(), historyBinary == null || historyBinary.getMetadata() == null
+                    || historyBinary.getMetadata().get("versionCode") == null ? null : historyBinary.getMetadata().get("versionCode").asInt());
             Assert.assertEquals(revisionNote.getVersionString(), historyBinary == null ? null : historyBinary.getVersion());
         }
     }
@@ -420,5 +444,17 @@ public class StoreBrowseValidationHelper {
                 }
             }
         });
+    }
+
+    private Organization getOrganization(OrganizationId organizationId, boolean serviceClientEnabled) {
+        if (!serviceClientEnabled) {
+            return null;
+        }
+        try {
+            return storeTestDataProvider.getOrganization(organizationId, 0);
+        } catch (Exception e) {
+            LOGGER.error("name=Get_Organization_Error", e);
+            return null;
+        }
     }
 }

@@ -70,6 +70,7 @@ public class EmailTesting extends TestClass {
      @Test
      public void testPostEmail() throws Exception {
         this.prepareUserData();
+        logger.LogSample("post an email");
         Email email = this.buildEmail();
         this.prepareAccessData();
         EmailService emailService = EmailServiceImpl.getInstance();
@@ -201,7 +202,7 @@ public class EmailTesting extends TestClass {
         try {
             Email email = this.buildEmail();
             email.setUserId(new UserId(System.currentTimeMillis()));
-            Email result = emailService.postEmail(email, 412);
+            Email result = emailService.postEmail(email, 404);
         } catch (Exception e) {
             String errorMsg = e.getMessage();
             if(!errorMsg.contains("User Not Found")) {
@@ -278,7 +279,8 @@ public class EmailTesting extends TestClass {
         assertNotNull("get email template failed", templateId);
         email.setTemplateId(templateId);
         Map<String, String> replacements = new HashMap();
-        replacements.put("accountname","tester");
+        replacements.put("name","tester");
+        replacements.put("link","http://url");
         email.setReplacements(replacements);
         return email;
     }
@@ -289,6 +291,8 @@ public class EmailTesting extends TestClass {
         email.setScheduleTime(new Date(System.currentTimeMillis()+100000));
         email.setCreatedTime(null);
         email.setCreatedBy(null);
+        email.setUpdatedTime(null);
+        email.setUpdatedBy(null);
         return email;
     }
 

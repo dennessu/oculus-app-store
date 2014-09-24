@@ -53,7 +53,7 @@ import java.util.regex.Pattern
 @SuppressWarnings('UnnecessaryGetter')
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String EMAIL_ACTION = 'UserLockout'
+    private static final String EMAIL_ACTION = 'UserLockout_V1'
     private static final String MAIL_IDENTIFIER = "@"
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCredentialVerifyAttemptValidatorImpl)
@@ -311,7 +311,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     LOGGER.error("Error sending Maximum retry reachable Notification")
                     return Promise.pure(null)
                 }.then {
-                    throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum allowed retry count').exception()
+                    throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
                 }
             }
         }
@@ -443,7 +443,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameUserAttemptCount) {
                 return Promise.pure(null)
             }
-            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
+            throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
         }
     }
 
@@ -460,7 +460,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 return Promise.pure(null)
             }
 
-            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
+            throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
         }
     }
 
@@ -521,6 +521,14 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             if (userLoginAttempt.userAgent.length() < userAgentMinLength) {
                 throw AppCommonErrors.INSTANCE.fieldTooShort('userAgent', userAgentMinLength).exception()
             }
+        }
+
+        if (StringUtils.isEmpty(userLoginAttempt.username) && userLoginAttempt.userId == null) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
+        }
+
+        if (!StringUtils.isEmpty(userLoginAttempt.username) && !isEmail(userLoginAttempt.username)) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'Only mail login is supported').exception()
         }
 
         if (userLoginAttempt.value == null) {

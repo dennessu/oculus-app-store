@@ -1,0 +1,18 @@
+{
+  "client_id" : "2dstore.service",
+  "client_secret" : "2E8259860680957432BBBBF898E74ED9#641FD303881114D75D27E7E6FB5233D7E6EDD6D5350BD3E003CA639F85D36FB85484220BDD2052BB79F4214F981BF2D7",
+  "client_name" : "2dstore.service",
+
+  "redirect_uris" : [],
+
+  "logout_redirect_uris" : [],
+
+  "scopes" : ["catalog", "identity", "commerce", "identity.pii"],
+  "default_scopes" : ["catalog", "identity", "commerce", "identity.pii"],
+
+  "response_types" : [],
+  "grant_types" : ["CLIENT_CREDENTIALS", "EXCHANGE"],
+
+  "id_token_issuer" : "api.oculus.com",
+  "need_consent" : false
+}

@@ -19,6 +19,7 @@ import com.junbo.common.id.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
+import com.junbo.emulator.casey.spec.model.CaseyReviewExtend;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
@@ -28,6 +29,7 @@ import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
+import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
@@ -450,7 +452,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public ItemAttribute getItemAttribute(String itemAttributeId) throws Exception {
         ItemAttribute itemAttribute = Master.getInstance().getItemAttribute(itemAttributeId);
         if (itemAttribute == null) {
-            itemAttribute = itemAttributeClient.getItemAttribute(itemAttributeId);
+            itemAttribute = itemAttributeClient.getItemAttribute(itemAttributeId, 0, false);
         }
         return itemAttribute;
     }
@@ -458,7 +460,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public OfferAttribute getOfferAttribute(String offerAttributeId) throws Exception {
         OfferAttribute offerAttribute = Master.getInstance().getOfferAttribute(offerAttributeId);
         if (offerAttribute == null) {
-            offerAttribute = offerAttributeClient.getOfferAttribute(offerAttributeId);
+            offerAttribute = offerAttributeClient.getOfferAttribute(offerAttributeId, 0, false);
         }
         return offerAttribute;
     }
@@ -619,6 +621,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getTOC();
     }
 
+    public TocResponse getToc(int expectedCode) throws Exception {
+        return storeClient.getTOC(expectedCode);
+    }
+
     public ListResponse getList(ListRequest request) throws Exception {
         return storeClient.getList(request);
     }
@@ -647,9 +653,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public DeliveryResponse getDelivery(ItemId itemId) throws Exception {
+        return getDelivery(itemId, null, 200);
+    }
+
+    public DeliveryResponse getDelivery(ItemId itemId, Integer desiredVersionCode, int expectedResponseCode) throws Exception {
         DeliveryRequest request = new DeliveryRequest();
         request.setItemId(itemId);
-        return storeClient.getDelivery(request);
+        request.setDesiredVersionCode(desiredVersionCode);
+        return storeClient.getDelivery(request, expectedResponseCode);
     }
 
     public ReviewsResponse getReviews(ItemId itemId, String cursor, Integer count) throws Exception {
@@ -666,8 +677,15 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public CaseyEmulatorData postCaseyEmulatorData(List<CaseyReview> caseyReviewList, List<CaseyAggregateRating> ratingList, CmsPage cmsPage) throws Exception {
         CaseyEmulatorData data = new CaseyEmulatorData();
+        List<CaseyReview> reviewList = null;
+        if (caseyReviewList != null) {
+            reviewList = new ArrayList<>();
+            for (CaseyReview caseyReview : caseyReviewList) {
+                reviewList.add(new CaseyReviewExtend(caseyReview));
+            }
+        }
         data.setCaseyAggregateRatings(ratingList);
-        data.setCaseyReviews(caseyReviewList);
+        data.setCaseyReviews(reviewList);
         if (cmsPage != null) {
             data.setCmsPages(Arrays.asList(cmsPage));
         }
@@ -682,6 +700,16 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         if (cmsPage != null) {
             data.setCmsPages(Arrays.asList(cmsPage));
         }
+        data.setCmsPageOffers(offerIds);
+        return caseyEmulatorClient.postEmulatorData(data);
+    }
+
+    public CaseyEmulatorData postCaseyEmulatorData(List<CmsCampaign> cmsCampaign, List<CmsPage> pages, Map<String, List<OfferId>> offerIds) throws Exception {
+        CaseyEmulatorData data = new CaseyEmulatorData();
+        data.setCaseyAggregateRatings(new ArrayList<CaseyAggregateRating>());
+        data.setCaseyReviews(new ArrayList<CaseyReview>());
+        data.setCmsCampaigns(cmsCampaign);
+        data.setCmsPages(pages);
         data.setCmsPageOffers(offerIds);
         return caseyEmulatorClient.postEmulatorData(data);
     }
@@ -706,11 +734,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return identityClient.PostUser(userInfo);
     }
 
-    public Organization getOrganization(OrganizationId organizationId) throws Exception {
+    public Organization getOrganization(OrganizationId organizationId, int statusCode) throws Exception {
         String orgIdString = IdFormatter.encodeId(organizationId);
         Organization organization = Master.getInstance().getOrganization(orgIdString);
         if (organization == null) {
-            organization = organizationClient.getOrganization(organizationId);
+            organization = organizationClient.getOrganization(organizationId, statusCode);
         }
         return organization;
     }
@@ -718,6 +746,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public Order getOrder(OrderId orderId) throws Exception {
         orderClient.getOrderByOrderId(IdFormatter.encodeId(orderId));
         return Master.getInstance().getOrder(IdFormatter.encodeId(orderId));
+    }
+
+    public AddReviewResponse addReview(AddReviewRequest request, int expectedCode) throws Exception {
+        return storeClient.addReview(request, expectedCode);
     }
 
 }

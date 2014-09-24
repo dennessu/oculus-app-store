@@ -29,9 +29,17 @@
     <bean id="commonClientProxyHeadersProvider" class="com.junbo.common.client.ClientProxyHeadersProvider">
         <property name="forwardedHeaders">
             <list>
-                <value>X-Request-Id</value>
+                <value>oculus-request-id</value>
                 <value>X-Routing-Path</value>
                 <value>Cache-Control</value>
+                <value>oculus-end-user-ip</value>
+            </list>
+        </property>
+        <property name="forwardedQAHeadersEnabled" value="${common.headers.forwardQAHeaders.enabled}"/>
+        <property name="forwardedQAHeaders">
+            <list>
+                <value>X_QA_CASEY_EMULATE_LATENCY</value>
+                <value>X_QA_CASEY_REVIEW_USER_ID_LIST</value>
             </list>
         </property>
     </bean>

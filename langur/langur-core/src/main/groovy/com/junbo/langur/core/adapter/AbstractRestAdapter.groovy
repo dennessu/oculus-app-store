@@ -8,6 +8,8 @@ import groovy.transform.CompileStatic
 import org.glassfish.grizzly.http.server.Request
 import org.glassfish.jersey.server.ContainerResponse
 import org.glassfish.jersey.server.internal.process.RespondingContext
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 
@@ -19,6 +21,8 @@ import javax.ws.rs.core.Context
  */
 @CompileStatic
 abstract class AbstractRestAdapter {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractRestAdapter.class)
 
     @Context
     private ContainerRequestContext httpRequestContext
@@ -39,8 +43,13 @@ abstract class AbstractRestAdapter {
                 requestMethod: httpRequestContext.method,
                 requestUri: httpRequestContext.uriInfo.absolutePath,
                 requestHandler: requestHandler,
-                acceptableLanguages: httpRequestContext.acceptableLanguages
         )
+
+        try {
+            httpContextData.acceptableLanguages = httpRequestContext.acceptableLanguages
+        } catch (Exception ex) {
+            LOGGER.warn("name=Invalid_AcceptLanguage_Header", ex)
+        }
 
         for (Map.Entry<String, List<String>> entry : httpRequestContext.headers.entrySet()) {
             httpContextData.requestHeaders.addAll(entry.key, entry.value)

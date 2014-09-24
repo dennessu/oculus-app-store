@@ -65,6 +65,17 @@
         <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
+    <bean id="oauth_communicationResource" class="com.junbo.identity.spec.v1.resource.proxy.CommunicationResourceClientProxy"
+          parent="communicationResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
+    <bean id="oauth_userCommunicationResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserCommunicationResourceClientProxy"
+          parent="userCommunicationResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
     <bean id="oauth_groupResource"
           class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxy"
           parent="groupResourceClientProxy">

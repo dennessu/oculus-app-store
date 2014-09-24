@@ -39,7 +39,7 @@ import org.springframework.util.StringUtils
 class UserTFAResourceImpl implements UserTFAResource {
 
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String EMAIL_ACTION = 'TFAVerificationCode'
+    private static final String EMAIL_ACTION = 'TFAVerificationCode_V1'
 
     @Autowired
     private UserTFAPhoneRepository userTFAPhoneRepository
@@ -74,6 +74,10 @@ class UserTFAResourceImpl implements UserTFAResource {
     Promise<UserTFA> create(UserId userId, UserTFA userTFA) {
         if (userTFA == null) {
             throw new IllegalArgumentException('userTFA is null')
+        }
+
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
         }
 
         if (userTFA.userId != null && userTFA.userId != userId) {
@@ -112,7 +116,11 @@ class UserTFAResourceImpl implements UserTFAResource {
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (userTFAId == null) {
+            throw new IllegalArgumentException('userTFAId is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -221,7 +229,11 @@ class UserTFAResourceImpl implements UserTFAResource {
     @Override
     Promise<Void> delete(UserId userId, UserTFAId userTFAId) {
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (userTFAId == null) {
+            throw new IllegalArgumentException('userTFAId is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -243,7 +255,7 @@ class UserTFAResourceImpl implements UserTFAResource {
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw new IllegalArgumentException('userId is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -286,7 +298,7 @@ class UserTFAResourceImpl implements UserTFAResource {
                     listOptions.limit, listOptions.offset)
             }
         } else {
-            throw new IllegalArgumentException('Unsupported search operation.')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()
         }
     }
 

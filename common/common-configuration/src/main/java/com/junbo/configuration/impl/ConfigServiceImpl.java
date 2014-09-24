@@ -475,7 +475,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                     newProperties.put(newKey, decrypt(value));
                 } catch (Exception ex) {
                     logger.error("Failed to decrypt " + key);
-                    throw ex;
+                    throw new RuntimeException("Failed to decrypt " + key, ex);
                 }
             }
 

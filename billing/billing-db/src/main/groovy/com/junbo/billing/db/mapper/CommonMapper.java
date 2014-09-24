@@ -191,7 +191,7 @@ public class CommonMapper {
     }
 
     public Long fromStringToLong(String source) {
-        return source == null ? null : Long.parseLong(source);
+        return source == null || source.isEmpty() ? null : Long.parseLong(source);
     }
 
     public String fromLongToString(Long source) {
@@ -207,7 +207,7 @@ public class CommonMapper {
     }
 
     public Short fromStringToShort(String id) {
-        if (id == null) {
+        if (id == null || id.isEmpty()) {
             return null;
         }
 

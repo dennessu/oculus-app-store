@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ser.impl.UnwrappingBeanSerializer;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
 import com.junbo.common.id.Id;
+import com.junbo.common.id.util.ResourcePathPlaceHolderAware;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Link;
@@ -97,6 +98,11 @@ public class CustomBeanSerializer extends BeanSerializerBase {
     @Override
     public void serialize(Object bean, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonGenerationException {
+
+        if (bean instanceof ResourcePathPlaceHolderAware) {
+            ((ResourcePathPlaceHolderAware)bean).resolveResourcePathPlaceHolders();
+        }
+
         if (_objectIdWriter != null) {
             _serializeWithObjectId(bean, jgen, provider, true);
             return;

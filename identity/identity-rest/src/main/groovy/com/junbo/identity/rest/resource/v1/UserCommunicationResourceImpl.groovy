@@ -203,7 +203,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
         } else if (listOptions.userId != null) {
             return userCommunicationRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Unsupported search operation.')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()
         }
     }
 }

@@ -14,5 +14,6 @@ public enum PaymentProvider {
     PayPal,
     Wallet,
     Adyen,
-    AdyenCC
+    AdyenCC,
+    FacebookCC
 }

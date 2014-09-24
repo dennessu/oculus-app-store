@@ -7,8 +7,11 @@ import com.junbo.common.id.CloudantId
 import com.junbo.common.memcached.JunboMemcachedClient
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
+import com.junbo.configuration.topo.DataCenters
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import net.spy.memcached.CASResponse
+import net.spy.memcached.CASValue
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -31,6 +34,7 @@ class CloudantClientCached implements CloudantClientInternal {
     private Integer expiration
     private Integer maxEntitySize
     private boolean storeViewResults
+    private String currentDc
 
     private CloudantClientCached() {
         ConfigService configService = ConfigServiceManager.instance()
@@ -42,6 +46,7 @@ class CloudantClientCached implements CloudantClientInternal {
         this.expiration = safeParseInt(strExpiration)
         this.maxEntitySize = safeParseInt(strMaxEntitySize)
         this.storeViewResults = strStoreViewResults == "true"
+        this.currentDc = DataCenters.instance().currentDataCenter()
     }
 
     @Override
@@ -53,7 +58,7 @@ class CloudantClientCached implements CloudantClientInternal {
         }
 
         return impl.cloudantPost(dbUri, entityClass, entity).then { T result ->
-            updateCache(dbUri, entityClass, result)
+            updateCache(dbUri, entityClass, null, result)
             return Promise.pure(result)
         }
     }
@@ -61,14 +66,14 @@ class CloudantClientCached implements CloudantClientInternal {
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantGet(CloudantDbUri dbUri, Class<T> entityClass, String id) {
         CloudantId.validate(id)
-        T result = getCache(dbUri, entityClass, id)
+        CASValue<T> result = getCache(dbUri, entityClass, id)
         if (result == null) {
             return impl.cloudantGet(dbUri, entityClass, id).then { T resp ->
-                updateCache(dbUri, entityClass, resp)
+                updateCache(dbUri, entityClass, null, resp)     // result must be null
                 return Promise.pure(resp)
             }
         }
-        return Promise.pure(result)
+        return Promise.pure(result.getValue())
     }
 
     @Override
@@ -77,11 +82,12 @@ class CloudantClientCached implements CloudantClientInternal {
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
 
+        def casValue = getCache(dbUri, entityClass, entity.cloudantId)
         return impl.cloudantPut(dbUri, entityClass, entity).recover { Throwable ex ->
             deleteCacheOnError(dbUri, entity.cloudantId)
             throw ex
         }.then { T result ->
-            updateCache(dbUri, entityClass, result)
+            updateCache(dbUri, entityClass, casValue, result)
             return Promise.pure(result)
         }
     }
@@ -158,24 +164,27 @@ class CloudantClientCached implements CloudantClientInternal {
     def <T extends CloudantEntity> Promise<CloudantQueryResult> updateCache(CloudantDbUri dbUri, Class<T> entityClass, Promise<CloudantQueryResult> future) {
         return future.then { CloudantQueryResult result ->
             result.rows.each { CloudantQueryResult.ResultObject row ->
-                updateCache(dbUri, entityClass, (T)row.doc)
+                updateCache(dbUri, entityClass, null, (T)row.doc)
             }
             return Promise.pure(result)
         }
     }
 
-    def <T extends CloudantEntity> T getCache(CloudantDbUri dbUri, Class<T> entityClass, String id) {
+    def <T extends CloudantEntity> CASValue<T> getCache(CloudantDbUri dbUri, Class<T> entityClass, String id) {
         if (memcachedClient == null) {
             return null
         }
         try {
-            String object = (String) memcachedClient.get(getKey(dbUri, id))
+            CASValue<String> casValue = (CASValue<String>)memcachedClient.gets(getKey(dbUri, id))
+            if (casValue == null) {
+                return null
+            }
             try {
-                T result = (T) marshaller.unmarshall(object, entityClass)
+                T result = (T) marshaller.unmarshall(casValue.value, entityClass)
                 if (result != null && logger.isDebugEnabled()) {
                     logger.debug("Found {} rev {} from memcached.", result.cloudantId, result.cloudantRev)
                 }
-                return result
+                return new CASValue<T>(casValue.getCas(), result)
             } catch (Exception ex) {
                 logger.warn("Error unmarshalling from memcached.", ex)
                 deleteCacheOnError(dbUri, id)
@@ -186,7 +195,7 @@ class CloudantClientCached implements CloudantClientInternal {
         return null
     }
 
-    def <T extends CloudantEntity> void updateCache(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> void updateCache(CloudantDbUri dbUri, Class<T> entityClass, CASValue<T> casValue, T entity) {
         if (memcachedClient == null || entity == null) {
             return
         }
@@ -195,14 +204,25 @@ class CloudantClientCached implements CloudantClientInternal {
         if (entity.getId() != null) {
             entity.setCloudantId(entity.getId().toString())
         }
-        if (entity.getCloudantId() == null) {
+        if (entity.getCloudantId() == null || dbUri.cloudantUri.dc != currentDc) {
+            // Don't cache if dc URI is not for current DC.
             return
         }
 
         try {
             String value = marshaller.marshall(entity)
             if (value.length() < this.maxEntitySize) {
-                memcachedClient.set(getKey(dbUri, entity.cloudantId), this.expiration, value).get()
+                boolean isSuccessful = false
+                if (casValue == null) {
+                    isSuccessful = memcachedClient.add(getKey(dbUri, entity.cloudantId), this.expiration, value).get()
+                } else {
+                    CASResponse casResponse = memcachedClient.cas(getKey(dbUri, entity.cloudantId), casValue.getCas(), this.expiration, value)
+                    isSuccessful = (casResponse == CASResponse.OK)
+                }
+                if (!isSuccessful) {
+                    logger.debug("Update conflict for {} rev {} to memcached.", entity.cloudantId, entity.cloudantRev)
+                    deleteCacheOnError(dbUri, entity.cloudantId)
+                }
             } else {
                 memcachedClient.delete(getKey(dbUri, entity.cloudantId)).get()
                 logger.debug("Entity {} of type {} oversized for memcached. Entity size: {}", entity.cloudantId, entityClass, value.length())
@@ -240,7 +260,7 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     private String getKey(CloudantDbUri dbUri, String id) {
-        return id + ":" + dbUri.dbName + ":" + dbUri.cloudantUri.dc
+        return id + ":" + dbUri.fullDbName + ":" + dbUri.cloudantUri.dc
     }
 
     private static Integer safeParseInt(String str) {

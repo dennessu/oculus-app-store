@@ -32,7 +32,7 @@
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>
 
-    <bean id="dualwriteDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="dualwriteDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${dualwrite.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/dualwrite"/>

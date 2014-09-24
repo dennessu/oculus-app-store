@@ -5,6 +5,8 @@
  */
 package com.junbo.common.webflow
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.util.UUIDUtils
+import com.junbo.configuration.topo.DataCenters
 import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.langur.core.webflow.state.StateRepository
 import groovy.transform.CompileStatic
@@ -16,7 +18,7 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
 
     @Override
     Conversation newConversation() {
-        String id = UUID.randomUUID().toString()
+        String id = UUIDUtils.randomUUIDwithDC().toString()
 
         def conversation = new Conversation(
                 id: id,
@@ -34,6 +36,17 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
         }
 
         ConversationEntity entity = cloudantGetSync(conversationId)
+        if (entity == null) {
+            int tokenDc = UUIDUtils.getDCFromUUID(conversationId)
+            if (DataCenters.instance().isLocalDataCenter(tokenDc)) {
+                return null
+            }
+            def fallbackDbUri = getDbUriByDc(tokenDc)
+            if (fallbackDbUri == null) {
+                return null
+            }
+            return wrap((ConversationEntity)getEffective().cloudantGet(fallbackDbUri, entityClass, conversationId).get())
+        }
         return wrap(entity)
     }
 

@@ -35,6 +35,7 @@ public class Oauth {
 
     public static final String DefaultOauthEndpoint = ConfigHelper.getSetting("defaultOauthEndpoint");
     public static final String DefaultRedirectURI = ConfigHelper.getSetting("defaultRedirectURI");
+    public static final String DefaultOauthSecondaryEndpoint = ConfigHelper.getSetting("secondaryDcEndpoint");
 
     public static final String DefaultAuthorizeURI = DefaultOauthEndpoint + "/oauth2/authorize";
     public static final String DefaultLogoutURI = DefaultOauthEndpoint + "/oauth2/end-session";
@@ -65,6 +66,7 @@ public class Oauth {
     public static final String DefaultFNIdToken = "id_token";
     public static final String DefaultFNLastName = "last_name";
     public static final String DefaultFNLocale = "locale";
+    public static final String DefaultFNCountry = "country";
     public static final String DefaultFNLogin = "login";
     public static final String DefaultFNLoginState = "ls";
     //public static final String DefaultFNNickName = "nickname";
@@ -74,12 +76,13 @@ public class Oauth {
     public static final String DefaultFNUserId = "userId";
     public static final String DefaultFNUserName = "username";
 
+
     public static String GetRegistrationCid() throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
-                        + "?client_id="
-                        + DefaultClientId
-                        + "&response_type=code&scope=identity&redirect_uri="
-                        + DefaultRedirectURI,
+                + "?client_id="
+                + DefaultClientId
+                + "&response_type=code&scope=identity&redirect_uri="
+                + DefaultRedirectURI,
                 false);
         try {
             String tarHeader = "Location";
@@ -95,6 +98,10 @@ public class Oauth {
     }
 
     public static String GetAccessToken(String authCode) throws Exception {
+        return GetAccessToken(authCode, DefaultTokenURI);
+    }
+
+    public static String GetAccessToken(String authCode, String uri) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCode, authCode));
         nvps.add(new BasicNameValuePair(DefaultFNClientId, DefaultClientId));
@@ -102,7 +109,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNGrantType, DefaultGrantType));
         nvps.add(new BasicNameValuePair(DefaultFNRedirectURI, DefaultRedirectURI));
 
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultTokenURI, nvps, false);
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(uri, nvps, false);
         try {
             AccessTokenResponse accessTokenResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), AccessTokenResponse.class);
@@ -115,8 +122,13 @@ public class Oauth {
     }
 
     public static TokenInfo GetTokenInfo(String accessToken) throws Exception {
-        return HttpclientHelper.SimpleGet(DefaultTokenInfoURI + "?access_token=" + accessToken, TokenInfo.class);
+        return GetTokenInfo(accessToken, DefaultTokenInfoURI);
     }
+
+    public static TokenInfo GetTokenInfo(String accessToken, String uri) throws Exception {
+        return HttpclientHelper.SimpleGet(uri + "?access_token=" + accessToken, TokenInfo.class);
+    }
+
 
     public static String SSO2GetAuthCode(String loginState) throws Exception {
         List<NameValuePair> nvpHeaders = new ArrayList<NameValuePair>();
@@ -145,7 +157,11 @@ public class Oauth {
     }
 
     public static String GetViewStateByCid(String cid) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid);
+        return GetViewStateByCid(cid, DefaultAuthorizeURI);
+    }
+
+    public static String GetViewStateByCid(String cid, String uri) throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(uri + "?cid=" + cid);
         try {
             String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
             //System.out.print(responseString);
@@ -233,6 +249,29 @@ public class Oauth {
         }
     }
 
+    public static void VerifyEmail(String cid, String uriEndPoint) throws Exception{
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
+        response.close();
+        // skip payment method view
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(DefaultFNEvent, "skip"));
+        response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
+        response.close();
+        // goto next and get email verified
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
+        response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
+        ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
+                new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
+        response.close();
+        String emailLink = viewModelResponse.getModel().get("link").toString();
+        emailLink = URLProtocolAuthorityReplace(emailLink, uriEndPoint);
+        VerifyEmail(emailLink, false);
+    }
+
+
     private static void RunPostRegistrationWithEmailVerification(String cid, Boolean doubleVerifyEmail)
             throws Exception {
         // get payment method view
@@ -276,12 +315,12 @@ public class Oauth {
 
     public static String GetLoginCid() throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
-                        + "?client_id="
-                        + DefaultClientId
-                        + "&response_type=token%20id_token&scope=openid%20identity&"
-                        + "redirect_uri="
-                        + DefaultRedirectURI
-                        + "&nonce=randomstring&locale=en_US&state=randomstring",
+                + "?client_id="
+                + DefaultClientId
+                + "&response_type=token%20id_token&scope=openid%20identity&"
+                + "redirect_uri="
+                + DefaultRedirectURI
+                + "&nonce=randomstring&locale=en_US&state=randomstring",
                 false);
         try {
             String tarHeader = "Location";
@@ -296,14 +335,18 @@ public class Oauth {
         }
     }
 
-    public static String UserLogin(String cid, String userName, String password) throws Exception {
+    public static String UserLogin(String cid, String email, String password) throws Exception {
+        return UserLogin(cid, email, password, DefaultAuthorizeURI);
+    }
+
+    public static String UserLogin(String cid, String email, String password, String uri) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
-        nvps.add(new BasicNameValuePair(DefaultFNLogin, userName));
+        nvps.add(new BasicNameValuePair(DefaultFNLogin, email));
         nvps.add(new BasicNameValuePair(DefaultFNPassword, password == null ? DefaultUserPwd : password));
 
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(uri, nvps, false);
         try {
             ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
@@ -315,8 +358,12 @@ public class Oauth {
     }
 
     public static Map<String, String> GetLoginUser(String requestURI) throws Exception {
+        return GetLoginUser(requestURI, DefaultOauthEndpoint);
+    }
+
+    public static Map<String, String> GetLoginUser(String requestURI, String uri) throws Exception {
         Map<String, String> results = new HashMap<>();
-        requestURI = URLProtocolAuthorityReplace(requestURI, DefaultOauthEndpoint);
+        requestURI = URLProtocolAuthorityReplace(requestURI, uri);
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
         try {
             String tarHeader = "Location";
@@ -382,6 +429,21 @@ public class Oauth {
                     viewModelResponse.getModel().get("verifyResult"));
             Validator.Validate("validate email verify errors", validateUsedToken ? false : true,
                     viewModelResponse.getErrors().isEmpty());
+        } finally {
+            response.close();
+        }
+    }
+
+    public static String PostSendVerifyEmail(String userId, String piid, String uri) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNUserId, userId));
+        nvps.add(new BasicNameValuePair(DefaultFNLocale, "en_US"));
+        nvps.add(new BasicNameValuePair(DefaultFNCountry, "US"));
+        nvps.add(new BasicNameValuePair("tml", piid));
+
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(uri + "/oauth2/verify-email", nvps, false);
+        try {
+            return EntityUtils.toString(response.getEntity(), "UTF-8");
         } finally {
             response.close();
         }

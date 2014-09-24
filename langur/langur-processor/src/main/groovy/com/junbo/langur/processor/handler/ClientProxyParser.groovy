@@ -276,7 +276,16 @@ class ClientProxyParser implements RestResourceHandler {
         def result = []
 
         def typeElement = (TypeElement) ((DeclaredType) variableType).asElement()
-        ElementFilter.fieldsIn(elementUtils.getAllMembers(typeElement)).each { VariableElement variableElement ->
+        def allFields = new ArrayList<>()
+        while (true) {
+            if (typeElement == null || typeElement.toString() == OBJECT_TYPE) {
+                break
+            }
+            allFields.addAll(ElementFilter.fieldsIn(elementUtils.getAllMembers(typeElement)))
+            typeElement = (TypeElement)((DeclaredType) typeElement.getSuperclass()).asElement()
+        }
+
+        allFields.each { VariableElement variableElement ->
             String fieldGetMethodName = getGetMethodName(variableElement)
             QueryParam queryParam = variableElement.getAnnotation(QueryParam)
             if (queryParam != null && !simpleNames.contains(fieldGetMethodName)) {

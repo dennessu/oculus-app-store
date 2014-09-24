@@ -56,7 +56,7 @@ class RatingFacadeImpl implements RatingFacade {
     private AppError convertError(Throwable error) {
         AppError e = ErrorUtils.toAppError(error)
         if (e != null) {
-            return AppErrors.INSTANCE.ratingConnectionError(e)
+            return AppErrors.INSTANCE.ratingResultError(e)
         }
         return AppErrors.INSTANCE.ratingConnectionError(error.message)
     }

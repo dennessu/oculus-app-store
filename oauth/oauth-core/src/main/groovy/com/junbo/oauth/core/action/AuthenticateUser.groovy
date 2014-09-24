@@ -14,7 +14,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -111,6 +111,10 @@ class AuthenticateUser implements Action {
                     case HttpStatus.PRECONDITION_FAILED.value():
                         handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential())
                         break
+                    // For response of TOO_MANY_REQUESTS, it suggests that the User reaches maximum login attempt
+                    case HttpStatus.TOO_MANY_REQUESTS.value():
+                        handleAppError(contextWrapper, e.error)
+                        break
                     // For response of FORBIDDEN, it suggests that captcha is required for user login.
                     case HttpStatus.FORBIDDEN.value():
                         // TODO: wait for identity response of captcha required
@@ -149,7 +153,8 @@ class AuthenticateUser implements Action {
 
             def oldLoginState = contextWrapper.loginState
             if (oldLoginState != null) {
-                loginState.id = oldLoginState.id
+                loginState.loginStateId = oldLoginState.loginStateId
+                loginState.hashedId = oldLoginState.hashedId
                 loginState.rev = oldLoginState.rev
 
                 if (loginState.userId == oldLoginState.userId) {

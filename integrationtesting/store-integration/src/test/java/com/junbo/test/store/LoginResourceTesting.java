@@ -18,6 +18,7 @@ import com.junbo.test.common.Validator;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
@@ -40,6 +41,7 @@ public class LoginResourceTesting extends BaseTestClass {
     public static String CREDENTIAL_STRENGTH_STRONG = "STRONG";
 
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
+
     @Property(
             priority = Priority.Dailies,
             features = "Store",
@@ -97,14 +99,15 @@ public class LoginResourceTesting extends BaseTestClass {
     @Test
     public void testCheckEmail() throws Exception {
         String invalidEmail = "123Test";
-        UserNameCheckResponse userNameCheckResponse =null;
+        UserNameCheckResponse userNameCheckResponse = null;
         Error error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");
         assert error != null;
         assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
         assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
         invalidEmail = "###1212@silkcloud.com";
-        error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");assert error != null;
+        error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");
+        assert error != null;
         assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
         assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
@@ -120,7 +123,7 @@ public class LoginResourceTesting extends BaseTestClass {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         assert links != null;
-        for(String link : links) {
+        for (String link : links) {
             oAuthClient.accessEmailVerifyLink(link);
         }
         userProfileGetResponse = testDataProvider.getUserProfile();
@@ -205,12 +208,12 @@ public class LoginResourceTesting extends BaseTestClass {
         createUserRequest.setPin(oldPin);
         Date oldDob = createUserRequest.getDob();
         createUserRequest.setDob(DateUtils.addYears(new Date(), 100));
-        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 412, "131.140");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("dob");
 
         createUserRequest.setDob(DateUtils.addYears(new Date(), -11));
-        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 412, "131.140");
         assert error != null;
 
 
@@ -224,6 +227,7 @@ public class LoginResourceTesting extends BaseTestClass {
 
         createUserResponse = testDataProvider.CreateUser(createUserRequest, true, 200);
         Validator.Validate("Validate username created successfully", createUserRequest.getUsername(), createUserResponse.getUsername());
+        validationHelper.verifyEmailInAuthResponse(createUserResponse, createUserRequest.getEmail(), false);
 
         // validate create with same username failure
         error = testDataProvider.CreateUserWithError(createUserRequest, true, 409, "131.002");
@@ -309,16 +313,19 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testLogin() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
 
         assert authTokenResponse.getUsername() != null;
-        AuthTokenResponse signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        AuthTokenResponse signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         Validator.Validate("validate createdToken equals to signIn token", authTokenResponse.getUsername(), signInResponse.getUsername());
+        validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
-        signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), RandomHelper.randomAlphabetic(15), 412);
+        signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), RandomHelper.randomAlphabetic(15), 412);
         assert signInResponse == null;
 
-        signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         Validator.Validate("validate createdToken equals to signIn token", authTokenResponse.getUsername(), signInResponse.getUsername());
+        validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
         signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         Validator.Validate("validate createdToken equals to signIn token through email login", authTokenResponse.getUsername(), signInResponse.getUsername());
@@ -328,6 +335,7 @@ public class LoginResourceTesting extends BaseTestClass {
 
         signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         Validator.Validate("validate createdToken equals to signIn token through email login", authTokenResponse.getUsername(), signInResponse.getUsername());
+        validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
         UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
         StoreUserProfile storeUserProfile = new StoreUserProfile();
@@ -346,11 +354,13 @@ public class LoginResourceTesting extends BaseTestClass {
         userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
         assert userProfileUpdateResponse != null;
 
-        signInResponse = testDataProvider.SignIn(createUserRequest.getUsername(), newPassword);
+        signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), newPassword);
         Validator.Validate("validate signIn token equals to the current user", createUserRequest.getUsername(), signInResponse.getUsername());
+        validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
         signInResponse = testDataProvider.SignIn(createUserRequest.getEmail(), newPassword);
         Validator.Validate("validate signIn token equals to current user with username login", createUserRequest.getUsername(), signInResponse.getUsername());
+        validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
     }
 
     @Property(
@@ -367,7 +377,8 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testLoginInvalid() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
-        assert authTokenResponse !=  null;
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
+        assert authTokenResponse != null;
 
         Error error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PIN", "1234", 400, "130.001");
         assert error != null;
@@ -387,9 +398,10 @@ public class LoginResourceTesting extends BaseTestClass {
         assert error.getDetails().get(0).getField().contains("userCredential.value");
         assert error.getDetails().get(0).getReason().contains("Field is required");
 
-        authTokenResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        authTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert authTokenResponse != null;
         assert authTokenResponse.getUsername().equals(createUserRequest.getUsername());
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), true);
     }
 
     @Property(
@@ -406,9 +418,11 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testRefreshToken() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
 
         AuthTokenResponse response = testDataProvider.getToken(authTokenResponse.getRefreshToken());
         Validator.Validate("Validate refreshToken works", response.getUsername(), authTokenResponse.getUsername());
+        validationHelper.verifyEmailInAuthResponse(response, createUserRequest.getEmail(), true);
 
         Error error = testDataProvider.getTokenWithError(authTokenResponse.getAccessToken(), 400, "132.001");
         assert error != null;
@@ -450,6 +464,7 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testUpdateEmail() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
 
         UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
         StoreUserProfile storeUserProfile = new StoreUserProfile();
@@ -474,7 +489,7 @@ public class LoginResourceTesting extends BaseTestClass {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
         assert links != null;
-        for(String link : links) {
+        for (String link : links) {
             oAuthClient.accessEmailVerifyLink(link);
         }
 
@@ -482,6 +497,7 @@ public class LoginResourceTesting extends BaseTestClass {
         assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
 
         AuthTokenResponse response = testDataProvider.SignIn(newEmail, createUserRequest.getPassword());
+        validationHelper.verifyEmailInAuthResponse(response, newEmail, true);
         assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
     }
 
@@ -675,11 +691,11 @@ public class LoginResourceTesting extends BaseTestClass {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
         assert links != null;
-        for(String link : links) {
+        for (String link : links) {
             oAuthClient.accessEmailVerifyLink(link);
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             ChallengeAnswer answer = new ChallengeAnswer();
             answer.setType(userProfileUpdateResponse.getChallenge().getType());
             answer.setPassword(RandomHelper.randomAlphabetic(10));
@@ -827,7 +843,7 @@ public class LoginResourceTesting extends BaseTestClass {
         links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         assert links != null;
         assert links.size() == 2;
-        for(String link : links) {
+        for (String link : links) {
             try {
                 oAuthClient.accessEmailVerifyLink(link);
             } catch (Exception e) {
@@ -843,4 +859,38 @@ public class LoginResourceTesting extends BaseTestClass {
         assert links != null;
         assert links.size() == 1;
     }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store sign in",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            environment = "release",
+            status = Status.Enable,
+            description = "Test user sign in with multi endpoint",
+            steps = {
+                    "1. Create user in east dc",
+                    "2. Sign in in west dc",
+
+            }
+    )
+    @Test(groups = "int/ppe/prod/sewer")
+    public void testSignInWithMultiEndpoint() throws Exception {
+        try {
+            Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
+            CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+            AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+            String userName = authTokenResponse.getUsername();
+            Master.getInstance().setEndPointType(Master.EndPointType.Primary);
+            AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
+
+            validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+        }
+        catch (Exception ex){}
+        finally {
+            Master.getInstance().setEndPointType(Master.EndPointType.Primary);
+        }
+
+    }
+
 }

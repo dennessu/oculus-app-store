@@ -17,7 +17,7 @@ interface TokenGenerator {
 
     String generateSessionStateId()
 
-    String generateAuthorizationCode()
+    String generateAuthorizationCode(Long userId)
 
     String generateAccessToken(Long userId)
 
@@ -39,6 +39,8 @@ interface TokenGenerator {
 
     String generateSalt()
 
+    String hashKey(String key)
+
     boolean isValidAccessToken(String tokenValue)
 
     boolean isValidRefreshToken(String tokenValue)
@@ -48,4 +50,8 @@ interface TokenGenerator {
     boolean isValidEmailVerifyCode(String codeValue)
 
     boolean isValidResetPasswordCode(String codeValue)
+
+    int getTokenDc(String token)
+
+    int getTokenUserDc(String token)
 }

@@ -42,6 +42,11 @@ class AuthorizeContext {
         return CURRENT_TOKEN_INFO.get()
     }
 
+    static String getCurrentAccessToken() {
+        TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
+        return tokenInfo == null ? null : tokenInfo.tokenValue
+    }
+
     static UserId getCurrentUserId() {
         TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
         return tokenInfo == null ? null : tokenInfo.sub
@@ -75,7 +80,6 @@ class AuthorizeContext {
 
         TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
         if (tokenInfo == null || tokenInfo.scopes == null) {
-            LOGGER.info('The token info\'s scope is empty. hasScopes return false')
             return false
         }
 
@@ -87,7 +91,6 @@ class AuthorizeContext {
 
         for (String scope : scopes) {
             if (!currentScopes.contains(scope) && scope != '*') {
-                LOGGER.info("Current scopes do not contain $scope")
                 return false
             }
         }
@@ -151,6 +154,7 @@ class AuthorizeContext {
 
         def currentRights = CURRENT_RIGHTS.get()
         if (currentRights == null) {
+            LOGGER.info('The current rights is empty, hasRights return false')
             return false
         }
 
@@ -160,6 +164,7 @@ class AuthorizeContext {
 
         for (String right : rights) {
             if (!currentRights.contains(right)) {
+                LOGGER.info("Current rights do not contain $right")
                 return false
             }
         }

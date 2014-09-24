@@ -2,6 +2,7 @@ package com.junbo.store.clientproxy.catalog
 import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.enums.OfferAttributeType
 import com.junbo.catalog.spec.enums.PriceType
+import com.junbo.catalog.spec.enums.Status
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
 import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
@@ -10,11 +11,13 @@ import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
@@ -23,8 +26,11 @@ import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.casey.CaseyFacade
+import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.common.utils.CommonUtils
+import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.catalog.Offer
@@ -57,13 +63,21 @@ class CatalogFacadeImpl implements CatalogFacade {
     @Resource(name = 'storeItemBuilder')
     private ItemBuilder itemBuilder
 
+    @Resource(name = 'storeAppErrorUtils')
+    private AppErrorUtils appErrorUtils
+
     @Override
     Promise<Item> getItem(ItemId itemId, ApiContext apiContext) {
         ItemData itemData = new ItemData()
         itemData.genres = []
         Item catalogItem
         Promise.pure().then {
-            resourceContainer.itemResource.getItem(itemId.value).then { Item e ->
+            resourceContainer.itemResource.getItem(itemId.value).recover { Throwable ex ->
+                if (appErrorUtils.isAppError(ex, ErrorCodes.Catalog.ResourceNotFound)) {
+                    throw AppCommonErrors.INSTANCE.resourceNotFound('Item', itemId).exception()
+                }
+                throw ex
+            }.then { Item e ->
                 catalogItem = e
                 itemData.item = e
                 return Promise.pure()
@@ -86,7 +100,7 @@ class CatalogFacadeImpl implements CatalogFacade {
             if (catalogItem.currentRevisionId == null) {
                 return Promise.pure()
             }
-            resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision e ->
+            resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions(locale: apiContext.locale.getId().value)).then { ItemRevision e ->
                 itemData.currentRevision = e
                 return Promise.pure()
             }
@@ -145,12 +159,37 @@ class CatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode) {
-        // todo get item revision by version code
-        return resourceContainer.itemResource.getItem(itemId.value).then { Item catalogItem ->
-            return resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
-                return Promise.pure(itemRevision)
+    Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode, ApiContext apiContext) {
+        if (versionCode == null) {
+            return resourceContainer.itemResource.getItem(itemId.value).then { Item catalogItem ->
+                return resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId,
+                        new ItemRevisionGetOptions(locale: apiContext.locale.getId().value)).then { ItemRevision itemRevision ->
+                    return Promise.pure(itemRevision)
+                }
             }
+        }
+
+        ItemRevisionsGetOptions options = new ItemRevisionsGetOptions(status: Status.APPROVED.name(),
+                itemIds: [itemId.value] as Set, locale: apiContext.locale.getId().value)
+        ItemRevision result
+        CommonUtils.loop {
+            resourceContainer.itemRevisionResource.getItemRevisions(options).then { Results<ItemRevision> itemRevisionResults ->
+                result = itemRevisionResults?.items?.find { ItemRevision e ->
+                    return itemBuilder.getVersionCode(e?.binaries?.get(apiContext.platform.value)) == versionCode
+                }
+                if (result != null) {
+                    return Promise.pure(Promise.BREAK)
+                }
+
+                String cursor = CommonUtils.getQueryParam(itemRevisionResults?.next?.href, 'cursor')
+                if (StringUtils.isEmpty(cursor) || CollectionUtils.isEmpty(itemRevisionResults?.items)) {
+                    return Promise.pure(Promise.BREAK)
+                }
+                options.cursor = cursor
+                return Promise.pure()
+            }
+        }.then {
+            return Promise.pure(result)
         }
     }
 
@@ -196,11 +235,15 @@ class CatalogFacadeImpl implements CatalogFacade {
             if (catalogOffer.currentRevisionId == null) {
                 return Promise.pure()
             }
-            resourceContainer.offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions()).then { OfferRevision e ->
+            resourceContainer.offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions(locale: apiContext.locale.getId().value)).then { OfferRevision e ->
                 result.offerRevision = e
                 return Promise.pure()
             }
-        }.then { // get categories
+        }.then {
+            if (!result.offerRevision?.countries?.get(apiContext.country.getId().value)?.isPurchasable) { // return null if offer not purchasable from the country
+                return Promise.pure()
+            }
+            // get categories
             Promise.each(catalogOffer.categories) { String categoryId ->
                 getOfferAttribute(categoryId, apiContext).then { OfferAttribute offerAttribute ->
                     if (offerAttribute != null) {
@@ -208,26 +251,29 @@ class CatalogFacadeImpl implements CatalogFacade {
                     }
                     return Promise.pure()
                 }
+            }.then { // get publisher
+                getOrganization(catalogOffer.ownerId).then { Organization organization->
+                    result.publisher = organization
+                    return Promise.pure()
+                }
+            }.then {
+                return Promise.pure(result)
             }
-        }.then { // get publisher
-            getOrganization(catalogOffer.ownerId).then { Organization organization->
-                result.publisher = organization
-                return Promise.pure()
-            }
-        }.then {
-            return Promise.pure(result)
         }
     }
 
     private Promise<CaseyData> getCaseyData(String itemId, ApiContext apiContext) {
         CaseyData result = new CaseyData()
-        caseyFacade.getAggregatedRatings(new ItemId(itemId), apiContext).then { List<AggregatedRatings> aggregatedRatings ->
+        caseyFacade.getAggregatedRatings(new ItemId(itemId), apiContext).then { Map<String, AggregatedRatings> aggregatedRatings ->
             result.aggregatedRatings = aggregatedRatings
             return Promise.pure(result)
         }
     }
 
     private Promise<Organization> getOrganization(OrganizationId organizationId) {
+        if (organizationId == null) {
+            return Promise.pure()
+        }
         Promise.pure().then {
             resourceContainer.organizationResource.get(organizationId, new OrganizationGetOptions())
         }.recover { Throwable ex ->

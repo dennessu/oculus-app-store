@@ -116,7 +116,8 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
 
         String putUrl = catalogServerURL + "/" + offerRevisionId;
         if (offerRevision.getStatus().equalsIgnoreCase(CatalogEntityStatus.APPROVED.name()) ||
-                offerRevision.getStatus().equalsIgnoreCase(CatalogEntityStatus.REJECTED.name())) {
+                offerRevision.getStatus().equalsIgnoreCase(CatalogEntityStatus.REJECTED.name()) ||
+                offerRevision.getStatus().equalsIgnoreCase(CatalogEntityStatus.OBSOLETE.name())) {
             isServiceScope = true;
         }
         else {

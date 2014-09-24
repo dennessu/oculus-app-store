@@ -11,8 +11,11 @@
             <map>
                 <entry key="AuthorizeEndpoint.authorize" value="500"/>
                 <entry key="AuthorizeEndpoint.postAuthorize" value="500"/>
+                <entry key="TokenEndpoint.postToken" value="100"/>
                 <entry key="ResetPasswordEndpoint.resetPasswordLink" value="100"/>
                 <entry key="ResetPasswordEndpoint.resetPassword" value="100"/>
+                <entry key="LoginResource.createUser" value="100"/>
+                <entry key="LoginResource.signIn" value="100"/>
             </map>
         </property>
     </bean>

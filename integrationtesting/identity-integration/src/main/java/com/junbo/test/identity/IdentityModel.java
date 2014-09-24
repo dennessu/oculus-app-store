@@ -9,6 +9,7 @@ package com.junbo.test.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.*;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.identity.spec.v1.model.*;
@@ -250,6 +251,14 @@ public class IdentityModel {
         return userPersonalInfo;
     }
 
+    public static Group DefaultGroup(OrganizationId organizationId) throws Exception {
+        Group group = new Group();
+        group.setName(RandomHelper.randomAlphabetic(15));
+        group.setActive(true);
+        group.setOrganizationId(organizationId);
+        return group;
+    }
+
     public static Organization DefaultOrganization() throws Exception {
         Organization org = new Organization();
         org.setName(RandomHelper.randomAlphabetic(20));
@@ -319,10 +328,7 @@ public class IdentityModel {
     public static UserTFA DefaultUserTFA() throws Exception {
         UserTFA userTFA = new UserTFA();
         userTFA.setVerifyType(RandomTFAVerifyType());
-        //userTFA.setVerifyType(TFAVerifyType.CALL.name());
-        if (!userTFA.getVerifyType().equals(TFAVerifyType.EMAIL.name())) {
-            userTFA.setTemplate(RandomHelper.randomAlphabetic(100));
-        }
+        userTFA.setTemplate(RandomHelper.randomAlphabetic(100));
         return userTFA;
     }
 

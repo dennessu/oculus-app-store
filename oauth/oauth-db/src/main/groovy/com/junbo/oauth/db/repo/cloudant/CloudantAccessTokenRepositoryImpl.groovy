@@ -4,28 +4,23 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.db.repo.cloudant
-import com.junbo.common.cloudant.CloudantClient
-import com.junbo.oauth.db.generator.TokenGenerator
+
 import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.spec.model.AccessToken
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 /**
  * CloudantAccessTokenRepositoryImpl.
  */
 @CompileStatic
-class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> implements AccessTokenRepository {
-    private TokenGenerator tokenGenerator
-
-    @Required
-    void setTokenGenerator(TokenGenerator tokenGenerator) {
-        this.tokenGenerator = tokenGenerator
-    }
+class CloudantAccessTokenRepositoryImpl
+        extends CloudantTokenRepositoryBase<AccessToken> implements AccessTokenRepository {
 
     @Override
     AccessToken save(AccessToken accessToken) {
         if (accessToken.tokenValue == null) {
             accessToken.tokenValue = tokenGenerator.generateAccessToken(accessToken.userId)
+            accessToken.hashedTokenValue = tokenGenerator.hashKey(accessToken.tokenValue)
         }
 
         return cloudantPostSync(accessToken)
@@ -33,7 +28,17 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
 
     @Override
     AccessToken get(String tokenValue) {
-        return cloudantGetSync(tokenValue)
+        if (StringUtils.isEmpty(tokenValue)) {
+            return null
+        }
+
+        String tokenHash = tokenGenerator.hashKey(tokenValue)
+        AccessToken token = cloudantGetSyncWithFallback(tokenValue, tokenHash)
+        if (token != null) {
+            token.tokenValue = tokenValue
+        }
+
+        return token
     }
 
     @Override
@@ -53,7 +58,14 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
 
     @Override
     void remove(String tokenValue) {
-        cloudantDeleteSync(tokenValue)
+        if (StringUtils.hasText(tokenValue)) {
+            cloudantDeleteSync(tokenGenerator.hashKey(tokenValue))
+        }
+    }
+
+    @Override
+    void removeByHash(String hash) {
+        cloudantDeleteSync(hash)
     }
 
     @Override

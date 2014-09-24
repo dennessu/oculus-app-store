@@ -12,7 +12,7 @@
             {
                 "precondition": "hasRole(\"owner\", \"publisher\")",
                 "rights": [
-                    "draft.read", "create", "update", "delete"
+                    "draft.read", "create", "update", "delete", "obsolete"
                 ],
                 "scriptType": "SPEL"
             }
@@ -30,7 +30,7 @@
             {
                 "precondition": "true",
                 "rights": [
-                    "draft.read", "create", "read", "update", "delete", "approve", "reject", "publish"
+                    "draft.read", "create", "read", "update", "delete", "approve", "reject", "publish", "obsolete"
                 ],
                 "scriptType": "SPEL"
             }

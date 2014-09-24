@@ -10,7 +10,9 @@ import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties
 import com.junbo.common.id.ItemId
+import com.junbo.common.id.ItemRevisionId
 import com.junbo.common.id.OfferId
+import com.junbo.common.id.OfferRevisionId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.store.spec.model.ApiContext
@@ -59,9 +61,10 @@ class ItemBuilder {
         }
     }
 
-    public Item buildItem(CaseyOffer caseyOffer, List<AggregatedRatings> aggregatedRatings, Organization publisher, Organization developer, ApiContext apiContext) {
+    public Item buildItem(CaseyOffer caseyOffer, Map<String, AggregatedRatings> aggregatedRatings, Organization publisher, Organization developer, ApiContext apiContext) {
         Item result = new Item()
         CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer?.items) ? null : caseyOffer.items[0]
+        result.currentRevision = caseyItem?.currentRevision
         result.title = caseyItem?.name
         result.itemType = caseyItem?.type
         result.descriptionHtml = caseyItem?.longDescription
@@ -69,7 +72,7 @@ class ItemBuilder {
         result.creator = developer?.name
         result.self = caseyItem?.self
         result.images = buildImages(caseyItem?.images, caseyItem?.self)
-        result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext.country.getId().value)
+        result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext)
         result.offer = buildOffer(caseyOffer, apiContext)
         result.aggregatedRatings = aggregatedRatings
         return result
@@ -82,6 +85,7 @@ class ItemBuilder {
         Item item = new Item()
         item.self = new ItemId(itemData.item.getId())
         item.itemType = itemData.item.type
+        item.currentRevision = itemData.item.currentRevisionId == null ? null : new ItemRevisionId(itemData.item.currentRevisionId)
 
         ItemRevisionLocaleProperties itemLocaleProperties = itemData.currentRevision?.locales?.get(apiContext.locale.getId().value)
         item.title = itemLocaleProperties?.name
@@ -96,6 +100,7 @@ class ItemBuilder {
         if (itemData.offer != null) {
             item.offer = new Offer()
             item.offer.self = new OfferId(itemData.offer.offer.getId())
+            item.offer.currentRevision = itemData.offer.offer.currentRevisionId == null ? null : new OfferRevisionId(itemData.offer.offer.currentRevisionId)
             item.offer.currency = apiContext.currency.getId()
             OfferRevisionLocaleProperties localeProperties = itemData.offer?.offerRevision?.locales?.get(apiContext.locale.getId().value)
             item.offer.formattedDescription = localeProperties?.shortDescription
@@ -130,7 +135,7 @@ class ItemBuilder {
         Binary binary = itemRevision?.binaries?.get(Platform.ANDROID.value)
         result.contentRating = null
         result.installationSize = binary?.size
-        result.versionCode = null // todo set the version code
+        result.versionCode = getVersionCode(binary)
         result.versionString = binary?.version
         result.releaseDate = itemData.offer?.offerRevision?.getCountries()?.get(apiContext.country.getId().value)?.releaseDate
         result.revisionNotes = [buildRevisionNote(itemRevisionLocaleProperties?.releaseNotes, binary, itemData.offer?.offerRevision?.countries?.get(apiContext.country.getId().value)?.releaseDate)]
@@ -174,12 +179,14 @@ class ItemBuilder {
         return result
     }
 
-    private AppDetails buildAppDetails(CaseyOffer caseyOffer, CaseyItem caseyItem, Organization publisher, Organization developer, String country) {
+    private AppDetails buildAppDetails(CaseyOffer caseyOffer, CaseyItem caseyItem, Organization publisher, Organization developer, ApiContext apiContext) {
+        String country = apiContext.country.getId().value
         AppDetails appDetails = new AppDetails()
         appDetails.packageName = caseyItem?.packageName
-        Binary binary = caseyItem?.binaries?.get(Platform.ANDROID.value)
+        Binary binary = caseyItem?.binaries?.get(apiContext.platform.value)
         appDetails.installationSize = binary?.size
-        appDetails.versionCode = null // todo set the version code
+        appDetails.versionCode = getVersionCode(binary)
+
         appDetails.versionString = binary?.version
         appDetails.releaseDate = caseyOffer?.regions?.get(country)?.releaseDate
         appDetails.revisionNotes = [buildRevisionNote(caseyItem?.releaseNotes, binary, appDetails.releaseDate)]
@@ -205,7 +212,7 @@ class ItemBuilder {
 
     private RevisionNote buildRevisionNote(RevisionNotes revisionNotes, Binary binary, Date releaseDate) {
         return new RevisionNote(
-                versionCode: null as Integer, // todo fill version code
+                versionCode: getVersionCode(binary),
                 releaseDate: releaseDate,
                 versionString: binary?.version,
                 title: revisionNotes?.shortNotes,
@@ -218,11 +225,12 @@ class ItemBuilder {
             return null
         }
         Offer offer = new Offer()
+        offer.currentRevision = caseyOffer.currentRevision
         offer.currency = apiContext.currency.getId()
-        offer.price = caseyOffer?.price?.amount
-        offer.self = caseyOffer?.self
-        offer.isFree = caseyOffer?.price?.isFree
-        offer.formattedDescription = caseyOffer?.shortDescription
+        offer.price = caseyOffer.price?.amount
+        offer.self = caseyOffer.self
+        offer.isFree = caseyOffer.price?.isFree
+        offer.formattedDescription = caseyOffer.shortDescription
         return offer
     }
 
@@ -269,5 +277,9 @@ class ItemBuilder {
             return null
         }
         return dimension
+    }
+
+    public Integer getVersionCode(Binary binary) {
+        return binary?.getMetadata()?.get('versionCode')?.asInt()
     }
 }

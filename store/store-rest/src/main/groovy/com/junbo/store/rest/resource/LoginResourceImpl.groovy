@@ -13,11 +13,12 @@ import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.model.GrantType
 import com.junbo.oauth.spec.model.TokenInfo
-import com.junbo.store.rest.context.ErrorContext
-import com.junbo.store.rest.utils.AppErrorUtils
-import com.junbo.store.rest.utils.ErrorCodes
+import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.clientproxy.error.ErrorCodes
+import com.junbo.store.clientproxy.error.ErrorContext
 import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.spec.model.identity.StoreUserEmail
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
 import groovy.transform.CompileStatic
@@ -25,6 +26,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
@@ -112,13 +114,17 @@ class LoginResourceImpl implements LoginResource {
         requestValidator.validateRequiredApiHeaders().validateCreateUserRequest(request)
         ApiContext apiContext = new ApiContext()
         ErrorContext errorContext = new ErrorContext()
+        StoreUserEmail storeUserEmail
 
         requestValidator.validateAndGetCountry(new CountryId(request.cor)).then {
             requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
         }.then {
             createUserBasic(request, apiContext, errorContext)
         }.then {
-            createUserPersonalInfo(request, apiContext, errorContext)
+            createUserPersonalInfo(request, apiContext, errorContext).then { StoreUserEmail email ->
+                storeUserEmail = email
+                return Promise.pure()
+            }
             // todo set the tos and newsPromotionsAgreed
         }.then {
             return resourceContainer.userResource.put(apiContext.user.getId(), apiContext.user).then { User u ->
@@ -136,16 +142,16 @@ class LoginResourceImpl implements LoginResource {
                 appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
                 if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
                         ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
-                        ErrorCodes.Identity.FieldDuplicate)) {
+                        ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction)) {
                     throw ex
                 }
                 appErrorUtils.throwUnknownError('createUser', ex)
             }
         }.then {
-            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(request.preferredLocale, request.cor, apiContext.user.getId(), null)
+            return resourceContainer.emailVerifyEndpoint.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId())
         }.then {
             // get the auth token
-            innerSignIn(apiContext.user.getId())
+            innerSignIn(apiContext.user.getId(), storeUserEmail)
         }
     }
 
@@ -174,18 +180,7 @@ class LoginResourceImpl implements LoginResource {
                         clientSecret: clientSecret
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
-            def response = fromAuthTokenResponse(accessTokenResponse)
-            resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo ->
-                resourceContainer.userResource.get(tokenInfo.sub, new UserGetOptions()).then { User user ->
-                    resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernamePersonalinfo ->
-                        def userLoginName = ObjectMapperProvider.instance().treeToValue(usernamePersonalinfo.value, UserLoginName)
-
-                        response.username = userLoginName.userName
-                        response.userId = tokenInfo.sub
-                        return Promise.pure(response)
-                    }
-                }
-            }
+            return buildResponse(accessTokenResponse, null)
         }.recover { Throwable ex ->
             if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.RefreshTokenExpired, ErrorCodes.OAuth.RefreshTokenInvalid)) {
                 throw ex
@@ -194,7 +189,7 @@ class LoginResourceImpl implements LoginResource {
         }
     }
 
-    private Promise<AuthTokenResponse> innerSignIn(UserId userId) {
+    private Promise<AuthTokenResponse> innerSignIn(UserId userId, StoreUserEmail storeUserEmail) {
         return resourceContainer.tokenEndpoint.postToken(
                 new AccessTokenRequest(
                         userId: IdFormatter.encodeId(userId),
@@ -204,7 +199,7 @@ class LoginResourceImpl implements LoginResource {
                         scope: defaultScopes
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
-            return buildResponse(accessTokenResponse)
+            return buildResponse(accessTokenResponse, storeUserEmail)
         }
     }
 
@@ -219,20 +214,34 @@ class LoginResourceImpl implements LoginResource {
                         scope: defaultScopes
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
-            return buildResponse(accessTokenResponse);
+            return buildResponse(accessTokenResponse, null);
         }
     }
 
-    private Promise<AuthTokenResponse> buildResponse(AccessTokenResponse accessTokenResponse) {
+    private Promise<AuthTokenResponse> buildResponse(AccessTokenResponse accessTokenResponse, StoreUserEmail storeUserEmail) {
         def response = fromAuthTokenResponse(accessTokenResponse)
         return resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo ->
             return resourceContainer.userResource.get(tokenInfo.sub, new UserGetOptions()).then { User user ->
                 return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernamePersonalinfo ->
                     def userLoginName = ObjectMapperProvider.instance().treeToValue(usernamePersonalinfo.value, UserLoginName)
-
                     response.username = userLoginName.userName
                     response.userId = tokenInfo.sub
-                    return Promise.pure(response)
+                    if (storeUserEmail != null) {
+                        response.email = storeUserEmail
+                        return Promise.pure(response)
+                    }
+
+                    UserPersonalInfoLink defaultEmail = null
+                    if (!CollectionUtils.isEmpty(user.emails)) {
+                        defaultEmail = user.emails.find {UserPersonalInfoLink link -> link.isDefault}
+                    }
+                    if (defaultEmail?.value == null) {
+                        return Promise.pure(response)
+                    }
+                    return resourceContainer.userPersonalInfoResource.get(defaultEmail.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo emailInfo ->
+                        response.email = new StoreUserEmail(isValidated: emailInfo.isValidated, value: ObjectMapperProvider.instance().treeToValue(emailInfo.value, Email).info)
+                        return Promise.pure(response)
+                    }
                 }
             }
         }
@@ -310,7 +319,8 @@ class LoginResourceImpl implements LoginResource {
     }
 
 
-    private Promise createUserPersonalInfo(CreateUserRequest createUserRequest, ApiContext apiContext, ErrorContext errorContext) {
+    private Promise<StoreUserEmail> createUserPersonalInfo(CreateUserRequest createUserRequest, ApiContext apiContext, ErrorContext errorContext) {
+        StoreUserEmail userEmail = new StoreUserEmail()
         errorContext.fieldName = 'email'
         return resourceContainer.userPersonalInfoResource.create(
                 new UserPersonalInfo(
@@ -319,6 +329,8 @@ class LoginResourceImpl implements LoginResource {
                         value: ObjectMapperProvider.instance().valueToTree(new Email(info: createUserRequest.email))
                 )
         ).then { UserPersonalInfo emailInfo ->
+            userEmail.isValidated = emailInfo.isValidated
+            userEmail.value = ObjectMapperProvider.instance().treeToValue(emailInfo.value, Email)?.info
             apiContext.user.emails = [
                     new UserPersonalInfoLink(
                             isDefault: true,
@@ -369,6 +381,8 @@ class LoginResourceImpl implements LoginResource {
                 return Promise.pure()
             }
 
+        }.then {
+            return Promise.pure(userEmail)
         }
     }
 

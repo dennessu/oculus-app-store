@@ -51,7 +51,7 @@ public class TestDeleteOfferAttribute extends BaseTestClass {
 
         //Try to get the offer, expected status code is 404.
         try {
-            offerAttributeService.getOfferAttribute(offerAttribute.getId(), 404);
+            offerAttributeService.getOfferAttribute(offerAttribute.getId(), null, 404);
             Assert.fail("Couldn't find the deleted offer attribute");
         }
         catch (Exception ex)

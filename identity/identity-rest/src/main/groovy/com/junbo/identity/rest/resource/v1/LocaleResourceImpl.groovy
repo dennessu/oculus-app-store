@@ -173,6 +173,9 @@ class LocaleResourceImpl implements LocaleResource {
     }
 
     private Promise<List<Locale>> search(LocaleListOptions listOptions) {
+        if (listOptions == null) {
+            throw new IllegalArgumentException('listOptions is null')
+        }
         return localeRepository.searchAll(listOptions.limit, listOptions.offset)
     }
 }

@@ -61,8 +61,7 @@ class OrderServiceContextBuilder {
             return facadeContainer.paymentFacade.
                     getPaymentInstrument(paymentInfo.paymentInstrument.value).syncRecover { Throwable throwable ->
                 LOGGER.error('name=Order_GetPaymentInstrument_Error', throwable)
-                // TODO read the payment error
-                throw AppErrors.INSTANCE.paymentConnectionError().exception()
+                throw throwable
             }.syncThen { PaymentInstrument pi ->
                 pis << pi
             }

@@ -3,8 +3,8 @@
   "client_secret" : "5F989ECADAF12D76FEBD002ECD7BB3A8#DACAFB71A0E03F8639EFA66C80FB809DD137F146E02137DE984AE7E2863C7783BDECCC5F540FC8FBAB6528F7D21D5B10",
   "client_name" : "sewer",
 
-  "scopes" : [ "api.info", "scope.info", "client.info", "role.readonly.service", "group.readonly.service" ],
-  "default_scopes" : [ "api.info", "scope.info", "client.info", "role.readonly.service", "group.readonly.service" ],
+  "scopes" : [ "everyone", "api.info", "scope.info", "client.info", "role.readonly.service", "group.readonly.service", "admininfo.service"],
+  "default_scopes" : [ "everyone", "api.info", "scope.info", "client.info", "role.readonly.service", "group.readonly.service", "admininfo.service" ],
 
   "response_types" : [ ],
   "grant_types" : [ "CLIENT_CREDENTIALS" ]

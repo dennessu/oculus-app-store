@@ -7,6 +7,7 @@ package com.junbo.langur.processor.handler
 
 import com.junbo.langur.core.AuthorizationNotRequired
 import com.junbo.langur.core.routing.RouteBy
+import com.junbo.langur.core.routing.RouteByAccessToken
 import com.junbo.langur.processor.ProcessingException
 import com.junbo.langur.processor.model.RestAdapterModel
 import com.junbo.langur.processor.model.RestMethodModel
@@ -19,6 +20,7 @@ import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.util.ElementFilter
+
 /**
  * Created by kevingu on 11/28/13.
  */
@@ -37,11 +39,11 @@ class RestAdapterParser implements RestResourceHandler {
                 mapperType.simpleName.toString()
 
         restAdapter.annotations = mapperType.annotationMirrors.collect {
-                AnnotationMirror annotationMirror -> annotationMirror.toString()
-            }.findAll {
-                String annotation ->
-                    !annotation.startsWith('@com.junbo.langur.core.RestResource') &&
-                    !annotation.startsWith('@com.wordnik.swagger.annotations')
+            AnnotationMirror annotationMirror -> annotationMirror.toString()
+        }.findAll {
+            String annotation ->
+                !annotation.startsWith('@com.junbo.langur.core.RestResource') &&
+                        !annotation.startsWith('@com.wordnik.swagger.annotations')
         }.toList()
 
         restAdapter.restMethods = []
@@ -53,15 +55,15 @@ class RestAdapterParser implements RestResourceHandler {
 
                 if (!(executableElement.returnType instanceof DeclaredType)) {
                     throw new ProcessingException
-                    ("returnType $executableElement.returnType must be a DeclaredType.", executableElement)
+                            ("returnType $executableElement.returnType must be a DeclaredType.", executableElement)
                 }
 
                 def returnType = (DeclaredType) executableElement.returnType
                 def returnTypeElement = returnType.asElement()
                 if (returnTypeElement.toString() != 'com.junbo.langur.core.promise.Promise') {
                     throw new ProcessingException
-                    ("returnType $executableElement.returnType must be a com.junbo.langur.core.promise.Promise.",
-                            executableElement)
+                            ("returnType $executableElement.returnType must be a com.junbo.langur.core.promise.Promise.",
+                                    executableElement)
                 }
 
                 def restMethod = new RestMethodModel()
@@ -79,15 +81,26 @@ class RestAdapterParser implements RestResourceHandler {
                 restMethod.parameters = executableElement.parameters.collect {
                     VariableElement variableElement ->
                         new RestParameterModel(
-                                paramName:variableElement.toString(),
-                                paramType:variableElement.asType().toString(),
-                                annotations:variableElement.annotationMirrors.collect {
+                                paramName: variableElement.toString(),
+                                paramType: variableElement.asType().toString(),
+                                annotations: variableElement.annotationMirrors.collect {
                                     AnnotationMirror annotationMirror -> annotationMirror.toString()
                                 })
                 }
 
+                restMethod.routeParamExprs = new ArrayList<>()
+
                 def routeBy = executableElement.getAnnotation(RouteBy)
-                restMethod.routeParamExprs = Arrays.asList(routeBy?.value() ?: new String[0])
+                if (routeBy != null) {
+                    restMethod.routeParamExprs.addAll(routeBy.value() ?: new String[0])
+                    restMethod.routeSwitchable = routeBy.switchable()
+                }
+
+                def routeByAccessToken = executableElement.getAnnotation(RouteByAccessToken)
+                if (routeByAccessToken != null) {
+                    restMethod.routeParamExprs.add("TrackContextManager.get().getCurrentUserId()")
+                    restMethod.routeSwitchable = routeByAccessToken.switchable()
+                }
 
                 restMethod.authorizationNotRequired = getAuthorizationNotRequired(mapperType, executableElement)
 

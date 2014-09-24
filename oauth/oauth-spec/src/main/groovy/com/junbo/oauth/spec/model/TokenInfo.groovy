@@ -31,4 +31,7 @@ class TokenInfo {
 
     @JsonProperty('debug_enabled')
     Boolean debugEnabled
+
+    @JsonProperty('access_token')
+    String tokenValue
 }

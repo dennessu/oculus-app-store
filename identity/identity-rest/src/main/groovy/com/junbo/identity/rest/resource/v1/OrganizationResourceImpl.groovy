@@ -50,6 +50,9 @@ class OrganizationResourceImpl implements OrganizationResource {
 
     @Override
     Promise<Organization> create(Organization organization) {
+        if (organization == null) {
+            throw new IllegalArgumentException('organization is null')
+        }
         organization = organizationFilter.filterForCreate(organization)
 
         return organizationValidator.validateForCreate(organization).then {
@@ -202,7 +205,7 @@ class OrganizationResourceImpl implements OrganizationResource {
             return organizationRepository.searchByCanonicalName(normalizeService.normalize(listOptions.name), listOptions.limit,
                     listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Not support search')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Not support search').exception()
         }
     }
 

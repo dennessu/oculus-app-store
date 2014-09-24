@@ -16,8 +16,8 @@ import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
-import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.store.apihelper.StoreService;
 import com.junbo.test.store.apihelper.TestContext;
@@ -34,7 +34,6 @@ import java.util.Map;
  * Created by weiyu_000 on 8/6/14.
  */
 public class StoreServiceImpl extends HttpClientBase implements StoreService {
-    private static String storeUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/horizon-api";
 
     private static StoreService instance;
 
@@ -45,8 +44,16 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
         for (Map.Entry<String, String> entry: TestContext.getData().getHeaders().entrySet()) {
             headers.put(entry.getKey(), Collections.singletonList(entry.getValue()));
         }
+
+        if (currentEndPointType.equals(Master.EndPointType.Secondary)) {
+            headers.put("Cache-Control", Collections.singletonList("no-cache"));
+        }
         //for further header, we can set dynamic value from properties here
         return headers;
+    }
+    
+    StoreServiceImpl(){
+        endPointUrlSuffix = "/horizon-api";
     }
 
     public static synchronized StoreService getInstance() {
@@ -63,7 +70,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public VerifyEmailResponse verifyEmail(VerifyEmailRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/verify-email", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/verify-email", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             VerifyEmailResponse response = new JsonMessageTranscoder().decode(new TypeReference<VerifyEmailResponse>() {
             }, responseBody);
@@ -80,7 +87,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public UserProfileGetResponse getUserProfile(int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/user-profile", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/user-profile", expectedResponseCode);
         if (expectedResponseCode == 200) {
             UserProfileGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<UserProfileGetResponse>() {
             }, responseBody);
@@ -97,7 +104,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/user-profile", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/user-profile", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             UserProfileUpdateResponse response = new JsonMessageTranscoder().decode(new TypeReference<UserProfileUpdateResponse>() {
             }, responseBody);
@@ -109,7 +116,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public com.junbo.common.error.Error updateUserProfileReturnError(UserProfileUpdateRequest request, int expectedResponseCode, String errorCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/user-profile", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/user-profile", request, expectedResponseCode);
         com.junbo.common.error.Error response = new JsonMessageTranscoder().decode(new TypeReference<com.junbo.common.error.Error>() {
         }, responseBody);
 
@@ -124,7 +131,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request, int expectedResponseCode) throws Exception {
-        String url = storeUrl + "/billing-profile";
+        String url = getEndPointUrl() + "/billing-profile";
         if (request.getOffer() != null) {
             url += String.format("?offerId=%s", IdConverter.idToHexString(request.getOffer()));
         }
@@ -146,7 +153,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public InstrumentUpdateResponse updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/billing-profile/instruments", instrumentUpdateRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/billing-profile/instruments", instrumentUpdateRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
             InstrumentUpdateResponse instrumentUpdateResponse = new JsonMessageTranscoder().decode(new TypeReference<InstrumentUpdateResponse>() {
             }, responseBody);
@@ -163,7 +170,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/purchase/prepare", preparePurchaseRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/purchase/prepare", preparePurchaseRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
             PreparePurchaseResponse preparePurchaseResponse = new JsonMessageTranscoder().decode(new TypeReference<PreparePurchaseResponse>() {
             }, responseBody);
@@ -175,7 +182,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public com.junbo.common.error.Error preparePurchaseWithException(PreparePurchaseRequest preparePurchaseRequest, int expectedResponseCode, String errorCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/purchase/prepare", preparePurchaseRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/purchase/prepare", preparePurchaseRequest, expectedResponseCode);
         com.junbo.common.error.Error appErrorException = new JsonMessageTranscoder().decode(new TypeReference<com.junbo.common.error.Error>() {
         }, responseBody);
         assert appErrorException.getCode().equalsIgnoreCase(errorCode);
@@ -189,7 +196,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public CommitPurchaseResponse commitPurchase(CommitPurchaseRequest commitPurchaseRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/purchase/commit", commitPurchaseRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/purchase/commit", commitPurchaseRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
             CommitPurchaseResponse commitPurchaseResponse = new JsonMessageTranscoder().decode(new TypeReference<CommitPurchaseResponse>() {
             }, responseBody);
@@ -206,7 +213,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/iap/consumption", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/iap/consumption", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             IAPEntitlementConsumeResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPEntitlementConsumeResponse>() {
             }, responseBody);
@@ -223,7 +230,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/purchase/free", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/purchase/free", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             MakeFreePurchaseResponse response = new JsonMessageTranscoder().decode(new TypeReference<MakeFreePurchaseResponse>() {
             }, responseBody);
@@ -240,7 +247,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public EntitlementsGetResponse getEntitlement(int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/entitlements", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/entitlements", expectedResponseCode);
         if (expectedResponseCode == 200) {
             EntitlementsGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<EntitlementsGetResponse>() {
             }, responseBody);
@@ -258,7 +265,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public IAPOfferGetResponse getIAPOffers(IAPOfferGetRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/iap/offers", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/iap/offers", expectedResponseCode);
         if (expectedResponseCode == 200) {
             IAPOfferGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPOfferGetResponse>() {
             }, responseBody);
@@ -276,7 +283,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public IAPEntitlementGetResponse getIAPEntitlement(IAPEntitlementGetRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/iap/entitlements", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/iap/entitlements", expectedResponseCode);
         if (expectedResponseCode == 200) {
             IAPEntitlementGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPEntitlementGetResponse>() {
             }, responseBody);
@@ -293,7 +300,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public TocResponse getTOC(int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/toc", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/toc", expectedResponseCode);
         if (expectedResponseCode == 200) {
             TocResponse response = new JsonMessageTranscoder().decode(new TypeReference<TocResponse>() {
             }, responseBody);
@@ -310,7 +317,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public AcceptTosResponse acceptTos(AcceptTosRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/accept-tos", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/accept-tos", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             AcceptTosResponse response = new JsonMessageTranscoder().decode(new TypeReference<AcceptTosResponse>() {
             }, responseBody);
@@ -328,7 +335,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public SectionLayoutResponse getSectionLayout(SectionLayoutRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String url = storeUrl + "/section-layout?";
+        String url = getEndPointUrl() + "/section-layout?";
         url = appendQuery(url, "category", request.getCategory());
         url = appendQuery(url, "criteria", request.getCriteria());
         url = appendQuery(url, "count", request.getCount());
@@ -350,7 +357,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public ListResponse getList(ListRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String url = storeUrl + "/section-list?";
+        String url = getEndPointUrl() + "/section-list?";
         url = appendQuery(url, "category", request.getCategory());
         url = appendQuery(url, "criteria", request.getCriteria());
         url = appendQuery(url, "count", request.getCount());
@@ -373,7 +380,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public LibraryResponse getLibrary(int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/library", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/library", expectedResponseCode);
         if (expectedResponseCode == 200) {
             LibraryResponse response = new JsonMessageTranscoder().decode(new TypeReference<LibraryResponse>() {
             }, responseBody);
@@ -391,7 +398,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public DetailsResponse getDetails(DetailsRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "/details?itemId=" + request.getItemId().getValue() , expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/details?itemId=" + request.getItemId().getValue() , expectedResponseCode);
         if (expectedResponseCode == 200) {
             DetailsResponse response = new JsonMessageTranscoder().decode(new TypeReference<DetailsResponse>() {
             }, responseBody);
@@ -409,7 +416,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public ReviewsResponse getReviews(ReviewsRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String url = storeUrl + "/reviews?";
+        String url = getEndPointUrl() + "/reviews?";
         url = appendQuery(url, "itemId", request.getItemId());
         url = appendQuery(url, "count", request.getCount());
         url = appendQuery(url, "cursor", request.getCursor());
@@ -431,7 +438,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public AddReviewResponse addReview(AddReviewRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "/add-review", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/add-review", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             AddReviewResponse response = new JsonMessageTranscoder().decode(new TypeReference<AddReviewResponse>() {
             }, responseBody);
@@ -449,7 +456,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public DeliveryResponse getDelivery(DeliveryRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String url = storeUrl + "/delivery?";
+        String url = getEndPointUrl() + "/delivery?";
         url = appendQuery(url, "itemId", request.getItemId());
         url = appendQuery(url, "currentVersionCode", request.getCurrentVersionCode());
         url = appendQuery(url, "desiredVersionCode", request.getDesiredVersionCode());
@@ -469,4 +476,5 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
         }
         return url;
     }
+
 }

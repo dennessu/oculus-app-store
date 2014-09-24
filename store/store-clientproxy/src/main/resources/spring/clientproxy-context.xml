@@ -7,41 +7,54 @@
     <context:component-scan base-package="com.junbo.store.clientproxy"/>
 
     <bean id="storeAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service email.service payment.service order.service fulfilment.service entitlement.service cms.service catalog crypto.service rating.service"/>
+        <property name="scope" value="identity.service fulfilment.service crypto.service rating.service entitlement.service cms.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${store.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${store.clientproxy.service.clientId}"/>
         <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
 
+    <bean id="storeUserAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity identity.pii commerce catalog"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${store.onbehalf.clientSecret}"/>
+        <property name="clientId" value="${store.onbehalf.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
     <bean id="store.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.offerItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.offerAttributeClient" class="com.junbo.catalog.spec.resource.proxy.OfferAttributeResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.itemAttributeClient" class="com.junbo.catalog.spec.resource.proxy.ItemAttributeResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.priceTierClient" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy"
@@ -53,13 +66,15 @@
     <bean id="store.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.offerItemRevisionClient"
           class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.fulfilmentClient"
@@ -71,7 +86,8 @@
     <bean id="store.entitlementClient"
           class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.entitlement.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.downloadUrlClient"
@@ -83,13 +99,15 @@
     <bean id="store.paymentInstrumentClient"
           class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.payment.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.orderClient"
           class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.order.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.cryptoClient"
@@ -131,13 +149,11 @@
     <bean id="store.piTypeResourceClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.PITypeResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
     <bean id="store.currencyResourceClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
     <bean id="store.organizationClientProxy"
@@ -148,12 +164,12 @@
 
     <bean id="store.tosResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.TosResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
     <bean id="store.userTosAgreementResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
     </bean>
 
     <bean id="store.tokenEndpointClientProxy"
@@ -164,7 +180,6 @@
     <bean id="store.tokenInfoEndpointClientProxy"
           class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.oauth.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
     <bean id="store.emailVerifyEndpointClientProxy"
@@ -176,19 +191,11 @@
     <bean id="store.countryClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
     <bean id="store.localeClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
-    </bean>
-
-    <bean id="store.userTosAgreementClientProxy"
-          class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
     <bean id="store.caseyClientProxy"
@@ -201,4 +208,26 @@
           class="com.junbo.store.spec.resource.external.proxy.CaseyReviewResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.casey.url}"/>
     </bean>
+
+    <bean id="store.user.userResourceClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
+    </bean>
+
+    <bean id="store.user.userPersonalInfoResourceClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
+    </bean>
+
+    <bean id="store.user.userCredentialResourceClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
+    </bean>
+
 </beans>

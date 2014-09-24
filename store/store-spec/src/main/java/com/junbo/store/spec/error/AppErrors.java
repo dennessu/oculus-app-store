@@ -79,4 +79,13 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "117", message = "Section Not Found.")
     AppError sectionNotFound();
+
+    @ErrorDef(httpStatusCode = 412, code = "118", message = "Item Version Code Not Found.")
+    AppError itemVersionCodeNotFound();
+
+    @ErrorDef(httpStatusCode = 412, code = "119", message = "Review already exists.")
+    AppError reviewAlreadyExists();
+
+    @ErrorDef(httpStatusCode = 412, code = "120", message = "Could not review an item that not purchased.")
+    AppError reviewItemNotPurchased();
 }

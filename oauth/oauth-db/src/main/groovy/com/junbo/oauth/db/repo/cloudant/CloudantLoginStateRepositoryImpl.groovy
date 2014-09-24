@@ -5,26 +5,18 @@
  */
 package com.junbo.oauth.db.repo.cloudant
 
-import com.junbo.common.cloudant.CloudantClient
-import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.spec.model.LoginState
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
+import org.springframework.util.StringUtils
 /**
  * CloudantLoginStateRepositoryImpl.
  */
 @CompileStatic
-class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implements LoginStateRepository {
-    private TokenGenerator tokenGenerator
+class CloudantLoginStateRepositoryImpl extends CloudantTokenRepositoryBase<LoginState> implements LoginStateRepository {
 
     private long defaultLoginStateExpiration
-
-    @Required
-    void setTokenGenerator(TokenGenerator tokenGenerator) {
-        this.tokenGenerator = tokenGenerator
-    }
 
     @Required
     void setDefaultLoginStateExpiration(long defaultLoginStateExpiration) {
@@ -33,13 +25,23 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
 
     @Override
     LoginState get(String id) {
-        return cloudantGetSync(id)
+        if (StringUtils.isEmpty(id)) {
+            return null
+        }
+
+        LoginState loginState = cloudantGetSyncUuidWithFallback(id, tokenGenerator.hashKey(id))
+        if (loginState != null) {
+            loginState.loginStateId = id
+        }
+
+        return loginState
     }
 
     @Override
     LoginState save(LoginState loginState) {
-        if (loginState.id == null) {
-            loginState.id = tokenGenerator.generateLoginStateId()
+        if (loginState.loginStateId == null) {
+            loginState.loginStateId = tokenGenerator.generateLoginStateId()
+            loginState.hashedId = tokenGenerator.hashKey(loginState.loginStateId)
         }
 
         if (loginState.sessionId == null) {
@@ -54,7 +56,14 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
     }
 
     @Override
-    void delete(String id) {
-        cloudantDeleteSync(id)
+    void remove(String id) {
+        if (StringUtils.hasText(id)) {
+            cloudantDeleteSync(tokenGenerator.hashKey(id))
+        }
+    }
+
+    @Override
+    void removeByHash(String hash) {
+        cloudantDeleteSync(hash)
     }
 }
