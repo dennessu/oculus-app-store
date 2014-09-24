@@ -34,5 +34,6 @@
   "response_types" : [],
   "grant_types" : [ "CLIENT_CREDENTIALS" ],
   "id_token_issuer" : "www.oculus.com",
-  "need_consent" : false
+  "need_consent" : false,
+  "internal" : true
 }

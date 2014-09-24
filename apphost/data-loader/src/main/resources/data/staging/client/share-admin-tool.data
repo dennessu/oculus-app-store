@@ -17,5 +17,6 @@
 
   "id_token_issuer" : "api.oculus.com",
   "need_consent" : false,
-  "allowed_groups" : [ "Oculus.ShareAdmin" ]
+  "allowed_groups" : [ "Oculus.ShareAdmin" ],
+  "internal" : true
 }

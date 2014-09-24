@@ -11,5 +11,6 @@
   "id_token_issuer" : "www.junbo.com",
   "logout_redirect_uris" : [ "http://localhost" ],
   "default_logout_redirect_uri" : "http://localhost",
-  "need_consent" : false
+  "need_consent" : false,
+  "internal" : true
 }

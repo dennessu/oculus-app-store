@@ -16,6 +16,7 @@ import com.junbo.oauth.core.util.GroupUtil
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
+import org.springframework.util.StringUtils
 
 /**
  * ValidateClientAfterLogin.
@@ -44,10 +45,9 @@ class ValidateClientAfterLogin implements Action {
         def client = contextWrapper.client
 
         Assert.notNull(oauthInfo, 'oauthInfo is null')
-        Assert.notNull(loginState, 'loginState is null')
         Assert.notNull(client, 'client is null')
 
-        if (client.allowedGroups != null && !client.allowedGroups.isEmpty()) {
+        if (loginState != null && client.allowedGroups != null && !client.allowedGroups.isEmpty()) {
             Boolean allowed = groupUtil.hasGroups(new UserId(loginState.userId), client.allowedGroups.toArray(new String[0]))
             if (allowed) {
                 return Promise.pure(new ActionResult('success'))

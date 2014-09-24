@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class ValidateClient implements Action {
-
+    private static final String INTERNAL_HEADER_NAME = 'oculus-internal'
     private ClientRepository clientRepository
 
     @Required
@@ -44,6 +44,15 @@ class ValidateClient implements Action {
         Client client = clientRepository.getClient(clientId)
         if (client == null) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('client_id', clientId).exception()
+        }
+
+        if (Boolean.TRUE.equals(client.internal)) {
+            def headerMap = contextWrapper.headerMap
+            String internal = headerMap.getFirst(INTERNAL_HEADER_NAME)
+            if (!StringUtils.isEmpty(internal) && Boolean.FALSE.equals(Boolean.parseBoolean(internal))) {
+                throw AppCommonErrors.INSTANCE
+                        .forbiddenWithMessage('This client is for internal use only').exception()
+            }
         }
 
         contextWrapper.client = client

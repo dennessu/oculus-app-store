@@ -78,6 +78,8 @@ class Client extends ResourceMeta<String> {
     @JsonProperty('allowed_groups')
     Set<String> allowedGroups
 
+    Boolean internal
+
     @Override
     String getId() {
         return clientId

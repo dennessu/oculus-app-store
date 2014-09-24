@@ -43,6 +43,7 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
     private static final String JWT_CONTENT_TYPE = 'JWT'
     private static final int LEFT_MOST_128_BITS = 16
     private static final Long MILLISECONDS_PER_SECOND = 1000L
+    private static final Date FOREVER = new GregorianCalendar(2079, 0, 1).getTime()
 
     private Long defaultAccessTokenExpiration
     private Long defaultRefreshTokenExpiration
@@ -168,10 +169,15 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
                 clientId: client.clientId,
                 userId: accessToken.userId,
                 accessToken: accessToken,
-                salt: salt,
-                expiredBy: new Date(System.currentTimeMillis() +
-                        defaultRefreshTokenExpiration * MILLISECONDS_PER_SECOND)
+                salt: salt
         )
+
+        if (defaultRefreshTokenExpiration == -1) {
+            refreshToken.expiredBy = FOREVER
+        } else {
+            refreshToken.expiredBy = new Date(System.currentTimeMillis() +
+                    defaultRefreshTokenExpiration * MILLISECONDS_PER_SECOND)
+        }
 
         return refreshTokenRepository.save(refreshToken)
     }
@@ -187,10 +193,15 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
                 clientId: client.clientId,
                 userId: accessToken.userId,
                 accessToken: accessToken,
-                salt: oldRefreshToken.salt,
-                expiredBy: new Date(System.currentTimeMillis() +
-                        defaultRefreshTokenExpiration * MILLISECONDS_PER_SECOND)
+                salt: oldRefreshToken.salt
         )
+
+        if (defaultRefreshTokenExpiration == -1) {
+            refreshToken.expiredBy = FOREVER
+        } else {
+            refreshToken.expiredBy = new Date(System.currentTimeMillis() +
+                    defaultRefreshTokenExpiration * MILLISECONDS_PER_SECOND)
+        }
 
         return refreshTokenRepository.save(refreshToken)
     }
