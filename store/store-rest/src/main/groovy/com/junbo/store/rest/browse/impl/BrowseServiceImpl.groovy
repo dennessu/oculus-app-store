@@ -121,6 +121,8 @@ class BrowseServiceImpl implements BrowseService {
         response.name = sectionInfoNode.name
         response.children = sectionInfoNode.children?.collect {SectionInfoNode e -> e.toSectionInfo() }
         response.ordered = false
+        response.category = request.category
+        response.criteria = request.criteria
 
         SectionInfoNode parent = sectionInfoNode.parent
         while (parent != null) {
@@ -128,11 +130,7 @@ class BrowseServiceImpl implements BrowseService {
             parent = parent.parent
         }
 
-        innerGetList(new ListRequest(criteria: request.criteria, category: request.category, count: request.count), rawSectionInfoNode, apiContext).then { ListResponse listResponse ->
-            response.items = listResponse.items
-            response.next = listResponse.next
-            return Promise.pure(response)
-        }
+        return Promise.pure(response)
     }
 
     @Override

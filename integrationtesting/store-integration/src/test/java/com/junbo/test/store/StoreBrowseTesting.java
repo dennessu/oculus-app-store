@@ -289,6 +289,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         // validate top level feature section layout
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(featuredSectionInfo.getCategory(), featuredSectionInfo.getCriteria(), pageSize);
         storeBrowseValidationHelper.validateCmsTopLevelSectionLayout(sectionLayoutResponse, 2, "Featured");
+        storeBrowseValidationHelper.getAndValidateItemList(sectionLayoutResponse.getCategory(), sectionLayoutResponse.getCriteria(), null, pageSize, 0, false);
 
         SectionInfo slot1Section = sectionLayoutResponse.getChildren().get(0);
         SectionInfo slot2Section = sectionLayoutResponse.getChildren().get(1);
@@ -300,6 +301,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         SectionLayoutResponse slot1Layout = testDataProvider.getLayout(null, slot1Section.getCriteria(), pageSize);
         storeBrowseValidationHelper.verifySectionLayoutBreadcrumbs(slot1Layout, sectionLayoutResponse, featuredSectionInfo);
         storeBrowseValidationHelper.validateCmsSection(slot1Layout, "test slot1", pageSize, true);
+        storeBrowseValidationHelper.getAndValidateItemList(slot1Layout.getCategory(), slot1Layout.getCriteria(), null, pageSize, pageSize, true);
         Assert.assertTrue(slot1Layout.getChildren().isEmpty(), "children should be empty");
 
         List<Item> items = getItemsInSection(slot1Section.getCategory(), slot1Section.getCriteria(), pageSize);
@@ -309,6 +311,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         SectionLayoutResponse slot2Layout = testDataProvider.getLayout(null, slot2Section.getCriteria(), pageSize);
         storeBrowseValidationHelper.verifySectionLayoutBreadcrumbs(slot2Layout, sectionLayoutResponse, featuredSectionInfo);
         storeBrowseValidationHelper.validateCmsSection(slot2Layout, "test slot2", pageSize, true);
+        storeBrowseValidationHelper.getAndValidateItemList(slot2Layout.getCategory(), slot2Layout.getCriteria(), null, pageSize, pageSize, true);
         Assert.assertTrue(slot2Layout.getChildren().isEmpty(), "children should be empty");
         items = getItemsInSection(slot2Section.getCategory(), slot2Section.getCriteria(), pageSize);
         storeBrowseValidationHelper.verifyItemsInList(cmsSlot2Items, items, true);
@@ -330,6 +333,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         // validate top level feature section layout
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(featuredSectionInfo.getCategory(), featuredSectionInfo.getCriteria(), pageSize);
         storeBrowseValidationHelper.validateCmsTopLevelSectionLayout(sectionLayoutResponse, 2, "Featured");
+        storeBrowseValidationHelper.getAndValidateItemList(sectionLayoutResponse.getCategory(), sectionLayoutResponse.getCriteria(), null, pageSize, 0, false);
 
         SectionInfo slot1Section = sectionLayoutResponse.getChildren().get(0);
         SectionInfo slot2Section = sectionLayoutResponse.getChildren().get(1);
@@ -340,11 +344,13 @@ public class StoreBrowseTesting extends BaseTestClass {
         SectionLayoutResponse slot1Layout = testDataProvider.getLayout(null, slot1Section.getCriteria(), pageSize);
         storeBrowseValidationHelper.verifySectionLayoutBreadcrumbs(slot1Layout, sectionLayoutResponse, featuredSectionInfo);
         storeBrowseValidationHelper.validateCmsSection(slot1Layout, "test slot1", pageSize, true);
+        storeBrowseValidationHelper.getAndValidateItemList(slot1Layout.getCategory(), slot1Layout.getCriteria(), null, pageSize, pageSize, true);
 
         // get feature-offers section
         SectionLayoutResponse slot2Layout = testDataProvider.getLayout(null, slot2Section.getCriteria(), pageSize);
         storeBrowseValidationHelper.verifySectionLayoutBreadcrumbs(slot2Layout, sectionLayoutResponse, featuredSectionInfo);
         storeBrowseValidationHelper.validateCmsSection(slot2Layout, "test slot2", pageSize, true);
+        storeBrowseValidationHelper.getAndValidateItemList(slot2Layout.getCategory(), slot2Layout.getCriteria(), null, pageSize, pageSize, true);
     }
 
     @Test
@@ -373,7 +379,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertTrue(sectionLayoutResponse.getBreadcrumbs().isEmpty(), "top level section's breadcrumbs should be empty");
         Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0);
         Assert.assertEquals(sectionLayoutResponse.getName(), "Featured");
-        Assert.assertTrue(sectionLayoutResponse.getItems().isEmpty(), "top level feature section should have empty items");
+        storeBrowseValidationHelper.getAndValidateItemList(sectionLayoutResponse.getCategory(), sectionLayoutResponse.getCriteria(), null, pageSize, 0, false);
         Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0, "Child under feature section is empty");
 
         for (SectionInfo sectionInfo : sectionLayoutResponse.getChildren()) {
@@ -407,7 +413,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         testDataProvider.clearCache(); // clear the item cache to get the latest aggregate ratings
 
         // check no reviews should be returned in the items if item is not got by getDetails
-        Item item = testDataProvider.getLayout("Game", null, 2).getItems().get(0);
+        Item item = testDataProvider.getList("Game", null, null, 2).getItems().get(0);
         Assert.assertNull(item.getReviews());
         storeBrowseValidationHelper.verifyAggregateRatings(item.getAggregatedRatings(), caseyAggregateRating);
 
@@ -434,7 +440,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         testDataProvider.clearCache(); // clear the item cache to get the latest aggregate ratings
 
         // check no reviews should be returned in the items if item is not got by getDetails
-        Item item = testDataProvider.getLayout("Game", null, 2).getItems().get(0);
+        Item item = testDataProvider.getList("Game", null, null, 2).getItems().get(0);
         item = testDataProvider.getItemDetails(item.getSelf().getValue()).getItem();
         List<Review> reviews = fetchReviewsFromItemDetails(item);
         Assert.assertEquals(reviews.size(), 1, "Number of reviews not correct.");
@@ -496,7 +502,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     public void testAddReviewInvalidRequest() throws Exception {
         // ratings missing
         gotoToc();
-        Item item = testDataProvider.getLayout("Game", null, 2).getItems().get(0);
+        Item item = testDataProvider.getList("Game", null, null, 2).getItems().get(0);
 
         AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
 
@@ -568,7 +574,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertEquals(sectionLayoutResponse.getName(), sectionName);
         Assert.assertTrue(sectionLayoutResponse.getChildren().isEmpty());
         Assert.assertTrue(sectionLayoutResponse.getBreadcrumbs().isEmpty());
-        Assert.assertTrue(!sectionLayoutResponse.getItems().isEmpty());
+        Assert.assertTrue(!testDataProvider.getList(sectionLayoutResponse.getCategory(), sectionLayoutResponse.getCriteria(), null, pageSize).getItems().isEmpty());
 
         Map<String, Item> nameToItems = new HashMap<>();
         List<Item> items = getItemsInSection(category, null, pageSize);
@@ -614,13 +620,10 @@ public class StoreBrowseTesting extends BaseTestClass {
         LOGGER.info("name=ExploreSectionStart, category={}, criteria={}", category, criteria);
         int numOfItems = 0;
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(category, criteria, listItemPageSize);
-        numOfItems += sectionLayoutResponse.getItems().size();
-        verifyItemsInExplore(sectionLayoutResponse.getItems());
-        if (sectionLayoutResponse.getNext() != null && sectionLayoutResponse.getItems().size() > 0) { // get rest of the items by get list
-            Assert.assertEquals(category, sectionLayoutResponse.getNext().getCategory());
-            Assert.assertEquals(criteria, sectionLayoutResponse.getNext().getCriteria());
-            numOfItems += listAllItems(category, criteria, listItemPageSize, sectionLayoutResponse.getNext().getCursor());
-        }
+        Assert.assertEquals(sectionLayoutResponse.getCategory(), category);
+        Assert.assertEquals(sectionLayoutResponse.getCriteria(), criteria);
+
+        numOfItems += listAllItems(category, criteria, listItemPageSize, null);
 
         // explore sub section
         if (!CollectionUtils.isEmpty(sectionLayoutResponse.getChildren())) {
@@ -661,28 +664,22 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private List<Item> getItemsInSection(String category, String criteria, Integer pageSize) throws Exception {
         List<Item> items = new ArrayList<>();
-        SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(category, criteria, pageSize);
-        items.addAll(sectionLayoutResponse.getItems());
-        ListResponse.NextOption nextOption = sectionLayoutResponse.getNext();
-
-        if (nextOption != null) {
-            Assert.assertEquals(nextOption.getCategory(), category);
-            Assert.assertEquals(nextOption.getCriteria(), criteria);
-            Assert.assertEquals(nextOption.getCount(), pageSize);
-        }
-
-        while (nextOption != null) {
-            ListResponse listResponse = testDataProvider.getList(nextOption.getCategory(), nextOption.getCriteria(), nextOption.getCursor(), nextOption.getCount());
+        String cursor = null;
+        while (true) {
+            ListResponse listResponse = testDataProvider.getList(category, criteria, cursor, pageSize);
             items.addAll(listResponse.getItems());
-            if (listResponse.getItems().isEmpty()) {
-                break;
-            }
-            nextOption = listResponse.getNext();
 
+            ListResponse.NextOption nextOption = listResponse.getNext();
             if (nextOption != null) {
                 Assert.assertEquals(nextOption.getCategory(), category);
                 Assert.assertEquals(nextOption.getCriteria(), criteria);
                 Assert.assertEquals(nextOption.getCount(), pageSize);
+                Assert.assertNotNull(nextOption.getCursor());
+                cursor = nextOption.getCursor();
+            }
+
+            if (listResponse.getItems().isEmpty() || nextOption == null) {
+                break;
             }
         }
 

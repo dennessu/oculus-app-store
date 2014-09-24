@@ -19,6 +19,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.store.spec.model.browse.AddReviewRequest;
 import com.junbo.store.spec.model.browse.Images;
+import com.junbo.store.spec.model.browse.ListResponse;
 import com.junbo.store.spec.model.browse.SectionLayoutResponse;
 import com.junbo.store.spec.model.browse.document.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
@@ -196,19 +197,28 @@ public class StoreBrowseValidationHelper {
 
     public void validateCmsSection(SectionLayoutResponse sectionLayoutResponse, String name, int numOfItems, boolean hasMoreItems) {
         Assert.assertEquals(sectionLayoutResponse.getName(), name);
-        if (hasMoreItems) {
-            Assert.assertEquals(sectionLayoutResponse.getItems().size(), numOfItems);
-        }
-        Assert.assertTrue(!sectionLayoutResponse.getNext().getCursor().isEmpty());
     }
+
+    public void getAndValidateItemList(String category, String criteria, String cursor, int pageSize, int expectedOfItems, boolean hasNext) throws Exception {
+        ListResponse response = storeTestDataProvider.getList(category, criteria, cursor, pageSize);
+        Assert.assertEquals(response.getItems().size(), expectedOfItems);
+        if (hasNext) {
+            Assert.assertNotNull(response.getNext().getCursor());
+            Assert.assertEquals(response.getNext().getCriteria(), criteria);
+            Assert.assertEquals(response.getNext().getCategory(), category);
+            Assert.assertEquals(response.getNext().getCount().intValue(), pageSize);
+        } else {
+            Assert.assertNull(response.getNext());
+        }
+    }
+
 
     public void validateCmsTopLevelSectionLayout(SectionLayoutResponse sectionLayoutResponse, int expectedNumOfChild, String expectedName) {
         Assert.assertTrue(sectionLayoutResponse.getBreadcrumbs().isEmpty(), "top level section's breadcrumbs should be empty");
         Assert.assertEquals(sectionLayoutResponse.getChildren().size(), expectedNumOfChild);
         Assert.assertEquals(sectionLayoutResponse.getName(), expectedName);
-        Assert.assertTrue(sectionLayoutResponse.getItems().isEmpty(), "top level feature section should have empty items");
-        Assert.assertNull(sectionLayoutResponse.getNext());
     }
+
 
     public void validateAddReview(AddReviewRequest addReviewRequest, Review review, String nickName) {
         Assert.assertEquals(review.getContent(), addReviewRequest.getContent());
