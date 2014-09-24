@@ -51,4 +51,9 @@ public interface LoginResource {
     @Path("/refresh-token")
     // This doesn't require email verification
     Promise<AuthTokenResponse> getAuthToken(AuthTokenRequest tokenRequest);
+
+    @POST
+    @Path("/confirm-email")
+    // This doesn't require email verification
+    Promise<ConfirmEmailResponse> confirmEmail(ConfirmEmailRequest confirmEmailRequest);
 }

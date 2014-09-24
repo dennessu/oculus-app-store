@@ -433,6 +433,10 @@ class RequestValidator {
         notEmpty(request.itemId, 'itemId')
     }
 
+    public void validateConfirmEmailRequest(ConfirmEmailRequest request) {
+        notEmpty(request.evc, 'evc')
+    }
+
     private Promise<Boolean> isMailChanged(UserProfileUpdateRequest request, User currentUser) {
         if (StringUtils.isEmpty(request.userProfile?.email?.value)) {
             return Promise.pure(false)

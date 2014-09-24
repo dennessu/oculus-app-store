@@ -175,4 +175,25 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         return error;
     }
 
+    @Override
+    public ConfirmEmailResponse confirmEmail(ConfirmEmailRequest request, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/confirm-email", request, expectedResponseCode);
+
+        if (expectedResponseCode == 200) {
+            ConfirmEmailResponse response = new JsonMessageTranscoder().decode(new TypeReference<ConfirmEmailResponse>() {
+            }, responseBody);
+            return response;
+        }
+        return null;
+    }
+
+    @Override
+    public Error confirmEmail(ConfirmEmailRequest request, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/confirm-email", request, expectedResponseCode);
+
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+        assert error.getCode().equalsIgnoreCase(errorCode);
+        return error;
+    }
 }

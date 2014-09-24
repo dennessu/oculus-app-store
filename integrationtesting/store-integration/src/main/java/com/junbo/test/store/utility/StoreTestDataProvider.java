@@ -129,11 +129,24 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
                     createUserRequest.getEmail());
             assert links != null;
             for (String link : links) {
-                oAuthClient.accessEmailVerifyLink(link);
+                confirmEmail(link);
+                //oAuthClient.accessEmailVerifyLink(link);
             }
         }
 
         return response;
+    }
+
+    public ConfirmEmailResponse confirmEmail(String link) throws Exception {
+        ConfirmEmailRequest request = new ConfirmEmailRequest();
+        request.setEvc(getEvcCode(link));
+        return loginClient.confirmEmail(request, 200);
+    }
+
+    private String getEvcCode(String link) {
+        int beginIndex = link.indexOf("?evc=") + "?evc=".length();
+        int endIndex = link.indexOf("&locale=");
+        return link.substring(beginIndex, endIndex);
     }
 
     public Error CreateUserWithError(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode, String errorCode) throws Exception {
