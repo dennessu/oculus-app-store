@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.docs.app.readers;
+package com.junbo.common.docs;
 
 import com.wordnik.swagger.model.Sample;
 import org.slf4j.Logger;
@@ -35,8 +35,8 @@ import java.util.regex.Pattern;
 /**
  * The reader to load samples.
  */
-public class SamplesReader {
-    private Logger logger = LoggerFactory.getLogger(SamplesReader.class);
+public class OculusSamplesReader {
+    private Logger logger = LoggerFactory.getLogger(OculusSamplesReader.class);
     private DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
     private DocumentBuilder dBuilder = getDocumentBuilder();
     private Map<String, List<Sample>> samples = readJarSamples();

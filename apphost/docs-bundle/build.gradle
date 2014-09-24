@@ -1,9 +1,0 @@
-apply plugin: 'application'
-
-mainClassName = "com.junbo.docs.app.Main"
-
-dependencies {
-    compile junboProject(':docs-app')
-}
-
-task('silkcloud', dependsOn: [ 'installApp', 'distZip' ])
