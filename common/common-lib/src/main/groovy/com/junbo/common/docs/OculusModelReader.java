@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.docs.app.readers;
+package com.junbo.common.docs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.EnumId;
@@ -31,7 +31,7 @@ import java.util.UUID;
 /**
  * The model reader to hook for model types.
  */
-public class ModelReader implements com.wordnik.swagger.reader.ModelReader {
+public class OculusModelReader implements com.wordnik.swagger.reader.ModelReader {
     @Override
     public Option<Map<String, Model>> read(String modelType) {
         return scala.Option.apply(null);

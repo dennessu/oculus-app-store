@@ -9,8 +9,8 @@
   "logout_redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
   "default_logout_redirect_uri" : "http://localhost",
 
-  "scopes" : [ "identity", "identity.service", "identity.pii", "openid", "offline" ],
-  "default_scopes" : [ "identity", "identity.service", "identity.pii", "openid", "offline" ],
+  "scopes" : [ "identity", "identity.pii", "openid", "offline" ],
+  "default_scopes" : [ "identity", "identity.pii", "openid", "offline" ],
 
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],

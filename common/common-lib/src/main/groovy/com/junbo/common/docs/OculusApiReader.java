@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.docs.app.readers;
+package com.junbo.common.docs;
 
 import com.junbo.common.enumid.EnumId;
 import com.junbo.common.id.CloudantId;
@@ -28,7 +28,7 @@ import java.util.UUID;
  * The hook to change API parameter types when reading API.
  */
 public class OculusApiReader extends JerseyApiReader {
-    private SamplesReader samplesReader = new SamplesReader();
+    private OculusSamplesReader samplesReader = new OculusSamplesReader();
 
     @Override
     public Operation processOperation(String endpoint, Operation operation, Method method, ApiOperation apiOperation) {

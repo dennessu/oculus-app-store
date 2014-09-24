@@ -82,5 +82,4 @@
     <bean id="userLogProcessor" class="com.junbo.common.userlog.UserLogProcessorImpl">
         <property name="userLogRepo" ref="userLogRepository"/>
     </bean>
-
 </beans>
