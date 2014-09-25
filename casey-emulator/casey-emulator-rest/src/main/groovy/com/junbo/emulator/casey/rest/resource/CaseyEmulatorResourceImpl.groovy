@@ -154,6 +154,8 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     @Override
     Promise<CaseyReview> addReview(String authorization, CaseyReview review) {
         emulatorUtils.emulateLatency()
+        Assert.isNull(review.getUser())
+        Assert.isNull(review.getPostedDate())
         CaseyEmulatorData caseyEmulatorData = caseyEmulatorDataRepository.get()
         if (caseyEmulatorData.caseyReviews == null) {
             caseyEmulatorData.caseyReviews = []
