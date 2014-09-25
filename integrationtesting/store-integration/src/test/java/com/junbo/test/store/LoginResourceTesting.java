@@ -36,6 +36,7 @@ public class LoginResourceTesting extends BaseTestClass {
     public static String CREDENTIAL_STRENGTH_WEAK = "WEAK";
     public static String CREDENTIAL_STRENGTH_FAIR = "FAIR";
     public static String CREDENTIAL_STRENGTH_STRONG = "STRONG";
+    public static Integer CREDENTIAL_ATTEMPT_COUNT = 3;
 
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
 
@@ -696,7 +697,7 @@ public class LoginResourceTesting extends BaseTestClass {
         assert links != null;
         assert links.size() == 0;
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < CREDENTIAL_ATTEMPT_COUNT; i++) {
             ChallengeAnswer answer = new ChallengeAnswer();
             answer.setType(userProfileUpdateResponse.getChallenge().getType());
             answer.setPassword(RandomHelper.randomAlphabetic(10));
