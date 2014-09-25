@@ -561,6 +561,36 @@ class OAuthTests(ut.TestBase):
         assert getqueryparam(location, 'error') == 'access_denied'
         pass
 
+    def testInternalClient(self):
+        token = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
+            'client_id': ut.test_service_client_id,
+            'client_secret': ut.test_service_client_secret,
+            'scope': 'identity.service',
+            'grant_type': 'client_credentials'
+        })
+        assert token['access_token'] is not None
+
+        error = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
+            'client_id': ut.test_service_client_id,
+            'client_secret': ut.test_service_client_secret,
+            'scope': 'identity.service',
+            'grant_type': 'client_credentials'
+        }, headers = {
+            'oculus-internal': 'false'
+        }, raiseOnError = False)
+        assert error['message'] == 'Forbidden'
+
+        token = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
+            'client_id': ut.test_service_client_id,
+            'client_secret': ut.test_service_client_secret,
+            'scope': 'identity.service',
+            'grant_type': 'client_credentials'
+        }, headers = {
+            'oculus-internal': 'true'
+        })
+        assert token['access_token'] is not None
+        pass
+
     def testGetCountries(self):
         return curlJson('GET', ut.test_uri, '/v1/countries')
 

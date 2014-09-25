@@ -386,7 +386,7 @@ public class CartCheckout extends BaseTestClass {
         String uid2 = testDataProvider.createUser();
 
         testDataProvider.postOrder(
-                uid2, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 500);
+                uid2, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 412);
 
 
     }
