@@ -150,10 +150,10 @@ public class OrderTestDataProvider {
             String offerName = (String) it.next();
             OfferId offerId;
             if (offerName.equals("Invalid")) {
-                offerId = new OfferId("123");
-            } else if(offerName.toLowerCase().contains("test")){
+                offerId = new OfferId(uid);
+            } else if (offerName.toLowerCase().contains("test")) {
                 offerId = new OfferId(offerClient.getOfferIdByName(offerName));
-            }else {
+            } else {
                 offerId = new OfferId(offerName);
             }
             orderItem.setQuantity(offers.get(offerName));
@@ -332,7 +332,9 @@ public class OrderTestDataProvider {
                     new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
             refundOrderItem.setRefundTax(refundTax.multiply(
                     new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
-
+            if (refundOrderItem.getRefundAmount().compareTo(new BigDecimal(0)) == 0) {
+                continue;
+            }
             billingHistory.getRefundOrderItemInfos().add(refundOrderItem);
         }
 
@@ -434,6 +436,11 @@ public class OrderTestDataProvider {
 
     public void refundOrder(String orderId, Map<String, Integer> refundedOffers,
                             Map<String, BigDecimal> partialRefundAmounts) throws Exception {
+        refundOrder(orderId, refundedOffers, partialRefundAmounts, 200);
+    }
+
+    public void refundOrder(String orderId, Map<String, Integer> refundedOffers,
+                            Map<String, BigDecimal> partialRefundAmounts, int expectedResponseCode) throws Exception {
         orderClient.getOrderByOrderId(orderId);
         Order order = Master.getInstance().getOrder(orderId);
 
@@ -459,7 +466,7 @@ public class OrderTestDataProvider {
             }
         }
 
-        orderClient.refundOrder(order);
+        orderClient.refundOrder(order, expectedResponseCode);
     }
 
     public BigDecimal refundTotalAmount(String orderId) throws Exception {

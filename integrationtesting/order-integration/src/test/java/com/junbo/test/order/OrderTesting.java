@@ -8,6 +8,7 @@ package com.junbo.test.order;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
@@ -48,9 +49,9 @@ public class OrderTesting extends BaseOrderTestClass {
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 400);
 
-        //TODO verify response
+        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
     }
 
     @Property(
@@ -79,9 +80,9 @@ public class OrderTesting extends BaseOrderTestClass {
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 400);
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 412);
 
-        //TODO verfiy response
+        assert Master.getInstance().getApiErrorMsg().contains("Offer Not Found");
     }
 
     @Property(

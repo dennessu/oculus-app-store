@@ -12,6 +12,7 @@ import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.property.*;
 import com.junbo.test.order.model.OrderInfo;
 import com.junbo.test.order.model.enums.OrderStatus;
@@ -543,7 +544,7 @@ public class RefundTesting extends BaseOrderTestClass {
             features = "Put /orders/{key}",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             release = Release.June2014,
             description = "Test order refund - full refund",
             steps = {
@@ -645,7 +646,9 @@ public class RefundTesting extends BaseOrderTestClass {
         Map<String, Integer> refundOfferList = new HashedMap();
         refundOfferList.put(offer_digital_free, 1);
 
-        testDataProvider.refundOrder(orderId, refundOfferList, null);
+        testDataProvider.refundOrder(orderId, refundOfferList, null, 412);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Order Not Refundable");
 
     }
 
@@ -689,8 +692,9 @@ public class RefundTesting extends BaseOrderTestClass {
         Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
         partialRefundAmounts.put(offer_physical_free, new BigDecimal(0));
 
-        testDataProvider.refundOrder(orderId, null, partialRefundAmounts);
+        testDataProvider.refundOrder(orderId, null, partialRefundAmounts, 412);
 
+        assert Master.getInstance().getApiErrorMsg().contains("Invalid Settled Order Update");
     }
 
 
