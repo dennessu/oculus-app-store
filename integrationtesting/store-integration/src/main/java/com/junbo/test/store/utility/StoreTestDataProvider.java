@@ -19,7 +19,6 @@ import com.junbo.common.id.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
-import com.junbo.emulator.casey.spec.model.CaseyReviewExtend;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
@@ -29,8 +28,8 @@ import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
-import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.casey.cms.CmsSchedule;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.*;
@@ -690,15 +689,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public CaseyEmulatorData postCaseyEmulatorData(List<CaseyReview> caseyReviewList, List<CaseyAggregateRating> ratingList, CmsPage cmsPage) throws Exception {
         CaseyEmulatorData data = new CaseyEmulatorData();
-        List<CaseyReview> reviewList = null;
-        if (caseyReviewList != null) {
-            reviewList = new ArrayList<>();
-            for (CaseyReview caseyReview : caseyReviewList) {
-                reviewList.add(new CaseyReviewExtend(caseyReview));
-            }
-        }
         data.setCaseyAggregateRatings(ratingList);
-        data.setCaseyReviews(reviewList);
+        data.setCaseyReviews(caseyReviewList);
         if (cmsPage != null) {
             data.setCmsPages(Arrays.asList(cmsPage));
         }
@@ -717,11 +709,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return caseyEmulatorClient.postEmulatorData(data);
     }
 
-    public CaseyEmulatorData postCaseyEmulatorData(List<CmsCampaign> cmsCampaign, List<CmsPage> pages, Map<String, List<OfferId>> offerIds) throws Exception {
+    public CaseyEmulatorData postCaseyEmulatorData(List<CmsSchedule> cmsSchedule, List<CmsPage> pages, Map<String, List<OfferId>> offerIds) throws Exception {
         CaseyEmulatorData data = new CaseyEmulatorData();
         data.setCaseyAggregateRatings(new ArrayList<CaseyAggregateRating>());
         data.setCaseyReviews(new ArrayList<CaseyReview>());
-        data.setCmsCampaigns(cmsCampaign);
+        data.setCmsSchedules(cmsSchedule);
         data.setCmsPages(pages);
         data.setCmsPageOffers(offerIds);
         return caseyEmulatorClient.postEmulatorData(data);

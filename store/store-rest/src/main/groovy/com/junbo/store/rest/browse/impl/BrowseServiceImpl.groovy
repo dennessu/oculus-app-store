@@ -1,8 +1,6 @@
 package com.junbo.store.rest.browse.impl
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
-import com.junbo.catalog.spec.model.attribute.OfferAttribute
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.error.AppCommonErrors
@@ -33,7 +31,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
@@ -100,42 +97,31 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.pure(new TocResponse(challenge: challenge))
             }
 
-            List<SectionInfoNode> sectionInfoNodes = sectionService.getTopLevelSectionInfoNode()
-            result.sections = sectionInfoNodes.collect { SectionInfoNode sectionInfoNode ->
-                return buildSectionInfoNodeForResponse(sectionInfoNode, true, apiContext)
-            }
+            result.sections = sectionService.getTopLevelSectionInfoNode(apiContext)
             return Promise.pure(result)
         }
     }
 
     @Override
     Promise<SectionLayoutResponse> getSectionLayout(SectionLayoutRequest request, ApiContext apiContext) {
-        SectionInfoNode rawSectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria)
-        if (rawSectionInfoNode == null) {
+        SectionInfoNode sectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria, apiContext)
+        if (sectionInfoNode == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
 
         SectionLayoutResponse response = new SectionLayoutResponse()
-        response.breadcrumbs = generateBreadcrumbs(rawSectionInfoNode, apiContext)
-        SectionInfoNode sectionInfoNode = buildSectionInfoNodeForResponse(rawSectionInfoNode, true, apiContext)
+        response.breadcrumbs = generateBreadcrumbs(sectionInfoNode, apiContext)
         response.name = sectionInfoNode.name
         response.children = sectionInfoNode.children?.collect {SectionInfoNode e -> e.toSectionInfo() }
         response.ordered = false
         response.category = request.category
         response.criteria = request.criteria
-
-        SectionInfoNode parent = sectionInfoNode.parent
-        while (parent != null) {
-            response.breadcrumbs << parent.toSectionInfo()
-            parent = parent.parent
-        }
-
         return Promise.pure(response)
     }
 
     @Override
     Promise<ListResponse> getList(ListRequest request, ApiContext apiContext) {
-        SectionInfoNode sectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria)
+        SectionInfoNode sectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria, apiContext)
         if (sectionInfoNode == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
@@ -261,35 +247,6 @@ class BrowseServiceImpl implements BrowseService {
         }
     }
 
-    private SectionInfoNode buildSectionInfoNodeForResponse(SectionInfoNode rawNode, boolean recursive, ApiContext apiContext) {
-        SectionInfoNode sectionInfoNode = new SectionInfoNode()
-        if (rawNode.sectionType == SectionInfoNode.SectionType.CategorySection) {
-            if (rawNode?.categoryId != null) {
-                OfferAttribute offerAttribute = facadeContainer.catalogFacade.getOfferAttribute(rawNode?.categoryId, apiContext).get()
-                SimpleLocaleProperties simpleLocaleProperties = offerAttribute?.locales?.get(apiContext.locale.getId().value)
-                sectionInfoNode.name = simpleLocaleProperties?.name
-            }
-        } else {
-            Assert.isTrue(rawNode.sectionType == SectionInfoNode.SectionType.CmsSection)
-            sectionInfoNode.name = localeUtils.getLocaleProperties(rawNode.cmsNames, apiContext.locale) as String
-            if (sectionInfoNode.name == null) {
-                sectionInfoNode.name = rawNode.name
-            }
-        }
-        sectionInfoNode.category = rawNode.category
-        sectionInfoNode.criteria = rawNode.criteria
-        sectionInfoNode.children = []
-        if (sectionInfoNode.name == null) {
-            sectionInfoNode.name = StringUtils.isEmpty(sectionInfoNode.category) ? sectionInfoNode.criteria :  sectionInfoNode.category
-        }
-        if (recursive) {
-            sectionInfoNode.children = rawNode.children.collect { SectionInfoNode e ->
-                return buildSectionInfoNodeForResponse(e, recursive, apiContext)
-            }
-        }
-        return sectionInfoNode
-    }
-
     private Promise<Item> decorateItem(boolean ratePrice, boolean includeDetails, ApiContext apiContext, Item item) {
         Promise.pure().then {
             if (!ratePrice || item?.offer == null) {
@@ -331,10 +288,10 @@ class BrowseServiceImpl implements BrowseService {
         }
     }
 
-    private List<SectionInfo> generateBreadcrumbs(SectionInfoNode sectionInfoNode, ApiContext apiContext) {
+    private static List<SectionInfo> generateBreadcrumbs(SectionInfoNode sectionInfoNode, ApiContext apiContext) {
         List<SectionInfo> breadCrumbs = []
         while (sectionInfoNode.parent != null) {
-            breadCrumbs << buildSectionInfoNodeForResponse(sectionInfoNode.parent, false, apiContext).toSectionInfo()
+            breadCrumbs << sectionInfoNode.parent.toSectionInfo()
             sectionInfoNode = sectionInfoNode.parent
         }
         return breadCrumbs.reverse()

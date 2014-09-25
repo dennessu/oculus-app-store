@@ -87,6 +87,9 @@ class StoreResourceImpl implements StoreResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StoreResourceImpl)
 
+    @Value('${store.browse.verifyUser}')
+    private boolean verifyUserInBrowse
+
     @Value('${store.tos.createuser}')
     private String tosCreateUser
 
@@ -1326,7 +1329,11 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private Promise<ApiContext> prepareBrowse() {
-        identityUtils.getVerifiedUserFromToken().then {
+        if (verifyUserInBrowse) {
+            return identityUtils.getVerifiedUserFromToken().then {
+                return apiContextBuilder.buildApiContext()
+            }
+        } else {
             return apiContextBuilder.buildApiContext()
         }
     }

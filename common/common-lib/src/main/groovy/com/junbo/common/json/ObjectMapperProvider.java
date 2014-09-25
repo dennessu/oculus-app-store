@@ -38,11 +38,11 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     private static ObjectMapper objectMapperNoIndent = createObjectMapper(false);
 
-    private static ObjectMapper createObjectMapper() {
+    static ObjectMapper createObjectMapper() {
         return createObjectMapper(true);
     }
 
-    private static ObjectMapper createObjectMapper(
+    static ObjectMapper createObjectMapper(
             boolean indent) {
         ObjectMapper objectMapper = new ObjectMapper(null,
                 new CustomSerializerProvider(),

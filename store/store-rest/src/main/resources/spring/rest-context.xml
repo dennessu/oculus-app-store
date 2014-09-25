@@ -37,14 +37,17 @@
         </bean>
         <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
             <property name="category" value="${store.browse.categories.game}"/>
+            <property name="name" value="${store.browse.categories.game}"/>
             <property name="sectionType" value="CategorySection"/>
         </bean>
         <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
             <property name="category" value="${store.browse.categories.app}"/>
+            <property name="name" value="${store.browse.categories.app}"/>
             <property name="sectionType" value="CategorySection"/>
         </bean>
         <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
             <property name="category" value="${store.browse.categories.exp}"/>
+            <property name="name" value="${store.browse.categories.exp}"/>
             <property name="sectionType" value="CategorySection"/>
         </bean>
     </util:list>

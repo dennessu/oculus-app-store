@@ -12,7 +12,6 @@ import com.junbo.catalog.spec.model.item.SupportedLocale;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.ItemRevisionId;
 import com.junbo.common.id.OrganizationId;
-import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,7 @@ import java.util.Map;
 /**
  * The Item class.
  */
-public class CaseyItem extends BaseCaseyModel {
+public class CaseyItem {
 
     private ItemId self;
     private String type;

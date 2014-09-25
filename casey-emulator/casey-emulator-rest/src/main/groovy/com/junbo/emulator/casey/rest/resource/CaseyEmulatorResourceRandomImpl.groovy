@@ -1,5 +1,4 @@
 package com.junbo.emulator.casey.rest.resource
-
 import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.offer.*
@@ -133,6 +132,11 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
 
     @Override
     Promise<CaseyEmulatorData> postEmulatorData(CaseyEmulatorData caseyEmulatorData) {
+        throw new RuntimeException('not implemented')
+    }
+
+    @Override
+    Promise<CmsSchedule> getCmsSchedules(String pageId, CmsScheduleGetParams cmsScheduleGetParams) {
         throw new RuntimeException('not implemented')
     }
 

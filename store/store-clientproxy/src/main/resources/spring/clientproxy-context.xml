@@ -202,6 +202,7 @@
           class="com.junbo.store.spec.resource.external.proxy.CaseyResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.casey.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="transcoder" ref="caseyTranscoder"/>
     </bean>
 
     <bean id="store.sentryClientProxy"
@@ -214,6 +215,7 @@
     <bean id="store.caseyReviewClientProxy"
           class="com.junbo.store.spec.resource.external.proxy.CaseyReviewResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.casey.url}"/>
+        <property name="transcoder" ref="caseyTranscoder"/>
     </bean>
 
     <bean id="store.user.userResourceClient"

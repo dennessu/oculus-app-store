@@ -15,6 +15,7 @@ import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
 import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.casey.cms.CmsSchedule;
 import com.junbo.store.spec.model.external.casey.cms.Placement;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -24,7 +25,6 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
@@ -732,22 +732,15 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private void setupCmsPageAndOffers(String path, String label, List<String> slots, List<String> names, List<List<OfferId>> offers) throws Exception {
         Map<String, List<OfferId>> cmsOffers = new HashMap<>();
-        List<Placement> placements = new ArrayList<>();
         CmsPage cmsPage = DataGenerator.instance().genCmsPage(path, label, slots);
+
+        CmsSchedule cmsSchedule = DataGenerator.instance().genCmsSchedule(cmsPage.getSelf().getId());
         for (int i = 0;i < slots.size();++i) {
-            placements.add(
-                    DataGenerator.instance().genStringPlacement(cmsPage.getSelf().getId(), slots.get(i), "category", names.get(i))
-            );
+            cmsSchedule.getSlots().put(slots.get(i), DataGenerator.instance().genCmsScheduleContent("header", names.get(i)));
             cmsOffers.put(cmsPageName + "-" + slots.get(i), offers.get(i));
         }
-        List<CmsCampaign> cmsCampaigns = Arrays.asList(
-                DataGenerator.instance().genCmsCampaign("Android", placements),
-                DataGenerator.instance().genCmsCampaign("test", Arrays.asList(
-                        DataGenerator.instance().genStringPlacement(UUID.randomUUID().toString(), RandomFactory.getRandomStringOfAlphabet(20), "category", "abc"),
-                        DataGenerator.instance().genStringPlacement(cmsPage.getSelf().getId(), RandomFactory.getRandomStringOfAlphabet(20), "category", "abc")
-                ))
-        );
-        testDataProvider.postCaseyEmulatorData(cmsCampaigns, Arrays.asList(cmsPage), cmsOffers);
+
+        testDataProvider.postCaseyEmulatorData(Arrays.asList(cmsSchedule), Arrays.asList(cmsPage), cmsOffers);
     }
 
     private void verifyItemsInExplore(List<Item> items) throws Exception {

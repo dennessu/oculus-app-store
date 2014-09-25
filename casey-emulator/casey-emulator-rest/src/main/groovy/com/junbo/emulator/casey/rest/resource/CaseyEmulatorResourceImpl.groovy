@@ -1,4 +1,6 @@
 package com.junbo.emulator.casey.rest.resource
+
+import com.fasterxml.jackson.core.type.TypeReference
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemsGetOptions
@@ -10,14 +12,16 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.util.IdUtil
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.emulator.casey.rest.CaseyEmulatorDataRepository
 import com.junbo.emulator.casey.rest.EmulatorUtils
+import com.junbo.emulator.casey.rest.LocaleUtils
 import com.junbo.emulator.casey.rest.ResourceContainer
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData
-import com.junbo.emulator.casey.spec.model.CaseyReviewExtend
 import com.junbo.emulator.casey.spec.resource.CaseyEmulatorResource
+import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.external.casey.*
@@ -28,6 +32,7 @@ import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
@@ -51,6 +56,9 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
 
     @Resource(name = 'randomCaseyEmulatorResource')
     CaseyEmulatorResource randomCaseyEmulatorResource
+
+    @Resource(name = 'caseyEmulatorLocaleUtils')
+    LocaleUtils localeUtils
 
     @Value('${emulator.casey.random.enabled}')
     private boolean randomData
@@ -118,7 +126,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
             if (userReview != null) {
                 results.items << userReview
             }
-            return Promise.pure(process(results))
+            return Promise.pure(results)
         } else {
             int pageSize = params.count == null ? defaultPageSize : params.count
             int offset = 0
@@ -131,7 +139,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
                 } catch (NumberFormatException ex) {}
             }
             if (offset >= reviews.size()) {
-                return Promise.pure(process(results))
+                return Promise.pure(results)
             }
 
             results.items = reviews.subList(offset, Math.min(reviews.size(), offset + pageSize))
@@ -139,7 +147,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
                 results.count = params.count
                 results.cursor = (offset + pageSize).toString()
             }
-            return Promise.pure(process(results))
+            return Promise.pure(results)
         }
     }
 
@@ -155,7 +163,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         review.user = new CaseyLink(id: IdFormatter.encodeId(AuthorizeContext.currentUserId), href: IdUtil.toHref(AuthorizeContext.currentUserId))
         review.self = new CaseyLink(id: UUID.randomUUID().toString())
         caseyEmulatorData.caseyReviews << review
-        return Promise.pure(new CaseyReviewExtend(review))
+        return Promise.pure(review)
     }
 
     @Override
@@ -197,6 +205,21 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     Promise<CmsContent> getCmsContent(String contentId) {
         emulatorUtils.emulateLatency()
         return Promise.pure(cmsContentMap[contentId])
+    }
+
+    @Override
+    Promise<CmsSchedule> getCmsSchedules(String pageId, CmsScheduleGetParams cmsScheduleGetParams) {
+        emulatorUtils.emulateLatency()
+        Assert.notNull(cmsScheduleGetParams.locale)
+        Assert.notNull(cmsScheduleGetParams.country)
+        CmsSchedule cmsSchedule = caseyEmulatorDataRepository.get().cmsSchedules.find { CmsSchedule cmsSchedule ->
+            return cmsSchedule.self?.id == pageId
+        }
+        if (cmsSchedule == null) {
+            throw new RuntimeException("schedule error")
+        }
+        cmsSchedule = filterLocale(cmsSchedule, cmsScheduleGetParams.getLocale())
+        return Promise.pure(cmsSchedule)
     }
 
     private CaseyResults<CaseyOffer> searchFromCms(OfferSearchParams searchParams) {
@@ -331,11 +354,26 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         }
     }
 
-    private CaseyResults<CaseyReview> process(CaseyResults<CaseyReview> caseyReviewResults) {
-        caseyReviewResults.items = caseyReviewResults.items.collect { CaseyReview caseyReview ->
-            return new CaseyReviewExtend(caseyReview)
+    private CmsSchedule filterLocale(CmsSchedule cmsSchedule, String localeId) {
+        CmsSchedule result = ObjectMapperProvider.instance().readValue(ObjectMapperProvider.instance().writeValueAsString(cmsSchedule), new TypeReference<CmsSchedule>() {}) as CmsSchedule
+        com.junbo.identity.spec.v1.model.Locale locale = resourceContainer.localeResource.get(new LocaleId(localeId), new LocaleGetOptions()).get()
+        if (CollectionUtils.isEmpty(result.slots)) {
+            return result
         }
-        return caseyReviewResults
+        result.slots.values().each { CmsScheduleContent cmsScheduleContent ->
+            if (CollectionUtils.isEmpty(cmsScheduleContent?.content?.contents?.values())) {
+                return
+            }
+            cmsScheduleContent.content.contents.values().each { ContentItem contentItem ->
+                if (contentItem.strings == null) {
+                    return
+                }
+                contentItem.strings.each { CaseyContentItemString string ->
+                    string.locales[localeId] = localeUtils.getLocaleProperties(string.locales, locale) as String
+                }
+            }
+        }
+        return result
     }
 }
 

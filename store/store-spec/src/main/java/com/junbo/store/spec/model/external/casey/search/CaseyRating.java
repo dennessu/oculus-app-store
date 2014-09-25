@@ -5,16 +5,12 @@
  */
 package com.junbo.store.spec.model.external.casey.search;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
-
 /**
  * The CaseyRating class.
  */
-public class CaseyRating extends BaseCaseyModel {
+public class CaseyRating {
 
     private String type;
-    private JsonNode average;
     private Double stars;
     private Long count;
     private Long numOnes;
@@ -30,16 +26,6 @@ public class CaseyRating extends BaseCaseyModel {
     public void setType(String type) {
         this.type = type;
     }
-
-    public JsonNode getAverage() {
-        return average;
-    }
-
-    public void setAverage(JsonNode average) {
-        this.average = average;
-    }
-
-
 
     public Long getCount() {
         return count;

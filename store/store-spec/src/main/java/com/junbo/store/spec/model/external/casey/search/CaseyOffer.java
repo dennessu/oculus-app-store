@@ -9,7 +9,6 @@ import com.junbo.catalog.spec.model.offer.CountryProperties;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.id.OrganizationId;
-import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,7 @@ import java.util.Map;
 /**
  * The CaseyOffer class.
  */
-public class CaseyOffer extends BaseCaseyModel {
+public class CaseyOffer {
 
     private OfferId self;
     private List<CatalogAttribute> categories;

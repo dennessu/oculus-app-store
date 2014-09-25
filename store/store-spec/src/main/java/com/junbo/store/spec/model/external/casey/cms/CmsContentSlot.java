@@ -6,7 +6,6 @@
 package com.junbo.store.spec.model.external.casey.cms;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +13,7 @@ import java.util.Map;
 /**
  * The CmsContentSlot class.
  */
-public class CmsContentSlot extends BaseCaseyModel {
+public class CmsContentSlot {
 
     private String description;
 

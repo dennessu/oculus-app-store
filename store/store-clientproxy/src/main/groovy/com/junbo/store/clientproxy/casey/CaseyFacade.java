@@ -36,7 +36,7 @@ public interface CaseyFacade {
 
     Promise<Boolean> itemAvailable(ItemId itemId, ApiContext apiContext);
 
-    Promise<CmsPage> getCmsPage(String path, String label);
+    Promise<CmsPage> getCmsPage(String path, String label, String country, String locale);
 
     Promise<CmsCampaign> getCmsCampaign(String label);
 

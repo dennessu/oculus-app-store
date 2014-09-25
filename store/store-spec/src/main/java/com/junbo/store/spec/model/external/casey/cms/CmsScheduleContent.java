@@ -8,30 +8,19 @@ package com.junbo.store.spec.model.external.casey.cms;
 import com.junbo.store.spec.model.external.casey.CaseyLink;
 
 /**
- * The Placement class.
+ * The CmsScheduleContent class.
  */
-public class Placement {
+public class CmsScheduleContent {
 
-    private CaseyLink page;
+    CaseyLink campaign;
+    CmsContent content;
 
-    private String slot;
-
-    private CmsContent content;
-
-    public CaseyLink getPage() {
-        return page;
+    public CaseyLink getCampaign() {
+        return campaign;
     }
 
-    public void setPage(CaseyLink page) {
-        this.page = page;
-    }
-
-    public String getSlot() {
-        return slot;
-    }
-
-    public void setSlot(String slot) {
-        this.slot = slot;
+    public void setCampaign(CaseyLink campaign) {
+        this.campaign = campaign;
     }
 
     public CmsContent getContent() {

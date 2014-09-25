@@ -180,19 +180,20 @@ class CaseyFacadeImpl implements CaseyFacade {
     }
 
     @Override
-    Promise<CmsPage> getCmsPage(String path, String label) {
+    Promise<CmsPage> getCmsPage(String path, String label, String country, String locale) {
         CmsPage page
         resourceContainer.caseyResource.getCmsPages(
-            new CmsPageGetParams(path: "\"${path}\"", label: label == null ? null : "\"${label}\"")
+            new CmsPageGetParams(path: StringUtils.isBlank(path) ? null : "\"${path}\"", label: StringUtils.isBlank(label) ? null : "\"${label}\"")
         ).then { CaseyResults<CmsPage> results ->
-            if (CollectionUtils.isEmpty(results?.items)) {
-                return Promise.pure()
+            if (CollectionUtils.isEmpty(results?.items) || results.items.size() > 1) {
+                LOGGER.error('name=GetCmsPageIncorrectResponse, payload={}', ObjectMapperProvider.instance().writeValueAsString(results))
+                throw new RuntimeException('Invalid Number Of CmsPage returned, should be 1')
             }
             page = results.items[0]
             if (CollectionUtils.isEmpty(page?.slots)) {
                 return Promise.pure(page)
             }
-            return fillPageContent(page)
+            return fillPageContent(page, country, locale)
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_GetCmsPage_Error, path={}, label={}', path, label, ex)
             return Promise.pure(page)
@@ -319,46 +320,17 @@ class CaseyFacadeImpl implements CaseyFacade {
         }
     }
 
-    private Promise<CmsPage> fillPageContent(CmsPage cmsPage) {
+    private Promise<CmsPage> fillPageContent(CmsPage cmsPage, String country, String locale) {
         assert cmsPage?.slots != null, 'cmsPage.slot should not be null'
-        resourceContainer.caseyResource.getCmsCampaigns(new CmsCampaignGetParam(expand: 'results/placements/content')).then { CaseyResults<CmsCampaign> caseyResults ->
-            if (CollectionUtils.isEmpty(caseyResults?.items)) {
-                return Promise.pure(cmsPage)
-            }
-            caseyResults.items.each { CmsCampaign campaign ->
-                if (CollectionUtils.isEmpty(campaign.placements)) {
-                    return
-                }
-                campaign.placements.each { Placement placement ->
-                    if (placement != null) {
-                        fillStringContent(cmsPage, placement)
-                    }
+        resourceContainer.caseyResource.getCmsSchedules(cmsPage?.self?.id, new CmsScheduleGetParams(country: country, locale: locale)).then { CmsSchedule cmsSchedule ->
+            cmsPage.slots.each { Map.Entry<String, CmsContentSlot> entry ->
+                String slot = entry.key
+                CmsContentSlot content = entry.value
+                if (content != null) {
+                    content.contents = cmsSchedule?.slots?.get(slot)?.content?.getContents()
                 }
             }
             return Promise.pure(cmsPage)
-        }
-    }
-
-    private static void fillStringContent(CmsPage cmsPage, Placement placement) {
-        assert cmsPage?.slots != null, 'cmsPage.slot should not be null'
-        if (!(placement?.page?.getId() == cmsPage.self.getId() && cmsPage.slots.get(placement.slot) != null)) {
-            return
-        }
-        CmsContentSlot pageSlot = cmsPage.slots.get(placement.slot)
-        if (!CollectionUtils.isEmpty(placement?.content?.contents)) {
-            placement.content.contents.each { Map.Entry<String, ContentItem> placementContent ->
-                if (placementContent?.value?.type != ContentItem.Type.string.name()) { // only interested in string content
-                    return
-                }
-                if (pageSlot.contents.get(placementContent.key) == null) {
-                    pageSlot.contents[placementContent.key] = new ContentItem(type: placementContent.value.type, links: [] as List, strings: [] as List)
-                }
-
-                ContentItem contentItem = pageSlot.contents[placementContent.key]
-                if (!CollectionUtils.isEmpty(placementContent.value.strings)) {
-                    contentItem.strings.addAll(placementContent.value.strings)
-                }
-            }
         }
     }
 

@@ -8,7 +8,7 @@ package com.junbo.store.spec.model.external.casey;
 /**
  * CaseyAggregateRating.
  */
-public class CaseyAggregateRating extends BaseCaseyModel {
+public class CaseyAggregateRating {
     private Double average;
     private Long sum;
     private Long count;
