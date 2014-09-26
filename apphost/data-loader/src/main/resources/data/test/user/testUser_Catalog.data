@@ -1,0 +1,22 @@
+{
+    "username": "testUserCatalog",
+    "password": "Welcome123",
+    "email": "testUserCatalog@oculusvr.com",
+	"cor":	{
+			"id" : "US"
+	},
+	"address": {
+		"street1": "800 West Campbell Road",
+		"city": "Richardson",
+		"postalCode": "75080",
+		"countryId": {
+			"id" : "US"
+		}
+	},
+	"name": {
+		"givenName": "testUserCatalog",
+		"middleName": "testUserCatalog",
+		"familyName": "testUserCatalog",
+		"nickName": "testUserCatalog"
+	}
+}
