@@ -26,8 +26,8 @@ public final class ConfigHelper {
             //ClassLoader loader = Thread.currentThread().getContextClassLoader();
             ClassLoader loader = Test.class.getClassLoader();
             String configFile = "testConfig.properties";
-            String profile = System.getProperty("profile", "test");
-            if (!profile.equals("test") && !profile.equals("local") && !profile.trim().isEmpty()) {
+            String profile = System.getProperty("profile", "onebox");
+            if (!profile.equals("onebox") && !profile.trim().isEmpty()) {
                 configFile = profile + ".properties";
             }
             properties.load(loader.getResourceAsStream(configFile));
