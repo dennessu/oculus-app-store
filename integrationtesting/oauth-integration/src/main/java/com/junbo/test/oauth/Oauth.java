@@ -22,6 +22,7 @@ import org.apache.http.util.EntityUtils;
 import javax.ws.rs.NotFoundException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -467,9 +468,11 @@ public class Oauth {
     }
 
     public static List<String> GetResetPasswordLinks(String userName, String email, String locale) throws Exception {
+        List<NameValuePair> nvpHeaders = new ArrayList<NameValuePair>();
+        nvpHeaders.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         String uri = String.format(DefaultResetPasswordURI + "/test?username=%s&email=%s&locale=%s&country=%s",
                 userName, email, locale == null ? "en_US" : locale, Country.DEFAULT.toString());
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(uri, false);
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(uri, nvpHeaders, false);
 
         try {
             String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
