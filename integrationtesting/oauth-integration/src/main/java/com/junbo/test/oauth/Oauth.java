@@ -470,8 +470,8 @@ public class Oauth {
     public static List<String> GetResetPasswordLinks(String userName, String email, String locale) throws Exception {
         List<NameValuePair> nvpHeaders = new ArrayList<NameValuePair>();
         nvpHeaders.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        String uri = String.format(DefaultResetPasswordURI + "/test?username=%s&email=%s&locale=%s&country=%s",
-                userName, email, locale == null ? "en_US" : locale, Country.DEFAULT.toString());
+        String uri = String.format(DefaultResetPasswordURI + "/test?username=%s&user_email=%s&locale=%s&country=%s",
+                userName, URLEncoder.encode(email, "UTF-8"), locale == null ? "en_US" : locale, Country.DEFAULT.toString());
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(uri, nvpHeaders, false);
 
         try {
