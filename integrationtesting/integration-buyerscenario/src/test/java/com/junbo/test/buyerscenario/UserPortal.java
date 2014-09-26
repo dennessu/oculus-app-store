@@ -126,8 +126,5 @@ public class UserPortal extends BaseTestClass {
 
         List<String> userIds = us.GetCurrentUserByUserName(randomUser.getUserName(), 403);
         assert userIds == null;
-
-        userIds = us.GetUserByUserName("", 200);
-        assert userIds.size() == 0;
     }
 }

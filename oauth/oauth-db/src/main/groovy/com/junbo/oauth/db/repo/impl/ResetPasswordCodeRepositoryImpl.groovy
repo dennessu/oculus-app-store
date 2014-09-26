@@ -66,6 +66,11 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
 
     }
 
+    @Override
+    List<ResetPasswordCode> getByUserIdEmail(Long userId, String email) {
+        return null
+    }
+
     private static ResetPasswordCode wrap(ResetPasswordCodeEntity entity) {
         if (entity == null) {
             return null

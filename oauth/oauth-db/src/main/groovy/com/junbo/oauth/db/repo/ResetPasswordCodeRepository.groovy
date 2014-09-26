@@ -14,4 +14,5 @@ public interface ResetPasswordCodeRepository {
     void removeByHash(String hash)
     void save(ResetPasswordCode resetPasswordCode)
     void removeByUserIdEmail(Long userId, String email)
+    List<ResetPasswordCode> getByUserIdEmail(Long userId, String email)
 }

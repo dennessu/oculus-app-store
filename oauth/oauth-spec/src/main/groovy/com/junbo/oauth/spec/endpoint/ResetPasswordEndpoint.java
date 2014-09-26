@@ -14,6 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * Created by minhao on 5/1/14.
@@ -49,4 +50,11 @@ public interface ResetPasswordEndpoint {
                                     @FormParam("username") String username,
                                     @FormParam("user_email") String userEmail,
                                     MultivaluedMap<String, String> formParams);
+
+    @GET
+    @Path("/reset-password/test")
+    Promise<List<String>> getResetPasswordLink(@QueryParam("username") String username,
+                                               @QueryParam("user_email") String userEmail,
+                                               @QueryParam("locale") String locale,
+                                               @QueryParam("country") String country);
 }
