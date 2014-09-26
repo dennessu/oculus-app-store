@@ -22,6 +22,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -317,7 +318,7 @@ public class authorizeUser {
     @Property(environment = "release")
     @Test(groups = "ppe/prod")
     public void resetPasswordRoute() throws Exception {
-        if (Oauth.DefaultOauthSecondaryEndpoint == null) return;
+       // if (Oauth.DefaultOauthSecondaryEndpoint == null) return;
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
 
@@ -348,6 +349,8 @@ public class authorizeUser {
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         String resetPasswordLink = Oauth.PostResetPassword(
                 Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName,email,null);
+        resetPasswordLink = resetPasswordLink.contains("reset") ? resetPasswordLink : resetPwdLinks.get(0);
         LogHelper logHelper = new LogHelper(authorizeUser.class);
         logHelper.logInfo("reset password link: "+ resetPasswordLink);
         String resetPasswordCid = Oauth.GetResetPasswordCid(resetPasswordLink);

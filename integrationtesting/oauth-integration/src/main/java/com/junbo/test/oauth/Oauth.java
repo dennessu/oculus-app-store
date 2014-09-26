@@ -5,10 +5,13 @@
  */
 package com.junbo.test.oauth;
 
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
+import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.identity.Identity;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
@@ -249,7 +252,7 @@ public class Oauth {
         }
     }
 
-    public static void VerifyEmail(String cid, String uriEndPoint) throws Exception{
+    public static void VerifyEmail(String cid, String uriEndPoint) throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
         response.close();
         // skip payment method view
@@ -458,6 +461,20 @@ public class Oauth {
         CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultResetPasswordURI, nvps, false);
         try {
             return EntityUtils.toString(response.getEntity(), "UTF-8");
+        } finally {
+            response.close();
+        }
+    }
+
+    public static List<String> GetResetPasswordLinks(String userName, String email, String locale) throws Exception {
+        String uri = String.format(DefaultResetPasswordURI + "/test?username=%s&email=%s&locale=%s&country=%s",
+                userName, email, locale == null ? "en_US" : locale, Country.DEFAULT.toString());
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(uri, false);
+
+        try {
+            String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
+            return ObjectMapperProvider.instance().readValue(responseString, TypeFactory.defaultInstance()
+                    .constructCollectionType(List.class, String.class));
         } finally {
             response.close();
         }
