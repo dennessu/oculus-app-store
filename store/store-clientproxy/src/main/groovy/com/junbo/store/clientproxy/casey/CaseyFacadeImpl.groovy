@@ -168,7 +168,7 @@ class CaseyFacadeImpl implements CaseyFacade {
             offerSearchParams.offerId = offerResults.items[0].offerId
             offerSearchParams.minimal = true
             resourceContainer.caseyResource.searchOffers(offerSearchParams).recover { Throwable ex ->
-                LOGGER.info('name=Store_SearchOffer_Error', ex)
+                LOGGER.error('name=Store_SearchOffer_Error', ex)
                 return Promise.pure()
             }.then { CaseyResults<CaseyOffer> results ->
                 if (CollectionUtils.isEmpty(results?.items)) {

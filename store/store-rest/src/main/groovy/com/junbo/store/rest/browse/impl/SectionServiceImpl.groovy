@@ -35,13 +35,22 @@ class SectionServiceImpl implements SectionService {
     private FacadeContainer facadeContainer
 
     @Value('${store.browse.featured.name.content}')
-    private String cmsNameContent
+    private List<String> cmsHeaderContentNames
 
     @Value('${store.browse.featured.page.label}')
     private String cmsPageLabel
 
     @Value('${store.browse.featured.name.slot}')
     private String cmsFeaturedNameSlot
+
+    void setCmsHeaderContentNames(String setCmsHeaderContentNames) {
+        this.cmsHeaderContentNames = [] as List
+        Arrays.asList(setCmsHeaderContentNames.split(',')).each { String s ->
+            if (!StringUtils.isBlank(s.trim())) {
+                this.cmsHeaderContentNames << s.trim()
+            }
+        }
+    }
 
     @Override
     List<SectionInfoNode> getTopLevelSectionInfoNode(ApiContext apiContext) {
@@ -138,7 +147,14 @@ class SectionServiceImpl implements SectionService {
     }
 
     private String getNameFromSlot(CmsPage cmsPage, String slotName, String locale) {
-        List<CaseyContentItemString> strings = cmsPage.slots?.get(slotName)?.contents?.get(cmsNameContent)?.getStrings()
-        return CollectionUtils.isEmpty(strings) ? '' : strings[0]?.locales?.get(locale)
+        String localized = null
+        for (String name : cmsHeaderContentNames) {
+            List<CaseyContentItemString> strings = cmsPage.slots?.get(slotName)?.contents?.get(name)?.getStrings()
+            if (!CollectionUtils.isEmpty(strings)) {
+                localized = strings[0]?.locales?.get(locale)
+                break
+            }
+        }
+        return localized == null ? '' : localized
     }
 }
