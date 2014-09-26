@@ -394,6 +394,8 @@ class UserServiceImpl implements UserService {
                     results.add(uriBuilder.build().toString())
                 }
             }
+
+            return Promise.pure()
         }.then {
             return Promise.pure(results)
         }
