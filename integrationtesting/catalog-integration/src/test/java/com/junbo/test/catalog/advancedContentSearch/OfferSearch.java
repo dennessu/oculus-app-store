@@ -308,6 +308,13 @@ public class OfferSearch extends BaseTestClass {
         String offerId1 = ConfigHelper.getSetting("testdata.offer.digital.free");
         String offerId2 = ConfigHelper.getSetting("testdata.offer.iap.free");
 
+        if (offerId1.contains("testOffer")) {
+            offerId1 = offerService.getOfferIdByName(offerId1);
+        }
+        if (offerId2.contains("testOffer")) {
+            offerId2 = offerService.getOfferIdByName(offerId2);
+        }
+
         Offer offer1 = offerService.getOffer(offerId1);
         Offer offer2 = offerService.getOffer(offerId2);
         Assert.assertNotNull(offer1);
@@ -355,6 +362,13 @@ public class OfferSearch extends BaseTestClass {
 
         String offerId1 = ConfigHelper.getSetting("testdata.offer.digital.free");
         String offerId2 = ConfigHelper.getSetting("testdata.offer.iap.free");
+
+        if (offerId1.contains("testOffer")) {
+            offerId1 = offerService.getOfferIdByName(offerId1);
+        }
+        if (offerId2.contains("testOffer")) {
+            offerId2 = offerService.getOfferIdByName(offerId2);
+        }
 
         Offer offer1 = offerService.getOffer(offerId1);
         Offer offer2 = offerService.getOffer(offerId2);
