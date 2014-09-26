@@ -106,9 +106,13 @@ public class Oauth {
     }
 
     public static String GetAccessToken(String authCode, String uri) throws Exception {
+      return GetAccessToken(authCode,uri,DefaultClientId);
+    }
+
+    public static String GetAccessToken(String authCode, String uri, String clientId) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCode, authCode));
-        nvps.add(new BasicNameValuePair(DefaultFNClientId, DefaultClientId));
+        nvps.add(new BasicNameValuePair(DefaultFNClientId, clientId));
         nvps.add(new BasicNameValuePair(DefaultFNClientSecret, DefaultClientSecret));
         nvps.add(new BasicNameValuePair(DefaultFNGrantType, DefaultGrantType));
         nvps.add(new BasicNameValuePair(DefaultFNRedirectURI, DefaultRedirectURI));
@@ -410,7 +414,8 @@ public class Oauth {
             String tarHeader = "Location:";
             for (Header h : response.getAllHeaders()) {
                 if (h.toString().startsWith(tarHeader)) {
-                    Validator.Validate("validate logout success", true, h.toString().contains("Location: http://localhost"));
+                    Validator.Validate("validate logout success", true,
+                            h.toString().contains("Location: http://localhost"));
                     return;
                 }
             }
@@ -471,7 +476,8 @@ public class Oauth {
         List<NameValuePair> nvpHeaders = new ArrayList<NameValuePair>();
         nvpHeaders.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         String uri = String.format(DefaultResetPasswordURI + "/test?username=%s&user_email=%s&locale=%s&country=%s",
-                userName, URLEncoder.encode(email, "UTF-8"), locale == null ? "en_US" : locale, Country.DEFAULT.toString());
+                userName, URLEncoder.encode(email, "UTF-8"), locale == null ? "en_US" : locale,
+                Country.DEFAULT.toString());
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(uri, nvpHeaders, false);
 
         try {
