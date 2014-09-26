@@ -75,6 +75,7 @@ class CloudantResetPasswordCodeRepositoryImpl
         if (resetPasswordCode.code == null) {
             resetPasswordCode.code = tokenGenerator.generateResetPasswordCode()
             resetPasswordCode.hashedCode = tokenGenerator.hashKey(resetPasswordCode.code)
+            resetPasswordCode.encryptedCode = cipherService.encrypt(resetPasswordCode.code)
             resetPasswordCode.dc = tokenGenerator.getTokenDc(resetPasswordCode.code)
         }
 
