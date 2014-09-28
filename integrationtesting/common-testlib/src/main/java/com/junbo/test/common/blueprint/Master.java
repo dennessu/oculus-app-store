@@ -102,7 +102,7 @@ public class Master {
         this.initializeServiceAccessTokens();
         this.initializeOrgnizations();
         this.currentUid = new String();
-        this.endPointType = EndPointType.Primary;
+        this.endPointType = EndPointType.Random;
     }
 
     /**
@@ -528,6 +528,9 @@ public class Master {
     }
 
     public EndPointType getEndPointType() {
+        if (ConfigHelper.getSetting("endpoint.random") != null && Boolean.valueOf(ConfigHelper.getSetting("endpoint.random"))) {
+            endPointType = EndPointType.Random;
+        }
         if (endPointType.equals(EndPointType.Random)) {
             switch (RandomFactory.getRandomInteger(0, 2)) {
                 case 0:
