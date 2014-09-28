@@ -97,7 +97,7 @@ public class postCommunication {
         CommunicationLocale communicationLocale = new CommunicationLocale();
         communicationLocale.setDescription(RandomHelper.randomAlphabetic(100));
         communicationLocale.setName(RandomHelper.randomAlphabetic(100));
-        String randomLocale = RandomHelper.randomAlphabetic(2) + "_" + RandomHelper.randomAlphabetic(2);
+        String randomLocale = RandomHelper.randomAlphabetic(2) + "_" + "XX";
         communication.getLocales().put(randomLocale, JsonHelper.ObjectToJsonNode(communicationLocale));
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
