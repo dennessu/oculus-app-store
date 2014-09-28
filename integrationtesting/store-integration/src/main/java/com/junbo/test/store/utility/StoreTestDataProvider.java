@@ -187,7 +187,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public Error SignInWithError(String username, String type, String password, int expectedCode, String errorCode) throws Exception {
         UserSignInRequest userSignInRequest = new UserSignInRequest();
-        userSignInRequest.setUsername(username);
+        userSignInRequest.setEmail(username);
         UserCredential userCredential = new UserCredential();
         userCredential.setType(type);
         userCredential.setValue(password);
@@ -197,7 +197,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public AuthTokenResponse SignIn(String username, String password, int expectedCode) throws Exception {
         UserSignInRequest userSignInRequest = new UserSignInRequest();
-        userSignInRequest.setUsername(username);
+        userSignInRequest.setEmail(username);
         UserCredential userCredential = new UserCredential();
         userCredential.setType("PASSWORD");
         userCredential.setValue(password);
@@ -551,7 +551,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public AuthTokenResponse signIn(String userName) throws Exception {
         UserSignInRequest request = new UserSignInRequest();
-        request.setUsername(userName);
+        request.setEmail(userName);
         UserCredential userCredential = new UserCredential();
         userCredential.setType("password");
         userCredential.setValue("Test1234");

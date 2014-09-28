@@ -168,7 +168,7 @@ class LoginResourceImpl implements LoginResource {
     Promise<AuthTokenResponse> signIn(UserSignInRequest userSignInRequest) {
         requestValidator.validateRequiredApiHeaders().validateUserSignInRequest(userSignInRequest)
 
-        return innerSignIn(userSignInRequest.username, userSignInRequest.userCredential.value).recover { Throwable ex ->
+        return innerSignIn(userSignInRequest.email, userSignInRequest.userCredential.value).recover { Throwable ex ->
             if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {
                 throw ex
             }
@@ -240,10 +240,10 @@ class LoginResourceImpl implements LoginResource {
         }
     }
 
-    private Promise<AuthTokenResponse> innerSignIn(String username, String password) {
+    private Promise<AuthTokenResponse> innerSignIn(String email, String password) {
         return resourceContainer.tokenEndpoint.postToken( // todo : may need call credential verification first since post token does not return meaningful error when user credential is invalid
                 new AccessTokenRequest(
-                        username: username,
+                        username: email,
                         password: password,
                         clientId: clientId,
                         clientSecret: clientSecret,

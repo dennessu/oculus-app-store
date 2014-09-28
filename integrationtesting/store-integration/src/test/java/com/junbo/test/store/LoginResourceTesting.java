@@ -379,20 +379,25 @@ public class LoginResourceTesting extends BaseTestClass {
         validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
         assert authTokenResponse != null;
 
-        Error error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PIN", "1234", 400, "130.001");
+        Error error = testDataProvider.SignInWithError(createUserRequest.getEmail(), "PIN", "1234", 400, "130.001");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("userCredential.type");
         assert error.getDetails().get(0).getReason().contains("Field value is invalid. type must be PASSWORD");
 
-        error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PASSWORD", RandomHelper.randomAlphabetic(10), 412, "132.103");
+        error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(15), "PASSWORD", createUserRequest.getPassword(), 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("email");
+        assert error.getDetails().get(0).getReason().contains("email is incorrect format");
+
+        error = testDataProvider.SignInWithError(createUserRequest.getEmail(), "PASSWORD", RandomHelper.randomAlphabetic(10), 412, "132.103");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("password");
 
-        error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(10), "PASSWORD", createUserRequest.getPassword(), 412, "132.103");
+        error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(10) + "@gmail.com", "PASSWORD", createUserRequest.getPassword(), 412, "132.103");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("username");
 
-        error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PASSWORD", null, 400, "130.001");
+        error = testDataProvider.SignInWithError(createUserRequest.getEmail(), "PASSWORD", null, 400, "130.001");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("userCredential.value");
         assert error.getDetails().get(0).getReason().contains("Field is required");
