@@ -317,7 +317,7 @@ class BrowseServiceImpl implements BrowseService {
         String cursor = null
         CommonUtils.loop {
             facadeContainer.caseyFacade.getReviews(null, apiContext.user, cursor, null).then { ReviewsResponse response ->
-                if (!CollectionUtils.isEmpty(response.reviews)) {
+                if (!CollectionUtils.isEmpty(response?.reviews)) {
                     response.reviews.each { Review review ->
                         if (review.itemId != null && itemIdReviewMap.containsKey(review.itemId)) {
                             itemIdReviewMap[review.itemId] = review
