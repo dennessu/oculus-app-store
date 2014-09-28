@@ -31,6 +31,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
@@ -43,6 +44,10 @@ import javax.annotation.Resource
 class BrowseServiceImpl implements BrowseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BrowseServiceImpl)
+
+    private static final int DEFAULT_PAGE_SIZE = 10
+
+    private static final int MAX_PAGE_SIZE = 50
 
     @Value('${store.tos.browse}')
     private String storeBrowseTos
@@ -158,7 +163,9 @@ class BrowseServiceImpl implements BrowseService {
                 }
             }
         }.then {
-            return Promise.pure(result)
+            fillCurrentUserReview(result?.items, apiContext).then {
+                return Promise.pure(result)
+            }
         }
     }
 
@@ -183,7 +190,7 @@ class BrowseServiceImpl implements BrowseService {
 
     @Override
     Promise<ReviewsResponse> getReviews(ReviewsRequest request, ApiContext apiContext) {
-        return facadeContainer.caseyFacade.getReviews(request.itemId.value, null, request.cursor, request.count)
+        return facadeContainer.caseyFacade.getReviews(request.itemId.value, null, request.cursor, getPageSize(request.count))
     }
 
     @Override
@@ -198,10 +205,10 @@ class BrowseServiceImpl implements BrowseService {
     private Promise<ListResponse> innerGetList(ListRequest request, SectionInfoNode sectionInfoNode, ApiContext apiContext) {
         ListResponse listResponse = new ListResponse(items: [])
         facadeContainer.caseyFacade.search(sectionInfoNode, request.cursor, request.count, apiContext).then { CaseyResults<Item> caseyResults ->
-            if (caseyResults.cursor != null) {
+            if (caseyResults.cursorString != null) {
                 listResponse.next = new ListResponse.NextOption(
-                        cursor: caseyResults.cursor,
-                        count: request.count,
+                        cursor: caseyResults.cursorString,
+                        count: getPageSize(request.count),
                         category: request.category,
                         criteria: request.criteria
                 )
@@ -281,7 +288,7 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.pure()
             }
         }.then { // get the review response
-            facadeContainer.caseyFacade.getReviews(item.self.value, null, null, null).then { ReviewsResponse reviewsResponse ->
+            facadeContainer.caseyFacade.getReviews(item.self.value, null, null, DEFAULT_PAGE_SIZE).then { ReviewsResponse reviewsResponse ->
                 item.reviews = reviewsResponse
                 return Promise.pure()
             }
@@ -295,5 +302,44 @@ class BrowseServiceImpl implements BrowseService {
             sectionInfoNode = sectionInfoNode.parent
         }
         return breadCrumbs.reverse()
+    }
+
+    private Promise fillCurrentUserReview(List<Item> items, ApiContext apiContext) {
+        if (CollectionUtils.isEmpty(items)) {
+            return Promise.pure()
+        }
+
+        Map<ItemId, Review> itemIdReviewMap = [:] as Map<ItemId, Review>
+        items.each { Item item ->
+            itemIdReviewMap.put(item.self, null)
+        }
+
+        String cursor = null
+        CommonUtils.loop {
+            facadeContainer.caseyFacade.getReviews(null, apiContext.user, cursor, null).then { ReviewsResponse response ->
+                if (!CollectionUtils.isEmpty(response.reviews)) {
+                    response.reviews.each { Review review ->
+                        if (review.itemId != null && itemIdReviewMap.containsKey(review.itemId)) {
+                            itemIdReviewMap[review.itemId] = review
+                        }
+                    }
+                }
+                if (CollectionUtils.isEmpty(response?.reviews) || response.next == null) {
+                    return Promise.pure(Promise.BREAK)
+                }
+                Assert.isTrue(!StringUtils.isEmpty(response.next.cursor))
+                cursor = response.next.cursor
+                return Promise.pure()
+            }
+        }.then {
+            items.each { Item item ->
+                item.currentUserReview = itemIdReviewMap[item.self]
+            }
+            return Promise.pure()
+        }
+    }
+
+    int getPageSize(Integer count) {
+        return (count == null || count <= 0) ? DEFAULT_PAGE_SIZE : Math.min(count, MAX_PAGE_SIZE)
     }
 }

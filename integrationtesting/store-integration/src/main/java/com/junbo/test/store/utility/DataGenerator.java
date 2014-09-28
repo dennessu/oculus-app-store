@@ -39,7 +39,7 @@ public class DataGenerator {
         return val;
     }
 
-    public CaseyReview generateCaseyReview(String userId) {
+    public CaseyReview generateCaseyReview(String userId, ItemId itemId) {
         CaseyReview caseyReview = new CaseyReview();
         caseyReview.setReview("review text:" + RandomStringUtils.randomAlphabetic(15));
         caseyReview.setReviewTitle("title:" + RandomStringUtils.randomAlphabetic(15));
@@ -47,6 +47,11 @@ public class DataGenerator {
         caseyReview.setUser(new CaseyLink(userId));
         caseyReview.setPostedDate(new Date(System.currentTimeMillis() / 1000L * 1000));
         caseyReview.setSelf(new CaseyLink(UUID.randomUUID().toString()));
+        if (itemId != null) {
+            CaseyLink caseyLink = new CaseyLink();
+            caseyLink.setId(itemId.getValue());
+            caseyReview.setResource(caseyLink);
+        }
 
         CaseyReview.Rating qualityRating = new CaseyReview.Rating();
         qualityRating.setType("quality");

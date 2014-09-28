@@ -1,4 +1,6 @@
 package com.junbo.store.clientproxy.casey
+
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
@@ -53,6 +55,8 @@ import javax.annotation.Resource
 @Component('storeCaseyFacade')
 class CaseyFacadeImpl implements CaseyFacade {
 
+    private static final int CASEY_RESULTS_CURSOR_INDEX = 1;
+
     private final static Logger LOGGER = LoggerFactory.getLogger(CaseyFacadeImpl)
 
     @Resource(name = 'storeResourceContainer')
@@ -75,7 +79,6 @@ class CaseyFacadeImpl implements CaseyFacade {
         assert sectionInfoNode.sectionType != null, 'sectionType could not be null'
         CaseyResults<Item> results = new CaseyResults<Item>(
                 items: [] as List,
-                cursor: null as String
         )
 
         if (!canSearch(sectionInfoNode)) {
@@ -129,11 +132,12 @@ class CaseyFacadeImpl implements CaseyFacade {
                 ))
             }
 
+            processCaseyResultsCursor(results)
             ReviewsResponse reviews = new ReviewsResponse()
-            if (!org.springframework.util.StringUtils.isEmpty(results.cursor)) {
+            if (!org.springframework.util.StringUtils.isEmpty(results.cursorString)) {
                 reviews.next = new ReviewsResponse.NextOption(
                         itemId: new ItemId(itemId),
-                        cursor: results.cursor,
+                        cursor: results.cursorString,
                         count: results.count
                 )
             }
@@ -141,7 +145,7 @@ class CaseyFacadeImpl implements CaseyFacade {
             reviews.reviews = []
             Promise.each(results.items) { CaseyReview caseyReview ->
                 getReviewAuthorName(caseyReview).then { String author ->
-                    Review review = reviewBuilder.buildReview(caseyReview, author)
+                    Review review = reviewBuilder.buildItemReview(caseyReview, author)
                     reviews.reviews << review
                     return Promise.pure()
                 }
@@ -231,7 +235,7 @@ class CaseyFacadeImpl implements CaseyFacade {
         ).then { AccessTokenResponse accessTokenResponse ->
             return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).then { CaseyReview newReview ->
                 getReviewAuthorName(newReview).then { String author ->
-                    return Promise.pure(reviewBuilder.buildReview(newReview, author))
+                    return Promise.pure(reviewBuilder.buildItemReview(newReview, author))
                 }
             }
         }
@@ -239,15 +243,14 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     private Promise<CaseyResults<Item>> doSearch(OfferSearchParams searchParams, ApiContext apiContext) {
         CaseyResults<Item> results = new CaseyResults<Item>(
-                items: [] as List,
-                cursor: null as String
+                items: [] as List
         )
         resourceContainer.caseyResource.searchOffers(searchParams).then { CaseyResults<CaseyOffer> rawResults ->
             if (rawResults?.items == null) {
                 return Promise.pure(results)
             }
 
-            results.cursor = rawResults.cursor
+            results.rawCursor = rawResults.rawCursor
             results.count = rawResults.count
             results.totalCount = rawResults.totalCount
             Promise.each (rawResults.items) { CaseyOffer caseyOffer ->
@@ -272,6 +275,7 @@ class CaseyFacadeImpl implements CaseyFacade {
                     return Promise.pure()
                 }
             }then {
+                processCaseyResultsCursor(results)
                 return Promise.pure(results)
             }
         }
@@ -281,9 +285,9 @@ class CaseyFacadeImpl implements CaseyFacade {
         OfferSearchParams offerSearchParams = new OfferSearchParams()
         switch (sectionInfoNode.sectionType) {
             case SectionInfoNode.SectionType.CmsSection:
-                offerSearchParams.cmsPage = sectionInfoNode.cmsPageSearch
-                offerSearchParams.cmsSlot = sectionInfoNode.cmsSlot
-                break;
+                offerSearchParams.cmsPage = sectionInfoNode.cmsPageSearch?.toLowerCase()
+                offerSearchParams.cmsSlot = sectionInfoNode.cmsSlot?.toLowerCase()
+                break
             case SectionInfoNode.SectionType.CategorySection:
                 offerSearchParams.category = sectionInfoNode.categoryId
         }
@@ -348,5 +352,22 @@ class CaseyFacadeImpl implements CaseyFacade {
             LOGGER.error('Exception happened while getting review author', e)
             return Promise.pure(null)
         }
+    }
+
+    private static void processCaseyResultsCursor(CaseyResults caseyResults) {
+        if (caseyResults?.rawCursor == null) {
+            return
+        }
+        if (caseyResults.rawCursor.isTextual() || caseyResults.rawCursor.isNull()) {
+            caseyResults.cursorString = caseyResults.rawCursor.textValue()
+            return
+        } else {
+            JsonNode element = caseyResults.rawCursor.get(CASEY_RESULTS_CURSOR_INDEX);
+            if (element != null && (element.isNull() || element.isTextual())) {
+                caseyResults.cursorString = element.textValue()
+                return
+            }
+        }
+        LOGGER.error("name=CaseyResults_Unknown_CursorFormat, payload={}", ObjectMapperProvider.instance().writeValueAsString(caseyResults.rawCursor))
     }
 }

@@ -5,7 +5,9 @@
  */
 package com.junbo.store.spec.model.external.casey;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.model.Link;
 
 import java.util.List;
@@ -20,7 +22,11 @@ public class CaseyResults<T> {
     @JsonProperty("results")
     private List<T> items;
 
-    private String cursor;
+    @JsonProperty("cursor")
+    private JsonNode rawCursor;
+
+    @JsonIgnore
+    private String cursorString;
 
     private Integer count;
 
@@ -42,14 +48,6 @@ public class CaseyResults<T> {
         this.items = items;
     }
 
-    public String getCursor() {
-        return cursor;
-    }
-
-    public void setCursor(String cursor) {
-        this.cursor = cursor;
-    }
-
     public Integer getCount() {
         return count;
     }
@@ -64,5 +62,21 @@ public class CaseyResults<T> {
 
     public void setTotalCount(Long totalCount) {
         this.totalCount = totalCount;
+    }
+
+    public JsonNode getRawCursor() {
+        return rawCursor;
+    }
+
+    public void setRawCursor(JsonNode rawCursor) {
+        this.rawCursor = rawCursor;
+    }
+
+    public String getCursorString() {
+        return cursorString;
+    }
+
+    public void setCursorString(String cursorString) {
+        this.cursorString = cursorString;
     }
 }

@@ -1,5 +1,4 @@
 package com.junbo.emulator.casey.rest.resource
-
 import com.fasterxml.jackson.core.type.TypeReference
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.model.item.Item
@@ -15,10 +14,7 @@ import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
-import com.junbo.emulator.casey.rest.CaseyEmulatorDataRepository
-import com.junbo.emulator.casey.rest.EmulatorUtils
-import com.junbo.emulator.casey.rest.LocaleUtils
-import com.junbo.emulator.casey.rest.ResourceContainer
+import com.junbo.emulator.casey.rest.*
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData
 import com.junbo.emulator.casey.spec.resource.CaseyEmulatorResource
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
@@ -56,6 +52,9 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
 
     @Resource(name = 'randomCaseyEmulatorResource')
     CaseyEmulatorResource randomCaseyEmulatorResource
+
+    @Resource(name = 'caseyEmulatorDataGenerator')
+    private DataGenerator dataGenerator
 
     @Resource(name = 'caseyEmulatorLocaleUtils')
     LocaleUtils localeUtils
@@ -107,52 +106,41 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
 
     @Override
     Promise<CaseyResults<CaseyReview>> getReviews(ReviewSearchParams params) {
+        Assert.isTrue(params.resourceType == 'item')
         emulatorUtils.emulateLatency()
         if (randomData) {
             return randomCaseyEmulatorResource.getReviews(params)
         }
 
         CaseyResults<CaseyReview> results = new CaseyResults<CaseyReview>()
+        results.count = params.count
         results.items = []
-        List reviews = caseyEmulatorDataRepository.get().caseyReviews
+        List<CaseyReview> reviews = caseyEmulatorDataRepository.get().caseyReviews
         if (CollectionUtils.isEmpty(reviews)) {
             return Promise.pure(results)
         }
 
-        if (params.userId != null) { // user review
-            CaseyReview userReview = reviews.find { CaseyReview caseyReview ->
-                caseyReview.user.getId() == IdFormatter.encodeId(params.userId)
+        int offset = params.cursor == null ? 0 : Integer.valueOf(params.cursor)
+        for (; offset < reviews.size(); ++offset) {
+            if (params.count != null && results.items.size() >= params.count) {
+                break
             }
-            if (userReview != null) {
-                results.items << userReview
+            CaseyReview caseyReview = reviews[offset]
+            if ((params.userId == null || caseyReview.user.getId() == IdFormatter.encodeId(params.userId))
+                && (params.resourceId == null || params.resourceId == caseyReview.resource.getId())) {
+                results.items << caseyReview
             }
-            return Promise.pure(results)
-        } else {
-            int pageSize = params.count == null ? defaultPageSize : params.count
-            int offset = 0
-            if (params.cursor != null) {
-                try {
-                    offset = Integer.parseInt(params.cursor)
-                    if (offset < 0) {
-                        offset = 0
-                    }
-                } catch (NumberFormatException ex) {}
-            }
-            if (offset >= reviews.size()) {
-                return Promise.pure(results)
-            }
-
-            results.items = reviews.subList(offset, Math.min(reviews.size(), offset + pageSize))
-            if (offset + pageSize < reviews.size()) {
-                results.count = params.count
-                results.cursor = (offset + pageSize).toString()
-            }
-            return Promise.pure(results)
         }
+
+        if (offset < reviews.size()) {
+            results.rawCursor = dataGenerator.genCursor(offset.toString())
+        }
+        return Promise.pure(results)
     }
 
     @Override
     Promise<CaseyReview> addReview(String authorization, CaseyReview review) {
+        Assert.isTrue(review.resourceType == 'item')
         emulatorUtils.emulateLatency()
         Assert.isNull(review.getUser())
         Assert.isNull(review.getPostedDate())
@@ -247,7 +235,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
                 checkOfferValid(offer, searchParams)
             }.asList()
             if (offers.size() > 0) {
-                return new CaseyResults<CaseyOffer>(items: offers, cursor:  (offset + searchParams.count).toString())
+                return new CaseyResults<CaseyOffer>(items: offers, rawCursor:  dataGenerator.genCursor((offset + searchParams.count).toString()))
             }
         }
         return new CaseyResults<CaseyOffer>(items: [])
@@ -268,7 +256,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
                 checkOfferValid(offer, searchParams)
             }.asList()
             if (!results.items.isEmpty()) {
-                results.cursor = cursor
+                results.rawCursor = dataGenerator.genCursor(cursor)
                 return results
             }
 
@@ -277,7 +265,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
             }
             searchParams.cursor = cursor
         }
-        return new CaseyResults<CaseyOffer>(items: [], cursor: 'end')
+        return new CaseyResults<CaseyOffer>(items: [], rawCursor: dataGenerator.genCursor('end'))
     }
 
     private CaseyResults<CaseyOffer> searchByOfferId(OfferSearchParams searchParams) {
@@ -287,7 +275,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         if (checkOfferValid(caseyOffer, searchParams)) {
             offers << caseyOffer
         }
-        return new CaseyResults<CaseyOffer>(items: offers, cursor: 'end')
+        return new CaseyResults<CaseyOffer>(items: offers, rawCursor: dataGenerator.genCursor('end'))
     }
 
     private boolean checkOfferValid(CaseyOffer offer,  OfferSearchParams searchParams) {

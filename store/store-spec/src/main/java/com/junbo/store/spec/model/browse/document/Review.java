@@ -5,6 +5,8 @@
  */
 package com.junbo.store.spec.model.browse.document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.model.Link;
 
 import java.util.Date;
@@ -16,6 +18,9 @@ import java.util.Map;
 public class Review {
 
     private Link self;
+
+    @JsonIgnore
+    private ItemId itemId;
 
     private String authorName;
 
@@ -35,6 +40,14 @@ public class Review {
 
     public void setSelf(Link self) {
         this.self = self;
+    }
+
+    public ItemId getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(ItemId itemId) {
+        this.itemId = itemId;
     }
 
     public String getAuthorName() {

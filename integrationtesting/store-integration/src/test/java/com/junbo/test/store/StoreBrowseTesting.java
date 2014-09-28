@@ -402,24 +402,25 @@ public class StoreBrowseTesting extends BaseTestClass {
         gotoToc();
         StoreUserProfile userProfile = testDataProvider.getUserProfile().getUserProfile();
 
+        Item item = testDataProvider.getList("Game", null, null, 2).getItems().get(0);
+
         // prepare review & aggregate ratings
-        int numOfReviews = 20;
+        int numOfReviews = 50;
         List<CaseyReview> caseyReviews = new ArrayList<>();
         for (int i = 0; i < numOfReviews;++i) {
-            caseyReviews.add(DataGenerator.instance().generateCaseyReview(IdFormatter.encodeId(userProfile.getUserId())));
+            caseyReviews.add(DataGenerator.instance().generateCaseyReview(IdFormatter.encodeId(userProfile.getUserId()), item.getSelf()));
         }
         List<CaseyAggregateRating> caseyAggregateRating = Arrays.asList(DataGenerator.instance().generateCaseyAggregateRating("quality"), DataGenerator.instance().generateCaseyAggregateRating("comfort"));
         testDataProvider.postCaseyEmulatorData(caseyReviews, caseyAggregateRating, null);
-        testDataProvider.clearCache(); // clear the item cache to get the latest aggregate ratings
 
         // check no reviews should be returned in the items if item is not got by getDetails
-        Item item = testDataProvider.getList("Game", null, null, 2).getItems().get(0);
+        item = testDataProvider.getList("Game", null, null, 2).getItems().get(0);
         Assert.assertNull(item.getReviews());
         storeBrowseValidationHelper.verifyAggregateRatings(item.getAggregatedRatings(), caseyAggregateRating);
 
         // verify the review & ratings in getDetails
         item = testDataProvider.getItemDetails(item.getSelf().getValue()).getItem();
-        List<Review> reviews = fetchReviewsFromItemDetails(item);
+        List<Review> reviews = fetchReviewsFromItemDetails(item, 3);
         Assert.assertEquals(reviews.size(), numOfReviews, "Number of reviews not correct.");
         for (int i = 0;i < reviews.size(); ++i) {
             storeBrowseValidationHelper.verifyReview(reviews.get(i), caseyReviews.get(i), userProfile.getNickName());
@@ -434,15 +435,15 @@ public class StoreBrowseTesting extends BaseTestClass {
         gotoToc();
 
         // prepare review with invalid user id
+        Item item = testDataProvider.getList("Game", null, null, 2).getItems().get(0);
         List<CaseyReview> caseyReviews = new ArrayList<>();
-        caseyReviews.add(DataGenerator.instance().generateCaseyReview(RandomStringUtils.randomAlphabetic(10)));
+        caseyReviews.add(DataGenerator.instance().generateCaseyReview(RandomStringUtils.randomAlphabetic(10), item.getSelf()));
         testDataProvider.postCaseyEmulatorData(caseyReviews, null, null);
         testDataProvider.clearCache(); // clear the item cache to get the latest aggregate ratings
 
         // check no reviews should be returned in the items if item is not got by getDetails
-        Item item = testDataProvider.getList("Game", null, null, 2).getItems().get(0);
         item = testDataProvider.getItemDetails(item.getSelf().getValue()).getItem();
-        List<Review> reviews = fetchReviewsFromItemDetails(item);
+        List<Review> reviews = fetchReviewsFromItemDetails(item, 1);
         Assert.assertEquals(reviews.size(), 1, "Number of reviews not correct.");
         storeBrowseValidationHelper.verifyReview(reviews.get(0), caseyReviews.get(0), null);
 
@@ -490,6 +491,9 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         // validate with current user review
         Item item = testDataProvider.getItemDetails(itemId).getItem();
+        storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
+        // current user review also included in library
+        item = testDataProvider.getLibrary().getItems().get(0);
         storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
 
         // add again should fail
@@ -686,18 +690,18 @@ public class StoreBrowseTesting extends BaseTestClass {
         return items;
     }
 
-    private List<Review> fetchReviewsFromItemDetails(Item item) throws Exception {
+    private List<Review> fetchReviewsFromItemDetails(Item item, int pageSize) throws Exception {
         List<Review> result = new ArrayList<>();
         Assert.assertNotNull(item.getReviews(), "reviews in item details should not be null");
         ReviewsResponse reviewsResponse = item.getReviews();
         result.addAll(reviewsResponse.getReviews());
         while (reviewsResponse.getNext() != null &&  !CollectionUtils.isEmpty(reviewsResponse.getReviews())) {
             ReviewsResponse.NextOption next = reviewsResponse.getNext();
-            reviewsResponse = testDataProvider.getReviews(item.getSelf(), next.getCursor(), next.getCount());
+            reviewsResponse = testDataProvider.getReviews(item.getSelf(), next.getCursor(), pageSize);
             result.addAll(reviewsResponse.getReviews());
             if (reviewsResponse.getNext() != null) {
                 Assert.assertEquals(reviewsResponse.getNext().getItemId(), item.getSelf(), "itemId should be the same in get reviews");
-                Assert.assertEquals(reviewsResponse.getNext().getCount(), next.getCount(), "itemId should be the same in get reviews");
+                Assert.assertEquals(reviewsResponse.getNext().getCount().intValue(), pageSize, "itemId should be the same in get reviews");
                 Assert.assertNotNull(reviewsResponse.getNext().getCursor(), "cursor should not be null");
             }
         }
@@ -766,6 +770,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         }
         return placement.getContent().getContents().get("category").getStrings().get(0).getLocales().get("en_US");
     }
+
 }
 
 

@@ -1,4 +1,6 @@
 package com.junbo.store.clientproxy.utils
+
+import com.junbo.common.id.ItemId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Link
 import com.junbo.store.common.utils.CommonUtils
@@ -50,7 +52,7 @@ class ReviewBuilder {
         return review
     }
 
-    Review buildReview(CaseyReview caseyReview, String nickName) {
+    Review buildItemReview(CaseyReview caseyReview, String nickName) {
         if (caseyReview == null) {
             return null
         }
@@ -60,6 +62,7 @@ class ReviewBuilder {
                 title: caseyReview.reviewTitle,
                 content: caseyReview.review,
                 starRatings: [:] as Map<String, Integer>,
+                itemId: caseyReview.resource?.getId() == null ? null : new ItemId(caseyReview.resource.getId()),
                 timestamp: caseyReview.postedDate
         )
         if (!CollectionUtils.isEmpty(caseyReview.ratings)) {
