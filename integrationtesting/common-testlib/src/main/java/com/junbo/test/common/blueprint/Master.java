@@ -102,7 +102,7 @@ public class Master {
         this.initializeServiceAccessTokens();
         this.initializeOrgnizations();
         this.currentUid = new String();
-        this.endPointType = EndPointType.Random;
+        this.endPointType = EndPointType.Primary;
     }
 
     /**
