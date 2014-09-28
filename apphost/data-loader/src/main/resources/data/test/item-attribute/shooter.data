@@ -1,0 +1,10 @@
+{
+    "type": "GENRE",
+        "locales": {
+            "en_US": {
+                "name": "Shooter",
+                "description": ""
+            }
+    },
+    "parent": null
+}
