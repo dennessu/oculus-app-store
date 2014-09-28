@@ -27,7 +27,7 @@ interface AppErrors {
             field = 'scope')
     AppError outboundScope()
 
-    @ErrorDef(httpStatusCode = 412, code = '103', message = 'Invalid Credential', field = 'email, password')
+    @ErrorDef(httpStatusCode = 412, code = '103', message = 'Invalid Credential', field = 'email, password', reason = 'email and credential doesn\'t match')
     AppError invalidCredential()
 
     @ErrorDef(httpStatusCode = 412, code = '104', message='Expired Refresh Token.', reason = 'The refresh_token {0} is already expired',
