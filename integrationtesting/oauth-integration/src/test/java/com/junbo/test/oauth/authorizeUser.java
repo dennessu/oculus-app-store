@@ -74,6 +74,8 @@ public class authorizeUser {
         Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         Validator.Validate("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
         User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
+        // https://oculus.atlassian.net/browse/SER-640
+        assert storedUser.getNickName().equalsIgnoreCase(userName);
         UserPersonalInfo storedUPI = Identity.UserPersonalInfoGetByUserPersonalInfoId(storedUser.getUsername());
         Validator.Validate("validate token->binded user is correct", userName,
                 ((UserLoginName) JsonHelper.JsonNodeToObject(storedUPI.getValue(), UserLoginName.class)).getUserName());
@@ -318,7 +320,7 @@ public class authorizeUser {
     @Property(environment = "release")
     @Test(groups = "ppe/prod")
     public void resetPasswordRoute() throws Exception {
-        // if (Oauth.DefaultOauthSecondaryEndpoint == null) return;
+        if (Oauth.DefaultOauthSecondaryEndpoint == null) return;
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
 

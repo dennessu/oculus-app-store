@@ -162,6 +162,7 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testCreateUser() throws Exception {
         AuthTokenResponse createUserResponse = null;
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setNickName(createUserRequest.getUsername());
         String invalidUsername = "123yunlong";
         String oldUsername = createUserRequest.getUsername();
         createUserRequest.setUsername(invalidUsername);
@@ -183,14 +184,6 @@ public class LoginResourceTesting extends BaseTestClass {
         createUserRequest.setUsername(oldUsername);
 
         createUserRequest.setEmail(oldEmail);
-        String oldNickName = createUserRequest.getNickName();
-        // nick name should not be the same as username
-        createUserRequest.setNickName(createUserRequest.getUsername());
-        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
-        assert error != null;
-        assert error.getDetails().get(0).getField().contains("username");
-
-        createUserRequest.setNickName(oldNickName);
         String oldPassword = createUserRequest.getPassword();
         createUserRequest.setPassword(createUserRequest.getUsername() + "gggg");
         error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
@@ -395,7 +388,7 @@ public class LoginResourceTesting extends BaseTestClass {
 
         error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(10) + "@gmail.com", "PASSWORD", createUserRequest.getPassword(), 412, "132.103");
         assert error != null;
-        assert error.getDetails().get(0).getField().contains("username");
+        assert error.getDetails().get(0).getField().contains("email");
 
         error = testDataProvider.SignInWithError(createUserRequest.getEmail(), "PASSWORD", null, 400, "130.001");
         assert error != null;
