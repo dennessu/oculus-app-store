@@ -5,7 +5,7 @@
  */
 package com.junbo.common.http
 
-import com.junbo.apphost.core.health.ConnectionInfoProvider
+import com.junbo.common.health.ConnectionInfoProvider
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.ning.http.client.AsyncHttpClient
 import groovy.transform.CompileStatic

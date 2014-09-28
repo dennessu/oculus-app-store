@@ -5,7 +5,7 @@
  */
 package com.junbo.sharding.health
 
-import com.junbo.apphost.core.health.ConnectionInfoProvider
+import com.junbo.common.health.ConnectionInfoProvider
 import com.junbo.sharding.hibernate.ShardMultiTenantConnectionProvider
 import com.junbo.sharding.transaction.SimpleDataSourceProxy
 import com.zaxxer.hikari.HikariDataSource

@@ -5,7 +5,7 @@
  */
 package com.junbo.common.memcached;
 
-import com.junbo.apphost.core.health.ConnectionInfoProvider;
+import com.junbo.common.health.ConnectionInfoProvider;
 import net.spy.memcached.MemcachedNode;
 
 import java.util.HashMap;
