@@ -2,6 +2,14 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/../util/common.sh
 
+role=`getServerRole`
+echo "The server is [$role]"
+
+if [[ $role != "SLAVE" ]] ; then
+    echo "[REMEDY][$role] failover script should be executed on [SLAVE] server"
+    exit
+fi
+
 echo "[FAILOVER][SLAVE] stop traffic for failover"
 
 echo "[FAILOVER][SLAVE] stop secondary pgbouncer proxy"

@@ -2,6 +2,14 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/../util/common.sh
 
+role=`getServerRole`
+echo "The server is [$role]"
+
+if [[ $role != "MASTER" ]] ; then
+    echo "[REMEDY][$role] bcp failback script should be executed on [MASTER] server"
+    exit
+fi
+
 echo "[FAILBACK][MASTER] stop traffic for failback"
 
 echo "[FAILBACK][MASTER] stop primary pgbouncer proxy"

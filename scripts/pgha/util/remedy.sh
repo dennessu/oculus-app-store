@@ -18,7 +18,6 @@ echo "server port [${!port}]"
 
 echo "[REMEDY][$role] check whether postgresql instance running"
 
-
 if ! nc -z ${!host} ${!port} ; then
     echo "[REMEDY][$role] postgresql instance is not running"
     $PGBIN_PATH/pg_ctl -D ${!data_path} -l "${!log_path}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
