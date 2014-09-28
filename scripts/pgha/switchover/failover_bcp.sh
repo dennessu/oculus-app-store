@@ -116,3 +116,12 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     echo "[FAILOVER][REPLICA] start pgqd deamon"
 	$DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
 ENDSSH
+
+echo "[FAILOVER][BCP] point pgbouncer to bcp"
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_bcp.sh
+ENDSSH
+
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_bcp.sh
+ENDSSH
