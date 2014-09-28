@@ -32,6 +32,7 @@ public interface ItemService {
     Item prepareItemEntity(String fileName, OrganizationId organizationId) throws Exception;
     Item postItem(Item item) throws Exception;
     Item postItem(Item item, int expectedResponseCode) throws Exception;
+    Item postItem(Item item, int expectedResponseCode, boolean isAdmin) throws Exception;
 
     Item updateItem(String itemId, Item item) throws Exception;
     Item updateItem(String itemId, Item item, int expectedResponseCode) throws Exception;

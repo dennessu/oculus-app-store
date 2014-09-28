@@ -155,6 +155,17 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         return offerPost;
     }
 
+    public Offer postOffer(Offer offer, int expectedResponseCode, boolean isAdmin) throws Exception {
+        componentType = ComponentType.CATALOGADMIN;
+
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offer, expectedResponseCode, true);
+        Offer offerPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
+                responseBody);
+
+        Master.getInstance().addOffer(offerPost.getOfferId(), offerPost);
+        return offerPost;
+    }
+
     public Offer updateOffer(String offerId, Offer offer) throws Exception {
         return updateOffer(offerId, offer, 200);
     }
@@ -162,7 +173,14 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     public Offer updateOffer(String offerId, Offer offer, int expectedResponseCode) throws Exception {
         componentType = ComponentType.CATALOGADMIN;
 
-        boolean isServiceScope = offer.getPublished();
+        boolean isServiceScope;
+        if (offer.getPublished() != null){
+            isServiceScope = offer.getPublished();
+        }
+        else
+        {
+            isServiceScope = false;
+        }
 
         String putUrl = catalogServerURL + "/" + offerId;
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offer, expectedResponseCode, isServiceScope);
