@@ -1,14 +1,10 @@
 package com.junbo.store.clientproxy.casey
-
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.catalog.spec.model.offer.Offer
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
@@ -24,6 +20,7 @@ import com.junbo.oauth.spec.model.GrantType
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.clientproxy.utils.ReviewBuilder
+import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
 import com.junbo.store.spec.model.browse.ReviewsResponse
@@ -97,15 +94,14 @@ class CaseyFacadeImpl implements CaseyFacade {
     @Override
     Promise<Map<String, AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext) {
         Map<String, AggregatedRatings> aggregatedRatingsMap = [:]
-        resourceContainer.caseyResource.getRatingByItemId(itemId.value).then { CaseyResults<CaseyAggregateRating> results ->
+        resourceContainer.caseyResource.getRatingByItemId(itemId.value).recover { Throwable throwable ->
+            wrapAndThrow(throwable)
+        }.then { CaseyResults<CaseyAggregateRating> results ->
             results.items.each { CaseyAggregateRating caseyAggregateRating ->
                 if (caseyAggregateRating.type != null) {
                     aggregatedRatingsMap[caseyAggregateRating.type] = reviewBuilder.buildAggregatedRatings(caseyAggregateRating)
                 }
             }
-            return Promise.pure()
-        }.recover { Throwable throwable ->
-            LOGGER.error('name=Get_AggregateRating_Fail, item=', itemId, throwable)
             return Promise.pure()
         }.then {
             return Promise.pure(aggregatedRatingsMap)
@@ -123,8 +119,7 @@ class CaseyFacadeImpl implements CaseyFacade {
         )
 
         return resourceContainer.caseyResource.getReviews(params).recover { Throwable ex ->
-            LOGGER.error('name=Get_Casey_Review_Fail', ex)
-            return Promise.pure()
+            wrapAndThrow(ex)
         }.then { CaseyResults<CaseyReview> results ->
             if (results == null) {
                 return Promise.pure(new ReviewsResponse(
@@ -156,34 +151,6 @@ class CaseyFacadeImpl implements CaseyFacade {
     }
 
     @Override
-    Promise<Boolean> itemAvailable(ItemId itemId, ApiContext apiContext) {
-        resourceContainer.offerResource.getOffers(new OffersGetOptions(itemId: itemId?.value)).then { Results<Offer> offerResults ->
-            if (offerResults.items.size() > 1) {
-                LOGGER.warn('name=Store_Multiple_Offers_Found, item={}, useOffer={}', itemId, offerResults.items[0].offerId)
-            }
-            if (CollectionUtils.isEmpty(offerResults.items)) {
-                return Promise.pure(false)
-            }
-
-            // call search to check whether the offer is available under the given country
-            OfferSearchParams offerSearchParams = new OfferSearchParams()
-            offerSearchParams.locale = apiContext.locale.getId().value
-            offerSearchParams.country = apiContext.country.getId().value
-            offerSearchParams.offerId = offerResults.items[0].offerId
-            offerSearchParams.minimal = true
-            resourceContainer.caseyResource.searchOffers(offerSearchParams).recover { Throwable ex ->
-                LOGGER.error('name=Store_SearchOffer_Error', ex)
-                return Promise.pure()
-            }.then { CaseyResults<CaseyOffer> results ->
-                if (CollectionUtils.isEmpty(results?.items)) {
-                    return Promise.pure(false)
-                }
-                return Promise.pure(true)
-            }
-        }
-    }
-
-    @Override
     Promise<CmsPage> getCmsPage(String path, String label, String country, String locale) {
         CmsPage page
         resourceContainer.caseyResource.getCmsPages(
@@ -205,21 +172,6 @@ class CaseyFacadeImpl implements CaseyFacade {
     }
 
     @Override
-    Promise<CmsCampaign> getCmsCampaign(String label) {
-        CaseyResults<CmsCampaign> caseyResults
-        resourceContainer.caseyResource.getCmsCampaigns(new CmsCampaignGetParam(expand: 'results/placements/content')).then { CaseyResults<CmsCampaign> results ->
-            caseyResults = results
-            if (CollectionUtils.isEmpty(caseyResults?.items)) {
-                return Promise.pure()
-            }
-            CmsCampaign result = caseyResults.items.find { CmsCampaign campaign ->
-                return campaign?.status == 'APPROVED' && campaign?.label == label
-            }
-            return Promise.pure(result)
-        }
-    }
-
-    @Override
     Promise<Review> addReview(AddReviewRequest request, ApiContext apiContext) {
         CaseyReview review = reviewBuilder.buildCaseyReview(request, apiContext)
 
@@ -233,7 +185,9 @@ class CaseyFacadeImpl implements CaseyFacade {
                         scope: 'catalog'
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
-            return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).then { CaseyReview newReview ->
+            return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).recover { Throwable ex ->
+                wrapAndThrow(ex)
+            }.then { CaseyReview newReview ->
                 getReviewAuthorName(newReview).then { String author ->
                     return Promise.pure(reviewBuilder.buildItemReview(newReview, author))
                 }
@@ -245,7 +199,9 @@ class CaseyFacadeImpl implements CaseyFacade {
         CaseyResults<Item> results = new CaseyResults<Item>(
                 items: [] as List
         )
-        resourceContainer.caseyResource.searchOffers(searchParams).then { CaseyResults<CaseyOffer> rawResults ->
+        resourceContainer.caseyResource.searchOffers(searchParams).recover { Throwable ex ->
+            wrapAndThrow(ex)
+        }.then { CaseyResults<CaseyOffer> rawResults ->
             if (rawResults?.items == null) {
                 return Promise.pure(results)
             }
@@ -369,5 +325,9 @@ class CaseyFacadeImpl implements CaseyFacade {
             }
         }
         LOGGER.error("name=CaseyResults_Unknown_CursorFormat, payload={}", ObjectMapperProvider.instance().writeValueAsString(caseyResults.rawCursor))
+    }
+
+    private static void wrapAndThrow(Throwable throwable) {
+        throw new CaseyException('Call_Casey_Error', throwable)
     }
 }

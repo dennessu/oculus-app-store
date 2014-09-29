@@ -6,6 +6,7 @@ import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
 import com.junbo.common.model.Results
+import com.junbo.common.util.IdFormatter
 import com.junbo.entitlement.spec.model.*
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.priceRating.RatingItem
@@ -18,6 +19,7 @@ import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.CatalogUtils
 import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
@@ -279,7 +281,13 @@ class BrowseServiceImpl implements BrowseService {
             item.ownedByCurrentUser = owned
             return Promise.pure()
         }.then { // get current user review
-            facadeContainer.caseyFacade.getReviews(item.self.value, apiContext.user, null, null).then { ReviewsResponse reviewsResponse ->
+            facadeContainer.caseyFacade.getReviews(item.self.value, apiContext.user, null, null).recover { Throwable ex ->
+                if (ex instanceof CaseyException) {
+                    LOGGER.error('name=FillItemDetails_GetCurrentUserReview_Error, item={}, user={}', item?.self, IdFormatter.encodeId(apiContext.user), ex)
+                    return Promise.pure()
+                }
+                throw ex
+            }.then { ReviewsResponse reviewsResponse ->
                 if (CollectionUtils.isEmpty(reviewsResponse?.reviews)) {
                     item.currentUserReview = null
                 } else {
@@ -288,7 +296,13 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.pure()
             }
         }.then { // get the review response
-            facadeContainer.caseyFacade.getReviews(item.self.value, null, null, DEFAULT_PAGE_SIZE).then { ReviewsResponse reviewsResponse ->
+            facadeContainer.caseyFacade.getReviews(item.self.value, null, null, DEFAULT_PAGE_SIZE).recover { Throwable ex ->
+                if (ex instanceof CaseyException) {
+                    LOGGER.error('name=FillItemDetails_GetReviews_Error, item={}', item?.self, ex)
+                    return Promise.pure()
+                }
+                throw ex
+            }.then { ReviewsResponse reviewsResponse ->
                 item.reviews = reviewsResponse
                 return Promise.pure()
             }
@@ -316,15 +330,25 @@ class BrowseServiceImpl implements BrowseService {
 
         String cursor = null
         CommonUtils.loop {
-            facadeContainer.caseyFacade.getReviews(null, apiContext.user, cursor, null).then { ReviewsResponse response ->
-                if (!CollectionUtils.isEmpty(response?.reviews)) {
+            facadeContainer.caseyFacade.getReviews(null, apiContext.user, cursor, null).recover { Throwable ex ->
+                if (ex instanceof CaseyException) {
+                    LOGGER.error('name=GetLibrary_GetReviewByUser_Error, user={}', IdFormatter.encodeId(apiContext.user), ex)
+                    return Promise.pure()
+                }
+                throw ex
+            }.then { ReviewsResponse response ->
+                if (response == null) {
+                    return Promise.pure(Promise.BREAK)
+                }
+
+                if (!CollectionUtils.isEmpty(response.reviews)) {
                     response.reviews.each { Review review ->
                         if (review.itemId != null && itemIdReviewMap.containsKey(review.itemId)) {
                             itemIdReviewMap[review.itemId] = review
                         }
                     }
                 }
-                if (CollectionUtils.isEmpty(response?.reviews) || response.next == null) {
+                if (CollectionUtils.isEmpty(response.reviews) || response.next == null) {
                     return Promise.pure(Promise.BREAK)
                 }
                 Assert.isTrue(!StringUtils.isEmpty(response.next.cursor))
