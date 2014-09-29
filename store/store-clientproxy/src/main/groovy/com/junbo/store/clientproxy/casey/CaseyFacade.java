@@ -16,7 +16,6 @@ import com.junbo.store.spec.model.browse.document.Item;
 import com.junbo.store.spec.model.browse.document.Review;
 import com.junbo.store.spec.model.browse.document.SectionInfoNode;
 import com.junbo.store.spec.model.external.casey.CaseyResults;
-import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 
 import java.util.Map;
@@ -34,11 +33,7 @@ public interface CaseyFacade {
 
     Promise<ReviewsResponse> getReviews(String itemId, UserId userId, String cursor, Integer count);
 
-    Promise<Boolean> itemAvailable(ItemId itemId, ApiContext apiContext);
-
-    Promise<CmsPage> getCmsPage(String path, String label);
-
-    Promise<CmsCampaign> getCmsCampaign(String label);
+    Promise<CmsPage> getCmsPage(String path, String label, String country, String locale);
 
     Promise<Review> addReview(AddReviewRequest request, ApiContext apiContext);
 }

@@ -193,7 +193,8 @@ public class postUser {
 
     @Test(groups = "dailies")
     //https://oculus.atlassian.net/browse/SER-436
-    //Please insure users cannot have same username as nickname
+    //https://oculus.atlassian.net/browse/SER-639
+    //Please insure users can have same username as nickname
     public void testNickNameDifferentFromUsername() throws Exception {
         String username = RandomHelper.randomAlphabetic(15);
         String nickname = RandomHelper.randomAlphabetic(15);
@@ -206,18 +207,17 @@ public class postUser {
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
                 url, JsonHelper.JsonSerializer(user),
                 HttpclientHelper.HttpRequestType.put, nvps);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "be the same as username";
-        Validator.Validate("validate response error message", true,
-                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        Validator.Validate("validate response error code", 200, response.getStatusLine().getStatusCode());
+        response.close();
 
+        user = Identity.UserGetByUserId(user.getId());
         UserPersonalInfo updatedPII = createUserNamePII(user.getNickName(), user.getId());
         user.setUsername(updatedPII.getId());
         response = HttpclientHelper.PureHttpResponse(url, JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        Validator.Validate("validate response error message", true,
-                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        Validator.Validate("validate response error code", 200, response.getStatusLine().getStatusCode());
+        response.close();
 
+        user = Identity.UserGetByUserId(user.getId());
         updatedPII = createUserNamePII(RandomHelper.randomAlphabetic(15), user.getId());
         user.setUsername(updatedPII.getId());
         Identity.UserPut(user);

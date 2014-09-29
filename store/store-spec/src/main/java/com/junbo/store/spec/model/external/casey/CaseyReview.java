@@ -5,16 +5,13 @@
  */
 package com.junbo.store.spec.model.external.casey;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 import java.util.List;
 
 /**
  * CaseyReview.
  */
-public class CaseyReview extends BaseCaseyModel {
+public class CaseyReview {
     private List<Rating> ratings;
     private String reviewTitle;
     private String review;
@@ -82,32 +79,26 @@ public class CaseyReview extends BaseCaseyModel {
         this.resource = resource;
     }
 
-    @JsonIgnore
     public CaseyLink getUser() {
         return user;
     }
 
-    @JsonProperty("user")
     public void setUser(CaseyLink user) {
         this.user = user;
     }
 
-    @JsonIgnore
     public Date getPostedDate() {
         return postedDate;
     }
 
-    @JsonProperty("postedDate")
     public void setPostedDate(Date postedDate) {
         this.postedDate = postedDate;
     }
 
-    @JsonIgnore
     public CaseyLink getSelf() {
         return self;
     }
 
-    @JsonProperty("self")
     public void setSelf(CaseyLink self) {
         this.self = self;
     }

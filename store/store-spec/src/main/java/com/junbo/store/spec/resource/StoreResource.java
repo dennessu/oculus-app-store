@@ -31,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 public interface StoreResource {
 
     @POST
-    @Path("/verify-email")
+    @Path("/resend-confirmation-email")
     @RouteByAccessToken(switchable = true)
     // This doesn't require email verification
     Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request);
@@ -112,7 +112,7 @@ public interface StoreResource {
     Promise<SectionLayoutResponse> getSectionLayout(@BeanParam SectionLayoutRequest request);
 
     @GET
-    @Path("/section-list")
+    @Path("/section-items")
     @RouteByAccessToken(switchable = true)
     Promise<ListResponse> getList(@BeanParam ListRequest request);
 
@@ -122,9 +122,9 @@ public interface StoreResource {
     Promise<LibraryResponse> getLibrary();
 
     @GET
-    @Path("/details")
+    @Path("/item-details")
     @RouteByAccessToken(switchable = true)
-    Promise<DetailsResponse> getDetails(@BeanParam DetailsRequest request);
+    Promise<DetailsResponse> getItemDetails(@BeanParam DetailsRequest request);
 
     @GET
     @Path("/reviews")
@@ -137,7 +137,7 @@ public interface StoreResource {
     Promise<AddReviewResponse> addReview(AddReviewRequest request);
 
     @GET
-    @Path("/delivery")
+    @Path("/generate-download-info")
     @RouteByAccessToken(switchable = true)
     Promise<DeliveryResponse> getDelivery(@BeanParam DeliveryRequest request);
 }

@@ -314,6 +314,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (offer.getDeveloperRatio() == null) {
             offer.setDeveloperRatio(config.getDeveloperRatio());
         }
+        if (offer.getPublished() == null) {
+            offer.setPublished(Boolean.FALSE);
+        }
     }
 
     private List<Offer> getOffersByItemId(String itemId, OffersGetOptions options) {

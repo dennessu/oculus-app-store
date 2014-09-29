@@ -3,7 +3,6 @@ apply plugin: 'groovy'
 dependencies {
     compile junboProject(':common-configuration')
     compile junboProject(':langur-core')
-    compile junboProject(':apphost-core')
 
     compile (libraries.rs_api)
 
@@ -44,4 +43,10 @@ dependencies {
     compile (libraries.quartz_scheduler)
 
     testRuntime junboProject(':configuration-data')
+
+    // dependency for docs
+    compile("com.wordnik:swagger-jersey2-jaxrs_2.10:${swaggerVersion}") {
+        exclude group: "javax.ws.rs", module: "jsr311-api"
+        changing = true
+    }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.apphost.core.health
 
+import com.junbo.common.health.ConnectionInfoProvider
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext

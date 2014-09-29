@@ -6,12 +6,11 @@
 package com.junbo.store.spec.model.external.casey.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 
 /**
  * The CatalogAttribute class.
  */
-public class CatalogAttribute extends BaseCaseyModel {
+public class CatalogAttribute {
 
     @JsonProperty("id")
     private String attributeId;

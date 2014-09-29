@@ -5,14 +5,12 @@
  */
 package com.junbo.store.spec.model.external.casey.search;
 
-import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
-
 import java.math.BigDecimal;
 
 /**
  * The CaseyPrice class.
  */
-public class CaseyPrice extends BaseCaseyModel {
+public class CaseyPrice {
 
     private String currencyCode;
     private BigDecimal amount;

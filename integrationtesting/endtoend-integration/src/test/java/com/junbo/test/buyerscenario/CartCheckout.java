@@ -461,10 +461,11 @@ public class CartCheckout extends BaseTestClass {
 
         Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
 
+        Thread.sleep(1000);
+
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
         validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.FREE, false);
-
     }
 
     @Property(

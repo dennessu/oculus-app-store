@@ -3,11 +3,7 @@ import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.enums.OfferAttributeType
 import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.enums.Status
-import com.junbo.catalog.spec.model.attribute.ItemAttribute
-import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
-import com.junbo.catalog.spec.model.attribute.OfferAttribute
-import com.junbo.catalog.spec.model.attribute.OfferAttributeGetOptions
-import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
+import com.junbo.catalog.spec.model.attribute.*
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
@@ -30,7 +26,7 @@ import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.common.utils.CommonUtils
-import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.catalog.Offer
@@ -264,7 +260,13 @@ class CatalogFacadeImpl implements CatalogFacade {
 
     private Promise<CaseyData> getCaseyData(String itemId, ApiContext apiContext) {
         CaseyData result = new CaseyData()
-        caseyFacade.getAggregatedRatings(new ItemId(itemId), apiContext).then { Map<String, AggregatedRatings> aggregatedRatings ->
+        caseyFacade.getAggregatedRatings(new ItemId(itemId), apiContext).recover { Throwable ex ->
+            if (ex instanceof CaseyException) {
+                LOGGER.error('name=GetCaseyData_Get_Reviews_Error', ex)
+                return Promise.pure()
+            }
+            throw ex
+        }.then { Map<String, AggregatedRatings> aggregatedRatings ->
             result.aggregatedRatings = aggregatedRatings
             return Promise.pure(result)
         }

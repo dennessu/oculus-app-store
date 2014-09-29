@@ -374,6 +374,33 @@ class UserServiceImpl implements UserService {
         return sendResetPassword(userId, locale, country)
     }
 
+    @Override
+    Promise<List<String>> getResetPasswordLinks(String username, String email, String locale, String country) {
+        List<String> results = new ArrayList<>()
+        return userResource.list(new UserListOptions(username: username)).then { Results<User> userResults ->
+            userResults.items.each { User user ->
+                List<ResetPasswordCode> codes = resetPasswordCodeRepository.getByUserIdEmail(user.getId().value, email)
+                codes.each { ResetPasswordCode code ->
+                    UriBuilder uriBuilder = UriBuilder.fromUri(emailLinkBaseUri)
+                    uriBuilder.path(EMAIL_RESET_PASSWORD_PATH)
+                    uriBuilder.queryParam(OAuthParameters.RESET_PASSWORD_CODE, code.code)
+                    if (!StringUtils.isEmpty(locale)) {
+                        uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
+                    }
+                    if (!StringUtils.isEmpty(country)) {
+                        uriBuilder.queryParam(OAuthParameters.COUNTRY, country)
+                    }
+
+                    results.add(uriBuilder.build().toString())
+                }
+            }
+
+            return Promise.pure()
+        }.then {
+            return Promise.pure(results)
+        }
+    }
+
     private Promise<String> getDefaultUserEmail(User user) {
         if (user == null) {
             throw AppErrors.INSTANCE.errorCallingIdentity().exception()

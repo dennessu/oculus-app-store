@@ -5,7 +5,6 @@
  */
 package com.junbo.store.spec.model.external.casey.cms;
 
-import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 import com.junbo.store.spec.model.external.casey.CaseyLink;
 
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
 /**
  * The CmsCampaign class.
  */
-public class CmsCampaign extends BaseCaseyModel {
+public class CmsCampaign {
 
     private CaseyLink self;
 

@@ -68,17 +68,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private Integer userAgentMinLength
     private Integer userAgentMaxLength
     // This is to check good user can't fail to login in some time
-    private Integer maxRetryCount
-    private Integer retryInterval
+    private Map<Integer, Integer> maxRetryIntervalMap   // This is to control same user's allow retry count during interval
+                                                        // The first parameter is the maxRetryCount, the second parameter is the retryInterval
+                                                        // All of them are and operation, only when user's login history satisfy any configurations, it will be the same
+    private Map<Integer, Integer> maxLockDownTime       // This is to control same user's lock out time
+                                                        // The first parameter is the maxRetryCount, the second parameter is the lock down time
 
     // This is to check maxSameUserAttemptCount login attempts for the same user within attemptRetryCount time frame
-    private Integer maxSameUserAttemptCount
-    private Integer sameUserAttemptRetryInterval
+    private Map<Integer, Integer> maxSameUserAttemptIntervalMap    // This is to control smae user's retry interval
+                                                                    // The first parameter is the allowed number, the second parameter is the interval
 
     // This is to check More than maxSameIPRetryCount login attempts from the same IP address for different user account within sameIPRetryInterval timeframe
-    private Integer maxSameIPRetryCount
+    private Map<Integer, Integer> maxSameIPIntervalMap  // This is to control same ip's retry interval
+                                                        // The first parameter is the allowed number, the second parameter is the retryInterval
     private List<String> ip4WhiteList
-    private Integer sameIPRetryInterval
 
     // Any data that will use this data should be data issue, we may need to fix this.
     private Integer maximumFetchSize
@@ -89,6 +92,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private EmailResource emailResource
     private EmailTemplateResource emailTemplateResource
     private PlatformTransactionManager transactionManager
+    private Boolean enableMailSend
 
     @Override
     Promise<UserCredentialVerifyAttempt> validateForGet(UserCredentialVerifyAttemptId userLoginAttemptId) {
@@ -285,51 +289,44 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
-
         return getActiveCredentialCreatedTime(user, userLoginAttempt).then { Date passwordActiveTime ->
-            Long timeInterval = passwordActiveTime.getTime()
+            return Promise.each(this.maxRetryIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
+                Integer maxRetryCount = entry.key
+                Integer maxRetryInterval = entry.value
+                Long maxRetryIntervalFromTime = System.currentTimeMillis() - maxRetryInterval * 1000L
+                Long timeInterval = maxRetryIntervalFromTime > passwordActiveTime.getTime() ? maxRetryIntervalFromTime : passwordActiveTime.getTime()
 
-            return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount + 1, 0).then {
-                    List<UserCredentialVerifyAttempt> attemptListTemp ->
-                if (CollectionUtils.isEmpty(attemptListTemp) || attemptListTemp.size() < maxRetryCount) {
-                    return Promise.pure(null)
-                }
+                return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount, 0).then {
+                    List<UserCredentialVerifyAttempt> attemptList ->
+                        if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
+                            // Only if it reaches the threashold, we will send mail
+                            if (!CollectionUtils.isEmpty(attemptList) && attemptList.size() == maxRetryCount - 1) {
+                                return sendMaximumRetryReachedNotification(user, userLoginAttempt).recover { Throwable ex ->
+                                    LOGGER.error("Error sending Maximum retry reachable Notification")
+                                    return Promise.pure(null)
+                                }
+                            }
+                            return Promise.pure(null)
+                        }
 
-                List<UserCredentialVerifyAttempt> attemptList = new ArrayList<>()
-                for (int index = 0; index < maxRetryCount; index ++) {
-                    attemptList.add(attemptListTemp.get(index))
-                }
+                        UserCredentialVerifyAttempt successAttempt = attemptList.find { UserCredentialVerifyAttempt attempt ->
+                            return attempt.succeeded
+                        }
+                        if (successAttempt != null) {
+                            return Promise.pure(null)
+                        }
 
-                UserCredentialVerifyAttempt successAttempt = attemptList.find { UserCredentialVerifyAttempt attempt ->
-                    return attempt.succeeded
-                }
-                if (successAttempt != null) {
-                    return Promise.pure(null)
-                }
-
-                return sendMaximumRetryReachedNotification(user, userLoginAttempt, attemptListTemp).recover { Throwable throwable ->
-                    LOGGER.error("Error sending Maximum retry reachable Notification")
-                    return Promise.pure(null)
-                }.then {
-                    throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+                        if (attemptList.get(0).createdTime.before(DateUtils.addSeconds(new Date(), -maxLockDownTime.get(entry.key)))) {
+                            return Promise.pure(null)
+                        }
+                        throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
                 }
             }
         }
     }
 
-    private Promise<Void> sendMaximumRetryReachedNotification(User user, UserCredentialVerifyAttempt userLoginAttempt, List<UserCredentialVerifyAttempt> attemptList) {
-        if (attemptList.size() < maxRetryCount + 1) {
-            return Promise.pure(null)
-        }
-
-        UserCredentialVerifyAttempt userCredentialVerifyAttempt = attemptList.get(maxRetryCount);
-        // One day can send only one user lock mail
-        if (!userCredentialVerifyAttempt.succeeded && userCredentialVerifyAttempt.createdTime.after(DateUtils.addDays(new Date(), -1))) {
-            return Promise.pure(null)
-        }
-
-        // todo:    can remove this later due to mailenable is set to
-        if (!Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue("identity.conf.mailEnable"))) {
+    private Promise<Void> sendMaximumRetryReachedNotification(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (!enableMailSend) {
             return Promise.pure(null)
         }
 
@@ -437,13 +434,19 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumSameUserAttemptCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
-        Long timeInterval = System.currentTimeMillis() - sameUserAttemptRetryInterval * 1000
-        return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval,
-                maxSameUserAttemptCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameUserAttemptCount) {
-                return Promise.pure(null)
+        return Promise.each(this.maxSameUserAttemptIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
+            Integer maxSameUserAttemptCount = entry.key
+            Integer sameUserAttemptRetryInterval = entry.value
+            Long timeInterval = System.currentTimeMillis() - sameUserAttemptRetryInterval * 1000
+            return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval,
+                    maxSameUserAttemptCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+                if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameUserAttemptCount) {
+                    return Promise.pure(null)
+                }
+                throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
             }
-            throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+        }.then {
+            return Promise.pure(null)
         }
     }
 
@@ -452,15 +455,21 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             return Promise.pure(null)
         }
 
-        Long fromTimeStamp = System.currentTimeMillis() - sameIPRetryInterval * 1000
+        return Promise.each(this.maxSameIPIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
+            Integer maxSameIPRetryCount = entry.getKey()
+            Integer maxSameIPRetryInterval = entry.getValue()
 
-        return userLoginAttemptRepository.searchByIPAddressAndCredentialTypeAndInterval(userLoginAttempt.ipAddress, userLoginAttempt.type, fromTimeStamp,
-                maxSameIPRetryCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameIPRetryCount) {
-                return Promise.pure(null)
+            Long fromTimeStamp = System.currentTimeMillis() - maxSameIPRetryInterval * 1000
+
+            return userLoginAttemptRepository.searchByIPAddressAndCredentialTypeAndInterval(userLoginAttempt.ipAddress, userLoginAttempt.type, fromTimeStamp,
+                    maxSameIPRetryCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+                if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameIPRetryCount) {
+                    return Promise.pure(null)
+                }
+
+                throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
             }
 
-            throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
         }
     }
 
@@ -554,6 +563,17 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     @Required
+    void setMaxSameUserAttemptIntervalMap(String maxSameUserAttemptIntervalStr) {
+        String[] maxSameUserAttemptIntervalArray = maxSameUserAttemptIntervalStr.split(';')
+        this.maxSameUserAttemptIntervalMap = new HashMap<>()
+        maxSameUserAttemptIntervalArray.each { String retryIntervalStr ->
+            String[] retryIntervalArray = retryIntervalStr.split(':')
+            assert retryIntervalArray.size() == 2
+            this.maxSameUserAttemptIntervalMap.put(parseInteger(retryIntervalArray[0]), parseInteger(retryIntervalArray[1]))
+        }
+    }
+
+    @Required
     void setUserLoginAttemptRepository(UserCredentialVerifyAttemptRepository userLoginAttemptRepository) {
         this.userLoginAttemptRepository = userLoginAttemptRepository
     }
@@ -596,28 +616,37 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     @Required
-    void setMaxRetryCount(Integer maxRetryCount) {
-        this.maxRetryCount = maxRetryCount
+    void setMaxRetryIntervalMap(String maxRetryIntervalStr) {
+        String[] retryIntervalArray = maxRetryIntervalStr.split(';')
+        this.maxRetryIntervalMap = new HashMap<>()
+        this.maxLockDownTime = new HashMap<>()
+        this.maxLockDownTime = new HashMap<>()
+        retryIntervalArray.each { String retryIntervalStr ->
+            String[] retryIntervalStrArray = retryIntervalStr.split(':')
+            assert retryIntervalStrArray.size() == 3
+            this.maxRetryIntervalMap.put(parseInteger(retryIntervalStrArray[0]), parseInteger(retryIntervalStrArray[1]))
+            this.maxLockDownTime.put(parseInteger(retryIntervalStrArray[0]), parseInteger(retryIntervalStrArray[2]))
+        }
     }
 
-    @Required
-    void setRetryInterval(Integer retryInterval) {
-        this.retryInterval = retryInterval
+    private Integer parseInteger(String value) {
+        if ("MAX_VALUE".equalsIgnoreCase(value)) {
+            return Integer.MAX_VALUE
+        }
+
+        return Integer.parseInt(value)
     }
 
-    @Required
-    void setMaxAttemptCount(Integer maxAttemptCount) {
-        this.maxSameUserAttemptCount = maxAttemptCount
-    }
 
     @Required
-    void setAttemptRetryInterval(Integer attemptRetryInterval) {
-        this.sameUserAttemptRetryInterval = attemptRetryInterval
-    }
-
-    @Required
-    void setMaxSameIPRetryCount(Integer maxSameIPRetryCount) {
-        this.maxSameIPRetryCount = maxSameIPRetryCount
+    void setMaxSameIPIntervalMap(String maxSameIPIntervalStr) {
+        String[] maxSameIPIntervalStrArray = maxSameIPIntervalStr.split(';')
+        this.maxSameIPIntervalMap = new HashMap<>()
+        maxSameIPIntervalStrArray.each { String retryIntervalStr ->
+            String[] retryIntervalStrArray = retryIntervalStr.split(':')
+            assert retryIntervalStrArray.size() == 2
+            this.maxSameIPIntervalMap.put(parseInteger(retryIntervalStrArray[0]), parseInteger(retryIntervalStrArray[1]))
+        }
     }
 
     @Required
@@ -632,11 +661,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 throw new IllegalArgumentException('configuration ip4WhiteList must be xx.xx.xx.xx;xx.xx.xx.xx ' + ip + ipFieldList.length)
             }
         }
-    }
-
-    @Required
-    void setSameIPRetryInterval(Integer sameIPRetryInterval) {
-        this.sameIPRetryInterval = sameIPRetryInterval
     }
 
     @Required
@@ -667,5 +691,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setMaximumFetchSize(Integer maximumFetchSize) {
         this.maximumFetchSize = maximumFetchSize
+    }
+
+    @Required
+    void setEnableMailSend(Boolean enableMailSend) {
+        this.enableMailSend = enableMailSend
     }
 }

@@ -39,7 +39,7 @@ public class DataGenerator {
         return val;
     }
 
-    public CaseyReview generateCaseyReview(String userId) {
+    public CaseyReview generateCaseyReview(String userId, ItemId itemId) {
         CaseyReview caseyReview = new CaseyReview();
         caseyReview.setReview("review text:" + RandomStringUtils.randomAlphabetic(15));
         caseyReview.setReviewTitle("title:" + RandomStringUtils.randomAlphabetic(15));
@@ -47,6 +47,11 @@ public class DataGenerator {
         caseyReview.setUser(new CaseyLink(userId));
         caseyReview.setPostedDate(new Date(System.currentTimeMillis() / 1000L * 1000));
         caseyReview.setSelf(new CaseyLink(UUID.randomUUID().toString()));
+        if (itemId != null) {
+            CaseyLink caseyLink = new CaseyLink();
+            caseyLink.setId(itemId.getValue());
+            caseyReview.setResource(caseyLink);
+        }
 
         CaseyReview.Rating qualityRating = new CaseyReview.Rating();
         qualityRating.setType("quality");
@@ -98,21 +103,29 @@ public class DataGenerator {
         return cmsPage;
     }
 
-    public Placement genStringPlacement(String pageId, String slot, String name, String value) {
+    public CmsSchedule genCmsSchedule(String pageId) {
+        CmsSchedule cmsSchedule = new CmsSchedule();
+        CaseyLink caseyLink = new CaseyLink();
+        caseyLink.setId(pageId);
+        cmsSchedule.setSelf(caseyLink);
+        cmsSchedule.setSlots(new TreeMap<String, CmsScheduleContent>());
+        return cmsSchedule;
+    }
+
+    public CmsScheduleContent genCmsScheduleContent(String name, String value) {
         CaseyContentItemString string = new CaseyContentItemString();
         string.setLocales(Collections.singletonMap("en_US", value));
         ContentItem contentItem = new ContentItem();
         contentItem.setType(ContentItem.Type.string.name());
         contentItem.setStrings(Arrays.asList(string));
-
-        Placement placement = new Placement();
-        placement.setPage(new CaseyLink());
-        placement.getPage().setId(pageId);
-        placement.setSlot(slot);
-        placement.setContent(new CmsContent());
-        placement.getContent().setContents(Collections.singletonMap(name, contentItem));
-        return placement;
+        CmsContent cmsContent = new CmsContent();
+        cmsContent.setContents(Collections.singletonMap(name, contentItem));
+        CmsScheduleContent cmsScheduleContent = new CmsScheduleContent();
+        cmsScheduleContent.setContent(cmsContent);
+        return cmsScheduleContent;
     }
+
+    //public CmsSchedule genCmsSchedule(String pageId)
 
     public CmsCampaign genCmsCampaign(String label, List<Placement> placements) {
         CmsCampaign cmsCampaign = new CmsCampaign();

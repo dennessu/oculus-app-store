@@ -70,7 +70,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public VerifyEmailResponse verifyEmail(VerifyEmailRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/verify-email", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/resend-confirmation-email", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             VerifyEmailResponse response = new JsonMessageTranscoder().decode(new TypeReference<VerifyEmailResponse>() {
             }, responseBody);
@@ -357,7 +357,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public ListResponse getList(ListRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String url = getEndPointUrl() + "/section-list?";
+        String url = getEndPointUrl() + "/section-items?";
         url = appendQuery(url, "category", request.getCategory());
         url = appendQuery(url, "criteria", request.getCriteria());
         url = appendQuery(url, "count", request.getCount());
@@ -398,7 +398,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public DetailsResponse getDetails(DetailsRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/details?itemId=" + request.getItemId().getValue() , expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/item-details?itemId=" + request.getItemId().getValue() , expectedResponseCode);
         if (expectedResponseCode == 200) {
             DetailsResponse response = new JsonMessageTranscoder().decode(new TypeReference<DetailsResponse>() {
             }, responseBody);
@@ -456,7 +456,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public DeliveryResponse getDelivery(DeliveryRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String url = getEndPointUrl() + "/delivery?";
+        String url = getEndPointUrl() + "/generate-download-info?";
         url = appendQuery(url, "itemId", request.getItemId());
         url = appendQuery(url, "currentVersionCode", request.getCurrentVersionCode());
         url = appendQuery(url, "desiredVersionCode", request.getDesiredVersionCode());

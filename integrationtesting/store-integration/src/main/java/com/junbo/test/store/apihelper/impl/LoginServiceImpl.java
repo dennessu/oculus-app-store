@@ -55,7 +55,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/create", createUserRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/register", createUserRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);
@@ -69,7 +69,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public com.junbo.common.error.Error CreateUserWithError(CreateUserRequest createUserRequest, int expectedResponseCode, String errorCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/create", createUserRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/register", createUserRequest, expectedResponseCode);
         Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
         }, responseBody);
         assert error.getCode().equalsIgnoreCase(errorCode);
@@ -103,7 +103,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public AuthTokenResponse signIn(UserSignInRequest userSignInRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/sign-in", userSignInRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/log-in", userSignInRequest, expectedResponseCode);
 
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
@@ -120,7 +120,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public Error signInWithError(UserSignInRequest userSignInRequest, int expectedResponseCode, String errorCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/sign-in", userSignInRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/log-in", userSignInRequest, expectedResponseCode);
 
         Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
         }, responseBody);
@@ -153,7 +153,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public AuthTokenResponse getToken(AuthTokenRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/token", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/refresh-token", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);
@@ -167,7 +167,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public Error getTokenWithError(AuthTokenRequest request, int expectedResponseCode, String errorCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/token", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/refresh-token", request, expectedResponseCode);
 
         Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
         }, responseBody);
@@ -175,4 +175,25 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         return error;
     }
 
+    @Override
+    public ConfirmEmailResponse confirmEmail(ConfirmEmailRequest request, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/confirm-email", request, expectedResponseCode);
+
+        if (expectedResponseCode == 200) {
+            ConfirmEmailResponse response = new JsonMessageTranscoder().decode(new TypeReference<ConfirmEmailResponse>() {
+            }, responseBody);
+            return response;
+        }
+        return null;
+    }
+
+    @Override
+    public Error confirmEmail(ConfirmEmailRequest request, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/confirm-email", request, expectedResponseCode);
+
+        Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
+        }, responseBody);
+        assert error.getCode().equalsIgnoreCase(errorCode);
+        return error;
+    }
 }
