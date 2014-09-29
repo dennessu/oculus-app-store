@@ -262,7 +262,7 @@ class CatalogFacadeImpl implements CatalogFacade {
         CaseyData result = new CaseyData()
         caseyFacade.getAggregatedRatings(new ItemId(itemId), apiContext).recover { Throwable ex ->
             if (ex instanceof CaseyException) {
-                LOGGER.error('name=GetCaseyData_Get_Reviews_Error', ex)
+                LOGGER.error('name=GetCaseyData_Get_AggregateRatings_Error', ex)
                 return Promise.pure()
             }
             throw ex

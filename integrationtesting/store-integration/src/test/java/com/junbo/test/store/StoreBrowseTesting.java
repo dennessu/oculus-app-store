@@ -139,6 +139,41 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     @Test
+    public void testGetLibraryGetAggregateRatingAndReviewCaseyError() throws Exception {
+        // create user
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        // setup aggregate rating
+        List<CaseyAggregateRating> caseyAggregateRating = Arrays.asList(DataGenerator.instance().generateCaseyAggregateRating("quality"), DataGenerator.instance().generateCaseyAggregateRating("comfort"));
+        testDataProvider.postCaseyEmulatorData(null, caseyAggregateRating, null);
+
+        // buy offers
+        String offerId;
+        if (offer_digital_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
+        testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+
+        // add review
+        testDataProvider.addReview(DataGenerator.instance().generateAddReviewRequest(testDataProvider.getLibrary().getItems().get(0).getSelf()), 200);
+
+        // get library and check aggregate rating & current user review is there
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
+        Assert.assertNotNull(libraryResponse.getItems().get(0).getAggregatedRatings());
+        Assert.assertNotNull(libraryResponse.getItems().get(0).getCurrentUserReview());
+
+        // get library with simulated casey error and check aggregate rating/current user review is null
+        TestContext.getData().putHeader("X_QA_CASEY_ERROR", "getReviews,getRatings");
+        libraryResponse = testDataProvider.getLibrary();
+        Assert.assertNull(libraryResponse.getItems().get(0).getAggregatedRatings());
+        Assert.assertNull(libraryResponse.getItems().get(0).getCurrentUserReview());
+    }
+
+    @Test
     public void testGetDetailsPurchased() throws Exception {
         // create user and sign in
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
@@ -428,6 +463,12 @@ public class StoreBrowseTesting extends BaseTestClass {
         // verify the user review
         storeBrowseValidationHelper.verifyReview(item.getCurrentUserReview(), caseyReviews.get(0), userProfile.getNickName());
         storeBrowseValidationHelper.verifyAggregateRatings(item.getAggregatedRatings(), caseyAggregateRating);
+
+        // simulate error when get review and verify review are empty
+        TestContext.getData().putHeader("X_QA_CASEY_ERROR", "getReviews");
+        item = testDataProvider.getItemDetails(item.getSelf().getValue()).getItem();
+        Assert.assertNull(item.getReviews());
+        Assert.assertNull(item.getCurrentUserReview());
     }
 
     @Test

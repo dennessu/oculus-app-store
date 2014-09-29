@@ -11,4 +11,5 @@ package com.junbo.emulator.casey.rest;
 public enum  EmulatorHeaders {
     X_QA_CASEY_EMULATE_LATENCY,
     X_QA_CASEY_REVIEW_USER_ID_LIST,
+    X_QA_CASEY_ERROR
 }

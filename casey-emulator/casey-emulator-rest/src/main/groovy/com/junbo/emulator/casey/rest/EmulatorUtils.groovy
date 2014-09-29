@@ -63,6 +63,16 @@ public class EmulatorUtils {
         }
     }
 
+    void emulateError(String methodName) {
+        String error = JunboHttpContext.getData().getRequestHeaders().getFirst(EmulatorHeaders.X_QA_CASEY_ERROR.name())
+        if (!StringUtils.isBlank(error)) {
+            if (error.split(',').contains(methodName)) {
+                throw new RuntimeException("${methodName} test error");
+            }
+
+        }
+    }
+
     CaseyOffer buildCaseyOffer(Offer offer, LocaleId localeId, CountryId countryId, Closure<CaseyResults<CaseyAggregateRating> > caseyAggregateRatingGetFunc) {
         CaseyOffer caseyOffer = new CaseyOffer()
         caseyOffer.self = new OfferId(offer.getId())
