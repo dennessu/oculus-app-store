@@ -351,7 +351,7 @@ public class authorizeUser {
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         String resetPasswordLink = Oauth.PostResetPassword(
                 Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
-        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null);
+        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, false);
         resetPasswordLink = resetPasswordLink.contains("reset") ? resetPasswordLink : resetPwdLinks.get(0);
         LogHelper logHelper = new LogHelper(authorizeUser.class);
         logHelper.logInfo("reset password link: " + resetPasswordLink);
@@ -415,6 +415,46 @@ public class authorizeUser {
     }
 
     @Test(groups = "dailies")
+    public void resetPasswordLinkUniqueAvailability() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
+
+        HttpclientHelper.ResetHttpClient();
+        // set identity authorization header
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid), Oauth.DefaultTokenURI);
+        UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
+        Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        Oauth.PostAccessToken("smoketest","smoketest");
+        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, false);
+        String resetPasswordCid= Oauth.GetResetPasswordCid(resetPwdLinks.get(1));
+        String newPassword = "ASDFqwer1234";
+        // set identity authorization header
+        Oauth.GetResetPasswordView(resetPasswordCid);
+        Oauth.PostResetPasswordWithNewPassword(resetPasswordCid, newPassword);
+    }
+
+    @Test(groups = "dailies")
     public void verifyEmailTwiceEnsureTheSecondFail() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
@@ -472,9 +512,7 @@ public class authorizeUser {
         Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid), Oauth.DefaultTokenURI, "client");
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
-        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null);
-        assert resetPwdLinks.size() == 0;
-
+        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, true);
     }
 
     private static void ValidateErrorFreeResponse(String responseString) throws Exception {

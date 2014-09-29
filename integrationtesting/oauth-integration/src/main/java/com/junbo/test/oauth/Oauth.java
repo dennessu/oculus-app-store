@@ -106,7 +106,7 @@ public class Oauth {
     }
 
     public static String GetAccessToken(String authCode, String uri) throws Exception {
-      return GetAccessToken(authCode,uri,DefaultClientId);
+        return GetAccessToken(authCode, uri, DefaultClientId);
     }
 
     public static String GetAccessToken(String authCode, String uri, String clientId) throws Exception {
@@ -118,6 +118,25 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNRedirectURI, DefaultRedirectURI));
 
         CloseableHttpResponse response = HttpclientHelper.SimplePost(uri, nvps, false);
+        try {
+            AccessTokenResponse accessTokenResponse = JsonHelper.JsonDeserializer(
+                    new InputStreamReader(response.getEntity().getContent()), AccessTokenResponse.class);
+            String accessToken = accessTokenResponse.getAccessToken();
+            Identity.SetHttpAuthorizationHeader(accessToken);
+            return accessToken;
+        } finally {
+            response.close();
+        }
+    }
+
+    public static String PostAccessToken(String clientId, String scope) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNClientId, clientId));
+        nvps.add(new BasicNameValuePair(DefaultFNClientSecret, DefaultClientSecret));
+        nvps.add(new BasicNameValuePair(DefaultFNGrantType, "client_credentials"));
+        nvps.add(new BasicNameValuePair("scope", scope));
+
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultTokenURI, nvps, false);
         try {
             AccessTokenResponse accessTokenResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), AccessTokenResponse.class);
@@ -472,7 +491,8 @@ public class Oauth {
         }
     }
 
-    public static List<String> GetResetPasswordLinks(String userName, String email, String locale) throws Exception {
+    public static List<String> GetResetPasswordLinks(String userName, String email, String locale, boolean isForbidden)
+            throws Exception {
         List<NameValuePair> nvpHeaders = new ArrayList<NameValuePair>();
         nvpHeaders.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         String uri = String.format(DefaultResetPasswordURI + "/test?username=%s&user_email=%s&locale=%s&country=%s",
@@ -482,6 +502,12 @@ public class Oauth {
 
         try {
             String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
+            if (isForbidden) {
+                assert responseString.contains("Forbidden");
+                assert responseString.contains("The access token does not have sufficient scope to make the " +
+                        "request to ResetPasswordEndpoint.getResetPasswordLink");
+                return null;
+            }
             return ObjectMapperProvider.instance().readValue(responseString, TypeFactory.defaultInstance()
                     .constructCollectionType(List.class, String.class));
         } finally {
