@@ -31,7 +31,6 @@
     <util:list id="storeSectionInfoNodePrototype" value-type="com.junbo.store.spec.model.browse.document.SectionInfoNode">
         <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
             <property name="criteria" value="${store.browse.featured.rootCriteria}"/>
-            <property name="cmsPageSearch" value="${store.browse.featured.page.search}"/>
             <property name="name" value="${store.browse.featured.name}"/>
             <property name="sectionType" value="CmsSection"/>
         </bean>
