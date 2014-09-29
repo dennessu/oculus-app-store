@@ -136,17 +136,15 @@ public class StoreBrowseValidationHelper {
     }
 
     public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled) throws Exception {
-        OfferRevision currentOfferRevision = null;
-        ItemRevision currentItemRevision = null;
         com.junbo.catalog.spec.model.offer.Offer catalogOffer =
                 storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue());
-        OfferRevision offerRevision = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
+        OfferRevision currentOfferRevision  = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
         com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue());
-        ItemRevision itemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevision().getValue());
+        ItemRevision currentItemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevision().getValue());
+
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
-        List<OfferRevision> offerRevisions = getOfferRevisions(catalogOffer);
-        List<ItemRevision> itemRevisions =  Arrays.asList(itemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
+        List<ItemRevision> itemRevisions =  Arrays.asList(currentItemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
 
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
             for (String id : catalogOffer.getCategories()) {
@@ -158,18 +156,6 @@ public class StoreBrowseValidationHelper {
                 itemAttributes.add(storeTestDataProvider.getItemAttribute(id));
             }
         }
-        for (OfferRevision revision : offerRevisions) {
-            if (ObjectUtils.nullSafeEquals(revision.getId(), catalogOffer.getCurrentRevisionId())) {
-                currentOfferRevision = revision;
-                break;
-            }
-        }
-        for (ItemRevision revision : itemRevisions) {
-            if (ObjectUtils.nullSafeEquals(revision.getId(), catalogItem.getCurrentRevisionId())) {
-                currentItemRevision = revision;
-                break;
-            }
-        }
 
         ItemRevisionLocaleProperties localeProperties = currentItemRevision.getLocales().get(locale);
         Organization developer = getOrganization(catalogItem.getOwnerId(), serviceClientEnabled);
@@ -179,8 +165,8 @@ public class StoreBrowseValidationHelper {
         verifyItemImages(item.getImages(), localeProperties.getImages());
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
                 developer, publisher, serviceClientEnabled);
-        boolean isFree = PriceType.FREE.name().equals(offerRevision.getPrice().getPriceType());
-        verifyItemOffer(item.getOffer(), catalogOffer, offerRevision, isFree);
+        boolean isFree = PriceType.FREE.name().equals(currentOfferRevision.getPrice().getPriceType());
+        verifyItemOffer(item.getOffer(), catalogOffer, currentOfferRevision, isFree);
     }
 
     public void validateCmsSection(SectionInfoNode sectionInfoNode, String name, String cmsPageName, String slot) {
