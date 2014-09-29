@@ -715,7 +715,6 @@ public class StoreBrowseTesting extends BaseTestClass {
             Assert.assertEquals(item.getOwnedByCurrentUser().booleanValue(), ownedByUser.booleanValue());
         } else if (method == GetItemMethod.Library || method == GetItemMethod.Purchase) {
             Assert.assertNull(item.getReviews());
-            Assert.assertNull(item.getCurrentUserReview());
             Assert.assertTrue(item.getOwnedByCurrentUser());
         } else if (method == GetItemMethod.List) {
             Assert.assertNull(item.getReviews());

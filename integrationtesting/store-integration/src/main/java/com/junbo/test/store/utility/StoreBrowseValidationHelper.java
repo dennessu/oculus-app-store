@@ -137,9 +137,13 @@ public class StoreBrowseValidationHelper {
 
     public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled) throws Exception {
         com.junbo.catalog.spec.model.offer.Offer catalogOffer =
-                storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue());
+                storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue(), true);
+        com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue(), true);
+        if (catalogOffer == null || catalogItem == null) {
+            LOGGER.info("Offer/Item not found, skip verify item:{}", item.getSelf());
+            return ;
+        }
         OfferRevision currentOfferRevision  = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
-        com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue());
         ItemRevision currentItemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevision().getValue());
 
         List<OfferAttribute> offerAttributes = new ArrayList<>();

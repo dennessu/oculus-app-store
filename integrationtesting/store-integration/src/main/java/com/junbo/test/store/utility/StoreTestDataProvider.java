@@ -430,9 +430,19 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public Offer getOfferByOfferId(String offerId) throws Exception {
+        return getOfferByOfferId(offerId, false);
+    }
+
+    public Offer getOfferByOfferId(String offerId, boolean ignoreError) throws Exception {
         Offer offer = Master.getInstance().getOffer(offerId);
         if (offer == null) {
-            offer = offerClient.getOffer(offerId);
+            try {
+                offer = offerClient.getOffer(offerId, ignoreError ? 0 : 200);
+            } catch (Exception ex) {
+                if (!ignoreError) {
+                    throw ex;
+                }
+            }
         }
         return offer;
     }
@@ -446,9 +456,19 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public Item getItemByItemId(String itemId) throws Exception{
+        return getItemByItemId(itemId, false);
+    }
+
+    public Item getItemByItemId(String itemId, boolean ignoreError) throws Exception{
         Item item = Master.getInstance().getItem(itemId);
         if (item == null) {
-            item = itemClient.getItem(itemId);
+            try {
+                item = itemClient.getItem(itemId, ignoreError ? 0 : 200);
+            } catch (Exception ex) {
+                if (!ignoreError) {
+                    throw ex;
+                }
+            }
         }
         return item;
     }
