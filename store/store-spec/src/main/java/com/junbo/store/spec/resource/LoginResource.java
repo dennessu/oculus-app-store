@@ -38,17 +38,22 @@ public interface LoginResource {
     Promise<UserCredentialRateResponse> rateUserCredential(UserCredentialRateRequest userCredentialRateRequest);
 
     @POST
-    @Path("/create")
+    @Path("/register")
     // This doesn't require email verification
     Promise<AuthTokenResponse> createUser(CreateUserRequest createUserRequest);
 
     @POST
-    @Path("/sign-in")
+    @Path("/log-in")
     // This doesn't require email verification
     Promise<AuthTokenResponse> signIn(UserSignInRequest userSignInRequest);
 
     @POST
-    @Path("/token")
+    @Path("/refresh-token")
     // This doesn't require email verification
     Promise<AuthTokenResponse> getAuthToken(AuthTokenRequest tokenRequest);
+
+    @POST
+    @Path("/confirm-email")
+    // This doesn't require email verification
+    Promise<ConfirmEmailResponse> confirmEmail(ConfirmEmailRequest confirmEmailRequest);
 }

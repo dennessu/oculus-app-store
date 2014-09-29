@@ -5,10 +5,13 @@
  */
 package com.junbo.test.oauth;
 
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
+import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.identity.Identity;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
@@ -19,6 +22,7 @@ import org.apache.http.util.EntityUtils;
 import javax.ws.rs.NotFoundException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,9 +106,13 @@ public class Oauth {
     }
 
     public static String GetAccessToken(String authCode, String uri) throws Exception {
+      return GetAccessToken(authCode,uri,DefaultClientId);
+    }
+
+    public static String GetAccessToken(String authCode, String uri, String clientId) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCode, authCode));
-        nvps.add(new BasicNameValuePair(DefaultFNClientId, DefaultClientId));
+        nvps.add(new BasicNameValuePair(DefaultFNClientId, clientId));
         nvps.add(new BasicNameValuePair(DefaultFNClientSecret, DefaultClientSecret));
         nvps.add(new BasicNameValuePair(DefaultFNGrantType, DefaultGrantType));
         nvps.add(new BasicNameValuePair(DefaultFNRedirectURI, DefaultRedirectURI));
@@ -249,7 +257,7 @@ public class Oauth {
         }
     }
 
-    public static void VerifyEmail(String cid, String uriEndPoint) throws Exception{
+    public static void VerifyEmail(String cid, String uriEndPoint) throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
         response.close();
         // skip payment method view
@@ -406,7 +414,8 @@ public class Oauth {
             String tarHeader = "Location:";
             for (Header h : response.getAllHeaders()) {
                 if (h.toString().startsWith(tarHeader)) {
-                    Validator.Validate("validate logout success", true, h.toString().contains("Location: http://localhost"));
+                    Validator.Validate("validate logout success", true,
+                            h.toString().contains("Location: http://localhost"));
                     return;
                 }
             }
@@ -458,6 +467,23 @@ public class Oauth {
         CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultResetPasswordURI, nvps, false);
         try {
             return EntityUtils.toString(response.getEntity(), "UTF-8");
+        } finally {
+            response.close();
+        }
+    }
+
+    public static List<String> GetResetPasswordLinks(String userName, String email, String locale) throws Exception {
+        List<NameValuePair> nvpHeaders = new ArrayList<NameValuePair>();
+        nvpHeaders.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
+        String uri = String.format(DefaultResetPasswordURI + "/test?username=%s&user_email=%s&locale=%s&country=%s",
+                userName, URLEncoder.encode(email, "UTF-8"), locale == null ? "en_US" : locale,
+                Country.DEFAULT.toString());
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(uri, nvpHeaders, false);
+
+        try {
+            String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
+            return ObjectMapperProvider.instance().readValue(responseString, TypeFactory.defaultInstance()
+                    .constructCollectionType(List.class, String.class));
         } finally {
             response.close();
         }

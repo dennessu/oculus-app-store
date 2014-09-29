@@ -29,7 +29,10 @@ import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.StoreApiHeader
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
-import com.junbo.store.spec.model.browse.*
+import com.junbo.store.spec.model.browse.AcceptTosRequest
+import com.junbo.store.spec.model.browse.DeliveryRequest
+import com.junbo.store.spec.model.browse.DetailsRequest
+import com.junbo.store.spec.model.browse.ReviewsRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
 import com.junbo.store.spec.model.login.*
@@ -131,13 +134,16 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        notEmpty(request.username, 'username')
+        notEmpty(request.email, 'email')
         notEmpty(request.userCredential, 'userCredential')
         notEmpty(request.userCredential.type, 'userCredential.type')
         notEmpty(request.userCredential.value, 'userCredential.value')
 
         if (!'PASSWORD'.equalsIgnoreCase(request.userCredential.type)) { //
             throw AppCommonErrors.INSTANCE.fieldInvalid('userCredential.type', 'type must be PASSWORD ').exception()
+        }
+        if (!request.email.contains('@')) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('email', 'email is incorrect format').exception()
         }
         return this
     }
@@ -431,6 +437,10 @@ class RequestValidator {
 
     public void validateReviewsRequest(ReviewsRequest request) {
         notEmpty(request.itemId, 'itemId')
+    }
+
+    public void validateConfirmEmailRequest(ConfirmEmailRequest request) {
+        notEmpty(request.evc, 'evc')
     }
 
     private Promise<Boolean> isMailChanged(UserProfileUpdateRequest request, User currentUser) {

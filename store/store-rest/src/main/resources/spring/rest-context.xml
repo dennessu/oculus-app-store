@@ -31,20 +31,22 @@
     <util:list id="storeSectionInfoNodePrototype" value-type="com.junbo.store.spec.model.browse.document.SectionInfoNode">
         <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
             <property name="criteria" value="${store.browse.featured.rootCriteria}"/>
-            <property name="cmsPageSearch" value="${store.browse.featured.page.search}"/>
             <property name="name" value="${store.browse.featured.name}"/>
             <property name="sectionType" value="CmsSection"/>
         </bean>
         <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
             <property name="category" value="${store.browse.categories.game}"/>
+            <property name="name" value="${store.browse.categories.game}"/>
             <property name="sectionType" value="CategorySection"/>
         </bean>
         <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
             <property name="category" value="${store.browse.categories.app}"/>
+            <property name="name" value="${store.browse.categories.app}"/>
             <property name="sectionType" value="CategorySection"/>
         </bean>
         <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
             <property name="category" value="${store.browse.categories.exp}"/>
+            <property name="name" value="${store.browse.categories.exp}"/>
             <property name="sectionType" value="CategorySection"/>
         </bean>
     </util:list>

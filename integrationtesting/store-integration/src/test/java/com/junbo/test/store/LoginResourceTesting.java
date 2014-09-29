@@ -8,10 +8,7 @@ package com.junbo.test.store;
 import com.junbo.common.error.Error;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.identity.*;
-import com.junbo.store.spec.model.login.AuthTokenResponse;
-import com.junbo.store.spec.model.login.CreateUserRequest;
-import com.junbo.store.spec.model.login.UserCredentialRateResponse;
-import com.junbo.store.spec.model.login.UserNameCheckResponse;
+import com.junbo.store.spec.model.login.*;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
@@ -39,6 +36,7 @@ public class LoginResourceTesting extends BaseTestClass {
     public static String CREDENTIAL_STRENGTH_WEAK = "WEAK";
     public static String CREDENTIAL_STRENGTH_FAIR = "FAIR";
     public static String CREDENTIAL_STRENGTH_STRONG = "STRONG";
+    public static Integer CREDENTIAL_ATTEMPT_COUNT = 3;
 
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
 
@@ -124,7 +122,8 @@ public class LoginResourceTesting extends BaseTestClass {
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         assert links != null;
         for (String link : links) {
-            oAuthClient.accessEmailVerifyLink(link);
+            ConfirmEmailResponse response = testDataProvider.confirmEmail(link);
+            assert response.getIsSuccess();
         }
         userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse != null;
@@ -163,6 +162,7 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testCreateUser() throws Exception {
         AuthTokenResponse createUserResponse = null;
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setNickName(createUserRequest.getUsername());
         String invalidUsername = "123yunlong";
         String oldUsername = createUserRequest.getUsername();
         createUserRequest.setUsername(invalidUsername);
@@ -184,14 +184,6 @@ public class LoginResourceTesting extends BaseTestClass {
         createUserRequest.setUsername(oldUsername);
 
         createUserRequest.setEmail(oldEmail);
-        String oldNickName = createUserRequest.getNickName();
-        // nick name should not be the same as username
-        createUserRequest.setNickName(createUserRequest.getUsername());
-        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
-        assert error != null;
-        assert error.getDetails().get(0).getField().contains("username");
-
-        createUserRequest.setNickName(oldNickName);
         String oldPassword = createUserRequest.getPassword();
         createUserRequest.setPassword(createUserRequest.getUsername() + "gggg");
         error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
@@ -380,20 +372,26 @@ public class LoginResourceTesting extends BaseTestClass {
         validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
         assert authTokenResponse != null;
 
-        Error error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PIN", "1234", 400, "130.001");
+        Error error = testDataProvider.SignInWithError(createUserRequest.getEmail(), "PIN", "1234", 400, "130.001");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("userCredential.type");
         assert error.getDetails().get(0).getReason().contains("Field value is invalid. type must be PASSWORD");
 
-        error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PASSWORD", RandomHelper.randomAlphabetic(10), 412, "132.103");
+        error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(15), "PASSWORD", createUserRequest.getPassword(), 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().contains("email");
+        assert error.getDetails().get(0).getReason().contains("email is incorrect format");
+
+        error = testDataProvider.SignInWithError(createUserRequest.getEmail(), "PASSWORD", RandomHelper.randomAlphabetic(10), 412, "132.103");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("password");
 
-        error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(10), "PASSWORD", createUserRequest.getPassword(), 412, "132.103");
+        error = testDataProvider.SignInWithError(RandomHelper.randomAlphabetic(10) + "@gmail.com", "PASSWORD", createUserRequest.getPassword(), 412, "132.103");
         assert error != null;
-        assert error.getDetails().get(0).getField().contains("username");
+        assert error.getDetails().get(0).getField().contains("email");
+        assert error.getDetails().get(0).getReason().contains("email and credential doesn't match");
 
-        error = testDataProvider.SignInWithError(createUserRequest.getUsername(), "PASSWORD", null, 400, "130.001");
+        error = testDataProvider.SignInWithError(createUserRequest.getEmail(), "PASSWORD", null, 400, "130.001");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("userCredential.value");
         assert error.getDetails().get(0).getReason().contains("Field is required");
@@ -489,9 +487,10 @@ public class LoginResourceTesting extends BaseTestClass {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
         assert links != null;
-        for (String link : links) {
-            oAuthClient.accessEmailVerifyLink(link);
-        }
+        assert links.size() == 1;
+        String link = links.get(0);
+        ConfirmEmailResponse confirmEmailResponse = testDataProvider.confirmEmail(link);
+        assert confirmEmailResponse.getIsSuccess();
 
         UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
@@ -569,7 +568,8 @@ public class LoginResourceTesting extends BaseTestClass {
         assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
 
         // Scenario 3:
-        oAuthClient.accessEmailVerifyLink(links.get(0));
+        ConfirmEmailResponse confirmEmailResponse = testDataProvider.confirmEmail(links.get(0));
+        assert confirmEmailResponse.getIsSuccess();
         userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse != null;
         assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
@@ -586,7 +586,8 @@ public class LoginResourceTesting extends BaseTestClass {
         links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         assert links != null;
         assert links.size() == 1;
-        oAuthClient.accessEmailVerifyLink(links.get(0));
+        confirmEmailResponse = testDataProvider.confirmEmail(links.get(0));
+        assert confirmEmailResponse.getIsSuccess();
 
         userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
 
@@ -602,7 +603,8 @@ public class LoginResourceTesting extends BaseTestClass {
         links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
         assert links != null;
         assert links.size() == 1;
-        oAuthClient.accessEmailVerifyLink(links.get(0));
+        confirmEmailResponse = testDataProvider.confirmEmail(links.get(0));
+        assert confirmEmailResponse.getIsSuccess();
 
         userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse != null;
@@ -653,7 +655,8 @@ public class LoginResourceTesting extends BaseTestClass {
         links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
         assert links != null;
         assert links.size() == 1;
-        oAuthClient.accessEmailVerifyLink(links.get(0));
+        confirmEmailResponse = testDataProvider.confirmEmail(links.get(0));
+        assert confirmEmailResponse.getIsSuccess();
 
         userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse != null;
@@ -691,11 +694,9 @@ public class LoginResourceTesting extends BaseTestClass {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
         assert links != null;
-        for (String link : links) {
-            oAuthClient.accessEmailVerifyLink(link);
-        }
+        assert links.size() == 0;
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < CREDENTIAL_ATTEMPT_COUNT; i++) {
             ChallengeAnswer answer = new ChallengeAnswer();
             answer.setType(userProfileUpdateResponse.getChallenge().getType());
             answer.setPassword(RandomHelper.randomAlphabetic(10));
@@ -843,13 +844,16 @@ public class LoginResourceTesting extends BaseTestClass {
         links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         assert links != null;
         assert links.size() == 2;
-        for (String link : links) {
-            try {
-                oAuthClient.accessEmailVerifyLink(link);
-            } catch (Exception e) {
-                // do nothing here
-            }
-        }
+        String link = links.get(0);
+        ConfirmEmailResponse confirmEmailResponse = testDataProvider.confirmEmail(link);
+        assert confirmEmailResponse.getIsSuccess();
+
+        confirmEmailResponse = testDataProvider.confirmEmail(link);
+        assert !confirmEmailResponse.getIsSuccess();
+
+        link = links.get(1);
+        confirmEmailResponse = testDataProvider.confirmEmail(link);
+        assert !confirmEmailResponse.getIsSuccess();
 
         response = testDataProvider.verifyEmail(new VerifyEmailRequest());
         assert response != null;

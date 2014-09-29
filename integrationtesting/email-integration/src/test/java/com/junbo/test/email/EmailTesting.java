@@ -248,20 +248,6 @@ public class EmailTesting extends TestClass {
             }
         }
         this.prepareAccessData();
-        this.prepareUserData();
-        try {
-            Email email = this.buildEmail();
-            Map<String, String> replacements = new HashMap();
-            replacements.put("invalidreplacements","tester");
-            email.setReplacements(replacements);
-            Email result = emailService.postEmail(email, 412);
-        } catch (Exception e) {
-            String errorMsg = e.getMessage();
-            if(!errorMsg.contains("Invalid Replacements")) {
-                assertTrue("validate post email field [replacements] failed",false);
-            }
-        }
-        this.prepareAccessData();
         try {
             emailService.deleteEmail(new EmailId("test" + System.currentTimeMillis()), 412);
         } catch (Exception e) {
@@ -300,7 +286,7 @@ public class EmailTesting extends TestClass {
         this.prepareAccessData();
         EmailTemplateService templateService = EmailTemplateServiceImpl.getInstance();
         QueryParam queryParam = new QueryParam();
-        queryParam.setAction("Welcome");
+        queryParam.setAction("Welcome_V1");
         queryParam.setSource("Oculus");
         queryParam.setLocale("en_US");
 

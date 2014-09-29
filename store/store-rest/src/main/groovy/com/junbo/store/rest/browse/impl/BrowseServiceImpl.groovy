@@ -1,13 +1,12 @@
 package com.junbo.store.rest.browse.impl
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
-import com.junbo.catalog.spec.model.attribute.OfferAttribute
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
 import com.junbo.common.model.Results
+import com.junbo.common.util.IdFormatter
 import com.junbo.entitlement.spec.model.*
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.priceRating.RatingItem
@@ -20,6 +19,7 @@ import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.CatalogUtils
 import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
@@ -46,6 +46,10 @@ import javax.annotation.Resource
 class BrowseServiceImpl implements BrowseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BrowseServiceImpl)
+
+    private static final int DEFAULT_PAGE_SIZE = 10
+
+    private static final int MAX_PAGE_SIZE = 50
 
     @Value('${store.tos.browse}')
     private String storeBrowseTos
@@ -100,44 +104,31 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.pure(new TocResponse(challenge: challenge))
             }
 
-            List<SectionInfoNode> sectionInfoNodes = sectionService.getTopLevelSectionInfoNode()
-            result.sections = sectionInfoNodes.collect { SectionInfoNode sectionInfoNode ->
-                return buildSectionInfoNodeForResponse(sectionInfoNode, true, apiContext)
-            }
+            result.sections = sectionService.getTopLevelSectionInfoNode(apiContext)
             return Promise.pure(result)
         }
     }
 
     @Override
     Promise<SectionLayoutResponse> getSectionLayout(SectionLayoutRequest request, ApiContext apiContext) {
-        SectionInfoNode rawSectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria)
-        if (rawSectionInfoNode == null) {
+        SectionInfoNode sectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria, apiContext)
+        if (sectionInfoNode == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
 
         SectionLayoutResponse response = new SectionLayoutResponse()
-        response.breadcrumbs = generateBreadcrumbs(rawSectionInfoNode, apiContext)
-        SectionInfoNode sectionInfoNode = buildSectionInfoNodeForResponse(rawSectionInfoNode, true, apiContext)
+        response.breadcrumbs = generateBreadcrumbs(sectionInfoNode, apiContext)
         response.name = sectionInfoNode.name
         response.children = sectionInfoNode.children?.collect {SectionInfoNode e -> e.toSectionInfo() }
         response.ordered = false
-
-        SectionInfoNode parent = sectionInfoNode.parent
-        while (parent != null) {
-            response.breadcrumbs << parent.toSectionInfo()
-            parent = parent.parent
-        }
-
-        innerGetList(new ListRequest(criteria: request.criteria, category: request.category, count: request.count), rawSectionInfoNode, apiContext).then { ListResponse listResponse ->
-            response.items = listResponse.items
-            response.next = listResponse.next
-            return Promise.pure(response)
-        }
+        response.category = request.category
+        response.criteria = request.criteria
+        return Promise.pure(response)
     }
 
     @Override
     Promise<ListResponse> getList(ListRequest request, ApiContext apiContext) {
-        SectionInfoNode sectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria)
+        SectionInfoNode sectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria, apiContext)
         if (sectionInfoNode == null) {
             throw AppErrors.INSTANCE.sectionNotFound().exception()
         }
@@ -174,7 +165,9 @@ class BrowseServiceImpl implements BrowseService {
                 }
             }
         }.then {
-            return Promise.pure(result)
+            fillCurrentUserReview(result?.items, apiContext).then {
+                return Promise.pure(result)
+            }
         }
     }
 
@@ -199,7 +192,7 @@ class BrowseServiceImpl implements BrowseService {
 
     @Override
     Promise<ReviewsResponse> getReviews(ReviewsRequest request, ApiContext apiContext) {
-        return facadeContainer.caseyFacade.getReviews(request.itemId.value, null, request.cursor, request.count)
+        return facadeContainer.caseyFacade.getReviews(request.itemId.value, null, request.cursor, getPageSize(request.count))
     }
 
     @Override
@@ -214,10 +207,10 @@ class BrowseServiceImpl implements BrowseService {
     private Promise<ListResponse> innerGetList(ListRequest request, SectionInfoNode sectionInfoNode, ApiContext apiContext) {
         ListResponse listResponse = new ListResponse(items: [])
         facadeContainer.caseyFacade.search(sectionInfoNode, request.cursor, request.count, apiContext).then { CaseyResults<Item> caseyResults ->
-            if (caseyResults.cursor != null) {
+            if (caseyResults.cursorString != null) {
                 listResponse.next = new ListResponse.NextOption(
-                        cursor: caseyResults.cursor,
-                        count: request.count,
+                        cursor: caseyResults.cursorString,
+                        count: getPageSize(request.count),
                         category: request.category,
                         criteria: request.criteria
                 )
@@ -263,35 +256,6 @@ class BrowseServiceImpl implements BrowseService {
         }
     }
 
-    private SectionInfoNode buildSectionInfoNodeForResponse(SectionInfoNode rawNode, boolean recursive, ApiContext apiContext) {
-        SectionInfoNode sectionInfoNode = new SectionInfoNode()
-        if (rawNode.sectionType == SectionInfoNode.SectionType.CategorySection) {
-            if (rawNode?.categoryId != null) {
-                OfferAttribute offerAttribute = facadeContainer.catalogFacade.getOfferAttribute(rawNode?.categoryId, apiContext).get()
-                SimpleLocaleProperties simpleLocaleProperties = offerAttribute?.locales?.get(apiContext.locale.getId().value)
-                sectionInfoNode.name = simpleLocaleProperties?.name
-            }
-        } else {
-            Assert.isTrue(rawNode.sectionType == SectionInfoNode.SectionType.CmsSection)
-            sectionInfoNode.name = localeUtils.getLocaleProperties(rawNode.cmsNames, apiContext.locale) as String
-            if (sectionInfoNode.name == null) {
-                sectionInfoNode.name = rawNode.name
-            }
-        }
-        sectionInfoNode.category = rawNode.category
-        sectionInfoNode.criteria = rawNode.criteria
-        sectionInfoNode.children = []
-        if (sectionInfoNode.name == null) {
-            sectionInfoNode.name = StringUtils.isEmpty(sectionInfoNode.category) ? sectionInfoNode.criteria :  sectionInfoNode.category
-        }
-        if (recursive) {
-            sectionInfoNode.children = rawNode.children.collect { SectionInfoNode e ->
-                return buildSectionInfoNodeForResponse(e, recursive, apiContext)
-            }
-        }
-        return sectionInfoNode
-    }
-
     private Promise<Item> decorateItem(boolean ratePrice, boolean includeDetails, ApiContext apiContext, Item item) {
         Promise.pure().then {
             if (!ratePrice || item?.offer == null) {
@@ -317,7 +281,13 @@ class BrowseServiceImpl implements BrowseService {
             item.ownedByCurrentUser = owned
             return Promise.pure()
         }.then { // get current user review
-            facadeContainer.caseyFacade.getReviews(item.self.value, apiContext.user, null, null).then { ReviewsResponse reviewsResponse ->
+            facadeContainer.caseyFacade.getReviews(item.self.value, apiContext.user, null, null).recover { Throwable ex ->
+                if (ex instanceof CaseyException) {
+                    LOGGER.error('name=FillItemDetails_GetCurrentUserReview_Error, item={}, user={}', item?.self, IdFormatter.encodeId(apiContext.user), ex)
+                    return Promise.pure()
+                }
+                throw ex
+            }.then { ReviewsResponse reviewsResponse ->
                 if (CollectionUtils.isEmpty(reviewsResponse?.reviews)) {
                     item.currentUserReview = null
                 } else {
@@ -326,19 +296,74 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.pure()
             }
         }.then { // get the review response
-            facadeContainer.caseyFacade.getReviews(item.self.value, null, null, null).then { ReviewsResponse reviewsResponse ->
+            facadeContainer.caseyFacade.getReviews(item.self.value, null, null, DEFAULT_PAGE_SIZE).recover { Throwable ex ->
+                if (ex instanceof CaseyException) {
+                    LOGGER.error('name=FillItemDetails_GetReviews_Error, item={}', item?.self, ex)
+                    return Promise.pure()
+                }
+                throw ex
+            }.then { ReviewsResponse reviewsResponse ->
                 item.reviews = reviewsResponse
                 return Promise.pure()
             }
         }
     }
 
-    private List<SectionInfo> generateBreadcrumbs(SectionInfoNode sectionInfoNode, ApiContext apiContext) {
+    private static List<SectionInfo> generateBreadcrumbs(SectionInfoNode sectionInfoNode, ApiContext apiContext) {
         List<SectionInfo> breadCrumbs = []
         while (sectionInfoNode.parent != null) {
-            breadCrumbs << buildSectionInfoNodeForResponse(sectionInfoNode.parent, false, apiContext).toSectionInfo()
+            breadCrumbs << sectionInfoNode.parent.toSectionInfo()
             sectionInfoNode = sectionInfoNode.parent
         }
         return breadCrumbs.reverse()
+    }
+
+    private Promise fillCurrentUserReview(List<Item> items, ApiContext apiContext) {
+        if (CollectionUtils.isEmpty(items)) {
+            return Promise.pure()
+        }
+
+        Map<ItemId, Review> itemIdReviewMap = [:] as Map<ItemId, Review>
+        items.each { Item item ->
+            itemIdReviewMap.put(item.self, null)
+        }
+
+        String cursor = null
+        CommonUtils.loop {
+            facadeContainer.caseyFacade.getReviews(null, apiContext.user, cursor, null).recover { Throwable ex ->
+                if (ex instanceof CaseyException) {
+                    LOGGER.error('name=GetLibrary_GetReviewByUser_Error, user={}', IdFormatter.encodeId(apiContext.user), ex)
+                    return Promise.pure()
+                }
+                throw ex
+            }.then { ReviewsResponse response ->
+                if (response == null) {
+                    return Promise.pure(Promise.BREAK)
+                }
+
+                if (!CollectionUtils.isEmpty(response.reviews)) {
+                    response.reviews.each { Review review ->
+                        if (review.itemId != null && itemIdReviewMap.containsKey(review.itemId)) {
+                            itemIdReviewMap[review.itemId] = review
+                        }
+                    }
+                }
+                if (CollectionUtils.isEmpty(response.reviews) || response.next == null) {
+                    return Promise.pure(Promise.BREAK)
+                }
+                Assert.isTrue(!StringUtils.isEmpty(response.next.cursor))
+                cursor = response.next.cursor
+                return Promise.pure()
+            }
+        }.then {
+            items.each { Item item ->
+                item.currentUserReview = itemIdReviewMap[item.self]
+            }
+            return Promise.pure()
+        }
+    }
+
+    int getPageSize(Integer count) {
+        return (count == null || count <= 0) ? DEFAULT_PAGE_SIZE : Math.min(count, MAX_PAGE_SIZE)
     }
 }

@@ -171,7 +171,7 @@ public class EmailTemplateTesting {
         this.prepareTestData(true);
         try {
             EmailTemplate template = new EmailTemplate();
-            template.setAction("Welcome");
+            template.setAction("Welcome_V1");
             template.setSource("Oculus");
             template.setLocale("en_US");
             template.setProviderName("Mandrill");
@@ -240,7 +240,7 @@ public class EmailTemplateTesting {
 
     private QueryParam buildQueryParam() {
         QueryParam queryParam = new QueryParam();
-        queryParam.setAction("Welcome");
+        queryParam.setAction("Welcome_V1");
         queryParam.setSource("Oculus");
         queryParam.setLocale("en_US");
         return queryParam;

@@ -7,6 +7,8 @@ import com.junbo.store.spec.model.external.casey.cms.CmsCampaign
 import com.junbo.store.spec.model.external.casey.cms.CmsContent
 import com.junbo.store.spec.model.external.casey.cms.CmsContentSlot
 import com.junbo.store.spec.model.external.casey.cms.CmsPage
+import com.junbo.store.spec.model.external.casey.cms.CmsSchedule
+import com.junbo.store.spec.model.external.casey.cms.CmsScheduleContent
 import com.junbo.store.spec.model.external.casey.cms.ContentItem
 import com.junbo.store.spec.model.external.casey.cms.Placement
 import groovy.transform.CompileStatic
@@ -42,6 +44,9 @@ class CaseyEmulatorDataRepository implements InitializingBean {
         if (caseyEmulatorData.cmsCampaigns != null) {
             this.caseyEmulatorData.cmsCampaigns = caseyEmulatorData.cmsCampaigns
         }
+        if (caseyEmulatorData.cmsSchedules != null) {
+            this.caseyEmulatorData.cmsSchedules = caseyEmulatorData.cmsSchedules
+        }
         this.caseyEmulatorData.caseyAggregateRatings = caseyEmulatorData.caseyAggregateRatings
         this.caseyEmulatorData.caseyReviews = caseyEmulatorData.caseyReviews
         return caseyEmulatorData
@@ -58,7 +63,7 @@ class CaseyEmulatorDataRepository implements InitializingBean {
                 caseyAggregateRatings: [],
                 caseyReviews: [],
                 cmsPages: [page] as List,
-                cmsCampaigns: [generateDefaultCmsCampaigns(page.self.getId()), generateDefaultCmsCampaigns('iOS')]
+                cmsSchedules: [generateDefaultCmsSchedule(page.self.id)]
         )
     }
 
@@ -84,6 +89,27 @@ class CaseyEmulatorDataRepository implements InitializingBean {
                 ]
         )
         return campaign
+    }
+
+    private CmsSchedule generateDefaultCmsSchedule(String pageId) {
+        CmsSchedule cmsSchedule = new CmsSchedule(self: new CaseyLink(id: pageId))
+        cmsSchedule.slots = [:] as Map
+        cmsSchedule.slots['slot1'] = generateCmsScheduleContent('category', 'Featured All');
+        cmsSchedule.slots['slot2'] = generateCmsScheduleContent('category', 'Featured SS');
+        return cmsSchedule
+    }
+
+    private CmsScheduleContent generateCmsScheduleContent(String name, String value) {
+        CaseyContentItemString strings = new CaseyContentItemString()
+        strings.locales = [:]
+        strings.locales['en_US'] = value
+
+        ContentItem contentItem = new ContentItem()
+        contentItem.strings = [strings]
+
+        CmsContent cmsContent = new CmsContent()
+        cmsContent.contents = Collections.singletonMap(name, contentItem)
+        return new CmsScheduleContent(content: cmsContent)
     }
 
     private Placement generatePlacement(String pageId, String slot, String name, String value) {

@@ -5,10 +5,12 @@
  */
 package com.junbo.oauth.db.repo.cloudant
 
+import com.junbo.configuration.crypto.CipherService
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
 import com.junbo.oauth.spec.model.ResetPasswordCode
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 /**
  * CloudantResetPasswordCodeRepositoryImpl.
@@ -17,13 +19,18 @@ import org.springframework.util.StringUtils
 class CloudantResetPasswordCodeRepositoryImpl
         extends CloudantTokenRepositoryBase<ResetPasswordCode> implements ResetPasswordCodeRepository{
 
+    private CipherService cipherService
+
     @Override
     ResetPasswordCode get(String code) {
         if (StringUtils.isEmpty(code)) {
             return null
         }
 
-        return cloudantGetSyncWithFallback(code, tokenGenerator.hashKey(code))
+        ResetPasswordCode resetPasswordCode = cloudantGetSyncWithFallback(code, tokenGenerator.hashKey(code))
+        resetPasswordCode.code = StringUtils.isEmpty(resetPasswordCode.encryptedCode) ?
+                resetPasswordCode.code : cipherService.decrypt(resetPasswordCode.encryptedCode)
+        return resetPasswordCode
     }
 
     @Override
@@ -46,6 +53,10 @@ class CloudantResetPasswordCodeRepositoryImpl
             }
             result = (ResetPasswordCode)getEffective().cloudantGet(fallbackDbUri, entityClass, hash).get()
         }
+
+        if (result != null && !StringUtils.isEmpty(result.encryptedCode)) {
+            result.code = cipherService.decrypt(result.encryptedCode)
+        }
         return result
     }
 
@@ -64,6 +75,7 @@ class CloudantResetPasswordCodeRepositoryImpl
         if (resetPasswordCode.code == null) {
             resetPasswordCode.code = tokenGenerator.generateResetPasswordCode()
             resetPasswordCode.hashedCode = tokenGenerator.hashKey(resetPasswordCode.code)
+            resetPasswordCode.encryptedCode = cipherService.encrypt(resetPasswordCode.code)
             resetPasswordCode.dc = tokenGenerator.getTokenDc(resetPasswordCode.code)
         }
 
@@ -76,5 +88,22 @@ class CloudantResetPasswordCodeRepositoryImpl
         for (ResetPasswordCode code : entities) {
             cloudantDeleteSync(code)
         }
+    }
+
+    @Override
+    List<ResetPasswordCode> getByUserIdEmail(Long userId, String email) {
+        List<ResetPasswordCode> entities = queryViewSync('by_user_id_email', "$userId:$email")
+        entities.each { ResetPasswordCode code ->
+            if(code != null && !StringUtils.isEmpty(code.encryptedCode)) {
+                code.code = cipherService.decrypt(code.encryptedCode)
+            }
+        }
+
+        return entities
+    }
+
+    @Required
+    void setCipherService(CipherService cipherService) {
+        this.cipherService = cipherService
     }
 }

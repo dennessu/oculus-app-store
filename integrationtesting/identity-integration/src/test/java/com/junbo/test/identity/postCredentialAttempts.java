@@ -28,6 +28,8 @@ import java.util.List;
  */
 public class postCredentialAttempts {
 
+    private static Integer CREDENTIAL_ATTEMPT_COUNT = 3;
+
     @BeforeClass(alwaysRun = true)
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
@@ -65,7 +67,7 @@ public class postCredentialAttempts {
         Identity.UserCredentialPostDefault(user.getId(), null, password);
 
         String newPassword = IdentityModel.DefaultPassword();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < CREDENTIAL_ATTEMPT_COUNT; i++) {
             UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
             UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
@@ -237,16 +239,14 @@ public class postCredentialAttempts {
 
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < CREDENTIAL_ATTEMPT_COUNT; i++) {
             UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, IdentityModel.DefaultPassword());
             response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                     JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
-            if (i < 5) {
-                Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
-                String errorMessage = "User Password Incorrect";
-                Validator.Validate("validate response error message", true,
-                        EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
-            }
+            Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
+            String errorMessage = "User Password Incorrect";
+            Validator.Validate("validate response error message", true,
+                    EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
             response.close();
         }
 
@@ -365,7 +365,7 @@ public class postCredentialAttempts {
 
         String newPassword = IdentityModel.DefaultPassword();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < CREDENTIAL_ATTEMPT_COUNT; i++) {
             UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
             UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
@@ -382,7 +382,7 @@ public class postCredentialAttempts {
         Identity.UserCredentialPostDefault(user.getId(), null, password);
         String newPassword = IdentityModel.DefaultPassword();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < CREDENTIAL_ATTEMPT_COUNT; i++) {
             UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
             UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(

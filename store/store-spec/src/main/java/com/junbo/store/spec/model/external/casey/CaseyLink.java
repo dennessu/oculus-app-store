@@ -8,7 +8,7 @@ package com.junbo.store.spec.model.external.casey;
 /**
  * CaseyLink.
  */
-public class CaseyLink extends BaseCaseyModel {
+public class CaseyLink {
     private String id;
     private String href;
     private String rev;

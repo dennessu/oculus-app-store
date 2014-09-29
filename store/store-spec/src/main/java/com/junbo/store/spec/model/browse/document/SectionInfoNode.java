@@ -8,7 +8,6 @@ package com.junbo.store.spec.model.browse.document;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * The SectionInfoNode class.
@@ -49,8 +48,6 @@ public class SectionInfoNode {
     @JsonIgnore
     private String cmsSlot;
 
-    @JsonIgnore
-    private Map<String, String> cmsNames;
 
     public SectionInfoNode() {
     }
@@ -139,14 +136,6 @@ public class SectionInfoNode {
 
     public void setCmsSlot(String cmsSlot) {
         this.cmsSlot = cmsSlot;
-    }
-
-    public Map<String, String> getCmsNames() {
-        return cmsNames;
-    }
-
-    public void setCmsNames(Map<String, String> cmsNames) {
-        this.cmsNames = cmsNames;
     }
 
     public SectionInfo toSectionInfo() {

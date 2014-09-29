@@ -410,13 +410,6 @@ class UserValidatorImpl implements UserValidator {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('user.username', 'UserPersonalInfo must be USERNAME type').exception()
                 }
 
-                if (!StringUtils.isEmpty(user.nickName)) {
-                    UserLoginName userLoginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
-                    if (userLoginName.userName.equalsIgnoreCase(user.nickName)) {
-                        throw AppCommonErrors.INSTANCE.fieldInvalid('nickName', 'nickName can\'t be the same as username').exception()
-                    }
-                }
-
                 return Promise.pure(null)
             }
         }

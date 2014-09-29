@@ -69,6 +69,7 @@ class CreateUser implements Action {
 
         User user = new User(
                 isAnonymous: true,
+                nickName: username,
                 countryOfResidence: countryOfResidence == null ? null : new CountryId(countryOfResidence),
                 preferredLocale: preferLocale == null ? null : new LocaleId(preferLocale)
         )

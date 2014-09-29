@@ -1,8 +1,8 @@
 package com.junbo.store.clientproxy.utils
 
+import com.junbo.common.id.ItemId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Link
-import com.junbo.entitlement.common.cache.CommonCache
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
@@ -17,7 +17,6 @@ import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-
 /**
  * The ReviewBuilder class.
  */
@@ -53,7 +52,7 @@ class ReviewBuilder {
         return review
     }
 
-    Review buildReview(CaseyReview caseyReview, String nickName) {
+    Review buildItemReview(CaseyReview caseyReview, String nickName) {
         if (caseyReview == null) {
             return null
         }
@@ -63,6 +62,7 @@ class ReviewBuilder {
                 title: caseyReview.reviewTitle,
                 content: caseyReview.review,
                 starRatings: [:] as Map<String, Integer>,
+                itemId: caseyReview.resource?.getId() == null ? null : new ItemId(caseyReview.resource.getId()),
                 timestamp: caseyReview.postedDate
         )
         if (!CollectionUtils.isEmpty(caseyReview.ratings)) {
@@ -115,13 +115,6 @@ class ReviewBuilder {
 
         if (caseyRating.stars != null) {
             aggregatedRatings.averageRating = caseyRating.stars
-        } else if (caseyRating.average != null) {
-            try {
-                aggregatedRatings.averageRating = Double.valueOf(caseyRating.average.textValue())
-            } catch (NumberFormatException ex) {
-                LOGGER.warn("name=Invalid_AverageRating, val={}", caseyRating.average.textValue(), ex)
-                aggregatedRatings.averageRating = 0
-            }
         } else {
             aggregatedRatings.averageRating = 0
         }

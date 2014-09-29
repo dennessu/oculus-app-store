@@ -19,6 +19,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.store.spec.model.browse.AddReviewRequest;
 import com.junbo.store.spec.model.browse.Images;
+import com.junbo.store.spec.model.browse.ListResponse;
 import com.junbo.store.spec.model.browse.SectionLayoutResponse;
 import com.junbo.store.spec.model.browse.document.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
@@ -135,17 +136,19 @@ public class StoreBrowseValidationHelper {
     }
 
     public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled) throws Exception {
-        OfferRevision currentOfferRevision = null;
-        ItemRevision currentItemRevision = null;
         com.junbo.catalog.spec.model.offer.Offer catalogOffer =
-                storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue());
-        OfferRevision offerRevision = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
-        com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue());
-        ItemRevision itemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevision().getValue());
+                storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue(), true);
+        com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue(), true);
+        if (catalogOffer == null || catalogItem == null) {
+            LOGGER.info("Offer/Item not found, skip verify item:{}", item.getSelf());
+            return ;
+        }
+        OfferRevision currentOfferRevision  = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
+        ItemRevision currentItemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevision().getValue());
+
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
-        List<OfferRevision> offerRevisions = getOfferRevisions(catalogOffer);
-        List<ItemRevision> itemRevisions =  Arrays.asList(itemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
+        List<ItemRevision> itemRevisions =  Arrays.asList(currentItemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
 
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
             for (String id : catalogOffer.getCategories()) {
@@ -157,18 +160,6 @@ public class StoreBrowseValidationHelper {
                 itemAttributes.add(storeTestDataProvider.getItemAttribute(id));
             }
         }
-        for (OfferRevision revision : offerRevisions) {
-            if (ObjectUtils.nullSafeEquals(revision.getId(), catalogOffer.getCurrentRevisionId())) {
-                currentOfferRevision = revision;
-                break;
-            }
-        }
-        for (ItemRevision revision : itemRevisions) {
-            if (ObjectUtils.nullSafeEquals(revision.getId(), catalogItem.getCurrentRevisionId())) {
-                currentItemRevision = revision;
-                break;
-            }
-        }
 
         ItemRevisionLocaleProperties localeProperties = currentItemRevision.getLocales().get(locale);
         Organization developer = getOrganization(catalogItem.getOwnerId(), serviceClientEnabled);
@@ -178,8 +169,8 @@ public class StoreBrowseValidationHelper {
         verifyItemImages(item.getImages(), localeProperties.getImages());
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
                 developer, publisher, serviceClientEnabled);
-        boolean isFree = PriceType.FREE.name().equals(offerRevision.getPrice().getPriceType());
-        verifyItemOffer(item.getOffer(), catalogOffer, offerRevision, isFree);
+        boolean isFree = PriceType.FREE.name().equals(currentOfferRevision.getPrice().getPriceType());
+        verifyItemOffer(item.getOffer(), catalogOffer, currentOfferRevision, isFree);
     }
 
     public void validateCmsSection(SectionInfoNode sectionInfoNode, String name, String cmsPageName, String slot) {
@@ -196,19 +187,28 @@ public class StoreBrowseValidationHelper {
 
     public void validateCmsSection(SectionLayoutResponse sectionLayoutResponse, String name, int numOfItems, boolean hasMoreItems) {
         Assert.assertEquals(sectionLayoutResponse.getName(), name);
-        if (hasMoreItems) {
-            Assert.assertEquals(sectionLayoutResponse.getItems().size(), numOfItems);
-        }
-        Assert.assertTrue(!sectionLayoutResponse.getNext().getCursor().isEmpty());
     }
+
+    public void getAndValidateItemList(String category, String criteria, String cursor, int pageSize, int expectedOfItems, boolean hasNext) throws Exception {
+        ListResponse response = storeTestDataProvider.getList(category, criteria, cursor, pageSize);
+        Assert.assertEquals(response.getItems().size(), expectedOfItems);
+        if (hasNext) {
+            Assert.assertNotNull(response.getNext().getCursor());
+            Assert.assertEquals(response.getNext().getCriteria(), criteria);
+            Assert.assertEquals(response.getNext().getCategory(), category);
+            Assert.assertEquals(response.getNext().getCount().intValue(), pageSize);
+        } else {
+            Assert.assertNull(response.getNext());
+        }
+    }
+
 
     public void validateCmsTopLevelSectionLayout(SectionLayoutResponse sectionLayoutResponse, int expectedNumOfChild, String expectedName) {
         Assert.assertTrue(sectionLayoutResponse.getBreadcrumbs().isEmpty(), "top level section's breadcrumbs should be empty");
         Assert.assertEquals(sectionLayoutResponse.getChildren().size(), expectedNumOfChild);
         Assert.assertEquals(sectionLayoutResponse.getName(), expectedName);
-        Assert.assertTrue(sectionLayoutResponse.getItems().isEmpty(), "top level feature section should have empty items");
-        Assert.assertNull(sectionLayoutResponse.getNext());
     }
+
 
     public void validateAddReview(AddReviewRequest addReviewRequest, Review review, String nickName) {
         Assert.assertEquals(review.getContent(), addReviewRequest.getContent());

@@ -22,6 +22,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -73,6 +74,8 @@ public class authorizeUser {
         Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         Validator.Validate("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
         User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
+        // https://oculus.atlassian.net/browse/SER-640
+        assert storedUser.getNickName().equalsIgnoreCase(userName);
         UserPersonalInfo storedUPI = Identity.UserPersonalInfoGetByUserPersonalInfoId(storedUser.getUsername());
         Validator.Validate("validate token->binded user is correct", userName,
                 ((UserLoginName) JsonHelper.JsonNodeToObject(storedUPI.getValue(), UserLoginName.class)).getUserName());
@@ -348,8 +351,10 @@ public class authorizeUser {
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         String resetPasswordLink = Oauth.PostResetPassword(
                 Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null);
+        resetPasswordLink = resetPasswordLink.contains("reset") ? resetPasswordLink : resetPwdLinks.get(0);
         LogHelper logHelper = new LogHelper(authorizeUser.class);
-        logHelper.logInfo("reset password link: "+ resetPasswordLink);
+        logHelper.logInfo("reset password link: " + resetPasswordLink);
         String resetPasswordCid = Oauth.GetResetPasswordCid(resetPasswordLink);
         Oauth.GetResetPasswordView(resetPasswordCid);
         Oauth.PostResetPasswordWithNewPassword(resetPasswordCid, newPassword);
@@ -433,6 +438,43 @@ public class authorizeUser {
         String email = RandomHelper.randomEmail();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, true, true);
         ValidateErrorFreeResponse(postRegisterUserResponse);
+    }
+
+    @Test(groups = "dailies")
+    public void resetPasswordLinkPrivilege() throws Exception {
+        // if (Oauth.DefaultOauthSecondaryEndpoint == null) return;
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
+
+        HttpclientHelper.ResetHttpClient();
+        String newPassword = "ASDFqwer1234";
+        // set identity authorization header
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid), Oauth.DefaultTokenURI, "client");
+        UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
+        Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null);
+        assert resetPwdLinks.size() == 0;
+
     }
 
     private static void ValidateErrorFreeResponse(String responseString) throws Exception {

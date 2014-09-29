@@ -1,5 +1,4 @@
 package com.junbo.emulator.casey.rest.resource
-
 import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.offer.*
@@ -69,7 +68,7 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
         CaseyResults<CaseyOffer> results = new CaseyResults<CaseyOffer>()
         results.items = caseyOffers.subList(offset, Math.min(offset + params.count, caseyOffers.size()))
         if (offset + params.count < caseyOffers.size()) {
-            results.cursor = offset + params.count
+            results.rawCursor = dataGenerator.genCursor((offset + params.count).toString())
         }
         return Promise.pure(results)
     }
@@ -86,10 +85,13 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
     @Override
     Promise<CaseyResults<CaseyReview>> getReviews(ReviewSearchParams params) {
         if (params.userId != null) {
-            return Promise.pure(new CaseyResults<CaseyReview>(
-                    items: dataGenerator.random.nextBoolean() ? [] as List :
-                            [dataGenerator.generateCaseyReview(params.resourceType, params.resourceId, params.userId)] as List
-            ))
+            if (params.resourceId != null) {
+                return Promise.pure(new CaseyResults<CaseyReview>(
+                        items: dataGenerator.random.nextBoolean() ? [] as List :
+                                [dataGenerator.generateCaseyReview(params.resourceType, params.resourceId, params.userId)] as List
+                ))
+            }
+            return Promise.pure(new CaseyResults<CaseyReview>(items: [] as List))
         }
 
         String userIdText = JunboHttpContext.getData().getRequestHeaders().getFirst(EmulatorHeaders.X_QA_CASEY_REVIEW_USER_ID_LIST.name())
@@ -106,7 +108,7 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
         }
 
         if (dataGenerator.random.nextBoolean()) {
-            results.cursor = UUID.randomUUID().toString()
+            results.rawCursor = dataGenerator.genCursor(UUID.randomUUID().toString())
         }
         return Promise.pure(results)
     }
@@ -133,6 +135,11 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
 
     @Override
     Promise<CaseyEmulatorData> postEmulatorData(CaseyEmulatorData caseyEmulatorData) {
+        throw new RuntimeException('not implemented')
+    }
+
+    @Override
+    Promise<CmsSchedule> getCmsSchedules(String pageId, CmsScheduleGetParams cmsScheduleGetParams) {
         throw new RuntimeException('not implemented')
     }
 

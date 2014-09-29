@@ -143,6 +143,11 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
         return flowExecutor.resume(conversationId, event ?: '', requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
     }
 
+    @Override
+    Promise<List<String>> getResetPasswordLink(String username, String userEmail, String locale, String country) {
+        return userService.getResetPasswordLinks(username, userEmail, locale, country)
+    }
+
     private void csrActionAudit(UserId userId) {
         if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
             String email = userService.getUserEmailByUserId(userId).get()

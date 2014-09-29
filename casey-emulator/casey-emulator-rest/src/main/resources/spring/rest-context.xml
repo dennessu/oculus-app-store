@@ -27,6 +27,12 @@
         <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
     </bean>
 
+    <bean id="casey.localeResource" class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
+    </bean>
+
     <bean id="casey.itemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>

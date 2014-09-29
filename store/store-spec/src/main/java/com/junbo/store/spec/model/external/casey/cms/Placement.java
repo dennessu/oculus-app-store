@@ -5,13 +5,12 @@
  */
 package com.junbo.store.spec.model.external.casey.cms;
 
-import com.junbo.store.spec.model.external.casey.BaseCaseyModel;
 import com.junbo.store.spec.model.external.casey.CaseyLink;
 
 /**
  * The Placement class.
  */
-public class Placement extends BaseCaseyModel {
+public class Placement {
 
     private CaseyLink page;
 

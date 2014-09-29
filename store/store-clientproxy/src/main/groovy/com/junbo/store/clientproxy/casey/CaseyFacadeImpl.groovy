@@ -1,12 +1,10 @@
 package com.junbo.store.clientproxy.casey
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.catalog.spec.model.offer.Offer
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
@@ -22,6 +20,7 @@ import com.junbo.oauth.spec.model.GrantType
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.clientproxy.utils.ReviewBuilder
+import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
 import com.junbo.store.spec.model.browse.ReviewsResponse
@@ -53,6 +52,8 @@ import javax.annotation.Resource
 @Component('storeCaseyFacade')
 class CaseyFacadeImpl implements CaseyFacade {
 
+    private static final int CASEY_RESULTS_CURSOR_INDEX = 1;
+
     private final static Logger LOGGER = LoggerFactory.getLogger(CaseyFacadeImpl)
 
     @Resource(name = 'storeResourceContainer')
@@ -75,7 +76,6 @@ class CaseyFacadeImpl implements CaseyFacade {
         assert sectionInfoNode.sectionType != null, 'sectionType could not be null'
         CaseyResults<Item> results = new CaseyResults<Item>(
                 items: [] as List,
-                cursor: null as String
         )
 
         if (!canSearch(sectionInfoNode)) {
@@ -94,15 +94,14 @@ class CaseyFacadeImpl implements CaseyFacade {
     @Override
     Promise<Map<String, AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext) {
         Map<String, AggregatedRatings> aggregatedRatingsMap = [:]
-        resourceContainer.caseyResource.getRatingByItemId(itemId.value).then { CaseyResults<CaseyAggregateRating> results ->
+        resourceContainer.caseyResource.getRatingByItemId(itemId.value).recover { Throwable throwable ->
+            wrapAndThrow(throwable)
+        }.then { CaseyResults<CaseyAggregateRating> results ->
             results.items.each { CaseyAggregateRating caseyAggregateRating ->
                 if (caseyAggregateRating.type != null) {
                     aggregatedRatingsMap[caseyAggregateRating.type] = reviewBuilder.buildAggregatedRatings(caseyAggregateRating)
                 }
             }
-            return Promise.pure()
-        }.recover { Throwable throwable ->
-            LOGGER.error('name=Get_AggregateRating_Fail, item=', itemId, throwable)
             return Promise.pure()
         }.then {
             return Promise.pure(aggregatedRatingsMap)
@@ -120,8 +119,7 @@ class CaseyFacadeImpl implements CaseyFacade {
         )
 
         return resourceContainer.caseyResource.getReviews(params).recover { Throwable ex ->
-            LOGGER.error('name=Get_Casey_Review_Fail', ex)
-            return Promise.pure()
+            wrapAndThrow(ex)
         }.then { CaseyResults<CaseyReview> results ->
             if (results == null) {
                 return Promise.pure(new ReviewsResponse(
@@ -129,11 +127,12 @@ class CaseyFacadeImpl implements CaseyFacade {
                 ))
             }
 
+            processCaseyResultsCursor(results)
             ReviewsResponse reviews = new ReviewsResponse()
-            if (!org.springframework.util.StringUtils.isEmpty(results.cursor)) {
+            if (!org.springframework.util.StringUtils.isEmpty(results.cursorString)) {
                 reviews.next = new ReviewsResponse.NextOption(
                         itemId: new ItemId(itemId),
-                        cursor: results.cursor,
+                        cursor: results.cursorString,
                         count: results.count
                 )
             }
@@ -141,7 +140,7 @@ class CaseyFacadeImpl implements CaseyFacade {
             reviews.reviews = []
             Promise.each(results.items) { CaseyReview caseyReview ->
                 getReviewAuthorName(caseyReview).then { String author ->
-                    Review review = reviewBuilder.buildReview(caseyReview, author)
+                    Review review = reviewBuilder.buildItemReview(caseyReview, author)
                     reviews.reviews << review
                     return Promise.pure()
                 }
@@ -152,65 +151,23 @@ class CaseyFacadeImpl implements CaseyFacade {
     }
 
     @Override
-    Promise<Boolean> itemAvailable(ItemId itemId, ApiContext apiContext) {
-        resourceContainer.offerResource.getOffers(new OffersGetOptions(itemId: itemId?.value)).then { Results<Offer> offerResults ->
-            if (offerResults.items.size() > 1) {
-                LOGGER.warn('name=Store_Multiple_Offers_Found, item={}, useOffer={}', itemId, offerResults.items[0].offerId)
-            }
-            if (CollectionUtils.isEmpty(offerResults.items)) {
-                return Promise.pure(false)
-            }
-
-            // call search to check whether the offer is available under the given country
-            OfferSearchParams offerSearchParams = new OfferSearchParams()
-            offerSearchParams.locale = apiContext.locale.getId().value
-            offerSearchParams.country = apiContext.country.getId().value
-            offerSearchParams.offerId = offerResults.items[0].offerId
-            offerSearchParams.minimal = true
-            resourceContainer.caseyResource.searchOffers(offerSearchParams).recover { Throwable ex ->
-                LOGGER.info('name=Store_SearchOffer_Error', ex)
-                return Promise.pure()
-            }.then { CaseyResults<CaseyOffer> results ->
-                if (CollectionUtils.isEmpty(results?.items)) {
-                    return Promise.pure(false)
-                }
-                return Promise.pure(true)
-            }
-        }
-    }
-
-    @Override
-    Promise<CmsPage> getCmsPage(String path, String label) {
+    Promise<CmsPage> getCmsPage(String path, String label, String country, String locale) {
         CmsPage page
         resourceContainer.caseyResource.getCmsPages(
-            new CmsPageGetParams(path: "\"${path}\"", label: label == null ? null : "\"${label}\"")
+            new CmsPageGetParams(path: StringUtils.isBlank(path) ? null : "\"${path}\"", label: StringUtils.isBlank(label) ? null : "\"${label}\"")
         ).then { CaseyResults<CmsPage> results ->
-            if (CollectionUtils.isEmpty(results?.items)) {
-                return Promise.pure()
+            if (CollectionUtils.isEmpty(results?.items) || results.items.size() > 1) {
+                LOGGER.error('name=GetCmsPageIncorrectResponse, payload={}', ObjectMapperProvider.instance().writeValueAsString(results))
+                throw new RuntimeException('Invalid Number Of CmsPage returned, should be 1')
             }
             page = results.items[0]
             if (CollectionUtils.isEmpty(page?.slots)) {
                 return Promise.pure(page)
             }
-            return fillPageContent(page)
+            return fillPageContent(page, country, locale)
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_GetCmsPage_Error, path={}, label={}', path, label, ex)
             return Promise.pure(page)
-        }
-    }
-
-    @Override
-    Promise<CmsCampaign> getCmsCampaign(String label) {
-        CaseyResults<CmsCampaign> caseyResults
-        resourceContainer.caseyResource.getCmsCampaigns(new CmsCampaignGetParam(expand: 'results/placements/content')).then { CaseyResults<CmsCampaign> results ->
-            caseyResults = results
-            if (CollectionUtils.isEmpty(caseyResults?.items)) {
-                return Promise.pure()
-            }
-            CmsCampaign result = caseyResults.items.find { CmsCampaign campaign ->
-                return campaign?.status == 'APPROVED' && campaign?.label == label
-            }
-            return Promise.pure(result)
         }
     }
 
@@ -228,9 +185,11 @@ class CaseyFacadeImpl implements CaseyFacade {
                         scope: 'catalog'
                 )
         ).then { AccessTokenResponse accessTokenResponse ->
-            return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).then { CaseyReview newReview ->
+            return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).recover { Throwable ex ->
+                wrapAndThrow(ex)
+            }.then { CaseyReview newReview ->
                 getReviewAuthorName(newReview).then { String author ->
-                    return Promise.pure(reviewBuilder.buildReview(newReview, author))
+                    return Promise.pure(reviewBuilder.buildItemReview(newReview, author))
                 }
             }
         }
@@ -238,15 +197,16 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     private Promise<CaseyResults<Item>> doSearch(OfferSearchParams searchParams, ApiContext apiContext) {
         CaseyResults<Item> results = new CaseyResults<Item>(
-                items: [] as List,
-                cursor: null as String
+                items: [] as List
         )
-        resourceContainer.caseyResource.searchOffers(searchParams).then { CaseyResults<CaseyOffer> rawResults ->
+        resourceContainer.caseyResource.searchOffers(searchParams).recover { Throwable ex ->
+            wrapAndThrow(ex)
+        }.then { CaseyResults<CaseyOffer> rawResults ->
             if (rawResults?.items == null) {
                 return Promise.pure(results)
             }
 
-            results.cursor = rawResults.cursor
+            results.rawCursor = rawResults.rawCursor
             results.count = rawResults.count
             results.totalCount = rawResults.totalCount
             Promise.each (rawResults.items) { CaseyOffer caseyOffer ->
@@ -271,6 +231,7 @@ class CaseyFacadeImpl implements CaseyFacade {
                     return Promise.pure()
                 }
             }then {
+                processCaseyResultsCursor(results)
                 return Promise.pure(results)
             }
         }
@@ -280,9 +241,9 @@ class CaseyFacadeImpl implements CaseyFacade {
         OfferSearchParams offerSearchParams = new OfferSearchParams()
         switch (sectionInfoNode.sectionType) {
             case SectionInfoNode.SectionType.CmsSection:
-                offerSearchParams.cmsPage = sectionInfoNode.cmsPageSearch
-                offerSearchParams.cmsSlot = sectionInfoNode.cmsSlot
-                break;
+                offerSearchParams.cmsPage = sectionInfoNode.cmsPageSearch?.toLowerCase()
+                offerSearchParams.cmsSlot = sectionInfoNode.cmsSlot?.toLowerCase()
+                break
             case SectionInfoNode.SectionType.CategorySection:
                 offerSearchParams.category = sectionInfoNode.categoryId
         }
@@ -319,46 +280,17 @@ class CaseyFacadeImpl implements CaseyFacade {
         }
     }
 
-    private Promise<CmsPage> fillPageContent(CmsPage cmsPage) {
+    private Promise<CmsPage> fillPageContent(CmsPage cmsPage, String country, String locale) {
         assert cmsPage?.slots != null, 'cmsPage.slot should not be null'
-        resourceContainer.caseyResource.getCmsCampaigns(new CmsCampaignGetParam(expand: 'results/placements/content')).then { CaseyResults<CmsCampaign> caseyResults ->
-            if (CollectionUtils.isEmpty(caseyResults?.items)) {
-                return Promise.pure(cmsPage)
-            }
-            caseyResults.items.each { CmsCampaign campaign ->
-                if (CollectionUtils.isEmpty(campaign.placements)) {
-                    return
-                }
-                campaign.placements.each { Placement placement ->
-                    if (placement != null) {
-                        fillStringContent(cmsPage, placement)
-                    }
+        resourceContainer.caseyResource.getCmsSchedules(cmsPage?.self?.id, new CmsScheduleGetParams(country: country, locale: locale)).then { CmsSchedule cmsSchedule ->
+            cmsPage.slots.each { Map.Entry<String, CmsContentSlot> entry ->
+                String slot = entry.key
+                CmsContentSlot content = entry.value
+                if (content != null) {
+                    content.contents = cmsSchedule?.slots?.get(slot)?.content?.getContents()
                 }
             }
             return Promise.pure(cmsPage)
-        }
-    }
-
-    private static void fillStringContent(CmsPage cmsPage, Placement placement) {
-        assert cmsPage?.slots != null, 'cmsPage.slot should not be null'
-        if (!(placement?.page?.getId() == cmsPage.self.getId() && cmsPage.slots.get(placement.slot) != null)) {
-            return
-        }
-        CmsContentSlot pageSlot = cmsPage.slots.get(placement.slot)
-        if (!CollectionUtils.isEmpty(placement?.content?.contents)) {
-            placement.content.contents.each { Map.Entry<String, ContentItem> placementContent ->
-                if (placementContent?.value?.type != ContentItem.Type.string.name()) { // only interested in string content
-                    return
-                }
-                if (pageSlot.contents.get(placementContent.key) == null) {
-                    pageSlot.contents[placementContent.key] = new ContentItem(type: placementContent.value.type, links: [] as List, strings: [] as List)
-                }
-
-                ContentItem contentItem = pageSlot.contents[placementContent.key]
-                if (!CollectionUtils.isEmpty(placementContent.value.strings)) {
-                    contentItem.strings.addAll(placementContent.value.strings)
-                }
-            }
         }
     }
 
@@ -376,5 +308,26 @@ class CaseyFacadeImpl implements CaseyFacade {
             LOGGER.error('Exception happened while getting review author', e)
             return Promise.pure(null)
         }
+    }
+
+    private static void processCaseyResultsCursor(CaseyResults caseyResults) {
+        if (caseyResults?.rawCursor == null) {
+            return
+        }
+        if (caseyResults.rawCursor.isTextual() || caseyResults.rawCursor.isNull()) {
+            caseyResults.cursorString = caseyResults.rawCursor.textValue()
+            return
+        } else {
+            JsonNode element = caseyResults.rawCursor.get(CASEY_RESULTS_CURSOR_INDEX);
+            if (element != null && (element.isNull() || element.isTextual())) {
+                caseyResults.cursorString = element.textValue()
+                return
+            }
+        }
+        LOGGER.error("name=CaseyResults_Unknown_CursorFormat, payload={}", ObjectMapperProvider.instance().writeValueAsString(caseyResults.rawCursor))
+    }
+
+    private static void wrapAndThrow(Throwable throwable) {
+        throw new CaseyException('Call_Casey_Error', throwable)
     }
 }

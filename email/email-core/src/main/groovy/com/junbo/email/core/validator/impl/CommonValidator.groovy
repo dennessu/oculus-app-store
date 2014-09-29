@@ -65,20 +65,33 @@ abstract class CommonValidator {
         if (template == null) {
             throw AppErrors.INSTANCE.emailTemplateNotFound(email.templateId).exception()
         }
-        if (template.placeholderNames?.any() && !email.replacements?.any()) {
-            throw AppErrors.INSTANCE.invalidReplacements().exception()
+        if (!template.placeholderNames?.any()) {
+            return
         }
-        if (!template.placeholderNames?.any() && email.replacements?.any()) {
-            throw AppErrors.INSTANCE.invalidReplacements().exception()
+        def replacements = new HashMap<String,String>()
+        def placeholders = template.placeholderNames.collect { String placeholder ->
+            placeholder.toLowerCase(Locale.ENGLISH)
         }
-        if (template.placeholderNames?.any()) {
-            List<String> placeholderNames = template.placeholderNames.collect { String placeholderName ->
-                placeholderName.toLowerCase() }
-            for (String key : email.replacements.keySet()) {
-                if (!placeholderNames.contains(key.replaceAll('\\d*(:\\w*)?$', '').toLowerCase())) {
-                    throw AppErrors.INSTANCE.invalidReplacements(key).exception()
+        if (placeholders?.any()) {
+            placeholders.each{String placeholder ->
+                replacements.put(placeholder,'')
+            }
+            email.replacements.each { Map.Entry<String, String> replacement ->
+                def key = replacement.key
+                if (key.contains(':') && !key.startsWith(':')) {
+                    def prefix = key.split(':').first()
+                    replacements.remove(prefix.toLowerCase(Locale.ENGLISH))
+                    key = key.replaceFirst(prefix, prefix.toLowerCase(Locale.ENGLISH))
+                }
+                else {
+                    key = key.toLowerCase(Locale.ENGLISH)
+                }
+                if (placeholders.contains(key.replaceAll('\\d*(:\\w*)?$', ''))) {
+                    replacements.put(key,replacement.value)
                 }
             }
         }
+
+        email.replacements = replacements
     }
 }

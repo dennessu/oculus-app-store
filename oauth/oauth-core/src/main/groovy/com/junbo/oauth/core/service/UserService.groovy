@@ -46,4 +46,6 @@ interface UserService {
     Promise<String> sendResetPassword(UserId userId, String locale, String country)
 
     Promise<String> buildResponseLink(EmailVerifyCode emailVerifyCode)
+
+    Promise<List<String>> getResetPasswordLinks(String username, String email, String locale, String country)
 }

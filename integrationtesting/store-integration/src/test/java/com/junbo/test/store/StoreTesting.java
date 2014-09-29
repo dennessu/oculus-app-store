@@ -481,7 +481,6 @@ public class StoreTesting extends BaseTestClass {
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
         assert libraryResponse.getItems().size() == 0;
-
     }
 
     @Property(

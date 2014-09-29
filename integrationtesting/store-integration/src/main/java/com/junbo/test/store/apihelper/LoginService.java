@@ -34,4 +34,8 @@ public interface LoginService {
     AuthTokenResponse getToken(AuthTokenRequest request, int expectedResponseCode) throws Exception;
 
     Error getTokenWithError(AuthTokenRequest request, int expectedResponseCode, String errorCode) throws Exception;
+
+    ConfirmEmailResponse confirmEmail(ConfirmEmailRequest request, int expectedResponseCode) throws Exception;
+
+    Error confirmEmail(ConfirmEmailRequest request, int expectedResponseCode, String errorCode) throws Exception;
 }

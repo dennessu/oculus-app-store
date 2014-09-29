@@ -14,6 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * Created by minhao on 5/1/14.
@@ -21,27 +22,30 @@ import javax.ws.rs.core.Response;
 @Api("oauth2")
 @Path("/oauth2")
 @RestResource
-@AuthorizationNotRequired
 @Produces(MediaType.APPLICATION_JSON)
 public interface ResetPasswordEndpoint {
     //@GET
     //@Path("/forget-password")
+    //@AuthorizationNotRequired
     //Promise<Response> forgetPassword(@QueryParam("cid") String conversationId, @QueryParam("locale") String locale);
 
     //@POST
     //@Path("/forget-password")
+    //@AuthorizationNotRequired
     //Promise<Response> forgetPassword(@FormParam("cid") String conversationId,
     //                                 @FormParam("event") String event,
     //                                 MultivaluedMap<String, String> formParams);
 
     @GET
     @Path("/reset-password")
+    @AuthorizationNotRequired
     Promise<Response> resetPasswordLink(@QueryParam("cid") String conversationId,
                                         @QueryParam("rpc") String code,
                                         @QueryParam("locale") String locale,
                                         @QueryParam("country") String country);
     @POST
     @Path("/reset-password")
+    @AuthorizationNotRequired
     Promise<Response> resetPassword(@FormParam("cid") String conversationId,
                                     @FormParam("event") String event,
                                     @FormParam("locale") String locale,
@@ -49,4 +53,11 @@ public interface ResetPasswordEndpoint {
                                     @FormParam("username") String username,
                                     @FormParam("user_email") String userEmail,
                                     MultivaluedMap<String, String> formParams);
+
+    @GET
+    @Path("/reset-password/test")
+    Promise<List<String>> getResetPasswordLink(@QueryParam("username") String username,
+                                               @QueryParam("user_email") String userEmail,
+                                               @QueryParam("locale") String locale,
+                                               @QueryParam("country") String country);
 }

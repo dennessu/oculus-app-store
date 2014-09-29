@@ -23,6 +23,7 @@
     <bean id="commonQueryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
     <bean id="commonTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
     <bean id="commonIgnoreUnknownTranscoder" class="com.junbo.common.json.JsonMessageIgnoreUnknownTranscoder"/>
+    <bean id="caseyTranscoder" class="com.junbo.common.json.JsonMessageCaseyTranscoder"/>
     <bean id="commonExceptionHandler" class="com.junbo.common.error.CommonExceptionHandler">
         <property name="messageTranscoder" ref="commonTranscoder"/>
     </bean>

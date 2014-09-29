@@ -9,15 +9,14 @@ import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.spec.model.AccessTokenRequest
-import com.junbo.oauth.spec.model.AccessTokenResponse
-import com.junbo.oauth.spec.model.GrantType
-import com.junbo.oauth.spec.model.TokenInfo
+import com.junbo.oauth.spec.model.*
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.error.ErrorContext
+import com.junbo.store.clientproxy.sentry.SentryFacade
+import com.junbo.store.rest.utils.ApiContextBuilder
 import com.junbo.store.rest.utils.RequestValidator
-import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.model.identity.StoreUserEmail
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
@@ -30,6 +29,7 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
+import javax.ws.rs.core.Response
 import javax.ws.rs.ext.Provider
 
 @Provider
@@ -59,6 +59,12 @@ class LoginResourceImpl implements LoginResource {
 
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
+
+    @Resource(name = 'storeContextBuilder')
+    private ApiContextBuilder apiContextBuilder
+
+    @Resource(name = 'storeSentryFacade')
+    private SentryFacade sentryFacade
 
     private class ApiContext {
         User user
@@ -119,6 +125,9 @@ class LoginResourceImpl implements LoginResource {
         requestValidator.validateAndGetCountry(new CountryId(request.cor)).then {
             requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
         }.then {
+            // todo:    Here we need to define the parameters here
+            sentryFacade.doSentryCheck(null, null, null, null, null, null)
+        }.then {
             createUserBasic(request, apiContext, errorContext)
         }.then {
             createUserPersonalInfo(request, apiContext, errorContext).then { StoreUserEmail email ->
@@ -159,7 +168,7 @@ class LoginResourceImpl implements LoginResource {
     Promise<AuthTokenResponse> signIn(UserSignInRequest userSignInRequest) {
         requestValidator.validateRequiredApiHeaders().validateUserSignInRequest(userSignInRequest)
 
-        return innerSignIn(userSignInRequest.username, userSignInRequest.userCredential.value).recover { Throwable ex ->
+        return innerSignIn(userSignInRequest.email, userSignInRequest.userCredential.value).recover { Throwable ex ->
             if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {
                 throw ex
             }
@@ -189,6 +198,34 @@ class LoginResourceImpl implements LoginResource {
         }
     }
 
+    @Override
+    Promise<ConfirmEmailResponse> confirmEmail(ConfirmEmailRequest confirmEmailRequest) {
+        requestValidator.validateRequiredApiHeaders().validateConfirmEmailRequest(confirmEmailRequest);
+
+        return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
+            return resourceContainer.emailVerifyEndpoint.verifyEmail(confirmEmailRequest.evc, apiContext.locale.toString())
+        }.recover { Throwable ex ->
+            appErrorUtils.throwUnknownError('confirmEmail', ex)
+        }.then { Response response ->
+            if (response != null && response.entity instanceof ViewModel) {
+                ViewModel viewModel = (ViewModel)response.entity
+                if (viewModel.model?.verifyResult == Boolean.TRUE) {
+                    return Promise.pure(new ConfirmEmailResponse(
+                            isSuccess: true
+                    ))
+                }
+
+                return Promise.pure(new ConfirmEmailResponse(
+                        isSuccess: false
+                ))
+            }
+
+            return Promise.pure(new ConfirmEmailResponse(
+                    isSuccess: false
+            ))
+        }
+    }
+
     private Promise<AuthTokenResponse> innerSignIn(UserId userId, StoreUserEmail storeUserEmail) {
         return resourceContainer.tokenEndpoint.postToken(
                 new AccessTokenRequest(
@@ -203,10 +240,10 @@ class LoginResourceImpl implements LoginResource {
         }
     }
 
-    private Promise<AuthTokenResponse> innerSignIn(String username, String password) {
+    private Promise<AuthTokenResponse> innerSignIn(String email, String password) {
         return resourceContainer.tokenEndpoint.postToken( // todo : may need call credential verification first since post token does not return meaningful error when user credential is invalid
                 new AccessTokenRequest(
-                        username: username,
+                        username: email,
                         password: password,
                         clientId: clientId,
                         clientSecret: clientSecret,

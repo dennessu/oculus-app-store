@@ -1,7 +1,9 @@
 package com.junbo.emulator.casey.rest
+
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.util.IdFormatter
-import com.junbo.emulator.casey.spec.model.CaseyReviewExtend
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
 import com.junbo.store.spec.model.external.casey.CaseyLink
 import com.junbo.store.spec.model.external.casey.CaseyReview
@@ -68,6 +70,14 @@ class DataGenerator {
                 ratings: [new CaseyReview.Rating(type: CaseyReview.RatingType.quality.name(), score: random.nextInt(101)),
                           new CaseyReview.Rating(type: CaseyReview.RatingType.comfort.name(), score: random.nextInt(101))]
         )
-        return new CaseyReviewExtend(caseyReview)
+        return caseyReview
+    }
+
+    JsonNode genCursor(String cursor) {
+        if (random.nextBoolean()) {
+            return ObjectMapperProvider.instance().valueToTree(cursor)
+        } else {
+            return ObjectMapperProvider.instance().valueToTree(['abc', cursor])
+        }
     }
 }
