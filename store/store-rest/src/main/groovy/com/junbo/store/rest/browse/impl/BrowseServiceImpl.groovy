@@ -175,17 +175,24 @@ class BrowseServiceImpl implements BrowseService {
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request, ApiContext apiContext) {
         ItemRevision itemRevision
         DeliveryResponse result = new DeliveryResponse()
-        facadeContainer.catalogFacade.getAppItemRevision(request.itemId, request.desiredVersionCode, apiContext).then { ItemRevision e ->
-            if (e == null) {
-                throw AppErrors.INSTANCE.itemVersionCodeNotFound().exception()
+        catalogUtils.checkItemOwnedByUser(request.itemId, apiContext.user).then { Boolean owned ->
+            if (!owned) {
+                throw AppErrors.INSTANCE.itemNotPurchased().exception()
             }
-            itemRevision = e
-            return resourceContainer.downloadUrlResource.getDownloadUrl(request.itemId, new DownloadUrlGetOptions(itemRevisionId: e.getRevisionId(), platform: apiContext.platform.value)).then { DownloadUrlResponse response ->
-                result.downloadUrl = response.redirectUrl
-                Binary binary = itemRevision.binaries?.get(apiContext.platform.value)
-                result.downloadSize = binary?.size
-                result.signature = binary?.md5
-                return Promise.pure(result)
+            return Promise.pure()
+        }.then {
+            facadeContainer.catalogFacade.getAppItemRevision(request.itemId, request.desiredVersionCode, apiContext).then { ItemRevision e ->
+                if (e == null) {
+                    throw AppErrors.INSTANCE.itemVersionCodeNotFound().exception()
+                }
+                itemRevision = e
+                return resourceContainer.downloadUrlResource.getDownloadUrl(request.itemId, new DownloadUrlGetOptions(itemRevisionId: e.getRevisionId(), platform: apiContext.platform.value)).then { DownloadUrlResponse response ->
+                    result.downloadUrl = response.redirectUrl
+                    Binary binary = itemRevision.binaries?.get(apiContext.platform.value)
+                    result.downloadSize = binary?.size
+                    result.signature = binary?.md5
+                    return Promise.pure(result)
+                }
             }
         }
     }

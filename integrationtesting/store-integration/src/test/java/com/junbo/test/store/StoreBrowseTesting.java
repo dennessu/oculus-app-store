@@ -523,7 +523,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
         testDataProvider.addReview(addReviewRequest, 412);
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.120"));
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("Could not review an item that not purchased."));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("item not purchased."));
 
         // purchase & add again
         testDataProvider.makeFreePurchase(offerId, null, 200);
@@ -607,6 +607,16 @@ public class StoreBrowseTesting extends BaseTestClass {
     public void testInvalidAndroidId() throws Exception { // API does not fail even the android id is invalid
         TestContext.getData().putHeader("X-ANDROID-ID", "1233a2azzdfasdd22addda22");
         gotoToc();
+    }
+
+    @Test
+    public void testGetDeliveryNotPurchased() throws Exception {
+        // create user
+        testDataProvider.CreateUser(testDataProvider.CreateUserRequest(), true);
+        com.junbo.catalog.spec.model.item.Item item = testDataProvider.getItemByName(item_digital_oculus_free1);
+        testDataProvider.getDelivery(new ItemId(item.getItemId()), null, 412);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.120"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("item not purchased."));
     }
 
     private void testGetCategorySection(final String category, String sectionName, List<String> itemNames) throws Exception {
