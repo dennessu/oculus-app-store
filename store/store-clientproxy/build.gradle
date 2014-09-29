@@ -7,7 +7,7 @@ dependencies {
     compile (libraries.spring_expression)
 
     compile junboProject(':oom-core')
-    compile junboProject(':common-sharding')
+    compile junboProject(':silkcloud-core')
     compile (libraries.HikariCP)
 
     testCompile (libraries.spring_test)

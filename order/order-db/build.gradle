@@ -16,10 +16,9 @@ dependencies {
     compile (libraries.hibernate_annotation)
     compile (libraries.hibernate_validator)
     compile (libraries.postgresql)
-    compile junboProject(':oom-core')
-    compile junboProject(':common-configuration')
     compile (libraries.HikariCP)
-    compile junboProject(':common-sharding')
+    compile junboProject(':oom-core')
+    compile junboProject(':silkcloud-core')
 
     processor junboProject(':oom-processor')
 

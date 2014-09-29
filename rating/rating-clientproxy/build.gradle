@@ -5,7 +5,7 @@ dependencies {
 
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
-    compile junboProject(':langur-core')
+    compile junboProject(':silkcloud-core')
     compile (libraries.guava)
 
     compile junboProject(':rating-common')
@@ -14,6 +14,6 @@ dependencies {
     compile junboProject(':entitlement-spec')
     compile junboProject(':oauth-spec')
 
-    processor junboProject(':langur-processor')
+    processor junboProject(':silkcloud-processor')
     processor (libraries.log4j)
 }

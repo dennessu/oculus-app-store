@@ -9,12 +9,12 @@ dependencies {
 
     compile junboProject(":token-spec")
 	compile (libraries.rs_api)
-    compile junboProject(':langur-core')
+    compile junboProject(':silkcloud-core')
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
     compile (libraries.guava)
 
-    processor junboProject(':langur-processor')
+    processor junboProject(':silkcloud-processor')
     processor (libraries.log4j)
 
     testCompile(libraries.spring_test)

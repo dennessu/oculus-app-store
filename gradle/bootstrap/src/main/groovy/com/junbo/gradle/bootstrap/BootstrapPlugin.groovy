@@ -124,6 +124,12 @@ class BootstrapPlugin implements Plugin<Project> {
 
                 test {
                     useTestNG()
+                    beforeTest { desc ->
+                        println "Running test ${desc.name} [${desc.className}]"
+                    }
+                    afterTest { desc, result ->
+                        println "[${result.resultType}] ${desc.name} [${desc.className}]"
+                    }
                 }
 
                 subProject.apply plugin: 'checkstyle'

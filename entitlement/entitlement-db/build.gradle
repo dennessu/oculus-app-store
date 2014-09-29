@@ -5,9 +5,7 @@ dependencies {
     compile junboProject(":entitlement-spec")
     compile junboProject(":entitlement-common")
 
-    compile junboProject(':common-lib')
-    compile junboProject(':common-sharding')
-    compile junboProject(':common-configuration')
+    compile junboProject(':silkcloud-core')
 
     compile (libraries.persistence_api)
     compile (libraries.validation_api)

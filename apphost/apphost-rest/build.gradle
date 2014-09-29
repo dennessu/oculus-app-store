@@ -2,10 +2,10 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 
 mainClassName = "com.junbo.apphost.core.JunboApplication"
-applicationDefaultJvmArgs = ["-Xmx4096m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility"]
+applicationDefaultJvmArgs = ["-Xmx4096m", "-XX:MaxPermSize=512m", "-Dfile.encoding=UTF-8", "-Dspring.profiles.active=utility"]
 
 dependencies {
-    compile junboProject(':apphost-core')
+    compile junboProject(':silkcloud-apphost')
     compile junboProject(':configuration-data')
 
     compile junboProject(':identity-rest')

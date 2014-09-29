@@ -5,8 +5,6 @@
 
     <import resource="classpath*:spring/*-context.xml"/>
 
-    <import resource="classpath*:spring/transaction.xml"/>
-
     <bean id="baseTest" class="com.junbo.notification.core.BaseTest">
         <!-- static injection -->
         <property name="brokerUrl" value="${notification.activemq.brokerURL}"/>
@@ -42,7 +40,7 @@
           parent="baseListenerContainer">
         <property name="destination" ref="testQueue"/>
         <property name="messageListener">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="emailListener"/>
                 </property>

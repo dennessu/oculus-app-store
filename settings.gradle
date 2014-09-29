@@ -1,4 +1,4 @@
-includeDir 'langur'
+includeDir 'silkcloud'
 includeDir 'common'
 includeDir 'oom'
 includeDir 'identity'

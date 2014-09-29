@@ -5,7 +5,7 @@
 
     <import resource="classpath*:spring/core-context.xml" />
     <import resource="classpath*:spring/common-context.xml"/>
-    <import resource="classpath*:spring/transaction.xml"/>
+    <import resource="classpath*:spring/transaction-context.xml"/>
     <import resource="classpath*:spring/common-lib-context.xml" />
     <import resource="classpath*:spring/clientproxy-context.xml" />
 </beans>
