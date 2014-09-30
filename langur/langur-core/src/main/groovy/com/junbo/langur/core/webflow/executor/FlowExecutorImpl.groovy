@@ -1,8 +1,10 @@
 package com.junbo.langur.core.webflow.executor
 
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.ConversationNotfFoundException
 import com.junbo.langur.core.webflow.FlowException
+import com.junbo.langur.core.webflow.IpViolationException
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionList
 import com.junbo.langur.core.webflow.definition.FlowDefLoader
@@ -75,6 +77,10 @@ class FlowExecutorImpl implements FlowExecutor {
 
         if (conversation == null) {
             throw new ConversationNotfFoundException()
+        }
+
+        if (conversation.ipAddress != JunboHttpContext.requestIpAddress) {
+            throw new IpViolationException()
         }
 
         def executionContext = new ExecutionContext(

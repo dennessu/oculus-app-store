@@ -9,6 +9,8 @@ class Conversation {
 
     String id
 
+    String ipAddress
+
     Map<String, Object> scope
 
     List<FlowState> flowStack

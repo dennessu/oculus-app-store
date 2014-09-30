@@ -7,6 +7,7 @@ package com.junbo.common.webflow
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.util.UUIDUtils
 import com.junbo.configuration.topo.DataCenters
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.langur.core.webflow.state.StateRepository
 import groovy.transform.CompileStatic
@@ -22,6 +23,7 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
 
         def conversation = new Conversation(
                 id: id,
+                ipAddress: JunboHttpContext.requestIpAddress,
                 scope: [:],
                 flowStack: []
         )
@@ -78,6 +80,7 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
 
         return new Conversation(
                 id: entity.id,
+                ipAddress: entity.ipAddress,
                 scope: entity.scope,
                 flowStack: entity.flowStack
         )
@@ -90,6 +93,7 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
 
         return new ConversationEntity(
                 id: entity.id,
+                ipAddress: entity.ipAddress,
                 scope: entity.scope,
                 flowStack: entity.flowStack
         )
