@@ -242,6 +242,16 @@ public class IdentityModel {
         return userPersonalInfo;
     }
 
+    public static UserPersonalInfo DefaultUnicodeUserPersonalInfoName() throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        UserName userName = new UserName();
+        userName.setFamilyName("赵");
+        userName.setGivenName("云龙");
+        userPersonalInfo.setType(UserPersonalInfoType.NAME.toString());
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(userName));
+        return userPersonalInfo;
+    }
+
     public static UserPersonalInfo DefaultUserPersonalInfoUsername() throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         UserLoginName loginName = new UserLoginName();

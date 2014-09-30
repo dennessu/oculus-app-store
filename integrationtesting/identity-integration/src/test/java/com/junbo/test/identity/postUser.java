@@ -353,6 +353,7 @@ public class postUser {
     }
 
     @Test(groups = "dailies")
+    // https://oculus.atlassian.net/browse/SER-645
     public void testUserPutUsername() throws Exception {
         User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
 
@@ -361,6 +362,13 @@ public class postUser {
         UserPersonalInfo usernameInfo = IdentityModel.DefaultUserPersonalInfoUsername();
         usernameInfo = Identity.UserPersonalInfoPost(user.getId(), usernameInfo);
         user.setUsername(usernameInfo.getId());
+        Identity.UserPut(user);
+
+        // todo:    Change username to new unicode value
+        user = Identity.UserGetByUserId(user.getId());
+        UserPersonalInfo nameInfo = IdentityModel.DefaultUnicodeUserPersonalInfoName();
+        nameInfo = Identity.UserPersonalInfoPost(user.getId(), nameInfo);
+        user.setName(nameInfo.getId());
         Identity.UserPut(user);
     }
 
