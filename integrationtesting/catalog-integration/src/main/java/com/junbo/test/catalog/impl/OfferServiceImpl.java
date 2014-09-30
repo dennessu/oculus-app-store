@@ -177,8 +177,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         if (offer.getPublished() != null){
             isServiceScope = offer.getPublished();
         }
-        else
-        {
+        else {
             isServiceScope = false;
         }
 

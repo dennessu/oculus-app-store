@@ -349,10 +349,23 @@ public class postUser {
 
         // todo:    Need to check mail is sent
         user.getAddresses().clear();
+        user = Identity.UserPut(user);
+
+        UserPersonalInfo unicodeAddressPII2 = IdentityModel.DefaultUserPersonalInfoUnicodeAddress();
+        unicodeAddressPII2 = Identity.UserPersonalInfoPost(user.getId(), unicodeAddressPII2);
+        Address getAddress = (Address)JsonHelper.JsonNodeToObject(unicodeAddressPII2.getValue(), Address.class);
+        assert getAddress.getCity().equalsIgnoreCase("黄埔区");
+        UserPersonalInfoLink link3 = new UserPersonalInfoLink();
+        link3.setIsDefault(true);
+        link3.setUserId(user.getId());
+        link3.setLabel(RandomHelper.randomAlphabetic(15));
+        link3.setValue(unicodeAddressPII2.getId());
+        user.getAddresses().add(link3);
         Identity.UserPut(user);
     }
 
     @Test(groups = "dailies")
+    // https://oculus.atlassian.net/browse/SER-645
     public void testUserPutUsername() throws Exception {
         User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
 
@@ -361,6 +374,13 @@ public class postUser {
         UserPersonalInfo usernameInfo = IdentityModel.DefaultUserPersonalInfoUsername();
         usernameInfo = Identity.UserPersonalInfoPost(user.getId(), usernameInfo);
         user.setUsername(usernameInfo.getId());
+        Identity.UserPut(user);
+
+        // todo:    Change username to new unicode value
+        user = Identity.UserGetByUserId(user.getId());
+        UserPersonalInfo nameInfo = IdentityModel.DefaultUnicodeUserPersonalInfoName();
+        nameInfo = Identity.UserPersonalInfoPost(user.getId(), nameInfo);
+        user.setName(nameInfo.getId());
         Identity.UserPut(user);
     }
 

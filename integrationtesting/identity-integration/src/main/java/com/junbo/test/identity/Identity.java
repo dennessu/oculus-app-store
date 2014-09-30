@@ -55,17 +55,17 @@ public class Identity {
 
     public static <T> T IdentityPost(String requestURI, String objJson, Class<T> cls) throws Exception {
         HttpPost httpPost = new HttpPost(requestURI);
-        httpPost.addHeader("Content-Type", "application/json");
+        httpPost.addHeader("Content-Type", "application/json; charset=utf-8");
         httpPost.addHeader("Authorization", httpAuthorizationHeader);
-        httpPost.setEntity(new StringEntity(objJson));
+        httpPost.setEntity(new StringEntity(objJson, "utf-8"));
         return HttpclientHelper.SimpleHttpPost(httpPost, cls);
     }
 
     public static <T> T IdentityPut(String requestURI, String objJson, Class<T> cls) throws Exception {
         HttpPut httpPut = new HttpPut(requestURI);
-        httpPut.addHeader("Content-Type", "application/json");
+        httpPut.addHeader("Content-Type", "application/json; charset=utf-8");
         httpPut.addHeader("Authorization", httpAuthorizationHeader);
-        httpPut.setEntity(new StringEntity(objJson));
+        httpPut.setEntity(new StringEntity(objJson, "utf-8"));
         return HttpclientHelper.SimpleHttpPut(httpPut, cls);
     }
 

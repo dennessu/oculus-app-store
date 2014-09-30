@@ -591,6 +591,22 @@ class OAuthTests(ut.TestBase):
         assert token['access_token'] is not None
         pass
 
+    def testConversationWithDifferentIp(self, scope = 'identity'):
+        ut.cookies.clear()
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': scope,
+            'redirect_uri': ut.test_redirect_uri
+        })
+        cid = getqueryparam(location, 'cid')
+
+        error = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = { 'cid': cid }, headers = {
+            'oculus-end-user-ip': '1.2.3.4'
+        }, raiseOnError=False)
+        assert error['details'][0]['reason'] == 'com.junbo.langur.core.webflow.IpViolationException'
+        pass
+
     def testGetCountries(self):
         return curlJson('GET', ut.test_uri, '/v1/countries')
 

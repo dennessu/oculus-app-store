@@ -100,7 +100,7 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     }
 
     public Item postItem(Item item, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, item, expectedResponseCode, true);
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, item, expectedResponseCode);
         Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, responseBody);
         Master.getInstance().addItem(itemPost.getItemId(), itemPost);
         return itemPost;
