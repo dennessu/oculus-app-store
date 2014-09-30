@@ -353,6 +353,8 @@ public class postUser {
 
         UserPersonalInfo unicodeAddressPII2 = IdentityModel.DefaultUserPersonalInfoUnicodeAddress();
         unicodeAddressPII2 = Identity.UserPersonalInfoPost(user.getId(), unicodeAddressPII2);
+        Address getAddress = (Address)JsonHelper.JsonNodeToObject(unicodeAddressPII2.getValue(), Address.class);
+        assert getAddress.getCity().equalsIgnoreCase("黄埔区");
         UserPersonalInfoLink link3 = new UserPersonalInfoLink();
         link3.setIsDefault(true);
         link3.setUserId(user.getId());
