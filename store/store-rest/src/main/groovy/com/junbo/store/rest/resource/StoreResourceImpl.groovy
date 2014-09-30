@@ -1,5 +1,4 @@
 package com.junbo.store.rest.resource.raw
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
@@ -38,8 +37,8 @@ import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
-import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.error.ErrorContext
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
@@ -55,12 +54,9 @@ import com.junbo.store.spec.model.browse.*
 import com.junbo.store.spec.model.iap.*
 import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
-import com.junbo.store.spec.model.token.Token
 import com.junbo.store.spec.resource.StoreResource
 import groovy.transform.CompileStatic
-import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -615,7 +611,7 @@ class StoreResourceImpl implements StoreResource {
         PurchaseState purchaseState
         User user
         ApiContext apiContext
-        boolean askChallenge = false
+        Challenge challenge
         requestValidator.validateRequiredApiHeaders()
         return identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
@@ -626,11 +622,6 @@ class StoreResourceImpl implements StoreResource {
             return Promise.pure()
         }.then {
             requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest)
-        }.then {
-            return isPurchasePINChallengeNeeded(user.getId(), null).then { Boolean purchaseChallengeNeeded ->
-                askChallenge = purchaseChallengeNeeded
-                return Promise.pure(null)
-            }
         }.then {
             tokenProcessor.toTokenObject(commitPurchaseRequest.purchaseToken, PurchaseState).then { PurchaseState e ->
                 purchaseState = e
@@ -644,14 +635,14 @@ class StoreResourceImpl implements StoreResource {
                 return requestValidator.validateOrderValid(purchaseState.order)
             }
         }.then {
-            if (askChallenge) {
+            challengeHelper.checkPurchasePINChallenge(user.getId(), commitPurchaseRequest?.challengeAnswer).then { Challenge e ->
+                challenge = e
+                return Promise.pure()
+            }
+        }.then {
+            if (challenge != null) {
                 return tokenProcessor.toTokenString(purchaseState).then { String token ->
-                    return Promise.pure(
-                            new CommitPurchaseResponse(
-                                    challenge : new Challenge(type: Constants.ChallengeType.PIN),
-                                    purchaseToken: token
-                            )
-                    )
+                    return Promise.pure(new CommitPurchaseResponse(challenge : challenge, purchaseToken: token))
                 }
             }
             OrderId orderId = purchaseState.order
@@ -1229,100 +1220,10 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<Boolean> isPurchasePINChallengeNeeded(UserId userId, String pinCode) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId can\'t be null')
-        }
-
-        def askChallenge = false
-        if (pinCode == null) {
-            return tokenRepository.searchByUserIdAndType(userId, Constants.ChallengeType.PIN, 1, 0).then { List<Token> tokenList ->
-                if (CollectionUtils.isEmpty(tokenList)) {
-                    askChallenge = true
-                    return Promise.pure(askChallenge)
-                }
-
-                Token validToken = tokenList.find { Token token ->
-                    return token.expireTime.after(new Date())
-                }
-
-                askChallenge = validToken == null
-                return Promise.pure(askChallenge)
-            }.then {
-                return Promise.pure(askChallenge)
-            }
-        } else {
-            return resourceContainer.userCredentialVerifyAttemptResource.create(
-                    new UserCredentialVerifyAttempt(
-                            userId: userId,
-                            type: Constants.ChallengeType.PIN,
-                            value: pinCode
-                    )
-            ).recover { Throwable t ->
-                if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidPin)) {
-                    throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-                }
-
-                if (appErrorUtils.isAppError(t, ErrorCodes.Identity.MaximumLoginAttempt)) {
-                    throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-                }
-
-                appErrorUtils.throwUnknownError('purchase', t)
-            }.then {
-                Token token = new Token(
-                    userId: userId,
-                    type: Constants.ChallengeType.PIN,
-                    expireTime: DateUtils.addSeconds(new Date(), pinCodeValidateDuration)
-                )
-                return tokenRepository.create(token).then {
-                    return Promise.pure(askChallenge)
-                }
-            }
-        }
-    }
-
-    /**
-    private Promise<Boolean> isPurchaseTosChallengeNeeded(UserId userId, PreparePurchaseRequest request) {
-        if (request?.challengeAnswer?.type != null && request?.challengeAnswer?.type != Constants.ChallengeType.TOS_ACCEPTANCE) {
-            return Promise.pure(true)
-        }
-
-        return resourceContainer.tosResource.list(new TosListOptions(title: PURCHASE_TOS_TITLE)).then { Results<Tos> toses ->
-            if (toses == null || CollectionUtils.isEmpty(toses.items)) {
-                if (request?.challengeAnswer?.type == Constants.ChallengeType.TOS_ACCEPTANCE && request?.challengeAnswer?.tosAcceptable) {
-                    return Promise.pure(false)
-                }
-                return Promise.pure(true)
-            }
-
-            Tos tos = toses.items.get(0)
-            return resourceContainer.userTosAgreementResource.list(new UserTosAgreementListOptions(
-                    userId: userId,
-                    tosId: tos.getId()
-            )).then { Results<UserTosAgreement> tosAgreementResults ->
-                if (tosAgreementResults == null || CollectionUtils.isEmpty(tosAgreementResults.items)) {
-                    if (request?.challengeAnswer?.type == Constants.ChallengeType.TOS_ACCEPTANCE && request?.challengeAnswer?.tosAcceptable) {
-                        return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(
-                                userId: userId,
-                                tosId: tos.getId(),
-                                agreementTime: new Date()
-                        )).then {
-                            return Promise.pure(false)
-                        }
-                    }
-
-                    return Promise.pure(true)
-                }
-
-                return Promise.pure(false)
-            }
-        }
-    }*/
-
     private Promise<Challenge> getPurchaseChallenge(UserId userId, PreparePurchaseRequest request) {
-        return isPurchasePINChallengeNeeded(userId, request?.challengeAnswer?.pin).then { Boolean pinChallengeNeeded ->
-            if (pinChallengeNeeded) {
-                return Promise.pure(new Challenge(type:  Constants.ChallengeType.PIN))
+        return challengeHelper.checkPurchasePINChallenge(userId, request?.challengeAnswer).then { Challenge challenge ->
+            if (challenge != null) {
+                return Promise.pure(challenge)
             }
             return challengeHelper.checkTosChallenge(userId, tosPurchase, request.challengeAnswer)
         }
