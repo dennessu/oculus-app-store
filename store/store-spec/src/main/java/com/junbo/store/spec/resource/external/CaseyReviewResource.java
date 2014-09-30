@@ -26,4 +26,10 @@ public interface CaseyReviewResource {
     // This annotation is added since we need to specify self generated access token through the header.
     @AuthorizationNotRequired
     Promise<CaseyReview> addReview(@HeaderParam("Authorization") String authorization, CaseyReview review);
+
+    @PUT
+    @Path("reviews/{reviewId}")
+    // This annotation is added since we need to specify self generated access token through the header.
+    @AuthorizationNotRequired
+    Promise<CaseyReview> putReview(@HeaderParam("Authorization") String authorization, @PathParam("reviewId") String reviewId, CaseyReview review);
 }

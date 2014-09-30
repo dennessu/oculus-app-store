@@ -45,11 +45,28 @@ class ReviewBuilder {
                 locale: apiContext.locale.getId().value
         )
 
-        review.ratings = []
-        for (String type : request.starRatings.keySet()) {
-            review.ratings << new CaseyReview.Rating(type: type, score: request.starRatings[type] * RATING_SCALE)
-        }
+        review.ratings = buildCaseyRatings(request.starRatings, null)
         return review
+    }
+
+    List<CaseyReview.Rating> buildCaseyRatings(Map<String, Integer> starRatings, List<CaseyReview.Rating> oldRatings) {
+        List<CaseyReview.Rating> newRatings = [] as List<CaseyReview.Rating>
+        if (!org.springframework.util.CollectionUtils.isEmpty(starRatings)) {
+            for (String type : starRatings.keySet()) {
+                newRatings << new CaseyReview.Rating(type: type, score: starRatings[type] * RATING_SCALE)
+            }
+        }
+
+        // merge the old one
+        if (!org.springframework.util.CollectionUtils.isEmpty(oldRatings)) {
+            oldRatings = oldRatings.findAll { CaseyReview.Rating oldRating ->
+                return newRatings.find { CaseyReview.Rating newRating ->
+                    newRating.type == oldRating.type
+                } == null
+            }.asList()
+            newRatings.addAll(oldRatings)
+        }
+        return newRatings
     }
 
     Review buildItemReview(CaseyReview caseyReview, String nickName) {

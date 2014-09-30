@@ -537,10 +537,19 @@ public class StoreBrowseTesting extends BaseTestClass {
         item = testDataProvider.getLibrary().getItems().get(0);
         storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
 
-        // add again should fail
-        testDataProvider.addReview(addReviewRequest, 412);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.119"));
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("Review already exists."));
+        // update the current review 3 times
+        for (int i = 0; i < 3; ++i) {
+            AddReviewRequest updateRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
+            AddReviewResponse response = testDataProvider.addReview(updateRequest, 200);
+            addReviewRequest.setStarRatings(updateRequest.getStarRatings());
+            storeBrowseValidationHelper.validateAddReview(addReviewRequest, response.getReview(), userProfile.getNickName());
+            // validate with current user review
+            item = testDataProvider.getItemDetails(itemId).getItem();
+            storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
+            // current user review also included in library
+            item = testDataProvider.getLibrary().getItems().get(0);
+            storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
+        }
     }
 
     @Test

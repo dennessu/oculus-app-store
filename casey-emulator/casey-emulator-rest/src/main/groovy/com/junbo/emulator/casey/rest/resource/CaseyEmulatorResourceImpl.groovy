@@ -161,6 +161,26 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     @Override
+    Promise<CaseyReview> putReview(String authorization, String reviewId, CaseyReview review) {
+        emulatorUtils.emulateLatency()
+        CaseyEmulatorData caseyEmulatorData = caseyEmulatorDataRepository.get()
+        CaseyReview oldReview = caseyEmulatorData.caseyReviews.find {CaseyReview e -> e.self.id == reviewId}
+        Assert.notNull(oldReview)
+        Assert.isTrue(oldReview.user.getId() == review.user.getId())
+        Assert.isTrue(oldReview.country == review.country)
+        Assert.isTrue(oldReview.locale == review.locale)
+        Assert.isTrue(oldReview.reviewTitle == review.reviewTitle)
+        Assert.isTrue(oldReview.review == review.review)
+        Assert.isTrue(oldReview.resourceType == review.resourceType)
+        Assert.isTrue(oldReview.resource.getId() == review.resource.getId())
+        Assert.isTrue(((oldReview.postedDate.time / 1000) as long) == ((review.postedDate.time / 1000)) as long)
+        Assert.isTrue(oldReview.getSelf().getId() == review.getSelf().getId())
+        Assert.isTrue(oldReview.self.rev == review.self.rev)
+        oldReview.ratings = review.ratings
+        return Promise.pure(oldReview)
+    }
+
+    @Override
     Promise<CaseyResults<CmsCampaign>> getCmsCampaigns(CmsCampaignGetParam cmsCampaignGetParam) {
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('getCmsCampaigns')

@@ -119,6 +119,11 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
     }
 
     @Override
+    Promise<CaseyReview> putReview(String authorization, String reviewId, CaseyReview review) {
+        throw new RuntimeException('not implemented')
+    }
+
+    @Override
     Promise<CaseyResults<CmsCampaign>> getCmsCampaigns(CmsCampaignGetParam cmsCampaignGetParam) {
         throw new RuntimeException('not implemented')
     }
