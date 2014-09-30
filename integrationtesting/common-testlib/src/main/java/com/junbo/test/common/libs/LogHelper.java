@@ -77,7 +77,7 @@ public class LogHelper {
             if (response.getStatusCode() == 302) {
                 logger.info("**** Response redirect URL is: " + response.getHeaders().get("Location").get(0));
             } else {
-                logger.info("**** Response body: " + response.getResponseBody());
+                logger.info("**** Response body: " + response.getResponseBody("UTF-8"));
             }
         } else {
             logger.warn("The response is null");
