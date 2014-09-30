@@ -349,6 +349,16 @@ public class postUser {
 
         // todo:    Need to check mail is sent
         user.getAddresses().clear();
+        user = Identity.UserPut(user);
+
+        UserPersonalInfo unicodeAddressPII2 = IdentityModel.DefaultUserPersonalInfoUnicodeAddress();
+        unicodeAddressPII2 = Identity.UserPersonalInfoPost(user.getId(), unicodeAddressPII2);
+        UserPersonalInfoLink link3 = new UserPersonalInfoLink();
+        link3.setIsDefault(true);
+        link3.setUserId(user.getId());
+        link3.setLabel(RandomHelper.randomAlphabetic(15));
+        link3.setValue(unicodeAddressPII2.getId());
+        user.getAddresses().add(link3);
         Identity.UserPut(user);
     }
 
