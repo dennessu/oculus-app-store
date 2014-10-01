@@ -4,13 +4,12 @@ dependencies {
     compile (libraries.rs_api)
     compile (libraries.jersey_bean_validation)
     compile (libraries.jackson_databind)
-    compile junboProject(':langur-core')
     compile (libraries.guava)
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
 
-    processor junboProject(':langur-processor')
+    processor junboProject(':silkcloud-processor')
     processor (libraries.log4j)
 }
 ext {

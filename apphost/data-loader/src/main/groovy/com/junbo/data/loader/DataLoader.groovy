@@ -50,7 +50,6 @@ class DataLoader {
             ApplicationContext applicationContext = new JunboApplication.JunboApplicationContext(
                     ["classpath*:/spring/*-context.xml",
                             "classpath*:/spring/validators.xml",
-                            "classpath*:/spring/transaction.xml",
                             "classpath*:/spring/flow/*.xml"] as String[], true)
             applicationContext.getBean("dataLoader", DataLoader)
             LOGGER.info("loading spring context end")

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.junbo.common.rs"/>
+
+    <!-- due to https://github.com/AsyncHttpClient/async-http-client/issues/484, use the default provider: netty -->
+    <bean id="commonAsyncHttpClient" class="com.junbo.langur.core.async.JunboAsyncHttpClient" factory-method="instance" />
+
+    <bean id="commonMemcachedClient" class="com.junbo.common.memcached.JunboMemcachedClient" factory-method="instance" />
+
+    <bean id="memcachedConnectionInfoProvider" class="com.junbo.common.memcached.MemcachedClientConnectionInfoProvider"/>
+
+    <bean id="asyncHttpClientConnectionInfoProvider" class="com.junbo.common.http.AsyncHttpClientConnectionInfoProvider">
+        <property name="junboAsyncHttpClient" ref="commonAsyncHttpClient"/>
+    </bean>
+
+    <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
+    <bean id="commonQueryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
+    <bean id="commonTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
+    <bean id="commonIgnoreUnknownTranscoder" class="com.junbo.common.json.JsonMessageIgnoreUnknownTranscoder"/>
+    <bean id="caseyTranscoder" class="com.junbo.common.json.JsonMessageCaseyTranscoder"/>
+    <bean id="commonExceptionHandler" class="com.junbo.common.error.CommonExceptionHandler">
+        <property name="messageTranscoder" ref="commonTranscoder"/>
+    </bean>
+    <bean id="commonClientProxyHeadersProvider" class="com.junbo.common.client.ClientProxyHeadersProvider">
+        <property name="forwardedHeaders">
+            <list>
+                <value>oculus-request-id</value>
+                <value>X-Routing-Path</value>
+                <value>Cache-Control</value>
+                <value>oculus-end-user-ip</value>
+            </list>
+        </property>
+        <property name="forwardedQAHeadersEnabled" value="${common.headers.forwardQAHeaders.enabled}"/>
+        <property name="forwardedQAHeaders">
+            <list>
+                <value>X_QA_CASEY_EMULATE_LATENCY</value>
+                <value>X_QA_CASEY_REVIEW_USER_ID_LIST</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="baseClientProxy" class="com.junbo.langur.core.client.AbstractClientProxy" abstract="true">
+        <property name="client" ref="commonAsyncHttpClient"/>
+        <property name="exceptionHandler" ref="commonExceptionHandler"/>
+        <property name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
+        <property name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
+        <property name="headersProvider" ref="commonClientProxyHeadersProvider"/>
+        <property name="transcoder" ref="commonTranscoder"/>
+        <property name="inProcessCallable" value="${common.clientproxy.inProcessCallable}"/>
+    </bean>
+
+    <bean id="defaultAfterInvocationFilter" class="com.junbo.common.filter.RestAdapterAfterInvocationFilter" />
+
+    <bean id="oculus40IdShuffle" class="com.junbo.common.shuffle.Oculus40Id" />
+    <bean id="oculus48IdShuffle" class="com.junbo.common.shuffle.Oculus48Id" />
+
+    <bean id="cloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
+        <property name="cloudantDbUri" value="${common.cloudant.url}" />
+        <property name="enableCache" value="${common.cloudant.cache.enabled}" />
+        <property name="includeDocs" value="${common.cloudant.cache.includeDocs}" />
+    </bean>
+
+    <bean id="cloudantClientWithSearch" parent="cloudantClient" abstract="true">
+        <property name="cloudantDbUri" value="${common.cloudantWithSearch.url}" />
+        <property name="enableCache" value="${common.cloudant.cache.enabled}" />
+        <property name="includeDocs" value="${common.cloudant.cache.includeDocs}" />
+    </bean>
+
+    <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.DefaultCloudantMarshaller" factory-method="instance" />
+
+    <bean id="contextScopeListener" class="com.junbo.common.util.ContextScopeListener" />
+
+    <bean id="userLogRepository" class="com.junbo.common.userlog.UserLogRepositoryCloudantImpl" parent="cloudantClientWithSearch">
+        <property name="dbName" value="user_log"/>
+    </bean>
+
+    <bean id="userLogProcessor" class="com.junbo.common.userlog.UserLogProcessorImpl">
+        <property name="userLogRepo" ref="userLogRepository"/>
+    </bean>
+
+    <bean id="junboThreadPool" class="org.glassfish.grizzly.threadpool.JunboThreadPool" factory-method="instance" />
+</beans>

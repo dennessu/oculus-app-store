@@ -12,5 +12,5 @@ dependencies {
     compile junboProject(':oom-core')
 
     testCompile (libraries.testng)
-    testCompile junboProject(':common-lib')
+    testCompile junboProject(':silkcloud-core')
 }

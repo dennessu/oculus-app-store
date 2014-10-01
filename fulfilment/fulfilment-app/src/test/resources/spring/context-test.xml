@@ -3,12 +3,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <import resource="classpath*:spring/clientproxy-context.xml"/>
-    <import resource="classpath*:spring/transaction.xml"/>
-    <import resource="classpath*:spring/sharding-context.xml"/>
-    <import resource="classpath*:spring/common-lib-context.xml"/>
-    <import resource="classpath*:spring/common-context.xml"/>
-
     <import resource="classpath*:spring/*-context.xml"/>
 
     <bean id="megaGatway" class="com.junbo.fulfilment.clientproxy.impl.MegaGatewayImpl"/>
@@ -29,7 +23,7 @@
           parent="baseListenerContainer">
         <property name="destination" ref="emailQueue"/>
         <property name="messageListener">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="emailListener"/>
                 </property>

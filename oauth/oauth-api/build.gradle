@@ -19,7 +19,7 @@ dependencies {
     compile(libraries.spring_tx)
     compile(libraries.spring_web)
 
-    compile junboProject(':common-configuration')
+    compile junboProject(':silkcloud-core')
 
     compile(libraries.slf4j_api)
 }

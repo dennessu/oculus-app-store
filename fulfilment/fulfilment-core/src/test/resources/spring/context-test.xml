@@ -4,7 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <import resource="classpath*:spring/*-context.xml" />
-    <import resource="classpath*:spring/transaction.xml"/>
 
     <!-- fusion mock -->
     <bean id="catalogGateway" class="com.junbo.fulfilment.clientproxy.mock.MockCatalogGatewayImpl"/>

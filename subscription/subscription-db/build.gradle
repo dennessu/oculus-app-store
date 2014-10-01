@@ -27,9 +27,7 @@ dependencies {
 
     testCompile(libraries.spring_test)
 
-    compile junboProject(':common-lib')
-    compile junboProject(':common-sharding')
-    compile junboProject(':common-configuration')
+    compile junboProject(':silkcloud-core')
     testCompile junboProject(':authorization-lib')
 
 }

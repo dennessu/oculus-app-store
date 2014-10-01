@@ -2,8 +2,7 @@ apply plugin: 'java'
 
 dependencies {
     compile (libraries.rs_api)
-    compile junboProject(':langur-core')
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
 
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
@@ -20,6 +19,6 @@ dependencies {
 
     testCompile (libraries.spring_test)
 
-    processor junboProject(':langur-processor')
+    processor junboProject(':silkcloud-processor')
     processor (libraries.log4j)
 }

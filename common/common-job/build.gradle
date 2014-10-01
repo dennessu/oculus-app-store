@@ -5,7 +5,7 @@ dependencies {
     compile (libraries.http_client)
     compile (libraries.http_core)
 
-    compile junboProject(':common-sharding')
+    compile junboProject(':silkcloud-core')
 
     runtime junboProject(':billing-db')
     runtime junboProject(':ewallet-db')

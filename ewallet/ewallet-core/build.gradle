@@ -14,7 +14,7 @@ dependencies {
 
     compile(libraries.jersey_server)
 
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)

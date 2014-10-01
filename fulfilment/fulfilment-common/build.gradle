@@ -8,8 +8,7 @@ dependencies {
     compile (libraries.json_path)
     compile (libraries.fastjson)
 
-    compile junboProject(':common-lib')
-    compile junboProject(':common-configuration')
+    compile junboProject(':silkcloud-core')
 
     compile (libraries.log4j)
     compile (libraries.slf4j_api)
@@ -19,6 +18,4 @@ dependencies {
     compile (libraries.slf4j_api)
 
     compile ('net.sf.dozer:dozer:5.5.1')
-
-    testCompile junboProject(':langur-core')
 }

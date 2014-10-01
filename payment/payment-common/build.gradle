@@ -8,7 +8,7 @@ dependencies {
     compile (libraries.json_path)
     compile (libraries.fastjson)
 
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
 
     compile (libraries.common_codec)
     compile (libraries.apache_commons_lang)

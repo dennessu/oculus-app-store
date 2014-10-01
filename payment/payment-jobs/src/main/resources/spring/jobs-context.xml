@@ -27,7 +27,7 @@
     <!-- File Process Job -->
     <bean id="paymentBatchFileProcessing" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="fileProcessingJob"/>
                 </property>
@@ -70,7 +70,7 @@
     <!-- reconcile Job -->
     <bean id="paymentReconcileProcessor" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="reconcileJob"/>
                 </property>
@@ -115,7 +115,7 @@
     <!-- reconcile Job -->
     <bean id="paypalPaymentReconcileProcessor" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="paypalReconcileJob"/>
                 </property>

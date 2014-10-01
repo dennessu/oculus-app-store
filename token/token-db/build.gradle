@@ -5,9 +5,7 @@ dependencies {
     compile project(":token-common")
     compile project(":token-spec")
 
-    compile junboProject(':common-lib')
-    compile junboProject(':common-sharding')
-    compile junboProject(':common-configuration')
+    compile junboProject(':silkcloud-core')
 
 	compile(libraries.persistence_api)
 	compile(libraries.validation_api)
