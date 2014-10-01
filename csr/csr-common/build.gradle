@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
     compile (libraries.jackson_annotations)
     compile (libraries.spring_beans)
     compile (libraries.guava)

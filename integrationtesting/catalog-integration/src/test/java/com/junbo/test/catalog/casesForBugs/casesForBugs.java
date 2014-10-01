@@ -39,6 +39,7 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -321,6 +322,105 @@ public class casesForBugs extends BaseTestClass {
         } catch (Exception ex) {
             logger.logInfo("Expected exception");
         }
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Bug 636",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Verify offer isPublished is not null(default is false)",
+            steps = {
+                    "1. Post an offer with isPublished = null",
+                    "2. Update an offer with isPublished = null"
+            }
+    )
+     @Test
+     public void testOfferIsPublishedNotNull() throws Exception {
+        String defaultOfferFileName = "defaultOffer";
+
+        Organization organization = organizationService.postDefaultOrganization();
+        Offer offer = offerService.prepareOfferEntity(defaultOfferFileName, organization.getId());
+
+        offer.setPublished(null);
+
+        Offer offerReturn = offerService.postOffer(offer);
+        Assert.assertFalse(offerReturn.getPublished());
+
+        offerReturn.setPublished(null);
+        offerReturn = offerService.updateOffer(offerReturn.getOfferId(), offerReturn);
+        Assert.assertFalse(offerReturn.getPublished());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Bug 597",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "An item can be created with a non existent organization linked in developer",
+            steps = {
+                    "1. Post an offer with isPublished = null",
+                    "2. Update an offer with isPublished = null"
+            }
+    )
+    @Test
+    public void testCreateEntityWithNotExistedOrganization() throws Exception {
+        prepareCatalogAdminToken();
+
+        String defaultItemFileName = "defaultItem";
+        String defaultOfferFileName = "defaultOffer";
+
+        Organization organization = organizationService.postDefaultOrganization();
+        Offer offer = offerService.postDefaultOffer(organization.getId());
+
+        Item item = itemService.prepareItemEntity(defaultItemFileName);
+        item.setOwnerId(new OrganizationId(1234L));
+
+        try {
+            itemService.postItem(item, 400, true);
+            Assert.fail("Post item should fail");
+        }
+        catch (Exception ex) {
+            Assert.assertTrue(ex.toString().contains("Field value is invalid. Cannot find organization"));
+        }
+
+        item = itemService.postDefaultItem(CatalogItemType.APP, organization.getId());
+        ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        itemRevision.setItemId(item.getItemId());
+        itemRevision.setOwnerId(new OrganizationId(1234L));
+
+        try {
+            itemRevisionService.postItemRevision(itemRevision, 400, true);
+            Assert.fail("Post item revision should fail");
+        }
+        catch (Exception ex) {
+            Assert.assertTrue(ex.toString().contains("Field value is invalid. Cannot find organization"));
+        }
+
+        Offer offerPost = offerService.prepareOfferEntity(defaultOfferFileName);
+        offerPost.setOwnerId(new OrganizationId(1234L));
+
+        try {
+            offerService.postOffer(offerPost, 400, true);
+            Assert.fail("Post offer should fail");
+        }
+        catch (Exception ex) {
+            Assert.assertTrue(ex.toString().contains("Field value is invalid. Cannot find organization"));
+        }
+
+        OfferRevision offerRevision = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, new OrganizationId(1234L), false);
+        offerRevision.setOfferId(offer.getOfferId());
+
+        try {
+            offerRevisionService.postOfferRevision(offerRevision, 400);
+            Assert.fail("Post offer revision should fail");
+        }
+        catch (Exception ex) {
+            Assert.assertTrue(ex.toString().contains("Field value is invalid. Cannot find organization"));
+        }
+
     }
 
 }

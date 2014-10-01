@@ -31,6 +31,7 @@ public interface OfferService {
     Offer prepareOfferEntity(String fileName, OrganizationId organizationId) throws Exception;
     Offer postOffer(Offer offer) throws Exception;
     Offer postOffer(Offer offer, int expectedResponseCode) throws Exception;
+    Offer postOffer(Offer offer, int expectedResponseCode, boolean isAdmin) throws Exception;
 
     Offer updateOffer(String offerId, Offer offer) throws Exception;
     Offer updateOffer(String offerId, Offer offer, int expectedResponseCode) throws Exception;

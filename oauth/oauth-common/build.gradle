@@ -13,5 +13,5 @@ dependencies {
     compile(libraries.spring_beans)
     compile(libraries.common_io)
 
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
 }

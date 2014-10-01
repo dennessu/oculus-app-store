@@ -13,7 +13,7 @@ dependencies {
     compile (libraries.spring_expression)
     compile (libraries.spring_tx)
     compile (libraries.spring_web)
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
 
     compile (libraries.asyncclient)
     processor junboProject(':oom-processor')

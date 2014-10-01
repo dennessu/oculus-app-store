@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile 'com.goshop.langur:langur-core:0.0.1-SNAPSHOT'
+    compile 'com.goshop.langur:silkcloud-core:0.0.1-SNAPSHOT'
 
     compile 'javax.ws.rs:javax.ws.rs-api:2.0'
 

@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile (libraries.rs_api)
-    compile junboProject(':langur-core')
+    compile junboProject(':silkcloud-core')
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
     compile (libraries.guava)
@@ -14,6 +14,6 @@ dependencies {
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
 
-    processor junboProject(':langur-processor')
+    processor junboProject(':silkcloud-processor')
     processor (libraries.log4j)
 }

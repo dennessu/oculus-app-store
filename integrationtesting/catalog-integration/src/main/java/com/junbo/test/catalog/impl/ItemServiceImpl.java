@@ -106,6 +106,18 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         return itemPost;
     }
 
+    public Item postItem(Item item, int expectedResponseCode, boolean isAdmin) throws Exception {
+        componentType = ComponentType.CATALOGADMIN;
+
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, item, expectedResponseCode, isAdmin);
+        Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, responseBody);
+        Master.getInstance().addItem(itemPost.getItemId(), itemPost);
+
+        componentType = ComponentType.CATALOG;
+
+        return itemPost;
+    }
+
     public Item updateItem(String itemId, Item item) throws Exception {
         return updateItem(itemId, item, 200);
     }

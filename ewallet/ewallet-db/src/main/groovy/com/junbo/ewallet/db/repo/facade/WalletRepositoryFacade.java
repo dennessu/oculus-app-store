@@ -91,7 +91,7 @@ public class WalletRepositoryFacade {
         BigDecimal validAmount = walletLotRepository.getValidAmount(walletId).get();
         Wallet wallet = walletRepository.get(walletId).get();
         wallet.setBalance(validAmount == null ? BigDecimal.ZERO : validAmount);
-        walletRepository.update(wallet, wallet);
+        walletRepository.update(wallet, wallet).get();
     }
 
     public Transaction refund(Wallet wallet, Long transactionId, RefundRequest refundRequest) {
@@ -156,11 +156,11 @@ public class WalletRepositoryFacade {
             if (amount.subtract(lotTransaction.getUnrefundedAmount()).compareTo(BigDecimal.ZERO) <= 0) {
                 lot.setRemainingAmount(lot.getRemainingAmount().add(amount));
                 lotTransaction.setUnrefundedAmount(lotTransaction.getUnrefundedAmount().subtract(amount));
-                lotTransactionRepository.create(buildRefundLotTransaction(lot, amount, transactionId));
+                lotTransactionRepository.create(buildRefundLotTransaction(lot, amount, transactionId)).get();
                 refundEnded = true;
             } else {
                 lot.setRemainingAmount(lot.getRemainingAmount().add(lotTransaction.getUnrefundedAmount()));
-                lotTransactionRepository.create(buildRefundLotTransaction(lot, lotTransaction.getUnrefundedAmount(), transactionId));
+                lotTransactionRepository.create(buildRefundLotTransaction(lot, lotTransaction.getUnrefundedAmount(), transactionId)).get();
                 amount = amount.subtract(lotTransaction.getUnrefundedAmount());
                 lotTransaction.setUnrefundedAmount(BigDecimal.ZERO);
             }
@@ -168,8 +168,8 @@ public class WalletRepositoryFacade {
             if (lot.getExpirationDate() != null && lot.getExpirationDate().before(now)) {
                 lot.setExpirationDate(WalletConst.NEVER_EXPIRE);  //enable lot
             }
-            walletLotRepository.update(lot, lot);
-            lotTransactionRepository.update(lotTransaction, lotTransaction);
+            walletLotRepository.update(lot, lot).get();
+            lotTransactionRepository.update(lotTransaction, lotTransaction).get();
             if (refundEnded) {
                 break;
             }

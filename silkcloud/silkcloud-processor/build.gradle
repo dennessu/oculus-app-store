@@ -1,0 +1,17 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':silkcloud-core')
+
+    compile (libraries.rs_api)
+    compile (libraries.freemarker)
+
+
+    testCompile (libraries.slf4j_api)
+    testCompile (libraries.spring_beans)
+    testCompile (libraries.spring_context)
+
+    testRuntime (junboProject(':silkcloud-core')) {
+        exclude group: 'com.junbo.langur', module: 'langur-core'
+    }
+}

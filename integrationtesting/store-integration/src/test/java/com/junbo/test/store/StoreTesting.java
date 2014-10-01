@@ -21,6 +21,7 @@ import com.junbo.store.spec.model.login.UserNameCheckResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
@@ -373,6 +374,7 @@ public class StoreTesting extends BaseTestClass {
     @Test(groups = "int/ppe/prod/sewer")
     public void testMakeFreePurchaseWithMultiEndpoint() throws Exception {
         try {
+            if (ConfigHelper.getSetting("secondaryDcEndpoint") == null) return;
             CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
             AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
             validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);

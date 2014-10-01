@@ -10,6 +10,6 @@ dependencies {
 
     compile (libraries.ehcache)
 
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
     compile junboProject(':authorization-lib')
 }

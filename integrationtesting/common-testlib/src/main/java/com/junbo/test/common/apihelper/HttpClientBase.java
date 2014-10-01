@@ -163,6 +163,7 @@ public abstract class HttpClientBase {
                     Request req = new RequestBuilder(httpMethod.getHttpMethod())
                             .setUrl(restUrl)
                             .setHeaders(getHeader(isServiceScope))
+                            .setBodyEncoding("UTF-8")
                             .setBody(requestBody)
                             .build();
 
@@ -179,7 +180,7 @@ public abstract class HttpClientBase {
                     if (expectedResponseCode != 200) {
                         Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
                     }
-                    return nettyResponse.getResponseBody();
+                    return nettyResponse.getResponseBody("UTF-8");
                 } catch (HttpResponseException ex) {
                     throw new TestException(ex.getMessage().toString());
                 } finally {
@@ -240,7 +241,7 @@ public abstract class HttpClientBase {
                         Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
                     }
 
-                    return nettyResponse.getResponseBody();
+                    return nettyResponse.getResponseBody("UTF-8");
                 } catch (HttpResponseException ex) {
                     throw new TestException(ex.getMessage().toString());
                 } finally {
@@ -270,7 +271,7 @@ public abstract class HttpClientBase {
                         Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
                     }
 
-                    return nettyResponse.getResponseBody();
+                    return nettyResponse.getResponseBody("UTF-8");
                 } catch (HttpResponseException ex) {
                     throw new TestException(ex.getMessage().toString());
                 } finally {

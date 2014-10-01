@@ -3,7 +3,7 @@ apply plugin: 'groovy'
 dependencies {
     compile junboProject(":order-spec")
     compile junboProject(":order-core")
-    compile junboProject(":common-configuration")
+    compile junboProject(":silkcloud-core")
     compile (libraries.quartz_scheduler)
 
     testCompile (libraries.spring_test)

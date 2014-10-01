@@ -49,7 +49,7 @@
     <bean id="baseListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"
           abstract="true">
         <property name="connectionFactory">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="connectionFactory"/>
                 </property>

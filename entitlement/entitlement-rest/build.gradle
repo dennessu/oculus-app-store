@@ -22,5 +22,5 @@ dependencies {
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
-    testCompile junboProject(':apphost-core')
+    testCompile junboProject(':silkcloud-apphost')
 }

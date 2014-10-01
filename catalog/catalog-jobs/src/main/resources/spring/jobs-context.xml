@@ -12,7 +12,7 @@
     <!-- Offer Job -->
     <bean id="offerIndexJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="offerIndexJob"/>
                 </property>

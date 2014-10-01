@@ -561,6 +561,52 @@ class OAuthTests(ut.TestBase):
         assert getqueryparam(location, 'error') == 'access_denied'
         pass
 
+    def testInternalClient(self):
+        token = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
+            'client_id': ut.test_service_client_id,
+            'client_secret': ut.test_service_client_secret,
+            'scope': 'identity.service',
+            'grant_type': 'client_credentials'
+        })
+        assert token['access_token'] is not None
+
+        error = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
+            'client_id': ut.test_service_client_id,
+            'client_secret': ut.test_service_client_secret,
+            'scope': 'identity.service',
+            'grant_type': 'client_credentials'
+        }, headers = {
+            'oculus-internal': 'false'
+        }, raiseOnError = False)
+        assert error['message'] == 'Forbidden'
+
+        token = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
+            'client_id': ut.test_service_client_id,
+            'client_secret': ut.test_service_client_secret,
+            'scope': 'identity.service',
+            'grant_type': 'client_credentials'
+        }, headers = {
+            'oculus-internal': 'true'
+        })
+        assert token['access_token'] is not None
+        pass
+
+    def testConversationWithDifferentIp(self, scope = 'identity'):
+        ut.cookies.clear()
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': scope,
+            'redirect_uri': ut.test_redirect_uri
+        })
+        cid = getqueryparam(location, 'cid')
+
+        error = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = { 'cid': cid }, headers = {
+            'oculus-end-user-ip': '1.2.3.4'
+        }, raiseOnError=False)
+        assert error['details'][0]['reason'] == 'com.junbo.langur.core.webflow.IpViolationException'
+        pass
+
     def testGetCountries(self):
         return curlJson('GET', ut.test_uri, '/v1/countries')
 

@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.itemRevision;
 
+import com.junbo.common.model.Results;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
@@ -104,6 +105,71 @@ public class TestPostItemRevision extends BaseTestClass {
 
         checkItemRevisionRequiredFields(testItemRevisionRtn, testItemRevisionFull);
         checkItemRevisionOptionalFields(testItemRevisionRtn, testItemRevisionFull);
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Post v1/item-revisions",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test Post Item Revisions",
+            steps = {
+                    "1. Post test item revisions with unicode characters",
+                    "2. Use unicode characters to search the item"
+            }
+    )
+    @Test
+    public void testPostItemRevisionWithUnicode() throws Exception {
+        this.prepareTestData();
+
+        //Post an item revision only with required fields
+        ItemRevision testItemRevisionFull = itemRevisionService.prepareItemRevisionEntity(fullItemRevisionFileName);
+
+        testItemRevisionFull.setItemId(item1.getItemId());
+        testItemRevisionFull.setOwnerId(organizationId);
+        testItemRevisionFull.setPackageName("packageName_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+
+        Map<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = testItemRevisionFull.getLocales().get(defaultLocale);
+
+        String itemRevisionName = "testItemRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10) + "中国";
+        itemRevisionLocaleProperties.setName(itemRevisionName);
+        locales.put(defaultLocale, itemRevisionLocaleProperties);
+        testItemRevisionFull.setLocales(locales);
+        List<String> hostItemIds = new ArrayList<>();
+        hostItemIds.add(item2.getItemId());
+        testItemRevisionFull.setIapHostItemIds(hostItemIds);
+
+        ItemRevision itemRevisionRtn = itemRevisionService.postItemRevision(testItemRevisionFull);
+        Assert.assertTrue(itemRevisionName.equalsIgnoreCase(itemRevisionRtn.getLocales().get(defaultLocale).getName()));
+
+        if (item1.getType().equalsIgnoreCase(CatalogItemType.APP.name()) ||
+                item1.getType().equalsIgnoreCase(CatalogItemType.DOWNLOADED_ADDITION.name())) {
+            itemRevisionRtn.setDownloadName("download name");
+
+            Map<String, Binary> binaries = new HashMap<>();
+            Binary binary = new Binary();
+            binary.setVersion("1");
+            binary.setSize(1024L);
+            binary.setMd5("abcdabcdabcdabcdabcdabcdabcdabcd");
+            binary.setHref("http://www.google.com/downlaod/angrybird1_0.exe");
+            binaries.put("PC", binary);
+
+            itemRevisionRtn.setBinaries(binaries);
+        }
+
+        releaseItemRevision(itemRevisionRtn);
+
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> query = new ArrayList<>();
+
+        query.add("%22" + itemRevisionName + "%22");
+        paraMap.put("q", query);
+
+        Results<Item> items = itemService.getItems(paraMap);
+        Assert.assertEquals(items.getItems().size(), 1);
+        Assert.assertTrue(isContain(items, item1));
     }
 
     @Property(

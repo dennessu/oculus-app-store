@@ -26,5 +26,5 @@ dependencies {
     compile junboProject(':fulfilment-clientproxy')
     compile junboProject(':fulfilment-core')
 
-    processor junboProject(':langur-processor')
+    processor junboProject(':silkcloud-processor')
 }

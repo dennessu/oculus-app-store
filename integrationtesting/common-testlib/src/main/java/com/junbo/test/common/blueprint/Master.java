@@ -19,6 +19,7 @@ import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.order.spec.model.Order;
 import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.RandomFactory;
@@ -511,7 +512,7 @@ public class Master {
     }
 
     public String getPrimaryCommerceEndPointUrl() {
-        return primaryCommerceEndPointUrl;
+        return primaryCommerceEndPointUrl == null ? ConfigHelper.getSetting("defaultCommerceEndpoint") : primaryCommerceEndPointUrl;
     }
 
     public void setPrimaryCommerceEndPointUrl(String primaryCommerceEndPointUrl) {
@@ -527,6 +528,9 @@ public class Master {
     }
 
     public EndPointType getEndPointType() {
+        if (ConfigHelper.getSetting("endpoint.random") != null && Boolean.valueOf(ConfigHelper.getSetting("endpoint.random"))) {
+            endPointType = EndPointType.Random;
+        }
         if (endPointType.equals(EndPointType.Random)) {
             switch (RandomFactory.getRandomInteger(0, 2)) {
                 case 0:
@@ -537,6 +541,10 @@ public class Master {
                     throw new TestException("No such endpoint type");
             }
         }
+        return endPointType;
+    }
+
+    public EndPointType getCurrentEndPointType() {
         return endPointType;
     }
 

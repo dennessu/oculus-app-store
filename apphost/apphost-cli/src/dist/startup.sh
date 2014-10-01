@@ -39,6 +39,16 @@ if [[ -z "$environment" ]]; then
     fi
 fi
 
+# check whether the ports are available
+if [[ "$OSTYPE" == "linux-gnu" || "$OSTYPE" == darwin* ]]; then
+    for port in 8079 8080 8081; do
+        if nc -zv localhost $port >/dev/null 2>&1; then
+            echo "ERROR: port $port is not available."
+            exit 1
+        fi
+    done
+fi
+
 # check profile
 # default to apphost-cli on onebox
 effective_environment=${environment:-$environment_from_config}

@@ -18,7 +18,7 @@ dependencies {
     compile (libraries.postgresql)
 
     compile junboProject(':oom-core')
-    compile junboProject(':common-sharding')
+    compile junboProject(':silkcloud-core')
     compile (libraries.HikariCP)
 
     testCompile (libraries.spring_test)

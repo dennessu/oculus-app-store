@@ -4,7 +4,7 @@ dependencies {
     compile junboProject(':restriction-rest')
 
     compile (libraries.jersey_container_grizzly2_http)
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
     runtime junboProject(':configuration-data')
 
 }

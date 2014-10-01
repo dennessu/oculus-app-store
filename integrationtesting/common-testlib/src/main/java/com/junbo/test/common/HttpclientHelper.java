@@ -146,7 +146,7 @@ public class HttpclientHelper {
     }
 
     public static <T> T SimpleJsonPost(String requestURI, String objJson, Class<T> cls) throws Exception {
-        StringEntity se = new StringEntity(objJson);
+        StringEntity se = new StringEntity(objJson, "utf-8");
         se.setContentType("application/json");
         return SimpleJsonPost(requestURI, se, cls);
     }
@@ -193,7 +193,7 @@ public class HttpclientHelper {
     public static <T> T SimpleJsonPut(String requestURI, String objJson, Class<T> cls) throws Exception {
         HttpPut httpPut = new HttpPut(requestURI);
         httpPut.addHeader("Content-Type", "application/json");
-        httpPut.setEntity(new StringEntity(objJson));
+        httpPut.setEntity(new StringEntity(objJson, "utf-8"));
         CloseableHttpResponse response = httpclient.execute(httpPut);
 
         try {
@@ -273,7 +273,7 @@ public class HttpclientHelper {
                         httpPost.addHeader(nvp.getName(), nvp.getValue());
                     }
                 }
-                httpPost.setEntity(new StringEntity(objJson));
+                httpPost.setEntity(new StringEntity(objJson, "utf-8"));
                 return httpclient.execute(httpPost);
             case put:
                 HttpPut httpPut = new HttpPut(requestURI);
@@ -283,7 +283,7 @@ public class HttpclientHelper {
                         httpPut.addHeader(nvp.getName(), nvp.getValue());
                     }
                 }
-                httpPut.setEntity(new StringEntity(objJson));
+                httpPut.setEntity(new StringEntity(objJson, "utf-8"));
                 return httpclient.execute(httpPut);
             case delete:
                 HttpDelete httpDelete = new HttpDelete(requestURI);

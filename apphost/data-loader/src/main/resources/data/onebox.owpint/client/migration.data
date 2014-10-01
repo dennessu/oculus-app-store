@@ -9,5 +9,6 @@
   "grant_types" : [ "CLIENT_CREDENTIALS" ],
   "logout_redirect_uris" : [],
   "need_consent" : false,
-  "access_token_expiration" : 86400
+  "access_token_expiration" : 86400,
+  "internal" : true
 }

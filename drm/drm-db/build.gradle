@@ -1,8 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile junboProject(':common-lib')
-    compile junboProject(':common-sharding')
+    compile junboProject(':silkcloud-core')
 
     compile junboProject(":drm-spec")
     compile junboProject(":drm-common")

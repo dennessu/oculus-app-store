@@ -1,9 +1,7 @@
 apply plugin: 'java'
 
 dependencies {
-    compile junboProject(':langur-core')
-    compile junboProject(':common-lib')
-
+    compile junboProject(':silkcloud-core')
     compile junboProject(':store-spec')
 
     compile (libraries.rs_api)
@@ -17,7 +15,7 @@ dependencies {
 
     compile (libraries.hibernate_validator)
 
-    processor junboProject(':langur-processor')
+    processor junboProject(':silkcloud-processor')
     processor (libraries.log4j)
 }
 

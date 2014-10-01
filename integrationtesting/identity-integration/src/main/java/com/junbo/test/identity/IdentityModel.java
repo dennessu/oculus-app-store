@@ -50,6 +50,17 @@ public class IdentityModel {
         return address;
     }
 
+    public static Address DefaultUnicodeAddress() throws Exception {
+        Address address = new Address();
+        CountryId countryId = new CountryId("US");
+        address.setSubCountry("上海");
+        address.setCity("黄埔区");
+        address.setCountryId(countryId);
+        address.setPostalCode("200023");
+        address.setStreet1("打浦路1号");
+        return address;
+    }
+
     public static UserDOB DefaultUserDob() throws Exception {
         Calendar ca = Calendar.getInstance();
         UserDOB userDOB = new UserDOB();
@@ -205,10 +216,20 @@ public class IdentityModel {
         return shareProfile;
     }
 
+    public static UserPersonalInfo DefaultUserPersonalInfoUnicodeAddress() throws Exception {
+        Address address = DefaultUnicodeAddress();
+        return DefaultUserPersonalInfoAddress(address);
+    }
+
     public static UserPersonalInfo DefaultUserPersonalInfoAddress() throws Exception {
+        Address address = DefaultAddress();
+        return DefaultUserPersonalInfoAddress(address);
+    }
+
+    public static UserPersonalInfo DefaultUserPersonalInfoAddress(Address address) throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType(UserPersonalInfoType.ADDRESS.name());
-        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultAddress()));
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(address != null ? address : DefaultAddress()));
         return userPersonalInfo;
     }
 
@@ -239,6 +260,16 @@ public class IdentityModel {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType(UserPersonalInfoType.PHONE.name());
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultPhoneNumber()));
+        return userPersonalInfo;
+    }
+
+    public static UserPersonalInfo DefaultUnicodeUserPersonalInfoName() throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        UserName userName = new UserName();
+        userName.setFamilyName("赵");
+        userName.setGivenName("云龙");
+        userPersonalInfo.setType(UserPersonalInfoType.NAME.toString());
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(userName));
         return userPersonalInfo;
     }
 

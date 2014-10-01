@@ -59,7 +59,7 @@ mavenCentral()
 
 dependencies {
     compile junboProject(':identity-spec')
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
     compile junboProject(':common-testlib')
 
     testCompile(libraries.junit)

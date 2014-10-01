@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class AuthenticateClient implements Action {
+    private static final String INTERNAL_HEADER_NAME = 'oculus-internal'
     /**
      * The clientRepository to handle the client related logic.
      */
@@ -100,6 +101,13 @@ class AuthenticateClient implements Action {
             throw AppCommonErrors.INSTANCE.fieldInvalid('client_secret', clientSecret).exception()
         }
 
+        if (Boolean.TRUE.equals(appClient.internal)) {
+            String internal = headerMap.getFirst(INTERNAL_HEADER_NAME)
+            if (!StringUtils.isEmpty(internal) && Boolean.FALSE.equals(Boolean.parseBoolean(internal))) {
+                throw AppCommonErrors.INSTANCE
+                        .forbiddenWithMessage('This client is for internal use only').exception()
+            }
+        }
         // Validation passed, save the client in the actionContext.
         contextWrapper.client = appClient
 

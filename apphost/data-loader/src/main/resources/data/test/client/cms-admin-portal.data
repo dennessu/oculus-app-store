@@ -7,5 +7,6 @@
   "response_types" : [],
   "grant_types" : [ "PASSWORD", "REFRESH_TOKEN" ],
   "id_token_issuer" : "www.junbo.com",
-  "need_consent" : false
+  "need_consent" : false,
+  "internal" : true
 }

@@ -28,8 +28,7 @@ dependencies {
     compile junboProject(':identity-spec')
     compile junboProject(':order-spec')
     compile junboProject(':payment-spec')
-    compile junboProject(':common-lib')
-    compile junboProject(':common-sharding')
+    compile junboProject(':silkcloud-core')
     compile junboProject(':fulfilment-spec')
     compile junboProject(':email-spec')
 

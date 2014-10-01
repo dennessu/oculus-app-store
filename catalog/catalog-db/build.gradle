@@ -23,9 +23,7 @@ dependencies {
 
     compile (libraries.HikariCP)
 
-    compile junboProject(':common-lib')
-    compile junboProject(':common-sharding')
-    compile junboProject(':common-configuration')
+    compile junboProject(':silkcloud-core')
 
     testCompile (libraries.spring_test)
 }

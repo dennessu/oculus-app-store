@@ -124,7 +124,8 @@ public class PaymentTesting extends BaseTestClass {
     )
     @Test
     public void testGetPaymentInstrumentByInvalidId() throws Exception {
-        testDataProvider.getPaymentInstrument("1355efb43c9f", 412);
+        testDataProvider.getPaymentInstrument("1355efb43c9f", 404);
+        assert Master.getInstance().getApiErrorMsg().contains("Payment Instrument Not Found");
     }
 
 

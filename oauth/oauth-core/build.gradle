@@ -14,7 +14,7 @@ dependencies {
 
     compile(libraries.jersey_server)
 
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
     compile junboProject(':authorization-lib')
 
     compile ("com.nimbusds:nimbus-jose-jwt:2.22.1")

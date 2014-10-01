@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="httpServer" class="com.junbo.apphost.core.GrizzlyHttpServerBean">
+        <property name="uri">
+            <value type="java.net.URI">${apphost.server.uri}</value>
+        </property>
+        <property name="executorService" ref="junboThreadPool"/>
+        <property name="keepAliveMaxRequestsCount" value="${apphost.server.keepAlive.maxRequestsCount}"/>
+        <property name="keepAliveIdleTimeoutInSeconds" value="${apphost.server.keepAlive.idleTimeoutInSeconds}"/>
+    </bean>
+
+    <bean id="healthHttpServer" class="com.junbo.apphost.core.health.HealthHttpServerBean">
+        <property name="uri">
+            <value type="java.net.URI">${apphost.server.health.uri}</value>
+        </property>
+        <property name="executorService" ref="junboThreadPool"/>
+        <property name="keepAliveMaxRequestsCount" value="${apphost.server.keepAlive.maxRequestsCount}"/>
+        <property name="keepAliveIdleTimeoutInSeconds" value="${apphost.server.keepAlive.idleTimeoutInSeconds}"/>
+    </bean>
+
+    <bean id="docsHttpServer" class="com.junbo.apphost.core.DocsHttpServerBean">
+        <property name="uri">
+            <value type="java.net.URI">${apphost.server.docs.uri}</value>
+        </property>
+        <property name="executorService" ref="junboThreadPool"/>
+        <property name="keepAliveMaxRequestsCount" value="${apphost.server.keepAlive.maxRequestsCount}"/>
+        <property name="keepAliveIdleTimeoutInSeconds" value="${apphost.server.keepAlive.idleTimeoutInSeconds}"/>
+        <property name="apiReader">
+            <bean class="com.junbo.common.docs.OculusApiReader" />
+        </property>
+        <property name="modelReader">
+            <bean class="com.junbo.common.docs.OculusModelReader" />
+        </property>
+    </bean>
+</beans>

@@ -32,6 +32,7 @@ public interface ItemRevisionService {
     ItemRevision postDefaultItemRevision(Item item) throws Exception;
     ItemRevision postItemRevision(ItemRevision itemRevision) throws Exception;
     ItemRevision postItemRevision(ItemRevision itemRevision, int expectedResponseCode) throws Exception;
+    ItemRevision postItemRevision(ItemRevision itemRevision, int expectedResponseCode, boolean isAdmin) throws Exception;
 
     ItemRevision updateItemRevision(String itemRevisionId, ItemRevision itemRevision) throws Exception;
     ItemRevision updateItemRevision(String itemRevisionId, ItemRevision itemRevision, int expectedResponseCode) throws Exception;

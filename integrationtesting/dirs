@@ -9,7 +9,7 @@ payment-integration
 order-integration
 entitlement-integration
 fulfilment-integration
-integration-buyerscenario
+endtoend-integration
 integration-catalogscenario
 integration-csrscenario
 token-integration

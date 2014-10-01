@@ -5,8 +5,7 @@ dependencies {
     compile junboProject(':email-common')
     compile junboProject(':identity-spec')
     compile junboProject(':oauth-spec')
-    compile junboProject(':langur-core')
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
     compile (libraries.rs_api)
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
@@ -15,6 +14,6 @@ dependencies {
 
     testCompile (libraries.spring_test)
 
-    processor junboProject(':langur-processor')
+    processor junboProject(':silkcloud-processor')
     processor (libraries.log4j)
 }

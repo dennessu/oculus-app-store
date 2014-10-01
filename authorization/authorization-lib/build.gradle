@@ -1,8 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile junboProject(':langur-core')
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
 
     compile(libraries.rs_api)
     compile(libraries.guava)
