@@ -49,4 +49,8 @@ public final class ExecutorContext {
     public static Executor getExecutor() {
         return theExecutor;
     }
+
+    public static boolean isExecutorThread() {
+        return defaultExecutorService.isExecutorThread();
+    }
 }

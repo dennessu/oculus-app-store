@@ -67,7 +67,7 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(captureResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(null);
-        paymentService.reverse(result.getId(), payment);
+        paymentService.reverse(result.getId(), payment).get();
         PaymentTransaction getResult = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
@@ -92,7 +92,7 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.chargeExternalToken);
         Assert.assertEquals(result.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         payment.setChargeInfo(null);
-        paymentService.reverse(result.getId(), payment);
+        paymentService.reverse(result.getId(), payment).get();
         PaymentTransaction getResult = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.chargeExternalToken);
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());

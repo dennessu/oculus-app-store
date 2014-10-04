@@ -42,7 +42,6 @@ class Snapshot {
 
     public Snapshot() {
         Thread currentThread = Thread.currentThread();
-
         classLoader = currentThread.getContextClassLoader();
 
         try {
