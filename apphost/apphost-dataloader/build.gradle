@@ -5,11 +5,12 @@ apply plugin: 'application'
 
 mainClassName = "com.junbo.data.loader.DataLoader"
 applicationDefaultJvmArgs = [
-        "-Xmx2048m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility", "-Dfile.encoding=UTF-8"
+        "-Xmx2048m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility", "-Dfile.encoding=UTF-8",
+        "-Xdebug", "-Xrunjdwp:server=y,transport=dt_socket,suspend=n"
 ]
 
 dependencies {
     compile junboProject(':silkcloud-apphost')
-    compile junboProject(':configuration-data')
+    compile junboProject(':config-data')
     compile junboProject(':data-loader')
 }
