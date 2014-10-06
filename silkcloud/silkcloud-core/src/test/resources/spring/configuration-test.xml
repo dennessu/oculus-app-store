@@ -4,7 +4,7 @@
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <import resource="classpath*:spring/common-context.xml"/>
+    <import resource="classpath*:spring/config-context.xml"/>
 
     <bean id="configurationTestBean" class="com.junbo.configuration.test.ConfigurationTest.ConfigBag">
         <property name="integerConfig" value="[test.integerConfig]"/>
