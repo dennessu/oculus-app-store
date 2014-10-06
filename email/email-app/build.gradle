@@ -5,7 +5,7 @@ mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
     runtime junboProject(':silkcloud-apphost')
-    runtime junboProject(':configuration-data')
+    runtime junboProject(':config-data')
 
     runtime junboProject(':email-rest')
 }

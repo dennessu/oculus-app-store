@@ -6,7 +6,7 @@ applicationDefaultJvmArgs = ["-Xmx2048m", "-Xms1024m", "-XX:MaxPermSize=512m", "
 
 dependencies {
     compile junboProject(':silkcloud-apphost')
-    compile junboProject(':configuration-data')
+    compile junboProject(':config-data')
     compile junboProject(':crypto-rest')
     compile junboProject(':identity-rest')
     compile junboProject(':oauth-api')

@@ -9,7 +9,7 @@ dependencies {
     compile (libraries.guava)
 
     testCompile (libraries.spring_test)
-    testCompile junboProject(':configuration-data')
+    testCompile junboProject(':config-data')
     compile 'com.adyen.services:adyensdk:1.0-SNAPSHOT'
 
     processor junboProject(':silkcloud-processor')

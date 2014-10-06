@@ -116,7 +116,7 @@ Name it INTERNAL_CLIENT_SECRET_ENCRYPTED
 
 ## Change Configuration
 
-1. Create new environments from existing environments. The configuration is defined in `common/configuration-data/src/main/resources/junbo/`
+1. Create new environments from existing environments. The configuration is defined in `apphost/config-data/src/main/resources/junbo/`
 1. Customize the configurations
   * Change the JDBC URLs
   * Change the topology settings

@@ -61,7 +61,7 @@ public class AdyenProviderServiceTest extends BaseTest {
     public void testNotify() throws ExecutionException, InterruptedException {
         String notifyMsg = "pspReference=8614093008843994&eventDate=2014-08-29T08%3A28%3A04.42Z&merchantAccountCode=OculusCOM&reason=34914%3A1111%3A6%2F2016&originalReference=&value=1083&eventCode=AUTHORISATION&merchantReference=$merchantRef&operations=CANCEL%2CCAPTURE%2CREFUND&success=true&paymentMethod=visa&currency=USD&live=false";
         String requestMsg = notifyMsg.replace("$merchantRef", "2BD5FFADBC9F");
-        paymentService.processNotification(PaymentProvider.Adyen, requestMsg);
+        paymentService.processNotification(PaymentProvider.Adyen, requestMsg).get();
     }
 
     private String getMockCallbackRequest(PaymentTransaction result) {

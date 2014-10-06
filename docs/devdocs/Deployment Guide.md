@@ -291,7 +291,7 @@ chmod 600 /etc/silkcloud/*.jks
     * `10.24.34.10`
     * `10.24.38.10`
 
-  Run the following commands to setup pgbouncer access password. The password should match `*.db.password` configured in configuration-data.jar
+  Run the following commands to setup pgbouncer access password. The password should match `*.db.password` configured in config-data.jar
 
   For example, if the password plain text is `abc123` in ppe:
   ```

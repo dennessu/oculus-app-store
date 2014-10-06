@@ -9,8 +9,8 @@
     <import resource="classpath*:spring/db-context.xml"/>
     <import resource="classpath*:spring/core-context.xml"/>
     <import resource="classpath*:spring/clientproxy-context.xml"/>
-    <import resource="classpath*:spring/common-lib-context.xml"/>
-    <import resource="classpath*:spring/common-context.xml"/>
+    <import resource="classpath*:spring/silkcloud-context.xml"/>
+    <import resource="classpath*:spring/config-context.xml"/>
     <import resource="classpath*:spring/threadpool-context.xml"/>
     <import resource="classpath*:spring/transaction-context.xml"/>
 </beans>

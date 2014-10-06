@@ -5,6 +5,6 @@ dependencies {
 
     compile (libraries.jersey_container_grizzly2_http)
     compile junboProject(':silkcloud-core')
-    runtime junboProject(':configuration-data')
+    runtime junboProject(':config-data')
 
 }

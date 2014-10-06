@@ -55,7 +55,7 @@ class ValidateRegister implements Action {
         String pin = parameterMap.getFirst(OAuthParameters.PIN)
 
         if (StringUtils.isEmpty(pin)) {
-            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('pin').error())
+            // ignore if pin is empty.
         } else {
             if (!VALID_PIN_REGEX.matcher(pin).find()) {
                 contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldInvalid('pin').error())
