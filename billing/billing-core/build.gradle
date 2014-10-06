@@ -12,6 +12,6 @@ dependencies {
     runtime junboProject(':identity-clientproxy')
 
     testCompile (libraries.spring_test)
-    testCompile junboProject(':configuration-data')
+    testCompile junboProject(':config-data')
     testCompile junboProject(':authorization-lib')
 }

@@ -1,5 +1,4 @@
 includeDir 'silkcloud'
-includeDir 'common'
 includeDir 'oom'
 includeDir 'identity'
 includeDir 'oauth'

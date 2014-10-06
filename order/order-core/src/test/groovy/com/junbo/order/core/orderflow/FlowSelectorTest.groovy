@@ -25,7 +25,7 @@ class FlowSelectorTest extends BaseTest {
         context.paymentInstruments = [TestBuilder.buildCreditCartPI()]
         flowSelector.select(context, OrderServiceOperation.CREATE).syncThen { String name ->
             assert(name == FlowType.IMMEDIATE_SETTLE.name())
-        }
+        }.get()
     }
 
     @Test
@@ -34,7 +34,7 @@ class FlowSelectorTest extends BaseTest {
         context.order.payments = null
         flowSelector.select(context, OrderServiceOperation.CREATE).syncThen { String name ->
             assert(name == FlowType.FREE_SETTLE.name())
-        }
+        }.get()
     }
 
 }

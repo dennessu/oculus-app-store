@@ -6,7 +6,7 @@ applicationDefaultJvmArgs = ["-Xmx2048m", "-XX:MaxPermSize=512m", "-Dspring.prof
 
 dependencies {
     compile junboProject(':silkcloud-apphost')
-    compile junboProject(':configuration-data')
+    compile junboProject(':config-data')
 
     compile junboProject(':casey-emulator-rest')
 }

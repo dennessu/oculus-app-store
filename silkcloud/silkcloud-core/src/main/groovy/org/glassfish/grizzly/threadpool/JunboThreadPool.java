@@ -7,7 +7,6 @@ package org.glassfish.grizzly.threadpool;
 
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
-import com.junbo.langur.core.promise.ExecutorContext;
 import com.junbo.langur.core.promise.LocatableExecutorService;
 import com.junbo.langur.core.promise.Looper;
 import org.apache.commons.lang.StringUtils;

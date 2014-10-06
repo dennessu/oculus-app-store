@@ -327,7 +327,7 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     }
 
     private boolean isAdmin() {
-        return AuthorizeContext.hasAnyScope(new String[] {"catalog.admin"});
+        return AuthorizeContext.hasAnyScope(new String[] {"catalog.admin", "catalog.service"});
     }
 
     private boolean isDeveloper() {

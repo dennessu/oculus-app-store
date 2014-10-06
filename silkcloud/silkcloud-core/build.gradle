@@ -54,7 +54,7 @@ dependencies {
     }
 
     testCompile (libraries.spring_test)
-    testRuntime junboProject(':configuration-data')
+    testRuntime junboProject(':config-data')
 
     runtime junboProject(':configuration-data')
 }

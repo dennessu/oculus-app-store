@@ -187,7 +187,7 @@ export OAUTH_CRYPTO_KEY='$OAUTH_CRYPTO_KEY'
 export DATABASE_PASSWORD_HASH='$DATABASE_PASSWORD_HASH'
 EOF
 
-# configuration-data
+# config-data
 mkdir -p $ENV
 mkdir -p ${ENV}.useast
 mkdir -p ${ENV}.uswest

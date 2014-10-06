@@ -70,12 +70,13 @@ public class Looper {
                 throw new IllegalStateException("this.runnable != null && !this.runnableWrapper.hasRun()");
             }
 
-            this.runnableWrapper = runnableWrapper;
-            notEmpty.signal();
-
             if (nestedLevel <= 0) {
+                // no thread waiting
                 return false;
             }
+
+            this.runnableWrapper = runnableWrapper;
+            notEmpty.signal();
 
             return true;
         } finally {
@@ -123,7 +124,8 @@ public class Looper {
     }
 
     public static void tryToWait(ListenableFuture future) {
-        if (!future.isDone()) {
+
+        if (ExecutorContext.isExecutorThread() && !future.isDone()) {
             final Looper looper = Looper.current();
             final AtomicBoolean stopHolder = looper.start();
 
