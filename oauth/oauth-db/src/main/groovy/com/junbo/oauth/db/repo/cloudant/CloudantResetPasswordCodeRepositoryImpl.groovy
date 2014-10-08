@@ -28,6 +28,10 @@ class CloudantResetPasswordCodeRepositoryImpl
         }
 
         ResetPasswordCode resetPasswordCode = cloudantGetSyncWithFallback(code, tokenGenerator.hashKey(code))
+        if (resetPasswordCode == null) {
+            return null
+        }
+
         resetPasswordCode.code = StringUtils.isEmpty(resetPasswordCode.encryptedCode) ?
                 resetPasswordCode.code : cipherService.decrypt(resetPasswordCode.encryptedCode)
         return resetPasswordCode
