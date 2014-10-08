@@ -298,17 +298,9 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
                 return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount, 0).then {
                     List<UserCredentialVerifyAttempt> attemptList ->
-                        if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
-                            // Only if it reaches the threashold, we will send mail
-                            if (!CollectionUtils.isEmpty(attemptList) && attemptList.size() == maxRetryCount - 1) {
-                                return sendMaximumRetryReachedNotification(user, userLoginAttempt).recover { Throwable ex ->
-                                    LOGGER.error("Error sending Maximum retry reachable Notification")
-                                    return Promise.pure(null)
-                                }
-                            }
+                        if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount - 1) {
                             return Promise.pure(null)
                         }
-
                         UserCredentialVerifyAttempt successAttempt = attemptList.find { UserCredentialVerifyAttempt attempt ->
                             return attempt.succeeded
                         }
@@ -319,6 +311,18 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         if (attemptList.get(0).createdTime.before(DateUtils.addSeconds(new Date(), -maxLockDownTime.get(entry.key)))) {
                             return Promise.pure(null)
                         }
+                        // Only if it reaches the threashold, we will send mail
+                        if (attemptList.size() == maxRetryCount - 1 && !userLoginAttempt.succeeded) {
+                            return sendMaximumRetryReachedNotification(user, userLoginAttempt).recover { Throwable ex ->
+                                LOGGER.error("Error sending Maximum retry reachable Notification")
+                                return Promise.pure(null)
+                            }
+                        }
+
+                        if (attemptList.size() < maxRetryCount) {
+                            return Promise.pure(null)
+                        }
+
                         throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
                 }
             }
