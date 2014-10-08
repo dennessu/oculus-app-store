@@ -7,7 +7,6 @@
 package com.junbo.test.store.utility;
 
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.store.spec.model.Challenge;
@@ -75,10 +74,9 @@ public class StoreValidationHelper extends BaseValidationHelper {
     public void verifyLibraryResponse(LibraryResponse response, String offerId){
         OfferRevision offerRevision = Master.getInstance().getOfferRevision(Master.getInstance().getOffer(offerId).getCurrentRevisionId());
         Item item =  Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
-        ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
 
         verifyEqual(response.getItems().get(0).getItemType(), item.getType(), "verify item type");
-        verifyEqual(response.getItems().get(0).getTitle(), itemRevision.getLocales().get("en_US").getName(),"verify entitlement type");
+        verifyEqual(response.getItems().get(0).getTitle(), offerRevision.getLocales().get("en_US").getName(),"verify entitlement type");
         verifyEqual(response.getItems().get(0).getOwnedByCurrentUser(), Boolean.valueOf(true),"verify owned by current user");
     }
 

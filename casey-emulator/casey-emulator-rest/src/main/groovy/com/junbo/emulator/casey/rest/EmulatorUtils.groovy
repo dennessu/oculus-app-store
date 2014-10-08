@@ -87,6 +87,8 @@ public class EmulatorUtils {
         if (offer.currentRevisionId != null) {
             OfferRevision offerRevision = resourceContainer.offerRevisionResource.getOfferRevision(offer.currentRevisionId, new OfferRevisionGetOptions(locale: localeId.value)).get();
             caseyOffer.currentRevision = new OfferRevisionId(offer.currentRevisionId)
+            caseyOffer.images = offerRevision.locales?.get(localeId.value)?.images
+            caseyOffer.name = offerRevision.locales?.get(localeId.value)?.name
             caseyOffer.longDescription = offerRevision.locales?.get(localeId.value)?.longDescription
             caseyOffer.shortDescription = offerRevision.locales?.get(localeId.value)?.shortDescription
             caseyOffer.regions = offerRevision.countries
@@ -156,6 +158,7 @@ public class EmulatorUtils {
 
         Map<String, CaseyRating> ratingMap = buildRating(caseyAggregateRatingGetFunc.call(itemId))
         caseyItem.qualityRating = ratingMap[CaseyReview.RatingType.quality.name()]
+        caseyItem.comfortRating = ratingMap[CaseyReview.RatingType.comfort.name()]
         return caseyItem
     }
 }

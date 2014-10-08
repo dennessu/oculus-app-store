@@ -97,10 +97,10 @@ class CaseyFacadeImpl implements CaseyFacade {
         resourceContainer.caseyResource.getRatingByItemId(itemId.value).recover { Throwable throwable ->
             wrapAndThrow(throwable)
         }.then { CaseyResults<CaseyAggregateRating> results ->
-            results.items.each { CaseyAggregateRating caseyAggregateRating ->
-                if (caseyAggregateRating.type != null) {
-                    aggregatedRatingsMap[caseyAggregateRating.type] = reviewBuilder.buildAggregatedRatings(caseyAggregateRating)
-                }
+            [CaseyReview.RatingType.quality.name(), CaseyReview.RatingType.comfort.name()].each { String type ->
+                aggregatedRatingsMap[type] = reviewBuilder.buildAggregatedRatings(results?.items?.find { CaseyAggregateRating e ->
+                    e.type == type
+                })
             }
             return Promise.pure()
         }.then {
@@ -246,9 +246,8 @@ class CaseyFacadeImpl implements CaseyFacade {
                     }
                 }.then {
                     Map<String, AggregatedRatings> aggregatedRatings = [:] as Map
-                    if (caseyItem?.qualityRating != null) {
-                        aggregatedRatings[CaseyReview.RatingType.quality.name()] = reviewBuilder.buildAggregatedRatings(caseyItem.qualityRating)
-                    }
+                    aggregatedRatings[CaseyReview.RatingType.quality.name()] = reviewBuilder.buildAggregatedRatings(caseyItem?.qualityRating)
+                    aggregatedRatings[CaseyReview.RatingType.comfort.name()] = reviewBuilder.buildAggregatedRatings(caseyItem?.comfortRating)
                     results.items << itemBuilder.buildItem(caseyOffer, aggregatedRatings, publisher, developer, apiContext)
                     return Promise.pure()
                 }

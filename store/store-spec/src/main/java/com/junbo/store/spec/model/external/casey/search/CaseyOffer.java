@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.external.casey.search;
 
+import com.junbo.catalog.spec.model.common.Images;
 import com.junbo.catalog.spec.model.offer.CountryProperties;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OfferRevisionId;
@@ -24,9 +25,11 @@ public class CaseyOffer {
     private List<CaseyItem> items;
     private CaseyPrice price;
     private Map<String, CountryProperties> regions;
+    private String name;
     private String shortDescription;
     private String longDescription;
     private OfferRevisionId currentRevision;
+    private Images images;
 
     public OfferId getSelf() {
         return self;
@@ -68,6 +71,14 @@ public class CaseyOffer {
         this.price = price;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Map<String, CountryProperties> getRegions() {
         return regions;
     }
@@ -98,5 +109,13 @@ public class CaseyOffer {
 
     public void setCurrentRevision(OfferRevisionId currentRevision) {
         this.currentRevision = currentRevision;
+    }
+
+    public Images getImages() {
+        return images;
+    }
+
+    public void setImages(Images images) {
+        this.images = images;
     }
 }

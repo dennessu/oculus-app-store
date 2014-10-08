@@ -92,11 +92,11 @@ class ReviewBuilder {
 
     AggregatedRatings buildAggregatedRatings(CaseyAggregateRating caseyAggregateRating) {
         if (caseyAggregateRating == null) {
-            return null
+            return buildDefaultAggregatedRatings()
         }
         AggregatedRatings aggregatedRatings = new AggregatedRatings(
                 averageRating: (caseyAggregateRating.average / RATING_SCALE) as double,
-                ratingsCount: caseyAggregateRating.count,
+                ratingsCount: caseyAggregateRating.count
         )
 
         Map<Integer, Long> histogram = new HashMap<>()
@@ -116,12 +116,11 @@ class ReviewBuilder {
 
     AggregatedRatings buildAggregatedRatings(CaseyRating caseyRating) {
         if (caseyRating == null) {
-            return null
+            return buildDefaultAggregatedRatings()
         }
         AggregatedRatings aggregatedRatings = new AggregatedRatings(
-                ratingsCount: caseyRating.count,
+                ratingsCount: CommonUtils.safeLong(caseyRating.count),
         )
-
         Map<Integer, Long> histogram = new HashMap<>()
         histogram[0] = CommonUtils.safeLong(caseyRating.numOnes)
         histogram[1] = CommonUtils.safeLong(caseyRating.numTwos)
@@ -129,15 +128,26 @@ class ReviewBuilder {
         histogram[3] = CommonUtils.safeLong(caseyRating.numFours)
         histogram[4] = CommonUtils.safeLong(caseyRating.numFives)
         aggregatedRatings.ratingsHistogram = histogram
-
-        if (caseyRating.stars != null) {
-            aggregatedRatings.averageRating = caseyRating.stars
-        } else {
-            aggregatedRatings.averageRating = 0
-        }
-
+        aggregatedRatings.averageRating = CommonUtils.safeDouble(caseyRating.stars)
         return aggregatedRatings
     }
 
+    AggregatedRatings buildDefaultAggregatedRatings() {
+        AggregatedRatings result =  new AggregatedRatings(
+                ratingsCount: 0L,
+                averageRating: 0.0 as double,
+                ratingsHistogram: [:] as Map<Integer, Long>
+        )
+        for (int i = 0;i < HISTOGRAM_NUM;++i) {
+            result.ratingsHistogram[i] = 0L
+        }
+        return result
+    }
 
+    Map<String, AggregatedRatings> buildDefaultAggregatedRatingsMap() {
+        Map<String, AggregatedRatings> result = [:]
+        result[CaseyReview.RatingType.comfort.name()] = buildDefaultAggregatedRatings()
+        result[CaseyReview.RatingType.quality.name()] = buildDefaultAggregatedRatings()
+        return result
+    }
 }

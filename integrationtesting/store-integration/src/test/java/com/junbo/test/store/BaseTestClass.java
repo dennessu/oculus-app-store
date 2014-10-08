@@ -23,6 +23,7 @@ import static com.junbo.test.catalog.impl.ItemAttributeServiceImpl.instance;
  */
 public abstract class BaseTestClass {
     protected String offer_digital_oculus_free1;
+    protected String offer_digital_oculus_free2;
     protected String offer_digital_normal1;
     protected String offer_digital_normal2;
     protected String offer_physical_normal1;
@@ -77,6 +78,7 @@ public abstract class BaseTestClass {
 
     private void loadOffers() {
         offer_digital_oculus_free1 = ConfigHelper.getSetting("testdata.offer.digital.oculus.free1");
+        offer_digital_oculus_free2 = ConfigHelper.getSetting("testdata.offer.digital.oculus.free2");
         offer_digital_normal1 = ConfigHelper.getSetting("testdata.offer.digital.normal1");
         offer_digital_normal2 = ConfigHelper.getSetting("testdata.offer.digital.normal2");
         offer_physical_normal1 = ConfigHelper.getSetting("testdata.offer.physical.normal1");

@@ -111,6 +111,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     @Test
     public void testGetLibrary() throws Exception {
         // create user and sign in
+        testDataProvider.postCaseyEmulatorData(new LinkedList<CaseyReview>(), new ArrayList<CaseyAggregateRating>(), null);
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
@@ -135,6 +136,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         assert libraryResponse.getItems().size() == 1;
         for (Item item: libraryResponse.getItems()) {
             verifyItem(item, GetItemMethod.Library, null);
+            storeBrowseValidationHelper.verifyDefaultAggregateRatings(item.getAggregatedRatings());
         }
     }
 
@@ -169,7 +171,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         // get library with simulated casey error and check aggregate rating/current user review is null
         TestContext.getData().putHeader("X_QA_CASEY_ERROR", "getReviews,getRatings");
         libraryResponse = testDataProvider.getLibrary();
-        Assert.assertNull(libraryResponse.getItems().get(0).getAggregatedRatings());
+        storeBrowseValidationHelper.verifyDefaultAggregateRatings(libraryResponse.getItems().get(0).getAggregatedRatings());
         Assert.assertNull(libraryResponse.getItems().get(0).getCurrentUserReview());
     }
 
@@ -302,6 +304,9 @@ public class StoreBrowseTesting extends BaseTestClass {
     )
     @Test
     public void testExploreAllSections() throws Exception {
+        if (useCaseyEmulator) {
+            testDataProvider.postCaseyEmulatorData(new ArrayList<CaseyReview>(), new ArrayList<CaseyAggregateRating>(), null);
+        }
         // get the first item in the first section
         TocResponse response = gotoToc();
         for (SectionInfoNode sectionInfo : response.getSections()) {
@@ -424,12 +429,12 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     @Test
     public void testGetGameSection() throws Exception {
-        testGetCategorySection("Game", "Game", Arrays.asList(item_digital_normal1, item_digital_oculus_free1, item_digital_free));
+        testGetCategorySection("Game", "Game", Arrays.asList(offer_digital_normal1, offer_digital_oculus_free1, offer_digital_free));
     }
 
     @Test
     public void testGetAppSection() throws Exception {
-        testGetCategorySection("App", "App", Arrays.asList(item_digital_normal2, item_digital_oculus_free2));
+        testGetCategorySection("App", "App", Arrays.asList(offer_digital_normal2, offer_digital_oculus_free2));
     }
 
     @Test
@@ -449,7 +454,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         testDataProvider.postCaseyEmulatorData(caseyReviews, caseyAggregateRating, null);
 
         // check no reviews should be returned in the items if item is not got by getDetails
-        item = testDataProvider.getList("Game", null, null, 2).getItems().get(0);
+        item = getItemsInSection("Game", null, 10, item.getTitle());
         Assert.assertNull(item.getReviews());
         storeBrowseValidationHelper.verifyAggregateRatings(item.getAggregatedRatings(), caseyAggregateRating);
 
@@ -469,6 +474,48 @@ public class StoreBrowseTesting extends BaseTestClass {
         item = testDataProvider.getItemDetails(item.getSelf().getValue()).getItem();
         Assert.assertNull(item.getReviews());
         Assert.assertNull(item.getCurrentUserReview());
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store browse",
+            component = Component.STORE,
+            owner = "fzhang",
+            status = Status.Enable,
+            description = "When no aggregate ratings available for the item, it returns the default one with 0"
+    )
+    @Test
+    public void testGetAggregateRatingDefault() throws Exception {
+        gotoToc();
+        Item item = testDataProvider.getList("Game", null, null, 2).getItems().get(0);
+        testDataProvider.makeFreePurchase(item.getOffer().getSelf().getValue(), null);
+
+        // quality & comfort rating are both unavailable
+        testDataProvider.postCaseyEmulatorData(new LinkedList<CaseyReview>(), new ArrayList<CaseyAggregateRating>(), null);
+        item = getItemsInSection("Game", null, 10, item.getTitle());
+        storeBrowseValidationHelper.verifyDefaultAggregateRatings(item.getAggregatedRatings());
+        storeBrowseValidationHelper.verifyDefaultAggregateRatings(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem().getAggregatedRatings());
+        storeBrowseValidationHelper.verifyDefaultAggregateRatings(testDataProvider.getLibrary().getItems().get(0).getAggregatedRatings());
+
+        // comfort rating unavailable
+        CaseyAggregateRating caseyAggregateRating = DataGenerator.instance().generateCaseyAggregateRating("quality");
+        testDataProvider.postCaseyEmulatorData(new LinkedList<CaseyReview>(), Arrays.asList(caseyAggregateRating), null);
+        item = getItemsInSection("Game", null, 10, item.getTitle());
+        storeBrowseValidationHelper.verifyAggregateRatings(item.getAggregatedRatings(), Arrays.asList(caseyAggregateRating), Collections.singleton("comfort"));
+        storeBrowseValidationHelper.verifyAggregateRatings(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem().getAggregatedRatings(),
+                Arrays.asList(caseyAggregateRating), Collections.singleton("comfort"));
+        storeBrowseValidationHelper.verifyAggregateRatings(testDataProvider.getLibrary().getItems().get(0).getAggregatedRatings(),
+                Arrays.asList(caseyAggregateRating), Collections.singleton("comfort"));
+
+        // quality rating unavailable
+        caseyAggregateRating = DataGenerator.instance().generateCaseyAggregateRating("comfort");
+        testDataProvider.postCaseyEmulatorData(new LinkedList<CaseyReview>(), Arrays.asList(caseyAggregateRating), null);
+        item = getItemsInSection("Game", null, 10, item.getTitle());
+        storeBrowseValidationHelper.verifyAggregateRatings(item.getAggregatedRatings(), Arrays.asList(caseyAggregateRating), Collections.singleton("quality"));
+        storeBrowseValidationHelper.verifyAggregateRatings(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem().getAggregatedRatings(),
+                Arrays.asList(caseyAggregateRating), Collections.singleton("quality"));
+        storeBrowseValidationHelper.verifyAggregateRatings(testDataProvider.getLibrary().getItems().get(0).getAggregatedRatings(),
+                Arrays.asList(caseyAggregateRating), Collections.singleton("quality"));
     }
 
     @Test
@@ -537,10 +584,24 @@ public class StoreBrowseTesting extends BaseTestClass {
         item = testDataProvider.getLibrary().getItems().get(0);
         storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
 
+        // update comfort
+        AddReviewRequest updateRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
+        updateRequest.getStarRatings().remove("quality");
+        AddReviewResponse response = testDataProvider.addReview(updateRequest, 200);
+        addReviewRequest.getStarRatings().put("comfort", updateRequest.getStarRatings().get("comfort"));
+        storeBrowseValidationHelper.validateAddReview(addReviewRequest, response.getReview(), userProfile.getNickName());
+
+        // update quality
+        updateRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
+        updateRequest.getStarRatings().remove("comfort");
+        response = testDataProvider.addReview(updateRequest, 200);
+        addReviewRequest.getStarRatings().put("quality", updateRequest.getStarRatings().get("quality"));
+        storeBrowseValidationHelper.validateAddReview(addReviewRequest, response.getReview(), userProfile.getNickName());
+
         // update the current review 3 times
         for (int i = 0; i < 3; ++i) {
-            AddReviewRequest updateRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
-            AddReviewResponse response = testDataProvider.addReview(updateRequest, 200);
+            updateRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
+            response = testDataProvider.addReview(updateRequest, 200);
             addReviewRequest.setStarRatings(updateRequest.getStarRatings());
             storeBrowseValidationHelper.validateAddReview(addReviewRequest, response.getReview(), userProfile.getNickName());
             // validate with current user review
@@ -586,7 +647,6 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("value must in range [1,5]"));
     }
 
-
     @Test
     public void testAcceptLanguageHeader() throws Exception {
         gotoToc();
@@ -628,7 +688,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("item not purchased."));
     }
 
-    private void testGetCategorySection(final String category, String sectionName, List<String> itemNames) throws Exception {
+    private void testGetCategorySection(final String category, String sectionName, List<String> offerNames) throws Exception {
         int pageSize = 2;
         gotoToc();
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(category, null, pageSize);
@@ -654,8 +714,8 @@ public class StoreBrowseTesting extends BaseTestClass {
             ), "category not found in items");
             nameToItems.put(item.getTitle(), item);
         }
-        for (String itemName : itemNames) {
-            Assert.assertTrue(nameToItems.containsKey(itemName), String.format("Item %s not found in category %s", itemName, category));
+        for (String offerName : offerNames) {
+            Assert.assertTrue(nameToItems.containsKey(offerName), String.format("Item with title %s not found in category %s", offerName, category));
         }
     }
 
@@ -750,6 +810,16 @@ public class StoreBrowseTesting extends BaseTestClass {
         return items;
     }
 
+    private Item getItemsInSection(String category, String criteria, Integer pageSize, String name) throws Exception {
+        List<Item> items = getItemsInSection(category, criteria, pageSize);
+        for (Item item:items) {
+            if (item.getTitle().equals(name)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     private List<Review> fetchReviewsFromItemDetails(Item item, int pageSize) throws Exception {
         List<Review> result = new ArrayList<>();
         Assert.assertNotNull(item.getReviews(), "reviews in item details should not be null");
@@ -769,8 +839,29 @@ public class StoreBrowseTesting extends BaseTestClass {
         return result;
     }
 
+    private void verifyItemImage(Item item) {
+        Map<String, String> main = new HashMap<>();
+        main.put("tiny", "main_tiny");
+        main.put("small", "thumbnail_small");
+        main.put("medium", "main_medium");
+        main.put("large", "main_large");
+
+        List<Map<String, String>> gallery = new ArrayList<>();
+        for (int i = 0; i < 2; ++i) {
+            gallery.add(new HashMap<String, String>());
+            Map<String, String> e = gallery.get(i);
+            e.put("tiny", "gallery" + i + "_full_tiny");
+            e.put("small", "gallery" + i + "_thumbnail_small");
+            e.put("medium", "gallery" + i + "_full_medium");
+        }
+        storeBrowseValidationHelper.verifyImage(item.getImages(), main, gallery);
+    }
+
     private void verifyItem(Item item, GetItemMethod method, Boolean ownedByUser) throws Exception {
         storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled);
+        if (offer_digital_free.equals(item.getTitle())) {
+            verifyItemImage(item);
+        }
         if (method == GetItemMethod.Details) {
             Assert.assertEquals(item.getOwnedByCurrentUser().booleanValue(), ownedByUser.booleanValue());
         } else if (method == GetItemMethod.Library || method == GetItemMethod.Purchase) {
@@ -783,12 +874,11 @@ public class StoreBrowseTesting extends BaseTestClass {
         }
     }
 
-    private List<OfferId> getOfferIds(List<String> itemNames) throws Exception {
+    private List<OfferId> getOfferIds(List<String> offerNames) throws Exception {
         List<OfferId> offerIds = new ArrayList<>();
-        for(String name : itemNames) {
-            com.junbo.catalog.spec.model.item.Item item = testDataProvider.getItemByName(name);
-            com.junbo.catalog.spec.model.offer.Offer offer = testDataProvider.getOfferByItem(item.getItemId());
-            offerIds.add(new OfferId(offer.getOfferId()));
+        for(String name : offerNames) {
+            String offerId = testDataProvider.getOfferIdByName(name);
+            offerIds.add(new OfferId(offerId));
         }
         return offerIds;
     }

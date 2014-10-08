@@ -115,8 +115,31 @@ public class StoreBrowseValidationHelper {
         }
     }
 
+    public void verifyAggregateRatingsBasic(Map<String, AggregatedRatings> aggregatedRatings) {
+        Assert.assertNotNull(aggregatedRatings);
+        Assert.assertEquals(aggregatedRatings.keySet(), new HashSet<>(Arrays.asList("comfort", "quality")));
+        for( AggregatedRatings ratings:aggregatedRatings.values()) {
+            Assert.assertNotNull(ratings);
+            Assert.assertNull(ratings.getCommentsCount());
+            Assert.assertTrue(ratings.getAverageRating() >= 0.0);
+            Assert.assertTrue(ratings.getRatingsCount() >= 0);
+            Assert.assertEquals(ratings.getRatingsHistogram().size(), 5);
+            for (Long val: ratings.getRatingsHistogram().values()) {
+                Assert.assertTrue(val >= 0L);
+            }
+        }
+    }
+
     public void verifyAggregateRatings(Map<String, AggregatedRatings> aggregatedRatings, List<CaseyAggregateRating> caseyAggregatedRatings) {
+        verifyAggregateRatings(aggregatedRatings, caseyAggregatedRatings, new HashSet<String>());
+    }
+
+    public void verifyAggregateRatings(Map<String, AggregatedRatings> aggregatedRatings, List<CaseyAggregateRating> caseyAggregatedRatings, Set<String> defaultRating) {
         for (final Map.Entry<String, AggregatedRatings> entry : aggregatedRatings.entrySet()) {
+            if (defaultRating.contains(entry.getKey())) {
+                verifyDefaultAggregateRatings(entry.getValue());
+                continue;
+            }
             CaseyAggregateRating caseyAggregateRating = (CaseyAggregateRating) CollectionUtils.find(caseyAggregatedRatings, new Predicate() {
                 @Override
                 public boolean evaluate(Object object) {
@@ -161,16 +184,18 @@ public class StoreBrowseValidationHelper {
             }
         }
 
-        ItemRevisionLocaleProperties localeProperties = currentItemRevision.getLocales().get(locale);
+        OfferRevisionLocaleProperties localeProperties = currentOfferRevision.getLocales().get(locale);
         Organization developer = getOrganization(catalogItem.getOwnerId(), serviceClientEnabled);
         Organization publisher = getOrganization(catalogOffer.getOwnerId(), serviceClientEnabled);
 
-        verifyItem(item, catalogItem, currentItemRevision, developer, serviceClientEnabled);
+        verifyItem(item, catalogItem, currentItemRevision, currentOfferRevision, developer, serviceClientEnabled);
         verifyItemImages(item.getImages(), localeProperties.getImages());
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
                 developer, publisher, serviceClientEnabled);
         boolean isFree = PriceType.FREE.name().equals(currentOfferRevision.getPrice().getPriceType());
         verifyItemOffer(item.getOffer(), catalogOffer, currentOfferRevision, isFree);
+
+        verifyAggregateRatingsBasic(item.getAggregatedRatings());
     }
 
     public void validateCmsSection(SectionInfoNode sectionInfoNode, String name, String cmsPageName, String slot) {
@@ -209,6 +234,23 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(sectionLayoutResponse.getName(), expectedName);
     }
 
+    public void verifyDefaultAggregateRatings(Map<String, AggregatedRatings> aggregatedRatingsMap) {
+        Assert.assertEquals(aggregatedRatingsMap.keySet(), new HashSet<>(Arrays.asList("comfort", "quality")));
+        for (AggregatedRatings ratings:aggregatedRatingsMap.values()) {
+            verifyDefaultAggregateRatings(ratings);
+        }
+    }
+
+    public void verifyDefaultAggregateRatings(AggregatedRatings aggregatedRating) {
+        Assert.assertNull(aggregatedRating.getCommentsCount());
+        Assert.assertEquals(aggregatedRating.getAverageRating(), 0.0, 0.00001);
+        Assert.assertEquals(aggregatedRating.getRatingsCount(), new Long(0));
+        Map<Integer, Long> ratingsHistogram = new HashMap<>();
+        for (int i = 0;i < 5;++i) {
+            ratingsHistogram.put(i, 0L);
+        }
+        Assert.assertEquals(aggregatedRating.getRatingsHistogram(), ratingsHistogram);
+    }
 
     public void validateAddReview(AddReviewRequest addReviewRequest, Review review, String nickName) {
         Assert.assertEquals(review.getContent(), addReviewRequest.getContent());
@@ -219,11 +261,26 @@ public class StoreBrowseValidationHelper {
         Assert.assertNotNull(review.getTimestamp());
     }
 
+    public void verifyImage(Images images, Map<String, String> mainImageUrls, List<Map<String, String>> galleries) {
+        Assert.assertEquals(images.getMain().keySet(), mainImageUrls.keySet());
+        for (Map.Entry<String, String> entry: mainImageUrls.entrySet()) {
+            Assert.assertTrue(images.getMain().get(entry.getKey()).getImageUrl().contains(entry.getValue()));
+        }
+        Assert.assertEquals(images.getGallery().size(), galleries.size());
+        for (int i = 0;i < galleries.size();++i) {
+            Assert.assertEquals(images.getGallery().get(i).keySet(), galleries.get(i).keySet());
+            for (Map.Entry<String, String> entry: galleries.get(i).entrySet()) {
+                Assert.assertTrue(images.getGallery().get(i).get(entry.getKey()).getImageUrl().contains(entry.getValue()));
+            }
+        }
+    }
+
     private void verifyItem(com.junbo.store.spec.model.browse.document.Item item, Item catalogItem, ItemRevision itemRevision,
+                            OfferRevision offerRevision,
                             Organization developer, boolean serviceClientEnabled) {
         Assert.assertEquals(item.getSelf(), new ItemId(catalogItem.getItemId()));
         Assert.assertEquals(item.getItemType(), catalogItem.getType());
-        ItemRevisionLocaleProperties localeProperties = itemRevision.getLocales().get(locale);
+        OfferRevisionLocaleProperties localeProperties = offerRevision.getLocales().get(locale);
         Assert.assertEquals(item.getTitle(), localeProperties.getName(), "item title not match");
         Assert.assertEquals(item.getDescriptionHtml(), localeProperties.getLongDescription(), "description html not match");
         verifySupportedLocaleEquals(item.getSupportedLocales(), itemRevision.getSupportedLocales());
@@ -238,17 +295,13 @@ public class StoreBrowseValidationHelper {
             Assert.assertNull(images);
             return ;
         }
-        verifyImageMap(images.getBackground(), catalogImages.getBackground());
-        verifyImageMap(images.getFeatured(), catalogImages.getFeatured());
-        verifyImageMap(images.getMain(), catalogImages.getMain());
-        verifyImageMap(images.getThumbnail(), catalogImages.getThumbnail());
+        verifyImageMap(images.getMain(), catalogImages.getMain(), catalogImages.getThumbnail());
         if (catalogImages.getGallery() == null) {
-            Assert.assertNull(images.getGallery());
+            Assert.assertEquals(images.getGallery().size(), 0);
         } else {
             Assert.assertEquals(images.getGallery().size(), catalogImages.getGallery().size());
             for (int i = 0;i < images.getGallery().size();++i) {
-                verifyImageMap(images.getGallery().get(i).getThumbnail(), catalogImages.getGallery().get(i).getThumbnail());
-                verifyImageMap(images.getGallery().get(i).getFull(), catalogImages.getGallery().get(i).getFull());
+                verifyImageMap(images.getGallery().get(i), catalogImages.getGallery().get(i).getFull(), catalogImages.getGallery().get(i).getThumbnail());
             }
         }
     }
@@ -365,23 +418,23 @@ public class StoreBrowseValidationHelper {
         return entry.getValue();
     }
 
-    private void verifyImageMap(Map<String, Image> storeImageMap, Map<String , com.junbo.catalog.spec.model.common.Image> catalogImageMap) {
-        if (catalogImageMap == null) {
-            Assert.assertNull(storeImageMap);
-            return;
-        }
+    private void verifyImageMap(Map<String, Image> storeImageMap, Map<String , com.junbo.catalog.spec.model.common.Image>... catalogImageMaps) {
         Map<String , Image> expected = new HashMap<>();
-        for (Map.Entry<String , com.junbo.catalog.spec.model.common.Image> entry : catalogImageMap.entrySet()) {
-            try {
-                String groupName = getImageSizeGroup(entry.getKey());
-                Image storeImage = new Image();
-                storeImage.setAltText(entry.getValue().getAltText());
-                storeImage.setImageUrl(entry.getValue().getHref());
-                expected.put(groupName, storeImage);
-            } catch (Exception ex) {
-                assert ex != null;
+        for (Map<String , com.junbo.catalog.spec.model.common.Image> catalogImageMap : catalogImageMaps) {
+            for (Map.Entry<String , com.junbo.catalog.spec.model.common.Image> entry : catalogImageMap.entrySet()) {
+                try {
+                    String groupName = getImageSizeGroup(entry.getKey());
+                    Image storeImage = new Image();
+                    storeImage.setAltText(entry.getValue().getAltText());
+                    storeImage.setImageUrl(entry.getValue().getHref());
+                    if (expected.get(groupName) == null) {
+                        expected.put(groupName, storeImage);
+                    }
+                } catch (Exception ex) {
+                }
             }
         }
+
         Assert.assertEquals(storeImageMap.keySet(), expected.keySet());
         for (Map.Entry<String, Image> entry : storeImageMap.entrySet()) {
             Assert.assertEquals(entry.getValue().getAltText(), expected.get(entry.getKey()).getAltText(), "altText not equal");

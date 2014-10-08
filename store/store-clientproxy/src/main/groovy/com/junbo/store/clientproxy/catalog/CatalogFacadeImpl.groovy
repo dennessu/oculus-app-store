@@ -25,6 +25,7 @@ import com.junbo.store.clientproxy.casey.CaseyFacade
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.utils.ItemBuilder
+import com.junbo.store.clientproxy.utils.ReviewBuilder
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
@@ -58,6 +59,9 @@ class CatalogFacadeImpl implements CatalogFacade {
 
     @Resource(name = 'storeItemBuilder')
     private ItemBuilder itemBuilder
+
+    @Resource(name = 'storeReviewBuilder')
+    private ReviewBuilder reviewBuilder
 
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
@@ -263,7 +267,7 @@ class CatalogFacadeImpl implements CatalogFacade {
         caseyFacade.getAggregatedRatings(new ItemId(itemId), apiContext).recover { Throwable ex ->
             if (ex instanceof CaseyException) {
                 LOGGER.error('name=GetCaseyData_Get_AggregateRatings_Error', ex)
-                return Promise.pure()
+                return Promise.pure(reviewBuilder.buildDefaultAggregatedRatingsMap())
             }
             throw ex
         }.then { Map<String, AggregatedRatings> aggregatedRatings ->

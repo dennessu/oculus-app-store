@@ -29,6 +29,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
 
 import java.util.regex.Matcher
@@ -65,13 +66,13 @@ class ItemBuilder {
         Item result = new Item()
         CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer?.items) ? null : caseyOffer.items[0]
         result.currentRevision = caseyItem?.currentRevision
-        result.title = caseyItem?.name
+        result.title = caseyOffer?.name
+        result.descriptionHtml = caseyOffer?.longDescription
         result.itemType = caseyItem?.type
-        result.descriptionHtml = caseyItem?.longDescription
         result.supportedLocales = caseyItem?.supportedLocales
         result.creator = developer?.name
         result.self = caseyItem?.self
-        result.images = buildImages(caseyItem?.images, caseyItem?.self)
+        result.images = buildImages(caseyOffer?.images, caseyOffer?.self)
         result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext)
         result.offer = buildOffer(caseyOffer, apiContext)
         result.aggregatedRatings = aggregatedRatings
@@ -88,14 +89,15 @@ class ItemBuilder {
         item.currentRevision = itemData.item.currentRevisionId == null ? null : new ItemRevisionId(itemData.item.currentRevisionId)
 
         ItemRevisionLocaleProperties itemLocaleProperties = itemData.currentRevision?.locales?.get(apiContext.locale.getId().value)
-        item.title = itemLocaleProperties?.name
-        item.descriptionHtml = itemLocaleProperties?.longDescription
-        item.images = buildImages(itemLocaleProperties?.images, item.getSelf())
+        OfferRevisionLocaleProperties offerRevisionLocaleProperties = itemData.offer?.offerRevision?.locales?.get(apiContext.locale.getId().value)
+        item.title = offerRevisionLocaleProperties?.name
+        item.descriptionHtml = offerRevisionLocaleProperties?.longDescription
+        item.images = buildImages(offerRevisionLocaleProperties?.images, new OfferId(itemData.offer?.offer?.getId()))
         item.supportedLocales = itemData.currentRevision?.supportedLocales
 
         item.creator = itemData.developer?.name
         item.appDetails = buildAppDetails(itemData, itemLocaleProperties, apiContext)
-        item.aggregatedRatings = itemData.caseyData?.aggregatedRatings
+        item.aggregatedRatings = itemData.caseyData.aggregatedRatings
 
         if (itemData.offer != null) {
             item.offer = new Offer()
@@ -109,20 +111,14 @@ class ItemBuilder {
         return item
     }
 
-    public Images buildImages(com.junbo.catalog.spec.model.common.Images catalogImages, ItemId itemId) {
+    public Images buildImages(com.junbo.catalog.spec.model.common.Images catalogImages, OfferId offerId) {
         if (catalogImages == null) {
             return null
         }
         return new Images(
-                main: buildImageMap(catalogImages.main, itemId),
-                thumbnail: buildImageMap(catalogImages.thumbnail, itemId),
-                background: buildImageMap(catalogImages.background, itemId),
-                featured: buildImageMap(catalogImages.featured, itemId),
-                gallery: catalogImages.gallery == null ? null : catalogImages.gallery.collect { com.junbo.catalog.spec.model.common.ImageGalleryEntry entry ->
-                    return new com.junbo.store.spec.model.browse.ImageGalleryEntry(
-                            thumbnail: buildImageMap(entry.thumbnail, itemId),
-                            full: buildImageMap(entry.full, itemId)
-                    )
+                main: buildImageMap(offerId, catalogImages.main, catalogImages.thumbnail),
+                gallery: catalogImages.gallery == null ? [] as List : catalogImages.gallery.collect { com.junbo.catalog.spec.model.common.ImageGalleryEntry entry ->
+                    return buildImageMap(offerId, entry?.full, entry?.thumbnail)
                 }
         )
     }
@@ -164,17 +160,22 @@ class ItemBuilder {
         return result
     }
 
-    private Map<String, Image> buildImageMap(Map<String, com.junbo.catalog.spec.model.common.Image> catalogImageMap, ItemId itemId) {
-        if (catalogImageMap == null) {
-            return null
-        }
+    private Map<String, Image> buildImageMap(OfferId offerId, Map<String, com.junbo.catalog.spec.model.common.Image> ...catalogImageMaps) {
+        Assert.isTrue(catalogImageMaps != null)
         Map<String, Image> result = new HashMap<>()
-        catalogImageMap.each { Map.Entry<String, com.junbo.catalog.spec.model.common.Image> entry ->
-            String imageSizeGroup = getImageSizeGroup(entry.key, itemId)
-            if (imageSizeGroup == null) {
+        catalogImageMaps.each { Map<String, com.junbo.catalog.spec.model.common.Image> catalogImageMap ->
+            if (catalogImageMap == null) {
                 return
             }
-            result.put(imageSizeGroup, buildImage(entry.getValue()));
+            catalogImageMap.each { Map.Entry<String, com.junbo.catalog.spec.model.common.Image> entry ->
+                String imageSizeGroup = getImageSizeGroup(entry.key, offerId)
+                if (imageSizeGroup == null) {
+                    return
+                }
+                if (result.get(imageSizeGroup) == null) {
+                    result.put(imageSizeGroup, buildImage(entry.getValue()));
+                }
+            }
         }
         return result
     }
@@ -244,10 +245,10 @@ class ItemBuilder {
         )
     }
 
-    private String getImageSizeGroup(String imageResolutionText, ItemId itemId) {
+    private String getImageSizeGroup(String imageResolutionText, OfferId offerId) {
         ImageDimension dimension = parseImageDimension(imageResolutionText)
         if (dimension == null) {
-            LOGGER.error('name=Store_Invalid_ImageResolutionText, value={}, item={}', imageResolutionText, itemId?.value)
+            LOGGER.error('name=Store_Invalid_ImageResolutionText, value={}, offer={}', imageResolutionText, offerId?.value)
             return null
         }
 
