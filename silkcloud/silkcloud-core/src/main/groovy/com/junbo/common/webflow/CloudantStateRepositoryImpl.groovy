@@ -11,11 +11,15 @@ import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.langur.core.webflow.state.StateRepository
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 /**
  * CloudantStateRepositoryImpl.
  */
 @CompileStatic
 class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> implements StateRepository {
+    private static final Logger logger = LoggerFactory.getLogger(CloudantStateRepositoryImpl.class);
 
     @Override
     Conversation newConversation() {
@@ -37,19 +41,13 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
             throw new IllegalArgumentException('conversationId is null')
         }
 
-        ConversationEntity entity = cloudantGetSync(conversationId)
-        if (entity == null) {
-            int tokenDc = UUIDUtils.getDCFromUUID(conversationId)
-            if (DataCenters.instance().isLocalDataCenter(tokenDc)) {
-                return null
-            }
-            def fallbackDbUri = getDbUriByDc(tokenDc)
-            if (fallbackDbUri == null) {
-                return null
-            }
-            return wrap((ConversationEntity)getEffective().cloudantGet(fallbackDbUri, entityClass, conversationId).get())
+        // load conversation from home shard
+        int tokenDc = UUIDUtils.getDCFromUUID(conversationId)
+        if (!DataCenters.instance().isLocalDataCenter(tokenDc)) {
+            logger.info("Routing to remote shard {} for cid {}", tokenDc, conversationId)
         }
-        return wrap(entity)
+        def dbUri = getDbUriByDc(tokenDc)
+        return wrap((ConversationEntity)getEffective().cloudantGet(dbUri, entityClass, conversationId).get())
     }
 
     @Override
@@ -58,17 +56,27 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
             throw new IllegalArgumentException('conversation is null')
         }
 
+        // load conversation from home shard
+        int tokenDc = UUIDUtils.getDCFromUUID(conversation.id)
+        if (!DataCenters.instance().isLocalDataCenter(tokenDc)) {
+            logger.info("Routing to remote shard {} for cid {}", tokenDc, conversation.id)
+        }
+        def dbUri = getDbUriByDc(tokenDc)
+        def effective = getEffective()
+
         if (conversation.flowStack == null || conversation.flowStack.empty) {
-            cloudantDeleteSync(conversation.id)
+            effective.cloudantGet(dbUri, entityClass, conversation.id).then { ConversationEntity entity ->
+                return effective.cloudantDelete(dbUri, entityClass, entity)
+            }.get()
         } else {
-            ConversationEntity existing = cloudantGetSync(conversation.id)
+            ConversationEntity existing = (ConversationEntity)effective.cloudantGet(dbUri, entityClass, conversation.id).get()
 
             if (existing == null) {
-                cloudantPostSync(unwrap(conversation))
+                effective.cloudantPost(dbUri, entityClass, unwrap(conversation)).get()
             } else {
                 ConversationEntity entity = unwrap(conversation)
                 entity.rev = existing.rev
-                cloudantPutSync(entity, existing)
+                effective.cloudantPut(dbUri, entityClass, entity).get()
             }
         }
     }
