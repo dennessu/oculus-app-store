@@ -130,7 +130,9 @@ class BootstrapPlugin implements Plugin<Project> {
                     afterTest { desc, result ->
                         println "[${result.resultType}] ${desc.name} [${desc.className}]"
                     }
-                    jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=n'
+                    if (System.properties.getProperty("test.debug") == null) {
+                        jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=n'
+                    }
                 }
 
                 subProject.apply plugin: 'checkstyle'

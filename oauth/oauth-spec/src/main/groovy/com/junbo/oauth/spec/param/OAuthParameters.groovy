@@ -44,6 +44,7 @@ class OAuthParameters {
     public static final String SESSION_STATE = 'session_state'
     public static final String LOCALE = 'locale'
     public static final String EXTRA_PREFIX = 'extra_'
+    public static final String HANDLE_ERROR = 'extra_handle_error'
     public static final String EMAIL_VERIFY_CODE = 'evc'
     public static final String RESET_PASSWORD_CODE = 'rpc'
     public static final String IP_RESTRICTION = "ip_restriction"

@@ -465,6 +465,8 @@ public class CartCheckout extends BaseTestClass {
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
+        Thread.sleep(1000);
+
         validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.FREE, false);
     }
 

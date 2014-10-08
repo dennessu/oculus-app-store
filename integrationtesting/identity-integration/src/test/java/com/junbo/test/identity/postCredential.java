@@ -105,6 +105,14 @@ public class postCredential {
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
         response.close();
+
+        password = RandomHelper.randomAlphabetic(9) + " " + RandomHelper.randomNumeric(5) + "+" + RandomHelper.randomAlphabetic(4);
+        uc = IdentityModel.DefaultUserCredential(user.getId(), password);
+        response = HttpclientHelper.PureHttpResponse(
+                Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
+                JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
+        response.close();
     }
 
     @Test(groups = "dailies")

@@ -124,23 +124,11 @@
 #[slave] master failover to slave
     $DEPLOYMENT_PATH/switchover/failover.sh
 
-#[master] start primary PGBouncer proxy (connect to slave db)
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_slave.sh
-
-#[slave] start secondary PGBouncer proxy (connect to slave db)
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_slave.sh
-
 #[slave][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_slave2master.sh
 
 #[master] slave failback to master
     $DEPLOYMENT_PATH/switchover/failback.sh
-
-#[master] start primary PGBouncer proxy (connect to master db)
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
-
-#[slave] start secondary PGBouncer proxy (connect to master db)
-    $DEPLOYMENT_PATH/pgbouner/pgbouncer_master.sh
 
 #[master][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh

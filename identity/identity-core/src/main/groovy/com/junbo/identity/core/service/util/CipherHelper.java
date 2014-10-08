@@ -27,10 +27,8 @@ public class CipherHelper {
     // private final static String STAR = "*";
     private static final String ANY_STRING_PATTERN = ".*";
     private static final String PLUS = "+";
-    private static final String NOT_ALLOWED_PATTEN = "[ ]";
     private static final String UPPER_ALPHA_PATTEN = "[A-Z]";
     private static final String LOWER_ALPHA_PATTEN = "[a-z]";
-    // private final static String ALPHA_PATTEN = "[A-Za-z]";
     private static final String NUMBER_PATTEN = "[0-9]";
     private static final String SPECIAL_CHARACTER_PATTEN =  "[`~!@#$%^&*()+=|{}\\':;\\',//[//].<>/\" +\n?]";
     public static final String COLON = ":";
@@ -43,10 +41,6 @@ public class CipherHelper {
         if(!isValidLength(password)) {
             throw AppErrors.INSTANCE.
                     invalidPassword("Password length should be larger than " + MIN_LENGTH).exception();
-        }
-
-        if(isNotAllowedContain(password)) {
-            throw AppErrors.INSTANCE.invalidPassword("Password should not contain " + NOT_ALLOWED_PATTEN).exception();
         }
 
         if(isInBlackList(password)) {
@@ -100,12 +94,6 @@ public class CipherHelper {
             return true;
         }
         return false;
-    }
-
-    private static boolean isNotAllowedContain(String s) {
-        Pattern p = Pattern.compile(ANY_STRING_PATTERN + NOT_ALLOWED_PATTEN + PLUS + ANY_STRING_PATTERN);
-        Matcher matcher = p.matcher(s);
-        return matcher.matches();
     }
 
     private static boolean isSingleCharacterRepeated(String s) {
