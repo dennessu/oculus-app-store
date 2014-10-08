@@ -27,36 +27,52 @@ class RedirectToClientError implements Action {
 
     private String errorMessage
 
+    private String pageUrl
+
     @Required
     void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage
+    }
+
+    void setPageUrl(String pageUrl) {
+        this.pageUrl = pageUrl
     }
 
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
 
-        def oauthInfo = contextWrapper.oauthInfo
-        def uriBuilder = UriComponentsBuilder.fromHttpUrl(oauthInfo.redirectUri)
-
-        Map<String, String> parameters = new HashMap<>()
-
-        parameters.put(OAuthParameters.ERROR, errorMessage)
-
-        // Add the state parameter.
-        if (oauthInfo.state != null) {
-            parameters.put(OAuthParameters.STATE, oauthInfo.state)
+        String realUrl = new String(pageUrl)
+        if (contextWrapper.viewCountry != null) {
+            realUrl = realUrl.replaceFirst('/country', '/' + contextWrapper.viewCountry)
         }
+        if (contextWrapper.viewLocale != null) {
+            realUrl = realUrl.replaceFirst('/locale', '/' + contextWrapper.viewLocale)
+        }
+        def uriBuilder = UriComponentsBuilder.fromHttpUrl(realUrl)
 
-        if (OAuthInfoUtil.isImplicitFlow(oauthInfo)) {
-            List<GString> fragments = parameters.collect { String key, String value ->
-                return "$key=$value"
+        if ('true'.equalsIgnoreCase(contextWrapper.extraParameterMap.get(OAuthParameters.HANDLE_ERROR)) || StringUtils.isEmpty(this.pageUrl)) {
+            def oauthInfo = contextWrapper.oauthInfo
+            uriBuilder = UriComponentsBuilder.fromHttpUrl(oauthInfo.redirectUri)
+
+            Map<String, String> parameters = new HashMap<>()
+            parameters.put(OAuthParameters.ERROR, errorMessage)
+
+            // Add the state parameter.
+            if (oauthInfo.state != null) {
+                parameters.put(OAuthParameters.STATE, oauthInfo.state)
             }
 
-            uriBuilder.fragment(StringUtils.arrayToDelimitedString(fragments.toArray(), '&'))
-        } else {
-            parameters.each { String key, String value ->
-                uriBuilder.queryParam(key, value)
+            if (OAuthInfoUtil.isImplicitFlow(oauthInfo)) {
+                List<GString> fragments = parameters.collect { String key, String value ->
+                    return "$key=$value"
+                }
+
+                uriBuilder.fragment(StringUtils.arrayToDelimitedString(fragments.toArray(), '&'))
+            } else {
+                parameters.each { String key, String value ->
+                    uriBuilder.queryParam(key, value)
+                }
             }
         }
 
