@@ -6,16 +6,14 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.core.annotation.OrderEventAwareAfter
-import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.spec.model.enums.BillingAction
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.model.enums.BillingAction
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
@@ -42,10 +40,8 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthSettleAction)
 
     @Override
-    @OrderEventAwareBefore(action = 'AuthSettleAction')
-    @OrderEventAwareAfter(action = 'AuthSettleAction')
     @Transactional
-    Promise<ActionResult> execute(ActionContext actionContext) {
+    Promise<ActionResult> doExecute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         CoreUtils.readHeader(order, context?.orderServiceContext?.apiContext)

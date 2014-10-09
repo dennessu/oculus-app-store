@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.id.PIType
@@ -7,8 +6,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.core.annotation.OrderEventAwareAfter
-import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
@@ -25,7 +22,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
-
 /**
  * Complete Preorder action.
  */
@@ -48,10 +44,8 @@ class CompletePreorderAction extends BaseOrderEventAwareAction {
 
 
     @Override
-    @OrderEventAwareBefore(action = 'CompletePreorderAction')
-    @OrderEventAwareAfter(action = 'CompletePreorderAction')
     @Transactional
-    Promise<ActionResult> execute(ActionContext actionContext) {
+    Promise<ActionResult> doExecute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         CoreUtils.readHeader(order, context?.orderServiceContext?.apiContext)

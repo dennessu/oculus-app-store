@@ -7,8 +7,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.core.annotation.OrderEventAwareAfter
-import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
@@ -41,10 +39,8 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebPaymentChargeAction)
 
     @Override
-    @OrderEventAwareBefore(action = 'WebPaymentChargeAction')
-    @OrderEventAwareAfter(action = 'WebPaymentChargeAction')
     @Transactional
-    Promise<ActionResult> execute(ActionContext actionContext) {
+    Promise<ActionResult> doExecute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         CoreUtils.readHeader(order, context?.orderServiceContext?.apiContext)
