@@ -645,6 +645,7 @@
                 <value>userAgent</value>
                 <value>clientId</value>
                 <value>succeeded</value>
+                <value>isLockDownPeriodAttempt</value>
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>

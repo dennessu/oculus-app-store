@@ -583,6 +583,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (userLoginAttempt.value == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
         }
+
+        if (userLoginAttempt.isLockDownPeriodAttempt != null) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('isLockDownPeriodAttempt').exception()
+        }
     }
 
     Promise<UserCredentialVerifyAttempt> createInNewTran(Email emailToSend) {

@@ -409,6 +409,18 @@ public class Identity {
         }
     }
 
+    public static UserGroup UserGroupPost(UserId userId, GroupId groupId) throws Exception {
+        UserGroup userGroup = new UserGroup();
+        userGroup.setUserId(userId);
+        userGroup.setGroupId(groupId);
+        return IdentityPost(IdentityV1UserGroupMemberURI, JsonHelper.JsonSerializer(userGroup), UserGroup.class);
+    }
+
+    public static UserGroup UserGroupPut(UserGroup userGroup) throws Exception {
+        return IdentityPut(IdentityV1UserGroupMemberURI + "/" + userGroup.getId().getValue(),
+                JsonHelper.JsonSerializer(userGroup), UserGroup.class);
+    }
+
     public static Organization OrganizationPostDefault(Organization organization) throws Exception {
         Organization org = organization == null ? IdentityModel.DefaultOrganization() : organization;
         return (Organization) IdentityPost(IdentityV1OrganizationURI,
