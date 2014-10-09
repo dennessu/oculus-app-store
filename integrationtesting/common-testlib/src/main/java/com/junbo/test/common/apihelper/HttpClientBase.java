@@ -78,6 +78,7 @@ public abstract class HttpClientBase {
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
         headers.add(Header.CONTENT_TYPE, contentType);
+        headers.add(Header.OCULUS_INTERNAL, String.valueOf(true));
         String uid = Master.getInstance().getCurrentUid();
         if (isServiceScope) {
             headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getServiceAccessToken(componentType));
