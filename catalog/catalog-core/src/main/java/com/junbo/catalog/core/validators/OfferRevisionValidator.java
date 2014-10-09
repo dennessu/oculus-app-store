@@ -144,8 +144,15 @@ public class OfferRevisionValidator extends ValidationSupport {
             return;
         }
         for (String countryCode : countries.keySet()) {
-            if (!COUNTRY_CODES.containsAll(Arrays.asList(countryCode))) {
+            if (!COUNTRY_CODES.contains(countryCode)) {
                 errors.add(AppCommonErrors.INSTANCE.fieldInvalid(fieldName, countryCode + " is not a valid country code"));
+            }
+            if (countries.get(countryCode) == null) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid(fieldName, "regions " + countryCode + " should not be null"));
+                continue;
+            }
+            if (countries.get(countryCode).getIsPurchasable() == null) {
+                countries.get(countryCode).setIsPurchasable(Boolean.FALSE);
             }
             if (countries.get(countryCode).getIsPurchasable() != Boolean.TRUE || price == null
                     || !PriceType.CUSTOM.is(price.getPriceType()) || price.getPrices() == null) {
