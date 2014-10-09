@@ -11,7 +11,7 @@ dependencies {
     runtime junboProject(':catalog-rest')
     runtime junboProject(':oauth-api')
 
-    runtime junboProject(':configuration-data')
+    runtime junboProject(':config-data')
 
     testCompile (libraries.spring_test)
 }
