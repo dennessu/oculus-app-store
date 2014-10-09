@@ -97,8 +97,8 @@ class AuthenticateClient implements Action {
         }
 
         // Validate the client secret in the parameter with the client secret in the configuration.
-        if (passwordEncoder.matches(passwordEncoder.encode(appClient.clientSecret), passwordEncoder.encode(clientSecret))) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('client_secret', clientSecret).exception()
+        if (!passwordEncoder.matches(appClient.clientSecret, passwordEncoder.encode(clientSecret))) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('client_secret', "*****").exception()
         }
 
         if (Boolean.TRUE.equals(appClient.internal)) {

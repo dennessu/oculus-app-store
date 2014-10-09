@@ -9,6 +9,7 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
 
 /**
  * The AppErrorUtils class.
@@ -19,28 +20,27 @@ class AppErrorUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppErrorUtils)
 
-    public void throwOnFieldInvalidError(ErrorContext errorContext, Throwable ex) {
+    private static final String Invalid_Error_Code = '001'
+
+    public void throwOnFieldInvalidError(String component, ErrorContext errorContext, Throwable ex) {
+        Assert.notNull(component)
         if (!(ex instanceof AppErrorException)) {
             return;
         }
 
         AppError appError = ((AppErrorException) ex).error
-        String[] codes = appError.error().code.split('\\.')
+        if ("${component}.${Invalid_Error_Code}" == appError.error().code) {
+            LOGGER.error('name=Invalid_Field_Error', ex)
 
-        if (codes.length == 2) {
-            if (codes[1] == '001') {
-                LOGGER.error('name=Invalid_Field_Error', ex)
-
-                AppError resultAppError
-                if (errorContext.fieldName != null) {
-                    resultAppError = AppCommonErrors.INSTANCE.fieldInvalid(
-                            appError.error().details.collect { ErrorDetail errorDetail -> return new ErrorDetail(errorContext.fieldName, errorDetail.reason) }.toArray(new ErrorDetail[0])
-                    )
-                } else {
-                    resultAppError = AppCommonErrors.INSTANCE.fieldInvalid(appError.error().details.toArray(new ErrorDetail[0]))
-                }
-                throw resultAppError.exception()
+            AppError resultAppError
+            if (errorContext.fieldName != null) {
+                resultAppError = AppCommonErrors.INSTANCE.fieldInvalid(
+                        appError.error().details.collect { ErrorDetail errorDetail -> return new ErrorDetail(errorContext.fieldName, errorDetail.reason) }.toArray(new ErrorDetail[0])
+                )
+            } else {
+                resultAppError = AppCommonErrors.INSTANCE.fieldInvalid(appError.error().details.toArray(new ErrorDetail[0]))
             }
+            throw resultAppError.exception()
         } else {
             LOGGER.error('name=Invalid_Error_Code_Format, code={}', appError.error().code)
         }

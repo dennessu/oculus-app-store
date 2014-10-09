@@ -628,6 +628,56 @@ public class TestPutOfferRevision extends BaseTestClass {
     }
 
     @Property(
+            priority = Priority.Dailies,
+            features = "Put v1/offer-revisions/{offerRevisionId}",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Bug 646: Updating an offer-revision with an endTime less than or equal to startTime is successful",
+            steps = {
+                    "1. Prepare a default offer revision",
+                    "2. Update it to set the start time and end time",
+                    "3. EndTime <= StartTime: raise errors only when the status is pending-review or approved"
+            }
+    )
+    @Test
+    public void testOfferRevisionEndTimeLessThanStartTime() throws Exception {
+        prepareCatalogAdminToken();
+
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
+
+        item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        releaseItem(item1);
+        offer1 = offerService.postDefaultOffer(organizationId);
+
+        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+
+        Long current = System.currentTimeMillis();
+        Date startTime = new Date();
+        offerRevision1.setStartTime(startTime);
+        offerRevision1.setEndTime(new Date(current - 3600));
+
+        offerRevision1 = offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.REJECTED.name());
+        offerRevision1 = offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+        verifyExpectedFailure(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.APPROVED.name());
+        verifyExpectedFailure(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1.setEndTime(new Date());
+        offerRevision1 = offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
+        offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
+    }
+
+    @Property(
             priority = Priority.BVT,
             features = "Put v1/offer-revisions/{offerRevisionId}",
             component = Component.Catalog,

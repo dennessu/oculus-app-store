@@ -2,12 +2,14 @@ package com.junbo.store.rest.resource
 
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.Components
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.*
 import com.junbo.store.clientproxy.ResourceContainer
@@ -88,7 +90,7 @@ class LoginResourceImpl implements LoginResource {
                 response = new UserNameCheckResponse(isAvailable : false)
                 return Promise.pure()
             }
-            appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
+            appErrorUtils.throwOnFieldInvalidError(Components.instance().getComponent(UserResource), errorContext, ex)
             appErrorUtils.throwUnknownError('checkUserName', ex)
         }.then {
             if (response == null) {
@@ -148,7 +150,7 @@ class LoginResourceImpl implements LoginResource {
             }
 
             promise.then {
-                appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
+                appErrorUtils.throwOnFieldInvalidError(Components.instance().getComponent(UserResource), errorContext, ex)
                 if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
                         ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
                         ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction)) {

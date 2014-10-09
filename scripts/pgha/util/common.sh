@@ -42,6 +42,7 @@ export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'
 export PROMOTE_TRIGGER_FILE=$PGHA_BASE/bring_me_up
 export PGUSER='silkcloud'
+export READONLY_PGUSER='scro'
 export DB_PORT=5432
 export MAX_CONNECTIONS=500
 

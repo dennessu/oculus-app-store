@@ -54,6 +54,10 @@ public class HttpclientHelper {
 //        SimpleJsonPost("http://localhost:8081/rest/users", objJson);
     }
 
+    public static CloseableHttpResponse Execute(HttpRequestBase method) throws Exception {
+        return httpclient.execute(method);
+    }
+
     public static CloseableHttpResponse SimpleGet(String requestURI) throws Exception {
         return SimpleGet(requestURI, null, true);
     }

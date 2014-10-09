@@ -1,20 +1,17 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.core.annotation.OrderEventAwareAfter
-import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.FulfillmentEventHistoryBuilder
-import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.error.ErrorUtils
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.enums.EventStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
@@ -22,7 +19,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
-
 /**
  * Created by fzhang on 14-2-25.
  */
@@ -46,10 +42,8 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
     ]
 
     @Override
-    @OrderEventAwareBefore(action = 'FulfillmentAction')
-    @OrderEventAwareAfter(action = 'FulfillmentAction')
     @Transactional
-    Promise<ActionResult> execute(ActionContext actionContext) {
+    Promise<ActionResult> doExecute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def serviceContext = context.orderServiceContext
         def order = serviceContext.order

@@ -6,6 +6,7 @@
     linux accounts:
         [devops] used to install software, in sudo list
         [silkcloud] used to deployment PGHA, not included in sudo list
+        [scro] used for database livesite, created on replica database only
 
     postgresql user:
         [silkcloud] auto created by PGHA script

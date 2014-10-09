@@ -6,8 +6,6 @@
 
 package com.junbo.billing.core.service
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.junbo.billing.clientproxy.CatalogFacade
 import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
 import com.junbo.billing.clientproxy.TaxFacade
@@ -21,13 +19,9 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PIType
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
-import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserLoginName
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserVAT
-import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
@@ -45,8 +39,6 @@ class TaxServiceImpl implements TaxService {
 
     IdentityFacade identityFacade
 
-    CatalogFacade catalogFacade
-
     @Autowired
     void setIdentityFacade(@Qualifier('billingIdentityFacade')IdentityFacade identityFacade) {
         this.identityFacade = identityFacade
@@ -55,11 +47,6 @@ class TaxServiceImpl implements TaxService {
     @Autowired
     void setPaymentFacade(@Qualifier('billingPaymentFacade')PaymentFacade paymentFacade) {
         this.paymentFacade = paymentFacade
-    }
-
-    @Autowired
-    void setCatalogFacade(@Qualifier('billingCatalogFacade')CatalogFacade catalogFacade) {
-        this.catalogFacade = catalogFacade
     }
 
     TaxFacade taxFacade
