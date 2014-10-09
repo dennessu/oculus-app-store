@@ -51,10 +51,20 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     }
 
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
-        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
+        FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
+        headers.add(Header.OCULUS_INTERNAL, String.valueOf(true));
+        String uid = Master.getInstance().getCurrentUid();
         if (needOverrideRequestEntity) {
             headers.add(Header.CONTENT_TYPE, contentType);
         }
+        if (needAuthHeader) {
+            if (isServiceScope) {
+                headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getServiceAccessToken(componentType));
+            } else if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
+                headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getUserAccessToken(uid));
+            }
+        }
+
         //for further header, we can set dynamic value from properties here
         return headers;
     }
