@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -59,7 +60,7 @@ public interface UserPersonalInfoResource {
     @DELETE
     @Path("/{userPiiId}")
     @RouteBy("userPiiId")
-    Promise<Void> delete(@PathParam("userPiiId") UserPersonalInfoId userPiiId);
+    Promise<Response> delete(@PathParam("userPiiId") UserPersonalInfoId userPiiId);
 
     @ApiOperation("Search user person information.")
     @GET

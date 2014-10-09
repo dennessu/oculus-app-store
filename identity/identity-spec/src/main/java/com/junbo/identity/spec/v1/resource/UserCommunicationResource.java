@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -60,7 +61,7 @@ public interface UserCommunicationResource {
     @RouteByAccessToken(switchable = true)
     @DELETE
     @Path("/{userOptinId}")
-    Promise<Void> delete(@PathParam("userOptinId") UserCommunicationId userOptinId);
+    Promise<Response> delete(@PathParam("userOptinId") UserCommunicationId userOptinId);
 
     @ApiOperation("Search user optins")
     @RouteBy("listOptions.getUserId()")

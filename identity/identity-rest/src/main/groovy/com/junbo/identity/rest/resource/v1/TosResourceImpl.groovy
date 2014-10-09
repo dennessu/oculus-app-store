@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 4/9/14.
  */
@@ -151,9 +153,11 @@ class TosResourceImpl implements TosResource {
     }
 
     @Override
-    Promise<Void> delete(TosId tosId) {
+    Promise<Response> delete(TosId tosId) {
         return tosValidator.validateForGet(tosId).then {
-            return tosRepository.delete(tosId)
+            return tosRepository.delete(tosId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 

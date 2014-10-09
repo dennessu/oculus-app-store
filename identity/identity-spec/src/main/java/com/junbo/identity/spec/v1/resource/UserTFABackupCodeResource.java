@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/22/14.
@@ -63,7 +64,7 @@ public interface UserTFABackupCodeResource {
     @RouteBy(value = "userId", switchable = true)
     @DELETE
     @Path("/{userTFAId}")
-    Promise<Void> delete(@PathParam("userId") UserId userId,
+    Promise<Response> delete(@PathParam("userId") UserId userId,
                          @PathParam("userTFAId") UserTFABackupCodeId userTFABackupCodeId);
 
     @ApiOperation("Search user TFA backup resource")

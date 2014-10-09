@@ -31,6 +31,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
+
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 4/24/14.
  */
@@ -227,7 +230,7 @@ class UserTFAResourceImpl implements UserTFAResource {
     }
 
     @Override
-    Promise<Void> delete(UserId userId, UserTFAId userTFAId) {
+    Promise<Response> delete(UserId userId, UserTFAId userTFAId) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -243,7 +246,9 @@ class UserTFAResourceImpl implements UserTFAResource {
             }
 
             return userTFAValidator.validateForGet(userId, userTFAId).then {
-                return userTFAPhoneRepository.delete(userTFAId)
+                return userTFAPhoneRepository.delete(userTFAId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }

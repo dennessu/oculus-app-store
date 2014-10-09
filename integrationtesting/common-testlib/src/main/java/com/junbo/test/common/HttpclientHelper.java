@@ -240,7 +240,7 @@ public class HttpclientHelper {
         try {
             Assert.assertEquals(
                     true,
-                    (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 412),
+                    (response.getStatusLine().getStatusCode() == 204 || response.getStatusLine().getStatusCode() == 412),
                     "validate HttpDelete response is 200 or 412 (when item not found)");
         } finally {
             response.close();

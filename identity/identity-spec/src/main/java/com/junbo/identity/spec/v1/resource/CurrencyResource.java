@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by xiali_000 on 4/21/2014.
@@ -58,5 +59,5 @@ public interface CurrencyResource {
     @ApiOperation("Delete a currency")
     @DELETE
     @Path("/{currencyId}")
-    Promise<Void> delete(@PathParam("currencyId") CurrencyId currencyId);
+    Promise<Response> delete(@PathParam("currencyId") CurrencyId currencyId);
 }

@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by xiali_000 on 4/21/2014.
@@ -58,5 +59,5 @@ public interface DeviceTypeResource {
     @ApiOperation("Delete a device type")
     @DELETE
     @Path("/{deviceTypeId}")
-    Promise<Void> delete(@PathParam("deviceTypeId") DeviceTypeId deviceTypeId);
+    Promise<Response> delete(@PathParam("deviceTypeId") DeviceTypeId deviceTypeId);
 }

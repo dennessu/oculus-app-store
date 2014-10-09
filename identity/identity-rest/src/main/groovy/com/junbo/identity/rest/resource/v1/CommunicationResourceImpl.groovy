@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.Response
 import java.lang.reflect.Field
 
 /**
@@ -160,7 +161,9 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
 
         return communicationValidator.validateForGet(communicationId).then { Communication communication ->
-            return communicationRepository.delete(communicationId)
+            return communicationRepository.delete(communicationId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 

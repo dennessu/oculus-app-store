@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.Response
 import java.lang.reflect.Field
 
 /**
@@ -159,7 +160,7 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
     }
 
     @Override
-    Promise<Void> delete(ErrorIdentifier errorIdentifier) {
+    Promise<Response> delete(ErrorIdentifier errorIdentifier) {
         throw new IllegalStateException('Unsupported operation')
     }
 

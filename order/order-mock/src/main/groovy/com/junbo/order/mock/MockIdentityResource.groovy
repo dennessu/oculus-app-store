@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component
 
 import javax.ws.rs.BeanParam
 import javax.ws.rs.PathParam
+import javax.ws.rs.core.Response
+
 /**
  * Created by LinYi on 14-2-25.
  */
@@ -55,7 +57,7 @@ class MockIdentityResource implements UserResource {
     }
 
     @Override
-    Promise<Void> delete(@PathParam("userId") UserId userId) {
+    Promise<Response> delete(@PathParam("userId") UserId userId) {
         return null
     }
 

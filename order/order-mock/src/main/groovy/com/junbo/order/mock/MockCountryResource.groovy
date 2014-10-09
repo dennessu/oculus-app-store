@@ -10,6 +10,8 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
+import javax.ws.rs.core.Response
+
 /**
  * Mock implementation of country resource.
  */
@@ -45,7 +47,7 @@ class MockCountryResource extends BaseMock implements CountryResource {
     }
 
     @Override
-    Promise<Void> delete(CountryId countryId) {
+    Promise<Response> delete(CountryId countryId) {
         return null
     }
 }

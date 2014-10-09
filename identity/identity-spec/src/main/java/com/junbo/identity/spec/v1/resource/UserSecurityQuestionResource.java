@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -64,7 +65,7 @@ public interface UserSecurityQuestionResource {
     @RouteBy(value = "userId", switchable = true)
     @DELETE
     @Path("/{userSecurityQuestionId}")
-    Promise<Void> delete(@PathParam("userId") UserId userId,
+    Promise<Response> delete(@PathParam("userId") UserId userId,
             @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId);
 
     @ApiOperation("Search user security questions")

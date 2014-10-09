@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.Response
 import java.lang.reflect.Field
 import java.util.concurrent.ConcurrentHashMap
 
@@ -159,12 +160,14 @@ class CurrencyResourceImpl implements CurrencyResource {
     }
 
     @Override
-    Promise<Void> delete(CurrencyId currencyId) {
+    Promise<Response> delete(CurrencyId currencyId) {
         if (currencyId == null) {
             throw new IllegalArgumentException('currencyId is null')
         }
         return currencyValidator.validateForGet(currencyId).then {
-            return currencyRepository.delete(currencyId)
+            return currencyRepository.delete(currencyId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 

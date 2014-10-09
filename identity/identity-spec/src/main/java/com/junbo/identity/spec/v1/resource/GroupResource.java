@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -59,5 +60,5 @@ public interface GroupResource {
     @ApiOperation("Delete a group")
     @DELETE
     @Path("/{groupId}")
-    Promise<Void> delete(@PathParam("groupId") GroupId groupId);
+    Promise<Response> delete(@PathParam("groupId") GroupId groupId);
 }
