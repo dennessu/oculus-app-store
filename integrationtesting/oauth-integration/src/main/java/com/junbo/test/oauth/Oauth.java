@@ -141,7 +141,7 @@ public class Oauth {
         HttpDelete httpDelete = new HttpDelete(requestURI);
         if (addInternalHeader) httpDelete.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
         httpDelete.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
-        HttpclientHelper.SimpleHttpDelete(httpDelete);
+        HttpclientHelper.Execute(httpDelete);
     }
 
 
@@ -197,7 +197,9 @@ public class Oauth {
     }
 
     public static TokenInfo GetTokenInfo(String accessToken, String uri) throws Exception {
-        return HttpclientHelper.SimpleGet(uri + "?access_token=" + accessToken, TokenInfo.class);
+        return JsonHelper.JsonDeserializer(
+                new InputStreamReader(OauthGet(uri + "?access_token=" + accessToken, null).getEntity().getContent()),
+                TokenInfo.class);
     }
 
 

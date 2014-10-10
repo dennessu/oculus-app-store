@@ -5,7 +5,6 @@
  */
 package com.junbo.test.oauth;
 
-import com.junbo.common.error.*;
 import com.junbo.common.error.Error;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserLoginName;
@@ -290,10 +289,8 @@ public class authorizeUser {
         ValidateErrorFreeResponse(currentViewState);
         String loginResponseLink = Oauth.UserLogin(cid, "silkcloudtest+allEnvLoginUser@gmail.com", Oauth.DefaultUserPwd);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
-        CloseableHttpResponse response = Oauth.OauthGet(secondaryDcEndpoint
-                + "/oauth2/tokeninfo?access_token=" + accessToken, null);
-        TokenInfo tokenInfo = JsonHelper.JsonDeserializer(
-                new InputStreamReader(response.getEntity().getContent()), TokenInfo.class);
+        TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken, secondaryDcEndpoint
+                + "/oauth2/tokeninfo?access_token=" + accessToken);
         Validator.Validate("validate getting token from another dc", true, tokenInfo != null);
     }
 
