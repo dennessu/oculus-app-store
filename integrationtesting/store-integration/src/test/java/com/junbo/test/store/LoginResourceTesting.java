@@ -195,6 +195,7 @@ public class LoginResourceTesting extends BaseTestClass {
         for (String link : links) {
             ConfirmEmailResponse response = testDataProvider.confirmEmail(link);
             assert response.getIsSuccess();
+            assert createUserRequest.getEmail().equalsIgnoreCase(response.getEmail());
         }
         userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse != null;
@@ -612,6 +613,7 @@ public class LoginResourceTesting extends BaseTestClass {
         String link = links.get(0);
         ConfirmEmailResponse confirmEmailResponse = testDataProvider.confirmEmail(link);
         assert confirmEmailResponse.getIsSuccess();
+        assert newEmail.equalsIgnoreCase(confirmEmailResponse.getEmail());
 
         UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
@@ -691,6 +693,7 @@ public class LoginResourceTesting extends BaseTestClass {
         // Scenario 3:
         ConfirmEmailResponse confirmEmailResponse = testDataProvider.confirmEmail(links.get(0));
         assert confirmEmailResponse.getIsSuccess();
+        assert newEmail.equalsIgnoreCase(confirmEmailResponse.getEmail());
         userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse != null;
         assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
@@ -709,6 +712,7 @@ public class LoginResourceTesting extends BaseTestClass {
         assert links.size() == 1;
         confirmEmailResponse = testDataProvider.confirmEmail(links.get(0));
         assert confirmEmailResponse.getIsSuccess();
+        assert createUserRequest.getEmail().equalsIgnoreCase(confirmEmailResponse.getEmail());
 
         userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
 
@@ -725,6 +729,7 @@ public class LoginResourceTesting extends BaseTestClass {
         assert links != null;
         assert links.size() == 1;
         confirmEmailResponse = testDataProvider.confirmEmail(links.get(0));
+        assert newEmail.equalsIgnoreCase(confirmEmailResponse.getEmail());
         assert confirmEmailResponse.getIsSuccess();
 
         userProfileGetResponse = testDataProvider.getUserProfile();
@@ -778,6 +783,7 @@ public class LoginResourceTesting extends BaseTestClass {
         assert links.size() == 1;
         confirmEmailResponse = testDataProvider.confirmEmail(links.get(0));
         assert confirmEmailResponse.getIsSuccess();
+        assert newEmail.equalsIgnoreCase(confirmEmailResponse.getEmail());
 
         userProfileGetResponse = testDataProvider.getUserProfile();
         assert userProfileGetResponse != null;
@@ -968,13 +974,16 @@ public class LoginResourceTesting extends BaseTestClass {
         String link = links.get(0);
         ConfirmEmailResponse confirmEmailResponse = testDataProvider.confirmEmail(link);
         assert confirmEmailResponse.getIsSuccess();
+        assert createUserRequest.getEmail().equalsIgnoreCase(confirmEmailResponse.getEmail());
 
         confirmEmailResponse = testDataProvider.confirmEmail(link);
         assert !confirmEmailResponse.getIsSuccess();
+        assert confirmEmailResponse.getEmail() == null;
 
         link = links.get(1);
         confirmEmailResponse = testDataProvider.confirmEmail(link);
         assert !confirmEmailResponse.getIsSuccess();
+        assert confirmEmailResponse.getEmail() == null;
 
         response = testDataProvider.verifyEmail(new VerifyEmailRequest());
         assert response != null;

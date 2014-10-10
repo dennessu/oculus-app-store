@@ -251,7 +251,8 @@ class LoginResourceImpl implements LoginResource {
                 ViewModel viewModel = (ViewModel)response.entity
                 if (viewModel.model?.verifyResult == Boolean.TRUE) {
                     return Promise.pure(new ConfirmEmailResponse(
-                            isSuccess: true
+                            isSuccess: true,
+                            email: viewModel.model?.email as String
                     ))
                 }
 
