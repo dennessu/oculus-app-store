@@ -137,7 +137,7 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
         assert libraryResponse.getItems().size() == 1;
-        for (Item item: libraryResponse.getItems()) {
+        for (Item item : libraryResponse.getItems()) {
             verifyItem(item, GetItemMethod.Library, null);
             storeBrowseValidationHelper.verifyDefaultAggregateRatings(item.getAggregatedRatings());
         }
@@ -284,7 +284,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     public void testGetDetailsNotExist() throws Exception {
         gotoToc();
         // get the item details
-         testDataProvider.getItemDetails("noexists", 404);
+        testDataProvider.getItemDetails("noexists", 404);
         assert Master.getInstance().getApiErrorMsg().contains("130.004");
     }
 
@@ -467,7 +467,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         // prepare review & aggregate ratings
         int numOfReviews = 50;
         List<CaseyReview> caseyReviews = new ArrayList<>();
-        for (int i = 0; i < numOfReviews;++i) {
+        for (int i = 0; i < numOfReviews; ++i) {
             caseyReviews.add(DataGenerator.instance().generateCaseyReview(IdFormatter.encodeId(userProfile.getUserId()), item.getSelf()));
         }
         List<CaseyAggregateRating> caseyAggregateRating = Arrays.asList(DataGenerator.instance().generateCaseyAggregateRating("quality"), DataGenerator.instance().generateCaseyAggregateRating("comfort"));
@@ -482,7 +482,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         item = testDataProvider.getItemDetails(item.getSelf().getValue()).getItem();
         List<Review> reviews = fetchReviewsFromItemDetails(item, 3);
         Assert.assertEquals(reviews.size(), numOfReviews, "Number of reviews not correct.");
-        for (int i = 0;i < reviews.size(); ++i) {
+        for (int i = 0; i < reviews.size(); ++i) {
             storeBrowseValidationHelper.verifyReview(reviews.get(i), caseyReviews.get(i), userProfile.getNickName());
         }
         // verify the user review
@@ -555,7 +555,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertEquals(reviews.size(), 1, "Number of reviews not correct.");
         storeBrowseValidationHelper.verifyReview(reviews.get(0), caseyReviews.get(0), null);
 
-        testDataProvider.postCaseyEmulatorData((List<CaseyReview> )null, null, null);
+        testDataProvider.postCaseyEmulatorData((List<CaseyReview>) null, null, null);
         testDataProvider.clearCache();
 
     }
@@ -833,6 +833,9 @@ public class StoreBrowseTesting extends BaseTestClass {
     private Item getItemsInSection(String category, String criteria, String name) throws Exception {
         List<Item> items = getItemsInSection(category, criteria, 10);
         for (Item item:items) {
+    private Item getItemsInSection(String category, String criteria, Integer pageSize, String name) throws Exception {
+        List<Item> items = getItemsInSection(category, criteria, pageSize);
+        for (Item item : items) {
             if (item.getTitle().equals(name)) {
                 return item;
             }
@@ -845,7 +848,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertNotNull(item.getReviews(), "reviews in item details should not be null");
         ReviewsResponse reviewsResponse = item.getReviews();
         result.addAll(reviewsResponse.getReviews());
-        while (reviewsResponse.getNext() != null &&  !CollectionUtils.isEmpty(reviewsResponse.getReviews())) {
+        while (reviewsResponse.getNext() != null && !CollectionUtils.isEmpty(reviewsResponse.getReviews())) {
             ReviewsResponse.NextOption next = reviewsResponse.getNext();
             reviewsResponse = testDataProvider.getReviews(item.getSelf(), next.getCursor(), pageSize);
             result.addAll(reviewsResponse.getReviews());
@@ -896,7 +899,7 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private List<OfferId> getOfferIds(List<String> offerNames) throws Exception {
         List<OfferId> offerIds = new ArrayList<>();
-        for(String name : offerNames) {
+        for (String name : offerNames) {
             String offerId = testDataProvider.getOfferIdByName(name);
             offerIds.add(new OfferId(offerId));
         }

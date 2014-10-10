@@ -75,7 +75,7 @@ public class StoreBrowseValidationHelper {
     public void verifySectionLayoutBreadcrumbs(SectionLayoutResponse layout, SectionLayoutResponse parentLayout, SectionInfo parentSection) throws Exception {
         if (parentLayout != null) {
             Assert.assertEquals(layout.getBreadcrumbs().size(), parentLayout.getBreadcrumbs().size() + 1, "Breadcrumbs length not corret");
-            for (int i = 0;i < parentLayout.getBreadcrumbs().size(); ++i) {
+            for (int i = 0; i < parentLayout.getBreadcrumbs().size(); ++i) {
                 Validator.Validate("node in breadcrumbs not equal", layout.getBreadcrumbs().get(i), parentLayout.getBreadcrumbs().get(i));
             }
         }
@@ -118,13 +118,13 @@ public class StoreBrowseValidationHelper {
     public void verifyAggregateRatingsBasic(Map<String, AggregatedRatings> aggregatedRatings) {
         Assert.assertNotNull(aggregatedRatings);
         Assert.assertEquals(aggregatedRatings.keySet(), new HashSet<>(Arrays.asList("comfort", "quality")));
-        for (AggregatedRatings ratings:aggregatedRatings.values()) {
+        for (AggregatedRatings ratings : aggregatedRatings.values()) {
             Assert.assertNotNull(ratings);
             Assert.assertNull(ratings.getCommentsCount());
             Assert.assertTrue(ratings.getAverageRating() >= 0.0);
             Assert.assertTrue(ratings.getRatingsCount() >= 0);
             Assert.assertEquals(ratings.getRatingsHistogram().size(), 5);
-            for (Long val: ratings.getRatingsHistogram().values()) {
+            for (Long val : ratings.getRatingsHistogram().values()) {
                 Assert.assertTrue(val >= 0L);
             }
         }
@@ -198,15 +198,15 @@ public class StoreBrowseValidationHelper {
         verifyAggregateRatingsBasic(item.getAggregatedRatings());
     }
 
-    public void validateCmsSection(SectionInfoNode sectionInfoNode, String expectedName, String expectedCriteria) {
-        Assert.assertEquals(sectionInfoNode.getCriteria(), expectedCriteria);
-        Assert.assertEquals(sectionInfoNode.getName(), expectedName);
+    public void validateCmsSection(SectionInfoNode sectionInfoNode, String name, String cmsPageName, String slot) {
+        Assert.assertEquals(sectionInfoNode.getCriteria(), cmsPageName + "-" + slot);
+        Assert.assertEquals(sectionInfoNode.getName(), name);
         Assert.assertNull(sectionInfoNode.getCategory());
     }
 
-    public void validateCmsSection(SectionInfo sectionInfo, String expectedName, String expectedCriteria) {
-        Assert.assertEquals(sectionInfo.getCriteria(), expectedCriteria);
-        Assert.assertEquals(sectionInfo.getName(), expectedName);
+    public void validateCmsSection(SectionInfo sectionInfo, String name, String cmsPageName, String slot) {
+        Assert.assertEquals(sectionInfo.getCriteria(), cmsPageName + "-" + slot);
+        Assert.assertEquals(sectionInfo.getName(), name);
         Assert.assertNull(sectionInfo.getCategory());
     }
 

@@ -303,6 +303,10 @@ public class Identity {
         IdentityDelete(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()));
     }
 
+    public static void UsernameMailBlockerPost(UsernameMailBlocker usernameMailBlocker) throws Exception {
+        IdentityPost(IdentityV1UsernameMailBlockerURI, JsonHelper.JsonSerializer(usernameMailBlocker), null);
+    }
+
     public static List<User> UserSearchByUsername(String username) throws Exception {
         List<User> userList = new ArrayList<User>();
         for (Object obj : IdentityGet(
@@ -593,7 +597,7 @@ public class Identity {
         for (Object obj : IdentityGet(
                 IdentityV1UserCredentialAttemptsURI + "?userId=" + GetHexLongId(userId.getValue()) + "&credentialType=" + credentialType, (Results.class)).getItems()) {
             attempts.add((UserCredentialVerifyAttempt) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
-                    UserCredentialVerifyAttempt.class)
+                            UserCredentialVerifyAttempt.class)
             );
         }
         return attempts;

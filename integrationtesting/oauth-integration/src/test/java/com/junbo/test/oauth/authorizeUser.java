@@ -11,6 +11,7 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.identity.spec.v1.model.UserVAT;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.LogHelper;
@@ -445,9 +446,9 @@ public class authorizeUser {
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
         Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
-        Oauth.PostAccessToken("smoketest","smoketest");
+        Oauth.PostAccessToken("smoketest", "smoketest");
         List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, false);
-        String resetPasswordCid= Oauth.GetResetPasswordCid(resetPwdLinks.get(1));
+        String resetPasswordCid = Oauth.GetResetPasswordCid(resetPwdLinks.get(1));
         String newPassword = "ASDFqwer1234";
         // set identity authorization header
         Oauth.GetResetPasswordView(resetPasswordCid);
@@ -513,6 +514,39 @@ public class authorizeUser {
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
         List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, true);
+    }
+
+    @Test(groups = "dailies")
+    public void RegisterUsernameSameAsLegacyUser() throws Exception {
+        String userName = RandomHelper.randomName();
+        String email = RandomHelper.randomEmail();
+
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setUsername(userName);
+        usernameMailBlocker.setEmail(email);
+        Identity.GetHttpAuthorizationHeaderForMigration();
+        Identity.UsernameMailBlockerPost(usernameMailBlocker);
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
     }
 
     private static void ValidateErrorFreeResponse(String responseString) throws Exception {

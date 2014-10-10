@@ -8,7 +8,6 @@ package com.junbo.test.common.apihelper.oauth.impl;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.json.ObjectMapperProvider;
-import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
