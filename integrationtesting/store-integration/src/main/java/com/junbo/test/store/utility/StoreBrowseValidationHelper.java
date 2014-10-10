@@ -198,15 +198,15 @@ public class StoreBrowseValidationHelper {
         verifyAggregateRatingsBasic(item.getAggregatedRatings());
     }
 
-    public void validateCmsSection(SectionInfoNode sectionInfoNode, String name, String cmsPageName, String slot) {
-        Assert.assertEquals(sectionInfoNode.getCriteria(), cmsPageName + "-" + slot);
-        Assert.assertEquals(sectionInfoNode.getName(), name);
+    public void validateCmsSection(SectionInfoNode sectionInfoNode, String expectedName, String expectedCriteria) {
+        Assert.assertEquals(sectionInfoNode.getCriteria(), expectedCriteria);
+        Assert.assertEquals(sectionInfoNode.getName(), expectedName);
         Assert.assertNull(sectionInfoNode.getCategory());
     }
 
-    public void validateCmsSection(SectionInfo sectionInfo, String name, String cmsPageName, String slot) {
-        Assert.assertEquals(sectionInfo.getCriteria(), cmsPageName + "-" + slot);
-        Assert.assertEquals(sectionInfo.getName(), name);
+    public void validateCmsSection(SectionInfo sectionInfo, String expectedName, String expectedCriteria) {
+        Assert.assertEquals(sectionInfo.getCriteria(), expectedCriteria);
+        Assert.assertEquals(sectionInfo.getName(), expectedName);
         Assert.assertNull(sectionInfo.getCategory());
     }
 

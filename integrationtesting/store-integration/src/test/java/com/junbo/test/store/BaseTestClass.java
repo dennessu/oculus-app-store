@@ -44,7 +44,10 @@ public abstract class BaseTestClass {
     protected String item_digital_oculus_free2;
     protected String cmsPageName;
 
-    protected String featureRootCriteria = "featureRoot";
+    protected String cmsSlot1 = "slot1";
+    protected String cmsSlot2 = "slot2";
+    protected String cmsSlotName1 = "Featured All";
+    protected String cmsSlotName2 = "Featured SS";
     protected List<String> cmsSlot1Items;
     protected List<String> cmsSlot2Items;
 

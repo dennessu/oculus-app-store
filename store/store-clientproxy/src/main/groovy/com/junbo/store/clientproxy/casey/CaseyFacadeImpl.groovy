@@ -266,7 +266,7 @@ class CaseyFacadeImpl implements CaseyFacade {
                 offerSearchParams.cmsSlot = sectionInfoNode.cmsSlot?.toLowerCase()
                 break
             case SectionInfoNode.SectionType.CategorySection:
-                offerSearchParams.category = sectionInfoNode.categoryId
+                offerSearchParams.category = sectionInfoNode.category
         }
         offerSearchParams.locale = apiContext.locale.getId().value
         offerSearchParams.country = apiContext.country.getId().value

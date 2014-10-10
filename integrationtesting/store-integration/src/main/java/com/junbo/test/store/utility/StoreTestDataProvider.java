@@ -28,6 +28,7 @@ import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.casey.CaseyResults;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 import com.junbo.store.spec.model.external.casey.cms.CmsSchedule;
@@ -790,4 +791,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.addReview(request, expectedCode);
     }
 
+    public CaseyResults<CmsPage> getCmsPage(String path, String label, int expectedCode) throws Exception {
+        return caseyEmulatorClient.getCmsPages(path, label, expectedCode);
+    }
 }

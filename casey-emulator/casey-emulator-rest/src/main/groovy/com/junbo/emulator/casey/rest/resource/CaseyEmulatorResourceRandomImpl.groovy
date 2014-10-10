@@ -144,6 +144,11 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
     }
 
     @Override
+    Promise<CaseyEmulatorData> resetEmulatorData() {
+        throw new RuntimeException('not implemented')
+    }
+
+    @Override
     Promise<CmsSchedule> getCmsSchedules(String pageId, CmsScheduleGetParams cmsScheduleGetParams) {
         throw new RuntimeException('not implemented')
     }
