@@ -171,28 +171,31 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return CreateUser(createUserRequest, needVerifyEmail, 200);
     }
 
-    public UserNameCheckResponse CheckUserName(String userName) throws Exception {
+    public UserNameCheckResponse CheckUserName(String userName, String email) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setUsername(userName);
+        request.setEmail(email);
         return loginClient.CheckUserName(request);
     }
 
-    public com.junbo.common.error.Error CheckUserNameWithError(String userName, int expectedResponseCode, String errorCode) throws Exception {
+    public com.junbo.common.error.Error CheckUserNameWithError(String userName, String email,
+                                                               int expectedResponseCode, String errorCode) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setUsername(userName);
+        request.setEmail(email);
         return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
     }
 
-    public UserNameCheckResponse CheckEmail(String email) throws Exception {
-        UserNameCheckRequest request = new UserNameCheckRequest();
+    public EmailCheckResponse CheckEmail(String email) throws Exception {
+        EmailCheckRequest request = new EmailCheckRequest();
         request.setEmail(email);
-        return loginClient.CheckUserName(request);
+        return loginClient.CheckEmail(request);
     }
 
     public Error CheckEmailWithError(String email, int expectedResponseCode, String errorCode) throws Exception {
-        UserNameCheckRequest request = new UserNameCheckRequest();
+        EmailCheckRequest request = new EmailCheckRequest();
         request.setEmail(email);
-        return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
+        return loginClient.CheckEmailWithError(request, expectedResponseCode, errorCode);
     }
 
     public Error SignInWithError(String username, String type, String password, int expectedCode, String errorCode) throws Exception {

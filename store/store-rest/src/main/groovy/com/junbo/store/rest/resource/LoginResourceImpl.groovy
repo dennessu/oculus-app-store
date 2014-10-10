@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
-import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
 import javax.ws.rs.core.Response
@@ -71,25 +70,66 @@ class LoginResourceImpl implements LoginResource {
     }
 
     @Override
-    Promise<UserNameCheckResponse> checkUserName(UserNameCheckRequest userNameCheckRequest) {
-        requestValidator.validateRequiredApiHeaders().validateUserNameCheckRequest(userNameCheckRequest)
+    Promise<EmailCheckResponse> checkEmail(EmailCheckRequest emailCheckRequest) {
+        requestValidator.validateRequiredApiHeaders().validateEmailCheckRequest(emailCheckRequest)
+        EmailCheckResponse response
+        ErrorContext errorContext = new ErrorContext()
+
+        Promise.pure().then {
+            errorContext.fieldName = 'email'
+            return resourceContainer.userResource.checkEmail(emailCheckRequest.email)
+        }.recover { Throwable ex ->
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate)) {
+                response = new EmailCheckResponse(isAvailable : false)
+                return Promise.pure()
+            }
+            appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
+            appErrorUtils.throwUnknownError('checkEmail', ex)
+        }.then {
+            if (response == null) {
+                return Promise.pure(new EmailCheckResponse(isAvailable: true))
+            }
+            return Promise.pure(response)
+        }
+    }
+
+    @Override
+    Promise<UserNameCheckResponse> checkUsernameAvailable(UserNameCheckRequest userNameCheckRequest) {
+        requestValidator.validateRequiredApiHeaders().validateUsernameAvailableCheckRequest(userNameCheckRequest)
         UserNameCheckResponse response
         ErrorContext errorContext = new ErrorContext()
 
         Promise.pure().then {
-            if (!StringUtils.isEmpty(userNameCheckRequest.email)) {
-                errorContext.fieldName = 'email'
-                return resourceContainer.userResource.checkEmail(userNameCheckRequest.email)
-            }
-            errorContext.fieldName = 'username'
-            return resourceContainer.userResource.checkUsername(userNameCheckRequest.username)
+            errorContext.fieldName = 'email'
+            return resourceContainer.userResource.checkEmail(userNameCheckRequest.email)
         }.recover { Throwable ex ->
             if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate)) {
                 response = new UserNameCheckResponse(isAvailable : false)
                 return Promise.pure()
             }
             appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
-            appErrorUtils.throwUnknownError('checkUserName', ex)
+            appErrorUtils.throwUnknownError('checkUsernameAvailable', ex)
+        }.then {
+            if (response == null) {
+                errorContext.fieldName = 'username'
+                return resourceContainer.userResource.checkUsername(userNameCheckRequest.username).then {
+                    return resourceContainer.userResource.checkUsernameEmailBlocker(userNameCheckRequest.username, userNameCheckRequest.email).then { Boolean blocker ->
+                        if (blocker) {
+                            response = new UserNameCheckResponse(isAvailable: false)
+                        }
+
+                        return Promise.pure(null)
+                    }
+                }
+            }
+            return Promise.pure(null)
+        }.recover { Throwable ex ->
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate)) {
+                response = new UserNameCheckResponse(isAvailable: false)
+                return Promise.pure()
+            }
+            appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
+            appErrorUtils.throwUnknownError('checkUsernameAvailable', ex)
         }.then {
             if (response == null) {
                 return Promise.pure(new UserNameCheckResponse(isAvailable: true))

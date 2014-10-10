@@ -80,18 +80,31 @@ class RequestValidator {
         return this
     }
 
-    RequestValidator validateUserNameCheckRequest(UserNameCheckRequest request) {
+    RequestValidator validateEmailCheckRequest(EmailCheckRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        if (StringUtils.isEmpty(request.email) && StringUtils.isEmpty(request.username)) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('email or username').exception()
+        if (StringUtils.isEmpty(request.email)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
         }
 
-        if (!StringUtils.isEmpty(request.email) && !StringUtils.isEmpty(request.username)) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('email or username', 'only one of the fields [email, username] could be specified at a time').exception()
+        return this
+    }
+
+    RequestValidator validateUsernameAvailableCheckRequest(UserNameCheckRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
+
+        if (StringUtils.isEmpty(request.email)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
+        }
+
+        if (StringUtils.isEmpty(request.username)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
+        }
+
         return this
     }
 

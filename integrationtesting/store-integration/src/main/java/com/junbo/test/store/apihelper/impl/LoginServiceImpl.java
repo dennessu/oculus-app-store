@@ -79,7 +79,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public UserNameCheckResponse CheckUserName(UserNameCheckRequest userNameCheckRequest) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/name-check", userNameCheckRequest);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-username", userNameCheckRequest);
         UserNameCheckResponse userNameCheckResponse = new JsonMessageTranscoder().decode(
                 new TypeReference<UserNameCheckResponse>() {
                 }, responseBody);
@@ -88,7 +88,25 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public com.junbo.common.error.Error CheckUserNameWithError(UserNameCheckRequest userNameCheckRequest, int expectedResponseCode, String errorCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/name-check", userNameCheckRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-username", userNameCheckRequest, expectedResponseCode);
+        Error error = new JsonMessageTranscoder().decode(
+                new TypeReference<Error>() {
+                }, responseBody);
+        assert error.getCode().equalsIgnoreCase(errorCode);
+        return error;
+    }
+
+    @Override
+    public EmailCheckResponse CheckEmail(EmailCheckRequest emailCheckRequest) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-email", emailCheckRequest);
+        EmailCheckResponse emailCheckResponse = new JsonMessageTranscoder().decode(
+                new TypeReference<EmailCheckResponse>() { }, responseBody);
+        return emailCheckResponse;
+    }
+
+    @Override
+    public Error CheckEmailWithError(EmailCheckRequest emailCheckRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-email", emailCheckRequest, expectedResponseCode);
         Error error = new JsonMessageTranscoder().decode(
                 new TypeReference<Error>() {
                 }, responseBody);

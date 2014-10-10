@@ -118,7 +118,7 @@ public class StoreBrowseValidationHelper {
     public void verifyAggregateRatingsBasic(Map<String, AggregatedRatings> aggregatedRatings) {
         Assert.assertNotNull(aggregatedRatings);
         Assert.assertEquals(aggregatedRatings.keySet(), new HashSet<>(Arrays.asList("comfort", "quality")));
-        for( AggregatedRatings ratings:aggregatedRatings.values()) {
+        for (AggregatedRatings ratings:aggregatedRatings.values()) {
             Assert.assertNotNull(ratings);
             Assert.assertNull(ratings.getCommentsCount());
             Assert.assertTrue(ratings.getAverageRating() >= 0.0);

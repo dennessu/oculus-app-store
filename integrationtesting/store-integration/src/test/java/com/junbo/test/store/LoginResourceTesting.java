@@ -54,34 +54,105 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testCheckUsername() throws Exception {
         String invalidUsername = "123Test";
         UserNameCheckResponse userNameCheckResponse = null;
-        Error error = testDataProvider.CheckUserNameWithError(invalidUsername, 400, "130.001");
+        Error error = testDataProvider.CheckUserNameWithError(invalidUsername, RandomHelper.randomEmail(), 400, "130.001");
         assert error != null;
         assert error.getDetails().get(0).getField().equalsIgnoreCase("username");
         assert error.getDetails().get(0).getReason().equalsIgnoreCase("Field value is invalid.");
 
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
-        userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername());
+        userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername(), RandomHelper.randomEmail());
         Validator.Validate("Validate valid username", userNameCheckResponse.getIsAvailable(), true);
 
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
         Validator.Validate("validate authtoken response correct", createUserRequest.getUsername(), authTokenResponse.getUsername());
 
-        error = testDataProvider.CheckUserNameWithError(invalidUsername, 400, "130.001");
+        error = testDataProvider.CheckUserNameWithError(invalidUsername, RandomHelper.randomEmail(), 400, "130.001");
         assert error != null;
         assert error.getDetails().get(0).getField().equalsIgnoreCase("username");
         assert error.getDetails().get(0).getReason().equalsIgnoreCase("Field value is invalid.");
 
-        userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername());
+        userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername(), RandomHelper.randomEmail());
         Validator.Validate("Validate duplicate username", userNameCheckResponse.getIsAvailable(), false);
 
-        userNameCheckResponse = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15));
+        userNameCheckResponse = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15), RandomHelper.randomEmail());
         Validator.Validate("Validate random character username", userNameCheckResponse.getIsAvailable(), true);
 
-        error = testDataProvider.CheckUserNameWithError(null, 400, "130.001");
+        error = testDataProvider.CheckUserNameWithError(null, RandomHelper.randomEmail(), 400, "130.001");
         Validator.Validate("Validate null username error response", true, error != null);
 
-        error = testDataProvider.CheckUserNameWithError("", 400, "130.001");
+        error = testDataProvider.CheckUserNameWithError("", RandomHelper.randomEmail(), 400, "130.001");
         Validator.Validate("Validate empty username error response", true, error != null);
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check username"
+            }
+    )
+    @Test
+    public void testCheckUsernameWithInvalidMail() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        String username = createUserRequest.getUsername();
+        String invalidEmail = RandomHelper.randomAlphabetic(10);
+
+        Error error = testDataProvider.CheckUserNameWithError(username, invalidEmail, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
+        assert error.getDetails().get(0).getReason().equalsIgnoreCase("Field value is invalid.");
+
+        testDataProvider.CreateUser(createUserRequest, false);
+        UserNameCheckResponse response = testDataProvider.CheckUserName(username, RandomHelper.randomEmail());
+        assert response.getIsAvailable() == false;
+
+        response = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15), createUserRequest.getEmail());
+        assert response.getIsAvailable() == false;
+
+        response = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15), RandomHelper.randomEmail());
+        assert response.getIsAvailable();
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check username"
+            }
+    )
+    @Test
+    public void testCheckUsernameMailBlocker() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        String email = createUserRequest.getEmail();
+        String username = createUserRequest.getUsername();
+        testDataProvider.PrepareUsernameEmailBlocker(username, email);
+
+        UserNameCheckResponse response = testDataProvider.CheckUserName(username, RandomHelper.randomEmail());
+        assert response.getIsAvailable() == false;
+
+        response = testDataProvider.CheckUserName(username.toLowerCase(), RandomHelper.randomEmail());
+        assert response.getIsAvailable() == false;
+
+        response = testDataProvider.CheckUserName(username.toUpperCase(), RandomHelper.randomEmail());
+        assert response.getIsAvailable() == false;
+
+        response = testDataProvider.CheckUserName(username, email);
+        assert response.getIsAvailable() == true;
+
+        response = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15), email);
+        assert response.getIsAvailable() == true;
+
+        response = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15), email.toLowerCase());
+        assert response.getIsAvailable() == true;
+
+        response = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(15), email.toUpperCase());
+        assert response.getIsAvailable() == true;
     }
 
     @Property(
@@ -97,7 +168,7 @@ public class LoginResourceTesting extends BaseTestClass {
     @Test
     public void testCheckEmail() throws Exception {
         String invalidEmail = "123Test";
-        UserNameCheckResponse userNameCheckResponse = null;
+        EmailCheckResponse emailCheckResponse = null;
         Error error = testDataProvider.CheckEmailWithError(invalidEmail, 400, "130.001");
         assert error != null;
         assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
@@ -110,8 +181,8 @@ public class LoginResourceTesting extends BaseTestClass {
         assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
-        userNameCheckResponse = testDataProvider.CheckEmail(createUserRequest.getEmail());
-        Validator.Validate("Validate valid username", userNameCheckResponse.getIsAvailable(), true);
+        emailCheckResponse = testDataProvider.CheckEmail(createUserRequest.getEmail());
+        Validator.Validate("Validate valid username", emailCheckResponse.getIsAvailable(), true);
 
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
         Validator.Validate("validate authtoken response username correct", createUserRequest.getUsername(), authTokenResponse.getUsername());
@@ -135,11 +206,11 @@ public class LoginResourceTesting extends BaseTestClass {
         assert error.getDetails().get(0).getField().equalsIgnoreCase("email");
         assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
 
-        userNameCheckResponse = testDataProvider.CheckEmail(createUserRequest.getEmail());
-        Validator.Validate("Validate duplicate email", userNameCheckResponse.getIsAvailable(), false);
+        emailCheckResponse = testDataProvider.CheckEmail(createUserRequest.getEmail());
+        Validator.Validate("Validate duplicate email", emailCheckResponse.getIsAvailable(), false);
 
-        userNameCheckResponse = testDataProvider.CheckEmail(RandomHelper.randomEmail());
-        Validator.Validate("Validate random character email", userNameCheckResponse.getIsAvailable(), true);
+        emailCheckResponse = testDataProvider.CheckEmail(RandomHelper.randomEmail());
+        Validator.Validate("Validate random character email", emailCheckResponse.getIsAvailable(), true);
 
         error = testDataProvider.CheckEmailWithError(null, 400, "130.001");
         assert error != null;
