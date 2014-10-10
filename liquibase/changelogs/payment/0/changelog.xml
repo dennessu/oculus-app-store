@@ -635,4 +635,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="5" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                        ALTER TABLE payment_instrument ADD COLUMN payment_provider_id int;
+                    ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

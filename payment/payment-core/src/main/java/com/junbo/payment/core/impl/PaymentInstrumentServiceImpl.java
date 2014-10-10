@@ -62,6 +62,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(provider == null){
             throw AppServerExceptions.INSTANCE.providerNotFound(PIType.get(request.getType()).toString()).exception();
         }
+        request.setPaymentProvider(provider.getProviderName());
         return provider.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
