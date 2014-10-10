@@ -39,21 +39,21 @@ abstract class BaseOrderEventAwareAction implements Action {
     @Override
     @Transactional
     Promise<ActionResult> execute(ActionContext context) {
-
-        beforeOrderEventAwareAction(context)
-
-        return doExecute(context)
-        .recover { Throwable ex ->
-            afterThrowingOrderEventAwareAction(context, ex)
-            return Promise.pure(null)
-        }.then { ActionResult result ->
-            afterOrderEventAwareAction(context, result)
-            return Promise.pure(result)
+        return Promise.pure().then {
+            beforeOrderEventAwareAction(context)
+            return doExecute(context)
+                    .recover { Throwable ex ->
+                afterThrowingOrderEventAwareAction(context, ex)
+                throw ex
+            }.then { ActionResult result ->
+                afterOrderEventAwareAction(context, result)
+                return Promise.pure(result)
+            }
         }
     }
 
     private void beforeOrderEventAwareAction(ActionContext context) {
-        assert(context != null)
+        assert (context != null)
         LOGGER.info('name=Save_Order_Event_Before. action: {}', this.class.name)
 
         try {
@@ -64,13 +64,14 @@ abstract class BaseOrderEventAwareAction implements Action {
                     transactionHelper.executeInNewTransaction {
                         repo.createOrderEvent(orderEvent)
                     }
+                } else {
+                    LOGGER.info('name=NOT_RECORD_ORDER_EVENT_ACTION_BEFORE_NULL')
                 }
             } else {
-                LOGGER.info('name=NOT_RECORD_ORDER_EVENT_ACTION_NULL')
+                LOGGER.info('name=Not_Record_Order_Event_ActionType_Null')
             }
         } catch (e) {
-            LOGGER.error('name=Save_Order_Event_Before', e)
-            throw e
+            LOGGER.error('name=Save_Order_Event_Before_Failed', e)
         }
     }
 
@@ -78,18 +79,22 @@ abstract class BaseOrderEventAwareAction implements Action {
             ActionContext context,
             Throwable ex) {
         assert (context != null)
-        LOGGER.info('name=Save_Order_Event_AfterThrowing. action: {}', this.class.name)
+        LOGGER.error('name=Save_Order_Event_AfterThrowing. action: ' + this.class.name, ex)
         try {
             if (orderActionType != null) { // only create event if action type is set
                 def oe = getReturnedOrderEvent(context, EventStatus.ERROR)
-                transactionHelper.executeInNewTransaction {
-                    repo.createOrderEvent(oe)
+                if (oe != null && oe.order != null) {
+                    transactionHelper.executeInNewTransaction {
+                        repo.createOrderEvent(oe)
+                    }
+                } else {
+                    LOGGER.info('name=NOT_RECORD_ORDER_EVENT_ACTION_AFTERTHROWING_NULL')
                 }
+            } else {
+                LOGGER.info('name=Not_Record_Order_Event_AfterThrowing_ActionType_Null')
             }
-            throw ex
         } catch (e) {
-            LOGGER.error('name=Save_Order_Event_AfterThrowing', e)
-            throw e
+            LOGGER.error('name=Save_Order_Event_AfterThrowing_Failed', e)
         }
     }
 
@@ -100,15 +105,21 @@ abstract class BaseOrderEventAwareAction implements Action {
         LOGGER.info('name=Save_Order_Event_AfterReturning. action: {}', this.class.name)
 
         try {
-            def oe = getReturnedOrderEvent(context, result)
-            if (oe != null) {
-                transactionHelper.executeInNewTransaction {
-                    repo.createOrderEvent(oe)
+            if (orderActionType != null) { // only create event if action type is set
+                def oe = getReturnedOrderEvent(context, result)
+                if (oe != null && oe.order != null) {
+                    transactionHelper.executeInNewTransaction {
+                        repo.createOrderEvent(oe)
+                    }
+                } else {
+                    LOGGER.info('name=NOT_RECORD_ORDER_EVENT_ACTION_AFTERRETURN_NULL')
                 }
+            } else {
+                LOGGER.info('name=Not_Record_Order_Event_AfterReturn_ActionType_Null')
             }
-        } catch (e) {
-            LOGGER.error('name=Save_Order_Event_AfterReturning_Failed', e)
-            throw e
+        }
+        catch (e) {
+            LOGGER.error('name=Save_Order_Event_AfterReturn_Failed', e)
         }
     }
 

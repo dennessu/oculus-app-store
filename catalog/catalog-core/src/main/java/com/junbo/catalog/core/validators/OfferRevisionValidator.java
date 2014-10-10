@@ -158,7 +158,7 @@ public class OfferRevisionValidator extends ValidationSupport {
                     || !PriceType.CUSTOM.is(price.getPriceType()) || price.getPrices() == null) {
                 continue;
             }
-            if (!price.getPrices().containsKey(countryCode)) {
+            if (!DEFAULT_COUNTRY.equals(countryCode) && !price.getPrices().containsKey(countryCode)) {
                 errors.add(AppCommonErrors.INSTANCE.fieldInvalid("regions",
                         "offer is purchasable in " + countryCode + ", but no price defined for that country."));
             }

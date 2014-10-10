@@ -73,7 +73,7 @@ public class ItemRevision extends BaseRevisionModel {
 
     @XSSFreeString
     @ApiModelProperty(position = 24, required = true, value = "supported input devices",
-            allowableValues = "KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD")
+            allowableValues = "KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD, HEAD_LOOK")
     private List<String> supportedInputDevices;
     @XSSFreeString
     @ApiModelProperty(position = 25, required = true, value = "User interaction modes",

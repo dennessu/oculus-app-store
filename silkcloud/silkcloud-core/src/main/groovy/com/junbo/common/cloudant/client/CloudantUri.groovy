@@ -49,6 +49,6 @@ class CloudantUri {
     }
 
     public String getKey() {
-        return String.format("%s#%s", value, username);
+        return String.format("%s#%s#%s", value, username, account);
     }
 }

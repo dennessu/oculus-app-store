@@ -6,13 +6,13 @@
 
 package com.junbo.payment.core.provider.impl;
 
-import com.junbo.common.id.PIType;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
+import com.junbo.payment.spec.internal.ProviderCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +25,8 @@ public class ProviderRoutingServiceImpl implements ProviderRoutingService{
     private PaymentProviderRepository paymentProviderRepository;
 
     @Override
-    public PaymentProviderService getPaymentProvider(PIType piType) {
-        String provider = paymentProviderRepository.getProviderName(piType);
+    public PaymentProviderService getPaymentProvider(ProviderCriteria criteria) {
+        String provider = paymentProviderRepository.getProviderName(criteria);
         return getProviderByName(provider);
     }
 

@@ -5,7 +5,6 @@
  */
 package com.junbo.test.oauth;
 
-import com.junbo.common.error.*;
 import com.junbo.common.error.Error;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserLoginName;
@@ -290,10 +289,8 @@ public class authorizeUser {
         ValidateErrorFreeResponse(currentViewState);
         String loginResponseLink = Oauth.UserLogin(cid, "silkcloudtest+allEnvLoginUser@gmail.com", Oauth.DefaultUserPwd);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
-        CloseableHttpResponse response = Oauth.OauthGet(secondaryDcEndpoint
-                + "/oauth2/tokeninfo?access_token=" + accessToken, null);
-        TokenInfo tokenInfo = JsonHelper.JsonDeserializer(
-                new InputStreamReader(response.getEntity().getContent()), TokenInfo.class);
+        TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken, secondaryDcEndpoint
+                + "/oauth2/tokeninfo?access_token=" + accessToken);
         Validator.Validate("validate getting token from another dc", true, tokenInfo != null);
     }
 
@@ -495,6 +492,7 @@ public class authorizeUser {
                 + "&response_type=code&scope=identity&redirect_uri="
                 + Oauth.DefaultRedirectURI, null);
         Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        response.close();
 
         response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
                 + "?client_id="
@@ -502,20 +500,23 @@ public class authorizeUser {
                 + "&response_type=code&scope=identity&redirect_uri="
                 + Oauth.DefaultRedirectURI, null, false, false);
         Validator.Validate("response status is not ok", response.getStatusLine().getStatusCode(), 400);
+        response.close();
 
         response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
                 + "?client_id="
                 + Oauth.DefaultClientIdExt
-                + "&response_type=code&scope=identity&redirect_uri="
+                + "&response_type=code&scope=storeapi&redirect_uri="
                 + Oauth.DefaultRedirectURI, null);
         Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        response.close();
 
         response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
                 + "?client_id="
                 + Oauth.DefaultClientIdExt
-                + "&response_type=code&scope=identity&redirect_uri="
+                + "&response_type=code&scope=storeapi&redirect_uri="
                 + Oauth.DefaultRedirectURI, null, false, false);
         Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        response.close();
     }
 
     @Test(groups = "dailies")

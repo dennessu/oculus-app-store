@@ -95,7 +95,7 @@ public class CloudantSniffer {
         return filtered;
     }*/
 
-    public List<String> getAllDatabases(CloudantUri cloudantUri) {
+    public List<String> getDatabaseList() {
         String dblist = ConfigServiceManager.instance().getConfigValue(CLOUDANT_DBLIST_KEY);
 
         if (StringUtils.isEmpty(dblist)) {
@@ -108,7 +108,24 @@ public class CloudantSniffer {
             throw new CloudantException("Error occurred during reading file [" + dblist + "].");
         }
         LOGGER.info("Read cloudant database list file successfully.");
+        try {
+            Map<String, Map<String, Object>> payload = new ObjectMapper().readValue(dbFileInputStream, Map.class);
 
+            List<String> databases = new ArrayList<>();
+            for (Map.Entry<String, Map<String, Object>> entry : payload.entrySet()) {
+                databases.addAll(entry.getValue().keySet());
+            }
+
+            LOGGER.info("Read {} databases in database list file.", databases.size());
+            return databases;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to read all database list.", e);
+        } finally {
+            SnifferUtils.close(dbFileInputStream);
+        }
+    }
+
+    public List<String> getAllDatabases(CloudantUri cloudantUri, List<String> databases) {
         String prefix = ConfigServiceManager.instance().getConfigValue(CLOUDANT_PREFIX_KEY);
         if (prefix == null) {
             prefix = CLOUDANT_DEFAULT_PREFIX;
@@ -118,13 +135,6 @@ public class CloudantSniffer {
         List<String> filtered = new ArrayList<>();
 
         try {
-            Map<String, Map<String, Object>> payload = new ObjectMapper().readValue(dbFileInputStream, Map.class);
-
-            List<String> databases = new ArrayList<>();
-            for (Map.Entry<String, Map<String, Object>> entry : payload.entrySet()) {
-                databases.addAll(entry.getValue().keySet());
-            }
-
             for (String db : databases) {
                 String fullDatabaseName = prefix + db;
                 Response response = executeGet(cloudantUri, fullDatabaseName, "", null).get();
@@ -140,8 +150,6 @@ public class CloudantSniffer {
             }
         } catch (Exception e) {
             throw new CloudantConnectException("Error occurred during get all cloudant databases.", e);
-        } finally {
-            SnifferUtils.close(dbFileInputStream);
         }
 
         LOGGER.info("Detect [" + filtered.size() + "] available databases on " + cloudantUri.getDetail());
@@ -239,6 +247,9 @@ public class CloudantSniffer {
                     .setScheme(Realm.AuthScheme.BASIC).build();
 
             requestBuilder.setRealm(realm);
+        }
+        if (!StringUtils.isEmpty(cloudantUri.getAccount())) {
+            requestBuilder.addHeader("X-Cloudant-User", cloudantUri.getAccount());
         }
 
         if (queryParams != null) {

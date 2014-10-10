@@ -29,7 +29,9 @@ public class MerchantAccountRepository extends DomainDataRepository<MerchantAcco
                 return type.getCurrency().equalsIgnoreCase(currencyIsoNum);
             }
         });
-        if(results.size() > 1){
+        if(results.size() == 1){
+            return results.get(0).getMerchantAccountRef();
+        }else if(results.size() > 1){
             //continue try to filter
             List<MerchantAccountEntity> providerResults = CommonUtil.filter(results,
                     new IPredicate<MerchantAccountEntity>() {
@@ -43,8 +45,6 @@ public class MerchantAccountRepository extends DomainDataRepository<MerchantAcco
             }else{
                 return providerResults.get(0).getMerchantAccountRef();
             }
-        }else if(results.size() == 1){
-            return results.get(0).getMerchantAccountRef();
         }
         return null;
     }

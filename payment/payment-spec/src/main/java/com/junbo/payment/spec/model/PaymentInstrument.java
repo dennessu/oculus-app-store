@@ -67,6 +67,12 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
     @ApiModelProperty(position = 12, required = true, value = "The email resource of the PI.")
     @PersonalInfoId
     private Long email;
+    @ApiModelProperty(position = 13, required = true, value = "option for choose provider")
+    private ProviderOption providerOption;
+
+    @FilterIn
+    @JsonIgnore
+    private String paymentProvider;
 
     @JsonIgnore
     private String relationToHolder;
@@ -232,5 +238,21 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
 
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
+    }
+
+    public String getPaymentProvider() {
+        return paymentProvider;
+    }
+
+    public void setPaymentProvider(String paymentProvider) {
+        this.paymentProvider = paymentProvider;
+    }
+
+    public ProviderOption getProviderOption() {
+        return providerOption;
+    }
+
+    public void setProviderOption(ProviderOption providerOption) {
+        this.providerOption = providerOption;
     }
 }

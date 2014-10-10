@@ -64,16 +64,23 @@ public class CacheSnifferJob implements InitializingBean {
         LOGGER.info("Start listening cloundant DB change feed");
 
         List<CloudantUri> cloudantInstances = CloudantSniffer.instance().getCloudantInstances();
+        List<String> allDatabases = CloudantSniffer.instance().getDatabaseList();
 
         int totalDatabases = 0;
 
         // collect all databases
         Map<String, List<String>> databaseMap = new HashMap<>();
         for (CloudantUri cloudantUri : cloudantInstances) {
-            List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri);
+            List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri, allDatabases);
             totalDatabases += databases.size();
 
             databaseMap.put(cloudantUri.getKey(), databases);
+        }
+
+        LOGGER.info("Found {} databases in cloudant.", totalDatabases);
+        if (totalDatabases != allDatabases.size()) {
+            LOGGER.error("Found {} databases in cloudant and expected {} databases in db list file. ", totalDatabases, allDatabases.size());
+            throw new RuntimeException(String.format("Found %d databases in cloudant and expected %d databases in db list file. ", totalDatabases, allDatabases.size()));
         }
 
         executor = Executors.newScheduledThreadPool(totalDatabases + MONITOR_THREADS);

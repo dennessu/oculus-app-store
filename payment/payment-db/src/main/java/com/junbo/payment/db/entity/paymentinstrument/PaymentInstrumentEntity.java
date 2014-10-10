@@ -54,6 +54,9 @@ public class PaymentInstrumentEntity extends GenericEntity {
     @Column(name = "email")
     private Long email;
 
+    @Column(name = "payment_provider_id")
+    private Integer paymentProviderId;
+
     @Column(name = "relation_to_holder")
     private String relationToHolder;
 
@@ -193,6 +196,14 @@ public class PaymentInstrumentEntity extends GenericEntity {
 
     public void setExternalToken(String externalToken) {
         this.externalToken = externalToken;
+    }
+
+    public Integer getPaymentProviderId() {
+        return paymentProviderId;
+    }
+
+    public void setPaymentProviderId(Integer paymentProviderId) {
+        this.paymentProviderId = paymentProviderId;
     }
 
     public String toString() {

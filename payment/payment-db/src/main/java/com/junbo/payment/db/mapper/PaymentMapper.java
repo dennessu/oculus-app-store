@@ -64,7 +64,13 @@ public interface PaymentMapper {
     })
     PaymentTransaction toPaymentRaw(PaymentTransactionEntity paymentTransactionEntity, MappingContext context);
 
+    @Mappings({@Mapping(source = "paymentProvider", target = "paymentProviderId",
+            explicitMethod = "toProviderId", bidirectional = false),
+    })
     PaymentInstrumentEntity toPIEntityRaw(PaymentInstrument piRequest, MappingContext context);
+    @Mappings({@Mapping(source = "paymentProviderId", target = "paymentProvider",
+            explicitMethod = "toProviderName", bidirectional = false),
+    })
     PaymentInstrument toPaymentInstrumentRaw(PaymentInstrumentEntity piEntity, MappingContext context);
 
     @Mappings({
