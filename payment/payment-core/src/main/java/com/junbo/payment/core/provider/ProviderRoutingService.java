@@ -6,7 +6,7 @@
 
 package com.junbo.payment.core.provider;
 
-import com.junbo.common.id.PIType;
+import com.junbo.payment.spec.internal.ProviderCriteria;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface ProviderRoutingService {
     @Transactional(readOnly = true)
-    PaymentProviderService getPaymentProvider(PIType piType);
+    PaymentProviderService getPaymentProvider(ProviderCriteria criteria);
     PaymentProviderService getProviderByName(String provider);
     @Transactional
     void updatePaymentConfiguration();

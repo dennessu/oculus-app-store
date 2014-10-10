@@ -8,6 +8,7 @@ import com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl;
 import com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl;
 import com.junbo.payment.core.provider.facebook.FacebookCCProviderServiceImpl;
 import com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl;
+import com.junbo.payment.spec.internal.ProviderCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -28,7 +29,8 @@ public class MockFBProviderRoutingServiceImpl  implements ProviderRoutingService
     @Autowired
     private AdyenProviderServiceImpl adyenProviderService;
     @Override
-    public PaymentProviderService getPaymentProvider(PIType piType) {
+    public PaymentProviderService getPaymentProvider(ProviderCriteria criteria) {
+        PIType piType = criteria.getPiType();
         if(piType.equals(PIType.CREDITCARD)){
             return facebookCCProviderService;
         } else if(piType.equals(PIType.STOREDVALUE)){

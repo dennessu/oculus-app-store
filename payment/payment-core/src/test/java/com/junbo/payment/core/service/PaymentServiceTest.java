@@ -10,6 +10,7 @@ import com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl;
 import com.junbo.payment.core.provider.ewallet.EWalletProviderServiceImpl;
 import com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl;
 import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.internal.ProviderCriteria;
 import com.junbo.payment.spec.model.ChargeInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -121,13 +122,13 @@ public class PaymentServiceTest extends BaseTest {
 
     @Test
     public void testRoutingService() throws ExecutionException, InterruptedException {
-        PaymentProviderService service = providerRoutingService.getPaymentProvider(PIType.CREDITCARD);
+        PaymentProviderService service = providerRoutingService.getPaymentProvider(new ProviderCriteria(PIType.CREDITCARD));
         Assert.assertEquals(true, service instanceof AdyenCCProivderServiceImpl);
-        service = providerRoutingService.getPaymentProvider(PIType.PAYPAL);
+        service = providerRoutingService.getPaymentProvider(new ProviderCriteria(PIType.PAYPAL));
         Assert.assertEquals(true, service instanceof PayPalProviderServiceImpl);
-        service = providerRoutingService.getPaymentProvider(PIType.STOREDVALUE);
+        service = providerRoutingService.getPaymentProvider(new ProviderCriteria(PIType.STOREDVALUE));
         Assert.assertEquals(true, service instanceof EWalletProviderServiceImpl);
-        service = providerRoutingService.getPaymentProvider(PIType.OTHERS);
+        service = providerRoutingService.getPaymentProvider(new ProviderCriteria(PIType.OTHERS));
         Assert.assertEquals(true, service instanceof AdyenProviderServiceImpl);
     }
 
