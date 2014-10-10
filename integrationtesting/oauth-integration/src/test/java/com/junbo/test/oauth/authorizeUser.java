@@ -495,6 +495,7 @@ public class authorizeUser {
                 + "&response_type=code&scope=identity&redirect_uri="
                 + Oauth.DefaultRedirectURI, null);
         Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        response.close();
 
         response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
                 + "?client_id="
@@ -502,20 +503,23 @@ public class authorizeUser {
                 + "&response_type=code&scope=identity&redirect_uri="
                 + Oauth.DefaultRedirectURI, null, false, false);
         Validator.Validate("response status is not ok", response.getStatusLine().getStatusCode(), 400);
+        response.close();
 
         response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
                 + "?client_id="
                 + Oauth.DefaultClientIdExt
-                + "&response_type=code&scope=identity&redirect_uri="
+                + "&response_type=code&scope=storeapi&redirect_uri="
                 + Oauth.DefaultRedirectURI, null);
         Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        response.close();
 
         response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
                 + "?client_id="
                 + Oauth.DefaultClientIdExt
-                + "&response_type=code&scope=identity&redirect_uri="
+                + "&response_type=code&scope=storeapi&redirect_uri="
                 + Oauth.DefaultRedirectURI, null, false, false);
         Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        response.close();
     }
 
     @Test(groups = "dailies")
