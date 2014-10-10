@@ -124,6 +124,8 @@
         <property name="countryRepository" ref="countryRepository" />
         <property name="vatResource" ref="identityVatResource" />
         <property name="piTypeRepository" ref="piTypeRepository" />
+        <property name="piiHashFactory" ref="piiHashFactory" />
+        <property name="usernameEmailBlockerRepository" ref="usernameEmailBlockerRepository" />
         <property name="paymentInstrumentResource" ref="identityPaymentInstrumentResource" />
         <property name="enableVatValidation" value="${identity.conf.enableVatValidation}" />
         <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />

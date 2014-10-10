@@ -13,6 +13,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.*;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.ConfigHelper;
@@ -605,4 +606,10 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         return userId;
     }
 
+    @Override
+    public void postUsernameEmailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception {
+        componentType = ComponentType.IDENTITY_MIGRATION;
+        String url = String.format(getEndPointUrl().replace("/users", "") + "/imports/username-email-block");
+        restApiCall(HTTPMethod.POST, url, usernameMailBlocker, true);
+    }
 }

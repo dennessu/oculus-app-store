@@ -8,6 +8,7 @@ package com.junbo.test.common.apihelper.oauth.impl;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.json.ObjectMapperProvider;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
@@ -108,6 +109,10 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
             case SMOKETEST:
                 formParams.put("scope","smoketest identity catalog");
                 clientId = ConfigHelper.getSetting("client_id");
+                break;
+            case IDENTITY_MIGRATION:
+                formParams.put("scope", "identity.migration");
+                clientId = "migration";
                 break;
             default:
                 formParams.put("scope", componentType.toString() + ".service");
@@ -341,5 +346,4 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         List<String> links = ObjectMapperProvider.instance().readValue(linkArray, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class));
         return links;
     }
-
 }

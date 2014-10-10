@@ -6,6 +6,7 @@
 
 package com.junbo.test.common.apihelper.oauth;
 
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.ComponentType;
@@ -54,5 +55,4 @@ public interface OAuthService {
     void accessEmailVerifyLink(String emailVerifyLink) throws Exception;
 
     List<String> getEmailVerifyLink(String uid, String emailAddress) throws Exception;
-
 }

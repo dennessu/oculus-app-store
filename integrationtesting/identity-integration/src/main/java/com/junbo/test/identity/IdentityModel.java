@@ -15,10 +15,7 @@ import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.Locale;
-import com.junbo.identity.spec.v1.model.migration.Company;
-import com.junbo.identity.spec.v1.model.migration.OculusInput;
-import com.junbo.identity.spec.v1.model.migration.ShareProfile;
-import com.junbo.identity.spec.v1.model.migration.ShareProfileAvatar;
+import com.junbo.identity.spec.v1.model.migration.*;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 
@@ -164,6 +161,14 @@ public class IdentityModel {
         User user = new User();
         user.setIsAnonymous(true);
         return user;
+    }
+
+    public static UsernameMailBlocker DefaultUsernameMailBlocker() throws Exception {
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setUsername(RandomHelper.randomAlphabetic(15));
+        usernameMailBlocker.setEmail(RandomHelper.randomEmail());
+
+        return usernameMailBlocker;
     }
 
     public static OculusInput DefaultOculusInput() throws Exception {

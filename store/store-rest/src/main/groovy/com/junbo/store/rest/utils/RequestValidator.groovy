@@ -126,6 +126,10 @@ class RequestValidator {
             notEmpty(request.lastName, 'lastName')
         }
 
+        Boolean isBlocked = resourceContainer.userResource.checkUsernameEmailBlocker(request.username, request.email).get()
+        if (isBlocked) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email are occupied').exception()
+        }
         return this
     }
 

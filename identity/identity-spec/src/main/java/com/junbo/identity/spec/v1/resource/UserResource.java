@@ -79,4 +79,10 @@ public interface UserResource {
     @POST
     @Path("/check-email/{email}")
     Promise<Void> checkEmail(@PathParam("email") String email);
+
+    @ApiOperation("Check whether email and username is occupied")
+    @GET
+    @Path("/check-legacy-username-email")
+    Promise<Boolean> checkUsernameEmailBlocker(@QueryParam("username") String username,
+                                               @QueryParam("email") String email);
 }

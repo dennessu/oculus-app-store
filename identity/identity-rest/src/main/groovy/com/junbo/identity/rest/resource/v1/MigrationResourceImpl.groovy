@@ -27,14 +27,18 @@ import com.junbo.common.model.Results
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.normalize.NormalizeService
+import com.junbo.identity.data.hash.PiiHash
+import com.junbo.identity.data.hash.PiiHashFactory
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.*
+import com.junbo.identity.data.repository.migration.UsernameEmailBlockerRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.model.migration.OculusInput
 import com.junbo.identity.spec.v1.model.migration.OculusOutput
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker
 import com.junbo.identity.spec.v1.resource.MigrationResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
@@ -46,6 +50,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
+
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 6/6/14.
  */
@@ -95,6 +102,12 @@ class MigrationResourceImpl implements MigrationResource {
 
     @Autowired
     private NormalizeService normalizeService
+
+    @Autowired
+    private UsernameEmailBlockerRepository usernameEmailBlockerRepository
+
+    @Autowired
+    private PiiHashFactory piiHashFactory
 
     @Override
     @Transactional
@@ -175,6 +188,120 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(result)
             }
         }
+    }
+
+    @Override
+    Promise<Response> usernameMailBlock(UsernameMailBlocker usernameMailBlocker) {
+        return validateBlockerValid(usernameMailBlocker).then { Boolean existing ->
+            if (existing) {
+                // do nothing
+                return Promise.pure(Response.status(200).build())
+            }
+
+            // create the username mail blocker history
+            return usernameEmailBlockerRepository.create(usernameMailBlocker).then {
+                return Promise.pure(Response.status(200).build())
+            }
+        }
+    }
+
+    Promise<Boolean> validateBlockerValid(UsernameMailBlocker usernameMailBlocker) {
+        if (usernameMailBlocker == null) {
+            throw new IllegalArgumentException('usernameMailBlocker')
+        }
+
+        if (StringUtils.isEmpty(usernameMailBlocker.username)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
+        }
+
+        if (StringUtils.isEmpty(usernameMailBlocker.email)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
+        }
+
+        if (!StringUtils.isEmpty(usernameMailBlocker.canonicalUsername)) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('canonicalUsername').exception()
+        }
+
+        if (!StringUtils.isEmpty(usernameMailBlocker.hashEmail)) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('hashEmail').exception()
+        }
+
+        if (!StringUtils.isEmpty(usernameMailBlocker.hashUsername)) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('hashUsername').exception()
+        }
+
+        usernameMailBlocker.canonicalUsername = normalizeService.normalize(usernameMailBlocker.username)
+
+        // Check whether username and email is already imported, if yes, do nothing;
+        // if username and email exists, but it didn't match current value, throw exception
+        return validateBlockUsernameExists(usernameMailBlocker).then { Boolean existing ->
+            if (existing) {
+                return Promise.pure(existing)
+            }
+
+            return validateBlockEmailExists(usernameMailBlocker)
+        }
+    }
+
+    Promise<Boolean> validateBlockUsernameExists(UsernameMailBlocker usernameMailBlocker) {
+        return usernameEmailBlockerRepository.searchByUsername(usernameMailBlocker.canonicalUsername, Integer.MAX_VALUE, 0).then {
+            List<UsernameMailBlocker> usernameMailBlockerList ->
+                if (CollectionUtils.isEmpty(usernameMailBlockerList)) {
+                    return Promise.pure(false)
+                }
+
+                if (usernameMailBlockerList.size() > 1) {
+                    throw new IllegalStateException('username ' + usernameMailBlocker.canonicalUsername + ' have more than one same username')
+                }
+
+                if (StringUtils.isEmpty(usernameMailBlockerList.get(0).getHashEmail())) {
+                    throw new IllegalStateException('email with username ' + usernameMailBlocker.canonicalUsername + ' is missing')
+                }
+
+                PiiHash piiHash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
+                String hashedMail = piiHash.generateHash(usernameMailBlocker.email.toLowerCase(java.util.Locale.ENGLISH))
+                if (!hashedMail.equalsIgnoreCase(usernameMailBlockerList.get(0).getHashEmail())) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email do not match').exception()
+                }
+
+                return Promise.pure(true)
+        }
+    }
+
+    Promise<Boolean> validateBlockEmailExists(UsernameMailBlocker usernameMailBlocker) {
+        return usernameEmailBlockerRepository.searchByEmail(usernameMailBlocker.email, Integer.MAX_VALUE, 0).then { List<UsernameMailBlocker> usernameMailBlockerList ->
+            if (CollectionUtils.isEmpty(usernameMailBlockerList)) {
+                return Promise.pure(false)
+            }
+
+            if (usernameMailBlockerList.size() > 1) {
+                throw new IllegalStateException('email ' + usernameMailBlocker.email + ' has more than one same mail')
+            }
+
+            if (StringUtils.isEmpty(usernameMailBlockerList.get(0).getHashUsername())) {
+                throw new IllegalStateException('username with email ' + usernameMailBlocker.email + ' is missing')
+            }
+
+            PiiHash piiHash = getPiiHash(UserPersonalInfoType.USERNAME.toString())
+            String hashedUsername = piiHash.generateHash(usernameMailBlocker.canonicalUsername)
+            if (!hashedUsername.equalsIgnoreCase(usernameMailBlockerList.get(0).getHashUsername())) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email do not match').exception()
+            }
+
+            return Promise.pure(true)
+        }
+        return Promise.pure(true)
+    }
+
+    private PiiHash getPiiHash(String type) {
+        PiiHash hash = piiHashFactory.getAllPiiHashes().find { PiiHash piiHash ->
+            return piiHash.handles(type)
+        }
+        if (hash == null) {
+            throw new IllegalStateException('No hash implementation for type ' + type)
+        }
+
+        return hash
     }
 
     Promise<Boolean> saveOrUpdateUserName(OculusInput oculusInput, User user) {

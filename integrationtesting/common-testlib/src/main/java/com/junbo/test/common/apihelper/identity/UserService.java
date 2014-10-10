@@ -8,6 +8,7 @@ package com.junbo.test.common.apihelper.identity;
 import com.junbo.common.error.*;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 
 import java.util.List;
@@ -62,5 +63,7 @@ public interface UserService {
     String PostEmailVerification(String userId, String country, String locale, int expectedResponseCode) throws Exception;
 
     String UpdateUserPersonalInfo(String uid, String userName, String password) throws Exception;
+
+    void postUsernameEmailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception;
 
 }

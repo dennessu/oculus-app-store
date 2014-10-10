@@ -394,7 +394,9 @@
         <property name="userPersonalInfoResource" ref="oauth_userPersonalInfoResource"/>
     </bean>
 
-    <bean id="validateRegister" class="com.junbo.oauth.core.action.ValidateRegister"/>
+    <bean id="validateRegister" class="com.junbo.oauth.core.action.ValidateRegister">
+        <property name="userService" ref="userService" />
+    </bean>
 
     <bean id="validateCaptcha" class="com.junbo.oauth.core.action.ValidateCaptcha">
         <property name="enabled" value="${oauth.core.recaptcha.enabled}"/>

@@ -391,6 +391,11 @@ class UserResourceImpl implements UserResource {
         return userValidator.validateEmail(email)
     }
 
+    @Override
+    Promise<Boolean> checkUsernameEmailBlocker(String username, String email) {
+        return userValidator.validateUsernameEmailBlocker(username, email)
+    }
+
     Promise<Void> updateCredential(UserId userId, UserPersonalInfoId oldUsername, UserPersonalInfoId newUsername) {
         if (oldUsername == newUsername) {
             return Promise.pure(null)

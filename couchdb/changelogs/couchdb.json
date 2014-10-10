@@ -61,7 +61,17 @@
           "map": "function(doc) {  emit(doc.typeCode, doc._id)}"
         }
       }
-    }, 
+    },
+    "username_email_blocker":{
+      "views": {
+        "by_user_name_hash": {
+          "map": "function(doc) { emit(doc.hashUsername, doc._id) }"
+        },
+        "by_email_hash": {
+          "map": "function(doc) { emit(doc.hashEmail, doc._id) }"
+        }
+      }
+    },
     "dualwrite_pending_action": {}, 
     "email_history": {}, 
     "email_schedule": {}, 

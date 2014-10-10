@@ -13,6 +13,7 @@ import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.IdConverter;
 import org.apache.http.NameValuePair;
@@ -22,6 +23,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +48,7 @@ public class Identity {
     public static final String IdentityV1UserCredentialAttemptsURI = IdentityEndPointV1 + "/credential-attempts";
     public static final String IdentityV1UserGroupMemberURI = IdentityEndPointV1 + "/user-group-memberships";
     public static final String IdentityV1UserPersonalInfoURI = IdentityEndPointV1 + "/personal-info";
+    public static final String IdentityV1UsernameMailBlockerURI = IdentityEndPointV1 + "/imports/username-email-block";
 
     public static String httpAuthorizationHeader = "";
 
@@ -379,6 +382,35 @@ public class Identity {
         return (OculusOutput) IdentityPost(IdentityV1ImportsURI,
                 JsonHelper.JsonSerializer(oculusInput),
                 OculusOutput.class);
+    }
+
+    public static Boolean GetUsernameEmailBlocker(String username, String email) throws Exception {
+        return IdentityGet(IdentityV1UserURI + "/check-legacy-username-email?username=" + username + "&email=" + URLEncoder.encode(email, "UTF-8"),
+                Boolean.class);
+    }
+
+    public static void ImportUsernameMailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UsernameMailBlockerURI,
+                JsonHelper.JsonSerializer(usernameMailBlocker), HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("validate response code", 200, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    public static com.junbo.common.error.Error ImportUsernameMailBlockerError(String username, String email) throws Exception {
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setUsername(username);
+        usernameMailBlocker.setEmail(email);
+
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UsernameMailBlockerURI,
+                JsonHelper.JsonSerializer(usernameMailBlocker), HttpclientHelper.HttpRequestType.post, nvps);
+        com.junbo.common.error.Error error = JsonHelper.JsonDeserializer(new InputStreamReader(response.getEntity().getContent()),
+                com.junbo.common.error.Error.class);
+        response.close();
+        return error;
     }
 
     public static UserCredential CredentialsGetByUserId(UserId userId) throws Exception {

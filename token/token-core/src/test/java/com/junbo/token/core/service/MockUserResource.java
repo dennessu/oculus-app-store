@@ -64,4 +64,9 @@ public class MockUserResource implements UserResource {
     public Promise<User> silentPut(UserId userId, User user) {
         return Promise.pure(null);
     }
+
+    @Override
+    public Promise<Boolean> checkUsernameEmailBlocker(String username, String email) {
+        return null;
+    }
 }

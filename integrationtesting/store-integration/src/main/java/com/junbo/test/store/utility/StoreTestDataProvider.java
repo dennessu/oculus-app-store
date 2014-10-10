@@ -20,6 +20,7 @@ import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
 import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
@@ -134,6 +135,15 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         }
 
         return response;
+    }
+
+    public void PrepareUsernameEmailBlocker(String username, String email) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_MIGRATION);
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setEmail(email);
+        usernameMailBlocker.setUsername(username);
+
+        identityClient.postUsernameEmailBlocker(usernameMailBlocker);
     }
 
     public ConfirmEmailResponse confirmEmail(String link) throws Exception {

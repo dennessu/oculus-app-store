@@ -152,6 +152,56 @@ public class LoginResourceTesting extends BaseTestClass {
             priority = Priority.Dailies,
             features = "Store",
             component = Component.STORE,
+            owner = "Zhaoyunlong",
+            status = Status.Enable
+    )
+    @Test
+    public void testCreateUserBlock() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        String email = createUserRequest.getEmail();
+        String username = createUserRequest.getUsername();
+        testDataProvider.PrepareUsernameEmailBlocker(username, email);
+
+        createUserRequest.setEmail(RandomHelper.randomEmail());
+        Error error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        String errorMessage = "username and email are occupied";
+        String field = "username";
+        assert error.getDetails().get(0).getField().equalsIgnoreCase(field);
+        assert error.getDetails().get(0).getReason().contains(errorMessage);
+
+        createUserRequest.setUsername(username.toUpperCase());
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase(field);
+        assert error.getDetails().get(0).getReason().contains(errorMessage);
+
+        createUserRequest.setUsername(username.toLowerCase());
+        error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");
+        assert error != null;
+        assert error.getDetails().get(0).getField().equalsIgnoreCase(field);
+        assert error.getDetails().get(0).getReason().contains(errorMessage);
+
+        createUserRequest.setUsername(RandomHelper.randomAlphabetic(15));
+        createUserRequest.setEmail(email);
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse != null;
+        assert authTokenResponse.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        email = createUserRequest.getEmail();
+        username = createUserRequest.getUsername();
+        testDataProvider.PrepareUsernameEmailBlocker(username, email);
+
+        authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        assert authTokenResponse != null;
+        assert authTokenResponse.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
             steps = {

@@ -13,11 +13,15 @@ import com.junbo.identity.core.service.validator.EmailValidator
 import com.junbo.identity.core.service.validator.TimezoneValidator
 import com.junbo.identity.core.service.validator.UserValidator
 import com.junbo.identity.core.service.validator.UsernameValidator
+import com.junbo.identity.data.hash.PiiHash
+import com.junbo.identity.data.hash.PiiHashFactory
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.*
+import com.junbo.identity.data.repository.migration.UsernameEmailBlockerRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.*
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -60,6 +64,10 @@ class UserValidatorImpl implements UserValidator {
     private Boolean enableVatValidation
     // Any data that will use this data should be data issue, we may need to fix this.
     private Integer maximumFetchSize
+
+    private UsernameEmailBlockerRepository usernameEmailBlockerRepository
+
+    private PiiHashFactory piiHashFactory
 
     @Override
     Promise<Void> validateForCreate(User user) {
@@ -218,6 +226,33 @@ class UserValidatorImpl implements UserValidator {
             }.then {
                 return Promise.pure(null)
             }
+        }
+    }
+
+    @Override
+    Promise<Boolean> validateUsernameEmailBlocker(String username, String email) {
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(email)) {
+            return Promise.pure(true)
+        }
+
+        return usernameEmailBlockerRepository.searchByUsername(normalizeService.normalize(username), Integer.MAX_VALUE, 0).then {
+            List<UsernameMailBlocker> blockerList ->
+            if (CollectionUtils.isEmpty(blockerList)) {
+                return Promise.pure(false)
+            }
+            if (blockerList.size() > 1) {
+                return Promise.pure(true)
+            }
+
+            UsernameMailBlocker blocker = blockerList.get(0)
+            PiiHash piiHash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
+            String hashedMail = piiHash.generateHash(email.toLowerCase(Locale.ENGLISH))
+
+            if (blocker.hashEmail.equalsIgnoreCase(hashedMail)) {
+                return Promise.pure(false)
+            }
+
+            return Promise.pure(true)
         }
     }
 
@@ -701,6 +736,18 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
+    // todo:    Need to add this method to util
+    private PiiHash getPiiHash(String type) {
+        PiiHash hash = piiHashFactory.getAllPiiHashes().find { PiiHash piiHash ->
+            return piiHash.handles(type)
+        }
+        if (hash == null) {
+            throw new IllegalStateException('No hash implementation for type ' + type)
+        }
+
+        return hash
+    }
+
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
@@ -764,5 +811,15 @@ class UserValidatorImpl implements UserValidator {
     @Required
     void setMaximumFetchSize(Integer maximumFetchSize) {
         this.maximumFetchSize = maximumFetchSize
+    }
+
+    @Required
+    void setUsernameEmailBlockerRepository(UsernameEmailBlockerRepository usernameEmailBlockerRepository) {
+        this.usernameEmailBlockerRepository = usernameEmailBlockerRepository
+    }
+
+    @Required
+    void setPiiHashFactory(PiiHashFactory piiHashFactory) {
+        this.piiHashFactory = piiHashFactory
     }
 }
