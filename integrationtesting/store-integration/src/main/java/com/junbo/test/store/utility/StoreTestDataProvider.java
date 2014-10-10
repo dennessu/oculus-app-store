@@ -136,6 +136,24 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return response;
     }
 
+    public AuthTokenResponse RegisterUser(CreateUserRequest createUserRequest,
+                                          int expectedResponseCode) throws Exception {
+        AuthTokenResponse response = loginClient.CreateUser(createUserRequest, expectedResponseCode);
+        return response;
+    }
+
+    public void verifyEmailLinks(CreateUserRequest createUserRequest, AuthTokenResponse response) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()),
+                createUserRequest.getEmail());
+        assert links != null;
+        for (String link : links) {
+            confirmEmail(link);
+            //oAuthClient.accessEmailVerifyLink(link);
+        }
+    }
+
+
     public ConfirmEmailResponse confirmEmail(String link) throws Exception {
         ConfirmEmailRequest request = new ConfirmEmailRequest();
         request.setEvc(getEvcCode(link));
@@ -447,7 +465,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return offer;
     }
 
-    public OfferRevision getOfferRevision(String offerRevisionId) throws Exception{
+    public OfferRevision getOfferRevision(String offerRevisionId) throws Exception {
         OfferRevision offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
         if (offerRevision == null) {
             offerRevision = offerRevisionClient.getOfferRevision(offerRevisionId);
@@ -455,11 +473,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return offerRevision;
     }
 
-    public Item getItemByItemId(String itemId) throws Exception{
+    public Item getItemByItemId(String itemId) throws Exception {
         return getItemByItemId(itemId, false);
     }
 
-    public Item getItemByItemId(String itemId, boolean ignoreError) throws Exception{
+    public Item getItemByItemId(String itemId, boolean ignoreError) throws Exception {
         Item item = Master.getInstance().getItem(itemId);
         if (item == null) {
             try {
