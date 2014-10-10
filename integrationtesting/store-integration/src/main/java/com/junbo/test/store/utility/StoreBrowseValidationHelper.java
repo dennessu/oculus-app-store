@@ -151,7 +151,7 @@ public class StoreBrowseValidationHelper {
             Assert.assertEquals(rating.getRatingsCount(), caseyAggregateRating.getCount(), "rating count not correct");
             Assert.assertNull(rating.getCommentsCount(), "comments count should be null");
 
-            for (int i = 0;i < caseyAggregateRating.getHistogram().length; i += 2) {
+            for (int i = 0; i < caseyAggregateRating.getHistogram().length; i += 2) {
                 Assert.assertEquals(rating.getRatingsHistogram().get(i / 2).longValue(),
                         (caseyAggregateRating.getHistogram()[i] + caseyAggregateRating.getHistogram()[i + 1]), "rating histogram not correct");
             }
@@ -164,14 +164,14 @@ public class StoreBrowseValidationHelper {
         com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue(), true);
         if (catalogOffer == null || catalogItem == null) {
             LOGGER.info("Offer/Item not found, skip verify item:{}", item.getSelf());
-            return ;
+            return;
         }
-        OfferRevision currentOfferRevision  = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
+        OfferRevision currentOfferRevision = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
         ItemRevision currentItemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevision().getValue());
 
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
-        List<ItemRevision> itemRevisions =  Arrays.asList(currentItemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
+        List<ItemRevision> itemRevisions = Arrays.asList(currentItemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
 
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
             for (String id : catalogOffer.getCategories()) {
@@ -179,7 +179,7 @@ public class StoreBrowseValidationHelper {
             }
         }
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogItem.getGenres())) {
-            for (String id: catalogItem.getGenres()) {
+            for (String id : catalogItem.getGenres()) {
                 itemAttributes.add(storeTestDataProvider.getItemAttribute(id));
             }
         }
@@ -198,15 +198,15 @@ public class StoreBrowseValidationHelper {
         verifyAggregateRatingsBasic(item.getAggregatedRatings());
     }
 
-    public void validateCmsSection(SectionInfoNode sectionInfoNode, String name, String cmsPageName, String slot) {
-        Assert.assertEquals(sectionInfoNode.getCriteria(), cmsPageName + "-" + slot);
-        Assert.assertEquals(sectionInfoNode.getName(), name);
+    public void validateCmsSection(SectionInfoNode sectionInfoNode, String expectedName, String expectedCriteria) {
+        Assert.assertEquals(sectionInfoNode.getCriteria(), expectedCriteria);
+        Assert.assertEquals(sectionInfoNode.getName(), expectedName);
         Assert.assertNull(sectionInfoNode.getCategory());
     }
 
-    public void validateCmsSection(SectionInfo sectionInfo, String name, String cmsPageName, String slot) {
-        Assert.assertEquals(sectionInfo.getCriteria(), cmsPageName + "-" + slot);
-        Assert.assertEquals(sectionInfo.getName(), name);
+    public void validateCmsSection(SectionInfo sectionInfo, String expectedName, String expectedCriteria) {
+        Assert.assertEquals(sectionInfo.getCriteria(), expectedCriteria);
+        Assert.assertEquals(sectionInfo.getName(), expectedName);
         Assert.assertNull(sectionInfo.getCategory());
     }
 
@@ -236,7 +236,7 @@ public class StoreBrowseValidationHelper {
 
     public void verifyDefaultAggregateRatings(Map<String, AggregatedRatings> aggregatedRatingsMap) {
         Assert.assertEquals(aggregatedRatingsMap.keySet(), new HashSet<>(Arrays.asList("comfort", "quality")));
-        for (AggregatedRatings ratings:aggregatedRatingsMap.values()) {
+        for (AggregatedRatings ratings : aggregatedRatingsMap.values()) {
             verifyDefaultAggregateRatings(ratings);
         }
     }
@@ -246,7 +246,7 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(aggregatedRating.getAverageRating(), 0.0, 0.00001);
         Assert.assertEquals(aggregatedRating.getRatingsCount(), new Long(0));
         Map<Integer, Long> ratingsHistogram = new HashMap<>();
-        for (int i = 0;i < 5;++i) {
+        for (int i = 0; i < 5; ++i) {
             ratingsHistogram.put(i, 0L);
         }
         Assert.assertEquals(aggregatedRating.getRatingsHistogram(), ratingsHistogram);
@@ -263,13 +263,13 @@ public class StoreBrowseValidationHelper {
 
     public void verifyImage(Images images, Map<String, String> mainImageUrls, List<Map<String, String>> galleries) {
         Assert.assertEquals(images.getMain().keySet(), mainImageUrls.keySet());
-        for (Map.Entry<String, String> entry: mainImageUrls.entrySet()) {
+        for (Map.Entry<String, String> entry : mainImageUrls.entrySet()) {
             Assert.assertTrue(images.getMain().get(entry.getKey()).getImageUrl().contains(entry.getValue()));
         }
         Assert.assertEquals(images.getGallery().size(), galleries.size());
-        for (int i = 0;i < galleries.size();++i) {
+        for (int i = 0; i < galleries.size(); ++i) {
             Assert.assertEquals(images.getGallery().get(i).keySet(), galleries.get(i).keySet());
-            for (Map.Entry<String, String> entry: galleries.get(i).entrySet()) {
+            for (Map.Entry<String, String> entry : galleries.get(i).entrySet()) {
                 Assert.assertTrue(images.getGallery().get(i).get(entry.getKey()).getImageUrl().contains(entry.getValue()));
             }
         }
@@ -293,14 +293,14 @@ public class StoreBrowseValidationHelper {
     private void verifyItemImages(Images images, com.junbo.catalog.spec.model.common.Images catalogImages) {
         if (catalogImages == null) {
             Assert.assertNull(images);
-            return ;
+            return;
         }
         verifyImageMap(images.getMain(), catalogImages.getMain(), catalogImages.getThumbnail());
         if (catalogImages.getGallery() == null) {
             Assert.assertEquals(images.getGallery().size(), 0);
         } else {
             Assert.assertEquals(images.getGallery().size(), catalogImages.getGallery().size());
-            for (int i = 0;i < images.getGallery().size();++i) {
+            for (int i = 0; i < images.getGallery().size(); ++i) {
                 verifyImageMap(images.getGallery().get(i), catalogImages.getGallery().get(i).getFull(), catalogImages.getGallery().get(i).getThumbnail());
             }
         }
@@ -353,8 +353,7 @@ public class StoreBrowseValidationHelper {
             if (offerRevision.getCountries() == null && offerRevision.getCountries().get(country) == null &&
                     offerRevision.getCountries().get(country).getReleaseDate() == null) {
                 Assert.assertNull(appDetails.getReleaseDate());
-            }
-            else {
+            } else {
                 Assert.assertEquals(appDetails.getReleaseDate(), offerRevision.getCountries().get(country).getReleaseDate());
             }
         }
@@ -379,14 +378,14 @@ public class StoreBrowseValidationHelper {
             }
         });
         Assert.assertEquals(revisions.size(), revisionNotes.size());
-        for (int i = 0;i < revisionNotes.size(); ++i) {
+        for (int i = 0; i < revisionNotes.size(); ++i) {
             RevisionNote revisionNote = revisionNotes.get(i);
             ItemRevision historyItemRevision = revisions.get(i);
             ItemRevisionLocaleProperties historyLocalProperties = historyItemRevision.getLocales().get(locale);
             Binary historyBinary = historyItemRevision.getBinaries() == null ? null : historyItemRevision.getBinaries().get(Platform);
 
             Assert.assertEquals(revisionNote.getTitle(), historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getShortNotes());
-            Assert.assertEquals(revisionNote.getDescription(), historyLocalProperties == null ? null :  historyLocalProperties.getReleaseNotes().getLongNotes());
+            Assert.assertEquals(revisionNote.getDescription(), historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getLongNotes());
             Assert.assertEquals(revisionNote.getVersionCode(), historyBinary == null || historyBinary.getMetadata() == null
                     || historyBinary.getMetadata().get("versionCode") == null ? null : historyBinary.getMetadata().get("versionCode").asInt());
             Assert.assertEquals(revisionNote.getVersionString(), historyBinary == null ? null : historyBinary.getVersion());
@@ -418,10 +417,10 @@ public class StoreBrowseValidationHelper {
         return entry.getValue();
     }
 
-    private void verifyImageMap(Map<String, Image> storeImageMap, Map<String , com.junbo.catalog.spec.model.common.Image>... catalogImageMaps) {
-        Map<String , Image> expected = new HashMap<>();
-        for (Map<String , com.junbo.catalog.spec.model.common.Image> catalogImageMap : catalogImageMaps) {
-            for (Map.Entry<String , com.junbo.catalog.spec.model.common.Image> entry : catalogImageMap.entrySet()) {
+    private void verifyImageMap(Map<String, Image> storeImageMap, Map<String, com.junbo.catalog.spec.model.common.Image>... catalogImageMaps) {
+        Map<String, Image> expected = new HashMap<>();
+        for (Map<String, com.junbo.catalog.spec.model.common.Image> catalogImageMap : catalogImageMaps) {
+            for (Map.Entry<String, com.junbo.catalog.spec.model.common.Image> entry : catalogImageMap.entrySet()) {
                 try {
                     String groupName = getImageSizeGroup(entry.getKey());
                     Image storeImage = new Image();
@@ -486,7 +485,7 @@ public class StoreBrowseValidationHelper {
             @Override
             public void verify(List<AgeRating> o1, List<AgeRating> o2) {
                 Assert.assertEquals(o1.size(), o2.size());
-                for (int i = 0;i < o1.size();++i) {
+                for (int i = 0; i < o1.size(); ++i) {
                     AgeRating a1 = o1.get(i);
                     AgeRating a2 = o2.get(i);
                     Assert.assertEquals(a1.getCategory(), a2.getCategory());

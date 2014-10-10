@@ -832,9 +832,6 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private Item getItemsInSection(String category, String criteria, String name) throws Exception {
         List<Item> items = getItemsInSection(category, criteria, 10);
-        for (Item item:items) {
-    private Item getItemsInSection(String category, String criteria, Integer pageSize, String name) throws Exception {
-        List<Item> items = getItemsInSection(category, criteria, pageSize);
         for (Item item : items) {
             if (item.getTitle().equals(name)) {
                 return item;
@@ -908,7 +905,7 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private void setupCmsOffers(List<String> slots, List<List<OfferId>> offers) throws Exception {
         Map<String, List<OfferId>> cmsOffers = new HashMap<>();
-        for (int i = 0;i < slots.size();++i) {
+        for (int i = 0; i < slots.size(); ++i) {
             cmsOffers.put(cmsPageName + "-" + slots.get(i), offers.get(i));
         }
         testDataProvider.postCaseyEmulatorData(null, null, cmsOffers);
