@@ -147,6 +147,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()),
                 createUserRequest.getEmail());
         assert links != null;
+        Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
         for (String link : links) {
             confirmEmail(link);
             //oAuthClient.accessEmailVerifyLink(link);

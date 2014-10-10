@@ -377,7 +377,6 @@ public class StoreTesting extends BaseTestClass {
             if (ConfigHelper.getSetting("secondaryDcEndpoint") == null) return;
             CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
             AuthTokenResponse authTokenResponse = testDataProvider.RegisterUser(createUserRequest, 200);
-            Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
             testDataProvider.verifyEmailLinks(createUserRequest,authTokenResponse);
             validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
             String userName = authTokenResponse.getUsername();
