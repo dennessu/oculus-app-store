@@ -15,6 +15,7 @@ import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
 import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.casey.cms.CmsSchedule;
 import com.junbo.store.spec.model.external.casey.cms.Placement;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
@@ -109,6 +110,31 @@ public class StoreBrowseTesting extends BaseTestClass {
         // get toc again
         response = testDataProvider.getToc();
         validationHelper.verifyToc(response);
+    }
+
+    @Test
+    public void testGetTocErrorGettingSchedule() throws Exception {
+        TestContext.getData().putHeader("X_QA_CASEY_ERROR", "getCmsSchedules");
+        TocResponse response = gotoToc();
+        Assert.assertEquals(response.getSections().size(), 0);
+    }
+
+    @Test
+    public void testGetTocErrorGettingCmsPage() throws Exception {
+        TestContext.getData().putHeader("X_QA_CASEY_ERROR", "getCmsPages");
+        TocResponse response = gotoToc();
+        Assert.assertEquals(response.getSections().size(), 0);
+    }
+
+    @Test
+    public void testGetTocSectionCmsPageMissing() throws Exception {
+        try {
+            testDataProvider.postCaseyEmulatorData(new ArrayList<CmsSchedule>(), new ArrayList<CmsPage>(), null);
+            TocResponse response = gotoToc();
+            Assert.assertEquals(response.getSections().size(), 0);
+        } finally {
+            testDataProvider.resetEmulatorData();
+        }
     }
 
     @Test
