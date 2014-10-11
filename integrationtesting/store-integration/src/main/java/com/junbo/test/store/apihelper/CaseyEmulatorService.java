@@ -17,4 +17,6 @@ public interface CaseyEmulatorService {
     CaseyEmulatorData postEmulatorData(CaseyEmulatorData caseyEmulatorData) throws Exception;
 
     CaseyResults<CmsPage> getCmsPages(String path, String label, int expectedResponseCode) throws Exception;
+
+    void resetEmulatorData() throws Exception;
 }

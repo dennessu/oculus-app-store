@@ -362,8 +362,9 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     @Override
-    Promise<CaseyEmulatorData> resetEmulatorData() {
+    Promise<Void> resetEmulatorData() {
         caseyEmulatorDataRepository.resetData()
+        return Promise.pure()
     }
 
     private void addCmsContent(CmsContent cmsContent) {

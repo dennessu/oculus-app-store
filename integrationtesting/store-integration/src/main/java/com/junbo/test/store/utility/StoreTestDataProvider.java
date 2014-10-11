@@ -804,4 +804,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public CaseyResults<CmsPage> getCmsPage(String path, String label, int expectedCode) throws Exception {
         return caseyEmulatorClient.getCmsPages(path, label, expectedCode);
     }
+
+    public void resetEmulatorData() throws Exception {
+        caseyEmulatorClient.resetEmulatorData();
+    }
 }

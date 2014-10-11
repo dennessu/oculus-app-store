@@ -61,6 +61,11 @@ public class CaseyEmulatorServiceImpl extends HttpClientBase  implements CaseyEm
         return null;
     }
 
+    @Override
+    public void resetEmulatorData() throws Exception {
+        restApiCall(HttpClientBase.HTTPMethod.POST, baseUrl + "/reset", null, 200);
+    }
+
     private String appendQuery(String url, String name, Object val) {
         if (val != null) {
             return url + (url.endsWith("?") ? "" : "&") + name + "=" + val.toString();
