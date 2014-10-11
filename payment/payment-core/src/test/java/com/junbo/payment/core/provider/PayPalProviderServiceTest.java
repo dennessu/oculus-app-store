@@ -24,7 +24,7 @@ public class PayPalProviderServiceTest extends BaseTest {
     private PayPalProviderServiceImpl paypalProviderService;
     @Autowired
     private PaymentCallbackService paymentCallbackService;
-    @Test(enabled = true)
+    @Test(enabled = false)
     public void testCharge() throws ExecutionException, InterruptedException {
         PaymentInstrument request = addPI(buildPayPalRequest());
         final PaymentTransaction payment = new PaymentTransaction();
