@@ -122,4 +122,14 @@ public class postOrganization {
 
         Identity.GroupDelete(group);
     }
+
+    @Test(groups = "dailies")
+    public void testOrganizationUnicode() throws Exception {
+        Organization organization = IdentityModel.DefaultOrganization();
+        organization.setName("赵云龙&testcase" + RandomHelper.randomAlphabetic(15));
+        organization = Identity.OrganizationPostDefault(organization);
+
+        Organization newOrg = Identity.OrganizationGetByOrganizationId(organization.getId());
+        assert newOrg.getName().equalsIgnoreCase(organization.getName());
+    }
 }
