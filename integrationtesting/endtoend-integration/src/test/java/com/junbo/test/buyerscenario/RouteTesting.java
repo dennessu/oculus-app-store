@@ -32,7 +32,7 @@ public class RouteTesting extends BaseTestClass {
             owner = "ZhaoYunlong",
             status = Status.Enable,
             environment = "release",
-            description = "update nickname between two different endpoints",
+            description = "update nickname route testing",
             steps = {
                     "1. Register user against the first endpoint",
                     "2  Access email verification links against the second endpoint",
@@ -44,7 +44,7 @@ public class RouteTesting extends BaseTestClass {
             }
     )
     @Test
-    public void testUpdateNickNameRouteTesting() throws Exception {
+    public void testUpdateNickNameRoute() throws Exception {
         try {
             if (ConfigHelper.getSetting("secondaryDcEndpoint") == null) return;
             UserInfo userInfo = UserInfo.getRandomUserInfo();
