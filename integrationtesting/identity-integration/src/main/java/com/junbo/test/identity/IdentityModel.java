@@ -326,6 +326,28 @@ public class IdentityModel {
         return userCredential;
     }
 
+    public static Tos DefaultTos() throws Exception {
+        List<String> supportedCountries = new ArrayList<>();
+        supportedCountries.add("US");
+        return DefaultTos(RandomHelper.randomAlphabetic(15), "TOS", "APPROVED", supportedCountries);
+    }
+
+    public static Tos DefaultTos(String title, String type, String state, List<String> supportedCountries) throws Exception {
+        Tos tos = new Tos();
+        tos.setContent(RandomHelper.randomAlphabetic(1000));
+        tos.setType(type);
+        tos.setVersion(RandomHelper.randomAlphabetic(15));
+        tos.setTitle(title);
+        tos.setState(state);
+        List<CountryId> supportedCountryIds = new ArrayList<>();
+        for(String supportedCountry : supportedCountries) {
+            supportedCountryIds.add(new CountryId(supportedCountry));
+        }
+        tos.setCountries(supportedCountryIds);
+
+        return tos;
+    }
+
     public static UserCredentialVerifyAttempt DefaultUserCredentialAttempts(String userName, String password)
             throws Exception {
         UserCredentialVerifyAttempt ucva = new UserCredentialVerifyAttempt();

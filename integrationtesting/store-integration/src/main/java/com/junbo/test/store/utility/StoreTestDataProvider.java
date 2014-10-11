@@ -753,6 +753,15 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return caseyEmulatorClient.postEmulatorData(data);
     }
 
+    public void PrepareUsernameEmailBlocker(String username, String email) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_MIGRATION);
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setEmail(email);
+        usernameMailBlocker.setUsername(username);
+
+        identityClient.postUsernameEmailBlocker(usernameMailBlocker);
+    }
+
     public CaseyEmulatorData postCaseyEmulatorData(List<CmsSchedule> cmsSchedule, List<CmsPage> pages, Map<String, List<OfferId>> offerIds) throws Exception {
         CaseyEmulatorData data = new CaseyEmulatorData();
         data.setCaseyAggregateRatings(new ArrayList<CaseyAggregateRating>());

@@ -57,7 +57,7 @@ class UserServiceImpl implements UserService {
 
     private static final String EMAIL_SOURCE = 'Oculus'
     private static final String VERIFY_EMAIL_ACTION = 'EmailVerification_V1'
-    private static final String WELCOME_ACTION = 'Welcome_V1'
+    private static final String WELCOME_ACTION = 'Welcome_V2'
     private static final String RESET_PASSWORD_ACTION = 'PasswordReset_V1'
     private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
     private static final String EMAIL_RESET_PASSWORD_PATH = 'oauth2/reset-password'
@@ -510,6 +510,21 @@ class UserServiceImpl implements UserService {
         }
     }
 
+    private Promise<String> getUserLoginName(User user) {
+        if (user.username == null) {
+            return Promise.pure('')
+        } else {
+            return userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return Promise.pure('')
+                }
+
+                UserLoginName userLoginName = (UserLoginName)jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                return Promise.pure(userLoginName.userName)
+            }
+        }
+    }
+
     private Promise<String> getFirstName(User user) {
         if (user.name == null) {
             return Promise.pure('')
@@ -543,7 +558,8 @@ class UserServiceImpl implements UserService {
         } else if (action == WELCOME_ACTION) {
             return [
                 'firstName': getFirstName(user).get(),
-                'accountName': email,
+                'accountName': getUserLoginName(user).get(),
+                'email': email,
                 'link': link
             ]
         } else if (action == RESET_PASSWORD_ACTION) {

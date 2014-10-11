@@ -271,6 +271,48 @@
         "views": {
             "by_title" : {
                 "map": "function(doc) { emit(doc.title, doc._id)}"
+            },
+            "by_type": {
+                "map": "function(doc) { emit(doc.type, doc._id)}"
+            },
+            "by_state": {
+                "map": "function(doc) { emit(doc.state, doc._id)}"
+            },
+            "by_country": {
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit(doc.countries[i], doc._id)}}}"
+            },
+            "by_title_type": {
+                "map": "function(doc) { emit([doc.title, doc.type], doc._id)}"
+            },
+            "by_title_state": {
+                "map": "function(doc) { emit([doc.title, doc.state], doc._id)}"
+            },
+            "by_title_country": {
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.countries[i]], doc._id)}}}"
+            },
+            "by_type_state": {
+                "map": "function(doc) { emit([doc.type, doc.state], doc._id)}"
+            },
+            "by_type_country": {
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.type, doc.countries[i]], doc._id)}}}"
+            },
+            "by_state_country": {
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.state, doc.countries[i]], doc._id)}}}"
+            },
+            "by_title_type_state": {
+                "map": "function(doc) { emit([doc.title, doc.type, doc.state], doc._id)}"
+            },
+            "by_title_type_country": {
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.type, doc.countries[i]], doc._id)}}}"
+            },
+            "by_title_state_country": {
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.state, doc.countries[i]], doc._id)}}}"
+            },
+            "by_type_state_country": {
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.type, doc.state, doc.countries[i]], doc._id)}}}"
+            },
+            "by_title_type_state_country": {
+                "map": "function(doc) { if(doc.countries) { for(var i in doc.countries) { emit([doc.title, doc.type, doc.state, doc.countries[i]], doc._id)}}}"
             }
         }
     },

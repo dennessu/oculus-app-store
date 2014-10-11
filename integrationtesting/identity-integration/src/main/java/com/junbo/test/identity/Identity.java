@@ -52,6 +52,7 @@ public class Identity {
     public static final String IdentityV1UserGroupMemberURI = IdentityEndPointV1 + "/user-group-memberships";
     public static final String IdentityV1UserPersonalInfoURI = IdentityEndPointV1 + "/personal-info";
     public static final String IdentityV1UsernameMailBlockerURI = IdentityEndPointV1 + "/imports/username-email-block";
+    public static final String IdentityV1TosURI = IdentityEndPointV1 + "/tos";
 
     public static String httpAuthorizationHeader = "";
 
@@ -305,6 +306,59 @@ public class Identity {
 
     public static User UserPostDefault(User user) throws Exception {
         return (User) IdentityPost(IdentityV1UserURI, JsonHelper.JsonSerializer(user), User.class);
+    }
+
+    public static Tos TosPostDefault(Tos tos) throws Exception {
+        return IdentityPost(IdentityV1TosURI, JsonHelper.JsonSerializer(tos), Tos.class);
+    }
+
+    public static Tos TosGet(TosId tosId) throws Exception {
+        return IdentityGet(IdentityV1TosURI + "/" + tosId.getValue(), Tos.class);
+    }
+
+    public static List<Tos> TosSearch(String title, String type, String state, String country) throws Exception {
+        List<Tos> tosList = new ArrayList<Tos>();
+        List<Tos> tosResults = IdentityGet(buildTosSearchURI(title, state, type, country), Results.class).getItems();
+        for (Object obj : tosResults) {
+            tosList.add((Tos) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class));
+        }
+        return tosList;
+    }
+
+    private static String buildTosSearchURI(String title, String state, String type, String country) {
+        if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type + "&country" + country;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&country" + country;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&type=" + type + "&country" + country;
+        } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?state=" + state + "&type=" + type + "&country" + country;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?title=" + title + "&type=" + type;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&country=" + country;
+        } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?state=" + state + "&type=" + type;
+        } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?state=" + state + "&country=" + country;
+        } else if (!StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?type=" + type + "&country=" + country;
+        } else if (!StringUtils.isEmpty(title)) {
+            return IdentityV1TosURI + "?title=" + title;
+        } else if (!StringUtils.isEmpty(state)) {
+            return IdentityV1TosURI + "?state=" + state;
+        } else if (!StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?type=" + type;
+        } else if (!StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?country=" + country;
+        } else {
+            return IdentityV1TosURI;
+        }
     }
 
     public static User UserPut(User user) throws Exception {
