@@ -26,6 +26,8 @@ public class PurchaseState {
 
     private Date timestamp;
 
+    private String iapPackageName;
+
     public UserId getUser() {
         return user;
     }
@@ -48,6 +50,14 @@ public class PurchaseState {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getIapPackageName() {
+        return iapPackageName;
+    }
+
+    public void setIapPackageName(String iapPackageName) {
+        this.iapPackageName = iapPackageName;
     }
 
     public String getCountry() {

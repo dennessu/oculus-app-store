@@ -21,9 +21,6 @@ import com.junbo.common.util.IdFormatter
 import com.junbo.crypto.spec.model.ItemCryptoMessage
 import com.junbo.entitlement.spec.model.EntitlementSearchParam
 import com.junbo.entitlement.spec.model.PageMetadata
-import com.junbo.fulfilment.spec.model.FulfilmentAction
-import com.junbo.fulfilment.spec.model.FulfilmentItem
-import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
@@ -31,6 +28,7 @@ import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.promise.Promise
+import com.junbo.order.spec.model.FulfillmentHistory
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
@@ -62,6 +60,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
+import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
 import javax.ws.rs.BeanParam
@@ -474,10 +474,10 @@ class StoreResourceImpl implements StoreResource {
                 order = o
             }.then {
                 order.tentative = false
-                resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then {
+                resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
                     MakeFreePurchaseResponse response = new MakeFreePurchaseResponse()
-                    response.order = order.getId()
-                    getEntitlementsByOrder(order, null).then { List<Entitlement> entitlements ->
+                    response.order = settled.getId()
+                    getEntitlementsByOrder(settled, null).then { List<Entitlement> entitlements ->
                         response.entitlements = entitlements
                         expandEntitlementItem(response.entitlements, apiContext).then {
                             return Promise.pure(response)
@@ -511,6 +511,14 @@ class StoreResourceImpl implements StoreResource {
             requestValidator.validatePreparePurchaseRequest(request).then {
                 requestValidator.validateOfferForPurchase(user.getId(), request.offer, apiContext.country.getId(), apiContext.locale.getId(), false)
             }
+        }.then { // validate offer if inapp purchase
+            if (request.iapParams != null) {
+                return getItemByPackageName(request.iapParams.packageName).then { Item item ->
+                    hostItem = item
+                    return iapValidator.validateInAppOffer(offerId, hostItem)
+                }
+            }
+            return Promise.pure(null)
         }.then {
             if (request.purchaseToken == null) {
                 purchaseState = new PurchaseState(
@@ -530,14 +538,6 @@ class StoreResourceImpl implements StoreResource {
                 currencyId = country.defaultCurrency
                 return Promise.pure(null)
             }
-        }.then { // validate offer if inapp purchase
-            if (request.iapParams != null) {
-                return getItemByPackageName(request.iapParams.packageName).then { Item item ->
-                    hostItem = item
-                    return iapValidator.validateInAppOffer(offerId, hostItem)
-                }
-            }
-            return Promise.pure(null)
         }.then {
             if (request.instrument == null) {
                 return Promise.pure(null)
@@ -577,17 +577,12 @@ class StoreResourceImpl implements StoreResource {
                 order.payments = [new PaymentInfo(paymentInstrument : user.defaultPI)]
                 selectedInstrument = user.defaultPI
             }
-            if (request.iapParams != null) {
-                order.properties = [:]
-                order.properties.put('iap.packageName', request.iapParams.packageName)
-                order.properties.put('iap.hostItemId', hostItem.itemId)
-            }
 
-            return resourceContainer.orderResource.createOrder(order).then { Order createOrder ->
+            return resourceContainer.orderResource.createOrder(order).then { Order createdOrder ->
 
                 return resourceContainer.currencyResource.get(currencyId, new CurrencyGetOptions()).then { Currency currency ->
-                    response.formattedTotalPrice = order.totalAmount + currency.symbol
-                    purchaseState.order = order.getId()
+                    response.formattedTotalPrice = createdOrder.totalAmount.setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_UP) + currency.symbol
+                    purchaseState.order = createdOrder.getId()
                     return tokenProcessor.toTokenString(purchaseState).then { String token ->
                         response.purchaseToken = token
                         return Promise.pure(null)
@@ -599,7 +594,7 @@ class StoreResourceImpl implements StoreResource {
                             return Promise.pure(response)
                         }
                     }
-                    response.order = createOrder.getId()
+                    response.order = createdOrder.getId()
                     return Promise.pure(response)
                 }
             }
@@ -645,36 +640,7 @@ class StoreResourceImpl implements StoreResource {
                     return Promise.pure(new CommitPurchaseResponse(challenge : challenge, purchaseToken: token))
                 }
             }
-            OrderId orderId = purchaseState.order
-            String iapPackageName = null, iapItemId = null
-            CommitPurchaseResponse response = new CommitPurchaseResponse()
-            boolean inappPurchase
-            resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
-                iapPackageName = order.properties?.get('iap.packageName')
-                iapItemId = order.properties?.get('iap.hostItemId')
-                inappPurchase = !StringUtils.isEmpty(iapPackageName)
-                order.tentative = false
-                resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
-                    response.order = settled.getId()
-                    return Promise.pure(null)
-                }.then { // get entitlements
-                    getEntitlementsByOrder(order, iapPackageName).then { List<Entitlement> entitlements ->
-                        response.entitlements = entitlements
-                        return Promise.pure(null)
-                    }
-                }.then { // sign the inapp entitlements
-                    if (!inappPurchase) {
-                        return Promise.pure(null)
-                    }
-                    return Promise.each(response.entitlements) { Entitlement entitlement ->
-                        signEntitlement(entitlement, iapItemId)
-                    }
-                }
-            }.then {
-                expandEntitlementItem(response.entitlements, apiContext).then {
-                    return Promise.pure(response)
-                }
-            }
+            doCommitPurchaseResponse(purchaseState, apiContext)
         }
     }
 
@@ -917,48 +883,37 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<List<Entitlement>> getEntitlementsByOrder(Order order, String hostPackageName) {
+    private Promise<List<Entitlement>>  getEntitlementsByOrder(Order order, String hostPackageName) {
+        Assert.notNull(order)
         List<Entitlement> result = [] as LinkedList
-        Set<String> entitlementIds = [] as HashSet
+        Set<EntitlementId> entitlementIds = [] as HashSet
 
-        // get the entitlement ids
-        Promise promise = resourceContainer.fulfilmentResource.getByOrderId(order.getId()).then { FulfilmentRequest fulfilmentRequest ->
-            if (fulfilmentRequest.items != null) {
-                fulfilmentRequest.items.each { FulfilmentItem fulfilmentItem ->
-                    if (fulfilmentItem.actions == null) {
-                        return
-                    }
-                    fulfilmentItem.actions.each { FulfilmentAction fulfilmentAction ->
-                        if (ACTION_TYPE_GRANT_ENTITLEMENT.equalsIgnoreCase(fulfilmentAction.type) &&
-                                ACTION_STATUS_SUCCESS.equalsIgnoreCase(fulfilmentAction.status) &&
-                                fulfilmentAction.result != null && fulfilmentAction.result.entitlementIds != null) {
-
-                            fulfilmentAction.result.entitlementIds.each { String id ->
-                                entitlementIds.add(id)
-                            }
+        // get entitlement ids from order
+        if (!CollectionUtils.isEmpty(order.orderItems)) {
+            order.orderItems.each { OrderItem orderItem ->
+                if (!CollectionUtils.isEmpty(orderItem.fulfillmentHistories)) {
+                    orderItem.fulfillmentHistories.each { FulfillmentHistory fulfillmentHistory ->
+                        if (!CollectionUtils.isEmpty(fulfillmentHistory?.entitlements)) {
+                            entitlementIds.addAll(fulfillmentHistory.entitlements)
                         }
                     }
                 }
             }
-            return Promise.pure(null)
-
         }
 
         // get entitlements
-        return promise.then {
-            return Promise.each(entitlementIds) { String entitlementId ->
-                return resourceContainer.entitlementResource.getEntitlement(new EntitlementId(entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
-                    if (StringUtils.isEmpty(hostPackageName) && catalogEntitlement.type != EntitlementType.DOWNLOAD.name()) {
-                        return Promise.pure(null)
-                    }
-                    return convertEntitlement(catalogEntitlement, hostPackageName).then { Entitlement e ->
-                        result << e
-                        return Promise.pure(null)
-                    }
+        return Promise.each(entitlementIds) { EntitlementId entitlementId ->
+            return resourceContainer.entitlementResource.getEntitlement(entitlementId).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
+                if (StringUtils.isEmpty(hostPackageName) && catalogEntitlement.type != EntitlementType.DOWNLOAD.name()) {
+                    return Promise.pure(null)
                 }
-            }.then {
-                return Promise.pure(result)
+                return convertEntitlement(catalogEntitlement, hostPackageName).then { Entitlement e ->
+                    result << e
+                    return Promise.pure(null)
+                }
             }
+        }.then {
+            return Promise.pure(result)
         }
     }
 
@@ -1193,6 +1148,46 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
+    Promise<CommitPurchaseResponse> doCommitPurchaseResponse(PurchaseState purchaseState, ApiContext apiContext) {
+        OrderId orderId = purchaseState.order
+        String iapItemId = null
+        CommitPurchaseResponse response = new CommitPurchaseResponse()
+        boolean inappPurchase = purchaseState.iapPackageName != null
+
+        Promise.pure().then {
+            if (purchaseState.iapPackageName == null) {
+                return Promise.pure()
+            }
+            getItemByPackageName(purchaseState.iapPackageName).then { Item hostItem ->
+                iapItemId = hostItem.getId()
+                return Promise.pure()
+            }
+        }.then {
+            resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
+                order.tentative = false
+                resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
+                    response.order = settled.getId()
+                    getEntitlementsByOrder(settled, purchaseState.iapPackageName).then { List<Entitlement> entitlements ->
+                        response.entitlements = entitlements
+                        return Promise.pure(null)
+                    }
+                }.then { // sign the inapp entitlements
+                    if (!inappPurchase) {
+                        return Promise.pure(null)
+                    }
+                    return Promise.each(response.entitlements) { Entitlement entitlement ->
+                        signEntitlement(entitlement, iapItemId)
+                    }
+                }
+            }.then {
+                expandEntitlementItem(response.entitlements, apiContext).then {
+                    return Promise.pure(response)
+                }
+            }
+        }
+
+    }
+
     private void fillPurchaseState(PurchaseState purchaseState, PreparePurchaseRequest request, ApiContext apiContext) {
         if (purchaseState.user != AuthorizeContext.currentUserId) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
@@ -1211,6 +1206,11 @@ class StoreResourceImpl implements StoreResource {
             purchaseState.offer = request.offer.value
         } else if (purchaseState.offer != request.offer.value) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('offer', 'Input offer isn\'t consistent with token').exception()
+        }
+        if (purchaseState.iapPackageName == null) {
+            purchaseState.iapPackageName = request.iapParams?.packageName
+        } else if (purchaseState.iapPackageName != request.iapParams?.packageName) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('iapParams.packageName', 'Input packageName isn\'t consistent with token').exception()
         }
     }
 

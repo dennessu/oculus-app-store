@@ -65,7 +65,7 @@ public class StoreValidationHelper extends BaseValidationHelper {
     }
 
     public void verifyPreparePurchase(PreparePurchaseResponse response) {
-        verifyEqual(response.getFormattedTotalPrice(), String.format("10.0$"), "verify formatted total price");
+        verifyEqual(response.getFormattedTotalPrice(), String.format("10.00$"), "verify formatted total price");
         if (response.getPurchaseToken() == null || response.getPurchaseToken().isEmpty()) {
             throw new TestException("missing purchase token in prepare purchase response");
         }

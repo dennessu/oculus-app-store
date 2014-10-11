@@ -32,7 +32,6 @@ import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
-import javax.ws.rs.core.Response
 import javax.ws.rs.ext.Provider
 
 @Provider
@@ -219,7 +218,7 @@ class LoginResourceImpl implements LoginResource {
                     agreementTime: new Date()))
         }.then {
             // get the auth token
-            innerSignIn(apiContext.user.getId(), storeUserEmail)
+            innerSignIn(request.email, request.password)
         }
     }
 
@@ -287,9 +286,8 @@ class LoginResourceImpl implements LoginResource {
             return resourceContainer.emailVerifyEndpoint.verifyEmail(confirmEmailRequest.evc, apiContext.locale.toString())
         }.recover { Throwable ex ->
             appErrorUtils.throwUnknownError('confirmEmail', ex)
-        }.then { Response response ->
-            if (response != null && response.entity instanceof ViewModel) {
-                ViewModel viewModel = (ViewModel)response.entity
+        }.then { ViewModel viewModel ->
+            if (viewModel != null) {
                 if (viewModel.model?.verifyResult == Boolean.TRUE) {
                     return Promise.pure(new ConfirmEmailResponse(
                             isSuccess: true,
@@ -301,7 +299,6 @@ class LoginResourceImpl implements LoginResource {
                         isSuccess: false
                 ))
             }
-
             return Promise.pure(new ConfirmEmailResponse(
                     isSuccess: false
             ))
