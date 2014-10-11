@@ -289,7 +289,7 @@ public class authorizeUser {
         ValidateErrorFreeResponse(currentViewState);
         String loginResponseLink = Oauth.UserLogin(cid, "silkcloudtest+allEnvLoginUser@gmail.com", Oauth.DefaultUserPwd);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
-        TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken, secondaryDcEndpoint);
+        TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken, secondaryDcEndpoint + "/oauth2/tokeninfo");
         Validator.Validate("validate getting token from another dc", true, tokenInfo != null);
     }
 
