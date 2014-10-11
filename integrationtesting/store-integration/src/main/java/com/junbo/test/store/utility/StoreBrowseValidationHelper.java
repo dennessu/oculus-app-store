@@ -158,7 +158,7 @@ public class StoreBrowseValidationHelper {
         }
     }
 
-    public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled) throws Exception {
+    public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled, boolean verifyAttributes) throws Exception {
         com.junbo.catalog.spec.model.offer.Offer catalogOffer =
                 storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue(), true);
         com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue(), true);
@@ -191,7 +191,7 @@ public class StoreBrowseValidationHelper {
         verifyItem(item, catalogItem, currentItemRevision, currentOfferRevision, developer, serviceClientEnabled);
         verifyItemImages(item.getImages(), localeProperties.getImages());
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
-                developer, publisher, serviceClientEnabled);
+                developer, publisher, serviceClientEnabled, verifyAttributes);
         boolean isFree = PriceType.FREE.name().equals(currentOfferRevision.getPrice().getPriceType());
         verifyItemOffer(item.getOffer(), catalogOffer, currentOfferRevision, isFree);
 
@@ -308,27 +308,31 @@ public class StoreBrowseValidationHelper {
 
     private void verifyAppDetails(AppDetails appDetails, List<OfferAttribute> categories, List<ItemAttribute> genres,
                                   OfferRevision offerRevision, ItemRevision itemRevision, List<ItemRevision> itemRevisions,
-                                  Organization developer, Organization publisher, boolean serviceClientEnabled) {
+                                  Organization developer, Organization publisher, boolean serviceClientEnabled, boolean verifyAttributes) {
         // verify categories
         ItemRevisionLocaleProperties localeProperties = itemRevision.getLocales().get(locale);
-        if (categories == null) {
-            Assert.assertTrue(appDetails.getCategories().isEmpty());
-        } else {
-            Assert.assertEquals(appDetails.getCategories().size(), categories.size());
-            for (int i = 0; i < appDetails.getCategories().size(); ++i) {
-                Assert.assertEquals(appDetails.getCategories().get(i).getId(), categories.get(i).getId());
-                Assert.assertEquals(appDetails.getCategories().get(i).getName(), categories.get(i).getLocales().get(locale).getName());
+        if (verifyAttributes) {
+            if (categories == null) {
+                Assert.assertTrue(appDetails.getCategories().isEmpty());
+            } else {
+                Assert.assertEquals(appDetails.getCategories().size(), categories.size());
+                for (int i = 0; i < appDetails.getCategories().size(); ++i) {
+                    Assert.assertEquals(appDetails.getCategories().get(i).getId(), categories.get(i).getId());
+                    Assert.assertEquals(appDetails.getCategories().get(i).getName(), categories.get(i).getLocales().get(locale).getName());
+                }
             }
         }
 
         // verify genres
-        if (genres == null) {
-            Assert.assertTrue(appDetails.getGenres().isEmpty());
-        } else {
-            Assert.assertEquals(appDetails.getGenres().size(), genres.size());
-            for (int i = 0; i < appDetails.getGenres().size(); ++i) {
-                Assert.assertEquals(appDetails.getGenres().get(i).getId(), genres.get(i).getId());
-                Assert.assertEquals(appDetails.getGenres().get(i).getName(), genres.get(i).getLocales().get(locale).getName());
+        if (verifyAttributes) {
+            if (genres == null) {
+                Assert.assertTrue(appDetails.getGenres().isEmpty());
+            } else {
+                Assert.assertEquals(appDetails.getGenres().size(), genres.size());
+                for (int i = 0; i < appDetails.getGenres().size(); ++i) {
+                    Assert.assertEquals(appDetails.getGenres().get(i).getId(), genres.get(i).getId());
+                    Assert.assertEquals(appDetails.getGenres().get(i).getName(), genres.get(i).getLocales().get(locale).getName());
+                }
             }
         }
 
