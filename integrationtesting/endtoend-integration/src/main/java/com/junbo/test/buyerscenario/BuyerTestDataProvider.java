@@ -18,25 +18,28 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.identity.spec.v1.model.Address;
+import com.junbo.identity.spec.v1.model.User;
+import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
 import com.junbo.test.billing.utility.BillingTestDataProvider;
-import com.junbo.test.catalog.enums.CatalogItemType;
-import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
-import com.junbo.test.common.Utility.BaseTestDataProvider;
-
-import com.junbo.test.common.apihelper.cart.CartService;
-import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
-import com.junbo.order.spec.model.Order;
-import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
+import com.junbo.test.common.Utility.BaseTestDataProvider;
+import com.junbo.test.common.apihelper.cart.CartService;
+import com.junbo.test.common.apihelper.cart.impl.CartServiceImpl;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.entitlement.EntitlementService;
@@ -65,6 +68,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     protected PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
     protected FulfilmentTestDataProvider fulfilmentProvider = new FulfilmentTestDataProvider();
     protected BillingTestDataProvider billingProvider = new BillingTestDataProvider();
+    protected OAuthService oAuthProvider = OAuthServiceImpl.getInstance();
 
     private LogHelper logger = new LogHelper(BuyerTestDataProvider.class);
 
@@ -85,6 +89,24 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public String createUser(String vat) throws Exception {
         return identityClient.PostUser(vat);
+    }
+
+    public String registerUser(UserInfo userInfo) throws Exception {
+        return identityClient.RegisterUser(userInfo, 200);
+    }
+
+    public String getEmailVerificationLinks(String cid) throws Exception {
+        return identityClient.GetEmailVerificationLinks(cid);
+    }
+
+    public void accessEmailVerificationLinks(String emailVerifyLink) throws Exception {
+        if (emailVerifyLink != null && !emailVerifyLink.isEmpty()) {
+            oAuthProvider.accessEmailVerifyLink(emailVerifyLink);
+        }
+    }
+
+    public String BindUserPersonalInfos(UserInfo userInfo) throws Exception {
+        return identityClient.BindUserPersonalInfos(userInfo);
     }
 
     public String createUser(String userName, String emailAddress) throws Exception {
@@ -108,6 +130,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public String getUserByUid(String userId) throws Exception {
         return identityClient.GetUserByUserId(userId);
+    }
+
+    public String putUser(String uid, User user) throws Exception {
+        return identityClient.PutUser(uid, user);
     }
 
     public String getUserByUserName(String userName) throws Exception {
@@ -293,7 +319,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return entitlementService.getEntitlements(uid);
     }
 
-    public void getBinariesUrl(Entitlement entitlement) throws Exception{
+    public void getBinariesUrl(Entitlement entitlement) throws Exception {
         EntitlementService entitlementService = EntitlementServiceImpl.instance();
         entitlementService.getBinariesUrl(entitlement);
     }

@@ -181,17 +181,30 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     @Override
     public String PostUser(UserInfo userInfo, int expectedResponseCode) throws Exception {
+       String cid  = RegisterUser(userInfo, expectedResponseCode);
+        String emailVerifyLink = GetEmailVerificationLinks(cid);
+        if(emailVerifyLink != null && !emailVerifyLink.isEmpty()){
+            oAuthClient.accessEmailVerifyLink(emailVerifyLink);
+        }
+        return BindUserPersonalInfos(userInfo);
+    }
+
+    @Override
+    public String RegisterUser(UserInfo userInfo, int expectedResponseCode) throws Exception {
         String cid = oAuthClient.getCid();
         oAuthClient.authorizeLoginView(cid);
         oAuthClient.authorizeRegister(cid);
         oAuthClient.registerUser(userInfo, cid);
+        return cid;
+    }
 
-        String emailVerifyLink  = oAuthClient.getEmailVerifyLink(cid);
-        if(emailVerifyLink != null && !emailVerifyLink.isEmpty()){
-            oAuthClient.accessEmailVerifyLink(emailVerifyLink);
-        }
+    @Override
+    public String GetEmailVerificationLinks(String cid) throws Exception {
+        return oAuthClient.getEmailVerifyLink(cid);
+    }
 
-
+    @Override
+    public String BindUserPersonalInfos(UserInfo userInfo) throws Exception {
         String accessToken = oAuthClient.postUserAccessToken(userInfo.getEncodedEmails().get(0), userInfo.getPassword());
         TokenInfo tokenInfo = oAuthClient.getTokenInfo(accessToken);
         String uid = IdConverter.idToHexString(tokenInfo.getSub());
