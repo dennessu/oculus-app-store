@@ -40,8 +40,10 @@
     <appender name="MAIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logDir}/main.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logDir}/main.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
+            <!-- Roll the log every hour and compress it in GZIP -->
+            <fileNamePattern>${logDir}/main.%d{yyyy-MM-dd-HH}.%i.log.gz</fileNamePattern>
+            <!-- Keep max 30 * 24 hours logs (30 days) -->
+            <maxHistory>720</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 100MB -->
@@ -64,8 +66,10 @@
             <level>WARN</level>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logDir}/alert.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxHistory>5</maxHistory>
+            <!-- Roll the log every hour and compress it in GZIP -->
+            <fileNamePattern>${logDir}/alert.%d{yyyy-MM-dd-HH}.%i.log.gz</fileNamePattern>
+            <!-- Keep max 5 * 24 hours logs (5 days) -->
+            <maxHistory>120</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 100MB -->
@@ -107,8 +111,10 @@
     <appender name="FILE_ACCESS_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logDir}/httpd.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logDir}/alert.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxHistory>10</maxHistory>
+            <!-- Roll the log every hour and compress it in GZIP -->
+            <fileNamePattern>${logDir}/httpd.%d{yyyy-MM-dd-HH}.%i.log.gz</fileNamePattern>
+            <!-- Keep max 10 * 24 hours logs (10 days) -->
+            <maxHistory>240</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 100MB -->
@@ -124,10 +130,50 @@
         <appender-ref ref="FILE_ACCESS_LOG"/>
     </appender>
 
+    <!-- EXTERNAL CALL LOG -->
+    <property name="CONSOLE_EXTERNAL_CALL_PATTERN" value="%m %n"/>
+    <property name="FILE_EXTERNAL_CALL_PATTERN" value="%m %n"/>
+
+    <appender name="CONSOLE_EXTERNAL_CALL_LOG" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_EXTERNAL_CALL_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="CONSOLE_ASYNC_EXTERNAL_CALL_LOG" class="com.junbo.apphost.core.logging.RealAsyncAppender">
+        <appender-ref ref="CONSOLE_EXTERNAL_CALL_LOG"/>
+    </appender>
+
+    <appender name="FILE_EXTERNAL_CALL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/external_call.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Roll the log every hour and compress it in GZIP -->
+            <fileNamePattern>${logDir}/external_call.%d{yyyy-MM-dd-HH}.%i.log.gz</fileNamePattern>
+            <!-- Keep max 10 * 24 hours logs (10 days) -->
+            <maxHistory>240</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_EXTERNAL_CALL_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_ASYNC_EXTERNAL_CALL_LOG" class="com.junbo.apphost.core.logging.RealAsyncAppender">
+        <appender-ref ref="FILE_EXTERNAL_CALL_LOG"/>
+    </appender>
+
     <logger name="com.junbo.apphost.core.logging.AccessLogProbe" level="INFO" additivity="false">
         <appender-ref ref="CONSOLE_ASYNC_ACCESS_LOG"/>
         <appender-ref ref="FILE_ASYNC_ACCESS_LOG"/>
     </logger>
 
+    <logger name="com.junbo.langur.core.async.AsyncLoggedHandler" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE_ASYNC_EXTERNAL_CALL_LOG"/>
+        <appender-ref ref="FILE_ASYNC_EXTERNAL_CALL_LOG"/>
+    </logger>
 
 </configuration>

@@ -1,5 +1,6 @@
 package com.junbo.apphost.core.logging
 
+import com.junbo.langur.core.HashUtil
 import com.junbo.langur.core.IpUtil
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.Connection
@@ -12,6 +13,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import java.text.SimpleDateFormat
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * Created by Shenhua on 4/23/2014.
@@ -26,13 +29,15 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
     private static final SimpleDateFormatThreadLocal DATE_FORMAT =
             new SimpleDateFormatThreadLocal('[yyyy-MM-dd HH:mm:ss.SSS Z]')
 
+    private static final Pattern ACCESS_TOKEN_PATTERN = Pattern.compile("access_token=([0-9A-Za-z\\-~]{44})")
+
     @Override
     void onRequestReceiveEvent(HttpServerFilter filter, Connection connection, Request request) {
         def requestMillis = System.currentTimeMillis()
         request.setAttribute(ATTRIBUTE_TIME_STAMP, requestMillis)
 
         if (LOGGER.isDebugEnabled()) {
-            // %h %D %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\"
+            // %h %D %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\ \"[ALL_HEADERS]\""
 
             def remoteHost = getRemoteHost(request)
             def remoteUser = getRemoteUser(request)
@@ -43,9 +48,10 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
             def protocol = getRequestProtocol(request)
             def referer = getRequestHeader(request, 'Referer')
             def userAgent = getRequestHeader(request, 'User-agent')
+            def requestHeaders = getRequestHeaders(request)
 
             String record = "$remoteHost - $remoteUser $requestTimestamp \"$method $uri$query $protocol\"" +
-                    " - - \"$referer\" \"$userAgent\""
+                    " - - \"$referer\" \"$userAgent\" \"[$requestHeaders]\""
 
             LOGGER.debug(record)
         }
@@ -58,7 +64,7 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
         long requestMillis = (long) response.request.getAttribute(ATTRIBUTE_TIME_STAMP)
         long responseMillis = System.currentTimeMillis()
 
-        // %h %D %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\"
+        // %h %D %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\ \"[ALL_HEADERS]\""
 
         def remoteHost = getRemoteHost(response.request)
         def latencyMillis = responseMillis - requestMillis
@@ -72,9 +78,10 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
         def size = getResponseSize(response)
         def referer = getRequestHeader(response.request, 'Referer')
         def userAgent = getRequestHeader(response.request, 'User-agent')
+        def requestHeaders = getRequestHeaders(response.request)
 
         String record = "$remoteHost $latencyMillis $remoteUser $responseTimestamp \"$method $uri$query $protocol\"" +
-                " $status $size \"$referer\" \"$userAgent\""
+                " $status $size \"$referer\" \"$userAgent\" \"[$requestHeaders]\""
 
         LOGGER.info(record)
     }
@@ -110,9 +117,20 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
     }
 
     private static String getRequestQuery(Request request) {
-
         String value = request.queryString
-        return value == null ? '' : '?' + value
+        if (value != null) {
+            Matcher matcher = ACCESS_TOKEN_PATTERN.matcher(value)
+            StringBuffer sb = new StringBuffer('?')
+            while (matcher.find()) {
+                String tokenValue = matcher.group(1)
+                String hash = HashUtil.hash(tokenValue)
+                matcher.appendReplacement(sb, "access_token=$hash")
+            }
+            matcher.appendTail(sb)
+            return sb.toString()
+        } else {
+            return ''
+        }
     }
 
     private static String getRequestProtocol(Request request) {
@@ -131,7 +149,24 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
     }
 
     private static String getRequestHeader(Request request, String header) {
-        return request.getHeaders(header).join('; ')
+        return request.getHeaders(header).join(', ')
+    }
+
+    private static String getRequestHeaders(Request request) {
+        StringBuilder sb = new StringBuilder()
+        Iterator<String> headerIterator = request.getHeaderNames().iterator()
+        while (headerIterator.hasNext()) {
+            String headerName = headerIterator.next()
+            String header = getRequestHeader(request, headerName)
+            if (headerName.equalsIgnoreCase('Authorization') && header.startsWith('Bearer ')) {
+                String tokenValue = header.substring(7)
+                String hash = HashUtil.hash(tokenValue);
+                sb.append("$headerName: Bearer $hash")
+            } else {
+                sb.append("$headerName: $header; ")
+            }
+        }
+        return sb.toString()
     }
 
     private static String getResponseStatus(Response response) {

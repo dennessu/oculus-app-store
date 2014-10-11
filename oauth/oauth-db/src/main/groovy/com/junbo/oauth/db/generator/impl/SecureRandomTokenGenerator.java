@@ -8,6 +8,7 @@ package com.junbo.oauth.db.generator.impl;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.util.UUIDUtils;
 import com.junbo.configuration.topo.DataCenters;
+import com.junbo.langur.core.HashUtil;
 import com.junbo.oauth.db.generator.TokenGenerator;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -190,16 +191,7 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
     @Override
     public String hashKey(String key) {
-        try {
-            // MessageDigest is not thread safe, always create new instance per usage.
-            // getInstance is not that expensive.
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-
-            return Hex.encodeHexString(md.digest(key.getBytes()));
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("Error happened while hashing the key", e);
-            throw AppCommonErrors.INSTANCE.internalServerError(e).exception();
-        }
+        return HashUtil.hash(key);
     }
 
     @Override
