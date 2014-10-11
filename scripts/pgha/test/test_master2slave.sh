@@ -11,6 +11,8 @@ do
     $PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "INSERT INTO tly (id) VALUES ($k);"
 done
 
+$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "INSERT INTO tly (id) VALUES ($(($(date +%s%N)/1000000)));"
+
 echo 'waiting for replication...'
 sleep 5s
 

@@ -2,6 +2,14 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/../util/common.sh
 
+role=`getServerRole`
+echo "The server is [$role]"
+
+if [[ $role != "MASTER" ]] ; then
+    echo "[REMEDY][$role] failback script should be executed on [MASTER] server"
+    exit
+fi
+
 echo "[FAILBACK][MASTER] stop traffic for failback"
 
 echo "[FAILBACK][MASTER] stop primary pgbouncer proxy"
@@ -108,4 +116,11 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
 
     echo "[FAILBACK][REPLICA] start pgqd deamon"
 	$DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
+ENDSSH
+
+echo "[FAILOVER][MASTER] point pgbouncer to master"
+$DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 ENDSSH

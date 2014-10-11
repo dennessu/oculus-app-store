@@ -5,6 +5,7 @@
  */
 package com.junbo.test.oauth;
 
+import com.junbo.common.error.Error;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserLoginName;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
@@ -18,10 +19,15 @@ import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
 import com.junbo.test.identity.IdentityModel;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.message.BasicNameValuePair;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -284,7 +290,8 @@ public class authorizeUser {
         ValidateErrorFreeResponse(currentViewState);
         String loginResponseLink = Oauth.UserLogin(cid, "silkcloudtest+allEnvLoginUser@gmail.com", Oauth.DefaultUserPwd);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
-        TokenInfo tokenInfo = HttpclientHelper.SimpleGet(secondaryDcEndpoint + "/oauth2/tokeninfo?access_token=" + accessToken, TokenInfo.class);
+        TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken, secondaryDcEndpoint
+                + "/oauth2/tokeninfo?access_token=" + accessToken);
         Validator.Validate("validate getting token from another dc", true, tokenInfo != null);
     }
 
@@ -547,6 +554,81 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
+    }
+
+    @Test(groups = "dailies")
+    public void OculusInternalHeaderFunction() throws Exception {
+        CloseableHttpResponse response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
+                + "?client_id="
+                + Oauth.DefaultClientId
+                + "&response_type=code&scope=identity&redirect_uri="
+                + Oauth.DefaultRedirectURI, null);
+        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        response.close();
+
+        response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
+                + "?client_id="
+                + Oauth.DefaultClientId
+                + "&response_type=code&scope=identity&redirect_uri="
+                + Oauth.DefaultRedirectURI, null, false, false);
+        Validator.Validate("response status is not ok", response.getStatusLine().getStatusCode(), 400);
+        response.close();
+
+        response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
+                + "?client_id="
+                + Oauth.DefaultClientIdExt
+                + "&response_type=code&scope=storeapi&redirect_uri="
+                + Oauth.DefaultRedirectURI, null);
+        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        response.close();
+
+        response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
+                + "?client_id="
+                + Oauth.DefaultClientIdExt
+                + "&response_type=code&scope=storeapi&redirect_uri="
+                + Oauth.DefaultRedirectURI, null, false, false);
+        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void ClientAndSecretMisMatch() throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
+        nvps.add(new BasicNameValuePair("client_id", Oauth.DefaultClientId));
+        nvps.add(new BasicNameValuePair("client_secret", Oauth.DefaultClientSecret));
+        nvps.add(new BasicNameValuePair("scope", "identity"));
+        CloseableHttpResponse response = Oauth.OauthPost(Oauth.DefaultOauthEndpoint + "/oauth2/token", nvps);
+        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 200);
+        response.close();
+
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
+        nvps.add(new BasicNameValuePair("client_id", Oauth.DefaultClientId));
+        nvps.add(new BasicNameValuePair("client_secret", RandomHelper.randomAlphabetic(15)));
+        nvps.add(new BasicNameValuePair("scope", "identity"));
+        response = Oauth.OauthPost(Oauth.DefaultOauthEndpoint + "/oauth2/token", nvps);
+        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 400);
+        com.junbo.common.error.Error error = JsonHelper.JsonDeserializer(
+                new InputStreamReader(response.getEntity().getContent()), Error.class);
+        Validator.Validate("error detail field", "client_secret", error.getDetails().get(0).getField());
+        Validator.Validate("error detail field", "Field value is invalid. *****", error.getDetails().get(0).getReason());
+        response.close();
+
+        String randomClient = RandomHelper.randomAlphabetic(15);
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
+        nvps.add(new BasicNameValuePair("client_id", randomClient));
+        nvps.add(new BasicNameValuePair("client_secret", RandomHelper.randomAlphabetic(15)));
+        nvps.add(new BasicNameValuePair("scope", "identity"));
+        response = Oauth.OauthPost(Oauth.DefaultOauthEndpoint + "/oauth2/token", nvps);
+        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 400);
+        error = JsonHelper.JsonDeserializer(new InputStreamReader(response.getEntity().getContent()), Error.class);
+        Validator.Validate("error detail field", "client_id", error.getDetails().get(0).getField());
+        Validator.Validate("error detail field",
+                "Field value is invalid. " + randomClient,
+                error.getDetails().get(0).getReason());
+        response.close();
     }
 
     private static void ValidateErrorFreeResponse(String responseString) throws Exception {

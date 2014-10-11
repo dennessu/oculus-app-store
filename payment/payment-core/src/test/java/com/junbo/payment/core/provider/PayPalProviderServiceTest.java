@@ -24,10 +24,10 @@ public class PayPalProviderServiceTest extends BaseTest {
     private PayPalProviderServiceImpl paypalProviderService;
     @Autowired
     private PaymentCallbackService paymentCallbackService;
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testCharge() throws ExecutionException, InterruptedException {
         PaymentInstrument request = addPI(buildPayPalRequest());
-        PaymentTransaction payment = new PaymentTransaction();
+        final PaymentTransaction payment = new PaymentTransaction();
         payment.setBillingRefId("123");
         payment.setUserId(request.getUserId());
         payment.setPaymentInstrumentId(request.getId());
@@ -57,7 +57,7 @@ public class PayPalProviderServiceTest extends BaseTest {
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
         String callbackRequest = getMockCallbackRequest(result);
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
-        paymentCallbackService.addPaymentProperties(callbackRequest);
+        paymentCallbackService.addPaymentProperties(callbackRequest).get();
         PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
@@ -110,7 +110,7 @@ public class PayPalProviderServiceTest extends BaseTest {
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
         String callbackRequest = getMockCallbackRequest(result);
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
-        paymentCallbackService.addPaymentProperties(callbackRequest);
+        paymentCallbackService.addPaymentProperties(callbackRequest).get();
         PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
@@ -154,7 +154,7 @@ public class PayPalProviderServiceTest extends BaseTest {
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
         String callbackRequest = getMockCallbackRequest(result);
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
-        paymentCallbackService.addPaymentProperties(callbackRequest);
+        paymentCallbackService.addPaymentProperties(callbackRequest).get();
         PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token

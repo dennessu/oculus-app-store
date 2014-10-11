@@ -16,7 +16,10 @@ import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.IdConverter;
+import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
@@ -61,7 +64,7 @@ public class Identity {
         httpPost.addHeader("Content-Type", "application/json; charset=utf-8");
         httpPost.addHeader("Authorization", httpAuthorizationHeader);
         httpPost.setEntity(new StringEntity(objJson, "utf-8"));
-        return HttpclientHelper.SimpleHttpPost(httpPost, cls);
+        return HttpclientHelper.Execute(httpPost, cls);
     }
 
     public static <T> T IdentityPut(String requestURI, String objJson, Class<T> cls) throws Exception {
@@ -69,21 +72,21 @@ public class Identity {
         httpPut.addHeader("Content-Type", "application/json; charset=utf-8");
         httpPut.addHeader("Authorization", httpAuthorizationHeader);
         httpPut.setEntity(new StringEntity(objJson, "utf-8"));
-        return HttpclientHelper.SimpleHttpPut(httpPut, cls);
+        return HttpclientHelper.Execute(httpPut, cls);
     }
 
     public static <T> T IdentityGet(String requestURI, Class<T> cls) throws Exception {
         HttpGet httpGet = new HttpGet(requestURI);
         httpGet.addHeader("Content-Type", "application/json");
         httpGet.addHeader("Authorization", httpAuthorizationHeader);
-        return HttpclientHelper.SimpleHttpGet(httpGet, cls);
+        return HttpclientHelper.Execute(httpGet, cls);
     }
 
     public static void IdentityDelete(String requestURI) throws Exception {
         HttpDelete httpDelete = new HttpDelete(requestURI);
         httpDelete.addHeader("Content-Type", "application/json");
         httpDelete.addHeader("Authorization", httpAuthorizationHeader);
-        HttpclientHelper.SimpleHttpDelete(httpDelete);
+        HttpclientHelper.Execute(httpDelete);
     }
 
     public static void GetHttpAuthorizationHeaderForMigration() throws Exception {
@@ -92,8 +95,13 @@ public class Identity {
         nvps.add(new BasicNameValuePair("client_id", "migration"));
         nvps.add(new BasicNameValuePair("client_secret", "secret"));
         nvps.add(new BasicNameValuePair("scope", "identity.service identity.migration"));
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(
-                ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token", nvps);
+
+        HttpPost httpPost = new HttpPost(ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token");
+        httpPost.addHeader("oculus-internal", String.valueOf(true));
+        httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(true).build());
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+        CloseableHttpResponse response = HttpclientHelper.Execute(httpPost);
+
         String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
         for (String s : results) {
             if (s.contains("access_token")) {
@@ -109,8 +117,13 @@ public class Identity {
         nvps.add(new BasicNameValuePair("client_id", "service"));
         nvps.add(new BasicNameValuePair("client_secret", "secret"));
         nvps.add(new BasicNameValuePair("scope", "identity.service identity.admin"));
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(
-                ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token", nvps);
+
+        HttpPost httpPost = new HttpPost(ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token");
+        httpPost.addHeader("oculus-internal", String.valueOf(true));
+        httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(true).build());
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+        CloseableHttpResponse response = HttpclientHelper.Execute(httpPost);
+
         String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
         for (String s : results) {
             if (s.contains("access_token")) {

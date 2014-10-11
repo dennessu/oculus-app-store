@@ -63,31 +63,6 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Override
-    Promise<Response> forgetPassword(String cid, String locale) {
-        Map<String, Object> requestScope = new HashMap<>()
-        requestScope[OAuthParameters.LOCALE] = locale
-
-        if (cid == null) {
-            //start a new conversation in the flowExecutor.
-            return flowExecutor.start(forgetPasswordFlow, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
-        }
-
-        return flowExecutor.resume(cid, '', requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
-    }
-
-    @Override
-    Promise<Response> forgetPassword(String conversationId, String event, MultivaluedMap<String, String> formParams) {
-        Map<String, Object> requestScope = new HashMap<>()
-        requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
-
-        if (conversationId == null) {
-            throw new ConversationNotfFoundException()
-        }
-
-        return flowExecutor.resume(conversationId, event ?: '', requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
-    }
-
-    @Override
     Promise<Response> resetPasswordLink(String cid, String code, String locale, String country) {
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[OAuthParameters.RESET_PASSWORD_CODE] = code

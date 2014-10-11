@@ -70,13 +70,13 @@ public class Looper {
                 throw new IllegalStateException("this.runnable != null && !this.runnableWrapper.hasRun()");
             }
 
+            this.runnableWrapper = runnableWrapper;
+            notEmpty.signal();
+
             if (nestedLevel <= 0) {
                 // no thread waiting
                 return false;
             }
-
-            this.runnableWrapper = runnableWrapper;
-            notEmpty.signal();
 
             return true;
         } finally {

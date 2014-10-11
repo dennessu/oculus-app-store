@@ -352,7 +352,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             if (attemptList.size() < retryCount) {
                 userLoginAttempt.isLockDownPeriodAttempt = false
                 continue
-            }
+                        }
             UserCredentialVerifyAttempt attempt = attemptList.get(attemptList.size() - retryCount)
             // in lock down time
             if (attempt.createdTime.after(DateUtils.addSeconds(new Date(), -lockDownTime))) {

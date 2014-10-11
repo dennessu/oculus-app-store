@@ -16,6 +16,7 @@ public final class Header {
     public static final String ON_BEHALF_OF_REQUESTOR_ID = "On-Behalf-Of-Requestor-Id";
     public static final String USER_IP = "oculus-end-user-ip";
     public static final String AUTHORIZATION = "Authorization";
+    public static final String OCULUS_INTERNAL = "Oculus-internal";
 
 
     private Header() {

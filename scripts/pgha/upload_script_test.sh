@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-export ENVIRONMENT='test'
+export ENVIRONMENT='skm'
 source ${DIR}/util/common.sh
 
 export DEVOPS_ACCOUNT='ubuntu'

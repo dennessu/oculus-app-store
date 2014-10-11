@@ -13,9 +13,12 @@ import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.identity.Identity;
+import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.*;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -50,6 +53,9 @@ public class Oauth {
     public static final String DefaultClientId = ConfigHelper.getSetting("client_id");
     public static final String DefaultClientSecret = ConfigHelper.getSetting("client_secret");
 
+    public static final String DefaultClientIdExt = ConfigHelper.getSetting("client_id_external");
+    //public static final String DefaultClientSecretExt = ConfigHelper.getSetting("client_secret_external");
+
     public static final String DefaultClientScopes = "identity";
     public static final String DefaultGrantType = "authorization_code";
     public static final String DefaultLoginScopes = "identity openid";
@@ -80,14 +86,71 @@ public class Oauth {
     public static final String DefaultFNUserId = "userId";
     public static final String DefaultFNUserName = "username";
 
+    public static final String OculusInternalHeader = "oculus-internal";
+    public static final String OculusInternalHeaderDefaultValue = String.valueOf(true);
+
+    public static CloseableHttpResponse OauthPost(String requestURI, List<NameValuePair> nvps) throws Exception {
+        return OauthPost(requestURI, nvps, true, false);
+    }
+
+    public static CloseableHttpResponse OauthPost(String requestURI, List<NameValuePair> nvps,
+                                                  Boolean addInternalHeader, Boolean enableRedirect) throws Exception {
+        HttpPost httpPost = new HttpPost(requestURI);
+        if (addInternalHeader) httpPost.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
+        httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+        return HttpclientHelper.Execute(httpPost);
+    }
+
+    public static CloseableHttpResponse OauthPut(String requestURI, List<NameValuePair> nvps) throws Exception {
+        return OauthPut(requestURI, nvps, true, false);
+    }
+
+    public static CloseableHttpResponse OauthPut(String requestURI, List<NameValuePair> nvps,
+                                                 Boolean addInternalHeader, Boolean enableRedirect) throws Exception {
+        HttpPut httpPut = new HttpPut(requestURI);
+        if (addInternalHeader) httpPut.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
+        httpPut.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
+        httpPut.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+        return HttpclientHelper.Execute(httpPut);
+    }
+
+    public static CloseableHttpResponse OauthGet(String requestURI, List<NameValuePair> nvpHeaders) throws Exception {
+        return OauthGet(requestURI, nvpHeaders, true, false);
+    }
+
+    public static CloseableHttpResponse OauthGet(String requestURI, List<NameValuePair> nvpHeaders,
+                                                 Boolean addInternalHeader, Boolean enableRedirect) throws Exception {
+        HttpGet httpGet = new HttpGet(requestURI);
+        if (addInternalHeader) httpGet.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
+        httpGet.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
+        if (nvpHeaders != null && !nvpHeaders.isEmpty()) {
+            for (NameValuePair nvp : nvpHeaders) {
+                httpGet.addHeader(nvp.getName(), nvp.getValue());
+            }
+        }
+        return HttpclientHelper.Execute(httpGet);
+    }
+
+    public static void OauthDelete(String requestURI) throws Exception {
+        OauthDelete(requestURI, true, false);
+    }
+
+    public static void OauthDelete(String requestURI, Boolean addInternalHeader, Boolean enableRedirect)
+            throws Exception {
+        HttpDelete httpDelete = new HttpDelete(requestURI);
+        if (addInternalHeader) httpDelete.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
+        httpDelete.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
+        HttpclientHelper.Execute(httpDelete);
+    }
+
 
     public static String GetRegistrationCid() throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
+        CloseableHttpResponse response = OauthGet(DefaultAuthorizeURI
                 + "?client_id="
                 + DefaultClientId
                 + "&response_type=code&scope=identity&redirect_uri="
-                + DefaultRedirectURI,
-                false);
+                + DefaultRedirectURI, null);
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
@@ -117,7 +180,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNGrantType, DefaultGrantType));
         nvps.add(new BasicNameValuePair(DefaultFNRedirectURI, DefaultRedirectURI));
 
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(uri, nvps, false);
+        CloseableHttpResponse response = OauthPost(uri, nvps);
         try {
             AccessTokenResponse accessTokenResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), AccessTokenResponse.class);
@@ -153,7 +216,9 @@ public class Oauth {
     }
 
     public static TokenInfo GetTokenInfo(String accessToken, String uri) throws Exception {
-        return HttpclientHelper.SimpleGet(uri + "?access_token=" + accessToken, TokenInfo.class);
+        return JsonHelper.JsonDeserializer(
+                new InputStreamReader(OauthGet(uri + "?access_token=" + accessToken, null).getEntity().getContent()),
+                TokenInfo.class);
     }
 
 
@@ -161,14 +226,11 @@ public class Oauth {
         List<NameValuePair> nvpHeaders = new ArrayList<NameValuePair>();
         nvpHeaders.add(new BasicNameValuePair("Cookie", "ls=" + loginState));
 
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(
-                DefaultAuthorizeURI
-                        + "?client_id="
-                        + DefaultClientId
-                        + "&response_type=code&scope=identity&redirect_uri="
-                        + DefaultRedirectURI,
-                nvpHeaders,
-                false);
+        CloseableHttpResponse response = OauthGet(DefaultAuthorizeURI
+                + "?client_id="
+                + DefaultClientId
+                + "&response_type=code&scope=identity&redirect_uri="
+                + DefaultRedirectURI, nvpHeaders);
         try {
             String tarHeader = "location";
             for (Header h : response.getAllHeaders()) {
@@ -188,7 +250,7 @@ public class Oauth {
     }
 
     public static String GetViewStateByCid(String cid, String uri) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(uri + "?cid=" + cid);
+        CloseableHttpResponse response = OauthGet(uri + "?cid=" + cid, null);
         try {
             String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
             //System.out.print(responseString);
@@ -203,7 +265,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, DefaultRegisterEvent));
 
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
+        CloseableHttpResponse response = OauthPost(DefaultAuthorizeURI, nvps);
         try {
             String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
             //System.out.print(responseString);
@@ -233,7 +295,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNDoB, "1980-01-01"));
         nvps.add(new BasicNameValuePair(DefaultFNPin, RandomHelper.randomNumeric(4)));
 
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
+        CloseableHttpResponse response = OauthPost(DefaultAuthorizeURI, nvps);
         try {
             String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
             //System.out.print(responseString);
@@ -245,7 +307,7 @@ public class Oauth {
     }
 
     public static String GetAuthCodeAfterRegisterUser(String cid) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
+        CloseableHttpResponse response = OauthGet(DefaultAuthorizeURI + "?cid=" + cid, null);
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
@@ -261,7 +323,7 @@ public class Oauth {
     }
 
     public static String GetLoginStateAfterRegisterUser(String cid) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
+        CloseableHttpResponse response = OauthGet(DefaultAuthorizeURI + "?cid=" + cid, null);
         try {
             String tarHeader = "set-cookie";
             for (Header h : response.getAllHeaders()) {
@@ -277,23 +339,7 @@ public class Oauth {
     }
 
     public static void VerifyEmail(String cid, String uriEndPoint) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
-        response.close();
-        // skip payment method view
-        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
-        nvps.add(new BasicNameValuePair(DefaultFNEvent, "skip"));
-        response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
-        response.close();
-        // goto next and get email verified
-        nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
-        nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
-        response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
-        ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
-                new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
-        response.close();
-        String emailLink = viewModelResponse.getModel().get("link").toString();
+        String emailLink = GetEmailLinkFlowAfterRegistration(cid);
         emailLink = URLProtocolAuthorityReplace(emailLink, uriEndPoint);
         VerifyEmail(emailLink, false);
     }
@@ -301,24 +347,10 @@ public class Oauth {
 
     private static void RunPostRegistrationWithEmailVerification(String cid, Boolean doubleVerifyEmail)
             throws Exception {
-        // get payment method view
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
-        response.close();
-        // skip payment method view
-        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
-        nvps.add(new BasicNameValuePair(DefaultFNEvent, "skip"));
-        response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
-        response.close();
-        // goto next and get email verified
-        nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
-        nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
-        response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
-        ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
-                new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
-        response.close();
-        String emailLink = viewModelResponse.getModel().get("link").toString();
+        String emailLink = GetEmailLinkFlowAfterRegistration(cid);
+        List<NameValuePair> nvps;
+        CloseableHttpResponse response;
+
         emailLink = URLProtocolAuthorityReplace(emailLink, DefaultOauthEndpoint);
         VerifyEmail(emailLink, false);
         if (doubleVerifyEmail) VerifyEmail(emailLink, doubleVerifyEmail);
@@ -326,8 +358,29 @@ public class Oauth {
         nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
-        response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
+        response = OauthPost(DefaultAuthorizeURI, nvps);
         response.close();
+    }
+
+    private static String GetEmailLinkFlowAfterRegistration(String cid) throws Exception {
+        // get payment method view
+        CloseableHttpResponse response = OauthGet(DefaultAuthorizeURI + "?cid=" + cid, null);
+        response.close();
+        // skip payment method view
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(DefaultFNEvent, "skip"));
+        response = OauthPost(DefaultAuthorizeURI, nvps);
+        response.close();
+        // goto next and get email verified
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
+        response = OauthPost(DefaultAuthorizeURI, nvps);
+        ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
+                new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
+        response.close();
+        return viewModelResponse.getModel().get("link").toString();
     }
 
     private static String GetPropertyValueFromString(String input, String property, String splitor) throws Exception {
@@ -341,14 +394,13 @@ public class Oauth {
     }
 
     public static String GetLoginCid() throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
+        CloseableHttpResponse response = OauthGet(DefaultAuthorizeURI
                 + "?client_id="
                 + DefaultClientId
                 + "&response_type=token%20id_token&scope=openid%20identity&"
                 + "redirect_uri="
                 + DefaultRedirectURI
-                + "&nonce=randomstring&locale=en_US&state=randomstring",
-                false);
+                + "&nonce=randomstring&locale=en_US&state=randomstring", null);
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
@@ -373,7 +425,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNLogin, email));
         nvps.add(new BasicNameValuePair(DefaultFNPassword, password == null ? DefaultUserPwd : password));
 
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(uri, nvps, false);
+        CloseableHttpResponse response = OauthPost(uri, nvps);
         try {
             ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
@@ -391,7 +443,7 @@ public class Oauth {
     public static Map<String, String> GetLoginUser(String requestURI, String uri) throws Exception {
         Map<String, String> results = new HashMap<>();
         requestURI = URLProtocolAuthorityReplace(requestURI, uri);
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
+        CloseableHttpResponse response = OauthGet(requestURI, null);
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
@@ -410,7 +462,7 @@ public class Oauth {
     }
 
     public static String GetLoginAccessToken(String requestURI) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
+        CloseableHttpResponse response = OauthGet(requestURI, null);
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
@@ -425,10 +477,10 @@ public class Oauth {
     }
 
     public static void Logout(String idToken) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultLogoutURI
+        CloseableHttpResponse response = OauthGet(DefaultLogoutURI
                 + "?post_logout_redirect_uri="
                 + DefaultRedirectURI
-                + "&id_token_hint=" + idToken, false);
+                + "&id_token_hint=" + idToken, null);
         try {
             String tarHeader = "Location:";
             for (Header h : response.getAllHeaders()) {
@@ -446,9 +498,9 @@ public class Oauth {
     }
 
     public static void VerifyEmail(String link, Boolean validateUsedToken) throws Exception {
-        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair("Accept", "application/json"));
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(link, nvps, true);
+        List<NameValuePair> nvpHeaders = new ArrayList<NameValuePair>();
+        nvpHeaders.add(new BasicNameValuePair("Accept", "application/json"));
+        CloseableHttpResponse response = OauthGet(link, nvpHeaders);
         try {
             ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
@@ -469,7 +521,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNCountry, "US"));
         nvps.add(new BasicNameValuePair("tml", piid));
 
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(uri + "/oauth2/verify-email", nvps, false);
+        CloseableHttpResponse response = OauthPost(uri + "/oauth2/verify-email", nvps);
         try {
             return EntityUtils.toString(response.getEntity(), "UTF-8");
         } finally {
@@ -483,7 +535,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNUserName, userName));
         nvps.add(new BasicNameValuePair(DefaultFNLocale, locale == null ? "en_US" : locale));
 
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultResetPasswordURI, nvps, false);
+        CloseableHttpResponse response = OauthPost(DefaultResetPasswordURI, nvps);
         try {
             return EntityUtils.toString(response.getEntity(), "UTF-8");
         } finally {
@@ -498,7 +550,7 @@ public class Oauth {
         String uri = String.format(DefaultResetPasswordURI + "/test?username=%s&user_email=%s&locale=%s&country=%s",
                 userName, URLEncoder.encode(email, "UTF-8"), locale == null ? "en_US" : locale,
                 Country.DEFAULT.toString());
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(uri, nvpHeaders, false);
+        CloseableHttpResponse response = OauthGet(uri, nvpHeaders);
 
         try {
             String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
@@ -516,7 +568,7 @@ public class Oauth {
     }
 
     public static String GetResetPasswordCid(String resetPasswordLink) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(resetPasswordLink, false);
+        CloseableHttpResponse response = OauthGet(resetPasswordLink, null);
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
@@ -532,7 +584,7 @@ public class Oauth {
     }
 
     public static void GetResetPasswordView(String cid) throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultResetPasswordURI + "?cid=" + cid, false);
+        CloseableHttpResponse response = OauthGet(DefaultResetPasswordURI + "?cid=" + cid, null);
         try {
             ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
@@ -549,7 +601,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNPassword, newPassword));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
 
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultResetPasswordURI, nvps, false);
+        CloseableHttpResponse response = OauthPost(DefaultResetPasswordURI, nvps);
         try {
             ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), ViewModel.class);

@@ -361,6 +361,7 @@
 
     <bean id="accessDenied" class="com.junbo.oauth.core.view.RedirectToClientError">
         <property name="errorMessage" value="access_denied"/>
+        <property name="pageUrl" value="${oauth.core.portal.accessDeniedUri}" />
     </bean>
 
     <bean id="loginRequired" class="com.junbo.oauth.core.view.RedirectToClientError">

@@ -17,7 +17,6 @@ import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
-import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.db.repo.TrackingUuidRepository;
 import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
@@ -252,14 +251,11 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
     }
 
     protected PaymentProviderService getPaymentProviderService(PaymentInstrument pi) {
-        PaymentProviderService provider = providerRoutingService.getPaymentProvider(
-                PaymentUtil.getPIType(pi.getType()));
-        if(provider == null){
-            LOGGER.error("provider is not available for pi type:" + pi.getType());
-            throw AppServerExceptions.INSTANCE.providerNotFound(
-                    PaymentUtil.getPIType(pi.getType()).toString()).exception();
+        if(CommonUtil.isNullOrEmpty(pi.getPaymentProvider())){
+            LOGGER.error("provider is not available for pi:" + pi.getId());
+            throw AppServerExceptions.INSTANCE.providerNotFound(pi.getId().toString()).exception();
         }
-        return provider;
+        return getProviderByName(pi.getPaymentProvider());
     }
 
     protected PaymentProviderService getProviderByName(String provider){

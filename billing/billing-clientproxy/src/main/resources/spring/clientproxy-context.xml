@@ -55,7 +55,6 @@
     <bean id="billingPaymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl" />
     <bean id="billingCurrencyFacade" class="com.junbo.billing.clientproxy.impl.CurrencyFacadeImpl" />
     <bean id="billingCountryFacade" class="com.junbo.billing.clientproxy.impl.CountryFacadeImpl" />
-    <bean id="billingCatalogFacade" class="com.junbo.billing.clientproxy.impl.CatalogFacadeImpl" />
 
     <!--<bean id="identityFacade" class="com.junbo.billing.clientproxy.mock.MockIdentityFacadeImpl" />
     <bean id="paymentFacade" class="com.junbo.billing.clientproxy.mock.MockPaymentFacadeImpl" />-->
