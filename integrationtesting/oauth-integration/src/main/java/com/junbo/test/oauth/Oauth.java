@@ -199,7 +199,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNGrantType, "client_credentials"));
         nvps.add(new BasicNameValuePair("scope", scope));
 
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultTokenURI, nvps, false);
+        CloseableHttpResponse response = OauthPost(DefaultTokenURI, nvps);
         try {
             AccessTokenResponse accessTokenResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), AccessTokenResponse.class);
