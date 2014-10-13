@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.login;
 
+import com.junbo.common.id.TosId;
 import com.junbo.store.spec.model.ChallengeAnswer;
 
 import java.util.Date;
@@ -38,7 +39,7 @@ public class CreateUserRequest {
 
     private Date dob;
 
-    private Boolean tosAgreed;
+    private TosId tosAgreed;
 
     private Boolean newsPromotionsAgreed;
 
@@ -138,11 +139,11 @@ public class CreateUserRequest {
         this.dob = dob;
     }
 
-    public Boolean getTosAgreed() {
+    public TosId getTosAgreed() {
         return tosAgreed;
     }
 
-    public void setTosAgreed(Boolean tosAgreed) {
+    public void setTosAgreed(TosId tosAgreed) {
         this.tosAgreed = tosAgreed;
     }
 

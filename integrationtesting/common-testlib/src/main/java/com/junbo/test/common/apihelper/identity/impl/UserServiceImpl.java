@@ -31,6 +31,7 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import org.springframework.util.StringUtils;
 
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -611,5 +612,40 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         componentType = ComponentType.IDENTITY_MIGRATION;
         String url = String.format(getEndPointUrl().replace("/users", "") + "/imports/username-email-block");
         restApiCall(HTTPMethod.POST, url, usernameMailBlocker, true);
+    }
+
+    @Override
+    public void updateTos(String title, String status) throws Exception {
+        componentType = ComponentType.IDENTITY_ADMIN;
+        String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
+
+        String queryUrl = url + "?title=" + URLEncoder.encode(title, "UTF-8");
+        String tosResponse = restApiCall(HTTPMethod.GET, queryUrl, null, true);
+        Results<Tos> tosResults = new JsonMessageTranscoder().decode(new TypeReference<Results>() {
+        }, tosResponse);
+
+        List<Tos> tosList = new ArrayList<>();
+        for(Object obj : tosResults.getItems()) {
+            Tos tos = (Tos)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class);
+            tosList.add(tos);
+        }
+
+        Collections.sort(tosList, new Comparator<Tos>() {
+            @Override
+            public int compare(Tos o1, Tos o2) {
+                return o2.getVersion().compareTo(o1.getVersion());
+            }
+        });
+
+        Tos tos = tosList.get(0);
+        String putUrl = url;
+        Tos newTos = new Tos();
+        newTos.setTitle(tos.getTitle());
+        newTos.setState(status);
+        newTos.setVersion(tos.getVersion() + ".1");
+        newTos.setCountries(tos.getCountries());
+        newTos.setType(tos.getType());
+        newTos.setContent(tos.getContent());
+        restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
     }
 }

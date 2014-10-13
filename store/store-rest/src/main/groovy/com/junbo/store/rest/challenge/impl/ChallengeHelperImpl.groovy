@@ -1,5 +1,6 @@
 package com.junbo.store.rest.challenge.impl
 
+import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Tos
@@ -8,13 +9,13 @@ import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.Constants
 import com.junbo.store.rest.utils.DataConverter
-import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+
 /**
  * The ChallengeHelperImpl class.
  */
@@ -54,21 +56,30 @@ class ChallengeHelperImpl implements ChallengeHelper {
     private Integer pinCodeValidateDuration
 
     @Override
-    Promise<Challenge> checkTosChallenge(UserId userId, String tosTitle, ChallengeAnswer challengeAnswer) {
+    Promise<Challenge> checkTosChallenge(UserId userId, String tosTitle, CountryId countryId, ChallengeAnswer challengeAnswer) {
         if (!tosChallengeEnabled) {
             return Promise.pure()
         }
-        return resourceContainer.tosResource.list(new TosListOptions(title: tosTitle)).then { Results<Tos> toses ->
+        return resourceContainer.tosResource.list(new TosListOptions(title: tosTitle, countryId: countryId)).then { Results<Tos> toses ->
             if (toses == null || CollectionUtils.isEmpty(toses.items)) {
                 return Promise.pure(null)
             }
 
-            Tos tos = toses.items.get(0)
+            List<Tos> tosList = toses.items.sort { Tos item ->
+                return item.version
+            }
+
+            Tos tos = tosList.reverse().find { Tos tos ->
+                return tos.state == 'APPROVED'
+            }
+            if (tos == null) {
+                return Promise.pure(null)
+            }
             return resourceContainer.userTosAgreementResource.list(new UserTosAgreementListOptions(
                     userId: userId,
                     tosId: tos.getId()
             )).then { Results<UserTosAgreement> tosAgreementResults ->
-                if (CollectionUtils.isEmpty(tosAgreementResults.items)) {
+                if (!hasValidTosAgreement(tosAgreementResults, tos)) {
                     if (challengeAnswer?.type == Constants.ChallengeType.TOS_ACCEPTANCE && challengeAnswer?.acceptedTos == tos.getId()) {
                         return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(
                                 userId: userId,
@@ -85,6 +96,20 @@ class ChallengeHelperImpl implements ChallengeHelper {
                 return Promise.pure(null)
             }
         }
+    }
+
+    private Boolean hasValidTosAgreement(Results<UserTosAgreement> tosAgreementResults, Tos tos) {
+        if (tosAgreementResults == null || CollectionUtils.isEmpty(tosAgreementResults.items)) {
+            return false
+        }
+
+        def result = true
+        tosAgreementResults.items.each { UserTosAgreement userTosAgreement ->
+           if (result && tos.updatedTime != null && tos.updatedTime.after(userTosAgreement.agreementTime)) {
+                result = false
+           }
+        }
+        return result
     }
 
     @Override

@@ -8,6 +8,7 @@ package com.junbo.test.store.apihelper.impl;
 import com.junbo.common.error.Error;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
@@ -51,6 +52,14 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         }
         //for further header, we can set dynamic value from properties here
         return headers;
+    }
+
+    @Override
+    public Tos GetRegisterTos() throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/tos");
+        Tos tos = new JsonMessageTranscoder().decode(new TypeReference<Tos>() {
+        }, responseBody);
+        return tos;
     }
 
     @Override
@@ -126,9 +135,11 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);
-            String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
-            Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
-            Master.getInstance().setCurrentUid(uid);
+            if (authTokenResponse.getUserId() != null) {
+                String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+                Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
+                Master.getInstance().setCurrentUid(uid);
+            }
 
             return authTokenResponse;
         }

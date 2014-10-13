@@ -22,6 +22,7 @@ import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.apache.commons.lang3.time.DateUtils;
+import org.jboss.netty.util.NetUtil;
 import org.testng.annotations.Test;
 
 import java.util.Date;
@@ -992,6 +993,47 @@ public class LoginResourceTesting extends BaseTestClass {
         links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         assert links != null;
         assert links.size() == 1;
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check tos updated"
+            }
+    )
+    @Test
+    public void testLoginTosUpdated() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        // Try to login, it should have no challenge
+        AuthTokenResponse response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() == null;
+
+        Thread.sleep(2000);
+        // update tos to draft status
+        testDataProvider.UpdateTos("end user tos", "DRAFT");
+        response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() == null;
+
+        Thread.sleep(2000);
+        testDataProvider.UpdateTos("end user tos", "APPROVED");
+        response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() != null;
+        assert response.getChallenge().getTos() != null;
+
+        Thread.sleep(2000);
+        testDataProvider.acceptTos(response.getChallenge().getTos().getTosId());
+        response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() == null;
     }
 
     @Property(

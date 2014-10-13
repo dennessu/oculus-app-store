@@ -3,8 +3,10 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.*
+import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
@@ -14,8 +16,11 @@ import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.error.ErrorContext
 import com.junbo.store.clientproxy.sentry.SentryFacade
+import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.ApiContextBuilder
+import com.junbo.store.rest.utils.DataConverter
 import com.junbo.store.rest.utils.RequestValidator
+import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.identity.StoreUserEmail
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
@@ -63,6 +68,15 @@ class LoginResourceImpl implements LoginResource {
 
     @Resource(name = 'storeSentryFacade')
     private SentryFacade sentryFacade
+
+    @Value('${store.tos.createuser}')
+    private String tosCreateUser
+
+    @Resource(name = 'storeDataConverter')
+    DataConverter dataConverter
+
+    @Resource(name = 'storeChallengeHelper')
+    private ChallengeHelper challengeHelper
 
     private class ApiContext {
         User user
@@ -164,6 +178,8 @@ class LoginResourceImpl implements LoginResource {
         requestValidator.validateAndGetCountry(new CountryId(request.cor)).then {
             requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
         }.then {
+            requestValidator.validateTosExists(request.tosAgreed)
+        }.then {
             // todo:    Here we need to define the parameters here
             sentryFacade.doSentryCheck(null, null, null, null, null, null)
         }.then {
@@ -198,6 +214,10 @@ class LoginResourceImpl implements LoginResource {
         }.then {
             return resourceContainer.emailVerifyEndpoint.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId())
         }.then {
+            return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: apiContext.user.getId(),
+                    tosId: request.tosAgreed,
+                    agreementTime: new Date()))
+        }.then {
             // get the auth token
             innerSignIn(apiContext.user.getId(), storeUserEmail)
         }
@@ -205,13 +225,35 @@ class LoginResourceImpl implements LoginResource {
 
     @Override
     Promise<AuthTokenResponse> signIn(UserSignInRequest userSignInRequest) {
+        com.junbo.store.spec.model.ApiContext apc
         requestValidator.validateRequiredApiHeaders().validateUserSignInRequest(userSignInRequest)
 
-        return innerSignIn(userSignInRequest.email, userSignInRequest.userCredential.value).recover { Throwable ex ->
-            if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {
-                throw ex
+        return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
+            apc = apiContext
+            return Promise.pure(null)
+        }.then {
+            innerSignIn(userSignInRequest.email, userSignInRequest.userCredential.value).recover { Throwable ex ->
+                if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {
+                    throw ex
+                }
+                appErrorUtils.throwUnknownError('signIn', ex)
             }
-            appErrorUtils.throwUnknownError('signIn', ex)
+        }.then { AuthTokenResponse authTokenResponse ->
+            if (authTokenResponse != null) {
+                return challengeHelper.checkTosChallenge(authTokenResponse.getUserId(), tosCreateUser, apc.country.getId(), userSignInRequest.challengeAnswer).then { Challenge challenge ->
+                    if (challenge == null) {
+                        return Promise.pure(authTokenResponse)
+                    }
+
+                    AuthTokenResponse tosChallengeAuthToken = new AuthTokenResponse(
+                            challenge: challenge
+                    )
+
+                    return Promise.pure(tosChallengeAuthToken)
+                }
+            }
+
+            return Promise.pure(authTokenResponse)
         }
     }
 
@@ -263,6 +305,33 @@ class LoginResourceImpl implements LoginResource {
             return Promise.pure(new ConfirmEmailResponse(
                     isSuccess: false
             ))
+        }
+    }
+
+    @Override
+    Promise<com.junbo.store.spec.model.browse.document.Tos> getRegisterTos() {
+        requestValidator.validateRequiredApiHeaders()
+
+        return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
+            return resourceContainer.tosResource.list(new TosListOptions(title: tosCreateUser, countryId: apiContext.country.getId()))
+        }.recover { Throwable ex ->
+            appErrorUtils.throwUnknownError('getRegisterTos', ex)
+        }.then { Results<Tos> tosResults ->
+            if (tosResults == null || CollectionUtils.isEmpty(tosResults.items)) {
+                return Promise.pure(null)
+            }
+
+            List<Tos> tosList = tosResults.items.sort { Tos tos ->
+                return tos.version
+            }
+
+            Tos tos = tosList.reverse().find { Tos tos ->
+                return tos.state == 'APPROVED'
+            }
+            if (tos == null) {
+                return Promise.pure(null)
+            }
+            return Promise.pure(dataConverter.toStoreTos(tos, null))
         }
     }
 

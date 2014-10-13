@@ -7,12 +7,14 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
+import com.junbo.common.id.TosId
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
+import com.junbo.identity.spec.v1.option.model.TosGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
@@ -132,6 +134,7 @@ class RequestValidator {
         notEmpty(request.password, 'password')
         notEmpty(request.cor, 'cor')
         notEmpty(request.preferredLocale, 'preferredLocale')
+        notEmpty(request.tosAgreed, 'tosAgreed')
 
         if (requireDetailsForCreate) {
             notEmpty(request.dob, 'dob')
@@ -285,6 +288,16 @@ class RequestValidator {
 
     Promise<com.junbo.identity.spec.v1.model.Locale> validateAndGetLocale(LocaleId locale) {
         return resourceContainer.localeResource.get(locale, new LocaleGetOptions())
+    }
+
+    Promise<Tos> validateTosExists(TosId tosId) {
+        return resourceContainer.tosResource.get(tosId, new TosGetOptions()).then { Tos tos ->
+            if (tos == null && tos.state != 'APPROVED') {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('tosAgreed', 'Tos with Id ' + tos.id.toString() + ' not exists').exception()
+            }
+
+            return Promise.pure(tos)
+        }
     }
 
     Promise validateOffer(OfferId offer) {

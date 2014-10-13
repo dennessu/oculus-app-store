@@ -94,12 +94,14 @@ public class StoreTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
-        assert preparePurchaseResponse.getChallenge().getTos() != null;
+        if (preparePurchaseResponse.getChallenge() != null) {
+            assert preparePurchaseResponse.getChallenge() != null;
+            assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
+            assert preparePurchaseResponse.getChallenge().getTos() != null;
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+                    preparePurchaseResponse.getChallenge().getTos().getTosId());
+        }
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);
@@ -160,13 +162,14 @@ public class StoreTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
-        assert preparePurchaseResponse.getChallenge().getTos() != null;
+        if (preparePurchaseResponse.getChallenge() != null) {
+            assert preparePurchaseResponse.getChallenge() != null;
+            assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
+            assert preparePurchaseResponse.getChallenge().getTos() != null;
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId());
-
+        }
         //verify formatted price
         //validationHelper.verifyPreparePurchase(preparePurchaseResponse);
 
@@ -467,10 +470,12 @@ public class StoreTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null, true, 200);
 
-        assert preparePurchaseResponse.getChallenge().getTos() != null;
+        if (preparePurchaseResponse.getChallenge() != null) {
+            assert preparePurchaseResponse.getChallenge().getTos() != null;
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId(), true, 200);
+        }
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);

@@ -445,7 +445,7 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             if (tosFreepurchaseEnable) {
-                return challengeHelper.checkTosChallenge(user.getId(), tosPurchase, request.challengeAnswer).then { Challenge tosChallenge ->
+                return challengeHelper.checkTosChallenge(user.getId(), tosPurchase, apiContext.country.getId(), request.challengeAnswer).then { Challenge tosChallenge ->
                     challenge = tosChallenge
                     return Promise.pure(null)
                 }
@@ -544,7 +544,7 @@ class StoreResourceImpl implements StoreResource {
             }
             return validateInstrumentForPreparePurchase(user, request)
         }.then {
-            return getPurchaseChallenge(user.getId(), request).then { Challenge challenge ->
+            return getPurchaseChallenge(user.getId(), request, apiContext).then { Challenge challenge ->
                 potentialChallenge = challenge
 
                 return Promise.pure(null)
@@ -1220,12 +1220,12 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<Challenge> getPurchaseChallenge(UserId userId, PreparePurchaseRequest request) {
+    private Promise<Challenge> getPurchaseChallenge(UserId userId, PreparePurchaseRequest request, ApiContext apiContext) {
         return challengeHelper.checkPurchasePINChallenge(userId, request?.challengeAnswer).then { Challenge challenge ->
             if (challenge != null) {
                 return Promise.pure(challenge)
             }
-            return challengeHelper.checkTosChallenge(userId, tosPurchase, request.challengeAnswer)
+            return challengeHelper.checkTosChallenge(userId, tosPurchase, apiContext.country.getId(), request.challengeAnswer)
         }
     }
 

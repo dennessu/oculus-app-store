@@ -9,12 +9,10 @@ package com.junbo.store.spec.resource;
 import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.login.*;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -60,4 +58,9 @@ public interface LoginResource {
     @Path("/confirm-email")
     // This doesn't require email verification
     Promise<ConfirmEmailResponse> confirmEmail(ConfirmEmailRequest confirmEmailRequest);
+
+    @GET
+    @Path("/tos")
+    // This doesn't require email verification
+    Promise<Tos> getRegisterTos();
 }

@@ -101,11 +101,14 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         // get toc
         TocResponse response = testDataProvider.getToc();
-        validationHelper.verifyTocTosChallenge(response.getChallenge());
 
-        // accept the tos
-        AcceptTosResponse tosResponse = testDataProvider.acceptTos(response.getChallenge().getTos().getTosId());
-        Assert.assertEquals(tosResponse.getTos(), response.getChallenge().getTos().getTosId());
+        if (response.getChallenge() != null) {
+            validationHelper.verifyTocTosChallenge(response.getChallenge());
+
+            // accept the tos
+            AcceptTosResponse tosResponse = testDataProvider.acceptTos(response.getChallenge().getTos().getTosId());
+            Assert.assertEquals(tosResponse.getTos(), response.getChallenge().getTos().getTosId());
+        }
 
         // get toc again
         response = testDataProvider.getToc();
@@ -157,8 +160,9 @@ public class StoreBrowseTesting extends BaseTestClass {
             offerId = offer_digital_free;
         }
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
-
-        freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+        if (freePurchaseResponse.getChallenge() != null) {
+            freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+        }
         Assert.assertNotNull(freePurchaseResponse.getEntitlements().get(0).getItemDetails(), "itemDetails should not be null");
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
@@ -187,8 +191,9 @@ public class StoreBrowseTesting extends BaseTestClass {
             offerId = offer_digital_free;
         }
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
-        testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
-
+        if (freePurchaseResponse.getChallenge() != null) {
+            testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+        }
         // add review
         testDataProvider.addReview(DataGenerator.instance().generateAddReviewRequest(testDataProvider.getLibrary().getItems().get(0).getSelf()), 200);
 
@@ -219,7 +224,9 @@ public class StoreBrowseTesting extends BaseTestClass {
         com.junbo.catalog.spec.model.item.Item item = testDataProvider.getItemByName(item_digital_oculus_free1);
         String offerId = testDataProvider.getOfferByItem(item.getItemId()).getOfferId();
         MakeFreePurchaseResponse response = testDataProvider.makeFreePurchase(offerId, null);
-        response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
+        if (response.getChallenge() != null) {
+            response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
+        }
         Assert.assertNotNull(response.getEntitlements().get(0).getItemDetails(), "itemDetails in entitlement should not be null");
         verifyItem(response.getEntitlements().get(0).getItemDetails(), GetItemMethod.Purchase, null);
 
@@ -289,7 +296,9 @@ public class StoreBrowseTesting extends BaseTestClass {
             offerId = offer_digital_free;
         }
         MakeFreePurchaseResponse response = testDataProvider.makeFreePurchase(offerId, null);
-        response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
+        if (response.getChallenge() != null) {
+            response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
+        }
         ItemId itemId = response.getEntitlements().get(0).getItem();
         // get delivery
         testDataProvider.getDelivery(itemId, Integer.MAX_VALUE, 412);
@@ -774,7 +783,7 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         // get toc
         TocResponse response = testDataProvider.getToc();
-        if (!tosDisabled) {
+        if (!tosDisabled && response.getChallenge() != null) {
             validationHelper.verifyTocTosChallenge(response.getChallenge());
             // accept the tos
             AcceptTosResponse tosResponse = testDataProvider.acceptTos(response.getChallenge().getTos().getTosId());

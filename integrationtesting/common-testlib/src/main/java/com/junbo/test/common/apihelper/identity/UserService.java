@@ -66,4 +66,5 @@ public interface UserService {
 
     void postUsernameEmailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception;
 
+    void updateTos(String title, String status) throws Exception;
 }

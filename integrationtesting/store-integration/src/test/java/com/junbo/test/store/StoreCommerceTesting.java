@@ -310,9 +310,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+        if (preparePurchaseResponse.getChallenge() != null) {
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId());
-
+        }
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
@@ -476,10 +477,10 @@ public class StoreCommerceTesting extends BaseTestClass {
                 offerId, paymentId, "1234", null);
 
         testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
+                preparePurchaseResponse.getChallenge() != null ? preparePurchaseResponse.getChallenge().getTos().getTosId() : null);
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId2, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
+                preparePurchaseResponse.getChallenge() != null ? preparePurchaseResponse.getChallenge().getTos().getTosId(): null);
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);
@@ -606,9 +607,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+        if (preparePurchaseResponse.getChallenge() != null) {
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId());
-
+        }
         String purchaseToken = preparePurchaseResponse.getPurchaseToken();
 
         CreateUserRequest createUserRequest2 = testDataProvider.CreateUserRequest();
@@ -712,9 +714,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+        if (preparePurchaseResponse.getChallenge() != null) {
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId());
-
+        }
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, 412);
@@ -754,10 +757,10 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
 
-        testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
-
+        if (freePurchaseResponse.getChallenge() != null) {
+            testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+        }
         testDataProvider.makeFreePurchase(offerId, null, 412);
-
         assert Master.getInstance().getApiErrorMsg().contains("Duplicate Purchase.");
         assert Master.getInstance().getApiErrorMsg().contains("133.146");
 
@@ -892,7 +895,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test get billing profile filter out paypal",
             steps = {
                     "1. Create user",
@@ -915,7 +918,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         testDataProvider.postPayment(uid, creditCardInfo);
 
-        testDataProvider.signIn(userInfo.getEmails().get(0));
+        AuthTokenResponse authTokenResponse = testDataProvider.signIn(userInfo.getEmails().get(0));
+        testDataProvider.acceptTos(authTokenResponse.getChallenge().getTos().getTosId());
         BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
 
         assert response.getBillingProfile().getInstruments().size() == 1;

@@ -66,13 +66,8 @@ class TosValidatorImpl implements TosValidator {
             if (tos.id != null) {
                 throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
-            return tosRepository.searchByTitle(tos.title, 1, 0).then { List<Tos> toses ->
-                if (!CollectionUtils.isEmpty(toses)) {
-                    throw AppCommonErrors.INSTANCE.fieldDuplicate('title').exception()
-                }
 
-                return Promise.pure(null)
-            }
+            return Promise.pure(null)
         }
     }
 

@@ -7,12 +7,15 @@ package com.junbo.test.store.apihelper;
 
 import com.junbo.common.error.*;
 import com.junbo.common.error.Error;
+import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.login.*;
 
 /**
  * Created by weiyu_000 on 8/6/14.
  */
 public interface LoginService {
+    Tos GetRegisterTos() throws Exception;
+
     AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, int expectedResponseCode) throws Exception;
 
     com.junbo.common.error.Error CreateUserWithError(CreateUserRequest createUserRequest, int expectedResponseCode, String errorCode) throws Exception;

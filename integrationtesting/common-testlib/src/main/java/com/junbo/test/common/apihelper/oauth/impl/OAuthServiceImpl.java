@@ -114,6 +114,9 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
                 formParams.put("scope", "identity.migration");
                 clientId = "migration";
                 break;
+            case IDENTITY_ADMIN:
+                formParams.put("scope", "identity.service identity.admin");
+                break;
             default:
                 formParams.put("scope", componentType.toString() + ".service");
         }
