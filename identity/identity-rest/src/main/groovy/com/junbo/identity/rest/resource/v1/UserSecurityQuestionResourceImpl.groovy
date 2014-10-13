@@ -22,6 +22,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 4/11/14.
  */
@@ -196,7 +198,9 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return userSecurityQuestionRepository.delete(userSecurityQuestionId)
+                return userSecurityQuestionRepository.delete(userSecurityQuestionId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }

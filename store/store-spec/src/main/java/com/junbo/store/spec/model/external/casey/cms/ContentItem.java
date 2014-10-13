@@ -20,7 +20,9 @@ public class ContentItem {
     public enum Type {
         offer,
         item,
-        string
+        string,
+        offerAttribute,
+        tos
     }
 
     private String type;

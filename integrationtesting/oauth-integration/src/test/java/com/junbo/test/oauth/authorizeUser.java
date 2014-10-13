@@ -6,12 +6,14 @@
 package com.junbo.test.oauth;
 
 import com.junbo.common.error.Error;
+import com.junbo.common.error.ErrorDetail;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserLoginName;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.identity.spec.v1.model.UserVAT;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.LogHelper;
@@ -68,8 +70,7 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
+        Oauth.PostRegisterUser(cid, userName, email);
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAfterRegisterUser);
         String authCode = Oauth.GetAuthCodeAfterRegisterUser(cid);
@@ -111,8 +112,7 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
+        Oauth.PostRegisterUser(cid, userName, email);
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAfterRegisterUser);
         String authCode = Oauth.GetAuthCodeAfterRegisterUser(cid);
@@ -143,8 +143,7 @@ public class authorizeUser {
 
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
+        Oauth.PostRegisterUser(cid, userName, email);
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginStateByCidAfterRegisterUser);
         String loginState = Oauth.GetLoginStateAfterRegisterUser(cid);
@@ -165,6 +164,7 @@ public class authorizeUser {
         OculusInput input = IdentityModel.DefaultOculusInput();
         input.setPassword("1:8UFAbK26VrPLL75jE9P2:PRo4D7r23hrfv3FBxqBv:b87637b9ec5abd43db01d7a299612a49550230a813239fb3e28eec2a88c0df67");
         input.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        input.setForceResetPassword(false);
         Identity.GetHttpAuthorizationHeaderForMigration();
         OculusOutput output = Identity.ImportMigrationData(input);
 
@@ -200,8 +200,7 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
+        Oauth.PostRegisterUser(cid, userName, email);
 
         HttpclientHelper.ResetHttpClient();
         cid = Oauth.GetLoginCid();
@@ -214,7 +213,7 @@ public class authorizeUser {
 
     @Property(environment = "release")
     @Test(groups = "dailies")
-    public void RegisterWithUserPii() throws Exception {
+    public void registerWithUserPii() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
 
@@ -237,8 +236,7 @@ public class authorizeUser {
         //String email = "silkcloudtest+allEnvLoginUser@gmail.com";
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
+        Oauth.PostRegisterUser(cid, userName, email);
 
         HttpclientHelper.ResetHttpClient();
         cid = Oauth.GetLoginCid();
@@ -317,9 +315,8 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, false, false);
+        Oauth.PostRegisterUser(cid, userName, email, null, false, false);
         Oauth.VerifyEmail(cid, Oauth.DefaultOauthSecondaryEndpoint);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
 
     }
 
@@ -347,8 +344,7 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
+        Oauth.PostRegisterUser(cid, userName, email);
 
         HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
@@ -357,7 +353,7 @@ public class authorizeUser {
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         String resetPasswordLink = Oauth.PostResetPassword(
                 Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
-        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null);
+        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, false);
         resetPasswordLink = resetPasswordLink.contains("reset") ? resetPasswordLink : resetPwdLinks.get(0);
         LogHelper logHelper = new LogHelper(authorizeUser.class);
         logHelper.logInfo("reset password link: " + resetPasswordLink);
@@ -397,8 +393,7 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
+        Oauth.PostRegisterUser(cid, userName, email);
 
         HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
@@ -418,6 +413,45 @@ public class authorizeUser {
         String loginResponseLink = Oauth.UserLogin(cid, email, newPassword);
         String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
+    }
+
+    @Test(groups = "dailies")
+    public void resetPasswordLinkUniqueAvailability() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        Oauth.PostRegisterUser(cid, userName, email);
+
+        HttpclientHelper.ResetHttpClient();
+        // set identity authorization header
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid), Oauth.DefaultTokenURI);
+        UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
+        Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        Oauth.PostAccessToken("smoketest", "smoketest");
+        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, false);
+        String resetPasswordCid = Oauth.GetResetPasswordCid(resetPwdLinks.get(1));
+        String newPassword = "ASDFqwer1234";
+        // set identity authorization header
+        Oauth.GetResetPasswordView(resetPasswordCid);
+        Oauth.PostResetPasswordWithNewPassword(resetPasswordCid, newPassword);
     }
 
     @Test(groups = "dailies")
@@ -442,8 +476,7 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, true, true);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
+        Oauth.PostRegisterUser(cid, userName, email, null, true, true);
     }
 
     @Test(groups = "dailies")
@@ -469,8 +502,7 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
+        Oauth.PostRegisterUser(cid, userName, email);
 
         HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
@@ -478,13 +510,121 @@ public class authorizeUser {
         Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid), Oauth.DefaultTokenURI, "client");
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
-        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null);
-        assert resetPwdLinks.size() == 0;
-
+        List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, true);
     }
 
     @Test(groups = "dailies")
-    public void OculusInternalHeaderFunction() throws Exception {
+    public void registerBlockedUsernameOtherEmail() throws Exception {
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setUsername(userName);
+        usernameMailBlocker.setEmail(email);
+        Identity.GetHttpAuthorizationHeaderForMigration();
+        Identity.UsernameMailBlockerPost(usernameMailBlocker);
+
+        HttpclientHelper.ResetHttpClient();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        ErrorDetail errorDetail = new ErrorDetail();
+        errorDetail.setField("username");
+        errorDetail.setReason("Field value is invalid. username and email are occupied");
+        errorDetails.add(0, errorDetail);
+        Error error = new Error();
+        error.setMessage("Input Error");
+        error.setDetails(errorDetails);
+        Oauth.PostRegisterUser(cid, userName, RandomHelper.randomEmail(), error);
+    }
+
+    @Test(groups = "dailies")
+    public void registerBlockedEmailOtherUsername() throws Exception {
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setUsername(userName);
+        usernameMailBlocker.setEmail(email);
+        Identity.GetHttpAuthorizationHeaderForMigration();
+        Identity.UsernameMailBlockerPost(usernameMailBlocker);
+
+        HttpclientHelper.ResetHttpClient();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        Oauth.PostRegisterUser(cid, RandomHelper.randomAlphabetic(15), email);
+    }
+
+    @Test(groups = "dailies")
+    public void registerBlockedUsernameEmail() throws Exception {
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setUsername(userName);
+        usernameMailBlocker.setEmail(email);
+        Identity.GetHttpAuthorizationHeaderForMigration();
+        Identity.UsernameMailBlockerPost(usernameMailBlocker);
+
+        HttpclientHelper.ResetHttpClient();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate current view state is login", true,
+                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        Oauth.PostRegisterUser(cid, userName, email);
+    }
+
+    @Test(groups = "dailies")
+    public void oculusInternalHeaderFunction() throws Exception {
         CloseableHttpResponse response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
                 + "?client_id="
                 + Oauth.DefaultClientId
@@ -519,7 +659,7 @@ public class authorizeUser {
     }
 
     @Test(groups = "dailies")
-    public void ClientAndSecretMisMatch() throws Exception {
+    public void clientAndSecretMisMatch() throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
         nvps.add(new BasicNameValuePair("client_id", Oauth.DefaultClientId));

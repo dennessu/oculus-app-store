@@ -23,8 +23,11 @@ import com.junbo.identity.spec.v1.option.model.AuthenticatorGetOptions
 import com.junbo.identity.spec.v1.resource.AuthenticatorResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.hibernate.engine.spi.Status
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+
+import javax.ws.rs.core.Response
 
 /**
  * Created by xiali_000 on 4/8/2014.
@@ -198,7 +201,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
     }
 
     @Override
-    Promise<Void> delete(UserAuthenticatorId userAuthenticatorId) {
+    Promise<Response> delete(UserAuthenticatorId userAuthenticatorId) {
         if (userAuthenticatorId == null) {
             throw new IllegalArgumentException('userAuthenticatorId is null')
         }
@@ -210,7 +213,9 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return userAuthenticatorRepository.delete(userAuthenticatorId)
+                return userAuthenticatorRepository.delete(userAuthenticatorId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }

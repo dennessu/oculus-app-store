@@ -21,6 +21,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 4/9/14.
  */
@@ -156,14 +158,16 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
     }
 
     @Override
-    Promise<Void> delete(UserGroupId userGroupId) {
+    Promise<Response> delete(UserGroupId userGroupId) {
         return userGroupValidator.validateForGet(userGroupId).then { UserGroup userGroup ->
             def callback = authorizeCallbackFactory.create(userGroup.groupId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete') && AuthorizeContext.currentUserId != userGroup.userId) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
-                return userGroupRepository.delete(userGroupId)
+                return userGroupRepository.delete(userGroupId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
 
         }

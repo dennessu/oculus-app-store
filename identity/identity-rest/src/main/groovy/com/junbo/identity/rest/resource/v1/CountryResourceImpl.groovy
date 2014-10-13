@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.Response
 import java.lang.reflect.Field
 
 /**
@@ -160,13 +161,15 @@ class CountryResourceImpl implements CountryResource {
     }
 
     @Override
-    Promise<Void> delete(CountryId countryId) {
+    Promise<Response> delete(CountryId countryId) {
         if (countryId == null) {
             throw new IllegalArgumentException('countryId is null')
         }
 
         return countryValidator.validateForGet(countryId).then {
-            return countryRepository.delete(countryId)
+            return countryRepository.delete(countryId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 

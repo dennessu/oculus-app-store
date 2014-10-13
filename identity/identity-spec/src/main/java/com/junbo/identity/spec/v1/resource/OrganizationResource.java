@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 5/22/14.
@@ -65,5 +66,5 @@ public interface OrganizationResource {
     @RouteBy(value = "organizationId", switchable = true)
     @DELETE
     @Path("/{organizationId}")
-    Promise<Void> delete(@PathParam("organizationId") OrganizationId organizationId);
+    Promise<Response> delete(@PathParam("organizationId") OrganizationId organizationId);
 }

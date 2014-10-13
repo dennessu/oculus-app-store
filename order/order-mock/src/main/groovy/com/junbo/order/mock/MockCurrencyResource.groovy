@@ -10,6 +10,8 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by xmchen on 14-6-4.
  */
@@ -45,7 +47,7 @@ class MockCurrencyResource extends BaseMock implements CurrencyResource {
     }
 
     @Override
-    Promise<Void> delete(CurrencyId currencyId) {
+    Promise<Response> delete(CurrencyId currencyId) {
         return null
     }
 }

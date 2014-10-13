@@ -188,4 +188,14 @@ public class postOrganization {
 
         return null;
     }
+
+    @Test(groups = "dailies")
+    public void testOrganizationUnicode() throws Exception {
+        Organization organization = IdentityModel.DefaultOrganization();
+        organization.setName("赵云�testcase" + RandomHelper.randomAlphabetic(15));
+        organization = Identity.OrganizationPostDefault(organization);
+
+        Organization newOrg = Identity.OrganizationGetByOrganizationId(organization.getId());
+        assert newOrg.getName().equalsIgnoreCase(organization.getName());
+    }
 }

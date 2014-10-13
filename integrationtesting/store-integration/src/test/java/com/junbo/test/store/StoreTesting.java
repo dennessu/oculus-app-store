@@ -94,12 +94,14 @@ public class StoreTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
-        assert preparePurchaseResponse.getChallenge().getTos() != null;
+        if (preparePurchaseResponse.getChallenge() != null) {
+            assert preparePurchaseResponse.getChallenge() != null;
+            assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
+            assert preparePurchaseResponse.getChallenge().getTos() != null;
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+                    preparePurchaseResponse.getChallenge().getTos().getTosId());
+        }
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);
@@ -160,13 +162,14 @@ public class StoreTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        assert preparePurchaseResponse.getChallenge() != null;
-        assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
-        assert preparePurchaseResponse.getChallenge().getTos() != null;
+        if (preparePurchaseResponse.getChallenge() != null) {
+            assert preparePurchaseResponse.getChallenge() != null;
+            assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("TOS_ACCEPTANCE");
+            assert preparePurchaseResponse.getChallenge().getTos() != null;
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId());
-
+        }
         //verify formatted price
         //validationHelper.verifyPreparePurchase(preparePurchaseResponse);
 
@@ -251,10 +254,10 @@ public class StoreTesting extends BaseTestClass {
         List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         Validator.Validate("validate email was sent", 1, links.size());
 
-        UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername());
+        UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername(), createUserRequest.getEmail());
         Validator.Validate("validate username is not available", false, userNameCheckResponse.getIsAvailable());
 
-        userNameCheckResponse = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(10));
+        userNameCheckResponse = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(10), RandomHelper.randomEmail());
         Validator.Validate("validate username is available", true, userNameCheckResponse.getIsAvailable());
 
         String password = "1234";
@@ -467,10 +470,12 @@ public class StoreTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null, true, 200);
 
-        assert preparePurchaseResponse.getChallenge().getTos() != null;
+        if (preparePurchaseResponse.getChallenge() != null) {
+            assert preparePurchaseResponse.getChallenge().getTos() != null;
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId(), true, 200);
+        }
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);
@@ -509,7 +514,7 @@ public class StoreTesting extends BaseTestClass {
         assert authTokenResponse.getUsername().equals(userName);
         assert authTokenResponse.getAccessToken() != null;
 
-        UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckUserName(userName);
+        UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckUserName(userName, createUserRequest.getEmail());
         assert !userNameCheckResponse.getIsAvailable();
 
         authTokenResponse = testDataProvider.SignIn(createUserRequest.getEmail(), password);

@@ -1,7 +1,5 @@
 package com.junbo.identity.rest.resource.v1
 
-import com.junbo.authorization.AuthorizeContext
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PITypeId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -17,6 +15,8 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+
+import javax.ws.rs.core.Response
 
 /**
  * Created by haomin on 14-4-25.
@@ -149,13 +149,15 @@ class PITypeResourceImpl implements PITypeResource {
     }
 
     @Override
-    Promise<Void> delete(PITypeId piTypeId) {
+    Promise<Response> delete(PITypeId piTypeId) {
         if (piTypeId != null) {
             throw new IllegalArgumentException('piTypeId is null')
         }
 
         return piTypeValidator.validateForGet(piTypeId).then {
-            return piTypeRepository.delete(piTypeId)
+            return piTypeRepository.delete(piTypeId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 

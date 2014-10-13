@@ -15,4 +15,6 @@ interface UserValidator {
     Promise<Void> validateForSearch(UserListOptions options)
     Promise<Void> validateEmail(String email)
     Promise<Void> validateUsername(String username)
+    // Check whether username and email is occupied, if yes, return true, if no, return false
+    Promise<Boolean> validateUsernameEmailBlocker(String username, String email)
 }

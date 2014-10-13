@@ -233,14 +233,111 @@
             "locales": {
                 "en_US": {
                     "images": {
-                        "main": {},
+                        "main": {
+                            "15x20":{
+                                "y": 10,
+                                "x": 20,
+                                "href": "http://www.google.com/main_tiny.png",
+                                "id": "id of image",
+                                "size": 200
+                            },
+                            "1440x1000":{
+                                "y": 10,
+                                "x": 20,
+                                "href": "http://www.google.com/main_medium.png",
+                                "id": "id of image",
+                                "size": 200
+                            },
+                            "25600x1000":{
+                                "y": 10,
+                                "x": 20,
+                                "href": "http://www.google.com/main_large.png",
+                                "id": "id of image",
+                                "size": 200
+                            }
+                        },
                         "thumbnail": {"15x20":{
                             "y": 10,
                             "x": 20,
-                            "href": "http://www.google.com",
+                            "href": "http://www.google.com/thumbnail_tiny.png",
                             "id": "id of image",
                             "size": 200
-                        }}
+                        },"690x20":{
+                              "y": 10,
+                              "x": 20,
+                              "href": "http://www.google.com/thumbnail_small.png",
+                              "id": "id of image",
+                              "size": 200
+                        }},
+                        "gallery": [
+                            {
+                                "thumbnail": {"15x20":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery0_thumbnail_tiny.png",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                },
+                                "690x20":{
+                                      "y": 10,
+                                      "x": 20,
+                                      "href": "http://www.google.com/gallery0_thumbnail_small.png",
+                                      "id": "id of image",
+                                      "size": 200
+                                }},
+                                "full": {"1440x1000":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery0_full_medium.png",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                },
+                                "15x20":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery0_full_tiny.jpg",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                }
+                                }
+                            },
+                            {
+                                "thumbnail": {"15x20":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery1_thumbnail_tiny.png",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                },
+                                "690x20":{
+                                      "y": 10,
+                                      "x": 20,
+                                      "href": "http://www.google.com/gallery1_thumbnail_small.png",
+                                      "id": "id of image",
+                                      "size": 200
+                                }},
+                                "full": {"1440x1000":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery1_full_medium.png",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                },
+                                "15x20":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery1_full_tiny.jpg",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                }
+                                }
+                            }]
                     },
                     "shortDescription": "short description",
                     "name": "testOffer_Free_Digital",

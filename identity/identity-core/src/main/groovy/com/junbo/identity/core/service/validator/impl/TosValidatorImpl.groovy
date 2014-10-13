@@ -66,6 +66,7 @@ class TosValidatorImpl implements TosValidator {
             if (tos.id != null) {
                 throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
+
             return Promise.pure(null)
         }
     }
@@ -78,6 +79,10 @@ class TosValidatorImpl implements TosValidator {
 
         if (tosId != tos.id) {
             throw AppCommonErrors.INSTANCE.fieldNotWritable('id', tos.id, tosId.toString()).exception()
+        }
+
+        if (tos.title != oldTos.title) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('title').exception()
         }
 
         return checkBasicTosInfo(tos).then {

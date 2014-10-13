@@ -18,6 +18,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by haomin on 14-4-25.
  */
@@ -162,13 +164,15 @@ class LocaleResourceImpl implements LocaleResource {
     }
 
     @Override
-    Promise<Void> delete(LocaleId localeId) {
+    Promise<Response> delete(LocaleId localeId) {
         if (localeId == null) {
             throw new IllegalArgumentException('localeId is null')
         }
 
         return localeValidator.validateForGet(localeId).then {
-            return localeRepository.delete(localeId)
+            return localeRepository.delete(localeId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 

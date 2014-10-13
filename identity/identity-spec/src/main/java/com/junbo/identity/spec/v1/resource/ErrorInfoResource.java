@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 7/22/14.
@@ -57,5 +58,5 @@ public interface ErrorInfoResource {
     @ApiOperation("Delete one error info")
     @DELETE
     @Path("/{errorInfoId}")
-    Promise<Void> delete(@PathParam("errorInfoId") ErrorIdentifier errorIdentifier);
+    Promise<Response> delete(@PathParam("errorInfoId") ErrorIdentifier errorIdentifier);
 }

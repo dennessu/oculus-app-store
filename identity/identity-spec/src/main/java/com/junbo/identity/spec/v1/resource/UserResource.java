@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -67,7 +68,7 @@ public interface UserResource {
     @DELETE
     @Path("/{userId}")
     @RouteBy(value = "userId", switchable = true)
-    Promise<Void> delete(@PathParam("userId") UserId userId);
+    Promise<Response> delete(@PathParam("userId") UserId userId);
 
     @ApiOperation("Check whether username is valid")
     @POST
@@ -78,4 +79,10 @@ public interface UserResource {
     @POST
     @Path("/check-email/{email}")
     Promise<Void> checkEmail(@PathParam("email") String email);
+
+    @ApiOperation("Check whether email and username is occupied")
+    @GET
+    @Path("/check-legacy-username-email")
+    Promise<Boolean> checkUsernameEmailBlocker(@QueryParam("username") String username,
+                                               @QueryParam("email") String email);
 }

@@ -41,6 +41,7 @@
             <list>
                 <value>X_QA_CASEY_EMULATE_LATENCY</value>
                 <value>X_QA_CASEY_REVIEW_USER_ID_LIST</value>
+                <value>X_QA_CASEY_ERROR</value>
             </list>
         </property>
     </bean>

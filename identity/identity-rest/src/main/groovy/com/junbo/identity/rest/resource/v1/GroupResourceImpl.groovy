@@ -27,6 +27,9 @@ import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+
+import javax.ws.rs.core.Response
+
 /**
  * Created by xiali_000 on 4/8/2014.
  */
@@ -234,7 +237,9 @@ class GroupResourceImpl implements GroupResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return groupRepository.delete(groupId)
+                return groupRepository.delete(groupId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }

@@ -30,7 +30,7 @@ class MandrillProviderImpl implements EmailProvider {
     private static final String VARS_NAME ='name'
     private static final String VARS_CONTENT ='content'
     private static final String CONTENT_TYPE ='Content-Type'
-    private static final String APPLICATION_JSON ='application/json'
+    private static final String APPLICATION_JSON ='application/json; charset=utf-8'
 
     private MandrillConfiguration configuration
 
@@ -146,6 +146,7 @@ class MandrillProviderImpl implements EmailProvider {
     BoundRequestBuilder buildRequest(Email email, EmailTemplate template) {
         def requestBuilder = asyncHttpClient.preparePost(configuration.url)
         requestBuilder.addHeader(CONTENT_TYPE, APPLICATION_JSON)
+
         encoder(email)
         def request = populateRequest(email, template)
         requestBuilder.setBody(toJson(request))

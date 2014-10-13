@@ -75,7 +75,7 @@ public class StoreBrowseValidationHelper {
     public void verifySectionLayoutBreadcrumbs(SectionLayoutResponse layout, SectionLayoutResponse parentLayout, SectionInfo parentSection) throws Exception {
         if (parentLayout != null) {
             Assert.assertEquals(layout.getBreadcrumbs().size(), parentLayout.getBreadcrumbs().size() + 1, "Breadcrumbs length not corret");
-            for (int i = 0;i < parentLayout.getBreadcrumbs().size(); ++i) {
+            for (int i = 0; i < parentLayout.getBreadcrumbs().size(); ++i) {
                 Validator.Validate("node in breadcrumbs not equal", layout.getBreadcrumbs().get(i), parentLayout.getBreadcrumbs().get(i));
             }
         }
@@ -115,8 +115,31 @@ public class StoreBrowseValidationHelper {
         }
     }
 
+    public void verifyAggregateRatingsBasic(Map<String, AggregatedRatings> aggregatedRatings) {
+        Assert.assertNotNull(aggregatedRatings);
+        Assert.assertEquals(aggregatedRatings.keySet(), new HashSet<>(Arrays.asList("comfort", "quality")));
+        for (AggregatedRatings ratings : aggregatedRatings.values()) {
+            Assert.assertNotNull(ratings);
+            Assert.assertNull(ratings.getCommentsCount());
+            Assert.assertTrue(ratings.getAverageRating() >= 0.0);
+            Assert.assertTrue(ratings.getRatingsCount() >= 0);
+            Assert.assertEquals(ratings.getRatingsHistogram().size(), 5);
+            for (Long val : ratings.getRatingsHistogram().values()) {
+                Assert.assertTrue(val >= 0L);
+            }
+        }
+    }
+
     public void verifyAggregateRatings(Map<String, AggregatedRatings> aggregatedRatings, List<CaseyAggregateRating> caseyAggregatedRatings) {
+        verifyAggregateRatings(aggregatedRatings, caseyAggregatedRatings, new HashSet<String>());
+    }
+
+    public void verifyAggregateRatings(Map<String, AggregatedRatings> aggregatedRatings, List<CaseyAggregateRating> caseyAggregatedRatings, Set<String> defaultRating) {
         for (final Map.Entry<String, AggregatedRatings> entry : aggregatedRatings.entrySet()) {
+            if (defaultRating.contains(entry.getKey())) {
+                verifyDefaultAggregateRatings(entry.getValue());
+                continue;
+            }
             CaseyAggregateRating caseyAggregateRating = (CaseyAggregateRating) CollectionUtils.find(caseyAggregatedRatings, new Predicate() {
                 @Override
                 public boolean evaluate(Object object) {
@@ -128,27 +151,27 @@ public class StoreBrowseValidationHelper {
             Assert.assertEquals(rating.getRatingsCount(), caseyAggregateRating.getCount(), "rating count not correct");
             Assert.assertNull(rating.getCommentsCount(), "comments count should be null");
 
-            for (int i = 0;i < caseyAggregateRating.getHistogram().length; i += 2) {
+            for (int i = 0; i < caseyAggregateRating.getHistogram().length; i += 2) {
                 Assert.assertEquals(rating.getRatingsHistogram().get(i / 2).longValue(),
                         (caseyAggregateRating.getHistogram()[i] + caseyAggregateRating.getHistogram()[i + 1]), "rating histogram not correct");
             }
         }
     }
 
-    public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled) throws Exception {
+    public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled, boolean verifyAttributes) throws Exception {
         com.junbo.catalog.spec.model.offer.Offer catalogOffer =
                 storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue(), true);
         com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue(), true);
         if (catalogOffer == null || catalogItem == null) {
             LOGGER.info("Offer/Item not found, skip verify item:{}", item.getSelf());
-            return ;
+            return;
         }
-        OfferRevision currentOfferRevision  = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
+        OfferRevision currentOfferRevision = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
         ItemRevision currentItemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevision().getValue());
 
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
-        List<ItemRevision> itemRevisions =  Arrays.asList(currentItemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
+        List<ItemRevision> itemRevisions = Arrays.asList(currentItemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
 
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
             for (String id : catalogOffer.getCategories()) {
@@ -156,32 +179,34 @@ public class StoreBrowseValidationHelper {
             }
         }
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogItem.getGenres())) {
-            for (String id: catalogItem.getGenres()) {
+            for (String id : catalogItem.getGenres()) {
                 itemAttributes.add(storeTestDataProvider.getItemAttribute(id));
             }
         }
 
-        ItemRevisionLocaleProperties localeProperties = currentItemRevision.getLocales().get(locale);
+        OfferRevisionLocaleProperties localeProperties = currentOfferRevision.getLocales().get(locale);
         Organization developer = getOrganization(catalogItem.getOwnerId(), serviceClientEnabled);
         Organization publisher = getOrganization(catalogOffer.getOwnerId(), serviceClientEnabled);
 
-        verifyItem(item, catalogItem, currentItemRevision, developer, serviceClientEnabled);
+        verifyItem(item, catalogItem, currentItemRevision, currentOfferRevision, developer, serviceClientEnabled);
         verifyItemImages(item.getImages(), localeProperties.getImages());
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
-                developer, publisher, serviceClientEnabled);
+                developer, publisher, serviceClientEnabled, verifyAttributes);
         boolean isFree = PriceType.FREE.name().equals(currentOfferRevision.getPrice().getPriceType());
         verifyItemOffer(item.getOffer(), catalogOffer, currentOfferRevision, isFree);
+
+        verifyAggregateRatingsBasic(item.getAggregatedRatings());
     }
 
-    public void validateCmsSection(SectionInfoNode sectionInfoNode, String name, String cmsPageName, String slot) {
-        Assert.assertEquals(sectionInfoNode.getCriteria(), cmsPageName + "-" + slot);
-        Assert.assertEquals(sectionInfoNode.getName(), name);
+    public void validateCmsSection(SectionInfoNode sectionInfoNode, String expectedName, String expectedCriteria) {
+        Assert.assertEquals(sectionInfoNode.getCriteria(), expectedCriteria);
+        Assert.assertEquals(sectionInfoNode.getName(), expectedName);
         Assert.assertNull(sectionInfoNode.getCategory());
     }
 
-    public void validateCmsSection(SectionInfo sectionInfo, String name, String cmsPageName, String slot) {
-        Assert.assertEquals(sectionInfo.getCriteria(), cmsPageName + "-" + slot);
-        Assert.assertEquals(sectionInfo.getName(), name);
+    public void validateCmsSection(SectionInfo sectionInfo, String expectedName, String expectedCriteria) {
+        Assert.assertEquals(sectionInfo.getCriteria(), expectedCriteria);
+        Assert.assertEquals(sectionInfo.getName(), expectedName);
         Assert.assertNull(sectionInfo.getCategory());
     }
 
@@ -209,6 +234,23 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(sectionLayoutResponse.getName(), expectedName);
     }
 
+    public void verifyDefaultAggregateRatings(Map<String, AggregatedRatings> aggregatedRatingsMap) {
+        Assert.assertEquals(aggregatedRatingsMap.keySet(), new HashSet<>(Arrays.asList("comfort", "quality")));
+        for (AggregatedRatings ratings : aggregatedRatingsMap.values()) {
+            verifyDefaultAggregateRatings(ratings);
+        }
+    }
+
+    public void verifyDefaultAggregateRatings(AggregatedRatings aggregatedRating) {
+        Assert.assertNull(aggregatedRating.getCommentsCount());
+        Assert.assertEquals(aggregatedRating.getAverageRating(), 0.0, 0.00001);
+        Assert.assertEquals(aggregatedRating.getRatingsCount(), new Long(0));
+        Map<Integer, Long> ratingsHistogram = new HashMap<>();
+        for (int i = 0; i < 5; ++i) {
+            ratingsHistogram.put(i, 0L);
+        }
+        Assert.assertEquals(aggregatedRating.getRatingsHistogram(), ratingsHistogram);
+    }
 
     public void validateAddReview(AddReviewRequest addReviewRequest, Review review, String nickName) {
         Assert.assertEquals(review.getContent(), addReviewRequest.getContent());
@@ -219,11 +261,26 @@ public class StoreBrowseValidationHelper {
         Assert.assertNotNull(review.getTimestamp());
     }
 
+    public void verifyImage(Images images, Map<String, String> mainImageUrls, List<Map<String, String>> galleries) {
+        Assert.assertEquals(images.getMain().keySet(), mainImageUrls.keySet());
+        for (Map.Entry<String, String> entry : mainImageUrls.entrySet()) {
+            Assert.assertTrue(images.getMain().get(entry.getKey()).getImageUrl().contains(entry.getValue()));
+        }
+        Assert.assertEquals(images.getGallery().size(), galleries.size());
+        for (int i = 0; i < galleries.size(); ++i) {
+            Assert.assertEquals(images.getGallery().get(i).keySet(), galleries.get(i).keySet());
+            for (Map.Entry<String, String> entry : galleries.get(i).entrySet()) {
+                Assert.assertTrue(images.getGallery().get(i).get(entry.getKey()).getImageUrl().contains(entry.getValue()));
+            }
+        }
+    }
+
     private void verifyItem(com.junbo.store.spec.model.browse.document.Item item, Item catalogItem, ItemRevision itemRevision,
+                            OfferRevision offerRevision,
                             Organization developer, boolean serviceClientEnabled) {
         Assert.assertEquals(item.getSelf(), new ItemId(catalogItem.getItemId()));
         Assert.assertEquals(item.getItemType(), catalogItem.getType());
-        ItemRevisionLocaleProperties localeProperties = itemRevision.getLocales().get(locale);
+        OfferRevisionLocaleProperties localeProperties = offerRevision.getLocales().get(locale);
         Assert.assertEquals(item.getTitle(), localeProperties.getName(), "item title not match");
         Assert.assertEquals(item.getDescriptionHtml(), localeProperties.getLongDescription(), "description html not match");
         verifySupportedLocaleEquals(item.getSupportedLocales(), itemRevision.getSupportedLocales());
@@ -236,46 +293,46 @@ public class StoreBrowseValidationHelper {
     private void verifyItemImages(Images images, com.junbo.catalog.spec.model.common.Images catalogImages) {
         if (catalogImages == null) {
             Assert.assertNull(images);
-            return ;
+            return;
         }
-        verifyImageMap(images.getBackground(), catalogImages.getBackground());
-        verifyImageMap(images.getFeatured(), catalogImages.getFeatured());
-        verifyImageMap(images.getMain(), catalogImages.getMain());
-        verifyImageMap(images.getThumbnail(), catalogImages.getThumbnail());
+        verifyImageMap(images.getMain(), catalogImages.getMain(), catalogImages.getThumbnail());
         if (catalogImages.getGallery() == null) {
-            Assert.assertNull(images.getGallery());
+            Assert.assertEquals(images.getGallery().size(), 0);
         } else {
             Assert.assertEquals(images.getGallery().size(), catalogImages.getGallery().size());
-            for (int i = 0;i < images.getGallery().size();++i) {
-                verifyImageMap(images.getGallery().get(i).getThumbnail(), catalogImages.getGallery().get(i).getThumbnail());
-                verifyImageMap(images.getGallery().get(i).getFull(), catalogImages.getGallery().get(i).getFull());
+            for (int i = 0; i < images.getGallery().size(); ++i) {
+                verifyImageMap(images.getGallery().get(i), catalogImages.getGallery().get(i).getFull(), catalogImages.getGallery().get(i).getThumbnail());
             }
         }
     }
 
     private void verifyAppDetails(AppDetails appDetails, List<OfferAttribute> categories, List<ItemAttribute> genres,
                                   OfferRevision offerRevision, ItemRevision itemRevision, List<ItemRevision> itemRevisions,
-                                  Organization developer, Organization publisher, boolean serviceClientEnabled) {
+                                  Organization developer, Organization publisher, boolean serviceClientEnabled, boolean verifyAttributes) {
         // verify categories
         ItemRevisionLocaleProperties localeProperties = itemRevision.getLocales().get(locale);
-        if (categories == null) {
-            Assert.assertTrue(appDetails.getCategories().isEmpty());
-        } else {
-            Assert.assertEquals(appDetails.getCategories().size(), categories.size());
-            for (int i = 0; i < appDetails.getCategories().size(); ++i) {
-                Assert.assertEquals(appDetails.getCategories().get(i).getId(), categories.get(i).getId());
-                Assert.assertEquals(appDetails.getCategories().get(i).getName(), categories.get(i).getLocales().get(locale).getName());
+        if (verifyAttributes) {
+            if (categories == null) {
+                Assert.assertTrue(appDetails.getCategories().isEmpty());
+            } else {
+                Assert.assertEquals(appDetails.getCategories().size(), categories.size());
+                for (int i = 0; i < appDetails.getCategories().size(); ++i) {
+                    Assert.assertEquals(appDetails.getCategories().get(i).getId(), categories.get(i).getId());
+                    Assert.assertEquals(appDetails.getCategories().get(i).getName(), categories.get(i).getLocales().get(locale).getName());
+                }
             }
         }
 
         // verify genres
-        if (genres == null) {
-            Assert.assertTrue(appDetails.getGenres().isEmpty());
-        } else {
-            Assert.assertEquals(appDetails.getGenres().size(), genres.size());
-            for (int i = 0; i < appDetails.getGenres().size(); ++i) {
-                Assert.assertEquals(appDetails.getGenres().get(i).getId(), genres.get(i).getId());
-                Assert.assertEquals(appDetails.getGenres().get(i).getName(), genres.get(i).getLocales().get(locale).getName());
+        if (verifyAttributes) {
+            if (genres == null) {
+                Assert.assertTrue(appDetails.getGenres().isEmpty());
+            } else {
+                Assert.assertEquals(appDetails.getGenres().size(), genres.size());
+                for (int i = 0; i < appDetails.getGenres().size(); ++i) {
+                    Assert.assertEquals(appDetails.getGenres().get(i).getId(), genres.get(i).getId());
+                    Assert.assertEquals(appDetails.getGenres().get(i).getName(), genres.get(i).getLocales().get(locale).getName());
+                }
             }
         }
 
@@ -300,8 +357,7 @@ public class StoreBrowseValidationHelper {
             if (offerRevision.getCountries() == null && offerRevision.getCountries().get(country) == null &&
                     offerRevision.getCountries().get(country).getReleaseDate() == null) {
                 Assert.assertNull(appDetails.getReleaseDate());
-            }
-            else {
+            } else {
                 Assert.assertEquals(appDetails.getReleaseDate(), offerRevision.getCountries().get(country).getReleaseDate());
             }
         }
@@ -326,14 +382,14 @@ public class StoreBrowseValidationHelper {
             }
         });
         Assert.assertEquals(revisions.size(), revisionNotes.size());
-        for (int i = 0;i < revisionNotes.size(); ++i) {
+        for (int i = 0; i < revisionNotes.size(); ++i) {
             RevisionNote revisionNote = revisionNotes.get(i);
             ItemRevision historyItemRevision = revisions.get(i);
             ItemRevisionLocaleProperties historyLocalProperties = historyItemRevision.getLocales().get(locale);
             Binary historyBinary = historyItemRevision.getBinaries() == null ? null : historyItemRevision.getBinaries().get(Platform);
 
             Assert.assertEquals(revisionNote.getTitle(), historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getShortNotes());
-            Assert.assertEquals(revisionNote.getDescription(), historyLocalProperties == null ? null :  historyLocalProperties.getReleaseNotes().getLongNotes());
+            Assert.assertEquals(revisionNote.getDescription(), historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getLongNotes());
             Assert.assertEquals(revisionNote.getVersionCode(), historyBinary == null || historyBinary.getMetadata() == null
                     || historyBinary.getMetadata().get("versionCode") == null ? null : historyBinary.getMetadata().get("versionCode").asInt());
             Assert.assertEquals(revisionNote.getVersionString(), historyBinary == null ? null : historyBinary.getVersion());
@@ -365,23 +421,23 @@ public class StoreBrowseValidationHelper {
         return entry.getValue();
     }
 
-    private void verifyImageMap(Map<String, Image> storeImageMap, Map<String , com.junbo.catalog.spec.model.common.Image> catalogImageMap) {
-        if (catalogImageMap == null) {
-            Assert.assertNull(storeImageMap);
-            return;
-        }
-        Map<String , Image> expected = new HashMap<>();
-        for (Map.Entry<String , com.junbo.catalog.spec.model.common.Image> entry : catalogImageMap.entrySet()) {
-            try {
-                String groupName = getImageSizeGroup(entry.getKey());
-                Image storeImage = new Image();
-                storeImage.setAltText(entry.getValue().getAltText());
-                storeImage.setImageUrl(entry.getValue().getHref());
-                expected.put(groupName, storeImage);
-            } catch (Exception ex) {
-                assert ex != null;
+    private void verifyImageMap(Map<String, Image> storeImageMap, Map<String, com.junbo.catalog.spec.model.common.Image>... catalogImageMaps) {
+        Map<String, Image> expected = new HashMap<>();
+        for (Map<String, com.junbo.catalog.spec.model.common.Image> catalogImageMap : catalogImageMaps) {
+            for (Map.Entry<String, com.junbo.catalog.spec.model.common.Image> entry : catalogImageMap.entrySet()) {
+                try {
+                    String groupName = getImageSizeGroup(entry.getKey());
+                    Image storeImage = new Image();
+                    storeImage.setAltText(entry.getValue().getAltText());
+                    storeImage.setImageUrl(entry.getValue().getHref());
+                    if (expected.get(groupName) == null) {
+                        expected.put(groupName, storeImage);
+                    }
+                } catch (Exception ex) {
+                }
             }
         }
+
         Assert.assertEquals(storeImageMap.keySet(), expected.keySet());
         for (Map.Entry<String, Image> entry : storeImageMap.entrySet()) {
             Assert.assertEquals(entry.getValue().getAltText(), expected.get(entry.getKey()).getAltText(), "altText not equal");
@@ -433,7 +489,7 @@ public class StoreBrowseValidationHelper {
             @Override
             public void verify(List<AgeRating> o1, List<AgeRating> o2) {
                 Assert.assertEquals(o1.size(), o2.size());
-                for (int i = 0;i < o1.size();++i) {
+                for (int i = 0; i < o1.size(); ++i) {
                     AgeRating a1 = o1.get(i);
                     AgeRating a2 = o2.get(i);
                     Assert.assertEquals(a1.getCategory(), a2.getCategory());

@@ -40,9 +40,6 @@ public class SectionInfoNode {
     private Boolean ordered;
 
     @JsonIgnore
-    private String categoryId;
-
-    @JsonIgnore
     private String cmsPageSearch;
 
     @JsonIgnore
@@ -112,14 +109,6 @@ public class SectionInfoNode {
 
     public void setParent(SectionInfoNode parent) {
         this.parent = parent;
-    }
-
-    public String getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
     }
 
     public String getCmsPageSearch() {

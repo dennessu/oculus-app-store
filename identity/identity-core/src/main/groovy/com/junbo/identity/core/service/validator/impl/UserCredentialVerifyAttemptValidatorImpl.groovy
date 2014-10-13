@@ -68,7 +68,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private Integer userAgentMinLength
     private Integer userAgentMaxLength
     // This is to check good user can't fail to login in some time
-    private Map<Integer, Integer> maxRetryIntervalMap   // This is to control same user's allow retry count during interval
+    private Integer maxRetryInterval                    // This is to control same user's allow retry count during interval
                                                         // The first parameter is the maxRetryCount, the second parameter is the retryInterval
                                                         // All of them are and operation, only when user's login history satisfy any configurations, it will be the same
     private Map<Integer, Integer> maxLockDownTime       // This is to control same user's lock out time
@@ -290,46 +290,81 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
         return getActiveCredentialCreatedTime(user, userLoginAttempt).then { Date passwordActiveTime ->
-            return Promise.each(this.maxRetryIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
-                Integer maxRetryCount = entry.key
-                Integer maxRetryInterval = entry.value
-                Long maxRetryIntervalFromTime = System.currentTimeMillis() - maxRetryInterval * 1000L
-                Long timeInterval = maxRetryIntervalFromTime > passwordActiveTime.getTime() ? maxRetryIntervalFromTime : passwordActiveTime.getTime()
+            Integer maxRetryCount = maxLockDownTime.keySet().max()
+            Long maxRetryIntervalFromTime = System.currentTimeMillis() - maxRetryInterval * 1000L
+            Long timeInterval = maxRetryIntervalFromTime > passwordActiveTime.getTime() ? maxRetryIntervalFromTime : passwordActiveTime.getTime()
 
-                return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount, 0).then {
-                    List<UserCredentialVerifyAttempt> attemptList ->
-                        if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount - 1) {
-                            return Promise.pure(null)
-                        }
-                        UserCredentialVerifyAttempt successAttempt = attemptList.find { UserCredentialVerifyAttempt attempt ->
-                            return attempt.succeeded
-                        }
-                        if (successAttempt != null) {
-                            return Promise.pure(null)
-                        }
-
-                        if (attemptList.get(0).createdTime.before(DateUtils.addSeconds(new Date(), -maxLockDownTime.get(entry.key)))) {
-                            return Promise.pure(null)
-                        }
-                        // Only if it reaches the threashold, we will send mail
-                        if (attemptList.size() == maxRetryCount - 1 && !userLoginAttempt.succeeded) {
-                            return sendMaximumRetryReachedNotification(user, userLoginAttempt).recover { Throwable ex ->
-                                LOGGER.error("Error sending Maximum retry reachable Notification")
-                                return Promise.pure(null)
-                            }
-                        }
-
-                        if (attemptList.size() < maxRetryCount) {
-                            return Promise.pure(null)
-                        }
-
-                        throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+            return userLoginAttemptRepository.searchNonLockPeriodHistory(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+                // If no credential verify attempt found, return
+                if (CollectionUtils.isEmpty(attemptList)) {
+                    return Promise.pure(null)
                 }
+                List<UserCredentialVerifyAttempt> consecutiveFailureAttempts = new ArrayList<>()
+                for (int i = 0; i < attemptList.size(); i++) {
+                    if (attemptList.get(i).succeeded) {
+                        break
+                    }
+                    consecutiveFailureAttempts.add(attemptList.get(i))
+                }
+
+                // Return the rule template
+                int index = getRetryKeyIndex(consecutiveFailureAttempts.size())
+
+                // Check whether this is in lock down period
+                checkLockDownPeriod(consecutiveFailureAttempts, index, userLoginAttempt)
+
+                // Check whether need to send email
+                if (index < maxLockDownTime.keySet().size() && !userLoginAttempt.succeeded && consecutiveFailureAttempts.size() == maxLockDownTime.keySet().getAt(index) - 1) {
+                    return sendMaximumRetryReachedNotification(user, userLoginAttempt, index).recover { Throwable ex ->
+                        LOGGER.error("Error sending Maximum retry reachable Notification")
+                        return Promise.pure(null)
+                    }
+                }
+
+                // If not in lockdown period, will just return.
+                // Else if it is in lockdown period, return and throw potential exception
+                return Promise.pure(null)
             }
         }
     }
 
-    private Promise<Void> sendMaximumRetryReachedNotification(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+    private Integer getRetryKeyIndex(Integer value) {
+        int size = maxLockDownTime.keySet().size()
+        int startKey, endKey
+        for(int index = 0; index <= size; index ++) {
+            startKey = index == 0? 0: maxLockDownTime.keySet().getAt(index - 1)
+            endKey = index == size? Integer.MAX_VALUE : maxLockDownTime.keySet().getAt(index) - 1
+
+            if (value >= startKey && value <= endKey) {
+                return index
+            }
+        }
+    }
+
+    private void checkLockDownPeriod(List<UserCredentialVerifyAttempt> attemptList, int index, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (index == maxLockDownTime.keySet().size()) {
+            userLoginAttempt.isLockDownPeriodAttempt = true
+            return
+        }
+        for (int k = 0; k < index; k++) {
+            Integer retryCount = maxLockDownTime.keySet().getAt(k);
+            Integer lockDownTime = maxLockDownTime.get(retryCount);
+            if (attemptList.size() < retryCount) {
+                userLoginAttempt.isLockDownPeriodAttempt = false
+                continue
+                        }
+            UserCredentialVerifyAttempt attempt = attemptList.get(attemptList.size() - retryCount)
+            // in lock down time
+            if (attempt.createdTime.after(DateUtils.addSeconds(new Date(), -lockDownTime))) {
+                userLoginAttempt.isLockDownPeriodAttempt = true
+                break
+            } else {
+                userLoginAttempt.isLockDownPeriodAttempt = false
+            }
+        }
+    }
+
+    private Promise<Void> sendMaximumRetryReachedNotification(User user, UserCredentialVerifyAttempt userLoginAttempt, int index) {
         if (!enableMailSend) {
             return Promise.pure(null)
         }
@@ -364,6 +399,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                             replacements: [
                                     'name': userLoginName,
                                     'link': ConfigServiceManager.instance().getConfigValue('identity.conf.oculusHelpLink')
+                                    // todo:    May need to edit display time according to index
                             ]
                     )
 
@@ -547,6 +583,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (userLoginAttempt.value == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
         }
+
+        if (userLoginAttempt.isLockDownPeriodAttempt != null) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('isLockDownPeriodAttempt').exception()
+        }
     }
 
     Promise<UserCredentialVerifyAttempt> createInNewTran(Email emailToSend) {
@@ -620,16 +660,18 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     @Required
-    void setMaxRetryIntervalMap(String maxRetryIntervalStr) {
-        String[] retryIntervalArray = maxRetryIntervalStr.split(';')
-        this.maxRetryIntervalMap = new HashMap<>()
-        this.maxLockDownTime = new HashMap<>()
+    void setMaxRetryInterval(String maxRetryInterval) {
+        this.maxRetryInterval = parseInteger(maxRetryInterval)
+    }
+
+    @Required
+    void setMaxLockDownTime(String maxLockDownTimeStr) {
+        String[] retryIntervalArray = maxLockDownTimeStr.split(';')
         this.maxLockDownTime = new HashMap<>()
         retryIntervalArray.each { String retryIntervalStr ->
             String[] retryIntervalStrArray = retryIntervalStr.split(':')
-            assert retryIntervalStrArray.size() == 3
-            this.maxRetryIntervalMap.put(parseInteger(retryIntervalStrArray[0]), parseInteger(retryIntervalStrArray[1]))
-            this.maxLockDownTime.put(parseInteger(retryIntervalStrArray[0]), parseInteger(retryIntervalStrArray[2]))
+            assert retryIntervalStrArray.size() == 2
+            this.maxLockDownTime.put(parseInteger(retryIntervalStrArray[0]), parseInteger(retryIntervalStrArray[1]))
         }
     }
 
@@ -651,6 +693,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             assert retryIntervalStrArray.size() == 2
             this.maxSameIPIntervalMap.put(parseInteger(retryIntervalStrArray[0]), parseInteger(retryIntervalStrArray[1]))
         }
+        // todo:    Need to check the lockdown time is always increasing
     }
 
     @Required

@@ -6,6 +6,7 @@
 package com.junbo.test.oauth;
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.junbo.common.error.Error;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
@@ -192,6 +193,25 @@ public class Oauth {
         }
     }
 
+    public static String PostAccessToken(String clientId, String scope) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNClientId, clientId));
+        nvps.add(new BasicNameValuePair(DefaultFNClientSecret, DefaultClientSecret));
+        nvps.add(new BasicNameValuePair(DefaultFNGrantType, "client_credentials"));
+        nvps.add(new BasicNameValuePair("scope", scope));
+
+        CloseableHttpResponse response = OauthPost(DefaultTokenURI, nvps);
+        try {
+            AccessTokenResponse accessTokenResponse = JsonHelper.JsonDeserializer(
+                    new InputStreamReader(response.getEntity().getContent()), AccessTokenResponse.class);
+            String accessToken = accessTokenResponse.getAccessToken();
+            Identity.SetHttpAuthorizationHeader(accessToken);
+            return accessToken;
+        } finally {
+            response.close();
+        }
+    }
+
     public static TokenInfo GetTokenInfo(String accessToken) throws Exception {
         return GetTokenInfo(accessToken, DefaultTokenInfoURI);
     }
@@ -256,14 +276,19 @@ public class Oauth {
         }
     }
 
-    // pass in userName for validation purpose only
-    public static String PostRegisterUser(String cid, String userName, String email) throws Exception {
-        return PostRegisterUser(cid, userName, email, true, false);
+    // pass in userName and email for validation purpose only
+    public static void PostRegisterUser(String cid, String userName, String email) throws Exception {
+        PostRegisterUser(cid, userName, email, null, true, false);
     }
 
-    // pass in userName for validation purpose only
-    public static String PostRegisterUser(String cid, String userName, String email,
-                                          Boolean verifyEmail, Boolean doubleVerifyEmail) throws Exception {
+    public static void PostRegisterUser(String cid, String userName, String email, com.junbo.common.error.Error error)
+            throws Exception {
+        PostRegisterUser(cid, userName, email, error, true, false);
+    }
+
+    // pass in userName and email for validation purpose only
+    public static void PostRegisterUser(String cid, String userName, String email, Error errors,
+                                        Boolean verifyEmail, Boolean doubleVerifyEmail) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
@@ -278,12 +303,30 @@ public class Oauth {
 
         CloseableHttpResponse response = OauthPost(DefaultAuthorizeURI, nvps);
         try {
-            String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
-            //System.out.print(responseString);
-            return responseString;
+            ViewModel viewModel = JsonHelper.JsonDeserializer(new InputStreamReader(response.getEntity().getContent()),
+                    ViewModel.class);
+            if (errors == null) {
+                Validator.Validate("validate no errors", 0, viewModel.getErrors().size());
+            } else {
+                Validator.Validate("validate errors",
+                        errors.getDetails().size(),
+                        viewModel.getErrors().get(0).getDetails().size());
+                for (int i = 0; i < errors.getDetails().size(); i++) {
+                    Validator.Validate("validate error message",
+                            errors.getMessage(),
+                            viewModel.getErrors().get(0).getMessage());
+                    Validator.Validate("validate error field",
+                            errors.getDetails().get(i).getField(),
+                            viewModel.getErrors().get(0).getDetails().get(i).getField());
+                    Validator.Validate("validate error reason",
+                            errors.getDetails().get(i).getReason(),
+                            viewModel.getErrors().get(0).getDetails().get(i).getReason());
+                }
+                return;
+            }
+            if (verifyEmail) RunPostRegistrationWithEmailVerification(cid, doubleVerifyEmail);
         } finally {
             response.close();
-            if (verifyEmail) RunPostRegistrationWithEmailVerification(cid, doubleVerifyEmail);
         }
     }
 
@@ -524,7 +567,8 @@ public class Oauth {
         }
     }
 
-    public static List<String> GetResetPasswordLinks(String userName, String email, String locale) throws Exception {
+    public static List<String> GetResetPasswordLinks(String userName, String email, String locale, boolean isForbidden)
+            throws Exception {
         List<NameValuePair> nvpHeaders = new ArrayList<NameValuePair>();
         nvpHeaders.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         String uri = String.format(DefaultResetPasswordURI + "/test?username=%s&user_email=%s&locale=%s&country=%s",
@@ -534,6 +578,12 @@ public class Oauth {
 
         try {
             String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
+            if (isForbidden) {
+                assert responseString.contains("Forbidden");
+                assert responseString.contains("The access token does not have sufficient scope to make the " +
+                        "request to ResetPasswordEndpoint.getResetPasswordLink");
+                return null;
+            }
             return ObjectMapperProvider.instance().readValue(responseString, TypeFactory.defaultInstance()
                     .constructCollectionType(List.class, String.class));
         } finally {

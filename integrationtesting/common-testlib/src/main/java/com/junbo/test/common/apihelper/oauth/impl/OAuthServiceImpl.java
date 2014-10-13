@@ -110,6 +110,13 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
                 formParams.put("scope","smoketest identity catalog");
                 clientId = ConfigHelper.getSetting("client_id");
                 break;
+            case IDENTITY_MIGRATION:
+                formParams.put("scope", "identity.migration");
+                clientId = "migration";
+                break;
+            case IDENTITY_ADMIN:
+                formParams.put("scope", "identity.service identity.admin");
+                break;
             default:
                 formParams.put("scope", componentType.toString() + ".service");
         }
@@ -342,5 +349,4 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         List<String> links = ObjectMapperProvider.instance().readValue(linkArray, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class));
         return links;
     }
-
 }

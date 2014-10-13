@@ -11,11 +11,21 @@ package com.junbo.store.spec.model.login;
 public class ConfirmEmailResponse {
     private Boolean isSuccess;
 
+    private String email;
+
     public Boolean getIsSuccess() {
         return isSuccess;
     }
 
     public void setIsSuccess(Boolean isSuccess) {
         this.isSuccess = isSuccess;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

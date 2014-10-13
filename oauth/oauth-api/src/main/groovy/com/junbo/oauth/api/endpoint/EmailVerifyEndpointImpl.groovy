@@ -119,13 +119,13 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         successUri = successUri.replaceFirst('/country', '/' + parts[1])
 
         if (StringUtils.isEmpty(code)) {
-            return Promise.pure(response(failedUri, false, locale, AppCommonErrors.INSTANCE.fieldRequired('evc')).build())
+            return Promise.pure(response(failedUri, false, locale, null, AppCommonErrors.INSTANCE.fieldRequired('evc')).build())
         }
 
         EmailVerifyCode emailVerifyCode = emailVerifyCodeRepository.getAndRemove(code)
 
         if (emailVerifyCode == null) {
-            return Promise.pure(response(failedUri, false, locale, AppCommonErrors.INSTANCE.fieldInvalid('evc')).build())
+            return Promise.pure(response(failedUri, false, locale, null, AppCommonErrors.INSTANCE.fieldInvalid('evc')).build())
         }
 
         emailVerifyCodeRepository.removeByUserIdEmail(emailVerifyCode.userId, emailVerifyCode.email)
@@ -163,7 +163,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             )
 
             loginStateRepository.save(loginState)
-            def responseBuilder = response(successUri, true, locale, null)
+            def responseBuilder = response(successUri, true, locale, email, null)
             CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.loginStateId, -1)
             CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
                     loginState.sessionId, -1, false)
@@ -171,7 +171,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             return Promise.pure(responseBuilder.build())
         } catch (Exception e) {
             LOGGER.error('Error calling the identity service', e)
-            return Promise.pure(response(failedUri, false, locale, AppErrors.INSTANCE.errorCallingIdentity()).build())
+            return Promise.pure(response(failedUri, false, locale, null, AppErrors.INSTANCE.errorCallingIdentity()).build())
         }
     }
 
@@ -264,7 +264,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     }
 
     private
-    static Response.ResponseBuilder response(String redirectUri, boolean success, String locale, AppError error) {
+    static Response.ResponseBuilder response(String redirectUri, boolean success, String locale, Email email, AppError error) {
         String accept = JunboHttpContext.requestHeaders.getFirst('Accept')
         if (!StringUtils.isEmpty(accept) && accept.contains(MediaType.APPLICATION_JSON)) {
             ViewModel response = new ViewModel(
@@ -272,6 +272,10 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
                     model: ['verifyResult': success, 'locale': locale] as Map,
                     errors: []
             )
+
+            if (email != null) {
+                response.model['email'] = email.info
+            }
 
             if (error != null) {
                 response.errors << error.error()

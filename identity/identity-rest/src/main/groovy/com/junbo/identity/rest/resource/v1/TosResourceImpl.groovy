@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.TosId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -18,9 +19,13 @@ import com.junbo.identity.spec.v1.option.model.TosGetOptions
 import com.junbo.identity.spec.v1.resource.TosResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
+
+import javax.ws.rs.core.Response
 
 /**
  * Created by liangfu on 4/9/14.
@@ -36,6 +41,9 @@ class TosResourceImpl implements TosResource {
 
     @Autowired
     private TosValidator tosValidator
+
+    @Value('${identity.tos.defaultCountry}')
+    private String defaultCountryCode
 
     @Override
     Promise<Tos> create(Tos tos) {
@@ -151,17 +159,57 @@ class TosResourceImpl implements TosResource {
     }
 
     @Override
-    Promise<Void> delete(TosId tosId) {
+    Promise<Response> delete(TosId tosId) {
         return tosValidator.validateForGet(tosId).then {
-            return tosRepository.delete(tosId)
+            return tosRepository.delete(tosId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 
     private Promise<List<Tos>> search(TosListOptions listOptions) {
-        if (!StringUtils.isEmpty(listOptions.title)) {
-            return tosRepository.searchByTitle(listOptions.title, listOptions.limit, listOptions.offset)
-        } else {
-            return tosRepository.searchAll(listOptions.limit, listOptions.offset)
+        Promise.pure().then {
+            if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state) && !StringUtils.isEmpty(listOptions.type) && listOptions.countryId != null) {
+                return tosRepository.searchByTitleAndTypeAndStateAndCountry(listOptions.title, listOptions.type, listOptions.state,
+                        listOptions.countryId, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state) && !StringUtils.isEmpty(listOptions.type)) {
+                return tosRepository.searchByTitleAndTypeAndState(listOptions.title, listOptions.type, listOptions.state, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state) && listOptions.countryId != null) {
+                return tosRepository.searchByTitleAndStateAndCountry(listOptions.title, listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.type) && listOptions.countryId != null) {
+                return tosRepository.searchByTitleAndTypeAndCountry(listOptions.title, listOptions.type, listOptions.countryId, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.type) && !StringUtils.isEmpty(listOptions.state) && listOptions.countryId != null) {
+                return tosRepository.searchByTypeAndStateAndCountry(listOptions.type, listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.type)) {
+                return tosRepository.searchByTitleAndType(listOptions.title, listOptions.type, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state)) {
+                return tosRepository.searchByTitleAndState(listOptions.title, listOptions.state, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.title) && listOptions.countryId != null) {
+                return tosRepository.searchByTitleAndCountry(listOptions.title, listOptions.countryId, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.type) && !StringUtils.isEmpty(listOptions.state)) {
+                return tosRepository.searchByTypeAndState(listOptions.type, listOptions.state, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.type) && listOptions.countryId != null) {
+                return tosRepository.searchByTypeAndCountry(listOptions.type, listOptions.countryId, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.state) && listOptions.countryId != null) {
+                return tosRepository.searchByStateAndCountry(listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.title)) {
+                return tosRepository.searchByTitle(listOptions.title, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.type)) {
+                return tosRepository.searchByType(listOptions.type, listOptions.limit, listOptions.offset)
+            } else if (!StringUtils.isEmpty(listOptions.state)) {
+                return tosRepository.searchByState(listOptions.state, listOptions.limit, listOptions.offset)
+            } else if (listOptions.countryId != null) {
+                return tosRepository.searchByCountry(listOptions.countryId, listOptions.limit, listOptions.offset)
+            } else {
+                return tosRepository.searchAll(listOptions.limit, listOptions.offset)
+            }
+        }.then { List<Tos> tosList ->
+            if (listOptions.countryId != null && !listOptions.countryId.getValue().equalsIgnoreCase(defaultCountryCode) && CollectionUtils.isEmpty(tosList)) {
+                listOptions.setCountryId(new CountryId(defaultCountryCode))
+                return search(listOptions)
+            }
+
+            return Promise.pure(tosList)
         }
     }
 }

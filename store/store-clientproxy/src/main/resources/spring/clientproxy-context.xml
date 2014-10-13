@@ -168,8 +168,7 @@
 
     <bean id="store.userTosAgreementResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
-        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
-        <property name="attachUserToken" value="true"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
     <bean id="store.tokenEndpointClientProxy"

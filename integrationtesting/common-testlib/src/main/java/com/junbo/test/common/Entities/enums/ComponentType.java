@@ -35,6 +35,8 @@ public enum ComponentType {
     DRM("drm"),
     CRYPTO("crypto"),
     SUBSCRIPTION("subscription"),
+    IDENTITY_MIGRATION("migration"),
+    IDENTITY_ADMIN("identityAdmin"),
     SMOKETEST("smoketest");
 
     private String name;
