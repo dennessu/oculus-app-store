@@ -6,6 +6,7 @@
 package com.junbo.test.oauth;
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.junbo.common.error.Error;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
@@ -275,14 +276,19 @@ public class Oauth {
         }
     }
 
-    // pass in userName for validation purpose only
-    public static String PostRegisterUser(String cid, String userName, String email) throws Exception {
-        return PostRegisterUser(cid, userName, email, true, false);
+    // pass in userName and email for validation purpose only
+    public static void PostRegisterUser(String cid, String userName, String email) throws Exception {
+        PostRegisterUser(cid, userName, email, null, true, false);
     }
 
-    // pass in userName for validation purpose only
-    public static String PostRegisterUser(String cid, String userName, String email,
-                                          Boolean verifyEmail, Boolean doubleVerifyEmail) throws Exception {
+    public static void PostRegisterUser(String cid, String userName, String email, com.junbo.common.error.Error error)
+            throws Exception {
+        PostRegisterUser(cid, userName, email, error, true, false);
+    }
+
+    // pass in userName and email for validation purpose only
+    public static void PostRegisterUser(String cid, String userName, String email, Error errors,
+                                        Boolean verifyEmail, Boolean doubleVerifyEmail) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
@@ -297,12 +303,30 @@ public class Oauth {
 
         CloseableHttpResponse response = OauthPost(DefaultAuthorizeURI, nvps);
         try {
-            String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
-            //System.out.print(responseString);
-            return responseString;
+            ViewModel viewModel = JsonHelper.JsonDeserializer(new InputStreamReader(response.getEntity().getContent()),
+                    ViewModel.class);
+            if (errors == null) {
+                Validator.Validate("validate no errors", 0, viewModel.getErrors().size());
+            } else {
+                Validator.Validate("validate errors",
+                        errors.getDetails().size(),
+                        viewModel.getErrors().get(0).getDetails().size());
+                for (int i = 0; i < errors.getDetails().size(); i++) {
+                    Validator.Validate("validate error message",
+                            errors.getMessage(),
+                            viewModel.getErrors().get(0).getMessage());
+                    Validator.Validate("validate error field",
+                            errors.getDetails().get(i).getField(),
+                            viewModel.getErrors().get(0).getDetails().get(i).getField());
+                    Validator.Validate("validate error reason",
+                            errors.getDetails().get(i).getReason(),
+                            viewModel.getErrors().get(0).getDetails().get(i).getReason());
+                }
+                return;
+            }
+            if (verifyEmail) RunPostRegistrationWithEmailVerification(cid, doubleVerifyEmail);
         } finally {
             response.close();
-            if (verifyEmail) RunPostRegistrationWithEmailVerification(cid, doubleVerifyEmail);
         }
     }
 
