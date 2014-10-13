@@ -8,6 +8,7 @@ package com.junbo.test.store.apihelper.impl;
 import com.junbo.common.error.Error;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
@@ -54,6 +55,14 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     }
 
     @Override
+    public Tos GetRegisterTos() throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/tos");
+        Tos tos = new JsonMessageTranscoder().decode(new TypeReference<Tos>() {
+        }, responseBody);
+        return tos;
+    }
+
+    @Override
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/register", createUserRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
@@ -79,7 +88,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public UserNameCheckResponse CheckUserName(UserNameCheckRequest userNameCheckRequest) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/name-check", userNameCheckRequest);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-username", userNameCheckRequest);
         UserNameCheckResponse userNameCheckResponse = new JsonMessageTranscoder().decode(
                 new TypeReference<UserNameCheckResponse>() {
                 }, responseBody);
@@ -88,7 +97,25 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public com.junbo.common.error.Error CheckUserNameWithError(UserNameCheckRequest userNameCheckRequest, int expectedResponseCode, String errorCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/name-check", userNameCheckRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-username", userNameCheckRequest, expectedResponseCode);
+        Error error = new JsonMessageTranscoder().decode(
+                new TypeReference<Error>() {
+                }, responseBody);
+        assert error.getCode().equalsIgnoreCase(errorCode);
+        return error;
+    }
+
+    @Override
+    public EmailCheckResponse CheckEmail(EmailCheckRequest emailCheckRequest) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-email", emailCheckRequest);
+        EmailCheckResponse emailCheckResponse = new JsonMessageTranscoder().decode(
+                new TypeReference<EmailCheckResponse>() { }, responseBody);
+        return emailCheckResponse;
+    }
+
+    @Override
+    public Error CheckEmailWithError(EmailCheckRequest emailCheckRequest, int expectedResponseCode, String errorCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-email", emailCheckRequest, expectedResponseCode);
         Error error = new JsonMessageTranscoder().decode(
                 new TypeReference<Error>() {
                 }, responseBody);
@@ -108,9 +135,11 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);
-            String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
-            Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
-            Master.getInstance().setCurrentUid(uid);
+            if (authTokenResponse.getUserId() != null) {
+                String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+                Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
+                Master.getInstance().setCurrentUid(uid);
+            }
 
             return authTokenResponse;
         }

@@ -48,10 +48,15 @@ public class HttpclientHelper {
 
         try {
             System.out.println(response.getStatusLine());
-            HttpEntity entity = response.getEntity();
-            T type = JsonHelper.JsonDeserializer(new InputStreamReader(entity.getContent()), cls);
-            EntityUtils.consume(entity);
-            return type;
+            HttpEntity responseEntity = response.getEntity();
+            if (cls != null) {
+                T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
+                EntityUtils.consume(responseEntity);
+                return type;
+            } else {
+                EntityUtils.consume(responseEntity);
+                return null;
+            }
         } finally {
             response.close();
         }

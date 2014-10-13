@@ -15,10 +15,7 @@ import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.Locale;
-import com.junbo.identity.spec.v1.model.migration.Company;
-import com.junbo.identity.spec.v1.model.migration.OculusInput;
-import com.junbo.identity.spec.v1.model.migration.ShareProfile;
-import com.junbo.identity.spec.v1.model.migration.ShareProfileAvatar;
+import com.junbo.identity.spec.v1.model.migration.*;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 
@@ -164,6 +161,14 @@ public class IdentityModel {
         User user = new User();
         user.setIsAnonymous(true);
         return user;
+    }
+
+    public static UsernameMailBlocker DefaultUsernameMailBlocker() throws Exception {
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setUsername(RandomHelper.randomAlphabetic(15));
+        usernameMailBlocker.setEmail(RandomHelper.randomEmail());
+
+        return usernameMailBlocker;
     }
 
     public static OculusInput DefaultOculusInput() throws Exception {
@@ -319,6 +324,28 @@ public class IdentityModel {
         userCredential.setType("PIN");
         userCredential.setChangeAtNextLogin(false);
         return userCredential;
+    }
+
+    public static Tos DefaultTos() throws Exception {
+        List<String> supportedCountries = new ArrayList<>();
+        supportedCountries.add("US");
+        return DefaultTos(RandomHelper.randomAlphabetic(15), "TOS", "APPROVED", supportedCountries);
+    }
+
+    public static Tos DefaultTos(String title, String type, String state, List<String> supportedCountries) throws Exception {
+        Tos tos = new Tos();
+        tos.setContent(RandomHelper.randomAlphabetic(1000));
+        tos.setType(type);
+        tos.setVersion(RandomHelper.randomAlphabetic(15));
+        tos.setTitle(title);
+        tos.setState(state);
+        List<CountryId> supportedCountryIds = new ArrayList<>();
+        for(String supportedCountry : supportedCountries) {
+            supportedCountryIds.add(new CountryId(supportedCountry));
+        }
+        tos.setCountries(supportedCountryIds);
+
+        return tos;
     }
 
     public static UserCredentialVerifyAttempt DefaultUserCredentialAttempts(String userName, String password)

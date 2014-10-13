@@ -97,10 +97,10 @@ class CaseyFacadeImpl implements CaseyFacade {
         resourceContainer.caseyResource.getRatingByItemId(itemId.value).recover { Throwable throwable ->
             wrapAndThrow(throwable)
         }.then { CaseyResults<CaseyAggregateRating> results ->
-            results.items.each { CaseyAggregateRating caseyAggregateRating ->
-                if (caseyAggregateRating.type != null) {
-                    aggregatedRatingsMap[caseyAggregateRating.type] = reviewBuilder.buildAggregatedRatings(caseyAggregateRating)
-                }
+            [CaseyReview.RatingType.quality.name(), CaseyReview.RatingType.comfort.name()].each { String type ->
+                aggregatedRatingsMap[type] = reviewBuilder.buildAggregatedRatings(results?.items?.find { CaseyAggregateRating e ->
+                    e.type == type
+                })
             }
             return Promise.pure()
         }.then {
@@ -173,20 +173,42 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     @Override
     Promise<Review> addReview(AddReviewRequest request, ApiContext apiContext) {
-        CaseyReview review = reviewBuilder.buildCaseyReview(request, apiContext)
+        resourceContainer.caseyResource.getReviews(new ReviewSearchParams( // check the review already exists
+                resourceType: 'item',
+                resourceId: request.itemId.value,
+                userId: apiContext.user,
+        )).recover { Throwable ex ->
+            wrapAndThrow(ex)
+        }.then { CaseyResults<CaseyReview> caseyReviews ->
+            boolean createReview = true
+            CaseyReview review
+            if (CollectionUtils.isEmpty(caseyReviews.items)) { // add new review
+                review = reviewBuilder.buildCaseyReview(request, apiContext)
+            } else { // update the existing one, only update ratings
+                createReview = false
+                review = caseyReviews.items[0]
+                review.ratings = reviewBuilder.buildCaseyRatings(request.starRatings, review.ratings)
+            }
 
-        // Create an access token with this user and catalog scope.
-        return resourceContainer.tokenEndpoint.postToken(
-                new AccessTokenRequest(
-                        accessToken: AuthorizeContext.currentAccessToken,
-                        clientId: clientId,
-                        clientSecret: clientSecret,
-                        grantType: GrantType.EXCHANGE.name(),
-                        scope: 'catalog'
-                )
-        ).then { AccessTokenResponse accessTokenResponse ->
-            return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).recover { Throwable ex ->
-                wrapAndThrow(ex)
+            // Create an access token with this user and catalog scope.
+            return resourceContainer.tokenEndpoint.postToken(
+                    new AccessTokenRequest(
+                            accessToken: AuthorizeContext.currentAccessToken,
+                            clientId: clientId,
+                            clientSecret: clientSecret,
+                            grantType: GrantType.EXCHANGE.name(),
+                            scope: 'catalog'
+                    )
+            ).then { AccessTokenResponse accessTokenResponse ->
+                if (createReview) {
+                    return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).recover { Throwable ex ->
+                        wrapAndThrow(ex)
+                    }
+                } else {
+                    return resourceContainer.caseyReviewResource.putReview("Bearer $accessTokenResponse.accessToken", review.self.getId(), review).recover { Throwable ex ->
+                        wrapAndThrow(ex)
+                    }
+                }
             }.then { CaseyReview newReview ->
                 getReviewAuthorName(newReview).then { String author ->
                     return Promise.pure(reviewBuilder.buildItemReview(newReview, author))
@@ -224,9 +246,8 @@ class CaseyFacadeImpl implements CaseyFacade {
                     }
                 }.then {
                     Map<String, AggregatedRatings> aggregatedRatings = [:] as Map
-                    if (caseyItem?.qualityRating != null) {
-                        aggregatedRatings[CaseyReview.RatingType.quality.name()] = reviewBuilder.buildAggregatedRatings(caseyItem.qualityRating)
-                    }
+                    aggregatedRatings[CaseyReview.RatingType.quality.name()] = reviewBuilder.buildAggregatedRatings(caseyItem?.qualityRating)
+                    aggregatedRatings[CaseyReview.RatingType.comfort.name()] = reviewBuilder.buildAggregatedRatings(caseyItem?.comfortRating)
                     results.items << itemBuilder.buildItem(caseyOffer, aggregatedRatings, publisher, developer, apiContext)
                     return Promise.pure()
                 }
@@ -245,7 +266,7 @@ class CaseyFacadeImpl implements CaseyFacade {
                 offerSearchParams.cmsSlot = sectionInfoNode.cmsSlot?.toLowerCase()
                 break
             case SectionInfoNode.SectionType.CategorySection:
-                offerSearchParams.category = sectionInfoNode.categoryId
+                offerSearchParams.category = sectionInfoNode.category
         }
         offerSearchParams.locale = apiContext.locale.getId().value
         offerSearchParams.country = apiContext.country.getId().value

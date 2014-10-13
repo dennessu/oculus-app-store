@@ -28,6 +28,9 @@ interface UserCredentialVerifyAttemptRepository
                                                                                Integer limit, Integer offset)
 
     @ReadMethod
+    Promise<List<UserCredentialVerifyAttempt>> searchNonLockPeriodHistory(UserId userId, String type, Long fromTimeStamp, Integer limit, Integer offset)
+
+    @ReadMethod
     Promise<List<UserCredentialVerifyAttempt>> searchByIPAddressAndCredentialTypeAndInterval(String ipAddress, String type, Long fromTimeStamp,
                                                                                   Integer limit, Integer offset)
 }

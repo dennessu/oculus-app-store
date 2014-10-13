@@ -30,6 +30,7 @@ public class CaseyItem {
     private List<CatalogAttribute> genres;
     private RevisionNotes releaseNotes;
     private CaseyRating qualityRating;
+    private CaseyRating comfortRating;
     private String name;
     private String longDescription;
     private String supportEmail;
@@ -108,6 +109,14 @@ public class CaseyItem {
 
     public void setQualityRating(CaseyRating qualityRating) {
         this.qualityRating = qualityRating;
+    }
+
+    public CaseyRating getComfortRating() {
+        return comfortRating;
+    }
+
+    public void setComfortRating(CaseyRating comfortRating) {
+        this.comfortRating = comfortRating;
     }
 
     public String getName() {

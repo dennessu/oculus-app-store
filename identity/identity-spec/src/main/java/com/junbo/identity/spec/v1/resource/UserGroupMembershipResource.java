@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -60,7 +61,7 @@ public interface UserGroupMembershipResource {
     @RouteByAccessToken(switchable = true)
     @DELETE
     @Path("/{userGroupMembershipId}")
-    Promise<Void> delete(@PathParam("userGroupMembershipId") UserGroupId userGroupId);
+    Promise<Response> delete(@PathParam("userGroupMembershipId") UserGroupId userGroupId);
 
     @ApiOperation("search user group memberships")
     @RouteByAccessToken(switchable = true)

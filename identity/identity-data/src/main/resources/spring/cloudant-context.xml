@@ -118,6 +118,11 @@
         <property name="dbName" value="device_type" />
     </bean>
 
+    <bean id="cloudantUsernameEmailBlockerRepository" class="com.junbo.identity.data.repository.impl.cloudant.migration.UsernameEmailBlockerRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="username_email_blocker" />
+        <property name="piiHashFactory" ref="piiHashFactory" />
+    </bean>
+
     <bean id="cloudantOrganizationRepository" class="com.junbo.identity.data.repository.impl.cloudant.OrganizationRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="organization" />
         <property name="idGenerator" ref="oculus48IdGenerator"/>

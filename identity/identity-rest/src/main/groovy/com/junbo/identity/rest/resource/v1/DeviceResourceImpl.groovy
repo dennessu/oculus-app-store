@@ -21,6 +21,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by xiali_000 on 4/8/2014.
  */
@@ -130,9 +132,11 @@ class DeviceResourceImpl implements DeviceResource {
     }
 
     @Override
-    Promise<Void> delete(DeviceId deviceId) {
+    Promise<Response> delete(DeviceId deviceId) {
         return deviceValidator.validateForGet(deviceId).then {
-            return deviceRepository.delete(deviceId)
+            return deviceRepository.delete(deviceId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 
 import javax.transaction.Transactional
+import javax.ws.rs.core.Response
 
 /**
  * Created by liangfu on 4/24/14.
@@ -197,7 +198,9 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
             }
 
             return userTFABackupCodeValidator.validateForGet(userId, userTFABackupCodeId).then {
-                return userTFABackupCodeRepository.delete(userTFABackupCodeId)
+                return userTFABackupCodeRepository.delete(userTFABackupCodeId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }

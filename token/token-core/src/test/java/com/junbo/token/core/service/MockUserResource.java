@@ -9,6 +9,7 @@ import com.junbo.identity.spec.v1.resource.UserResource;
 import com.junbo.langur.core.promise.Promise;
 
 import javax.ws.rs.BeanParam;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by Administrator on 14-7-4.
@@ -45,7 +46,7 @@ public class MockUserResource implements UserResource {
     }
 
     @Override
-    public Promise<Void> delete(UserId userId) {
+    public Promise<Response> delete(UserId userId) {
         return null;
     }
 
@@ -62,5 +63,10 @@ public class MockUserResource implements UserResource {
     @Override
     public Promise<User> silentPut(UserId userId, User user) {
         return Promise.pure(null);
+    }
+
+    @Override
+    public Promise<Boolean> checkUsernameEmailBlocker(String username, String email) {
+        return null;
     }
 }

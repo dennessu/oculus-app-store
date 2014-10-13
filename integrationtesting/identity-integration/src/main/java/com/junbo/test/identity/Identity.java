@@ -13,6 +13,7 @@ import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.IdConverter;
 import org.apache.http.Consts;
@@ -25,6 +26,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +51,8 @@ public class Identity {
     public static final String IdentityV1UserCredentialAttemptsURI = IdentityEndPointV1 + "/credential-attempts";
     public static final String IdentityV1UserGroupMemberURI = IdentityEndPointV1 + "/user-group-memberships";
     public static final String IdentityV1UserPersonalInfoURI = IdentityEndPointV1 + "/personal-info";
+    public static final String IdentityV1UsernameMailBlockerURI = IdentityEndPointV1 + "/imports/username-email-block";
+    public static final String IdentityV1TosURI = IdentityEndPointV1 + "/tos";
 
     public static String httpAuthorizationHeader = "";
 
@@ -304,6 +308,59 @@ public class Identity {
         return (User) IdentityPost(IdentityV1UserURI, JsonHelper.JsonSerializer(user), User.class);
     }
 
+    public static Tos TosPostDefault(Tos tos) throws Exception {
+        return IdentityPost(IdentityV1TosURI, JsonHelper.JsonSerializer(tos), Tos.class);
+    }
+
+    public static Tos TosGet(TosId tosId) throws Exception {
+        return IdentityGet(IdentityV1TosURI + "/" + tosId.getValue(), Tos.class);
+    }
+
+    public static List<Tos> TosSearch(String title, String type, String state, String country) throws Exception {
+        List<Tos> tosList = new ArrayList<Tos>();
+        List<Tos> tosResults = IdentityGet(buildTosSearchURI(title, state, type, country), Results.class).getItems();
+        for (Object obj : tosResults) {
+            tosList.add((Tos) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class));
+        }
+        return tosList;
+    }
+
+    private static String buildTosSearchURI(String title, String state, String type, String country) {
+        if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type + "&country" + country;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&country" + country;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&type=" + type + "&country" + country;
+        } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?state=" + state + "&type=" + type + "&country" + country;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?title=" + title + "&type=" + type;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&country=" + country;
+        } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?state=" + state + "&type=" + type;
+        } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?state=" + state + "&country=" + country;
+        } else if (!StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?type=" + type + "&country=" + country;
+        } else if (!StringUtils.isEmpty(title)) {
+            return IdentityV1TosURI + "?title=" + title;
+        } else if (!StringUtils.isEmpty(state)) {
+            return IdentityV1TosURI + "?state=" + state;
+        } else if (!StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?type=" + type;
+        } else if (!StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?country=" + country;
+        } else {
+            return IdentityV1TosURI;
+        }
+    }
+
     public static User UserPut(User user) throws Exception {
         return (User) IdentityPut(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()),
                 JsonHelper.JsonSerializer(user), User.class);
@@ -311,6 +368,10 @@ public class Identity {
 
     public static void UserDelete(User user) throws Exception {
         IdentityDelete(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()));
+    }
+
+    public static void UsernameMailBlockerPost(UsernameMailBlocker usernameMailBlocker) throws Exception {
+        IdentityPost(IdentityV1UsernameMailBlockerURI, JsonHelper.JsonSerializer(usernameMailBlocker), null);
     }
 
     public static List<User> UserSearchByUsername(String username) throws Exception {
@@ -394,6 +455,35 @@ public class Identity {
                 OculusOutput.class);
     }
 
+    public static Boolean GetUsernameEmailBlocker(String username, String email) throws Exception {
+        return IdentityGet(IdentityV1UserURI + "/check-legacy-username-email?username=" + username + "&email=" + URLEncoder.encode(email, "UTF-8"),
+                Boolean.class);
+    }
+
+    public static void ImportUsernameMailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UsernameMailBlockerURI,
+                JsonHelper.JsonSerializer(usernameMailBlocker), HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("validate response code", 200, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    public static com.junbo.common.error.Error ImportUsernameMailBlockerError(String username, String email) throws Exception {
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setUsername(username);
+        usernameMailBlocker.setEmail(email);
+
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UsernameMailBlockerURI,
+                JsonHelper.JsonSerializer(usernameMailBlocker), HttpclientHelper.HttpRequestType.post, nvps);
+        com.junbo.common.error.Error error = JsonHelper.JsonDeserializer(new InputStreamReader(response.getEntity().getContent()),
+                com.junbo.common.error.Error.class);
+        response.close();
+        return error;
+    }
+
     public static UserCredential CredentialsGetByUserId(UserId userId) throws Exception {
         JsonNode jsonNode = JsonHelper.ObjectToJsonNode((IdentityGet(IdentityV1UserURI
                         + "/" + IdFormatter.encodeId(userId) + "/credentials?credentialType=PASSWORD",
@@ -422,6 +512,18 @@ public class Identity {
         }
     }
 
+    public static UserGroup UserGroupPost(UserId userId, GroupId groupId) throws Exception {
+        UserGroup userGroup = new UserGroup();
+        userGroup.setUserId(userId);
+        userGroup.setGroupId(groupId);
+        return IdentityPost(IdentityV1UserGroupMemberURI, JsonHelper.JsonSerializer(userGroup), UserGroup.class);
+    }
+
+    public static UserGroup UserGroupPut(UserGroup userGroup) throws Exception {
+        return IdentityPut(IdentityV1UserGroupMemberURI + "/" + userGroup.getId().getValue(),
+                JsonHelper.JsonSerializer(userGroup), UserGroup.class);
+    }
+
     public static Organization OrganizationPostDefault(Organization organization) throws Exception {
         Organization org = organization == null ? IdentityModel.DefaultOrganization() : organization;
         return (Organization) IdentityPost(IdentityV1OrganizationURI,
@@ -437,6 +539,22 @@ public class Identity {
     public static Results<Organization> OrganizationByName(String name, Integer limit, Integer offset) throws Exception {
         return IdentityGet(
                 IdentityV1OrganizationURI + "?name=" + name.toLowerCase() + buildIdentityCount(limit) + buildIdentityCursor(offset), Results.class);
+    }
+
+    public static Results<Organization> OrganizationGetAll(Integer limit, Integer offset) throws Exception {
+        String queryStr = "";
+        if (limit == null && offset == null) {
+            // do nothing
+        } else if (limit != null && offset == null) {
+            queryStr = "?count=" + limit.toString();
+        } else if (limit == null && offset != null) {
+            queryStr = "?cursor=" + offset.toString();
+        } else {
+            queryStr = "?count=" + limit.toString() + "&cursor=" + offset.toString();
+        }
+
+        return IdentityGet(
+                IdentityV1OrganizationURI + queryStr, Results.class);
     }
 
     public static Group GroupPostDefault(Group group) throws Exception {

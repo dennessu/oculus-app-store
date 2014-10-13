@@ -45,4 +45,8 @@ class CommonUtils {
         return number == null ? 0 : number.longValue()
     }
 
+    public static double safeDouble(Number number) {
+        return number == null ? 0 : number.doubleValue()
+    }
+
 }

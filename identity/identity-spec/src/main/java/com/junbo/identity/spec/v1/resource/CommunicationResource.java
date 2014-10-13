@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by xiali_000 on 4/21/2014.
@@ -62,5 +63,5 @@ public interface CommunicationResource {
     @ApiOperation("Delete communication info")
     @DELETE
     @Path("/{communicationId}")
-    Promise<Void> delete(@PathParam("communicationId") CommunicationId communicationId);
+    Promise<Response> delete(@PathParam("communicationId") CommunicationId communicationId);
 }

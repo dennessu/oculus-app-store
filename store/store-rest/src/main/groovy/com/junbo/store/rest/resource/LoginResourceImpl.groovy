@@ -1,15 +1,14 @@
 package com.junbo.store.rest.resource
-
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.Components
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.*
+import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
-import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.*
 import com.junbo.store.clientproxy.ResourceContainer
@@ -17,8 +16,11 @@ import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.error.ErrorContext
 import com.junbo.store.clientproxy.sentry.SentryFacade
+import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.ApiContextBuilder
+import com.junbo.store.rest.utils.DataConverter
 import com.junbo.store.rest.utils.RequestValidator
+import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.identity.StoreUserEmail
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
@@ -28,7 +30,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
-import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
 import javax.ws.rs.core.Response
@@ -68,30 +69,80 @@ class LoginResourceImpl implements LoginResource {
     @Resource(name = 'storeSentryFacade')
     private SentryFacade sentryFacade
 
+    @Value('${store.tos.createuser}')
+    private String tosCreateUser
+
+    @Resource(name = 'storeDataConverter')
+    DataConverter dataConverter
+
+    @Resource(name = 'storeChallengeHelper')
+    private ChallengeHelper challengeHelper
+
     private class ApiContext {
         User user
     }
 
     @Override
-    Promise<UserNameCheckResponse> checkUserName(UserNameCheckRequest userNameCheckRequest) {
-        requestValidator.validateRequiredApiHeaders().validateUserNameCheckRequest(userNameCheckRequest)
+    Promise<EmailCheckResponse> checkEmail(EmailCheckRequest emailCheckRequest) {
+        requestValidator.validateRequiredApiHeaders().validateEmailCheckRequest(emailCheckRequest)
+        EmailCheckResponse response
+        ErrorContext errorContext = new ErrorContext()
+
+        Promise.pure().then {
+            errorContext.fieldName = 'email'
+            return resourceContainer.userResource.checkEmail(emailCheckRequest.email)
+        }.recover { Throwable ex ->
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate)) {
+                response = new EmailCheckResponse(isAvailable : false)
+                return Promise.pure()
+            }
+            appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
+            appErrorUtils.throwUnknownError('checkEmail', ex)
+        }.then {
+            if (response == null) {
+                return Promise.pure(new EmailCheckResponse(isAvailable: true))
+            }
+            return Promise.pure(response)
+        }
+    }
+
+    @Override
+    Promise<UserNameCheckResponse> checkUsernameAvailable(UserNameCheckRequest userNameCheckRequest) {
+        requestValidator.validateRequiredApiHeaders().validateUsernameAvailableCheckRequest(userNameCheckRequest)
         UserNameCheckResponse response
         ErrorContext errorContext = new ErrorContext()
 
         Promise.pure().then {
-            if (!StringUtils.isEmpty(userNameCheckRequest.email)) {
-                errorContext.fieldName = 'email'
-                return resourceContainer.userResource.checkEmail(userNameCheckRequest.email)
-            }
-            errorContext.fieldName = 'username'
-            return resourceContainer.userResource.checkUsername(userNameCheckRequest.username)
+            errorContext.fieldName = 'email'
+            return resourceContainer.userResource.checkEmail(userNameCheckRequest.email)
         }.recover { Throwable ex ->
             if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate)) {
                 response = new UserNameCheckResponse(isAvailable : false)
                 return Promise.pure()
             }
-            appErrorUtils.throwOnFieldInvalidError(Components.instance().getComponent(UserResource), errorContext, ex)
-            appErrorUtils.throwUnknownError('checkUserName', ex)
+            appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
+            appErrorUtils.throwUnknownError('checkUsernameAvailable', ex)
+        }.then {
+            if (response == null) {
+                errorContext.fieldName = 'username'
+                return resourceContainer.userResource.checkUsername(userNameCheckRequest.username).then {
+                    return resourceContainer.userResource.checkUsernameEmailBlocker(userNameCheckRequest.username, userNameCheckRequest.email).then { Boolean blocker ->
+                        if (blocker) {
+                            response = new UserNameCheckResponse(isAvailable: false)
+                        }
+
+                        return Promise.pure(null)
+                    }
+                }
+            }
+            return Promise.pure(null)
+        }.recover { Throwable ex ->
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate)) {
+                response = new UserNameCheckResponse(isAvailable: false)
+                return Promise.pure()
+            }
+            appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
+            appErrorUtils.throwUnknownError('checkUsernameAvailable', ex)
         }.then {
             if (response == null) {
                 return Promise.pure(new UserNameCheckResponse(isAvailable: true))
@@ -127,6 +178,8 @@ class LoginResourceImpl implements LoginResource {
         requestValidator.validateAndGetCountry(new CountryId(request.cor)).then {
             requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
         }.then {
+            requestValidator.validateTosExists(request.tosAgreed)
+        }.then {
             // todo:    Here we need to define the parameters here
             sentryFacade.doSentryCheck(null, null, null, null, null, null)
         }.then {
@@ -150,7 +203,7 @@ class LoginResourceImpl implements LoginResource {
             }
 
             promise.then {
-                appErrorUtils.throwOnFieldInvalidError(Components.instance().getComponent(UserResource), errorContext, ex)
+                appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
                 if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
                         ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
                         ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction)) {
@@ -161,6 +214,10 @@ class LoginResourceImpl implements LoginResource {
         }.then {
             return resourceContainer.emailVerifyEndpoint.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId())
         }.then {
+            return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: apiContext.user.getId(),
+                    tosId: request.tosAgreed,
+                    agreementTime: new Date()))
+        }.then {
             // get the auth token
             innerSignIn(apiContext.user.getId(), storeUserEmail)
         }
@@ -168,13 +225,35 @@ class LoginResourceImpl implements LoginResource {
 
     @Override
     Promise<AuthTokenResponse> signIn(UserSignInRequest userSignInRequest) {
+        com.junbo.store.spec.model.ApiContext apc
         requestValidator.validateRequiredApiHeaders().validateUserSignInRequest(userSignInRequest)
 
-        return innerSignIn(userSignInRequest.email, userSignInRequest.userCredential.value).recover { Throwable ex ->
-            if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {
-                throw ex
+        return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
+            apc = apiContext
+            return Promise.pure(null)
+        }.then {
+            innerSignIn(userSignInRequest.email, userSignInRequest.userCredential.value).recover { Throwable ex ->
+                if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {
+                    throw ex
+                }
+                appErrorUtils.throwUnknownError('signIn', ex)
             }
-            appErrorUtils.throwUnknownError('signIn', ex)
+        }.then { AuthTokenResponse authTokenResponse ->
+            if (authTokenResponse != null) {
+                return challengeHelper.checkTosChallenge(authTokenResponse.getUserId(), tosCreateUser, apc.country.getId(), userSignInRequest.challengeAnswer).then { Challenge challenge ->
+                    if (challenge == null) {
+                        return Promise.pure(authTokenResponse)
+                    }
+
+                    AuthTokenResponse tosChallengeAuthToken = new AuthTokenResponse(
+                            challenge: challenge
+                    )
+
+                    return Promise.pure(tosChallengeAuthToken)
+                }
+            }
+
+            return Promise.pure(authTokenResponse)
         }
     }
 
@@ -213,7 +292,8 @@ class LoginResourceImpl implements LoginResource {
                 ViewModel viewModel = (ViewModel)response.entity
                 if (viewModel.model?.verifyResult == Boolean.TRUE) {
                     return Promise.pure(new ConfirmEmailResponse(
-                            isSuccess: true
+                            isSuccess: true,
+                            email: viewModel.model?.email as String
                     ))
                 }
 
@@ -225,6 +305,33 @@ class LoginResourceImpl implements LoginResource {
             return Promise.pure(new ConfirmEmailResponse(
                     isSuccess: false
             ))
+        }
+    }
+
+    @Override
+    Promise<com.junbo.store.spec.model.browse.document.Tos> getRegisterTos() {
+        requestValidator.validateRequiredApiHeaders()
+
+        return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
+            return resourceContainer.tosResource.list(new TosListOptions(title: tosCreateUser, countryId: apiContext.country.getId()))
+        }.recover { Throwable ex ->
+            appErrorUtils.throwUnknownError('getRegisterTos', ex)
+        }.then { Results<Tos> tosResults ->
+            if (tosResults == null || CollectionUtils.isEmpty(tosResults.items)) {
+                return Promise.pure(null)
+            }
+
+            List<Tos> tosList = tosResults.items.sort { Tos tos ->
+                return tos.version
+            }
+
+            Tos tos = tosList.reverse().find { Tos tos ->
+                return tos.state == 'APPROVED'
+            }
+            if (tos == null) {
+                return Promise.pure(null)
+            }
+            return Promise.pure(dataConverter.toStoreTos(tos, null))
         }
     }
 

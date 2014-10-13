@@ -73,35 +73,7 @@ public class TokenInfoParserImpl implements TokenInfoParser {
             }
         }
 
-        String[] tokens = accessToken.split(',')
-
-        // Normal case: there is only one token
-        if (tokens.length == 1) {
-            return parseTokenInfo(accessToken)
-        }
-
-        // Special Case: USER_TOKEN,SCOPE_OVERRIDE_TOKEN
-        if (tokens.length == 2) {
-            TokenInfo userToken = parseTokenInfo(tokens[0])
-            TokenInfo overrideToken = parseTokenInfo(tokens[1])
-
-            // override the scopes with the service token scope.
-            if (overrideToken.sub.value == 0L) {
-                return new TokenInfo(
-                        tokenValue: userToken.tokenValue,
-                        sub: userToken.sub,
-                        expiresIn: userToken.expiresIn,
-                        scopes: overrideToken.scopes,
-                        clientId: userToken.clientId,
-                        ipAddress: userToken.ipAddress,
-                        debugEnabled: userToken.debugEnabled
-                )
-            }
-
-            return userToken
-        }
-
-        return null
+        return parseTokenInfo(accessToken)
     }
 
     private TokenInfo parseTokenInfo(String accessToken) {

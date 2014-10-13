@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -66,6 +67,6 @@ public interface AuthenticatorResource {
     @RouteByAccessToken(switchable = true)
     @DELETE
     @Path("/{authenticatorId}")
-    Promise<Void> delete(@PathParam("authenticatorId") UserAuthenticatorId userAuthenticatorId);
+    Promise<Response> delete(@PathParam("authenticatorId") UserAuthenticatorId userAuthenticatorId);
 }
 

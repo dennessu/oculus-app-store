@@ -19,6 +19,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import scala.tools.nsc.Global;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +89,16 @@ public class postCredentialAttempts {
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
+
+        List<UserCredentialVerifyAttempt> attempts = Identity.UserCredentialAttemptList(user.getId(), "PASSWORD");
+        assert attempts.size() == CREDENTIAL_ATTEMPT_COUNT + 1;
+        assert attempts.get(0).getSucceeded() == false;
+        assert attempts.get(0).getIsLockDownPeriodAttempt() == true;
+
+        for (int index = 1; index < CREDENTIAL_ATTEMPT_COUNT + 1; index++) {
+            assert attempts.get(index).getSucceeded() == false;
+            assert (attempts.get(index).getIsLockDownPeriodAttempt() == null || attempts.get(index).getIsLockDownPeriodAttempt() == false);
+        }
     }
 
     @Test(groups = "dailies")

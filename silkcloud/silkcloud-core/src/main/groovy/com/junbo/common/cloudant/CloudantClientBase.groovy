@@ -4,6 +4,7 @@ import com.junbo.common.cloudant.client.*
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.cloudant.model.CloudantSearchResult
 import com.junbo.common.cloudant.model.CloudantUniqueItem
+import com.junbo.common.model.Results
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -173,6 +174,26 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
                 }
             }
             return []
+        }
+    }
+
+    public Promise<Results<T>> cloudantGetAll(Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+        def future = getEffective().cloudantGetAll(getDbUri(null), entityClass, limit, skip, descending, includeDocs)
+        if (!this.includeDocs) {
+            future = future.then { CloudantQueryResult result ->
+                return fetchDocs(result)
+            }
+        }
+        Results<T> results = new Results<>()
+        return future.syncThen { CloudantQueryResult result ->
+            results.setTotal(result.totalRows)
+            if (result.rows != null) {
+                results.items = result.rows.collect { CloudantQueryResult.ResultObject row ->
+                    return (T) row.doc
+                }
+                return results
+            }
+            return results
         }
     }
 

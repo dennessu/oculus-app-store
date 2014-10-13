@@ -20,8 +20,11 @@ import com.junbo.identity.spec.v1.resource.OrganizationResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
+
+import javax.ws.rs.core.Response
 
 /**
  * Created by liangfu on 5/22/14.
@@ -47,6 +50,9 @@ class OrganizationResourceImpl implements OrganizationResource {
 
     @Autowired
     private OrganizationAuthorizeCallbackFactory authorizeCallbackFactory
+
+    @Value('${common.maximum.fetch.size}')
+    private Integer maximumFetchSize
 
     @Override
     Promise<Organization> create(Organization organization) {
@@ -204,13 +210,15 @@ class OrganizationResourceImpl implements OrganizationResource {
         } else if (!StringUtils.isEmpty(listOptions.name)) {
             return organizationRepository.searchByCanonicalName(normalizeService.normalize(listOptions.name), listOptions.limit,
                     listOptions.offset)
+        } else if (listOptions.ownerId == null && StringUtils.isEmpty(listOptions.name)) {
+            return organizationRepository.searchAll(listOptions.limit == null ? maximumFetchSize : listOptions.limit, listOptions.offset)
         } else {
             throw AppCommonErrors.INSTANCE.invalidOperation('Not support search').exception()
         }
     }
 
     @Override
-    Promise<Void> delete(OrganizationId organizationId) {
+    Promise<Response> delete(OrganizationId organizationId) {
         return organizationValidator.validateForGet(organizationId).then { Organization organization ->
             def callback = authorizeCallbackFactory.create(organization)
             return RightsScope.with(authorizeService.authorize(callback)) {
@@ -218,7 +226,9 @@ class OrganizationResourceImpl implements OrganizationResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return organizationRepository.delete(organizationId)
+                return organizationRepository.delete(organizationId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }

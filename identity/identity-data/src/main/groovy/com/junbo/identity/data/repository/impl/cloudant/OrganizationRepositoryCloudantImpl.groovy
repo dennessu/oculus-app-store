@@ -85,4 +85,9 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     Promise<Void> delete(OrganizationId id) {
         return cloudantDelete(id.toString())
     }
+
+    @Override
+    Promise<Results<Organization>> searchAll(Integer limit, Integer offset) {
+        return super.cloudantGetAll(limit, offset, false, true)
+    }
 }

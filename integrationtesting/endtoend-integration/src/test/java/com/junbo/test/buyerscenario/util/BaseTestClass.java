@@ -10,12 +10,13 @@ import com.junbo.test.buyerscenario.BuyerValidationHelper;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.blueprint.Master;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 /**
- @author Jason
-  * Time: 3/7/2014
-  * Base test class
+ * @author Jason
+ *         Time: 3/7/2014
+ *         Base test class
  */
 public class BaseTestClass extends TestClass {
     protected BuyerTestDataProvider testDataProvider = new BuyerTestDataProvider();
@@ -47,7 +48,7 @@ public class BaseTestClass extends TestClass {
         Master.getInstance().setSecondaryCommerceEndPointUrl(secondaryUrl);
     }
 
-    private void loadOffers(){
+    private void loadOffers() {
         offer_digital_normal1 = ConfigHelper.getSetting("testdata.offer.digital.normal1");
         offer_digital_normal2 = ConfigHelper.getSetting("testdata.offer.digital.normal2");
         offer_physical_normal1 = ConfigHelper.getSetting("testdata.offer.physical.normal1");
@@ -66,13 +67,19 @@ public class BaseTestClass extends TestClass {
         offer_physical_uat = ConfigHelper.getSetting("testdate.offer.physical.uat");
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void initialEnv() {
+        Master.getInstance().initializeMaster();
         if (ConfigHelper.getSetting("endpoint.random") != null && Boolean.valueOf(ConfigHelper.getSetting("endpoint.random"))) {
             Master.getInstance().setEndPointType(Master.EndPointType.Random);
-        } else {
-            Master.getInstance().setEndPointType(Master.EndPointType.Primary);
         }
     }
+
+    /*
+    @AfterMethod(alwaysRun = true)
+    public void resetEnv(){
+        Master.getInstance().setEndPointType(Master.EndPointType.Primary);
+    }
+    */
 
 }

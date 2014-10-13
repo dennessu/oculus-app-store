@@ -67,6 +67,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     @Override
     Promise<CaseyResults<CaseyOffer>> searchOffers(OfferSearchParams params) {
         emulatorUtils.emulateLatency()
+        emulatorUtils.emulateError('search')
         if (randomData) {
             return randomCaseyEmulatorResource.searchOffers(params)
         }
@@ -84,6 +85,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     @Override
     Promise<CaseyResults<CaseyAggregateRating>> getRatingByItemId(String itemId) {
         emulatorUtils.emulateLatency()
+        emulatorUtils.emulateError('getRatings')
         if (randomData) {
             return randomCaseyEmulatorResource.getRatingByItemId(itemId)
         }
@@ -108,6 +110,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     Promise<CaseyResults<CaseyReview>> getReviews(ReviewSearchParams params) {
         Assert.isTrue(params.resourceType == 'item')
         emulatorUtils.emulateLatency()
+        emulatorUtils.emulateError('getReviews')
         if (randomData) {
             return randomCaseyEmulatorResource.getReviews(params)
         }
@@ -142,6 +145,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     Promise<CaseyReview> addReview(String authorization, CaseyReview review) {
         Assert.isTrue(review.resourceType == 'item')
         emulatorUtils.emulateLatency()
+        emulatorUtils.emulateError('addReviews')
         Assert.isNull(review.getUser())
         Assert.isNull(review.getPostedDate())
         CaseyEmulatorData caseyEmulatorData = caseyEmulatorDataRepository.get()
@@ -157,9 +161,29 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     @Override
+    Promise<CaseyReview> putReview(String authorization, String reviewId, CaseyReview review) {
+        emulatorUtils.emulateLatency()
+        CaseyEmulatorData caseyEmulatorData = caseyEmulatorDataRepository.get()
+        CaseyReview oldReview = caseyEmulatorData.caseyReviews.find {CaseyReview e -> e.self.id == reviewId}
+        Assert.notNull(oldReview)
+        Assert.isTrue(oldReview.user.getId() == review.user.getId())
+        Assert.isTrue(oldReview.country == review.country)
+        Assert.isTrue(oldReview.locale == review.locale)
+        Assert.isTrue(oldReview.reviewTitle == review.reviewTitle)
+        Assert.isTrue(oldReview.review == review.review)
+        Assert.isTrue(oldReview.resourceType == review.resourceType)
+        Assert.isTrue(oldReview.resource.getId() == review.resource.getId())
+        Assert.isTrue(((oldReview.postedDate.time / 1000) as long) == ((review.postedDate.time / 1000)) as long)
+        Assert.isTrue(oldReview.getSelf().getId() == review.getSelf().getId())
+        Assert.isTrue(oldReview.self.rev == review.self.rev)
+        oldReview.ratings = review.ratings
+        return Promise.pure(oldReview)
+    }
+
+    @Override
     Promise<CaseyResults<CmsCampaign>> getCmsCampaigns(CmsCampaignGetParam cmsCampaignGetParam) {
         emulatorUtils.emulateLatency()
-
+        emulatorUtils.emulateError('getCmsCampaigns')
         assert cmsCampaignGetParam.expand == 'results/placements/content'
         emulatorUtils.emulateLatency()
         CaseyResults<CmsCampaign> results = new CaseyResults<>()
@@ -170,6 +194,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     @Override
     Promise<CaseyResults<CmsPage>> getCmsPages(CmsPageGetParams pageGetParams) {
         emulatorUtils.emulateLatency()
+        emulatorUtils.emulateError('getCmsPages')
         List<CmsPage> pages = caseyEmulatorDataRepository.get().cmsPages
         if (pages == null) {
             return Promise.pure(new CaseyResults<CmsPage>(items: []))
@@ -194,12 +219,14 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     @Override
     Promise<CmsContent> getCmsContent(String contentId) {
         emulatorUtils.emulateLatency()
+        emulatorUtils.emulateError('getCmsContent')
         return Promise.pure(cmsContentMap[contentId])
     }
 
     @Override
     Promise<CmsSchedule> getCmsSchedules(String pageId, CmsScheduleGetParams cmsScheduleGetParams) {
         emulatorUtils.emulateLatency()
+        emulatorUtils.emulateError('getCmsSchedules')
         Assert.notNull(cmsScheduleGetParams.locale)
         Assert.notNull(cmsScheduleGetParams.country)
         CmsSchedule cmsSchedule = caseyEmulatorDataRepository.get().cmsSchedules.find { CmsSchedule cmsSchedule ->
@@ -332,6 +359,12 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         return Promise.pure(caseyEmulatorDataRepository.post(caseyEmulatorData)).then { CaseyEmulatorData result ->
             return Promise.pure(result)
         }
+    }
+
+    @Override
+    Promise<Void> resetEmulatorData() {
+        caseyEmulatorDataRepository.resetData()
+        return Promise.pure()
     }
 
     private void addCmsContent(CmsContent cmsContent) {

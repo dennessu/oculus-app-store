@@ -11,7 +11,6 @@ import com.junbo.identity.core.service.filter.UserPersonalInfoFilter
 import com.junbo.identity.core.service.filter.pii.PIIAdvanceFilter
 import com.junbo.identity.core.service.filter.pii.PIIAdvanceFilterFactory
 import com.junbo.identity.core.service.validator.UserPersonalInfoValidator
-import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -22,6 +21,8 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+
+import javax.ws.rs.core.Response
 
 /**
  * Created by liangfu on 4/26/14.
@@ -171,7 +172,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
     }
 
     @Override
-    Promise<Void> delete(UserPersonalInfoId userPiiId) {
+    Promise<Response> delete(UserPersonalInfoId userPiiId) {
         if (userPiiId == null) {
             throw new IllegalArgumentException('userPiiId is null')
         }
@@ -182,7 +183,9 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             return RightsScope.with(authorizeService.authorize(callback)) {
                 piiAdvanceFilter.checkDeletePermission()
 
-                return userPersonalInfoRepository.delete(userPiiId)
+                return userPersonalInfoRepository.delete(userPiiId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }

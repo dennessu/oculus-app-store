@@ -7,12 +7,14 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
+import com.junbo.common.id.TosId
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
+import com.junbo.identity.spec.v1.option.model.TosGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
@@ -80,18 +82,31 @@ class RequestValidator {
         return this
     }
 
-    RequestValidator validateUserNameCheckRequest(UserNameCheckRequest request) {
+    RequestValidator validateEmailCheckRequest(EmailCheckRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        if (StringUtils.isEmpty(request.email) && StringUtils.isEmpty(request.username)) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('email or username').exception()
+        if (StringUtils.isEmpty(request.email)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
         }
 
-        if (!StringUtils.isEmpty(request.email) && !StringUtils.isEmpty(request.username)) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('email or username', 'only one of the fields [email, username] could be specified at a time').exception()
+        return this
+    }
+
+    RequestValidator validateUsernameAvailableCheckRequest(UserNameCheckRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
+
+        if (StringUtils.isEmpty(request.email)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
+        }
+
+        if (StringUtils.isEmpty(request.username)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
+        }
+
         return this
     }
 
@@ -119,6 +134,7 @@ class RequestValidator {
         notEmpty(request.password, 'password')
         notEmpty(request.cor, 'cor')
         notEmpty(request.preferredLocale, 'preferredLocale')
+        notEmpty(request.tosAgreed, 'tosAgreed')
 
         if (requireDetailsForCreate) {
             notEmpty(request.dob, 'dob')
@@ -126,6 +142,10 @@ class RequestValidator {
             notEmpty(request.lastName, 'lastName')
         }
 
+        Boolean isBlocked = resourceContainer.userResource.checkUsernameEmailBlocker(request.username, request.email).get()
+        if (isBlocked) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email are occupied').exception()
+        }
         return this
     }
 
@@ -268,6 +288,16 @@ class RequestValidator {
 
     Promise<com.junbo.identity.spec.v1.model.Locale> validateAndGetLocale(LocaleId locale) {
         return resourceContainer.localeResource.get(locale, new LocaleGetOptions())
+    }
+
+    Promise<Tos> validateTosExists(TosId tosId) {
+        return resourceContainer.tosResource.get(tosId, new TosGetOptions()).then { Tos tos ->
+            if (tos == null && tos.state != 'APPROVED') {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('tosAgreed', 'Tos with Id ' + tos.id.toString() + ' not exists').exception()
+            }
+
+            return Promise.pure(tos)
+        }
     }
 
     Promise validateOffer(OfferId offer) {

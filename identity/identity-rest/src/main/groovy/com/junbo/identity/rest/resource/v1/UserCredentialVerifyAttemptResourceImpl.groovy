@@ -66,7 +66,14 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
                 throw e
             }
         }.then {
+            // For any period login, will always mark it as failure
+            if (userCredentialAttempt.isLockDownPeriodAttempt) {
+                userCredentialAttempt.succeeded = false
+            }
             return createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
+                if (attempt.isLockDownPeriodAttempt) {
+                    throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+                }
                 if (attempt.succeeded) {
                     if (attempt.id != null) {
                         Created201Marker.mark(attempt.getId())
@@ -76,7 +83,6 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
                     attempt = RightsScope.filterForAdminInfo(attempt as ResourceMetaBase) as UserCredentialVerifyAttempt
                     return Promise.pure(attempt)
                 }
-
                 if (userCredentialAttempt.type == CredentialType.PASSWORD.toString()) {
                     throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                 } else if (userCredentialAttempt.type == CredentialType.PIN.toString()) {

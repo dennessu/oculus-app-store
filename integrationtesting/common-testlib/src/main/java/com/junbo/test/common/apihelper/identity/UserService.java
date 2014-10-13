@@ -8,6 +8,7 @@ package com.junbo.test.common.apihelper.identity;
 import com.junbo.common.error.*;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 
 import java.util.List;
@@ -38,6 +39,12 @@ public interface UserService {
 
     String PostUser(UserInfo userInfo, int expectedResponseCode) throws Exception;
 
+    String RegisterUser(UserInfo userInfo, int expectedResponseCode) throws Exception;
+
+    String GetEmailVerificationLinks(String cid) throws Exception;
+
+    String BindUserPersonalInfos(UserInfo userInfo) throws Exception;
+
     //Get the user by userId
     String GetUserByUserId(String userId) throws Exception;
 
@@ -63,4 +70,7 @@ public interface UserService {
 
     String UpdateUserPersonalInfo(String uid, String userName, String password) throws Exception;
 
+    void postUsernameEmailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception;
+
+    void updateTos(String title, String status) throws Exception;
 }

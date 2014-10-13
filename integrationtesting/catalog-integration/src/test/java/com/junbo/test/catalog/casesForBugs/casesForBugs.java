@@ -373,9 +373,10 @@ public class casesForBugs extends BaseTestClass {
         String defaultOfferFileName = "defaultOffer";
 
         Organization organization = organizationService.postDefaultOrganization();
-        Offer offer = offerService.postDefaultOffer(organization.getId());
+        OrganizationId organizationId = organization.getId();
+        Offer offer = offerService.postDefaultOffer(organizationId);
 
-        Item item = itemService.prepareItemEntity(defaultItemFileName);
+        Item item = itemService.prepareItemEntity(defaultItemFileName, organizationId);
         item.setOwnerId(new OrganizationId(1234L));
 
         try {
@@ -386,7 +387,7 @@ public class casesForBugs extends BaseTestClass {
             Assert.assertTrue(ex.toString().contains("Field value is invalid. Cannot find organization"));
         }
 
-        item = itemService.postDefaultItem(CatalogItemType.APP, organization.getId());
+        item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
         ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
         itemRevision.setItemId(item.getItemId());
         itemRevision.setOwnerId(new OrganizationId(1234L));
@@ -399,7 +400,7 @@ public class casesForBugs extends BaseTestClass {
             Assert.assertTrue(ex.toString().contains("Field value is invalid. Cannot find organization"));
         }
 
-        Offer offerPost = offerService.prepareOfferEntity(defaultOfferFileName);
+        Offer offerPost = offerService.prepareOfferEntity(defaultOfferFileName, organizationId);
         offerPost.setOwnerId(new OrganizationId(1234L));
 
         try {

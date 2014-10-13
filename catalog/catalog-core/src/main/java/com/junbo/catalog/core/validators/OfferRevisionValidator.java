@@ -205,7 +205,7 @@ public class OfferRevisionValidator extends ValidationSupport {
         if (distributedChannels != null) {
             for (String channel : distributedChannels) {
                 if (channel==null || !DistributionChannel.contains(channel)) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributedChannel", Joiner.on(',').join(distributedChannels)));
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributionChannel", Joiner.on(',').join(distributedChannels)));
                     return false;
                 }
             }

@@ -21,6 +21,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 4/11/14.
  */
@@ -162,9 +164,11 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     }
 
     @Override
-    Promise<Void> delete(UserCommunicationId userCommunicationId) {
+    Promise<Response> delete(UserCommunicationId userCommunicationId) {
         return userCommunicationValidator.validateForGet(userCommunicationId).then {
-            return userCommunicationRepository.delete(userCommunicationId)
+            return userCommunicationRepository.delete(userCommunicationId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 

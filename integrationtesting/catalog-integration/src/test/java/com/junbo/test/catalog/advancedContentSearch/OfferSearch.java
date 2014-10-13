@@ -402,6 +402,8 @@ public class OfferSearch extends BaseTestClass {
         ItemRevision itemRevision1 = itemRevisionService.getItemRevision(item1.getCurrentRevisionId());
 
         paraMap.clear();
+        publisherIds.clear();
+        publisherIds.add(IdConverter.idToHexString(item1.getOwnerId()));
         paraMap.put("developerId", publisherIds);
 
         itemIds.add(item1.getItemId());

@@ -54,5 +54,4 @@ public interface OAuthService {
     void accessEmailVerifyLink(String emailVerifyLink) throws Exception;
 
     List<String> getEmailVerifyLink(String uid, String emailAddress) throws Exception;
-
 }

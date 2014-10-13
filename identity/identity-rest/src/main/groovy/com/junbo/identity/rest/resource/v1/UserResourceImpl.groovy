@@ -43,6 +43,8 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 4/10/14.
  */
@@ -348,7 +350,7 @@ class UserResourceImpl implements UserResource {
     }
 
     @Override
-    Promise<Void> delete(UserId userId) {
+    Promise<Response> delete(UserId userId) {
         if (userId == null) {
             throw new IllegalArgumentException('userId is null')
         }
@@ -364,7 +366,7 @@ class UserResourceImpl implements UserResource {
                 return userRepository.update(user, user).then {
                     return sendAccountDeleteEmail(user).recover {
                         LOGGER.error("Send delete account mail failure")
-                        return Promise.pure(null)
+                        return Promise.pure(Response.status(204).build())
                     }
                 }
             }
@@ -387,6 +389,11 @@ class UserResourceImpl implements UserResource {
         }
 
         return userValidator.validateEmail(email)
+    }
+
+    @Override
+    Promise<Boolean> checkUsernameEmailBlocker(String username, String email) {
+        return userValidator.validateUsernameEmailBlocker(username, email)
     }
 
     Promise<Void> updateCredential(UserId userId, UserPersonalInfoId oldUsername, UserPersonalInfoId newUsername) {

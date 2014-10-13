@@ -13,7 +13,8 @@ class ValidatorUtil {
         }
 
         // Due to Oculus's requirement, this will need to hack WORLD as one new countryCode
-        if (countryCode == "WORLD") {
+        // https://oculus.atlassian.net/browse/SER-667
+        if (countryCode == "ZZ") {
             return true
         }
 

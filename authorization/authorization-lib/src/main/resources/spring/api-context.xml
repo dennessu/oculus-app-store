@@ -82,6 +82,8 @@
                 <entry key="UserResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserResource.checkUsername" value="*" />
                 <entry key="UserResource.checkEmail" value="*" />
+                <!-- This checkUsernameEmailBlocker API will be used only by oauth -->
+                <entry key="UserResource.checkUsernameEmailBlocker" value="identity.service csr" />
                 <entry key="UserSecurityQuestionResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserSecurityQuestionVerifyAttemptResource.create" value="identity.service"/>
                 <entry key="UserSecurityQuestionVerifyAttemptResource" value="identity.service identity.pii csr"/>

@@ -14,4 +14,6 @@ dependencies {
     compile junboProject(':identity-job')
     compile junboProject(':payment-jobs')
     compile junboProject(':silkcloud-jobs')
+
+    compile junboProject(':email-listener')
 }

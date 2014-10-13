@@ -15,6 +15,8 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by haomin on 14-4-25.
  */
@@ -142,13 +144,15 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
     }
 
     @Override
-    Promise<Void> delete(DeviceTypeId deviceTypeId) {
+    Promise<Response> delete(DeviceTypeId deviceTypeId) {
         if (deviceTypeId == null) {
             throw new IllegalArgumentException('countryId is null')
         }
 
         return deviceTypeValidator.validateForGet(deviceTypeId).then {
-            return deviceTypeRepository.delete(deviceTypeId)
+            return deviceTypeRepository.delete(deviceTypeId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 

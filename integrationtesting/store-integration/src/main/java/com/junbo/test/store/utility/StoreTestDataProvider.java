@@ -20,13 +20,16 @@ import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
 import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
+import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.casey.CaseyResults;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
 import com.junbo.store.spec.model.external.casey.cms.CmsPage;
 import com.junbo.store.spec.model.external.casey.cms.CmsSchedule;
@@ -37,11 +40,13 @@ import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.catalog.*;
 import com.junbo.test.catalog.impl.*;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
+import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.UserService;
@@ -64,6 +69,14 @@ import com.junbo.test.store.apihelper.impl.CaseyEmulatorServiceImpl;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreConfigServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
+import org.apache.http.Consts;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -114,7 +127,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         createUserRequest.setPin("1234");
         createUserRequest.setCor(Country.DEFAULT.toString());
         createUserRequest.setPreferredLocale("en_US");
-
+        Tos tos = loginClient.GetRegisterTos();
+        createUserRequest.setTosAgreed(tos.getTosId());
         return createUserRequest;
     }
 
@@ -180,28 +194,31 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return CreateUser(createUserRequest, needVerifyEmail, 200);
     }
 
-    public UserNameCheckResponse CheckUserName(String userName) throws Exception {
+    public UserNameCheckResponse CheckUserName(String userName, String email) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setUsername(userName);
+        request.setEmail(email);
         return loginClient.CheckUserName(request);
     }
 
-    public com.junbo.common.error.Error CheckUserNameWithError(String userName, int expectedResponseCode, String errorCode) throws Exception {
+    public com.junbo.common.error.Error CheckUserNameWithError(String userName, String email,
+                                                               int expectedResponseCode, String errorCode) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setUsername(userName);
+        request.setEmail(email);
         return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
     }
 
-    public UserNameCheckResponse CheckEmail(String email) throws Exception {
-        UserNameCheckRequest request = new UserNameCheckRequest();
+    public EmailCheckResponse CheckEmail(String email) throws Exception {
+        EmailCheckRequest request = new EmailCheckRequest();
         request.setEmail(email);
-        return loginClient.CheckUserName(request);
+        return loginClient.CheckEmail(request);
     }
 
     public Error CheckEmailWithError(String email, int expectedResponseCode, String errorCode) throws Exception {
-        UserNameCheckRequest request = new UserNameCheckRequest();
+        EmailCheckRequest request = new EmailCheckRequest();
         request.setEmail(email);
-        return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
+        return loginClient.CheckEmailWithError(request, expectedResponseCode, errorCode);
     }
 
     public Error SignInWithError(String username, String type, String password, int expectedCode, String errorCode) throws Exception {
@@ -598,6 +615,21 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return loginClient.signIn(request);
     }
 
+    public AuthTokenResponse signInWithLogin(String username, String chanllengeType, TosId tosId) throws Exception {
+        UserSignInRequest request = new UserSignInRequest();
+        request.setEmail(username);
+        UserCredential userCredential = new UserCredential();
+        userCredential.setType("password");
+        userCredential.setValue("Test1234");
+        request.setUserCredential(userCredential);
+
+        ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+        challengeAnswer.setType(chanllengeType);
+        challengeAnswer.setAcceptedTos(tosId);
+        request.setChallengeAnswer(challengeAnswer);
+        return loginClient.signIn(request);
+    }
+
     public UserProfileGetResponse getUserProfile() throws Exception {
         return getUserProfile(200);
     }
@@ -748,6 +780,20 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return caseyEmulatorClient.postEmulatorData(data);
     }
 
+    public void PrepareUsernameEmailBlocker(String username, String email) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_MIGRATION);
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setEmail(email);
+        usernameMailBlocker.setUsername(username);
+
+        identityClient.postUsernameEmailBlocker(usernameMailBlocker);
+    }
+
+    public void UpdateTos(String title, String status) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
+        identityClient.updateTos(title, status);
+    }
+
     public CaseyEmulatorData postCaseyEmulatorData(List<CmsSchedule> cmsSchedule, List<CmsPage> pages, Map<String, List<OfferId>> offerIds) throws Exception {
         CaseyEmulatorData data = new CaseyEmulatorData();
         data.setCaseyAggregateRatings(new ArrayList<CaseyAggregateRating>());
@@ -796,4 +842,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.addReview(request, expectedCode);
     }
 
+    public CaseyResults<CmsPage> getCmsPage(String path, String label, int expectedCode) throws Exception {
+        return caseyEmulatorClient.getCmsPages(path, label, expectedCode);
+    }
+
+    public void resetEmulatorData() throws Exception {
+        caseyEmulatorClient.resetEmulatorData();
+    }
 }

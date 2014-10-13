@@ -86,6 +86,6 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "119", message = "Review already exists.")
     AppError reviewAlreadyExists();
 
-    @ErrorDef(httpStatusCode = 412, code = "120", message = "Could not review an item that not purchased.")
-    AppError reviewItemNotPurchased();
+    @ErrorDef(httpStatusCode = 412, code = "120", message = "item not purchased.")
+    AppError itemNotPurchased();
 }

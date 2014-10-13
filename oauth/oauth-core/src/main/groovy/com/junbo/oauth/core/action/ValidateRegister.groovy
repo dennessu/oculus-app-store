@@ -11,11 +11,14 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.service.UserService
+import com.junbo.oauth.core.util.ExceptionUtil
 import com.junbo.oauth.spec.model.Gender
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 import java.text.DateFormat
@@ -34,6 +37,8 @@ class ValidateRegister implements Action {
             Pattern.compile('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$', Pattern.CASE_INSENSITIVE);
 
     public static final Pattern VALID_PIN_REGEX = Pattern.compile('\\d{4}')
+
+    private UserService userService
 
     @Override
     Promise<ActionResult> execute(ActionContext context) {
@@ -108,11 +113,30 @@ class ValidateRegister implements Action {
             }
         }
 
-        if (!contextWrapper.errors.isEmpty()) {
-            return Promise.pure(new ActionResult('error'))
-        }
+        return userService.checkUsernameAndEmailBlocker(username, email).recover { Throwable throwable ->
+            ExceptionUtil.handleIdentityException(throwable, contextWrapper, false)
+            return Promise.pure(null)
+        }.then { Boolean isBlocked ->
+            if (isBlocked == null) {
+                return Promise.pure(new ActionResult('error'))
+            }
 
-        return Promise.pure(new ActionResult('success'))
+            if (isBlocked) {
+                LOGGER.debug('Username and email are occupied')
+                contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email are occupied').error())
+            }
+
+            if (!contextWrapper.errors.isEmpty()) {
+                return Promise.pure(new ActionResult('error'))
+            }
+
+            return Promise.pure(new ActionResult('success'))
+        }
+    }
+
+    @Required
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 }
 
