@@ -895,7 +895,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "Test get billing profile filter out paypal",
             steps = {
                     "1. Create user",
@@ -919,7 +919,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         testDataProvider.postPayment(uid, creditCardInfo);
 
         AuthTokenResponse authTokenResponse = testDataProvider.signIn(userInfo.getEmails().get(0));
-        testDataProvider.acceptTos(authTokenResponse.getChallenge().getTos().getTosId());
+        testDataProvider.signInWithLogin(userInfo.getEmails().get(0), authTokenResponse.getChallenge().getType(), authTokenResponse.getChallenge().getTos().getTosId());
         BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
 
         assert response.getBillingProfile().getInstruments().size() == 1;

@@ -615,6 +615,21 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return loginClient.signIn(request);
     }
 
+    public AuthTokenResponse signInWithLogin(String username, String chanllengeType, TosId tosId) throws Exception {
+        UserSignInRequest request = new UserSignInRequest();
+        request.setEmail(username);
+        UserCredential userCredential = new UserCredential();
+        userCredential.setType("password");
+        userCredential.setValue("Test1234");
+        request.setUserCredential(userCredential);
+
+        ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+        challengeAnswer.setType(chanllengeType);
+        challengeAnswer.setAcceptedTos(tosId);
+        request.setChallengeAnswer(challengeAnswer);
+        return loginClient.signIn(request);
+    }
+
     public UserProfileGetResponse getUserProfile() throws Exception {
         return getUserProfile(200);
     }
