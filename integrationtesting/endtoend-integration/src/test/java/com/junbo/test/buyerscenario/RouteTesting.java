@@ -45,34 +45,27 @@ public class RouteTesting extends BaseTestClass {
     )
     @Test
     public void testUpdateNickNameRoute() throws Exception {
-        try {
-            if (ConfigHelper.getSetting("secondaryDcEndpoint") == null) return;
-            UserInfo userInfo = UserInfo.getRandomUserInfo();
-            String cid = testDataProvider.registerUser(userInfo);
-            String uid = testDataProvider.BindUserPersonalInfos(userInfo);
-            String emailLinks = testDataProvider.getEmailVerificationLinks(cid);
-            Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
-            testDataProvider.accessEmailVerificationLinks(emailLinks);
-            testDataProvider.getUserByUid(uid);
-            Master.getInstance().setEndPointType(Master.EndPointType.Primary);
+        if (ConfigHelper.getSetting("secondaryDcEndpoint") == null) return;
+        UserInfo userInfo = UserInfo.getRandomUserInfo();
+        String cid = testDataProvider.registerUser(userInfo);
+        String uid = testDataProvider.BindUserPersonalInfos(userInfo);
+        String emailLinks = testDataProvider.getEmailVerificationLinks(cid);
+        Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
+        testDataProvider.accessEmailVerificationLinks(emailLinks);
+        testDataProvider.getUserByUid(uid);
+        Master.getInstance().setEndPointType(Master.EndPointType.Primary);
 
-            User user = Master.getInstance().getUser(uid);
-            String nickName = RandomFactory.getRandomStringOfAlphabet(5);
-            user.setNickName(nickName);
-            testDataProvider.putUser(uid, user);
+        User user = Master.getInstance().getUser(uid);
+        String nickName = RandomFactory.getRandomStringOfAlphabet(5);
+        user.setNickName(nickName);
+        testDataProvider.putUser(uid, user);
 
-            Thread.sleep(3000);
-            Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
-            testDataProvider.getUserByUid(uid);
+        Thread.sleep(3000);
+        Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
+        testDataProvider.getUserByUid(uid);
 
-            user = Master.getInstance().getUser(uid);
-            assert user.getNickName().equals(nickName);
-
-        } catch (Exception ex) {
-            logHelper.logError(ex.getMessage());
-        } finally {
-            Master.getInstance().setEndPointType(Master.EndPointType.Primary);
-        }
+        user = Master.getInstance().getUser(uid);
+        assert user.getNickName().equals(nickName);
 
     }
 
