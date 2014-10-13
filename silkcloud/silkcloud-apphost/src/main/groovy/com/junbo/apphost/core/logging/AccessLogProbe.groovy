@@ -29,7 +29,7 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
     private static final SimpleDateFormatThreadLocal DATE_FORMAT =
             new SimpleDateFormatThreadLocal('[yyyy-MM-dd HH:mm:ss.SSS Z]')
 
-    private static final Pattern ACCESS_TOKEN_PATTERN = Pattern.compile("access_token=([0-9A-Za-z\\-~]{44})")
+    private static final Pattern ACCESS_TOKEN_PATTERN = Pattern.compile("access_token=([0-9A-Za-z\\-~,]+)")
 
     @Override
     void onRequestReceiveEvent(HttpServerFilter filter, Connection connection, Request request) {
@@ -123,8 +123,15 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
             StringBuffer sb = new StringBuffer('?')
             while (matcher.find()) {
                 String tokenValue = matcher.group(1)
-                String hash = HashUtil.hash(tokenValue)
-                matcher.appendReplacement(sb, "access_token=$hash")
+                String[] tokens = tokenValue.split(',')
+                StringBuilder stringBuilder = new StringBuilder()
+                for (String token : tokens) {
+                    stringBuilder.append(HashUtil.hash(token))
+                    stringBuilder.append(',')
+                }
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1)
+
+                matcher.appendReplacement(sb, "access_token=$stringBuilder")
             }
             matcher.appendTail(sb)
             return sb.toString()
@@ -159,9 +166,16 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
             String headerName = headerIterator.next()
             String header = getRequestHeader(request, headerName)
             if (headerName.equalsIgnoreCase('Authorization') && header.startsWith('Bearer ')) {
+                sb.append("$headerName: Bearer ")
                 String tokenValue = header.substring(7)
-                String hash = HashUtil.hash(tokenValue);
-                sb.append("$headerName: Bearer $hash")
+                String[] tokens = tokenValue.split(',')
+
+                for (String token : tokens) {
+                    sb.append(HashUtil.hash(token))
+                    sb.append(',')
+                }
+                sb.deleteCharAt(sb.length() - 1)
+                sb.append('; ')
             } else {
                 sb.append("$headerName: $header; ")
             }
