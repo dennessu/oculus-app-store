@@ -22,14 +22,22 @@ class AppErrorUtils {
 
     private static final String Invalid_Error_Code = '001'
 
-    public void throwOnFieldInvalidError(String component, ErrorContext errorContext, Throwable ex) {
-        Assert.notNull(component)
+    public void throwOnFieldInvalidError(ErrorContext errorContext, Throwable ex, String ... components) {
+        Assert.notNull(components)
         if (!(ex instanceof AppErrorException)) {
             return;
         }
 
         AppError appError = ((AppErrorException) ex).error
-        if ("${component}.${Invalid_Error_Code}" == appError.error().code) {
+        boolean couldHandle = false
+        for (String component : components) {
+            if ("${component}.${Invalid_Error_Code}" == appError.error().code) {
+                couldHandle = true
+                break
+            }
+        }
+
+        if (couldHandle) {
             LOGGER.error('name=Invalid_Field_Error', ex)
 
             AppError resultAppError
@@ -41,17 +49,20 @@ class AppErrorUtils {
                 resultAppError = AppCommonErrors.INSTANCE.fieldInvalid(appError.error().details.toArray(new ErrorDetail[0]))
             }
             throw resultAppError.exception()
-        } else {
-            LOGGER.error('name=Invalid_Error_Code_Format, code={}', appError.error().code)
         }
     }
 
     public void throwUnknownError(String operation, Throwable ex) {
-        if (isAppError(ex, ErrorCodes.Store.UnknownError)) { // already unknown error
+        if (isStoreError(ex)) { // error thrown by store
             throw ex
         }
         LOGGER.error('nam=StoreApiUnknownError, operation={}', operation, ex)
         throw AppErrors.INSTANCE.unknownError().exception()
+    }
+
+    public boolean isStoreError(Throwable ex) {
+        String errorCode = getAppErrorCode(ex)
+        return errorCode != null && errorCode.startsWith(ErrorCodes.Store.majorCode)
     }
 
     public String getAppErrorCode(Throwable ex) {

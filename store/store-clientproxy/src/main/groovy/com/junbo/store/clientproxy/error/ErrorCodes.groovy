@@ -10,6 +10,7 @@ import groovy.transform.CompileStatic
 class ErrorCodes {
 
     class Identity {
+        static final String majorCode = '131'
         static final String FieldDuplicate = '131.002'
         static final String UserPasswordIncorrect = '131.109'
         static final String CountryNotFound = '131.122'
@@ -32,6 +33,7 @@ class ErrorCodes {
     }
 
     class Store {
+        static final String majorCode = '130'
         static final String UnknownError = AppErrors.INSTANCE.unknownError().error().code
     }
 }

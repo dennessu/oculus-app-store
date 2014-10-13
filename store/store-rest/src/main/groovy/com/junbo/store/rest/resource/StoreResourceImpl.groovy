@@ -12,7 +12,6 @@ import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
-import com.junbo.common.error.Components
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
@@ -30,7 +29,6 @@ import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
-import com.junbo.identity.spec.v1.resource.UserCredentialResource
 import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
@@ -1155,7 +1153,7 @@ class StoreResourceImpl implements StoreResource {
                     value: request.userProfile.password
             )).recover { Throwable ex ->
                 throwOnUserPasswordIncorrect(ex)
-                appErrorUtils.throwOnFieldInvalidError(Components.instance().getComponent(UserCredentialResource), errorContext, ex)
+                appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
                 throw ex
             }
         }.then {
@@ -1169,7 +1167,7 @@ class StoreResourceImpl implements StoreResource {
                     value: request.userProfile.pin
             )).recover { Throwable ex ->
                 throwOnUserPasswordIncorrect(ex)
-                appErrorUtils.throwOnFieldInvalidError(Components.instance().getComponent(UserCredentialResource), errorContext, ex)
+                appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
                 throw ex
             }
         }
