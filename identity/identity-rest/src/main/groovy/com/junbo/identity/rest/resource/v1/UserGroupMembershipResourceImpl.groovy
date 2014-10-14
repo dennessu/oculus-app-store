@@ -10,8 +10,10 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.GroupAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserGroupFilter
 import com.junbo.identity.core.service.validator.UserGroupValidator
+import com.junbo.identity.data.repository.GroupRepository
 import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.model.UserGroupGetOptions
@@ -32,6 +34,9 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
     @Autowired
     private UserGroupRepository userGroupRepository
+
+    @Autowired
+    private GroupRepository groupRepository
 
     @Autowired
     private UserGroupFilter userGroupFilter
@@ -185,18 +190,22 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
                 return Promise.each(userGroupList) { UserGroup newUserGroup ->
                     if (newUserGroup != null) {
-                        newUserGroup = userGroupFilter.filterForGet(newUserGroup,
-                                listOptions.properties?.split(',') as List<String>)
-                    }
-
-                    if (newUserGroup != null) {
-                        def callback = authorizeCallbackFactory.create(newUserGroup.groupId)
-                        return RightsScope.with(authorizeService.authorize(callback)) {
-                            if (AuthorizeContext.hasRights('read')) {
-                                result.items.add(newUserGroup)
-                                return Promise.pure(newUserGroup)
-                            } else {
+                        return groupRepository.get(newUserGroup.groupId).then { Group group ->
+                            if (group == null) {
                                 return Promise.pure(null)
+                            }
+
+                            newUserGroup = userGroupFilter.filterForGet(newUserGroup,
+                                    listOptions.properties?.split(',') as List<String>)
+
+                            def callback = authorizeCallbackFactory.create(newUserGroup.groupId)
+                            return RightsScope.with(authorizeService.authorize(callback)) {
+                                if (AuthorizeContext.hasRights('read')) {
+                                    result.items.add(newUserGroup)
+                                    return Promise.pure(newUserGroup)
+                                } else {
+                                    return Promise.pure(null)
+                                }
                             }
                         }
                     }

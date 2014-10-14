@@ -499,7 +499,7 @@ public class Identity {
         return ((Group) JsonHelper.JsonNodeToObject(jsonNode, Group.class));
     }
 
-    public static UserGroup SearchUserGroup(GroupId groupId, Boolean emptyResult) throws Exception {
+    public static UserGroup SearchUserGroupByGroupId(GroupId groupId, Boolean emptyResult) throws Exception {
         String requestURI = IdentityV1UserGroupMemberURI + "?groupId=" + groupId;
         if (emptyResult) {
             Validator.Validate("validate result is empty", true,
@@ -510,6 +510,23 @@ public class Identity {
                     (IdentityGet(requestURI, (Results.class)).getItems().get(0)));
             return ((UserGroup) JsonHelper.JsonNodeToObject(jsonNode, UserGroup.class));
         }
+    }
+
+    public static List<UserGroup> UserGroupSearch(GroupId groupId, UserId userId) throws Exception {
+        String url = "";
+        if (groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?groupId=" + IdConverter.idToHexString(groupId);
+        } else {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId);
+        }
+
+        List<UserGroup> userGroups = IdentityGet(url, Results.class).getItems();
+        List<UserGroup> userGroupList = new ArrayList<>();
+        for (Object obj : userGroups) {
+            userGroupList.add((UserGroup)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
+        }
+
+        return userGroupList;
     }
 
     public static UserGroup UserGroupPost(UserId userId, GroupId groupId) throws Exception {

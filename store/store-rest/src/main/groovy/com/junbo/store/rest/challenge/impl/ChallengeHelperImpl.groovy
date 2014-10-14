@@ -103,13 +103,7 @@ class ChallengeHelperImpl implements ChallengeHelper {
             return false
         }
 
-        def result = true
-        tosAgreementResults.items.each { UserTosAgreement userTosAgreement ->
-           if (result && tos.updatedTime != null && tos.updatedTime.after(userTosAgreement.agreementTime)) {
-                result = false
-           }
-        }
-        return result
+        return true
     }
 
     @Override

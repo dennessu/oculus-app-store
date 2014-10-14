@@ -280,7 +280,7 @@ public class postImportUserPersonalInfo {
                 userIsAdmin ? IdentityModel.MigrateCompanyGroup.admin.name()
                         : IdentityModel.MigrateCompanyGroup.developer.name()
         );
-        UserGroup userGroup = Identity.SearchUserGroup(group.getId(), false);
+        UserGroup userGroup = Identity.SearchUserGroupByGroupId(group.getId(), false);
         Validator.Validate("validate user is in correct group", oculusOutput.getUserId(), userGroup.getUserId());
         */
     }
@@ -299,13 +299,13 @@ public class postImportUserPersonalInfo {
                 userIsAdmin ? IdentityModel.MigrateCompanyGroup.admin.name()
                         : IdentityModel.MigrateCompanyGroup.developer.name()
         );
-        UserGroup userGroup = Identity.SearchUserGroup(groupWithUser.getId(), false);
+        UserGroup userGroup = Identity.SearchUserGroupByGroupId(groupWithUser.getId(), false);
         Validator.Validate("validate user is in correct group", oculusOutput.getUserId(), userGroup.getUserId());
         Group groupWithoutUser = Identity.SearchOrganizationGroup(oculusOutput.getOrganizationId(),
                 userIsAdmin ? IdentityModel.MigrateCompanyGroup.developer.name()
                         : IdentityModel.MigrateCompanyGroup.admin.name()
         );
-        Identity.SearchUserGroup(groupWithoutUser.getId(), true);
+        Identity.SearchUserGroupByGroupId(groupWithoutUser.getId(), true);
         */
     }
 
@@ -328,12 +328,12 @@ public class postImportUserPersonalInfo {
                 userIsAdmin ? IdentityModel.MigrateCompanyGroup.admin.name()
                         : IdentityModel.MigrateCompanyGroup.developer.name()
         );
-        Identity.SearchUserGroup(group1.getId(), true);
+        Identity.SearchUserGroupByGroupId(group1.getId(), true);
         Group group2 = Identity.SearchOrganizationGroup(oculusOutput2.getOrganizationId(),
                 userIsAdmin ? IdentityModel.MigrateCompanyGroup.admin.name()
                         : IdentityModel.MigrateCompanyGroup.developer.name()
         );
-        UserGroup userGroup = Identity.SearchUserGroup(group2.getId(), false);
+        UserGroup userGroup = Identity.SearchUserGroupByGroupId(group2.getId(), false);
         Validator.Validate("validate user is in correct group", oculusOutput1.getUserId(), userGroup.getUserId());
         */
     }

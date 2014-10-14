@@ -73,4 +73,47 @@ public class postUserGroup {
         userGroup = Identity.UserGroupPost(user.getId(), group2.getId());
         assert userGroup.getGroupId().getValue().equalsIgnoreCase(group2.getId().getValue());
     }
+
+    @Test(groups = "dailies")
+    // https://oculus.atlassian.net/browse/SER-686
+    public void getDeleteGroup() throws Exception {
+        User user = Identity.UserPostDefault();
+        Organization org = IdentityModel.DefaultOrganization();
+        Organization posted = Identity.OrganizationPostDefault(org);
+        Group group1 = Identity.GroupPostDefault(IdentityModel.DefaultGroup(posted.getId()));
+        Group group2 = Identity.GroupPostDefault(IdentityModel.DefaultGroup(posted.getId()));
+
+        Identity.UserGroupPost(user.getId(), group1.getId());
+        Identity.UserGroupPost(user.getId(), group2.getId());
+
+        List<UserGroup> userGroups = Identity.UserGroupSearch(null, user.getId());
+        assert userGroups != null;
+        assert userGroups.size() == 2;
+
+        userGroups = Identity.UserGroupSearch(group1.getId(), null);
+        assert userGroups != null;
+        assert userGroups.size() == 1;
+
+        userGroups = Identity.UserGroupSearch(group2.getId(), null);
+        assert userGroups != null;
+        assert userGroups.size() == 1;
+
+        Identity.GroupDelete(group1);
+        userGroups = Identity.UserGroupSearch(group1.getId(), null);
+        assert userGroups != null;
+        assert userGroups.size() == 0;
+
+        userGroups = Identity.UserGroupSearch(null, user.getId());
+        assert userGroups != null;
+        assert userGroups.size() == 1;
+
+        Identity.GroupDelete(group2);
+        userGroups = Identity.UserGroupSearch(group2.getId(), null);
+        assert userGroups != null;
+        assert userGroups.size() == 0;
+
+        userGroups = Identity.UserGroupSearch(null, user.getId());
+        assert userGroups != null;
+        assert userGroups.size() == 0;
+    }
 }
