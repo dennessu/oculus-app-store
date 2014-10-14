@@ -118,6 +118,9 @@ class DefaultFlowSelector implements FlowSelector {
                     return CoreUtils.hasPhysicalOffer(context.order) ? Promise.pure(FlowType.AUTH_SETTLE.name()) :
                             Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
                 case PIType.STOREDVALUE:
+                    if (CoreUtils.isPreorder(context.order)) {
+                        return Promise.pure(FlowType.PREORDER_SETTLE.name())
+                    }
                     return Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
                 case PIType.PAYPAL:
                 case PIType.OTHERS:
