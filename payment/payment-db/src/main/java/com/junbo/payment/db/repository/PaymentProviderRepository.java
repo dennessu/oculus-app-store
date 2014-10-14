@@ -38,21 +38,23 @@ public class PaymentProviderRepository  extends DomainDataRepository<PaymentProv
             return results.get(0).getProviderName();
         }else if(results.size() > 1){
             //continue filter:
-            List<PaymentProviderEntity> filterResults = CommonUtil.filter(entities, new IPredicate<PaymentProviderEntity>() {
+            List<PaymentProviderEntity> filterResults = CommonUtil.filter(results, new IPredicate<PaymentProviderEntity>() {
                 @Override
                 public boolean apply(PaymentProviderEntity entity) {
                     boolean filterResult = true;
                     if(!CommonUtil.isNullOrEmpty(criteria.getCountry())){
-                        filterResult = filterResult && entity.getCountryCode().equalsIgnoreCase(criteria.getCountry());
+                        filterResult = filterResult && entity.getCountryCode() != null &&
+                                entity.getCountryCode().trim().equalsIgnoreCase(criteria.getCountry());
                     }
                     if(!CommonUtil.isNullOrEmpty(criteria.getCurrency())){
-                        filterResult = filterResult && entity.getCurrency().equalsIgnoreCase(criteria.getCurrency());
+                        filterResult = filterResult && entity.getCurrency() != null &&
+                                entity.getCurrency().equalsIgnoreCase(criteria.getCurrency());
                     }
                     return filterResult;
                 }
             });
             if(filterResults.isEmpty()){
-                return results.get(0).getProviderName();
+                return null;
             }else{
                 return filterResults.get(0).getProviderName();
             }

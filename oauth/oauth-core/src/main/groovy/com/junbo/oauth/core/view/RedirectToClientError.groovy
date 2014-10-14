@@ -42,15 +42,9 @@ class RedirectToClientError implements Action {
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
 
-        String realUrl = new String(pageUrl)
-        if (contextWrapper.viewCountry != null) {
-            realUrl = realUrl.replaceFirst('/country', '/' + contextWrapper.viewCountry)
-        }
-        if (contextWrapper.viewLocale != null) {
-            realUrl = realUrl.replaceFirst('/locale', '/' + contextWrapper.viewLocale)
-        }
-        def uriBuilder = UriComponentsBuilder.fromHttpUrl(realUrl)
+        UriComponentsBuilder uriBuilder
 
+        // Redirect back to the client redirect uri with error message
         if ('true'.equalsIgnoreCase(contextWrapper.extraParameterMap.get(OAuthParameters.HANDLE_ERROR)) || StringUtils.isEmpty(this.pageUrl)) {
             def oauthInfo = contextWrapper.oauthInfo
             uriBuilder = UriComponentsBuilder.fromHttpUrl(oauthInfo.redirectUri)
@@ -74,6 +68,18 @@ class RedirectToClientError implements Action {
                     uriBuilder.queryParam(key, value)
                 }
             }
+        // Directly redirect to a certain page
+        } else {
+            // the pageUrl should not be null
+            String realUrl = new String(pageUrl)
+            if (contextWrapper.viewCountry != null) {
+                realUrl = realUrl.replaceFirst('/country', '/' + contextWrapper.viewCountry)
+            }
+            if (contextWrapper.viewLocale != null) {
+                realUrl = realUrl.replaceFirst('/locale', '/' + contextWrapper.viewLocale)
+            }
+
+            uriBuilder = UriComponentsBuilder.fromHttpUrl(realUrl)
         }
 
         contextWrapper.responseBuilder = Response.status(Response.Status.FOUND)
