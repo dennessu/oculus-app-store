@@ -39,8 +39,10 @@ import java.util.List;
 public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FacebookCCProviderServiceImpl.class);
     private static final String PROVIDER_NAME = "FacebookCC";
+    private static final String TEST_ENV = "test";
 
     private String oculusAppId;
+    private String env;
     private FacebookPaymentUtils facebookPaymentUtils;
     private FacebookPaymentApi facebookPaymentApi;
     private PersonalInfoFacade personalInfoFacade;
@@ -95,6 +97,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 }
                 FacebookPaymentAccount fbPaymentAccount = new FacebookPaymentAccount();
                 fbPaymentAccount.setPayerId(request.getUserId().toString());
+                if(env.equalsIgnoreCase(TEST_ENV)){
+                    fbPaymentAccount.setEnv(TEST_ENV);
+                }
                 return facebookPaymentApi.createAccount(s, oculusAppId, fbPaymentAccount).then(new Promise.Func<FacebookPaymentAccount, Promise<PaymentInstrument>>() {
                     @Override
                     public Promise<PaymentInstrument> apply(FacebookPaymentAccount fbPaymentAccount) {
@@ -336,6 +341,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     @Required
     public void setOculusAppId(String oculusAppId) {
         this.oculusAppId = oculusAppId;
+    }
+    public void setEnv(String env) {
+        this.env = env;
     }
     @Required
     public void setFacebookPaymentUtils(FacebookPaymentUtils facebookPaymentUtils) {

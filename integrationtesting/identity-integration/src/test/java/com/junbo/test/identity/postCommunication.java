@@ -102,7 +102,7 @@ public class postCommunication {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
 
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1CommunicationURI, JsonHelper.JsonSerializer(communication), HttpclientHelper.HttpRequestType.post, nvps);
 
         Validator.Validate("validate response code", 400, response.getStatusLine().getStatusCode());

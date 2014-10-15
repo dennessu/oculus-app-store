@@ -70,6 +70,7 @@
     <bean id="facebookCCProviderService" class="com.junbo.payment.core.provider.facebook.FacebookCCProviderServiceImpl">
         <property name="facebookPaymentUtils" ref="facebookPaymentUtil"/>
         <property name="oculusAppId" value="${payment.provider.facebook.appid}"/>
+        <property name="env" value="${payment.provider.facebook.env}"/>
         <property name="facebookPaymentApi" ref="facebookPaymentClient"/>
         <property name="personalInfoFacade" ref="personalInfoFacade"/>
         <property name="piRepository" ref="paymentInstrumentRepositoryFacade"/>

@@ -20,6 +20,7 @@ import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
 import com.junbo.test.identity.IdentityModel;
+import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
@@ -28,6 +29,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.InputStreamReader;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -696,6 +698,31 @@ public class authorizeUser {
                 "Field value is invalid. " + randomClient,
                 error.getDetails().get(0).getReason());
         response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void coverSER687() throws Exception {
+        String redirectURI = "http://localhost";
+        String requestURI = Oauth.DefaultAuthorizeURI + "?"
+                + Oauth.DefaultFNClientId + "=" + Oauth.DefaultClientId + "&"
+                + Oauth.DefaultFNResponseType + "=" + URLEncoder.encode("token id_token", "UTF-8") + "&"
+                + "state=state&"
+                + "nonce=12345&"
+                + Oauth.DefaultFNRedirectURI + "=" + redirectURI + "&"
+                + Oauth.DefaultFNCountry + "=" + "US" + "&"
+                + Oauth.DefaultFNLocale + "=" + "en_US" + "&"
+                + "prompt=none";
+
+        CloseableHttpResponse response = Oauth.OauthGet(requestURI, null);
+        Validator.Validate("validate response code", 302, response.getStatusLine().getStatusCode());
+        for (Header h : response.getAllHeaders()) {
+            if (h.getName().equals("Location")) {
+                Validator.Validate("validate redirect uri", true, h.getValue().contains(redirectURI));
+                Validator.Validate("validate error status", true, h.getValue().contains("error=login_required"));
+                return;
+            }
+        }
+        throw new Exception("response header location not validated");
     }
 
     private static void ValidateErrorFreeResponse(String responseString) throws Exception {

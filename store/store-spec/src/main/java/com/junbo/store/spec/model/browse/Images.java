@@ -15,6 +15,14 @@ import java.util.Map;
  */
 public class Images {
 
+    /**
+     * The BuildType enum.
+     */
+    public static enum BuildType {
+        Item_Details,
+        Item_List
+    }
+
     private Map<String, Image> main;
 
     private List<Map<String, Image>> gallery;

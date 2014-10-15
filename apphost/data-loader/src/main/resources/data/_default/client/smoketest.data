@@ -12,5 +12,6 @@
   "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home", "https://*.oculus.com/*" ],
   "default_logout_redirect_uri" : "http://localhost",
   "need_consent" : false,
-  "debug_enabled" : true
+  "debug_enabled" : true,
+  "internal" : true
 }

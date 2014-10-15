@@ -59,7 +59,7 @@ public class postOrganization {
         org.setIsValidated(true);
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1OrganizationURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1OrganizationURI,
                 JsonHelper.JsonSerializer(org), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "Can't create validated organization";
@@ -72,7 +72,7 @@ public class postOrganization {
         posted.setIsValidated(true);
         Identity.OrganizationPut(posted);
         org.setIsValidated(RandomHelper.randomBoolean());
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1OrganizationURI,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1OrganizationURI,
                 JsonHelper.JsonSerializer(org), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
         errorMessage = "Field value is duplicate";
@@ -136,7 +136,7 @@ public class postOrganization {
 
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1OrganizationURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1OrganizationURI,
                 null, HttpclientHelper.HttpRequestType.get, nvps);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "Query parameter is required";
@@ -192,7 +192,7 @@ public class postOrganization {
     @Test(groups = "dailies")
     public void testOrganizationUnicode() throws Exception {
         Organization organization = IdentityModel.DefaultOrganization();
-        organization.setName("赵云�testcase" + RandomHelper.randomAlphabetic(15));
+        organization.setName("赵云�testcase" + RandomHelper.randomAlphabetic(15));
         organization = Identity.OrganizationPostDefault(organization);
 
         Organization newOrg = Identity.OrganizationGetByOrganizationId(organization.getId());

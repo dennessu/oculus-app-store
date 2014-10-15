@@ -24,15 +24,15 @@ import javax.ws.rs.core.MediaType;
 @RestResource
 @AuthorizationNotRequired
 public interface LoginResource {
-    @POST
+    @GET
     @Path("/check-email")
     // This doesn't require email verification
-    Promise<EmailCheckResponse> checkEmail(EmailCheckRequest emailCheckRequest);
+    Promise<EmailCheckResponse> checkEmail(@BeanParam EmailCheckRequest emailCheckRequest);
 
-    @POST
+    @GET
     @Path("/check-username")
     // This doesn't require email verification
-    Promise<UserNameCheckResponse> checkUsernameAvailable(UserNameCheckRequest userNameCheckRequest);
+    Promise<UserNameCheckResponse> checkUsernameAvailable(@BeanParam UserNameCheckRequest userNameCheckRequest);
 
     @POST
     @Path("/rate-credential")

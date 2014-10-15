@@ -79,7 +79,7 @@ public class postUser {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
 
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()), null,
                 HttpclientHelper.HttpRequestType.delete, nvps);
 
@@ -204,7 +204,7 @@ public class postUser {
         String url = Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId());
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 url, JsonHelper.JsonSerializer(user),
                 HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("validate response error code", 200, response.getStatusLine().getStatusCode());
@@ -213,7 +213,7 @@ public class postUser {
         user = Identity.UserGetByUserId(user.getId());
         UserPersonalInfo updatedPII = createUserNamePII(user.getNickName(), user.getId());
         user.setUsername(updatedPII.getId());
-        response = HttpclientHelper.PureHttpResponse(url, JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
+        response = HttpclientHelper.GetHttpResponse(url, JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("validate response error code", 200, response.getStatusLine().getStatusCode());
         response.close();
 
@@ -229,29 +229,29 @@ public class postUser {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
 
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(15) ,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(15),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
 
         UserPersonalInfo loginName = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
         UserLoginName userLoginName = (UserLoginName)JsonHelper.JsonNodeToObject(loginName.getValue(), UserLoginName.class);
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + userLoginName.getUserName() ,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + userLoginName.getUserName(),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator duplicate username", 409, response.getStatusLine().getStatusCode());
         response.close();
 
-        response =  HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(2) ,
+        response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(2),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator username length", 400, response.getStatusLine().getStatusCode());
         response.close();
 
-        response =  HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(50) ,
+        response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(50),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator username length", 400, response.getStatusLine().getStatusCode());
         response.close();
 
-        response =  HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomNumeric(2) + RandomHelper.randomAlphabetic(10) ,
+        response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomNumeric(2) + RandomHelper.randomAlphabetic(10),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator username not start with string", 400, response.getStatusLine().getStatusCode());
         response.close();
@@ -280,12 +280,12 @@ public class postUser {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
 
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + IdentityModel.DefaultEmail().getInfo(),
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + IdentityModel.DefaultEmail().getInfo(),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
 
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomNumeric(15),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomNumeric(15),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 400, response.getStatusLine().getStatusCode());
         response.close();
@@ -307,12 +307,12 @@ public class postUser {
         user.setEmails(links);
         user = Identity.UserPut(user);
 
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + IdentityModel.DefaultEmail().getInfo(),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + IdentityModel.DefaultEmail().getInfo(),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
 
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomNumeric(15),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomNumeric(15),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 400, response.getStatusLine().getStatusCode());
         response.close();
@@ -428,7 +428,7 @@ public class postUser {
         nvps.add(new BasicNameValuePair("X-Email-Notification", "true"));
 
         // todo:    check mail is sent
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
@@ -436,7 +436,7 @@ public class postUser {
         // todo:    check mail is sent
         user = Identity.UserGetByUserId(user.getId());
         user.setStatus("ACTIVE");
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
@@ -444,19 +444,19 @@ public class postUser {
 
     @Test(groups = "dailies")
     public void testCheckUserNameAndEmail() throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomAlphabetic(15) + "@gmail.com",
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomAlphabetic(15) + "@gmail.com",
                 "", HttpclientHelper.HttpRequestType.post, null);
         Validator.Validate("Validate email verification", response.getStatusLine().getStatusCode(), 200);
         response.close();
 
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(15),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(15),
                 "", HttpclientHelper.HttpRequestType.post, null);
         Validator.Validate("Validate usernmae verification", response.getStatusLine().getStatusCode(), 200);
         response.close();
 
         User user = Identity.UserPostDefault();
 
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 "", HttpclientHelper.HttpRequestType.get, null);
         Validator.Validate("Validate usernmae verification", response.getStatusLine().getStatusCode(), 403);
         response.close();
@@ -483,7 +483,7 @@ public class postUser {
 
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validate Response code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "Field value is invalid.";
@@ -495,14 +495,14 @@ public class postUser {
         user.getEmails().clear();
         user.getEmails().add(link);
         userPersonalInfo = Identity.UserPersonalInfoPut(user.getId(), userPersonalInfo);
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validate Response code", 200, response.getStatusLine().getStatusCode());
         response.close();
 
         user = Identity.UserGetByUserId(user.getId());
         user.getEmails().clear();
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validate Response code", 400, response.getStatusLine().getStatusCode());
         Validator.Validate("Validate response error message", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));

@@ -179,7 +179,7 @@ public class postImportUserPersonalInfo {
         oculusInput.setCurrentId(RandomHelper.randomLong());
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1ImportsURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1ImportsURI,
                 JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "Field value is invalid. username is already used by others";
@@ -209,7 +209,7 @@ public class postImportUserPersonalInfo {
         oculusInput.setUsername(RandomHelper.randomAlphabetic(20));
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1ImportsURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1ImportsURI,
                 JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
         String errorMessage = String.format("Email %s is already used", oculusInput.getEmail());
@@ -261,7 +261,7 @@ public class postImportUserPersonalInfo {
         oculusInput.setPassword(RandomHelper.randomAlphabetic(80));
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1ImportsURI, JsonHelper.JsonSerializer(oculusInput),
                 HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 500, response.getStatusLine().getStatusCode());
@@ -432,7 +432,7 @@ public class postImportUserPersonalInfo {
 
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1ImportsURI, JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post, nvps);
 
         String errorMessage = "Migration must have user's currentId or userId";
