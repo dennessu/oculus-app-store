@@ -266,7 +266,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/hr_HR",
 		"id": "hr_HR"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Croatia",

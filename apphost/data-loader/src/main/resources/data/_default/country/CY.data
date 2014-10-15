@@ -114,7 +114,11 @@
 	{
 		"href": "/v1/locales/tr_CY",
 		"id": "tr_CY"
-	}],
+	},
+    {
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Cyprus",

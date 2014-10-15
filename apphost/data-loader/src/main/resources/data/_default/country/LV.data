@@ -1442,7 +1442,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/lv_LV",
 		"id": "lv_LV"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Latvia",

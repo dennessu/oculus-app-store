@@ -12,7 +12,7 @@
 	"subCountries": {
 		"00": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Београд",
 					"longName": "Београд"
 				},
@@ -28,7 +28,7 @@
 					"shortName": "North Bačka District",
 					"longName": "North Bačka District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Севернобачки округ",
 					"longName": "Севернобачки округ"
 				}
@@ -40,7 +40,7 @@
 					"shortName": "Central Banat District",
 					"longName": "Central Banat District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Средњебанатски округ",
 					"longName": "Средњебанатски округ"
 				}
@@ -52,7 +52,7 @@
 					"shortName": "North Banat District",
 					"longName": "North Banat District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Севернобанатски округ",
 					"longName": "Севернобанатски округ"
 				}
@@ -60,7 +60,7 @@
 		},
 		"04": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Јужнобанатски округ",
 					"longName": "Јужнобанатски округ"
 				},
@@ -72,7 +72,7 @@
 		},
 		"05": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Западнобачки округ",
 					"longName": "Западнобачки округ"
 				},
@@ -88,7 +88,7 @@
 					"shortName": "South Bačka District",
 					"longName": "South Bačka District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Јужнобачки округ",
 					"longName": "Јужнобачки округ"
 				}
@@ -100,7 +100,7 @@
 					"shortName": "Srem District",
 					"longName": "Srem District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Сремски округ",
 					"longName": "Сремски округ"
 				}
@@ -108,7 +108,7 @@
 		},
 		"08": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Мачвански округ",
 					"longName": "Мачвански округ"
 				},
@@ -124,7 +124,7 @@
 					"shortName": "Kolubara District",
 					"longName": "Kolubara District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Колубарски округ",
 					"longName": "Колубарски округ"
 				}
@@ -136,7 +136,7 @@
 					"shortName": "Podunavlje District",
 					"longName": "Podunavlje District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Подунавски округ",
 					"longName": "Подунавски округ"
 				}
@@ -144,7 +144,7 @@
 		},
 		"11": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Браничевски округ",
 					"longName": "Браничевски округ"
 				},
@@ -160,7 +160,7 @@
 					"shortName": "Šumadija District",
 					"longName": "Šumadija District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Шумадијски округ",
 					"longName": "Шумадијски округ"
 				}
@@ -172,7 +172,7 @@
 					"shortName": "Pomoravlje District",
 					"longName": "Pomoravlje District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Поморавски округ",
 					"longName": "Поморавски округ"
 				}
@@ -180,7 +180,7 @@
 		},
 		"14": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Борски округ",
 					"longName": "Борски округ"
 				},
@@ -196,7 +196,7 @@
 					"shortName": "Zaječar District",
 					"longName": "Zaječar District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Зајечарски округ",
 					"longName": "Зајечарски округ"
 				}
@@ -204,7 +204,7 @@
 		},
 		"16": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Златиборски округ",
 					"longName": "Златиборски округ"
 				},
@@ -216,7 +216,7 @@
 		},
 		"17": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Моравички округ",
 					"longName": "Моравички округ"
 				},
@@ -232,7 +232,7 @@
 					"shortName": "Raška District",
 					"longName": "Raška District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Рашки округ",
 					"longName": "Рашки округ"
 				}
@@ -244,7 +244,7 @@
 					"shortName": "Rasina District",
 					"longName": "Rasina District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Расински округ",
 					"longName": "Расински округ"
 				}
@@ -256,7 +256,7 @@
 					"shortName": "Nišava District",
 					"longName": "Nišava District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Нишавски округ",
 					"longName": "Нишавски округ"
 				}
@@ -268,7 +268,7 @@
 					"shortName": "Toplica District",
 					"longName": "Toplica District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Топлички округ",
 					"longName": "Топлички округ"
 				}
@@ -276,7 +276,7 @@
 		},
 		"22": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Пиротски Oкруг",
 					"longName": "Пиротски Oкруг"
 				},
@@ -292,7 +292,7 @@
 					"shortName": "Jablanica District",
 					"longName": "Jablanica District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Јабланички округ",
 					"longName": "Јабланички округ"
 				}
@@ -300,7 +300,7 @@
 		},
 		"24": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Пчињски округ",
 					"longName": "Пчињски округ"
 				},
@@ -312,7 +312,7 @@
 		},
 		"25": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Косовски округ",
 					"longName": "Косовски округ"
 				},
@@ -324,7 +324,7 @@
 		},
 		"26": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Пећки округ",
 					"longName": "Пећки округ"
 				},
@@ -336,7 +336,7 @@
 		},
 		"27": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Призренски округ",
 					"longName": "Призренски округ"
 				},
@@ -352,7 +352,7 @@
 					"shortName": "Kosovska Mitrovica District",
 					"longName": "Kosovska Mitrovica District"
 				},
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Косовскомитровички округ",
 					"longName": "Косовскомитровички округ"
 				}
@@ -360,7 +360,7 @@
 		},
 		"29": {
 			"locales": {
-				"sr-RS": {
+				"sr_RS": {
 					"shortName": "Косовско-Поморавски округ",
 					"longName": "Косовско-Поморавски округ"
 				},
@@ -374,7 +374,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/sr_RS",
 		"id": "sr_RS"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Serbia",

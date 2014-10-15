@@ -401,7 +401,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/es_MX",
 		"id": "es_MX"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Mexico",

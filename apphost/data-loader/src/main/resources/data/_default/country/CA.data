@@ -21,7 +21,11 @@
 				},
 				"en_CA": {
 					"shortName": "AB",
-					"longName": " Alberta"
+					"longName": "Alberta"
+				},
+				"en_US": {
+					"shortName": "AB",
+					"longName": "Alberta"
 				}
 			}
 		},
@@ -33,7 +37,11 @@
 				},
 				"en_CA": {
 					"shortName": "BC",
-					"longName": " British Columbia"
+					"longName": "British Columbia"
+				},
+				"en_US": {
+					"shortName": "BC",
+					"longName": "British Columbia"
 				}
 			}
 		},
@@ -41,9 +49,13 @@
 			"locales": {
 				"en_CA": {
 					"shortName": "MB",
-					"longName": " Manitoba"
+					"longName": "Manitoba"
 				},
 				"fr_CA": {
+					"shortName": "MB",
+					"longName": "Manitoba"
+				},
+				"en_US": {
 					"shortName": "MB",
 					"longName": "Manitoba"
 				}
@@ -57,7 +69,11 @@
 				},
 				"en_CA": {
 					"shortName": "NB",
-					"longName": " New Brunswick"
+					"longName": "New Brunswick"
+				},
+				"en_US": {
+					"shortName": "NB",
+					"longName": "New Brunswick"
 				}
 			}
 		},
@@ -65,11 +81,15 @@
 			"locales": {
 				"en_CA": {
 					"shortName": "NL",
-					"longName": " Newfoundland and Labrador"
+					"longName": "Newfoundland and Labrador"
 				},
 				"fr_CA": {
 					"shortName": "NL",
 					"longName": "Terre-Neuve-et-Labrador"
+				},
+				"en_US": {
+					"shortName": "NL",
+					"longName": "Newfoundland and Labrador"
 				}
 			}
 		},
@@ -77,11 +97,15 @@
 			"locales": {
 				"en_CA": {
 					"shortName": "NS",
-					"longName": " Nova Scotia"
+					"longName": "Nova Scotia"
 				},
 				"fr_CA": {
 					"shortName": "NS",
 					"longName": "Nouvelle-Écosse"
+				},
+				"en_US": {
+					"shortName": "NS",
+					"longName": "Nova Scotia"
 				}
 			}
 		},
@@ -93,7 +117,11 @@
 				},
 				"en_CA": {
 					"shortName": "NT",
-					"longName": " Northwest Territories"
+					"longName": "Northwest Territories"
+				},
+                "en_US": {
+					"shortName": "NT",
+					"longName": "Northwest Territories"
 				}
 			}
 		},
@@ -101,9 +129,13 @@
 			"locales": {
 				"en_CA": {
 					"shortName": "NU",
-					"longName": " Nunavut"
+					"longName": "Nunavut"
 				},
 				"fr_CA": {
+					"shortName": "NU",
+					"longName": "Nunavut"
+				},
+                "en_US": {
 					"shortName": "NU",
 					"longName": "Nunavut"
 				}
@@ -117,7 +149,11 @@
 				},
 				"en_CA": {
 					"shortName": "ON",
-					"longName": " Ontario"
+					"longName": "Ontario"
+				},
+				"en_US": {
+					"shortName": "ON",
+					"longName": "Ontario"
 				}
 			}
 		},
@@ -129,7 +165,11 @@
 				},
 				"en_CA": {
 					"shortName": "PE",
-					"longName": " Prince Edward Island"
+					"longName": "Prince Edward Island"
+				},
+				"en_US": {
+					"shortName": "PE",
+					"longName": "Prince Edward Island"
 				}
 			}
 		},
@@ -141,7 +181,11 @@
 				},
 				"en_CA": {
 					"shortName": "QC",
-					"longName": " Quebec"
+					"longName": "Quebec"
+				},
+				"en_US": {
+					"shortName": "QC",
+					"longName": "Quebec"
 				}
 			}
 		},
@@ -149,9 +193,13 @@
 			"locales": {
 				"en_CA": {
 					"shortName": "SK",
-					"longName": " Saskatchewan"
+					"longName": "Saskatchewan"
 				},
 				"fr_CA": {
+					"shortName": "SK",
+					"longName": "Saskatchewan"
+				},
+				"en_US": {
 					"shortName": "SK",
 					"longName": "Saskatchewan"
 				}
@@ -165,7 +213,11 @@
 				},
 				"en_CA": {
 					"shortName": "YT",
-					"longName": " Yukon Territory"
+					"longName": "Yukon Territory"
+				},
+				"en_US": {
+					"shortName": "YT",
+					"longName": "Yukon Territory"
 				}
 			}
 		}
@@ -177,8 +229,17 @@
 	{
 		"href": "/v1/locales/fr_CA",
 		"id": "fr_CA"
-	}],
+	},
+    {
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
+    }],
 	"locales": {
+		"en_US": {
+			"shortName": "Canada",
+			"longName": "Canada",
+			"postalCode": "Postal Code"
+		},
 		"en_CA": {
 			"shortName": "Canada",
 			"longName": "Canada",

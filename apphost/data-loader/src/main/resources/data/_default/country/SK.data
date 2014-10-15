@@ -110,7 +110,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/sk_SK",
 		"id": "sk_SK"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Slovakia",

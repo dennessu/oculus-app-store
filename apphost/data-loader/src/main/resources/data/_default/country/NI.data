@@ -218,7 +218,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/es_NI",
 		"id": "es_NI"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Nicaragua",

@@ -123,9 +123,13 @@
 		}
 	},
 	"supportedLocales": [{
-		"href": "/v1/locales/de_AT",
-		"id": "de_AT"
-	}],
+        "href": "/v1/locales/de_AT",
+        "id": "de_AT"
+    },
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Austria",

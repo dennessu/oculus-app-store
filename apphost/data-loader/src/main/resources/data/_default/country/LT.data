@@ -134,7 +134,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/lt_LT",
 		"id": "lt_LT"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Lithuania",

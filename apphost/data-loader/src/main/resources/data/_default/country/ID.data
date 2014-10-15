@@ -18,12 +18,20 @@
 				"en_SG": {
 					"shortName": "Papua",
 					"longName": "Papua"
+				},
+				"en_US": {
+					"shortName": "Papua",
+					"longName": "Papua"
 				}
 			}
 		},
 		"JW": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Jawa",
+					"longName": "Jawa"
+				},
+				"en_US": {
 					"shortName": "Jawa",
 					"longName": "Jawa"
 				}
@@ -34,12 +42,20 @@
 				"en_SG": {
 					"shortName": "Kalimantan",
 					"longName": "Kalimantan"
+				},
+				"en_US": {
+					"shortName": "Kalimantan",
+					"longName": "Kalimantan"
 				}
 			}
 		},
 		"ML": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Maluku",
+					"longName": "Maluku"
+				},
+				"en_US": {
 					"shortName": "Maluku",
 					"longName": "Maluku"
 				}
@@ -50,12 +66,20 @@
 				"en_SG": {
 					"shortName": "Nusa Tenggara",
 					"longName": "Nusa Tenggara"
+				},
+				"en_US": {
+					"shortName": "Nusa Tenggara",
+					"longName": "Nusa Tenggara"
 				}
 			}
 		},
 		"SL": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Sulawesi",
+					"longName": "Sulawesi"
+				},
+				"en_US": {
 					"shortName": "Sulawesi",
 					"longName": "Sulawesi"
 				}
@@ -66,6 +90,10 @@
 				"en_SG": {
 					"shortName": "Sumatera",
 					"longName": "Sumatera"
+				},
+                "en_US": {
+					"shortName": "Sumatera",
+					"longName": "Sumatera"
 				}
 			}
 		}
@@ -73,7 +101,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/en_SG",
 		"id": "en_SG"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Indonesia",

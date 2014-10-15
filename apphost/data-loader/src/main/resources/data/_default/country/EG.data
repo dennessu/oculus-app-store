@@ -362,7 +362,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ar_EG",
 		"id": "ar_EG"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Egypt",

@@ -74,7 +74,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ar_BH",
 		"id": "ar_BH"
-	}],
+	},
+    {
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Bahrain",

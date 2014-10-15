@@ -61,7 +61,11 @@
 	{
 		"href": "/v1/locales/de_BE",
 		"id": "de_BE"
-	}],
+	},
+    {
+    	"href": "/v1/locales/en_US",
+    	"id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Belgium",

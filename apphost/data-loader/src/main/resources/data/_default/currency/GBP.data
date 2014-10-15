@@ -3,6 +3,10 @@
 		"en_GB": {
 			"shortName": "Pound",
 			"longName": "Pound sterling"
+		},
+		"en_US": {
+			"shortName": "Pound",
+			"longName": "Pound sterling"
 		}
 	},
 	"countries": {

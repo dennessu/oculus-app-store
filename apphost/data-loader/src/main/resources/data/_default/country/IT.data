@@ -257,7 +257,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/it_IT",
 		"id": "it_IT"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Italy",

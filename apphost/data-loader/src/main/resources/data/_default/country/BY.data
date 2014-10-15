@@ -101,7 +101,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/be_BY",
 		"id": "be_BY"
-	}],
+	},
+    {
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Belarus",
