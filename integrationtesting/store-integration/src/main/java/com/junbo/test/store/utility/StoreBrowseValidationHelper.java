@@ -7,7 +7,7 @@ package com.junbo.test.store.utility;
 
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
-import com.junbo.catalog.spec.model.common.AgeRating;
+import com.junbo.catalog.spec.model.common.*;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
@@ -22,6 +22,7 @@ import com.junbo.store.spec.model.browse.Images;
 import com.junbo.store.spec.model.browse.ListResponse;
 import com.junbo.store.spec.model.browse.SectionLayoutResponse;
 import com.junbo.store.spec.model.browse.document.*;
+import com.junbo.store.spec.model.browse.document.Image;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
 import com.junbo.test.catalog.enums.PriceType;
@@ -54,6 +55,14 @@ public class StoreBrowseValidationHelper {
     private static final Pattern ImageDimensionTextPattern = Pattern.compile("\\s*(\\d+)\\s*[xX]\\s*(\\d+)\\s*");
 
     private static final TreeMap<Integer, String> lengthToImageSizeGroup = new TreeMap<>();
+
+    private static final List<String> SizeText_Details_Main = Arrays.asList("1440x810", "230x129");
+
+    private static final List<String> SizeText_Details_Gallery_Main = Arrays.asList("2560x1440");
+
+    private static final List<String> SizeText_Details_Gallery_Thumbnail = Arrays.asList("1360x765", "336x189");
+
+    private static final List<String> SizeText_List_Thumbnail = Arrays.asList("1440x810", "690x388", "216x122");
 
     private StoreTestDataProvider storeTestDataProvider;
 
@@ -158,7 +167,8 @@ public class StoreBrowseValidationHelper {
         }
     }
 
-    public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled, boolean verifyAttributes) throws Exception {
+    public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled, boolean verifyAttributes,
+                           boolean isList) throws Exception {
         com.junbo.catalog.spec.model.offer.Offer catalogOffer =
                 storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue(), true);
         com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue(), true);
@@ -189,7 +199,7 @@ public class StoreBrowseValidationHelper {
         Organization publisher = getOrganization(catalogOffer.getOwnerId(), serviceClientEnabled);
 
         verifyItem(item, catalogItem, currentItemRevision, currentOfferRevision, developer, serviceClientEnabled);
-        verifyItemImages(item.getImages(), localeProperties.getImages());
+        verifyItemImages(item.getImages(), localeProperties.getImages(), isList);
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
                 developer, publisher, serviceClientEnabled, verifyAttributes);
         boolean isFree = PriceType.FREE.name().equals(currentOfferRevision.getPrice().getPriceType());
@@ -290,18 +300,22 @@ public class StoreBrowseValidationHelper {
         }
     }
 
-    private void verifyItemImages(Images images, com.junbo.catalog.spec.model.common.Images catalogImages) {
+    private void verifyItemImages(Images images, com.junbo.catalog.spec.model.common.Images catalogImages, boolean isList) {
         if (catalogImages == null) {
             Assert.assertNull(images);
             return;
         }
-        verifyImageMap(images.getMain(), catalogImages.getMain(), catalogImages.getThumbnail());
-        if (catalogImages.getGallery() == null) {
-            Assert.assertEquals(images.getGallery().size(), 0);
+        verifyImageEquals(images.getMain(), buildExpectedImage(catalogImages, isList));
+        if (isList) {
+            Assert.assertNull(images.getGallery());
         } else {
-            Assert.assertEquals(images.getGallery().size(), catalogImages.getGallery().size());
-            for (int i = 0; i < images.getGallery().size(); ++i) {
-                verifyImageMap(images.getGallery().get(i), catalogImages.getGallery().get(i).getFull(), catalogImages.getGallery().get(i).getThumbnail());
+            if (catalogImages.getGallery() == null) {
+                Assert.assertEquals(images.getGallery().size(), 0);
+            } else {
+                Assert.assertEquals(images.getGallery().size(), catalogImages.getGallery().size());
+                for (int i = 0; i < images.getGallery().size(); ++i) {
+                    verifyImageEquals(images.getGallery().get(i), buildExpectedImage(catalogImages.getGallery().get(i)));
+                }
             }
         }
     }
@@ -419,6 +433,50 @@ public class StoreBrowseValidationHelper {
             entry = lengthToImageSizeGroup.lastEntry();
         }
         return entry.getValue();
+    }
+
+    private void verifyImageEquals(Map<String, Image> actual, Map<String, Image> expected) {
+        if (expected == null) {
+            Assert.assertNull(actual);
+        }
+        Assert.assertEquals(actual.keySet(), expected.keySet());
+        for (Map.Entry<String, Image> entry: actual.entrySet()) {
+            Assert.assertEquals(entry.getValue().getImageUrl(), expected.get(entry.getKey()).getImageUrl());
+            Assert.assertEquals(entry.getValue().getAltText(), expected.get(entry.getKey()).getAltText());
+        }
+    }
+
+    private Map<String, Image> buildExpectedImage(com.junbo.catalog.spec.model.common.Images catalogImages, boolean isList) {
+        Map<String, Image> result = new HashMap<>();
+        if (isList) {
+            buildImageMap(SizeText_List_Thumbnail, catalogImages.getThumbnail(), result);
+        } else {
+            buildImageMap(SizeText_Details_Main, catalogImages.getMain(), result);
+        }
+        return result;
+    }
+
+    private Map<String, Image> buildExpectedImage(ImageGalleryEntry galleryEntry) {
+        Map<String, Image> result = new HashMap<>();
+        buildImageMap(SizeText_Details_Gallery_Thumbnail, galleryEntry.getThumbnail(), result);
+        buildImageMap(SizeText_Details_Gallery_Main, galleryEntry.getThumbnail(), result);
+        return result;
+    }
+
+    private void buildImageMap(List<String> sizeTextList, Map<String, com.junbo.catalog.spec.model.common.Image> catalogImageMap, Map<String, Image> result) {
+        Assert.assertNotNull(result);
+        for (String sizeText:sizeTextList) {
+            if (catalogImageMap != null && catalogImageMap.get(sizeText) != null) {
+                result.put(getImageSizeGroup(sizeText), buildImage(catalogImageMap.get(sizeText)));
+            }
+        }
+    }
+
+    private Image buildImage(com.junbo.catalog.spec.model.common.Image catalogImage) {
+        Image storeImage = new Image();
+        storeImage.setAltText(catalogImage.getAltText());
+        storeImage.setImageUrl(catalogImage.getHref());
+        return storeImage;
     }
 
     private void verifyImageMap(Map<String, Image> storeImageMap, Map<String, com.junbo.catalog.spec.model.common.Image>... catalogImageMaps) {
