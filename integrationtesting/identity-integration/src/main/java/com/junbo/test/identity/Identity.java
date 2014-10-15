@@ -168,6 +168,25 @@ public class Identity {
         return countries;
     }
 
+    public static List<Country> CountriesSearch(String locale, String sortBy) throws Exception {
+        String url = "";
+        if (StringUtils.isEmpty(locale) && StringUtils.isEmpty(sortBy)) {
+            url = IdentityV1CountryURI;
+        } else if (StringUtils.isEmpty(locale)) {
+            url = IdentityV1CountryURI + "?locale=" + locale;
+        } else if (StringUtils.isEmpty(sortBy)) {
+            url = IdentityV1CountryURI + "?sortBy=" + sortBy;
+        } else {
+            url = IdentityV1CountryURI + "?locale=" + locale + "&sortBy=" + sortBy;
+        }
+
+        List<Country> countries = new ArrayList<>();
+        for (Object obj : IdentityGet(url, (Results.class)).getItems()) {
+            countries.add((Country)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Country.class));
+        }
+        return countries;
+    }
+
     public static void CountryDeleteByCountryId(String countryId) throws Exception {
         IdentityDelete(IdentityV1CountryURI + "/" + countryId);
     }

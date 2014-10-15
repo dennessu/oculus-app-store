@@ -21,6 +21,12 @@ public class CountryListOptions extends PagingGetOptions {
     @QueryParam("defaultLocaleId")
     private LocaleId localeId;
 
+    @QueryParam("locale")
+    private LocaleId returnLocale;
+
+    @QueryParam("sortBy")
+    private String sortBy;
+
     @QueryParam("properties")
     private String properties;
 
@@ -38,6 +44,22 @@ public class CountryListOptions extends PagingGetOptions {
 
     public void setLocaleId(LocaleId localeId) {
         this.localeId = localeId;
+    }
+
+    public LocaleId getReturnLocale() {
+        return returnLocale;
+    }
+
+    public void setReturnLocale(LocaleId returnLocale) {
+        this.returnLocale = returnLocale;
+    }
+
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
     }
 
     public String getProperties() {

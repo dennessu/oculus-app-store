@@ -33,6 +33,7 @@ import java.lang.reflect.Field
 @CompileStatic
 class CountryResourceImpl implements CountryResource {
     private static Map<String, Field> fieldMap = new HashMap<String, Field>()
+    private static final String SORT_BY_SHORT_NAME = 'shortName'
 
     @Autowired
     private CountryRepository countryRepository
@@ -147,15 +148,29 @@ class CountryResourceImpl implements CountryResource {
             return search(listOptions).then { List<Country> countryList ->
                 def result = new Results<Country>(items: [])
 
-                countryList.each { Country newCountry ->
-                    newCountry = countryFilter.filterForGet(newCountry, null)
+                return Promise.each(countryList) { Country newCountry ->
+                    return filterCountry(newCountry, listOptions.returnLocale?.toString()).then { Country filterCountry ->
+                        if (filterCountry != null) {
+                            filterCountry = countryFilter.filterForGet(filterCountry, listOptions.properties?.split(',') as List<String>)
+                            result.items.add(filterCountry)
+                        }
 
-                    if (newCountry != null) {
-                        result.items.add(newCountry)
+                        return Promise.pure(null)
                     }
-                }
+                }.then {
+                    if (listOptions.returnLocale != null && !StringUtils.isEmpty(listOptions.sortBy)) {
+                        result.items.sort { Country temp ->
+                            CountryLocaleKey countryLocaleKey = temp.locales?.get(listOptions.getReturnLocale().toString())
 
-                return Promise.pure(result)
+                            if (listOptions.sortBy.equalsIgnoreCase(SORT_BY_SHORT_NAME)) {
+                                return countryLocaleKey?.shortName == null ? "" : countryLocaleKey?.shortName
+                            } else {
+                                return ''
+                            }
+                        }
+                    }
+                    return Promise.pure(result)
+                }
             }
         }
     }
@@ -189,7 +204,7 @@ class CountryResourceImpl implements CountryResource {
     }
 
     private Promise<Country> filterCountry(Country country, String locale) {
-        if (StringUtils.isEmpty(locale)) {
+        if (StringUtils.isEmpty(locale) || country == null) {
             return Promise.pure(country)
         }
 
