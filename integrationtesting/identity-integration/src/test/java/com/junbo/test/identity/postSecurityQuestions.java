@@ -71,13 +71,13 @@ public class postSecurityQuestions {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         UserSecurityQuestionVerifyAttempt attempt = IdentityModel.DefaultUserSecurityQuestionVerifyAttempt(user1.getId(), postedUser1.getId(), usqUser1.getAnswer());
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityEndPointV1 + "/users/" + Identity.GetHexLongId(user1.getId().getValue()) + "/security-question-attempts",
                 JsonHelper.JsonSerializer(attempt), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validate response code", 201, response.getStatusLine().getStatusCode());
         response.close();
 
-        response = HttpclientHelper.PureHttpResponse(
+        response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityEndPointV1 + "/users/" + Identity.GetHexLongId(user2.getId().getValue()) + "/security-question-attempts",
                 JsonHelper.JsonSerializer(attempt), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validate response code", 409, response.getStatusLine().getStatusCode());
@@ -87,7 +87,7 @@ public class postSecurityQuestions {
         response.close();
 
         attempt.setUserId(user2.getId());
-        response = HttpclientHelper.PureHttpResponse(
+        response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityEndPointV1 + "/users/" + Identity.GetHexLongId(user2.getId().getValue()) + "/security-question-attempts",
                 JsonHelper.JsonSerializer(attempt), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validate response code", 400, response.getStatusLine().getStatusCode());

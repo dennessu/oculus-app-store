@@ -62,7 +62,7 @@ public class HttpclientHelper {
         }
     }
 
-    public static CloseableHttpResponse PureHttpResponse(
+    public static CloseableHttpResponse GetHttpResponse(
             String requestURI, String objJson, HttpRequestType type, List<NameValuePair> additionalHeaders)
             throws Exception {
         switch (type) {

@@ -19,7 +19,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import scala.tools.nsc.Global;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,7 +194,7 @@ public class postCredentialAttempts {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         UserCredential userCredential = IdentityModel.DefaultUserCredential(postedUser.getId(), password);
-        response = HttpclientHelper.PureHttpResponse(url, JsonHelper.JsonSerializer(userCredential), HttpclientHelper.HttpRequestType.post, nvps);
+        response = HttpclientHelper.GetHttpResponse(url, JsonHelper.JsonSerializer(userCredential), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "contain username";
         Validator.Validate("validate response error message", true,
@@ -218,7 +217,7 @@ public class postCredentialAttempts {
         postedUser.setUsername(userPersonalInfo.getId());
         User updatedUser = Identity.UserPut(postedUser);
         UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, password);
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
         errorMessage = "User Password Incorrect";
@@ -252,7 +251,7 @@ public class postCredentialAttempts {
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         for (int i = 0; i < CREDENTIAL_ATTEMPT_COUNT; i++) {
             UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, IdentityModel.DefaultPassword());
-            response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
+            response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                     JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
             Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
             String errorMessage = "User Password Incorrect";
@@ -262,7 +261,7 @@ public class postCredentialAttempts {
         }
 
         UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, password);
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 429, response.getStatusLine().getStatusCode());
         String errorMessage = "User reaches maximum login attempts";
@@ -306,7 +305,7 @@ public class postCredentialAttempts {
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         for (int i = 0; i < 2; i++) {
             UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, IdentityModel.DefaultPassword());
-            response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
+            response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                     JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
             if (i < 2) {
                 Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
@@ -322,7 +321,7 @@ public class postCredentialAttempts {
 
         for (int i = 0; i < 2; i++) {
             UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(email, IdentityModel.DefaultPassword());
-            response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
+            response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserCredentialAttemptsURI,
                     JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
             if (i < 2) {
                 Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
