@@ -129,7 +129,7 @@ public class Looper {
             final Looper looper = Looper.current();
             final AtomicBoolean stopHolder = looper.start();
 
-            future.addListener(new Runnable() {
+            future.addListener(new RawRunnable() {
                 @Override
                 public void run() {
                     looper.stop(stopHolder);

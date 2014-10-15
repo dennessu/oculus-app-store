@@ -20,6 +20,11 @@ public class ListenableFutureWrapper<V> extends ForwardingListenableFuture.Simpl
 
     @Override
     public void addListener(Runnable listener, Executor exec) {
+        if (listener instanceof RawRunnable) {
+            super.addListener(listener, exec);
+            return;
+        }
+
         super.addListener(new RunnableWrapper(listener), exec);
     }
 }
