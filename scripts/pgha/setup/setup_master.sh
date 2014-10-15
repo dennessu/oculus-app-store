@@ -35,6 +35,7 @@ cat > $MASTER_DATA_PATH/pg_hba.conf <<EOF
 
 # "local" is for Unix domain socket connections only
 local   all             ${PGUSER}                                       ident
+local   postgres        ${NEWRELIC_PGUSER}                              ident
 # IPv4 local connections:
 host    all             ${PGUSER}       127.0.0.1/32                    ident
 host    all             ${PGUSER}       ${MASTER_HOST}/32               ident
@@ -83,4 +84,7 @@ set -e
 
 echo "[SETUP][MASTER] start primary pgbouncer proxy and connect to master server"
 $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+
+echo "[SETUP][MASTER] create newrelic user"
+$DEPLOYMENT_PATH/util/create_user.sh $NEWRELIC_PGUSER $MASTER_HOST $MASTER_DB_PORT
 
