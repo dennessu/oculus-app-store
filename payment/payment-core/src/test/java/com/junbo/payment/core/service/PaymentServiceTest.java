@@ -144,7 +144,7 @@ public class PaymentServiceTest extends BaseTest {
     }
 
 
-    @Test
+    @Test(enabled = false)
     public void testRoutingService() throws ExecutionException, InterruptedException {
         PaymentProviderEntity entity = null;
         try{
