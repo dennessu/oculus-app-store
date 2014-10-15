@@ -7,7 +7,8 @@ package com.junbo.test.store.utility;
 
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
-import com.junbo.catalog.spec.model.common.*;
+import com.junbo.catalog.spec.model.common.AgeRating;
+import com.junbo.catalog.spec.model.common.ImageGalleryEntry;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
@@ -22,7 +23,6 @@ import com.junbo.store.spec.model.browse.Images;
 import com.junbo.store.spec.model.browse.ListResponse;
 import com.junbo.store.spec.model.browse.SectionLayoutResponse;
 import com.junbo.store.spec.model.browse.document.*;
-import com.junbo.store.spec.model.browse.document.Image;
 import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.casey.CaseyReview;
 import com.junbo.test.catalog.enums.PriceType;
@@ -58,7 +58,7 @@ public class StoreBrowseValidationHelper {
 
     private static final List<String> SizeText_Details_Main = Arrays.asList("1440x810", "230x129");
 
-    private static final List<String> SizeText_Details_Gallery_Main = Arrays.asList("2560x1440");
+    private static final List<String> SizeText_Details_Gallery_Full = Arrays.asList("2560x1440");
 
     private static final List<String> SizeText_Details_Gallery_Thumbnail = Arrays.asList("1360x765", "336x189");
 
@@ -459,7 +459,7 @@ public class StoreBrowseValidationHelper {
     private Map<String, Image> buildExpectedImage(ImageGalleryEntry galleryEntry) {
         Map<String, Image> result = new HashMap<>();
         buildImageMap(SizeText_Details_Gallery_Thumbnail, galleryEntry.getThumbnail(), result);
-        buildImageMap(SizeText_Details_Gallery_Main, galleryEntry.getThumbnail(), result);
+        buildImageMap(SizeText_Details_Gallery_Full, galleryEntry.getFull(), result);
         return result;
     }
 
