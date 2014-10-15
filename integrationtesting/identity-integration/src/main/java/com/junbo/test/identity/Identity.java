@@ -558,6 +558,22 @@ public class Identity {
                 IdentityV1OrganizationURI + "?name=" + name.toLowerCase() + buildIdentityCount(limit) + buildIdentityCursor(offset), Results.class);
     }
 
+    public static Results<Organization> OrganizationGetAll(Integer limit, Integer offset) throws Exception {
+        String queryStr = "";
+        if (limit == null && offset == null) {
+            // do nothing
+        } else if (limit != null && offset == null) {
+            queryStr = "?count=" + limit.toString();
+        } else if (limit == null && offset != null) {
+            queryStr = "?cursor=" + offset.toString();
+        } else {
+            queryStr = "?count=" + limit.toString() + "&cursor=" + offset.toString();
+        }
+
+        return IdentityGet(
+                IdentityV1OrganizationURI + queryStr, Results.class);
+    }
+
     public static Group GroupPostDefault(Group group) throws Exception {
         return IdentityPost(IdentityV1GroupURI, JsonHelper.JsonSerializer(group), Group.class);
     }

@@ -247,6 +247,9 @@ public class CacheSnifferJob implements InitializingBean {
         if (!checkCache(key)) {
             return;
         }
+        if (StringUtils.isEmpty(value)) {
+            return;
+        }
 
         try {
             memcachedClient.set(key, this.expiration, value).get();

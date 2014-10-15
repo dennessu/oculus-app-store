@@ -198,7 +198,11 @@ public class CloudantSniffer {
         HttpClient client = HttpClientBuilder.create().setDefaultCredentialsProvider(credsProvider).build();
 
         try {
-            return client.execute(new HttpGet(url)).getEntity().getContent();
+            HttpGet httpGet = new HttpGet(url);
+            if (!StringUtils.isEmpty(cloudantUri.getAccount())) {
+                httpGet.addHeader("X-Cloudant-User", cloudantUri.getAccount());
+            }
+            return client.execute(httpGet).getEntity().getContent();
         } catch (IOException e) {
             throw new CloudantConnectException("Error occurred while receiving cloudant change feed", e);
         }

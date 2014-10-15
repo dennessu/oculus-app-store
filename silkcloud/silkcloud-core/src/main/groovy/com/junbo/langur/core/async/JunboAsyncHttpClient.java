@@ -5,6 +5,7 @@
  */
 package com.junbo.langur.core.async;
 
+import com.junbo.common.filter.SequenceIdFilter;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
 import com.junbo.langur.core.profiling.ProfilingHelper;
@@ -13,6 +14,7 @@ import com.ning.http.client.*;
 import com.ning.http.client.providers.netty.NettyAsyncHttpProviderConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.util.StringUtils;
 
 import java.io.Closeable;
@@ -156,7 +158,8 @@ public class JunboAsyncHttpClient implements Closeable {
         ProfilingHelper.appendRow(null, "(HTTP) BEGIN %s %s", request.getMethod(), request.getURI());
         try {
             Promise<Response> response = Promise.wrap(asGuavaFuture(
-                    asyncHttpClient.executeRequest(request, new AsyncLoggedHandler(request.getMethod(), request.getURI().toString()))));
+                    asyncHttpClient.executeRequest(request, new AsyncLoggedHandler(request.getMethod(),
+                            request.getURI(), MDC.get(SequenceIdFilter.X_REQUEST_ID)))));
             if (ProfilingHelper.isProfileEnabled()) {
                 response = response.then(new Promise.Func<Response, Promise<Response>>() {
                     @Override

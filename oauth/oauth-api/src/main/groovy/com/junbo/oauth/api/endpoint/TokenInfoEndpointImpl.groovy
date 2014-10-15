@@ -72,6 +72,39 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint, InitializingBean {
             return Promise.pure(defaultToken)
         }
 
+        String[] tokens = tokenValue.split(',')
+
+        // Normal case: there is only one token
+        if (tokens.length == 1) {
+            return Promise.pure(get(tokenValue))
+        }
+
+        // Special Case: USER_TOKEN,SCOPE_OVERRIDE_TOKEN
+        if (tokens.length == 2) {
+            TokenInfo userToken = get(tokens[0])
+            TokenInfo overrideToken = get(tokens[1])
+
+            // override the scopes with the service token scope.
+            if (overrideToken.sub.value == 0L) {
+                return Promise.pure(new TokenInfo(
+                        tokenValue: userToken.tokenValue,
+                        sub: userToken.sub,
+                        expiresIn: userToken.expiresIn,
+                        scopes: overrideToken.scopes,
+                        clientId: userToken.clientId,
+                        ipAddress: userToken.ipAddress,
+                        debugEnabled: userToken.debugEnabled
+                ))
+            } else {
+                return Promise.pure(userToken)
+            }
+        }
+
+        // Invalid case
+        throw AppErrors.INSTANCE.invalidAccessToken(tokenValue).exception()
+    }
+
+    private TokenInfo get(String tokenValue) {
         // Retrieve the access token with the tokenValue.
         AccessToken accessToken = tokenService.getAccessToken(tokenValue)
 
@@ -100,7 +133,7 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint, InitializingBean {
             tokenInfo.debugEnabled = null
         }
 
-        return Promise.pure(tokenInfo)
+        return tokenInfo
     }
 
     @Override

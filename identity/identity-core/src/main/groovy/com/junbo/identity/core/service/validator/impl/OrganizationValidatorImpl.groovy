@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
@@ -31,6 +32,7 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class OrganizationValidatorImpl implements OrganizationValidator {
+    private static String ORGANIZATION_GROUP_ADMIN = 'organization.group.admin'
 
     private OrganizationRepository organizationRepository
     private UserRepository userRepository
@@ -57,7 +59,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.ownerId == null && StringUtils.isEmpty(options.name)) {
+        if ((options.ownerId == null && StringUtils.isEmpty(options.name)) && !AuthorizeContext.hasScopes(ORGANIZATION_GROUP_ADMIN)) {
             throw AppCommonErrors.INSTANCE.parameterRequired('ownerId or name').exception()
         }
 

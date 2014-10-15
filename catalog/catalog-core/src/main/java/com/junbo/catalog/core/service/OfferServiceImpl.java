@@ -85,10 +85,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     @Override
     public Offer updateEntity(String offerId, Offer offer) {
-        Offer oldOffer = getEntity(offerId);
+        Offer oldOffer = getEntityRepo().get(offerId);
+        checkEntityNotNull(offerId, offer, getEntityType());
+        offer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
         validateOfferUpdate(offer, oldOffer);
 
-        offer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
         offer.setApprovedRevisions(oldOffer.getApprovedRevisions());
         offer.setActiveRevision(oldOffer.getActiveRevision());
         fillDefaultValue(offer);

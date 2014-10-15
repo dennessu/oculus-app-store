@@ -18,6 +18,7 @@ import com.junbo.test.store.apihelper.TestContext;
 import com.junbo.test.store.utility.DataGenerator;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Map;
 
@@ -88,7 +89,9 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public UserNameCheckResponse CheckUserName(UserNameCheckRequest userNameCheckRequest) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-username", userNameCheckRequest);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/check-username?email=" + URLEncoder.encode(userNameCheckRequest.getEmail(), "UTF-8")
+                + "&username=" + userNameCheckRequest.getUsername(),
+                userNameCheckRequest);
         UserNameCheckResponse userNameCheckResponse = new JsonMessageTranscoder().decode(
                 new TypeReference<UserNameCheckResponse>() {
                 }, responseBody);
@@ -97,7 +100,9 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public com.junbo.common.error.Error CheckUserNameWithError(UserNameCheckRequest userNameCheckRequest, int expectedResponseCode, String errorCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-username", userNameCheckRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/check-username?email="
+                + (userNameCheckRequest.getEmail() == null ? "" : URLEncoder.encode(userNameCheckRequest.getEmail(), "UTF-8"))
+                + "&username=" + (userNameCheckRequest.getUsername() == null ? "" : userNameCheckRequest.getUsername()),  userNameCheckRequest, expectedResponseCode);
         Error error = new JsonMessageTranscoder().decode(
                 new TypeReference<Error>() {
                 }, responseBody);
@@ -107,7 +112,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public EmailCheckResponse CheckEmail(EmailCheckRequest emailCheckRequest) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-email", emailCheckRequest);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/check-email?email=" + URLEncoder.encode(emailCheckRequest.getEmail(), "UTF-8"), emailCheckRequest);
         EmailCheckResponse emailCheckResponse = new JsonMessageTranscoder().decode(
                 new TypeReference<EmailCheckResponse>() { }, responseBody);
         return emailCheckResponse;
@@ -115,7 +120,8 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public Error CheckEmailWithError(EmailCheckRequest emailCheckRequest, int expectedResponseCode, String errorCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/check-email", emailCheckRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/check-email?email=" +
+                (emailCheckRequest.getEmail() == null ? "" : URLEncoder.encode(emailCheckRequest.getEmail(), "UTF-8")), emailCheckRequest, expectedResponseCode);
         Error error = new JsonMessageTranscoder().decode(
                 new TypeReference<Error>() {
                 }, responseBody);

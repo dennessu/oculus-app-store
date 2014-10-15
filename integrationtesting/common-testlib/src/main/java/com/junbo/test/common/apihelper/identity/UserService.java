@@ -39,6 +39,12 @@ public interface UserService {
 
     String PostUser(UserInfo userInfo, int expectedResponseCode) throws Exception;
 
+    String RegisterUser(UserInfo userInfo, int expectedResponseCode) throws Exception;
+
+    String GetEmailVerificationLinks(String cid) throws Exception;
+
+    String BindUserPersonalInfos(UserInfo userInfo) throws Exception;
+
     //Get the user by userId
     String GetUserByUserId(String userId) throws Exception;
 

@@ -129,7 +129,7 @@ class CountryResourceImpl implements CountryResource {
                     throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
                 }
 
-                return filterCountry(newCountry, getOptions).then { Country filterCountry ->
+                return filterCountry(newCountry, getOptions.locale).then { Country filterCountry ->
                     filterCountry = countryFilter.filterForGet(filterCountry, getOptions.properties?.split(',') as List<String>)
                     return Promise.pure(filterCountry)
                 }
@@ -188,28 +188,28 @@ class CountryResourceImpl implements CountryResource {
         }
     }
 
-    private Promise<Country> filterCountry(Country country, CountryGetOptions getOptions) {
-        if (StringUtils.isEmpty(getOptions.locale)) {
+    private Promise<Country> filterCountry(Country country, String locale) {
+        if (StringUtils.isEmpty(locale)) {
             return Promise.pure(country)
         }
 
-        return filterSubCountries(country, getOptions).then { Country newCountry ->
-            CountryLocaleKey localeKey = country.locales.get(getOptions.locale)
-            return filterCountryLocaleKeys(newCountry.locales, getOptions.locale).then { Map<String, CountryLocaleKey> map ->
+        return filterSubCountries(country, locale).then { Country newCountry ->
+            CountryLocaleKey localeKey = country.locales.get(locale)
+            return filterCountryLocaleKeys(newCountry.locales, locale).then { Map<String, CountryLocaleKey> map ->
                 newCountry.locales = map
-                newCountry.localeAccuracy = calcCountryLocaleKeyAccuracy(localeKey, map.get(getOptions.locale))
+                newCountry.localeAccuracy = calcCountryLocaleKeyAccuracy(localeKey, map.get(locale))
                 return Promise.pure(newCountry)
             }
         }
     }
 
-    private Promise<Country> filterSubCountries(Country country, CountryGetOptions getOptions) {
+    private Promise<Country> filterSubCountries(Country country, String locale) {
         if (country.subCountries == null || country.subCountries.isEmpty()) {
             return Promise.pure(country)
         }
 
         return Promise.each(country.subCountries.entrySet()) { Map.Entry<String, SubCountryLocaleKeys> entry ->
-            return filterSubCountryLocaleKeys(entry.value, getOptions).then { SubCountryLocaleKeys keys ->
+            return filterSubCountryLocaleKeys(entry.value, locale).then { SubCountryLocaleKeys keys ->
                 entry.value = keys
                 return Promise.pure(null)
             }
@@ -218,11 +218,11 @@ class CountryResourceImpl implements CountryResource {
         }
     }
 
-    private Promise<SubCountryLocaleKeys> filterSubCountryLocaleKeys(SubCountryLocaleKeys keys, CountryGetOptions getOptions) {
-        SubCountryLocaleKey subCountryLocaleKey = keys.locales.get(getOptions.locale)
-        return filterSubCountryLocaleKeys(keys.locales, getOptions.locale).then { Map<String, SubCountryLocaleKey> map ->
+    private Promise<SubCountryLocaleKeys> filterSubCountryLocaleKeys(SubCountryLocaleKeys keys, String locale) {
+        SubCountryLocaleKey subCountryLocaleKey = keys.locales.get(locale)
+        return filterSubCountryLocaleKeys(keys.locales, locale).then { Map<String, SubCountryLocaleKey> map ->
             keys.locales = map
-            keys.localeAccuracy = calcSubCountryLocaleAccuracy(subCountryLocaleKey, map.get(getOptions.locale))
+            keys.localeAccuracy = calcSubCountryLocaleAccuracy(subCountryLocaleKey, map.get(locale))
             return Promise.pure(keys)
         }
     }

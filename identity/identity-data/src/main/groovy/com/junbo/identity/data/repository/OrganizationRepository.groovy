@@ -3,6 +3,7 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
+import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
@@ -21,4 +22,7 @@ public interface OrganizationRepository extends BaseRepository<Organization, Org
 
     @ReadMethod
     public Promise<Organization> searchByMigrateCompanyId(Long migratedCompanyId)
+
+    @ReadMethod
+    Promise<Results<Country>> searchAll(Integer limit, Integer offset)
 }

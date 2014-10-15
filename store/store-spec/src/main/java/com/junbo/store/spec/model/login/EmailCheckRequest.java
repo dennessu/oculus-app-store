@@ -5,10 +5,13 @@
  */
 package com.junbo.store.spec.model.login;
 
+import javax.ws.rs.QueryParam;
+
 /**
  * Created by liangfu on 10/10/14.
  */
 public class EmailCheckRequest {
+    @QueryParam("email")
     private String email;
 
     public String getEmail() {
