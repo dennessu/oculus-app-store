@@ -15,6 +15,7 @@ import javax.ws.rs.QueryParam;
  * Created by xiali_000 on 4/21/2014.
  */
 public class CountryListOptions extends PagingGetOptions {
+    // The below query parameters are used to search
     @QueryParam("defaultCurrencyId")
     private CurrencyId currencyId;
 

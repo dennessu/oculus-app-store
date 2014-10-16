@@ -452,7 +452,11 @@ public class IdentityModel {
 
         Map<String, JsonNode> locales = new HashMap<>();
         locales.put("en_US", JsonHelper.ObjectToJsonNode(communicationLocale));
-        locales.put("zh_CN", JsonHelper.ObjectToJsonNode(communicationLocale));
+
+        CommunicationLocale communicationLocale2 = new CommunicationLocale();
+        communicationLocale2.setDescription(RandomHelper.randomAlphabetic(100));
+        communicationLocale2.setName(RandomHelper.randomAlphabetic(100));
+        locales.put("zh_CN", JsonHelper.ObjectToJsonNode(communicationLocale2));
         communication.setLocales(locales);
 
         return communication;

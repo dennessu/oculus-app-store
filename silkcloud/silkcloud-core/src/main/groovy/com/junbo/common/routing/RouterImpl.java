@@ -115,6 +115,8 @@ public class RouterImpl implements Router {
                 case CLOUDANT_FIRST:
                     policy = DataAccessPolicy.SQL_FIRST;
                     break;
+                default:
+                    break;
             }
         }
         if (policy == null) {
