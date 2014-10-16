@@ -1,3 +1,9 @@
+# IMPORTANT:
+#   Please sure int group contains all the sub-groups, so that group_vars/int can take effect
+[int:children]
+appservers
+pgdbservers
+
 [appservers]
 10.0.0.101 hostname=owpint-app-1
 10.0.0.102 hostname=owpint-app-2
