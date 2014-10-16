@@ -3,6 +3,8 @@
 
 - name: set hostname in /etc/hostname
   hostname: name={{hostname}} # defined in hosts file
+  sudo: yes
 
 - name: configure /etc/hosts
   lineinfile: dest=/etc/hosts state=present regexp='^127\.0\.1\.1' line='127.0.1.1 {{hostname}}.{{domain_name}} {{hostname}}'
+  sudo: yes
