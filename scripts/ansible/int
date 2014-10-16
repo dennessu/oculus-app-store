@@ -1,0 +1,6 @@
+[appservers]
+10.0.0.101 hostname=owpint-app-1
+10.0.0.102 hostname=owpint-app-2
+
+[pgdbservers]
+10.0.0.201 hostname=owpint-db-1

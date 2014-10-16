@@ -1,0 +1,4 @@
+---
+# Variables here are applicable to all INT servers
+
+domain_name: comm-int.oculus.com
