@@ -1,4 +1,6 @@
 package com.junbo.store.rest.resource
+
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.UserId
@@ -6,6 +8,7 @@ import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.*
+import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -40,6 +43,7 @@ import javax.ws.rs.ext.Provider
 class LoginResourceImpl implements LoginResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginResourceImpl)
+    private static final String COMMUNICATION_DEFAULT_LOCALE = 'en_US'
 
     @Value('${store.login.requireDetailsForCreate}')
     private boolean requireDetailsForCreate
@@ -76,6 +80,9 @@ class LoginResourceImpl implements LoginResource {
 
     @Resource(name = 'storeChallengeHelper')
     private ChallengeHelper challengeHelper
+
+    @Value('${store.communication.createuser}')
+    private String registerUserCommunication
 
     private class ApiContext {
         User user
@@ -169,12 +176,18 @@ class LoginResourceImpl implements LoginResource {
 
     @Override
     Promise<AuthTokenResponse> createUser(CreateUserRequest request) {
+        com.junbo.store.spec.model.ApiContext apc
         requestValidator.validateRequiredApiHeaders().validateCreateUserRequest(request)
         ApiContext apiContext = new ApiContext()
         ErrorContext errorContext = new ErrorContext()
         StoreUserEmail storeUserEmail
 
-        requestValidator.validateAndGetCountry(new CountryId(request.cor)).then {
+        return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext storeApiContext ->
+            apc = storeApiContext
+            return Promise.pure(null)
+        }.then {
+            requestValidator.validateAndGetCountry(new CountryId(request.cor))
+        }.then {
             requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
         }.then {
             requestValidator.validateTosExists(request.tosAgreed)
@@ -188,7 +201,6 @@ class LoginResourceImpl implements LoginResource {
                 storeUserEmail = email
                 return Promise.pure()
             }
-            // todo set the tos and newsPromotionsAgreed
         }.then {
             return resourceContainer.userResource.put(apiContext.user.getId(), apiContext.user).then { User u ->
                 apiContext.user = u
@@ -216,6 +228,34 @@ class LoginResourceImpl implements LoginResource {
             return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: apiContext.user.getId(),
                     tosId: request.tosAgreed,
                     agreementTime: new Date()))
+        }.then {
+            if (request.newsPromotionsAgreed == null || !request.newsPromotionsAgreed) {
+                return Promise.pure(null)
+            }
+            return resourceContainer.communicationResource.list(new CommunicationListOptions(
+                    region: apc.country.getId()
+            )).then { Results<Communication> communicationResults ->
+                if (communicationResults == null || CollectionUtils.isEmpty(communicationResults.items)) {
+                    return Promise.pure(null)
+                }
+
+                Communication communication = communicationResults.items.find { Communication temp ->
+                    JsonNode jsonNode = temp?.locales?.get(COMMUNICATION_DEFAULT_LOCALE)
+                    if (jsonNode != null) {
+                        CommunicationLocale communicationLocale = ObjectMapperProvider.instance().treeToValue(jsonNode, CommunicationLocale)
+                        if (communicationLocale.name.equalsIgnoreCase(registerUserCommunication)) {
+                            return true
+                        }
+                    }
+
+                    return false
+                }
+
+                return resourceContainer.userCommunicationResource.create(new UserCommunication(
+                    userId: apiContext.user.getId(),
+                    communicationId: communication.getId()
+                ))
+            }
         }.then {
             // get the auth token
             innerSignIn(request.email, request.password)

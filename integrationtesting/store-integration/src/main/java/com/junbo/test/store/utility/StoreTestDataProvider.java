@@ -129,6 +129,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         createUserRequest.setPreferredLocale("en_US");
         Tos tos = loginClient.GetRegisterTos();
         createUserRequest.setTosAgreed(tos.getTosId());
+        createUserRequest.setNewsPromotionsAgreed(true);
         return createUserRequest;
     }
 

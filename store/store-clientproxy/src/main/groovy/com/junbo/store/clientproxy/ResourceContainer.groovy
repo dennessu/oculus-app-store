@@ -104,6 +104,12 @@ class ResourceContainer {
     @Resource(name = 'store.userTosAgreementResourceClientProxy')
     UserTosAgreementResource userTosAgreementResource
 
+    @Resource(name = 'store.communicationResourceClientProxy')
+    CommunicationResource communicationResource
+
+    @Resource(name = 'store.userCommunicationResourceClientProxy')
+    UserCommunicationResource userCommunicationResource
+
     @Resource(name='store.organizationClientProxy')
     OrganizationResource organizationResource
 

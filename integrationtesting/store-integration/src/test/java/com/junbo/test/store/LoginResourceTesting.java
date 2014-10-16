@@ -357,6 +357,24 @@ public class LoginResourceTesting extends BaseTestClass {
         Validator.Validate("Validate nickName in userProfile", createUserRequest.getNickName(), userProfileGetResponse.getUserProfile().getNickName());
     }
 
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check username"
+            }
+    )
+    @Test
+    public void testCreateUserWithCommunication() throws Exception {
+        AuthTokenResponse createUserResponse = null;
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+
+    }
+
     @Property(
             priority = Priority.Dailies,
             features = "Store",
