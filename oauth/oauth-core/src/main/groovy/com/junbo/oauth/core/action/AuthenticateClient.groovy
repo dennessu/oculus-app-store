@@ -103,7 +103,7 @@ class AuthenticateClient implements Action {
 
         if (Boolean.TRUE.equals(appClient.internal)) {
             String internal = headerMap.getFirst(INTERNAL_HEADER_NAME)
-            if (!StringUtils.isEmpty(internal) && Boolean.FALSE.equals(Boolean.parseBoolean(internal))) {
+            if (!Boolean.TRUE.equals(Boolean.parseBoolean(internal))) {
                 throw AppCommonErrors.INSTANCE
                         .forbiddenWithMessage('This client is for internal use only').exception()
             }
