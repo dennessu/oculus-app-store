@@ -22,7 +22,7 @@ import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.apache.commons.lang3.time.DateUtils;
-import org.jboss.netty.util.NetUtil;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Date;
@@ -1085,6 +1085,24 @@ public class LoginResourceTesting extends BaseTestClass {
             Master.getInstance().setEndPointType(Master.EndPointType.Primary);
         }
 
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Accept tos twice should fail"
+            }
+    )
+    @Test
+    public void testAcceptTosAlreadyAccepted() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+        testDataProvider.acceptTos(createUserRequest.getTosAgreed(), 409);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("131.002"));
     }
 
 }
