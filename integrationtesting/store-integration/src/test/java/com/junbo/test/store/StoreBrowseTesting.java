@@ -913,7 +913,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     private void verifyItem(Item item, GetItemMethod method, Boolean ownedByUser) throws Exception {
-        storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled, !useCaseyEmulator, method == GetItemMethod.List);
+        storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled, useCaseyEmulator, method == GetItemMethod.List);
         if (offer_digital_free.equals(item.getTitle())) {
             verifyItemImage(item);
         }

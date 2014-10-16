@@ -44,6 +44,11 @@
                 <value>X_QA_CASEY_ERROR</value>
             </list>
         </property>
+        <property name="defaultHeaders">
+            <map>
+                <entry key="oculus-internal" value="true"/>
+            </map>
+        </property>
     </bean>
 
     <bean id="baseClientProxy" class="com.junbo.langur.core.client.AbstractClientProxy" abstract="true">

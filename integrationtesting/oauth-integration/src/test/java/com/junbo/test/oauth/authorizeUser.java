@@ -632,7 +632,7 @@ public class authorizeUser {
                 + Oauth.DefaultClientId
                 + "&response_type=code&scope=identity&redirect_uri="
                 + Oauth.DefaultRedirectURI, null);
-        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        Validator.Validate("response status is ok", 302, response.getStatusLine().getStatusCode());
         response.close();
 
         response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
@@ -640,7 +640,10 @@ public class authorizeUser {
                 + Oauth.DefaultClientId
                 + "&response_type=code&scope=identity&redirect_uri="
                 + Oauth.DefaultRedirectURI, null, false, false);
-        Validator.Validate("response status is not ok", response.getStatusLine().getStatusCode(), 400);
+        Validator.Validate("response status is not ok", 403, response.getStatusLine().getStatusCode());
+        Error error = JsonHelper.JsonDeserializer(new InputStreamReader(response.getEntity().getContent()), Error.class);
+        Validator.Validate("failure reason is internal client",
+                "This client is for internal use only", error.getDetails().get(0).getReason());
         response.close();
 
         response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
@@ -648,7 +651,7 @@ public class authorizeUser {
                 + Oauth.DefaultClientIdExt
                 + "&response_type=code&scope=storeapi&redirect_uri="
                 + Oauth.DefaultRedirectURI, null);
-        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        Validator.Validate("response status is ok", 302, response.getStatusLine().getStatusCode());
         response.close();
 
         response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
@@ -656,7 +659,7 @@ public class authorizeUser {
                 + Oauth.DefaultClientIdExt
                 + "&response_type=code&scope=storeapi&redirect_uri="
                 + Oauth.DefaultRedirectURI, null, false, false);
-        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 302);
+        Validator.Validate("response status is ok", 302, response.getStatusLine().getStatusCode());
         response.close();
     }
 

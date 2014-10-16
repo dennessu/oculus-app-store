@@ -43,7 +43,7 @@ def readParams():
         sys.stdout.flush()
 
     def printUsage():
-        error("Usage: python ./couchdbcmd.py <command> [<env>] [--yes] [--verbose] [--prefix={prefix}] [--key={key}]\n")
+        error("Usage: python ./couchdbcmd.py <command> [<env>] [--yes] [--verbose] [--ignoreDiff] [--prefix={prefix}] [--key={key}]\n")
 
     # Read input params
     sys.argv.pop(0)  # skip argv[0]
@@ -62,6 +62,8 @@ def readParams():
             confirmed = True
         elif arg == "--verbose":
             setVerbose(True)
+        elif arg == "--ignoreDiff":
+            setIgnoreDiff(True)
         elif arg.startswith("--prefix="):
             dbPrefix = arg[len("--prefix="):]
         elif arg.startswith("--key="):
@@ -385,13 +387,13 @@ def createviews(dbDef, url, fullDbName):
     needPut = False
     if "views" in dbDef:
         viewDiff = diffView("views", viewsRequest, dbDef)
-        if "update" in viewDiff or "delete" in viewDiff:
-            raise Exception("update or delete view:\n" + json.dumps(viewDiff, indent=2))
+        if ("update" in viewDiff or "delete" in viewDiff) and not gIgnoreDiff:
+            raise Exception(("update or delete view in %s:\n" % fullDbName) + json.dumps(viewDiff, indent=2))
         viewsRequest["views"] = dbDef["views"]
         needPut = True
     if "indexes" in dbDef:
         indexDiff = diffView("indexes", viewsRequest, dbDef)
-        if "delete" in indexDiff:
+        if "delete" in indexDiff and not gIgnoreDiff:
             raise Exception("delete index:\n" + json.dumps(indexDiff, indent=2))
         viewsRequest["indexes"] = dbDef["indexes"]
         needPut = True
@@ -451,17 +453,20 @@ def purgedbs(envConf, dbPrefix):
 
                 if fullDbName in existingDbs:
                     info("Purging database '%s' from '%s[%d]'" % (fullDbName, key, index));
-                    allDocs = curlJson(url + "/" + fullDbName + '/_all_docs', "GET")
-                    docs = []
-                    for row in allDocs['rows']:
-                        docs.append({
-                            '_id': row['id'],
-                            '_rev': row['value']['rev'],
-                            '_deleted': True
-                        })
-                    bulkStr = json.dumps({'docs': docs}, indent=2)
-                    if len(docs) > 0:
-                        curlJson(url + "/" + fullDbName + '/_bulk_docs', "POST", bulkStr)
+                    while True:
+                        allDocs = curlJson(url + "/" + fullDbName + '/_all_docs?limit=10000', "GET")
+                        docs = []
+                        for row in allDocs['rows']:
+                            docs.append({
+                                '_id': row['id'],
+                                '_rev': row['value']['rev'],
+                                '_deleted': True
+                            })
+                        bulkStr = json.dumps({'docs': docs}, indent=2)
+                        if len(docs) > 0:
+                            curlJson(url + "/" + fullDbName + '/_bulk_docs', "POST", bulkStr)
+                        else:
+                            break
 
 
 def curlJson(url, method='GET', body=None, headers=None, raiseOnError=True):
@@ -602,12 +607,15 @@ def readJsonFile(filename):
 
 
 gIsVerbose = False
-
+gIgnoreDiff = False
 
 def setVerbose(isVerbose):
     global gIsVerbose
     gIsVerbose = isVerbose
 
+def setIgnoreDiff(ignoreDiff):
+    global  gIgnoreDiff
+    gIgnoreDiff = ignoreDiff
 
 def verbose(message):
     global gIsVerbose

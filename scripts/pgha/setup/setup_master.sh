@@ -42,6 +42,7 @@ host    all             ${PGUSER}       ${MASTER_HOST}/32               ident
 host    all             ${PGUSER}       ${SLAVE_HOST:-127.0.0.1}/32     ident
 host    all             ${PGUSER}       ${BCP_HOST:-127.0.0.1}/32       ident
 host    all             ${PGUSER}       ${REPLICA_HOST:-127.0.0.1}/32   ident
+host    all             ${NEWRELIC_PGUSER} 127.0.0.1/32                 ident
 # IPv6 local connections:
 host    all             ${PGUSER}       ::1/128                         ident
 # Allow replication connections from localhost, by a user with the
