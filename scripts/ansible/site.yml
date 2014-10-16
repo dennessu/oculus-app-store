@@ -1,7 +1,0 @@
----
-# This playbook prepares the whole application stack in an environment.
-
-# Apply common configuration to all hosts
-- hosts: all
-  roles:
-  - common
