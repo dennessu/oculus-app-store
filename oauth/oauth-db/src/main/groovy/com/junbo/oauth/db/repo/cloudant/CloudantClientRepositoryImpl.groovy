@@ -8,6 +8,7 @@ package com.junbo.oauth.db.repo.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
+import com.junbo.oauth.spec.option.PageableGetOptions
 import groovy.transform.CompileStatic
 import org.springframework.util.Assert
 
@@ -16,6 +17,12 @@ import org.springframework.util.Assert
  */
 @CompileStatic
 class CloudantClientRepositoryImpl extends CloudantClient<Client> implements ClientRepository {
+    @Override
+    List<Client> getAllClients(PageableGetOptions options) {
+        assert options != null : 'options is null'
+        return cloudantGetAllSync(options.validCount, options.validCursor, false)
+    }
+
     @Override
     Client getClient(String clientId) {
         Assert.notNull(clientId)

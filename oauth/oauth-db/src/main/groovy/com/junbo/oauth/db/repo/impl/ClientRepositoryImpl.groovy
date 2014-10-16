@@ -10,9 +10,12 @@ import com.junbo.oauth.db.dao.ClientDAO
 import com.junbo.oauth.db.entity.ClientEntity
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
+import com.junbo.oauth.spec.option.PageableGetOptions
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
+
+import javax.ws.rs.NotSupportedException
 
 /**
  * Javadoc.
@@ -24,6 +27,11 @@ class ClientRepositoryImpl implements ClientRepository {
     @Required
     void setClientDAO(ClientDAO clientDAO) {
         this.clientDAO = clientDAO
+    }
+
+    @Override
+    List<Client> getAllClients(PageableGetOptions options) {
+        throw new NotSupportedException()
     }
 
     @Override
