@@ -453,17 +453,20 @@ def purgedbs(envConf, dbPrefix):
 
                 if fullDbName in existingDbs:
                     info("Purging database '%s' from '%s[%d]'" % (fullDbName, key, index));
-                    allDocs = curlJson(url + "/" + fullDbName + '/_all_docs', "GET")
-                    docs = []
-                    for row in allDocs['rows']:
-                        docs.append({
-                            '_id': row['id'],
-                            '_rev': row['value']['rev'],
-                            '_deleted': True
-                        })
-                    bulkStr = json.dumps({'docs': docs}, indent=2)
-                    if len(docs) > 0:
-                        curlJson(url + "/" + fullDbName + '/_bulk_docs', "POST", bulkStr)
+                    while True:
+                        allDocs = curlJson(url + "/" + fullDbName + '/_all_docs?limit=1000', "GET")
+                        docs = []
+                        for row in allDocs['rows']:
+                            docs.append({
+                                '_id': row['id'],
+                                '_rev': row['value']['rev'],
+                                '_deleted': True
+                            })
+                        bulkStr = json.dumps({'docs': docs}, indent=2)
+                        if len(docs) > 0:
+                            curlJson(url + "/" + fullDbName + '/_bulk_docs', "POST", bulkStr)
+                        else:
+                            break
 
 
 def curlJson(url, method='GET', body=None, headers=None, raiseOnError=True):
