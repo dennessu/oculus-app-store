@@ -212,7 +212,6 @@ public class postCountry {
                 CountryLocaleKey countryLocaleKey = country.getLocales().get(locale.getLocaleCode());
                 Validator.Validate("Validate shortName ", countryLocaleKey.getShortName() != null, true);
                 Validator.Validate("Validate LongName ", countryLocaleKey.getShortName() != null, true);
-                Validator.Validate("Validate postCode", countryLocaleKey.getPostalCode() != null, true);
             }
         }
     }
