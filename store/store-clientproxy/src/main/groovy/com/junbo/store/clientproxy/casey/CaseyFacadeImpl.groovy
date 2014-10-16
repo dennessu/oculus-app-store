@@ -349,6 +349,9 @@ class CaseyFacadeImpl implements CaseyFacade {
     }
 
     private static void wrapAndThrow(Throwable throwable) {
+        if (throwable instanceof CaseyException) {
+            throw throwable
+        }
         throw new CaseyException('Call_Casey_Error', throwable)
     }
 }
