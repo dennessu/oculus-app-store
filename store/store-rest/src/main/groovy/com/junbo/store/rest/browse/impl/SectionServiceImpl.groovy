@@ -1,5 +1,6 @@
 package com.junbo.store.rest.browse.impl
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
+import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.spec.model.ApiContext
@@ -38,35 +39,42 @@ class SectionServiceImpl implements SectionService {
     private String sectionCmsPagePath
 
     @Override
-    List<SectionInfoNode> getTopLevelSectionInfoNode(ApiContext apiContext) {
+    Promise<List<SectionInfoNode>> getTopLevelSectionInfoNode(ApiContext apiContext) {
         return buildSectionInfoNode(apiContext)
     }
 
     @Override
-    public SectionInfoNode getSectionInfoNode(String category, String criteria, ApiContext apiContext) {
-        List<SectionInfoNode> nodes = buildSectionInfoNode(apiContext)
-        lookup(category, criteria, nodes)
+    public Promise<SectionInfoNode> getSectionInfoNode(String category, String criteria, ApiContext apiContext) {
+        buildSectionInfoNode(apiContext).then { List<SectionInfoNode> nodes ->
+            return Promise.pure(lookup(category, criteria, nodes))
+        }
     }
 
-    private List<SectionInfoNode> buildSectionInfoNode(ApiContext apiContext) {
+    private Promise<List<SectionInfoNode>> buildSectionInfoNode(ApiContext apiContext) {
         List<SectionInfoNode> results = []
+        facadeContainer.caseyFacade.getCmsPage(sectionCmsPagePath, null, apiContext.country.getId().value, apiContext.locale.getId().value).then { CmsPage menuCmsPage ->
+            if (menuCmsPage == null) {
+                LOGGER.error('name=Store_SectionCmsPage_NotFound, path={}', sectionCmsPagePath)
+                return Promise.pure(results)
+            }
+            if (menuCmsPage.slots == null) {
+                return Promise.pure(results)
+            }
 
-        CmsPage menuCmsPage = facadeContainer.caseyFacade.getCmsPage(sectionCmsPagePath, null, apiContext.country.getId().value, apiContext.locale.getId().value).get();
-        if (menuCmsPage == null) {
-            LOGGER.error('name=Store_SectionCmsPage_NotFound, path={}', sectionCmsPagePath)
-            return results
-        }
-
-        menuCmsPage.slots.entrySet().each { Map.Entry<String, CmsContentSlot> entry ->
-            SectionInfoNode sectionInfoNode = buildSectionInfoNode(entry.key, entry.value, apiContext)
-            if (sectionInfoNode != null) {
-                results << sectionInfoNode
+            Promise.each(menuCmsPage.slots.entrySet()) { Map.Entry<String, CmsContentSlot> entry ->
+                buildSectionInfoNode(entry.key, entry.value, apiContext).then { SectionInfoNode sectionInfoNode ->
+                    if (sectionInfoNode != null) {
+                        results << sectionInfoNode
+                    }
+                    return Promise.pure()
+                }
+            }.then {
+                return Promise.pure(results)
             }
         }
-        return results
     }
 
-    private SectionInfoNode buildSectionInfoNode(String slot, CmsContentSlot cmsContentSlot, ApiContext apiContext) {
+    private Promise<SectionInfoNode> buildSectionInfoNode(String slot, CmsContentSlot cmsContentSlot, ApiContext apiContext) {
         ContentItem offerAttributeContentItem = cmsContentSlot?.contents?.values()?.find { ContentItem contentItem ->
             ContentItem.Type.offerAttribute.name().equalsIgnoreCase(contentItem.type)
         }
@@ -82,10 +90,10 @@ class SectionServiceImpl implements SectionService {
         }
 
         LOGGER.warn('name=Store_Unsupported_Section_SlotContent, path={}, slot={}', sectionCmsPagePath, slot)
-        return null
+        return Promise.pure()
     }
 
-    private SectionInfoNode buildCategorySectionInfoNode(String path, String slot, ContentItem offerAttributeContentItem, ApiContext apiContext) {
+    private Promise<SectionInfoNode> buildCategorySectionInfoNode(String path, String slot, ContentItem offerAttributeContentItem, ApiContext apiContext) {
         Assert.notNull(offerAttributeContentItem)
         String attributeId = null
         if (!CollectionUtils.isEmpty(offerAttributeContentItem.links)) {
@@ -93,53 +101,54 @@ class SectionServiceImpl implements SectionService {
         }
         if (StringUtils.isBlank(attributeId)) {
             LOGGER.warn('name=Store_OfferAttribute_ContentItem_Invalid, path={}, slot={}', path, slot)
-            return null
+            return Promise.pure()
         }
 
-        OfferAttribute offerAttribute = facadeContainer.catalogFacade.getOfferAttribute(attributeId, apiContext).get()
-        if (offerAttribute == null) {
-            return null
+        facadeContainer.catalogFacade.getOfferAttribute(attributeId, apiContext).then { OfferAttribute offerAttribute ->
+            if (offerAttribute == null) {
+                return Promise.pure()
+            }
+            return Promise.pure(new SectionInfoNode(
+                    name: offerAttribute?.locales?.get(apiContext.locale.getId().value)?.name,
+                    category: offerAttribute.getId(),
+                    children: [],
+                    ordered: false,
+                    sectionType: SectionInfoNode.SectionType.CategorySection
+            ))
         }
-
-        return new SectionInfoNode(
-            name: offerAttribute?.locales?.get(apiContext.locale.getId().value)?.name,
-            category: offerAttribute.getId(),
-            children: [],
-            ordered: false,
-            sectionType: SectionInfoNode.SectionType.CategorySection
-        )
     }
 
-    private SectionInfoNode buildCmsSectionInfoNode(ContentItem stringContentItem, ApiContext apiContext) {
+    private Promise<SectionInfoNode> buildCmsSectionInfoNode(ContentItem stringContentItem, ApiContext apiContext) {
         Assert.notNull(stringContentItem)
+        String cmsCriteria = Cms_Criteria
+        facadeContainer.caseyFacade.getCmsPage(null, cmsPageLabel, apiContext.country.getId().value, apiContext.locale.getId().value).then { CmsPage cmsPage ->
+            if (cmsPage == null) {
+                LOGGER.warn('name=Store_CmsPage_NotFound, label={}', cmsPageLabel)
+                return Promise.pure()
+            }
 
-        CmsPage cmsPage = facadeContainer.caseyFacade.getCmsPage(null, cmsPageLabel, apiContext.country.getId().value, apiContext.locale.getId().value).get();
-        if (cmsPage == null) {
-            LOGGER.warn('name=Store_CmsPage_NotFound, label={}', cmsPageLabel)
-            return null
+            SectionInfoNode root = new SectionInfoNode(
+                    name: CollectionUtils.isEmpty(stringContentItem.strings) ? null : stringContentItem.strings[0].locales?.get(apiContext.locale.getId().value),
+                    criteria: "${cmsCriteria}.${cmsPage.self.getId()}",
+                    children: [],
+                    ordered: false,
+                    sectionType: SectionInfoNode.SectionType.CmsSection,
+                    cmsPageSearch: cmsPage.label?.toLowerCase()
+            )
+
+            cmsPage.slots.each { Map.Entry<String, CmsContentSlot> slotEntry ->
+                SectionInfoNode child = new SectionInfoNode()
+                child.criteria = "${root.criteria}.${slotEntry.key}"
+                child.cmsPageSearch = root.cmsPageSearch
+                child.cmsSlot = slotEntry.key
+                child.name = getNameFromSlot(cmsPage, slotEntry.key, apiContext.locale.getId().value)
+                child.parent = root
+                child.sectionType = root.sectionType
+                child.children = [] as List
+                root.children << child
+            }
+            return Promise.pure(root)
         }
-
-        SectionInfoNode root = new SectionInfoNode(
-            name: CollectionUtils.isEmpty(stringContentItem.strings) ? null : stringContentItem.strings[0].locales?.get(apiContext.locale.getId().value),
-            criteria: "${Cms_Criteria}.${cmsPage.self.getId()}",
-            children: [],
-            ordered: false,
-            sectionType: SectionInfoNode.SectionType.CmsSection,
-            cmsPageSearch: cmsPage.label?.toLowerCase()
-        )
-
-        cmsPage.slots.each { Map.Entry<String, CmsContentSlot> slotEntry ->
-            SectionInfoNode child = new SectionInfoNode()
-            child.criteria = "${root.criteria}.${slotEntry.key}"
-            child.cmsPageSearch = root.cmsPageSearch
-            child.cmsSlot = slotEntry.key
-            child.name = getNameFromSlot(cmsPage, slotEntry.key, apiContext.locale.getId().value)
-            child.parent = root
-            child.sectionType = root.sectionType
-            child.children = [] as List
-            root.children << child
-        }
-        return root
     }
 
     private SectionInfoNode lookup(String category, String criteria, List<SectionInfoNode> sectionInfoNodes) {

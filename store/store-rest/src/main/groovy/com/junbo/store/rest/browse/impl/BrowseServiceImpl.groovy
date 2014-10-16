@@ -104,35 +104,39 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.pure(new TocResponse(challenge: challenge))
             }
 
-            result.sections = sectionService.getTopLevelSectionInfoNode(apiContext)
-            return Promise.pure(result)
+            sectionService.getTopLevelSectionInfoNode(apiContext).then { List<SectionInfoNode> sections ->
+                result.sections = sections
+                return Promise.pure(result)
+            }
         }
     }
 
     @Override
     Promise<SectionLayoutResponse> getSectionLayout(SectionLayoutRequest request, ApiContext apiContext) {
-        SectionInfoNode sectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria, apiContext)
-        if (sectionInfoNode == null) {
-            throw AppErrors.INSTANCE.sectionNotFound().exception()
-        }
+        sectionService.getSectionInfoNode(request.category, request.criteria, apiContext).then { SectionInfoNode sectionInfoNode ->
+            if (sectionInfoNode == null) {
+                throw AppErrors.INSTANCE.sectionNotFound().exception()
+            }
 
-        SectionLayoutResponse response = new SectionLayoutResponse()
-        response.breadcrumbs = generateBreadcrumbs(sectionInfoNode, apiContext)
-        response.name = sectionInfoNode.name
-        response.children = sectionInfoNode.children?.collect {SectionInfoNode e -> e.toSectionInfo() }
-        response.ordered = false
-        response.category = request.category
-        response.criteria = request.criteria
-        return Promise.pure(response)
+            SectionLayoutResponse response = new SectionLayoutResponse()
+            response.breadcrumbs = generateBreadcrumbs(sectionInfoNode, apiContext)
+            response.name = sectionInfoNode.name
+            response.children = sectionInfoNode.children?.collect {SectionInfoNode e -> e.toSectionInfo() }
+            response.ordered = false
+            response.category = request.category
+            response.criteria = request.criteria
+            return Promise.pure(response)
+        }
     }
 
     @Override
     Promise<ListResponse> getList(ListRequest request, ApiContext apiContext) {
-        SectionInfoNode sectionInfoNode = sectionService.getSectionInfoNode(request.category, request.criteria, apiContext)
-        if (sectionInfoNode == null) {
-            throw AppErrors.INSTANCE.sectionNotFound().exception()
+        sectionService.getSectionInfoNode(request.category, request.criteria, apiContext).then { SectionInfoNode sectionInfoNode ->
+            if (sectionInfoNode == null) {
+                throw AppErrors.INSTANCE.sectionNotFound().exception()
+            }
+            innerGetList(request, sectionInfoNode, apiContext)
         }
-        innerGetList(request, sectionInfoNode, apiContext)
     }
 
     @Override
