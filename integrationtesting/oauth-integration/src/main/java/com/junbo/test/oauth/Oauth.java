@@ -247,12 +247,13 @@ public class Oauth {
         }
     }
 
-    public static String GetViewStateByCid(String cid) throws Exception {
+    public static CloseableHttpResponse GetViewStateByCid(String cid) throws Exception {
         return GetViewStateByCid(cid, DefaultAuthorizeURI);
     }
 
-    public static String GetViewStateByCid(String cid, String uri) throws Exception {
-        CloseableHttpResponse response = OauthGet(uri + "?cid=" + cid, null);
+    public static CloseableHttpResponse GetViewStateByCid(String cid, String uri) throws Exception {
+        return OauthGet(uri + "?cid=" + cid, null);
+        /*
         try {
             String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
             //System.out.print(responseString);
@@ -260,21 +261,15 @@ public class Oauth {
         } finally {
             response.close();
         }
+        */
     }
 
-    public static String PostViewRegisterByCid(String cid) throws Exception {
+    public static CloseableHttpResponse PostViewRegisterByCid(String cid) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, DefaultRegisterEvent));
 
-        CloseableHttpResponse response = OauthPost(DefaultAuthorizeURI, nvps);
-        try {
-            String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
-            //System.out.print(responseString);
-            return responseString;
-        } finally {
-            response.close();
-        }
+        return OauthPost(DefaultAuthorizeURI, nvps);
     }
 
     // pass in userName and email for validation purpose only
@@ -643,6 +638,30 @@ public class Oauth {
         url1 = url1.replace(new URL(url1).getProtocol(), new URL(url2).getProtocol());
         url1 = url1.replace(new URL(url1).getAuthority(), new URL(url2).getAuthority());
         return url1;
+    }
+
+    public static void validateViewModeResponse(CloseableHttpResponse response, String viewIdentifier)
+            throws Exception {
+        try {
+            ViewModel viewModel = JsonHelper.JsonDeserializer(
+                    new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
+            Validator.Validate("validate no errors in response", true, viewModel.getErrors().isEmpty());
+            Validator.Validate("validate view identifier", viewIdentifier.replace("_", "-"), viewModel.getView());
+        } finally {
+            response.close();
+        }
+    }
+
+    /**
+     * view model type enum.
+     */
+    public enum ViewModelType {
+        emailVerify,
+        emailVerifyRequired,
+        login,
+        payment_method,
+        redirect,
+        register,
     }
 
     // ****** start API sample logging ******
