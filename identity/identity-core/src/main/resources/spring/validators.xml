@@ -104,11 +104,15 @@
         <property name="maxLength" value="30"/>
         <property name="disallowedPatterns">
             <list>
+                <value>[a-zA-Z0-9\. _-]*[ ]{2,}[a-zA-Z0-9\. _-]*</value>
+                <value>[a-zA-Z0-9\. _-]*[_]{2,}[a-zA-Z0-9\. _-]*</value>
+                <value>[a-zA-Z0-9\. _-]*[\.]{2,}[a-zA-Z0-9\. _-]*</value>
+                <value>[a-zA-Z0-9\. _-]*[-]{2,}[a-zA-Z0-9\. _-]*</value>
             </list>
         </property>
         <property name="allowedPatterns">
             <list>
-                <value>[a-zA-Z]+[a-zA-Z0-9]*</value>
+                <value>^[a-zA-Z]+[a-zA-Z0-9 \. _-]{2,19}$</value>
             </list>
         </property>
     </bean>

@@ -102,7 +102,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     public com.junbo.common.error.Error CheckUserNameWithError(UserNameCheckRequest userNameCheckRequest, int expectedResponseCode, String errorCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/check-username?email="
                 + (userNameCheckRequest.getEmail() == null ? "" : URLEncoder.encode(userNameCheckRequest.getEmail(), "UTF-8"))
-                + "&username=" + (userNameCheckRequest.getUsername() == null ? "" : userNameCheckRequest.getUsername()),  userNameCheckRequest, expectedResponseCode);
+                + "&username=" + (userNameCheckRequest.getUsername() == null ? "" : URLEncoder.encode(userNameCheckRequest.getUsername())),  userNameCheckRequest, expectedResponseCode);
         Error error = new JsonMessageTranscoder().decode(
                 new TypeReference<Error>() {
                 }, responseBody);

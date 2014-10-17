@@ -21,6 +21,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -224,12 +226,12 @@ public class postUser {
     }
 
     @Test(groups = "dailies")
+    // https://oculus.atlassian.net/browse/SER-692
     public void testCheckName() throws Exception {
         User user = Identity.UserPostDefault();
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-
-        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(15),
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(20),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
@@ -254,6 +256,37 @@ public class postUser {
         response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomNumeric(2) + RandomHelper.randomAlphabetic(10),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator username not start with string", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        RandomHelper.randomAlphabetic(1) + RandomHelper.randomNumeric(2) + "%20" + "_" + "-." + RandomHelper.randomAlphabetic(1),
+                "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username can contain letters, numbers, spaces, dashes, underscores, and periods", 200, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        (RandomHelper.randomAlphabetic(5) + "%20%20" + RandomHelper.randomAlphabetic(1)), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username should not contain consecutive space", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        URLEncoder.encode(RandomHelper.randomAlphabetic(5) + "__" + RandomHelper.randomAlphabetic(1), "UTF-8"), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username should not contain consecutive underscore", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        URLEncoder.encode(RandomHelper.randomAlphabetic(5) + "--" + RandomHelper.randomAlphabetic(1), "UTF-8"), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username should not contain consecutive dashes", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        URLEncoder.encode(RandomHelper.randomAlphabetic(5) + ".." + RandomHelper.randomAlphabetic(1), "UTF-8"), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username should not contain consecutive periods", 400, response.getStatusLine().getStatusCode());
         response.close();
     }
 

@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by liangfu on 8/29/14.
@@ -83,6 +84,18 @@ public class LoginResourceTesting extends BaseTestClass {
 
         error = testDataProvider.CheckUserNameWithError("", RandomHelper.randomEmail(), 400, "130.001");
         Validator.Validate("Validate empty username error response", true, error != null);
+
+        error = testDataProvider.CheckUserNameWithError(RandomHelper.randomAlphabetic(10) + "  ", RandomHelper.randomEmail(), 400, "130.001");
+        Validator.Validate("Validate consecutive space error response", true, error != null);
+
+        error = testDataProvider.CheckUserNameWithError(RandomHelper.randomAlphabetic(10) + "___", RandomHelper.randomEmail(), 400, "130.001");
+        Validator.Validate("Validate consecutive underscores response", true, error != null);
+
+        error = testDataProvider.CheckUserNameWithError(RandomHelper.randomAlphabetic(10) + "----", RandomHelper.randomEmail(), 400, "130.001");
+        Validator.Validate("Validate consecutive dash response", true, error != null);
+
+        error = testDataProvider.CheckUserNameWithError(RandomHelper.randomAlphabetic(10) + "...", RandomHelper.randomEmail(), 400, "130.001");
+        Validator.Validate("Validate consecutive period response", true, error != null);
     }
 
     @Property(
