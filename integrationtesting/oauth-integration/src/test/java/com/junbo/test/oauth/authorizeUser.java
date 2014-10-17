@@ -56,18 +56,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
@@ -98,18 +95,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
@@ -132,16 +126,15 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
 
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
@@ -172,8 +165,8 @@ public class authorizeUser {
 
         HttpclientHelper.ResetHttpClient();
         String cid = Oauth.GetLoginCid();
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
         String loginResponseLink = Oauth.UserLogin(cid, input.getEmail(), "radiant555");
         String access_Token = Oauth.GetLoginAccessToken(loginResponseLink);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(access_Token);
@@ -186,18 +179,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
@@ -206,8 +196,8 @@ public class authorizeUser {
 
         HttpclientHelper.ResetHttpClient();
         cid = Oauth.GetLoginCid();
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
         String loginResponseLink = Oauth.UserLogin(cid, email, null);
         String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
@@ -220,18 +210,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         //String userName = "allEnvLoginUser";
@@ -242,8 +229,8 @@ public class authorizeUser {
 
         HttpclientHelper.ResetHttpClient();
         cid = Oauth.GetLoginCid();
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
         String loginResponseLink = Oauth.UserLogin(cid, email, null);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
@@ -266,8 +253,8 @@ public class authorizeUser {
     public void loginExistingUser() throws Exception {
         if (Oauth.DefaultOauthEndpoint.contains("http://localhost:8080")) return;
         String cid = Oauth.GetLoginCid();
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
         String loginResponseLink = Oauth.UserLogin(cid, "silkcloudtest+allEnvLoginUser@gmail.com", Oauth.DefaultUserPwd);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
@@ -285,8 +272,8 @@ public class authorizeUser {
         String secondaryDcEndpoint = ConfigHelper.getSetting("secondaryDcEndpoint");
         if (secondaryDcEndpoint == null) return;
         String cid = Oauth.GetLoginCid();
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
         String loginResponseLink = Oauth.UserLogin(cid, "silkcloudtest+allEnvLoginUser@gmail.com", Oauth.DefaultUserPwd);
         String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken, secondaryDcEndpoint + "/oauth2/tokeninfo");
@@ -301,18 +288,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
@@ -330,18 +314,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
@@ -365,8 +346,8 @@ public class authorizeUser {
 
         HttpclientHelper.ResetHttpClient();
         cid = Oauth.GetLoginCid();
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
         String loginResponseLink = Oauth.UserLogin(cid, email, newPassword, Oauth.DefaultOauthSecondaryEndpoint + "/oauth2/authorize");
         String idToken = Oauth.GetLoginUser(loginResponseLink, Oauth.DefaultOauthSecondaryEndpoint).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
@@ -379,18 +360,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
@@ -410,8 +388,8 @@ public class authorizeUser {
 
         HttpclientHelper.ResetHttpClient();
         cid = Oauth.GetLoginCid();
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
         String loginResponseLink = Oauth.UserLogin(cid, email, newPassword);
         String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
@@ -423,18 +401,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
@@ -462,18 +437,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
@@ -488,18 +460,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
@@ -532,18 +501,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         List<ErrorDetail> errorDetails = new ArrayList<>();
@@ -574,18 +540,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         Oauth.PostRegisterUser(cid, RandomHelper.randomAlphabetic(15), email);
@@ -608,18 +571,15 @@ public class authorizeUser {
         String cid = Oauth.GetRegistrationCid();
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate current view state is login", true,
-                currentViewState.contains("\"view\" : \"login\"") || currentViewState.contains("\"view\":\"login\""));
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
         Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        Validator.Validate("validate view state after post register view", postRegisterViewResponse, currentViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         Oauth.PostRegisterUser(cid, userName, email);
@@ -687,6 +647,32 @@ public class authorizeUser {
         Validator.Validate("error detail field", "Field value is invalid. *****", error.getDetails().get(0).getReason());
         response.close();
 
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
+        nvps.add(new BasicNameValuePair("client_id", Oauth.DefaultClientId));
+        nvps.add(new BasicNameValuePair("client_secret", null));
+        nvps.add(new BasicNameValuePair("scope", "identity"));
+        response = Oauth.OauthPost(Oauth.DefaultOauthEndpoint + "/oauth2/token", nvps);
+        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 400);
+        error = JsonHelper.JsonDeserializer(
+                new InputStreamReader(response.getEntity().getContent()), Error.class);
+        Validator.Validate("error detail field", "client_secret", error.getDetails().get(0).getField());
+        Validator.Validate("error detail field", "Query parameter is required", error.getDetails().get(0).getReason());
+        response.close();
+
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
+        nvps.add(new BasicNameValuePair("client_id", Oauth.DefaultClientId));
+        nvps.add(new BasicNameValuePair("client_secret", ""));
+        nvps.add(new BasicNameValuePair("scope", "identity"));
+        response = Oauth.OauthPost(Oauth.DefaultOauthEndpoint + "/oauth2/token", nvps);
+        Validator.Validate("response status is ok", response.getStatusLine().getStatusCode(), 400);
+        error = JsonHelper.JsonDeserializer(
+                new InputStreamReader(response.getEntity().getContent()), Error.class);
+        Validator.Validate("error detail field", "client_secret", error.getDetails().get(0).getField());
+        Validator.Validate("error detail field", "Query parameter is required", error.getDetails().get(0).getReason());
+        response.close();
+
         String randomClient = RandomHelper.randomAlphabetic(15);
         nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
@@ -726,10 +712,5 @@ public class authorizeUser {
             }
         }
         throw new Exception("response header location not validated");
-    }
-
-    private static void ValidateErrorFreeResponse(String responseString) throws Exception {
-        Validator.Validate("validate no errors in response \r\n" + responseString,
-                true, responseString.contains("\"errors\" : [ ]") || responseString.contains("\"errors\":[]"));
     }
 }
