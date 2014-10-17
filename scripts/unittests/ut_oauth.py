@@ -99,6 +99,8 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': ut.test_redirect_uri,
             'state': 'testState',
             'nonce': 'testNonce'
+        }, headers = {
+            'oculus-internal': 'true'
         })
 
         id_token = getqueryparam(location, 'id_token')
@@ -117,6 +119,8 @@ class OAuthTests(ut.TestBase):
             'response_type': 'code',
             'scope': 'identity',
             'redirect_uri': ut.test_redirect_uri
+        }, headers = {
+            'oculus-internal': 'true'
         })
         assert getqueryparam(location, 'code') is None
         assert getqueryparam(location, 'cid') is not None
@@ -133,6 +137,8 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': ut.test_redirect_uri,
             'state': 'testState',
             'nonce': 'testNonce'
+        }, headers = {
+            'oculus-internal': 'true'
         })
         id_token = getqueryparam(location, 'id_token')
         assert id_token is not None
@@ -156,6 +162,8 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': ut.test_redirect_uri,
             'state': 'testState',
             'nonce': 'testNonce'
+        }, headers = {
+            'oculus-internal': 'true'
         })
         id_token = getqueryparam(location, 'id_token')
         assert id_token is not None
@@ -177,6 +185,8 @@ class OAuthTests(ut.TestBase):
             'response_type': 'code',
             'scope': 'identity',
             'redirect_uri': ut.test_redirect_uri
+        }, headers = {
+            'oculus-internal': 'true'
         })
         assert getqueryparam(location, 'code') is None
         assert getqueryparam(location, 'cid') is not None
@@ -194,6 +204,8 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': ut.test_redirect_uri,
             'state': 'testState',
             'nonce': 'testNonce'
+        }, headers = {
+            'oculus-internal': 'true'
         })
         id_token = getqueryparam(location, 'id_token')
         assert id_token is not None
@@ -217,6 +229,8 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': ut.test_redirect_uri,
             'state': 'testState',
             'nonce': 'testNonce'
+        }, headers = {
+            'oculus-internal': 'true'
         })
         id_token = getqueryparam(location, 'id_token')
         assert id_token is not None
@@ -238,6 +252,8 @@ class OAuthTests(ut.TestBase):
             'response_type': 'code',
             'scope': 'identity',
             'redirect_uri': ut.test_redirect_uri
+        }, headers = {
+            'oculus-internal': 'true'
         })
         assert getqueryparam(location, 'code') is None
         assert getqueryparam(location, 'cid') is not None
@@ -252,6 +268,8 @@ class OAuthTests(ut.TestBase):
             'response_type': 'code',
             'scope': 'identity',
             'redirect_uri': 'https://www.oculus.com/abc'
+        }, headers = {
+            'oculus-internal': 'true'
         })
 
         auth_code = getqueryparam(location, 'code')
@@ -268,6 +286,8 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': 'https://abc.a.com/oculus.com/',
             'state': 'testState',
             'nonce': 'testNonce'
+        }, headers = {
+            'oculus-internal': 'true'
         }, raiseOnError = False)
 
         assert response['message'] == 'Input Error'
@@ -285,6 +305,8 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': ut.test_redirect_uri,
             'state': 'testState',
             'nonce': 'testNonce'
+        }, headers = {
+            'oculus-internal': 'true'
         })
 
         id_token = getqueryparam(location, 'id_token')
@@ -303,6 +325,8 @@ class OAuthTests(ut.TestBase):
             'response_type': 'code',
             'scope': 'identity',
             'redirect_uri': ut.test_redirect_uri
+        }, headers = {
+            'oculus-internal': 'true'
         })
         assert getqueryparam(location, 'code') is None
         assert getqueryparam(location, 'cid') is not None
@@ -319,6 +343,8 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': ut.test_redirect_uri,
             'state': 'testState',
             'nonce': 'testNonce'
+        }, headers = {
+            'oculus-internal': 'true'
         })
         auth_code = getqueryparam(location, 'code')
         assert auth_code is not None
@@ -329,6 +355,8 @@ class OAuthTests(ut.TestBase):
             'client_secret': ut.test_client_secret,
             'grant_type': 'authorization_code',
             'redirect_uri': ut.test_redirect_uri
+        }, headers = {
+            'oculus-internal': 'true'
         })
         access_token = response["access_token"]
         assert access_token is not None
@@ -353,6 +381,8 @@ class OAuthTests(ut.TestBase):
             'response_type': 'code',
             'scope': 'identity',
             'redirect_uri': ut.test_redirect_uri
+        }, headers = {
+            'oculus-internal': 'true'
         })
         assert getqueryparam(location, 'code') is None
         assert getqueryparam(location, 'cid') is not None
@@ -369,6 +399,8 @@ class OAuthTests(ut.TestBase):
             'scope': 'identity',
             'redirect_uri': ut.test_redirect_uri,
             'state': nounce
+        }, headers = {
+            'oculus-internal': 'true'
         })
         cid = getqueryparam(location, 'cid')
 
@@ -439,6 +471,8 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': ut.test_redirect_uri,
             'state': nounce,
             'nonce': 'testNonce'
+        }, headers = {
+            'oculus-internal': 'true'
         })
 
         id_token = getqueryparam(location, 'id_token')
@@ -467,6 +501,8 @@ class OAuthTests(ut.TestBase):
             'scope': 'identity',
             'redirect_uri': ut.test_redirect_uri,
             'state': nounce
+        }, headers = {
+            'oculus-internal': 'true'
         })
 
         assert getqueryparam(location, 'access_token') is None
