@@ -652,6 +652,9 @@ public class Oauth {
         }
     }
 
+    /**
+     * view model type enum.
+     */
     public enum ViewModelType {
         emailVerify,
         emailVerifyRequired,
