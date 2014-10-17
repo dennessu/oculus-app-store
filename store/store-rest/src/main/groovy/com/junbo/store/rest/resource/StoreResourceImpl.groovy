@@ -31,7 +31,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.FulfillmentHistory
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
@@ -76,8 +75,6 @@ class StoreResourceImpl implements StoreResource {
     public static final String ACTION_TYPE_GRANT_ENTITLEMENT = "GRANT_ENTITLEMENT"
 
     public static final String ACTION_STATUS_SUCCESS = "SUCCEED"
-
-    public static final String FREE_PURCHASE_CURRENCY = "USD"
 
     private static final int PAGE_SIZE = 100
 
@@ -461,27 +458,14 @@ class StoreResourceImpl implements StoreResource {
                         )
                 )
             }
-            Order order = new Order(
-                    user: user.getId(),
-                    country: apiContext.country.getId(),
-                    currency: new CurrencyId(FREE_PURCHASE_CURRENCY),
-                    locale: apiContext.locale.getId(),
-                    tentative: true,
-                    orderItems: [new OrderItem(offer: request.offer, quantity: 1)]
-            )
 
-            return resourceContainer.orderResource.createOrder(order).syncThen { Order o ->
-                order = o
-            }.then {
-                order.tentative = false
-                resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
-                    MakeFreePurchaseResponse response = new MakeFreePurchaseResponse()
-                    response.order = settled.getId()
-                    getEntitlementsByOrder(settled, null).then { List<Entitlement> entitlements ->
-                        response.entitlements = entitlements
-                        expandEntitlementItem(response.entitlements, apiContext).then {
-                            return Promise.pure(response)
-                        }
+            facadeContainer.orderFacade.freePurchaseOrder(user.getId(), Collections.singletonList(request.offer), apiContext).then { Order settled ->
+                MakeFreePurchaseResponse response = new MakeFreePurchaseResponse()
+                response.order = settled.getId()
+                getEntitlementsByOrder(settled, null).then { List<Entitlement> entitlements ->
+                    response.entitlements = entitlements
+                    expandEntitlementItem(response.entitlements, apiContext).then {
+                        return Promise.pure(response)
                     }
                 }
             }
@@ -561,25 +545,12 @@ class StoreResourceImpl implements StoreResource {
                 }
             }
 
-            Order order = new Order(
-                    user: user.getId(),
-                    country: apiContext.country.getId(),
-                    currency: currencyId,
-                    locale: apiContext.locale.getId(),
-                    tentative: true,
-                    orderItems: [new OrderItem(offer: request.offer, quantity: 1)]
-            )
-
             if (request.instrument != null) {
-                order.payments = [new PaymentInfo(paymentInstrument : request.instrument)]
                 selectedInstrument = request.instrument
             } else if (user.defaultPI != null) {
-                order.payments = [new PaymentInfo(paymentInstrument : user.defaultPI)]
                 selectedInstrument = user.defaultPI
             }
-
-            return resourceContainer.orderResource.createOrder(order).then { Order createdOrder ->
-
+            return facadeContainer.orderFacade.createTentativeOrder(user.getId(), Collections.singletonList(request.offer), currencyId, selectedInstrument, apiContext).then { Order createdOrder ->
                 return resourceContainer.currencyResource.get(currencyId, new CurrencyGetOptions()).then { Currency currency ->
                     response.formattedTotalPrice = createdOrder.totalAmount.setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_UP) + currency.symbol
                     purchaseState.order = createdOrder.getId()

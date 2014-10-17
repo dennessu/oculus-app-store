@@ -185,7 +185,8 @@
     <bean id="store.userTosAgreementResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.sewer.url}"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
     </bean>
 
     <bean id="store.communicationResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.CommunicationResourceClientProxy" parent="baseClientProxy">
@@ -196,7 +197,8 @@
     <bean id="store.userCommunicationResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserCommunicationResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.sewer.url}" />
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="attachUserToken" value="true"/>
+        <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
     </bean>
 
     <bean id="store.tokenEndpointClientProxy"

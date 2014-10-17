@@ -843,6 +843,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return caseyEmulatorClient.getCmsPages(path, label, expectedCode);
     }
 
+    public void setupCmsOffers(String cmsPageName, List<String> slots, List<List<OfferId>> offers) throws Exception {
+        Map<String, List<OfferId>> cmsOffers = new HashMap<>();
+        for (int i = 0; i < slots.size(); ++i) {
+            cmsOffers.put(cmsPageName + "-" + slots.get(i), offers.get(i));
+        }
+        postCaseyEmulatorData(null, null, cmsOffers);
+    }
+
     public void resetEmulatorData() throws Exception {
         caseyEmulatorClient.resetEmulatorData();
     }

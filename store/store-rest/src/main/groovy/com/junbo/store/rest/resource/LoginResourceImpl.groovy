@@ -12,6 +12,7 @@ import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.*
 import com.junbo.store.clientproxy.ResourceContainer
@@ -19,11 +20,14 @@ import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.error.ErrorContext
 import com.junbo.store.clientproxy.sentry.SentryFacade
+import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.ApiContextBuilder
 import com.junbo.store.rest.utils.DataConverter
+import com.junbo.store.rest.utils.InitialItemPurchaseUtils
 import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.spec.model.Challenge
+import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.identity.StoreUserEmail
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
@@ -32,6 +36,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
@@ -43,6 +48,9 @@ import javax.ws.rs.ext.Provider
 class LoginResourceImpl implements LoginResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginResourceImpl)
+
+    private static final String AUTH_HEADER = 'Authorization'
+
     private static final String COMMUNICATION_DEFAULT_LOCALE = 'en_US'
 
     @Value('${store.login.requireDetailsForCreate}')
@@ -80,6 +88,9 @@ class LoginResourceImpl implements LoginResource {
 
     @Resource(name = 'storeChallengeHelper')
     private ChallengeHelper challengeHelper
+
+    @Resource(name = 'storeInitialItemPurchaseUtils')
+    private InitialItemPurchaseUtils initialItemPurchaseUtils
 
     @Value('${store.communication.createuser}')
     private String registerUserCommunication
@@ -225,40 +236,23 @@ class LoginResourceImpl implements LoginResource {
         }.then {
             return resourceContainer.emailVerifyEndpoint.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId())
         }.then {
-            return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: apiContext.user.getId(),
-                    tosId: request.tosAgreed,
-                    agreementTime: new Date()))
-        }.then {
-            if (request.newsPromotionsAgreed == null || !request.newsPromotionsAgreed) {
-                return Promise.pure(null)
-            }
-            return resourceContainer.communicationResource.list(new CommunicationListOptions(
-                    region: apc.country.getId()
-            )).then { Results<Communication> communicationResults ->
-                if (communicationResults == null || CollectionUtils.isEmpty(communicationResults.items)) {
-                    return Promise.pure(null)
-                }
-
-                Communication communication = communicationResults.items.find { Communication temp ->
-                    JsonNode jsonNode = temp?.locales?.get(COMMUNICATION_DEFAULT_LOCALE)
-                    if (jsonNode != null) {
-                        CommunicationLocale communicationLocale = ObjectMapperProvider.instance().treeToValue(jsonNode, CommunicationLocale)
-                        if (communicationLocale.name.equalsIgnoreCase(registerUserCommunication)) {
-                            return true
-                        }
-                    }
-
-                    return false
-                }
-
-                return resourceContainer.userCommunicationResource.create(new UserCommunication(
-                    userId: apiContext.user.getId(),
-                    communicationId: communication.getId()
-                ))
-            }
-        }.then {
             // get the auth token
-            innerSignIn(request.email, request.password)
+            innerSignIn(request.email, request.password).then { AuthTokenResponse authTokenResponse ->
+                CommonUtils.pushAuthHeader(authTokenResponse.accessToken)
+                Promise.pure().then { // create user tos using the access token
+                    return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: apiContext.user.getId(),
+                            tosId: request.tosAgreed,
+                            agreementTime: new Date()))
+                }.then {
+                    createUserCommunication(request, apiContext.user.getId(), apc) // create user communication using the access token
+                }.recover { Throwable ex ->
+                    CommonUtils.popAuthHeader()
+                    throw ex
+                }.then {
+                    CommonUtils.popAuthHeader()
+                    return Promise.pure(authTokenResponse)
+                }
+            }
         }
     }
 
@@ -279,19 +273,8 @@ class LoginResourceImpl implements LoginResource {
             }
         }.then { AuthTokenResponse authTokenResponse ->
             if (authTokenResponse != null) {
-                return challengeHelper.checkTosChallenge(authTokenResponse.getUserId(), tosCreateUser, apc.country.getId(), userSignInRequest.challengeAnswer).then { Challenge challenge ->
-                    if (challenge == null) {
-                        return Promise.pure(authTokenResponse)
-                    }
-
-                    AuthTokenResponse tosChallengeAuthToken = new AuthTokenResponse(
-                            challenge: challenge
-                    )
-
-                    return Promise.pure(tosChallengeAuthToken)
-                }
+                return processAfterSignIn(userSignInRequest, authTokenResponse, apc)
             }
-
             return Promise.pure(authTokenResponse)
         }
     }
@@ -569,4 +552,64 @@ class LoginResourceImpl implements LoginResource {
         }
     }
 
+    private Promise<AuthTokenResponse> processAfterSignIn(UserSignInRequest userSignInRequest, AuthTokenResponse authTokenResponse, com.junbo.store.spec.model.ApiContext apiContext) {
+        CommonUtils.pushAuthHeader(authTokenResponse.accessToken)
+        Promise.pure().then {
+            return challengeHelper.checkTosChallenge(authTokenResponse.getUserId(), tosCreateUser, apiContext.country.getId(), userSignInRequest.challengeAnswer).then { Challenge challenge ->
+                if (challenge == null) {
+                    return Promise.pure(authTokenResponse)
+                }
+
+                AuthTokenResponse tosChallengeAuthToken = new AuthTokenResponse(
+                        challenge: challenge
+                )
+
+                return Promise.pure(tosChallengeAuthToken)
+            }.then { AuthTokenResponse response ->
+                if (response.challenge != null) {
+                    return Promise.pure(response)
+                }
+
+                initialItemPurchaseUtils.checkAndPurchaseInitialOffers(response.userId, apiContext).then {
+                    return Promise.pure(response)
+                }
+            }
+        }.recover { Throwable ex ->
+            CommonUtils.popAuthHeader()
+            throw ex
+        }.then { AuthTokenResponse response ->
+            CommonUtils.popAuthHeader()
+            return Promise.pure(response)
+        }
+    }
+
+    private Promise createUserCommunication(CreateUserRequest request, UserId userId, com.junbo.store.spec.model.ApiContext apc) {
+        if (request.newsPromotionsAgreed == null || !request.newsPromotionsAgreed) {
+            return Promise.pure(null)
+        }
+        return resourceContainer.communicationResource.list(new CommunicationListOptions(
+                region: apc.country.getId()
+        )).then { Results<Communication> communicationResults ->
+            if (communicationResults == null || CollectionUtils.isEmpty(communicationResults.items)) {
+                return Promise.pure(null)
+            }
+
+            Communication communication = communicationResults.items.find { Communication temp ->
+                JsonNode jsonNode = temp?.locales?.get(COMMUNICATION_DEFAULT_LOCALE)
+                if (jsonNode != null) {
+                    CommunicationLocale communicationLocale = ObjectMapperProvider.instance().treeToValue(jsonNode, CommunicationLocale)
+                    if (communicationLocale.name.equalsIgnoreCase(registerUserCommunication)) {
+                        return true
+                    }
+                }
+
+                return false
+            }
+
+            return resourceContainer.userCommunicationResource.create(new UserCommunication(
+                    userId: userId,
+                    communicationId: communication.getId()
+            ))
+        }
+    }
 }

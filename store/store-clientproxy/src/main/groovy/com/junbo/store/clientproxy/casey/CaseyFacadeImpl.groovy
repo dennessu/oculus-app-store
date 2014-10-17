@@ -43,6 +43,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
@@ -86,6 +87,15 @@ class CaseyFacadeImpl implements CaseyFacade {
         return doSearch(searchParams, imageBuildType, apiContext)
     }
 
+    @Override
+    Promise<CaseyResults<Item>> search(String cmsPage, String cmsSlot, String cursor, Integer count, Images.BuildType imageBuildType, ApiContext apiContext) {
+        Assert.notNull(cmsPage)
+        Assert.notNull(cmsSlot)
+        Assert.notNull(apiContext)
+        OfferSearchParams searchParams = buildOfferSearchParams(cmsPage, cmsSlot, cursor, count, apiContext)
+        return doSearch(searchParams, imageBuildType, apiContext)
+    }
+    
     @Override
     Promise<CaseyResults<Item>> search(ItemId itemId, Images.BuildType imageBuildType, ApiContext apiContext) {
         OfferSearchParams searchParams = buildOfferSearchParams(itemId, apiContext)
@@ -263,26 +273,37 @@ class CaseyFacadeImpl implements CaseyFacade {
         OfferSearchParams offerSearchParams = new OfferSearchParams()
         switch (sectionInfoNode.sectionType) {
             case SectionInfoNode.SectionType.CmsSection:
-                offerSearchParams.cmsPage = sectionInfoNode.cmsPageSearch?.toLowerCase()
-                offerSearchParams.cmsSlot = sectionInfoNode.cmsSlot?.toLowerCase()
-                break
+                return buildOfferSearchParams(sectionInfoNode.cmsPageSearch?.toLowerCase(), sectionInfoNode.cmsSlot?.toLowerCase(), cursor, count, apiContext)
             case SectionInfoNode.SectionType.CategorySection:
                 offerSearchParams.category = sectionInfoNode.category
+                fillOfferSearchParamsCommon(cursor, count, apiContext, offerSearchParams)
+                return offerSearchParams
         }
-        offerSearchParams.locale = apiContext.locale.getId().value
-        offerSearchParams.country = apiContext.country.getId().value
-        offerSearchParams.count = count
-        offerSearchParams.cursor = cursor
-        offerSearchParams.platform = apiContext.platform.value
+        Assert.isTrue(false, 'should not reach here')
+    }
+
+    private OfferSearchParams buildOfferSearchParams(String cmsPage, String cmsSlot, String cursor, Integer count, ApiContext apiContext) {
+        OfferSearchParams offerSearchParams = new OfferSearchParams()
+        offerSearchParams.cmsPage = cmsPage
+        offerSearchParams.cmsSlot = cmsSlot
+        fillOfferSearchParamsCommon(cursor, count, apiContext, offerSearchParams)
         return offerSearchParams
     }
 
     private OfferSearchParams buildOfferSearchParams(ItemId itemId, ApiContext apiContext) {
         OfferSearchParams offerSearchParams = new OfferSearchParams()
+        offerSearchParams.itemId = itemId
+        fillOfferSearchParamsCommon(null, null, apiContext, offerSearchParams)
+        return offerSearchParams
+    }
+
+    private OfferSearchParams fillOfferSearchParamsCommon(String cursor, Integer count, ApiContext apiContext, OfferSearchParams offerSearchParams) {
+        Assert.notNull(offerSearchParams)
+        offerSearchParams.cursor = cursor
+        offerSearchParams.count = count
         offerSearchParams.locale = apiContext.locale.getId().value
         offerSearchParams.country = apiContext.country.getId().value
         offerSearchParams.platform = apiContext.platform.value
-        offerSearchParams.itemId = itemId
         return offerSearchParams
     }
 

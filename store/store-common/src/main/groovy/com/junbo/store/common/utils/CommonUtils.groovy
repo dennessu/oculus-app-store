@@ -1,16 +1,21 @@
 package com.junbo.store.common.utils
 
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.apache.http.NameValuePair
 import org.apache.http.client.utils.URLEncodedUtils
+import org.springframework.util.Assert
+import org.springframework.util.CollectionUtils
 
 /**
  * The CommonUtils class.
  */
 @CompileStatic
 class CommonUtils {
+
+    private static final String AUTH_HEADER = 'Authorization'
 
     public static String allowedEnumValues(Class enumClass) {
         List<String> values = []
@@ -35,6 +40,15 @@ class CommonUtils {
             }
             return loop(func)
         }
+    }
+
+    public static void pushAuthHeader(String accessToken) {
+        JunboHttpContext.requestHeaders.addFirst(AUTH_HEADER, 'Bearer ' + accessToken)
+    }
+
+    public static String popAuthHeader() {
+        Assert.isTrue(!CollectionUtils.isEmpty(JunboHttpContext.requestHeaders?.get(AUTH_HEADER)))
+        return JunboHttpContext.requestHeaders.get(AUTH_HEADER).remove(0)
     }
 
     public static int safeInt(Number number) {
