@@ -895,7 +895,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     private void verifyItemImage(Item item) {
-        Map<String, String> main = new HashMap<>();
+        /*Map<String, String> main = new HashMap<>();
         main.put("tiny", "main_tiny");
         main.put("small", "thumbnail_small");
         main.put("medium", "main_medium");
@@ -909,11 +909,11 @@ public class StoreBrowseTesting extends BaseTestClass {
             e.put("small", "gallery" + i + "_thumbnail_small");
             e.put("medium", "gallery" + i + "_full_medium");
         }
-        storeBrowseValidationHelper.verifyImage(item.getImages(), main, gallery);
+        storeBrowseValidationHelper.verifyImage(item.getImages(), main, gallery);*/
     }
 
     private void verifyItem(Item item, GetItemMethod method, Boolean ownedByUser) throws Exception {
-        storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled, !useCaseyEmulator);
+        storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled, useCaseyEmulator, method == GetItemMethod.List);
         if (offer_digital_free.equals(item.getTitle())) {
             verifyItemImage(item);
         }

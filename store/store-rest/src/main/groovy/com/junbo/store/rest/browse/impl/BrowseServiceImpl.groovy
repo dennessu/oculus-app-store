@@ -83,9 +83,9 @@ class BrowseServiceImpl implements BrowseService {
     Promise<Item> getItem(ItemId itemId, boolean useSearch, boolean includeDetails, ApiContext apiContext) {
         Promise.pure().then {
             if (!useSearch) {
-                return facadeContainer.catalogFacade.getItem(itemId, apiContext)
+                return facadeContainer.catalogFacade.getItem(itemId, Images.BuildType.Item_Details, apiContext)
             }
-            facadeContainer.caseyFacade.search(itemId, apiContext).then { CaseyResults<Item> results ->
+            facadeContainer.caseyFacade.search(itemId, Images.BuildType.Item_Details, apiContext).then { CaseyResults<Item> results ->
                 if (CollectionUtils.isEmpty(results?.items)) {
                     throw AppCommonErrors.INSTANCE.resourceNotFound('Item', itemId).exception()
                 }
@@ -217,7 +217,7 @@ class BrowseServiceImpl implements BrowseService {
 
     private Promise<ListResponse> innerGetList(ListRequest request, SectionInfoNode sectionInfoNode, ApiContext apiContext) {
         ListResponse listResponse = new ListResponse(items: [])
-        facadeContainer.caseyFacade.search(sectionInfoNode, request.cursor, request.count, apiContext).then { CaseyResults<Item> caseyResults ->
+        facadeContainer.caseyFacade.search(sectionInfoNode, request.cursor, request.count, Images.BuildType.Item_List, apiContext).then { CaseyResults<Item> caseyResults ->
             if (caseyResults.cursorString != null) {
                 listResponse.next = new ListResponse.NextOption(
                         cursor: caseyResults.cursorString,

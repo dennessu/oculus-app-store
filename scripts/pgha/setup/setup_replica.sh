@@ -38,7 +38,7 @@ cat > $REPLICA_DATA_PATH/pg_hba.conf <<EOF
 
 # "local" is for Unix domain socket connections only
 local   all             ${PGUSER}                               ident
-local   all             ${READONLY_PGUSER}                      ident
+local   all             ${NEWRELIC_PGUSER}                      ident
 # IPv4 local connections:
 host    all             ${PGUSER}       127.0.0.1/32            ident
 host    all             ${PGUSER}       ${MASTER_HOST}/32       ident
@@ -71,6 +71,5 @@ echo "[SETUP][REPLICA] start pgbouncer proxy and connect to replica server"
 $DEPLOYMENT_PATH/pgbouncer/pgbouncer_replica.sh
 
 echo "[SETUP][REPLICA] create readonly user"
-$PGBIN_PATH/psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "CREATE USER ${READONLY_PGUSER};"
-$PGBIN_PATH/psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "ALTER USER ${READONLY_PGUSER} SET default_transaction_read_only = on;"
-$PGBIN_PATH/psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${READONLY_PGUSER};"
+$DEPLOYMENT_PATH/util/create_user.sh $READONLY_PGUSER $REPLICA_HOST $REPLICA_DB_PORT
+

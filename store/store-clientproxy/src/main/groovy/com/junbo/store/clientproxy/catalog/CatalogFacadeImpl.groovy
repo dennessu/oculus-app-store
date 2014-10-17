@@ -29,6 +29,7 @@ import com.junbo.store.clientproxy.utils.ReviewBuilder
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
+import com.junbo.store.spec.model.browse.Images
 import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.catalog.Offer
 import com.junbo.store.spec.model.catalog.data.CaseyData
@@ -67,7 +68,7 @@ class CatalogFacadeImpl implements CatalogFacade {
     private AppErrorUtils appErrorUtils
 
     @Override
-    Promise<Item> getItem(ItemId itemId, ApiContext apiContext) {
+    Promise<Item> getItem(ItemId itemId, Images.BuildType buildType, ApiContext apiContext) {
         ItemData itemData = new ItemData()
         itemData.genres = []
         Item catalogItem
@@ -124,7 +125,7 @@ class CatalogFacadeImpl implements CatalogFacade {
                 return Promise.pure()
             }
         }.then {
-            return Promise.pure(itemBuilder.buildItem(itemData, apiContext))
+            return Promise.pure(itemBuilder.buildItem(itemData, buildType, apiContext))
         }
     }
 

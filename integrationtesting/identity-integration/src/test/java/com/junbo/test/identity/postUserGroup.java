@@ -61,7 +61,7 @@ public class postUserGroup {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
 
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1UserGroupMemberURI + "/" + userGroup.getId().getValue(), JsonHelper.JsonSerializer(userGroup),
                 HttpclientHelper.HttpRequestType.put, nvps);
 

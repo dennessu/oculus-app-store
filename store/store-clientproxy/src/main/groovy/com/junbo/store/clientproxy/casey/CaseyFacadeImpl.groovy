@@ -23,6 +23,7 @@ import com.junbo.store.clientproxy.utils.ReviewBuilder
 import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
+import com.junbo.store.spec.model.browse.Images
 import com.junbo.store.spec.model.browse.ReviewsResponse
 import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.browse.document.Item
@@ -72,7 +73,7 @@ class CaseyFacadeImpl implements CaseyFacade {
     private String clientSecret
 
     @Override
-    Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext) {
+    Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, Images.BuildType imageBuildType, ApiContext apiContext) {
         assert sectionInfoNode.sectionType != null, 'sectionType could not be null'
         CaseyResults<Item> results = new CaseyResults<Item>(
                 items: [] as List,
@@ -82,13 +83,13 @@ class CaseyFacadeImpl implements CaseyFacade {
             return Promise.pure(results)
         }
         OfferSearchParams searchParams = buildOfferSearchParams(sectionInfoNode, cursor, count, apiContext)
-        return doSearch(searchParams, apiContext)
+        return doSearch(searchParams, imageBuildType, apiContext)
     }
 
     @Override
-    Promise<CaseyResults<Item>> search(ItemId itemId, ApiContext apiContext) {
+    Promise<CaseyResults<Item>> search(ItemId itemId, Images.BuildType imageBuildType, ApiContext apiContext) {
         OfferSearchParams searchParams = buildOfferSearchParams(itemId, apiContext)
-        return doSearch(searchParams, apiContext)
+        return doSearch(searchParams, imageBuildType, apiContext)
     }
 
     @Override
@@ -217,7 +218,7 @@ class CaseyFacadeImpl implements CaseyFacade {
         }
     }
 
-    private Promise<CaseyResults<Item>> doSearch(OfferSearchParams searchParams, ApiContext apiContext) {
+    private Promise<CaseyResults<Item>> doSearch(OfferSearchParams searchParams, Images.BuildType imageBuildType, ApiContext apiContext) {
         CaseyResults<Item> results = new CaseyResults<Item>(
                 items: [] as List
         )
@@ -248,7 +249,7 @@ class CaseyFacadeImpl implements CaseyFacade {
                     Map<String, AggregatedRatings> aggregatedRatings = [:] as Map
                     aggregatedRatings[CaseyReview.RatingType.quality.name()] = reviewBuilder.buildAggregatedRatings(caseyItem?.qualityRating)
                     aggregatedRatings[CaseyReview.RatingType.comfort.name()] = reviewBuilder.buildAggregatedRatings(caseyItem?.comfortRating)
-                    results.items << itemBuilder.buildItem(caseyOffer, aggregatedRatings, publisher, developer, apiContext)
+                    results.items << itemBuilder.buildItem(caseyOffer, aggregatedRatings, publisher, developer, imageBuildType, apiContext)
                     return Promise.pure()
                 }
             }then {

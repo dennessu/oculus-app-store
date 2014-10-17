@@ -15,6 +15,7 @@ import com.junbo.oauth.db.exception.DBUpdateConflictException
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
+import com.junbo.oauth.spec.option.PageableGetOptions
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
@@ -51,6 +52,11 @@ class ClientServiceImpl implements ClientService {
     @Required
     void setScopeService(ScopeService scopeService) {
         this.scopeService = scopeService
+    }
+
+    @Override
+    List<Client> getAllClients(PageableGetOptions options) {
+        return clientRepository.getAllClients(options)
     }
 
     @Override

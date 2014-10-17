@@ -71,7 +71,7 @@ public class postCredential {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         UserCredential uc = IdentityModel.DefaultUserCredential(user.getId(), password);
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response code", 412, response.getStatusLine().getStatusCode());
@@ -82,7 +82,7 @@ public class postCredential {
 
         password = RandomHelper.randomNumeric(6);
         uc = IdentityModel.DefaultUserCredential(user.getId(), password);
-        response = HttpclientHelper.PureHttpResponse(
+        response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response code", 412, response.getStatusLine().getStatusCode());
@@ -92,7 +92,7 @@ public class postCredential {
 
         password = RandomHelper.randomNumeric(126);
         uc = IdentityModel.DefaultUserCredential(user.getId(), password);
-        response = HttpclientHelper.PureHttpResponse(
+        response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
@@ -100,7 +100,7 @@ public class postCredential {
 
         password = RandomHelper.randomNumeric(8);
         uc = IdentityModel.DefaultUserCredential(user.getId(), password);
-        response = HttpclientHelper.PureHttpResponse(
+        response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
@@ -108,7 +108,7 @@ public class postCredential {
 
         password = RandomHelper.randomAlphabetic(9) + " " + RandomHelper.randomNumeric(5) + "+" + RandomHelper.randomAlphabetic(4);
         uc = IdentityModel.DefaultUserCredential(user.getId(), password);
-        response = HttpclientHelper.PureHttpResponse(
+        response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
@@ -133,7 +133,7 @@ public class postCredential {
         String randomPassword = IdentityModel.DefaultPassword();
         UserCredential uc = IdentityModel.DefaultUserCredential(user.getId(), randomPassword, newPassword);
 
-        response = HttpclientHelper.PureHttpResponse(
+        response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response code", 412, response.getStatusLine().getStatusCode());

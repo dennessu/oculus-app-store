@@ -14,12 +14,10 @@ public class RunnableWrapper implements Runnable {
 
     private final Snapshot snapshot;
 
-    private final Runnable runnable;
-
-    private final AtomicBoolean tag = new AtomicBoolean();
+    private final RunnableOnce runnable;
 
     public RunnableWrapper(Runnable runnable) {
-        this.runnable = runnable;
+        this.runnable = new RunnableOnce(runnable);
         snapshot = new Snapshot();
     }
 
@@ -39,20 +37,38 @@ public class RunnableWrapper implements Runnable {
     }
 
     public boolean hasRun() {
-        return tag.get();
+        return runnable.hasRun();
     }
 
     @Override
     public void run() {
-        if (!tag.compareAndSet(false, true)) {
-            return;
-        }
-
         Object handle = begin();
         try {
             runnable.run();
         } finally {
             end(handle);
+        }
+    }
+
+    private static class RunnableOnce implements Runnable {
+
+        private final AtomicBoolean tag = new AtomicBoolean();
+
+        private final Runnable runnable;
+
+        private RunnableOnce(Runnable runnable) {
+            this.runnable = runnable;
+        }
+
+        public boolean hasRun() {
+            return tag.get();
+        }
+
+        @Override
+        public void run() {
+            if (tag.compareAndSet(false, true)) {
+                runnable.run();
+            }
         }
     }
 }

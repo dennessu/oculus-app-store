@@ -84,6 +84,7 @@ public class Oauth {
     public static final String DefaultFNPassword = "password";
     public static final String DefaultFNPin = "pin";
     public static final String DefaultFNRedirectURI = "redirect_uri";
+    public static final String DefaultFNResponseType = "response_type";
     public static final String DefaultFNUserId = "userId";
     public static final String DefaultFNUserName = "username";
 
@@ -155,7 +156,7 @@ public class Oauth {
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
+                if (h.getName().equals(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNCid, "&");
                 }
             }
@@ -335,7 +336,7 @@ public class Oauth {
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
+                if (h.getName().equals(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNCode, "&");
                 }
             }
@@ -428,7 +429,7 @@ public class Oauth {
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
+                if (h.getName().equals(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNCid, "&");
                 }
             }
@@ -471,7 +472,7 @@ public class Oauth {
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
+                if (h.getName().equals(tarHeader)) {
                     results.put(DefaultFNAccessToken,
                             GetPropertyValueFromString(h.toString(), DefaultFNAccessToken, "&"));
                     results.put(DefaultFNIdToken,
@@ -490,7 +491,7 @@ public class Oauth {
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
+                if (h.getName().equals(tarHeader)) {
                     return h.toString().substring(h.toString().indexOf("access_token=") + "access_token=".length());
                 }
             }
@@ -506,9 +507,9 @@ public class Oauth {
                 + DefaultRedirectURI
                 + "&id_token_hint=" + idToken, null);
         try {
-            String tarHeader = "Location:";
+            String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
+                if (h.getName().equals(tarHeader)) {
                     Validator.Validate("validate logout success", true,
                             h.toString().contains("Location: http://localhost"));
                     return;
@@ -596,7 +597,7 @@ public class Oauth {
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
+                if (h.getName().equals(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNCid, "&");
                 }
             }

@@ -25,6 +25,9 @@ public class FacebookPaymentAccount {
     @QueryParam("payer_address")
     @JsonProperty("payer_address")
     private FacebookAddress payerAddress;
+    @QueryParam("env")
+    @JsonProperty
+    private String env;
 
     public FacebookAddress getPayerAddress() {
         return payerAddress;
@@ -56,5 +59,13 @@ public class FacebookPaymentAccount {
 
     public void setPayerEmail(String payerEmail) {
         this.payerEmail = payerEmail;
+    }
+
+    public String getEnv() {
+        return env;
+    }
+
+    public void setEnv(String env) {
+        this.env = env;
     }
 }

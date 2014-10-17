@@ -52,3 +52,4 @@ echo "[SETUP][SLAVE] slave database started successfully!"
 
 echo "[SETUP][SLAVE] start secondary pgbouncer proxy and connect to master server"
 $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+

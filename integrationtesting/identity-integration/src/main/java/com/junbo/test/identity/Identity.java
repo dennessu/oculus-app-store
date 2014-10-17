@@ -411,7 +411,7 @@ public class Identity {
     public static CloseableHttpResponse UserPersonalInfoPost(UserId userId, UserPersonalInfo upi, boolean validResponse) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserPersonalInfoURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UserPersonalInfoURI,
                 JsonHelper.JsonSerializer(upi), HttpclientHelper.HttpRequestType.post, nvps);
         if (validResponse) {
             Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
@@ -482,7 +482,7 @@ public class Identity {
     public static void ImportUsernameMailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UsernameMailBlockerURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UsernameMailBlockerURI,
                 JsonHelper.JsonSerializer(usernameMailBlocker), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response code", 200, response.getStatusLine().getStatusCode());
         response.close();
@@ -495,7 +495,7 @@ public class Identity {
 
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UsernameMailBlockerURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UsernameMailBlockerURI,
                 JsonHelper.JsonSerializer(usernameMailBlocker), HttpclientHelper.HttpRequestType.post, nvps);
         com.junbo.common.error.Error error = JsonHelper.JsonDeserializer(new InputStreamReader(response.getEntity().getContent()),
                 com.junbo.common.error.Error.class);
@@ -741,7 +741,7 @@ public class Identity {
         UserCredential uc = IdentityModel.DefaultUserCredential(userId, oldPassword, password);
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 IdentityV1UserURI + "/" + GetHexLongId(userId.getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
         if (validResponse) {
@@ -755,7 +755,7 @@ public class Identity {
         UserCredential pinCredential = IdentityModel.DefaultUserPin(userId, oldPassword, pin);
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 IdentityV1UserURI + "/" + GetHexLongId(userId.getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(pinCredential), HttpclientHelper.HttpRequestType.post, nvps);
         if (validReponse) {
@@ -792,7 +792,7 @@ public class Identity {
         }
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserCredentialAttemptsURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
         if (validResponse) {
             Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
@@ -808,7 +808,7 @@ public class Identity {
         }
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserCredentialAttemptsURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
         if (validResponse) {
             Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());

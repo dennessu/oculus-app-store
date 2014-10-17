@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.StringUtils;
+//import scala.util.control.Exception;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
@@ -116,7 +117,7 @@ public class RouterImpl implements Router {
                     policy = DataAccessPolicy.SQL_FIRST;
                     break;
                 default:
-                    break;
+                    break;//TODO temp fix check style failure no default.
             }
         }
         if (policy == null) {
@@ -235,8 +236,8 @@ public class RouterImpl implements Router {
         long oculusId = Utils.keyToLong(routingParam);
 
         // both Oculus40Id and Oculus48Id share the same bit layout for dc and shard
-        int dc = (int)((oculusId >> 2) & 0xF);
-        int shard = (int)((oculusId >> 6) & 0xFF);
+        int dc = (int) ((oculusId >> 2) & 0xF);
+        int shard = (int) ((oculusId >> 6) & 0xFF);
 
         Context.get().setDataCenterId(dc);
         Context.get().setShardId(shard);

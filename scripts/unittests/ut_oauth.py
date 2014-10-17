@@ -10,7 +10,7 @@ class OAuthTests(ut.TestBase):
             'response_type': 'code',
             'scope': scope,
             'redirect_uri': ut.test_redirect_uri
-        })
+        }, headers = {'oculus-internal': 'true'})
         cid = getqueryparam(location, 'cid')
 
         view = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = { 'cid': cid })
@@ -69,7 +69,7 @@ class OAuthTests(ut.TestBase):
             'client_secret': ut.test_client_secret,
             'grant_type': 'authorization_code',
             'redirect_uri': ut.test_redirect_uri
-        })
+        }, headers = {'oculus-internal': 'true'})
         access_token = response["access_token"]
         refresh_token = response["refresh_token"]
         auth_header = { 'Authorization': 'Bearer ' + access_token }
@@ -532,7 +532,7 @@ class OAuthTests(ut.TestBase):
             'scope': 'identity',
             'redirect_uri': ut.test_redirect_uri,
             'state': 'test'
-        })
+        }, headers = {'oculus-internal': 'true'})
 
         assert getqueryparam(location, 'access_token') is not None
         assert getqueryparam(location, 'cid') is None
@@ -555,20 +555,20 @@ class OAuthTests(ut.TestBase):
             'scope': 'identity',
             'redirect_uri': ut.test_redirect_uri,
             'state': 'test'
-        })
+        }, headers = {'oculus-internal': 'true'})
 
         # expect access_denied error
-        assert getqueryparam(location, 'error') == 'access_denied'
+        assert location.endswith('denied/')
         pass
 
     def testInternalClient(self):
-        token = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
+        error = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
             'client_id': ut.test_service_client_id,
             'client_secret': ut.test_service_client_secret,
             'scope': 'identity.service',
             'grant_type': 'client_credentials'
-        })
-        assert token['access_token'] is not None
+        }, raiseOnError = False)
+        assert error['message'] == 'Forbidden'
 
         error = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
             'client_id': ut.test_service_client_id,
@@ -577,6 +577,16 @@ class OAuthTests(ut.TestBase):
             'grant_type': 'client_credentials'
         }, headers = {
             'oculus-internal': 'false'
+        }, raiseOnError = False)
+        assert error['message'] == 'Forbidden'
+
+        error = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
+            'client_id': ut.test_service_client_id,
+            'client_secret': ut.test_service_client_secret,
+            'scope': 'identity.service',
+            'grant_type': 'client_credentials'
+        }, headers = {
+            'oculus-internal': 'arbitrary_value'
         }, raiseOnError = False)
         assert error['message'] == 'Forbidden'
 
@@ -598,7 +608,7 @@ class OAuthTests(ut.TestBase):
             'response_type': 'code',
             'scope': scope,
             'redirect_uri': ut.test_redirect_uri
-        })
+        }, headers = {'oculus-internal': 'true'})
         cid = getqueryparam(location, 'cid')
 
         error = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = { 'cid': cid }, headers = {
@@ -635,7 +645,7 @@ class OAuthTests(ut.TestBase):
             'client_secret': ut.test_service_client_secret,
             'scope': scope,
             'grant_type': 'client_credentials'
-        })
+        }, headers = {'oculus-internal': 'true'})
         return token['access_token']
 
 if __name__ == '__main__':

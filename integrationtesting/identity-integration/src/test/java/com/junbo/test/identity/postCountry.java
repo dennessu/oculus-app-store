@@ -99,7 +99,7 @@ public class postCountry {
         String url = Identity.IdentityV1CountryURI + "/" + "WORLD";
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 url, null, HttpclientHelper.HttpRequestType.get, nvps);
         Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
     }
