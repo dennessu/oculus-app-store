@@ -278,7 +278,7 @@ public class postCommunication {
 
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1CommunicationURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1CommunicationURI,
                 JsonHelper.JsonSerializer(communication2), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "communication have overlap region support for same title";
@@ -293,7 +293,7 @@ public class postCommunication {
         assert communication.getRegions().contains(new CountryId("GB"));
 
         communication.getRegions().add(new CountryId("US"));
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1CommunicationURI + "/" + communication.getId().toString(),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1CommunicationURI + "/" + communication.getId().toString(),
                 JsonHelper.JsonSerializer(communication), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         Validator.Validate("validate response error message", true,

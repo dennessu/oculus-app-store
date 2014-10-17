@@ -159,7 +159,7 @@ public class postCountry {
 
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(invalidSortByURL, null, HttpclientHelper.HttpRequestType.get, nvps);
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(invalidSortByURL, null, HttpclientHelper.HttpRequestType.get, nvps);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "Query parameter is invalid";
         Validator.Validate("validate response error message", true,
@@ -167,7 +167,7 @@ public class postCountry {
         response.close();
 
         errorMessage = "Query parameter is required";
-        response = HttpclientHelper.PureHttpResponse(missingLocaleByURL, null, HttpclientHelper.HttpRequestType.get, nvps);
+        response = HttpclientHelper.GetHttpResponse(missingLocaleByURL, null, HttpclientHelper.HttpRequestType.get, nvps);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
