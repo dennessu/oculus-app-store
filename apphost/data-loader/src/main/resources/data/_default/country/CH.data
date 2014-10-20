@@ -21,7 +21,7 @@
 				},
 				"en_US": {
 					"shortName": "Aargau",
-					"longName": "Canton of Aargau "
+					"longName": "Canton of Aargau"
 				}
 			}
 		},
@@ -329,7 +329,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/de_CH",
 		"id": "de_CH"
-	}],
+	},
+    {
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Switzerland",

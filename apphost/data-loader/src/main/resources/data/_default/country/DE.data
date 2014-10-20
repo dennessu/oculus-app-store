@@ -21,7 +21,7 @@
 				},
 				"en_US": {
 					"shortName": "BB",
-					"longName": "Brandenburg "
+					"longName": "Brandenburg"
 				}
 			}
 		},
@@ -209,7 +209,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/de_DE",
 		"id": "de_DE"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Germany",

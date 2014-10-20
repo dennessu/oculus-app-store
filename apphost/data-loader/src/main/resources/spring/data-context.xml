@@ -108,6 +108,10 @@
         <property name="tosResource" ref="defaultTosResource" />
     </bean>
 
+    <bean id="communicationDataHandler" class="com.junbo.data.handler.CommunicationDataHandler" parent="baseDataHandler">
+        <property name="communicationResource" ref="defaultCommunicationResource" />
+    </bean>
+
     <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
         <property name="handlers">
             <map>
@@ -126,6 +130,7 @@
                 <entry key="item-attribute" value-ref="itemAttributeDataHandler" />
                 <entry key="catalog" value-ref="catalogDataHandler" />
                 <entry key="tos" value-ref="tosDataHandler" />
+                <entry key="communication" value-ref="communicationDataHandler" />
             </map>
         </property>
         <property name="dataList">
@@ -145,6 +150,7 @@
                 <value>item-attribute</value>
                 <value>catalog</value>
                 <value>tos</value>
+                <value>communication</value>
             </list>
         </property>
         <property name="serialDataList">

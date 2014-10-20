@@ -15,7 +15,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/fr_FR",
 		"id": "fr_FR"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Guadeloupe",

@@ -15,6 +15,12 @@ interface UserValidator {
     Promise<Void> validateForSearch(UserListOptions options)
     Promise<Void> validateEmail(String email)
     Promise<Void> validateUsername(String username)
-    // Check whether username and email is occupied, if yes, return true, if no, return false
-    Promise<Boolean> validateUsernameEmailBlocker(String username, String email)
+    // Check whether username and email is occupied
+    // If username or email is empty, exception
+    // If username has multiple records, the migration data should have error, block this user, return 'ERROR'
+    // If username has no record, email has records, return 'USERNAMEABANDON'
+    // If username has no record, email has no records, return 'NEWUSER'
+    // If username has record, email is the same, return 'RETURNUSER'
+    // If username has record, email is different, return 'ERROR'
+    Promise<String> validateUsernameEmailBlocker(String username, String email)
 }

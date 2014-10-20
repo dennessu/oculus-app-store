@@ -358,7 +358,7 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     @Test
     public void testGetFeaturedSection() throws Exception {
-        setupCmsOffers(Arrays.asList(cmsSlot1, cmsSlot2),
+        testDataProvider.setupCmsOffers(cmsPageName, Arrays.asList(cmsSlot1, cmsSlot2),
                 Arrays.asList(getOfferIds(cmsSlot1Items), getOfferIds(cmsSlot2Items)));
 
         String criteria = "cms." + getCmsPageFromEmulator().getSelf().getId();
@@ -406,7 +406,7 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     @Test
     public void testGetFeaturedSectionWithLocaleFallback() throws Exception {
-        setupCmsOffers(Arrays.asList(cmsSlot1, cmsSlot2),
+        testDataProvider.setupCmsOffers(cmsPageName, Arrays.asList(cmsSlot1, cmsSlot2),
                 Arrays.asList(getOfferIds(cmsSlot1Items), getOfferIds(cmsSlot2Items)));
         String criteria = "cms." + getCmsPageFromEmulator().getSelf().getId();
 
@@ -456,7 +456,7 @@ public class StoreBrowseTesting extends BaseTestClass {
     public void testGetFeaturedSectionSmoke() throws Exception {
         String criteria = null;
         if (useCaseyEmulator) {
-            setupCmsOffers(Arrays.asList(cmsSlot1, cmsSlot2),
+            testDataProvider.setupCmsOffers(cmsPageName, Arrays.asList(cmsSlot1, cmsSlot2),
                     Arrays.asList(getOfferIds(cmsSlot1Items), getOfferIds(cmsSlot1Items)));
             criteria = "cms." + getCmsPageFromEmulator().getSelf().getId();
 
@@ -936,14 +936,6 @@ public class StoreBrowseTesting extends BaseTestClass {
             offerIds.add(new OfferId(offerId));
         }
         return offerIds;
-    }
-
-    private void setupCmsOffers(List<String> slots, List<List<OfferId>> offers) throws Exception {
-        Map<String, List<OfferId>> cmsOffers = new HashMap<>();
-        for (int i = 0; i < slots.size(); ++i) {
-            cmsOffers.put(cmsPageName + "-" + slots.get(i), offers.get(i));
-        }
-        testDataProvider.postCaseyEmulatorData(null, null, cmsOffers);
     }
 
     private void verifyItemsInExplore(List<Item> items) throws Exception {

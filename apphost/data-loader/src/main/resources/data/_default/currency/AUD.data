@@ -3,7 +3,11 @@
 		"en_AU": {
 			"shortName": "AUD",
 			"longName": "Australian dollar"
-		}
+		},
+		"en_US": {
+            "shortName": "AUD",
+        	"longName": "Australian dollar"
+        }
 	},
 	"countries": {
 		"href": "/v1/countries?defaultCurrencyId=AUD",

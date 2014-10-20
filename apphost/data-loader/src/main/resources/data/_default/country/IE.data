@@ -18,12 +18,20 @@
 				"en_IE": {
 					"shortName": "Connaught",
 					"longName": "Connaught"
+				},
+				"en_US": {
+					"shortName": "Connaught",
+					"longName": "Connaught"
 				}
 			}
 		},
 		"L": {
 			"locales": {
 				"en_IE": {
+					"shortName": "Leinster",
+					"longName": "Leinster"
+				},
+				"en_US": {
 					"shortName": "Leinster",
 					"longName": "Leinster"
 				}
@@ -34,12 +42,20 @@
 				"en_IE": {
 					"shortName": "Munster",
 					"longName": "Munster"
+				},
+				"en_US": {
+					"shortName": "Munster",
+					"longName": "Munster"
 				}
 			}
 		},
 		"U": {
 			"locales": {
 				"en_IE": {
+					"shortName": "Ulster",
+					"longName": "Ulster"
+				},
+				"en_US": {
 					"shortName": "Ulster",
 					"longName": "Ulster"
 				}
@@ -49,7 +65,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/en_IE",
 		"id": "en_IE"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Ireland",

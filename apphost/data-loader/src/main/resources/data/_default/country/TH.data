@@ -938,7 +938,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/th_TH",
 		"id": "th_TH"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Thailand",

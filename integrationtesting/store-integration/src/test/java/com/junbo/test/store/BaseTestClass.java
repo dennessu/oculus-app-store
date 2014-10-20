@@ -51,6 +51,9 @@ public abstract class BaseTestClass {
     protected List<String> cmsSlot1Items;
     protected List<String> cmsSlot2Items;
 
+    protected String initialAppsCmsPage = "android-initial-app";
+    protected String initialAppsCmsSlot = "offers";
+
     protected ItemService itemService;
     protected ItemRevisionService itemRevisionService;
     protected OfferService offerService;

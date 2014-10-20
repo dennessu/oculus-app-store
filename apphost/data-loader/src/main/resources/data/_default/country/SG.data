@@ -18,12 +18,20 @@
 				"en_SG": {
 					"shortName": "Central Singapore",
 					"longName": "Central Singapore"
+				},
+                "en_US": {
+					"shortName": "Central Singapore",
+					"longName": "Central Singapore"
 				}
 			}
 		},
 		"02": {
 			"locales": {
 				"en_SG": {
+					"shortName": "North East",
+					"longName": "North East"
+				},
+				"en_US": {
 					"shortName": "North East",
 					"longName": "North East"
 				}
@@ -34,12 +42,20 @@
 				"en_SG": {
 					"shortName": "North West",
 					"longName": "North West"
+				},
+				"en_US": {
+					"shortName": "North West",
+					"longName": "North West"
 				}
 			}
 		},
 		"04": {
 			"locales": {
 				"en_SG": {
+					"shortName": "South East",
+					"longName": "South East"
+				},
+				"en_US": {
 					"shortName": "South East",
 					"longName": "South East"
 				}
@@ -50,6 +66,10 @@
 				"en_SG": {
 					"shortName": "South West",
 					"longName": "South West"
+				},
+				"en_US": {
+					"shortName": "South West",
+					"longName": "South West"
 				}
 			}
 		}
@@ -57,7 +77,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/en_SG",
 		"id": "en_SG"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Singapore",

@@ -266,7 +266,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ar_YE",
 		"id": "ar_YE"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Yemen",

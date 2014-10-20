@@ -1,18 +1,16 @@
 package com.junbo.store.clientproxy
-
 import com.junbo.catalog.spec.resource.*
 import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.crypto.spec.resource.ItemCryptoResource
 import com.junbo.entitlement.spec.resource.DownloadUrlResource
 import com.junbo.entitlement.spec.resource.EntitlementResource
-import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.identity.spec.v1.resource.*
-import com.junbo.oauth.spec.endpoint.EmailVerifyEndpoint
 import com.junbo.oauth.spec.endpoint.TokenEndpoint
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.order.spec.resource.OrderResource
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import com.junbo.rating.spec.resource.RatingResource
+import com.junbo.store.clientproxy.oauth.OAuthEmailVerifyEndpoint
 import com.junbo.store.spec.resource.external.CaseyResource
 import com.junbo.store.spec.resource.external.CaseyReviewResource
 import com.junbo.store.spec.resource.external.SentryResource
@@ -20,7 +18,6 @@ import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Class to hold all the other sources IAP depends on.
  */
@@ -45,9 +42,6 @@ class ResourceContainer {
 
     @Resource(name='store.downloadUrlClient')
     DownloadUrlResource downloadUrlResource
-
-    @Resource(name='store.fulfilmentClient')
-    FulfilmentResource fulfilmentResource
 
     @Resource(name='store.orderClient')
     OrderResource orderResource
@@ -94,8 +88,9 @@ class ResourceContainer {
     @Resource(name='store.currencyResourceClientProxy')
     CurrencyResource currencyResource
 
+
     @Resource(name='store.emailVerifyEndpointClientProxy')
-    EmailVerifyEndpoint emailVerifyEndpoint
+    OAuthEmailVerifyEndpoint emailVerifyEndpoint
 
     @Resource(name='store.countryClientProxy')
     CountryResource countryResource
@@ -108,6 +103,12 @@ class ResourceContainer {
 
     @Resource(name = 'store.userTosAgreementResourceClientProxy')
     UserTosAgreementResource userTosAgreementResource
+
+    @Resource(name = 'store.communicationResourceClientProxy')
+    CommunicationResource communicationResource
+
+    @Resource(name = 'store.userCommunicationResourceClientProxy')
+    UserCommunicationResource userCommunicationResource
 
     @Resource(name='store.organizationClientProxy')
     OrganizationResource organizationResource

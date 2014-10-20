@@ -1,6 +1,10 @@
 {
 	"locales": {
-		"en_SG": {
+		"en_US": {
+			"shortName": "PHP",
+			"longName": "Philippine peso"
+		},
+        "en_SG": {
 			"shortName": "PHP",
 			"longName": "Philippine peso"
 		}

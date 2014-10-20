@@ -18,12 +18,20 @@
 				"en_NZ": {
 					"shortName": "AUK",
 					"longName": "Auckland"
+				},
+                "en_US": {
+					"shortName": "AUK",
+					"longName": "Auckland"
 				}
 			}
 		},
 		"BOP": {
 			"locales": {
 				"en_NZ": {
+					"shortName": "BOP",
+					"longName": "Bay of Plenty"
+				},
+				"en_US": {
 					"shortName": "BOP",
 					"longName": "Bay of Plenty"
 				}
@@ -34,12 +42,20 @@
 				"en_NZ": {
 					"shortName": "CAN",
 					"longName": "Canterbury"
+				},
+				"en_US": {
+					"shortName": "CAN",
+					"longName": "Canterbury"
 				}
 			}
 		},
 		"CIT": {
 			"locales": {
 				"en_NZ": {
+					"shortName": "CIT",
+					"longName": "Chatham Islands Territory"
+				},
+				"en_US": {
 					"shortName": "CIT",
 					"longName": "Chatham Islands Territory"
 				}
@@ -50,12 +66,20 @@
 				"en_NZ": {
 					"shortName": "GIS",
 					"longName": "Gisborne District"
+				},
+				"en_US": {
+					"shortName": "GIS",
+					"longName": "Gisborne District"
 				}
 			}
 		},
 		"HKB": {
 			"locales": {
 				"en_NZ": {
+					"shortName": "HKB",
+					"longName": "Hawke's Bay"
+				},
+				"en_US": {
 					"shortName": "HKB",
 					"longName": "Hawke's Bay"
 				}
@@ -66,12 +90,20 @@
 				"en_NZ": {
 					"shortName": "MBH",
 					"longName": "Marlborough District"
+				},
+				"en_US": {
+					"shortName": "MBH",
+					"longName": "Marlborough District"
 				}
 			}
 		},
 		"MWT": {
 			"locales": {
 				"en_NZ": {
+					"shortName": "MWT",
+					"longName": "Manawatu-Wanganui"
+				},
+				"en_US": {
 					"shortName": "MWT",
 					"longName": "Manawatu-Wanganui"
 				}
@@ -82,12 +114,20 @@
 				"en_NZ": {
 					"shortName": "NSN",
 					"longName": "Nelson City"
+				},
+				"en_US": {
+					"shortName": "NSN",
+					"longName": "Nelson City"
 				}
 			}
 		},
 		"NTL": {
 			"locales": {
 				"en_NZ": {
+					"shortName": "NTL",
+					"longName": "Northland"
+				},
+				"en_US": {
 					"shortName": "NTL",
 					"longName": "Northland"
 				}
@@ -98,12 +138,20 @@
 				"en_NZ": {
 					"shortName": "OTA",
 					"longName": "Otago"
+				},
+				"en_US": {
+					"shortName": "OTA",
+					"longName": "Otago"
 				}
 			}
 		},
 		"STL": {
 			"locales": {
 				"en_NZ": {
+					"shortName": "STL",
+					"longName": "Southland"
+				},
+				"en_US": {
 					"shortName": "STL",
 					"longName": "Southland"
 				}
@@ -114,12 +162,20 @@
 				"en_NZ": {
 					"shortName": "TAS",
 					"longName": "Tasman District"
+				},
+				"en_US": {
+					"shortName": "TAS",
+					"longName": "Tasman District"
 				}
 			}
 		},
 		"TKI": {
 			"locales": {
 				"en_NZ": {
+					"shortName": "TKI",
+					"longName": "Taranaki"
+				},
+				"en_US": {
 					"shortName": "TKI",
 					"longName": "Taranaki"
 				}
@@ -130,12 +186,20 @@
 				"en_NZ": {
 					"shortName": "WGN",
 					"longName": "Wellington"
+				},
+				"en_US": {
+					"shortName": "WGN",
+					"longName": "Wellington"
 				}
 			}
 		},
 		"WKO": {
 			"locales": {
 				"en_NZ": {
+					"shortName": "WKO",
+					"longName": "Waikato"
+				},
+				"en_US": {
 					"shortName": "WKO",
 					"longName": "Waikato"
 				}
@@ -146,6 +210,10 @@
 				"en_NZ": {
 					"shortName": "WTC",
 					"longName": "West Coast"
+				},
+				"en_US": {
+					"shortName": "WTC",
+					"longName": "West Coast"
 				}
 			}
 		}
@@ -153,7 +221,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/en_NZ",
 		"id": "en_NZ"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "New Zealand",

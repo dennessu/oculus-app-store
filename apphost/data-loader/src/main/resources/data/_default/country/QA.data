@@ -98,7 +98,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ar_QA",
 		"id": "ar_QA"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Qatar",

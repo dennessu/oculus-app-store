@@ -18,12 +18,20 @@
 				"en_ZA": {
 					"shortName": "EC",
 					"longName": "Eastern Cape"
+				},
+                "en_US": {
+					"shortName": "EC",
+					"longName": "Eastern Cape"
 				}
 			}
 		},
 		"FS": {
 			"locales": {
 				"en_ZA": {
+					"shortName": "FS",
+					"longName": "Free State"
+				},
+				"en_US": {
 					"shortName": "FS",
 					"longName": "Free State"
 				}
@@ -34,12 +42,20 @@
 				"en_ZA": {
 					"shortName": "GT",
 					"longName": "Gauteng"
+				},
+				"en_US": {
+					"shortName": "GT",
+					"longName": "Gauteng"
 				}
 			}
 		},
 		"LP": {
 			"locales": {
 				"en_ZA": {
+					"shortName": "LP",
+					"longName": "Limpopo"
+				},
+				"en_US": {
 					"shortName": "LP",
 					"longName": "Limpopo"
 				}
@@ -50,12 +66,20 @@
 				"en_ZA": {
 					"shortName": "MP",
 					"longName": "Mpumalanga"
+				},
+				"en_US": {
+					"shortName": "MP",
+					"longName": "Mpumalanga"
 				}
 			}
 		},
 		"NC": {
 			"locales": {
 				"en_ZA": {
+					"shortName": "NC",
+					"longName": "Northern Cape"
+				},
+				"en_US": {
 					"shortName": "NC",
 					"longName": "Northern Cape"
 				}
@@ -66,12 +90,20 @@
 				"en_ZA": {
 					"shortName": "NL",
 					"longName": "KwaZulu-Natal"
+				},
+				"en_US": {
+					"shortName": "NL",
+					"longName": "KwaZulu-Natal"
 				}
 			}
 		},
 		"NW": {
 			"locales": {
 				"en_ZA": {
+					"shortName": "NW",
+					"longName": "North West"
+				},
+				"en_US": {
 					"shortName": "NW",
 					"longName": "North West"
 				}
@@ -82,6 +114,10 @@
 				"en_ZA": {
 					"shortName": "WC",
 					"longName": "Western Cape"
+				},
+				"en_US": {
+					"shortName": "WC",
+					"longName": "Western Cape"
 				}
 			}
 		}
@@ -89,7 +125,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/en_ZA",
 		"id": "en_ZA"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "South Africa",

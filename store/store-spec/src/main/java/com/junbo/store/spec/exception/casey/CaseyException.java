@@ -14,7 +14,7 @@ public class CaseyException extends Exception {
         super(msg, cause);
     }
 
-    public CaseyException(Throwable cause) {
-        super(cause);
+    public CaseyException(String msg) {
+        super(msg);
     }
 }

@@ -113,7 +113,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     private PITypeRepository piTypeRepository
 
 
-    @Test
+    @Test(enabled = false)
     public void testCountryRepository() {
         countryRepository.delete(new CountryId('US')).get()
 

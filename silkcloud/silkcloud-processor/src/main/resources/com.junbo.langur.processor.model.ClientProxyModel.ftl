@@ -16,7 +16,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
 
-@org.springframework.stereotype.Component
 public class ${className} extends AbstractClientProxy implements ${interfaceType},
     org.springframework.context.ApplicationContextAware {
 

@@ -5,10 +5,7 @@
  */
 package com.junbo.test.identity;
 
-import com.junbo.identity.spec.v1.model.Country;
-import com.junbo.identity.spec.v1.model.CountryLocaleKey;
-import com.junbo.identity.spec.v1.model.SubCountryLocaleKey;
-import com.junbo.identity.spec.v1.model.SubCountryLocaleKeys;
+import com.junbo.identity.spec.v1.model.*;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Validator;
 import com.junbo.test.common.property.Component;
@@ -18,6 +15,7 @@ import com.junbo.test.common.property.Status;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.springframework.util.CollectionUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -141,6 +139,81 @@ public class postCountry {
         unexpectedLocales.add("zh_CN");
         checkCountryLocale(country, expectedLocales, unexpectedLocales);
         checkCountryAccuracy(country, "LOW");
+    }
+
+    @Test(groups = "dailies")
+    public void searchCountryByLocale() throws Exception {
+
+        String invalidSortByURL = Identity.IdentityV1CountryURI + "?locale=en_US&sortBy=locale";
+        String missingLocaleByURL = Identity.IdentityV1CountryURI + "?sortBy=shortName";
+
+        List<Country> countries = Identity.CountriesSearch("ab_CD", "shortName");
+        assert countries != null;
+        for (Country country : countries) {
+            Validator.Validate("Validate " + country.getCountryCode(), country.getSubCountries() != null, true);
+            CountryLocaleKey countryLocaleKey = country.getLocales().get("ab_CD");
+            Validator.Validate("Validate shortName ", countryLocaleKey.getShortName() == null, true);
+            Validator.Validate("Validate LongName ", countryLocaleKey.getShortName() == null, true);
+            Validator.Validate("Validate postCode", countryLocaleKey.getPostalCode() == null, true);
+        }
+
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(invalidSortByURL, null, HttpclientHelper.HttpRequestType.get, nvps);
+        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
+        String errorMessage = "Query parameter is invalid";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        errorMessage = "Query parameter is required";
+        response = HttpclientHelper.GetHttpResponse(missingLocaleByURL, null, HttpclientHelper.HttpRequestType.get, nvps);
+        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        countries = Identity.CountriesSearch("en_US", "shortName");
+        assert countries != null;
+        int chinaIndex = 0, usIndex = 0;
+        for (int index = 0; index < countries.size(); index ++) {
+            Country country = countries.get(index);
+            if (country.getCountryCode().equalsIgnoreCase("US")) {
+                usIndex = index;
+            } else if (country.getCountryCode().equalsIgnoreCase("CN")) {
+                chinaIndex = index;
+            }
+        }
+        assert chinaIndex < usIndex;
+
+        chinaIndex = usIndex = 0;
+        countries = Identity.CountriesSearch("zh_CN", "shortName");
+        assert countries != null;
+        for (int index = 0; index < countries.size(); index ++) {
+            Country country = countries.get(index);
+            if (country.getCountryCode().equalsIgnoreCase("US")) {
+                usIndex = index;
+            } else if (country.getCountryCode().equalsIgnoreCase("CN")) {
+                chinaIndex = index;
+            }
+        }
+        assert chinaIndex > usIndex;
+    }
+
+    @Test(groups = "dailies")
+    // todo:    Need jason fix this.
+    public void searchCountriesWithValidLocale() throws Exception {
+        List<Locale> locales = Identity.LocaleGetAll().getItems();
+
+        for (Locale locale : locales) {
+            List<Country> countries = Identity.CountriesSearch(locale.getLocaleCode(), "shortName");
+            for (Country country : countries) {
+                Validator.Validate("Validate " + country.getCountryCode(), country.getSubCountries() != null, true);
+                CountryLocaleKey countryLocaleKey = country.getLocales().get(locale.getLocaleCode());
+                Validator.Validate("Validate shortName ", countryLocaleKey.getShortName() != null, true);
+                Validator.Validate("Validate LongName ", countryLocaleKey.getShortName() != null, true);
+            }
+        }
     }
 
     private void checkCountryLocale(Country country, List<String> expectedLocales, List<String> unexpectedLocales) throws Exception {

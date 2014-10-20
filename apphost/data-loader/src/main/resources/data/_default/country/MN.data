@@ -278,7 +278,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/mn_MN",
 		"id": "mn_MN"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Mongolia",

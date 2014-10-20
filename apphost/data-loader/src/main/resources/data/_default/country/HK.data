@@ -19,18 +19,26 @@
 				"en_HK": {
 					"shortName": "Islands",
 					"longName": "Islands"
+				},
+				"en_US": {
+					"shortName": "Islands",
+					"longName": "Islands"
 				}
 			}
 		},
 		"02": {
 			"locales": {
 				"en_HK": {
-					"shortName": "Kwai Tsing ",
-					"longName": "Kwai Tsing "
+					"shortName": "Kwai Tsing",
+					"longName": "Kwai Tsing"
 				},
 				"zh_HK": {
 					"shortName": "葵青",
 					"longName": "葵青"
+				},
+				"en_US": {
+					"shortName": "Kwai Tsing",
+					"longName": "Kwai Tsing"
 				}
 			}
 		},
@@ -41,6 +49,10 @@
 					"longName": "北"
 				},
 				"en_HK": {
+					"shortName": "North",
+					"longName": "North"
+				},
+				"en_US": {
 					"shortName": "North",
 					"longName": "North"
 				}
@@ -55,6 +67,10 @@
 				"en_HK": {
 					"shortName": "Sai Kung",
 					"longName": "Sai Kung"
+				},
+				"en_US": {
+					"shortName": "Sai Kung",
+					"longName": "Sai Kung"
 				}
 			}
 		},
@@ -65,6 +81,10 @@
 					"longName": "沙田"
 				},
 				"en_HK": {
+					"shortName": "Sha Tin",
+					"longName": "Sha Tin"
+				},
+				"en_US": {
 					"shortName": "Sha Tin",
 					"longName": "Sha Tin"
 				}
@@ -79,6 +99,10 @@
 				"zh_HK": {
 					"shortName": "大埔",
 					"longName": "大埔"
+				},
+				"en_US": {
+					"shortName": "Tai Po",
+					"longName": "Tai Po"
 				}
 			}
 		},
@@ -91,6 +115,10 @@
 				"zh_HK": {
 					"shortName": "荃灣",
 					"longName": "荃灣"
+				},
+				"en_US": {
+					"shortName": "Tsuen Wan",
+					"longName": "Tsuen Wan"
 				}
 			}
 		},
@@ -103,6 +131,10 @@
 				"zh_HK": {
 					"shortName": "屯門",
 					"longName": "屯門"
+				},
+				"en_US": {
+					"shortName": "Tuen Mun",
+					"longName": "Tuen Mun"
 				}
 			}
 		},
@@ -115,6 +147,10 @@
 				"zh_HK": {
 					"shortName": "元朗",
 					"longName": "元朗"
+				},
+				"en_US": {
+					"shortName": "Yuen Long",
+					"longName": "Yuen Long"
 				}
 			}
 		},
@@ -127,6 +163,10 @@
 				"zh_HK": {
 					"shortName": "深水埗",
 					"longName": "深水埗"
+				},
+				"en_US": {
+					"shortName": "Sham Shui Po",
+					"longName": "Sham Shui Po"
 				}
 			}
 		},
@@ -139,6 +179,10 @@
 				"zh_HK": {
 					"shortName": "九龍城",
 					"longName": "九龍城"
+				},
+                "en_US": {
+					"shortName": "Kowloon City",
+					"longName": "Kowloon City"
 				}
 			}
 		},
@@ -149,6 +193,10 @@
 					"longName": "觀塘"
 				},
 				"en_HK": {
+					"shortName": "Kwun Tong",
+					"longName": "Kwun Tong"
+				},
+				"en_US": {
 					"shortName": "Kwun Tong",
 					"longName": "Kwun Tong"
 				}
@@ -163,6 +211,10 @@
 				"zh_HK": {
 					"shortName": "黃大仙",
 					"longName": "黃大仙"
+				},
+				"en_US": {
+					"shortName": "Wong Tai Sin",
+					"longName": "Wong Tai Sin"
 				}
 			}
 		},
@@ -175,6 +227,10 @@
 				"zh_HK": {
 					"shortName": "油尖旺",
 					"longName": "油尖旺"
+				},
+				"en_US": {
+					"shortName": "Yau Tsim Mong",
+					"longName": "Yau Tsim Mong"
 				}
 			}
 		},
@@ -187,6 +243,10 @@
 				"zh_HK": {
 					"shortName": "中西",
 					"longName": "中西"
+				},
+				"en_US": {
+					"shortName": "Central and Western",
+					"longName": "Central and Western"
 				}
 			}
 		},
@@ -199,6 +259,10 @@
 				"zh_HK": {
 					"shortName": "東",
 					"longName": "東"
+				},
+				"en_US": {
+					"shortName": "Eastern",
+					"longName": "Eastern"
 				}
 			}
 		},
@@ -211,6 +275,10 @@
 				"zh_HK": {
 					"shortName": "南",
 					"longName": "南"
+				},
+				"en_US": {
+					"shortName": "Southern",
+					"longName": "Southern"
 				}
 			}
 		},
@@ -221,6 +289,10 @@
 					"longName": "灣仔"
 				},
 				"en_HK": {
+					"shortName": "Wan Chai",
+					"longName": "Wan Chai"
+				},
+				"en_US": {
 					"shortName": "Wan Chai",
 					"longName": "Wan Chai"
 				}
@@ -234,7 +306,11 @@
 	{
 		"href": "/v1/locales/zh_HK",
 		"id": "zh_HK"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "HongKong",

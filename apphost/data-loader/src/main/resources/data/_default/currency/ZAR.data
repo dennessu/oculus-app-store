@@ -1,6 +1,10 @@
 {
 	"locales": {
-		"en_ZA": {
+		"en_US": {
+			"shortName": "South African rand",
+			"longName": "South African rand"
+		},
+        "en_ZA": {
 			"shortName": "South African rand",
 			"longName": "South African rand"
 		}

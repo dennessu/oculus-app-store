@@ -2534,7 +2534,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/sl_SI",
 		"id": "sl_SI"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Slovenia",

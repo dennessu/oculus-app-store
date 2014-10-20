@@ -24,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by liangfu on 4/3/14.
  */
-@Api(value = "users")
+@Api(value = "tos-agreements")
 @RestResource
 @InProcessCallable
 @Path("/tos-agreements")

@@ -305,7 +305,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ar_TN",
 		"id": "ar_TN"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Tunisia",

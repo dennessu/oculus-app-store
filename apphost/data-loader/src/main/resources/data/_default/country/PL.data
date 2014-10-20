@@ -209,7 +209,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/pl_PL",
 		"id": "pl_PL"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Poland",

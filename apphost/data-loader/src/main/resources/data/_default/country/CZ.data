@@ -182,7 +182,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/cs_CZ",
 		"id": "cs_CZ"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Czech",

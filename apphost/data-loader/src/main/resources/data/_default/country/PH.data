@@ -18,12 +18,20 @@
 				"en_SG": {
 					"shortName": "National Capital Region",
 					"longName": "National Capital Region"
+				},
+				"en_US": {
+					"shortName": "National Capital Region",
+					"longName": "National Capital Region"
 				}
 			}
 		},
 		"01": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Ilocos",
+					"longName": "Ilocos"
+				},
+				"en_US": {
 					"shortName": "Ilocos",
 					"longName": "Ilocos"
 				}
@@ -34,12 +42,20 @@
 				"en_SG": {
 					"shortName": "Cagayan Valley",
 					"longName": "Cagayan Valley"
+				},
+				"en_US": {
+					"shortName": "Cagayan Valley",
+					"longName": "Cagayan Valley"
 				}
 			}
 		},
 		"03": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Central Luzon",
+					"longName": "Central Luzon"
+				},
+				"en_US": {
 					"shortName": "Central Luzon",
 					"longName": "Central Luzon"
 				}
@@ -50,12 +66,20 @@
 				"en_SG": {
 					"shortName": "Bicol",
 					"longName": "Bicol"
+				},
+				"en_US": {
+					"shortName": "Bicol",
+					"longName": "Bicol"
 				}
 			}
 		},
 		"06": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Western Visayas",
+					"longName": "Western Visayas"
+				},
+				"en_US": {
 					"shortName": "Western Visayas",
 					"longName": "Western Visayas"
 				}
@@ -66,12 +90,20 @@
 				"en_SG": {
 					"shortName": "Central Visayas",
 					"longName": "Central Visayas"
+				},
+				"en_US": {
+					"shortName": "Central Visayas",
+					"longName": "Central Visayas"
 				}
 			}
 		},
 		"08": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Eastern Visayas",
+					"longName": "Eastern Visayas"
+				},
+				"en_US": {
 					"shortName": "Eastern Visayas",
 					"longName": "Eastern Visayas"
 				}
@@ -82,12 +114,20 @@
 				"en_SG": {
 					"shortName": "Zamboanga Peninsula",
 					"longName": "Zamboanga Peninsula"
+				},
+				"en_US": {
+					"shortName": "Zamboanga Peninsula",
+					"longName": "Zamboanga Peninsula"
 				}
 			}
 		},
 		"10": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Northern Mindanao",
+					"longName": "Northern Mindanao"
+				},
+				"en_US": {
 					"shortName": "Northern Mindanao",
 					"longName": "Northern Mindanao"
 				}
@@ -98,12 +138,20 @@
 				"en_SG": {
 					"shortName": "Davao",
 					"longName": "Davao"
+				},
+				"en_US": {
+					"shortName": "Davao",
+					"longName": "Davao"
 				}
 			}
 		},
 		"12": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Soccsksargen",
+					"longName": "Soccsksargen"
+				},
+				"en_US": {
 					"shortName": "Soccsksargen",
 					"longName": "Soccsksargen"
 				}
@@ -114,12 +162,20 @@
 				"en_SG": {
 					"shortName": "Caraga",
 					"longName": "Caraga"
+				},
+				"en_US": {
+					"shortName": "Caraga",
+					"longName": "Caraga"
 				}
 			}
 		},
 		"14": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Autonomous Region in Muslim Mindanao",
+					"longName": "Autonomous Region in Muslim Mindanao"
+				},
+				"en_US": {
 					"shortName": "Autonomous Region in Muslim Mindanao",
 					"longName": "Autonomous Region in Muslim Mindanao"
 				}
@@ -130,12 +186,20 @@
 				"en_SG": {
 					"shortName": "Cordillera Administrative Region",
 					"longName": "Cordillera Administrative Region"
+				},
+				"en_US": {
+					"shortName": "Cordillera Administrative Region",
+					"longName": "Cordillera Administrative Region"
 				}
 			}
 		},
 		"40": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Calabarzon",
+					"longName": "Calabarzon"
+				},
+				"en_US": {
 					"shortName": "Calabarzon",
 					"longName": "Calabarzon"
 				}
@@ -146,6 +210,10 @@
 				"en_SG": {
 					"shortName": "Mimaropa",
 					"longName": "Mimaropa"
+				},
+				"en_US": {
+					"shortName": "Mimaropa",
+					"longName": "Mimaropa"
 				}
 			}
 		}
@@ -153,7 +221,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/en_SG",
 		"id": "en_SG"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Philippines",

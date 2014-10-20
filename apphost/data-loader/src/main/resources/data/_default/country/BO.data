@@ -122,7 +122,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/es_BO",
 		"id": "es_BO"
-	}],
+	},
+    {
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Bolivia",

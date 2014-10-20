@@ -293,7 +293,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/zh_TW",
 		"id": "zh_TW"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Taiwan",
