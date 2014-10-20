@@ -926,13 +926,24 @@ public class LoginResourceTesting extends BaseTestClass {
         UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
         StoreUserProfile storeUserProfile = new StoreUserProfile();
         String newNickName = RandomHelper.randomAlphabetic(10);
+        String oldNickName = createUserRequest.getUsername();
         storeUserProfile.setNickName(newNickName);
         userProfileUpdateRequest.setUserProfile(storeUserProfile);
         UserProfileUpdateResponse response = testDataProvider.updateUserProfile(userProfileUpdateRequest);
-        assert response.getUserProfile().getNickName().equalsIgnoreCase(newNickName);
+        //https://oculus.atlassian.net/browse/SER-693?filter=-1
+        assert response.getUserProfile().getNickName().equalsIgnoreCase(oldNickName);
 
         UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
-        assert userProfileGetResponse.getUserProfile().getNickName().equalsIgnoreCase(newNickName);
+        assert userProfileGetResponse.getUserProfile().getNickName().equalsIgnoreCase(oldNickName);
+
+        String avatar = RandomHelper.randomAlphabetic(100);
+        storeUserProfile.setAvatar(avatar);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+        response = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert response.getUserProfile().getAvatar().equalsIgnoreCase(avatar);
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse.getUserProfile().getAvatar().equalsIgnoreCase(avatar);
     }
 
     @Property(

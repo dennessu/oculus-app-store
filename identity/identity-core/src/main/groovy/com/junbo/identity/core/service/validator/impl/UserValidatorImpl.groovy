@@ -84,9 +84,22 @@ class UserValidatorImpl implements UserValidator {
         }
         return validateUserInfo(user).then {
             if (user.username != null) {
-                return validateUserNameDuplicate(user, user)
+                return validateUserNameDuplicate(user, user).then {
+                    return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+                        if (userPersonalInfo == null || userPersonalInfo.value == null) {
+                            return Promise.pure(null)
+                        }
+
+                        UserLoginName userLoginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                        user.nickName = userLoginName.userName
+                        return Promise.pure(null)
+                    }
+                }
+
             }
 
+            // https://oculus.atlassian.net/browse/SER-693
+            // Will treat username as primary
             return Promise.pure(null)
         }
     }
@@ -129,6 +142,19 @@ class UserValidatorImpl implements UserValidator {
             }
 
             return validateEmailUpdate(user, oldUser)
+        }.then {
+            // https://oculus.atlassian.net/browse/SER-693
+            // Will treat username as primary
+            return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null || userPersonalInfo.value == null) {
+                    return Promise.pure(null)
+                }
+
+                UserLoginName userLoginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                user.nickName = userLoginName.userName
+
+                return Promise.pure(null)
+            }
         }
     }
 

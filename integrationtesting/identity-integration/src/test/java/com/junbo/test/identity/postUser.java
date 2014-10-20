@@ -54,7 +54,8 @@ public class postUser {
         String username = RandomHelper.randomAlphabetic(15);
         String nickname = RandomHelper.randomAlphabetic(10);
         User posted = createUser(username, nickname);
-        Validator.Validate("validate user nick name", posted.getNickName(), nickname);
+        // https://oculus.atlassian.net/browse/SER-693
+        Validator.Validate("validate user nick name", posted.getNickName(), username);
 
         User stored = Identity.UserGetByUserId(posted.getId());
         Validator.Validate("validate user name", posted.getUsername(), stored.getUsername());
