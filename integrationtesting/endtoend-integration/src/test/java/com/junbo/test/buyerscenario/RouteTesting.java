@@ -65,7 +65,7 @@ public class RouteTesting extends BaseTestClass {
         testDataProvider.getUserByUid(uid);
 
         user = Master.getInstance().getUser(uid);
-        assert user.getPreferredLocale().equals("en_CA");
+        assert user.getPreferredLocale().getValue().equals("en_CA");
 
     }
 
