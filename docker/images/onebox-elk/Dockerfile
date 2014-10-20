@@ -29,9 +29,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq &&\
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 RUN rm /etc/nginx/sites-enabled/*
 
-# Enable insecure key so that docker-ssh can work, it is ok in dev env
-RUN /usr/sbin/enable_insecure_key
-
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 

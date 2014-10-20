@@ -16,9 +16,6 @@ RUN mkdir /etc/service/memcached
 ADD memcached.sh /etc/service/memcached/run
 RUN chmod +x /etc/service/memcached/run
 
-# Enable insecure key so that docker-ssh can work, it is ok in dev env
-RUN /usr/sbin/enable_insecure_key
-
 # memcached public variable
 ENV MAX_MEM 64
 ENV MAX_CONN 1024
