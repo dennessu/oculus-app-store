@@ -22,15 +22,13 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.NotFoundException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author dw
@@ -273,18 +271,22 @@ public class Oauth {
     }
 
     // pass in userName and email for validation purpose only
+    public static void PostRegisterUser(String cid, String userName, String email, ViewModel emailVerifyRequiredViewModel) throws Exception {
+        PostRegisterUser(cid, userName, email, null, true, false, emailVerifyRequiredViewModel);
+    }
+
     public static void PostRegisterUser(String cid, String userName, String email) throws Exception {
-        PostRegisterUser(cid, userName, email, null, true, false);
+        PostRegisterUser(cid, userName, email, null, true, false, null);
     }
 
     public static void PostRegisterUser(String cid, String userName, String email, com.junbo.common.error.Error error)
             throws Exception {
-        PostRegisterUser(cid, userName, email, error, true, false);
+        PostRegisterUser(cid, userName, email, error, true, false, null);
     }
 
     // pass in userName and email for validation purpose only
     public static void PostRegisterUser(String cid, String userName, String email, Error errors,
-                                        Boolean verifyEmail, Boolean doubleVerifyEmail) throws Exception {
+                                        Boolean verifyEmail, Boolean doubleVerifyEmail, ViewModel emailVerifyRequiredViewModel) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
@@ -306,11 +308,14 @@ public class Oauth {
             } else {
                 Validator.Validate("validate errors",
                         errors.getDetails().size(),
-                        viewModel.getErrors().get(0).getDetails().size());
+                        viewModel.getErrors().get(0).getDetails() == null ? 0: viewModel.getErrors().get(0).getDetails().size());
+                Validator.Validate("validate error message",
+                        errors.getMessage(),
+                        viewModel.getErrors().get(0).getMessage());
                 for (int i = 0; i < errors.getDetails().size(); i++) {
-                    Validator.Validate("validate error message",
-                            errors.getMessage(),
-                            viewModel.getErrors().get(0).getMessage());
+                    if (!StringUtils.isEmpty(errors.getCode())) {
+                        Validator.Validate("Validate error code", errors.getCode(), viewModel.getErrors().get(0).getCode());
+                    }
                     Validator.Validate("validate error field",
                             errors.getDetails().get(i).getField(),
                             viewModel.getErrors().get(0).getDetails().get(i).getField());
@@ -318,9 +323,11 @@ public class Oauth {
                             errors.getDetails().get(i).getReason(),
                             viewModel.getErrors().get(0).getDetails().get(i).getReason());
                 }
-                return;
+                return ;
             }
-            if (verifyEmail) RunPostRegistrationWithEmailVerification(cid, doubleVerifyEmail);
+            if (verifyEmail) {
+                RunPostRegistrationWithEmailVerification(cid, doubleVerifyEmail, emailVerifyRequiredViewModel);
+            }
         } finally {
             response.close();
         }
@@ -365,9 +372,9 @@ public class Oauth {
     }
 
 
-    private static void RunPostRegistrationWithEmailVerification(String cid, Boolean doubleVerifyEmail)
+    private static void RunPostRegistrationWithEmailVerification(String cid, Boolean doubleVerifyEmail, ViewModel emailVerifyRequiredViewModel)
             throws Exception {
-        String emailLink = GetEmailLinkFlowAfterRegistration(cid);
+        String emailLink = GetEmailLinkFlowAfterRegistration(cid, emailVerifyRequiredViewModel);
         List<NameValuePair> nvps;
         CloseableHttpResponse response;
 
@@ -382,7 +389,11 @@ public class Oauth {
         response.close();
     }
 
-    private static String GetEmailLinkFlowAfterRegistration(String cid) throws Exception {
+    public static String GetEmailLinkFlowAfterRegistration(String cid) throws Exception {
+        return GetEmailLinkFlowAfterRegistration(cid, null);
+    }
+
+    private static String GetEmailLinkFlowAfterRegistration(String cid, ViewModel emailVerifyRequiredViewModel) throws Exception {
         // get payment method view
         CloseableHttpResponse response = OauthGet(DefaultAuthorizeURI + "?cid=" + cid, null);
         response.close();
@@ -400,6 +411,17 @@ public class Oauth {
         ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
                 new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
         response.close();
+        if (emailVerifyRequiredViewModel != null && emailVerifyRequiredViewModel.getModel() != null) {
+            Iterator<Map.Entry<String, Object>> it = emailVerifyRequiredViewModel.getModel().entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, Object> objectEntry = (Map.Entry<String, Object>)it.next();
+                Object obj =viewModelResponse.getModel().get(objectEntry.getKey());
+                assert obj.equals(objectEntry.getValue());
+            }
+        } else if (emailVerifyRequiredViewModel == null) {
+            Object obj =viewModelResponse.getModel().get("REGISTRATIONSTATE");
+            assert obj.equals("NEWUSER");
+        }
         return viewModelResponse.getModel().get("link").toString();
     }
 

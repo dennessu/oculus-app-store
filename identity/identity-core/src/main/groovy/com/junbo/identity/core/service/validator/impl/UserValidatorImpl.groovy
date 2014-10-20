@@ -255,19 +255,32 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
+    // If username or email is empty, throw exception
+    // If username has multiple records, the migration data should have error, block this user, return 'BLOCK'
+    // If username has no record, email has records, return 'USERNAMEABANDON'
+    // If username has no record, email has no records, return 'NEWUSER'
+    // If username has record, email is the same, return 'RETURNUSER'
+    // If username has record, email is different, return 'ERROR'
     @Override
-    Promise<Boolean> validateUsernameEmailBlocker(String username, String email) {
+    Promise<String> validateUsernameEmailBlocker(String username, String email) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(email)) {
-            return Promise.pure(true)
+            throw AppCommonErrors.INSTANCE.parameterRequired('username or email').exception()
         }
 
         return usernameEmailBlockerRepository.searchByUsername(normalizeService.normalize(username), Integer.MAX_VALUE, 0).then {
             List<UsernameMailBlocker> blockerList ->
             if (CollectionUtils.isEmpty(blockerList)) {
-                return Promise.pure(false)
+                return usernameEmailBlockerRepository.searchByEmail(email.toLowerCase(Locale.ENGLISH), Integer.MAX_VALUE, 0).then {
+                    List<UsernameMailBlocker> mailBlockerList ->
+                        if (CollectionUtils.isEmpty(mailBlockerList)) {
+                            return Promise.pure('NEWUSER')
+                        }
+
+                        return Promise.pure('USERNAMEABANDON')
+                }
             }
             if (blockerList.size() > 1) {
-                return Promise.pure(true)
+                return Promise.pure('ERROR')
             }
 
             UsernameMailBlocker blocker = blockerList.get(0)
@@ -275,10 +288,10 @@ class UserValidatorImpl implements UserValidator {
             String hashedMail = piiHash.generateHash(email.toLowerCase(Locale.ENGLISH))
 
             if (blocker.hashEmail.equalsIgnoreCase(hashedMail)) {
-                return Promise.pure(false)
+                return Promise.pure('RETURNUSER')
             }
 
-            return Promise.pure(true)
+            return Promise.pure('ERROR')
         }
     }
 

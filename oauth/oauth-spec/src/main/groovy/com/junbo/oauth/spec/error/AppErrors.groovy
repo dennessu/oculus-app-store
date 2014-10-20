@@ -190,4 +190,7 @@ interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = '141', message = 'User does not have phone in his/her profile')
     AppError phoneNotFound()
+
+    @ErrorDef(httpStatusCode = 412, code = '142', message = 'Username and email are occupied')
+    AppError usernameAndEmailOccupied()
 }

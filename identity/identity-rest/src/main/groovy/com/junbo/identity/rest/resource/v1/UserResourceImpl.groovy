@@ -393,6 +393,21 @@ class UserResourceImpl implements UserResource {
 
     @Override
     Promise<Boolean> checkUsernameEmailBlocker(String username, String email) {
+        return userValidator.validateUsernameEmailBlocker(username, email).then { String blockerState ->
+            if (StringUtils.isEmpty(blockerState)) {
+                return Promise.pure(true)
+            }
+
+            if ('ERROR'.equalsIgnoreCase(blockerState)) {
+                return Promise.pure(true)
+            }
+
+            return Promise.pure(false)
+        }
+    }
+
+    @Override
+    Promise<String> getUsernameEmailOccupyState(String username, String email) {
         return userValidator.validateUsernameEmailBlocker(username, email)
     }
 
