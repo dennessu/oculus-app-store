@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.util
 
+import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.core.context.ActionContextWrapper
 import groovy.transform.CompileStatic
@@ -17,14 +18,14 @@ import javax.ws.rs.core.Response.ResponseBuilder
  */
 @CompileStatic
 class CookieUtil {
+    static boolean SECURE = Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('oauth.cookie.secure'))
+
     static void setCookie(ActionContext context, String cookieName,
                           String value, int maxAge = NewCookie.DEFAULT_MAX_AGE, boolean httpOnly = true) {
         def wrapper = new ActionContextWrapper(context)
 
-        def secure = false // todo: read it from configuration service
-
         NewCookie cookie = new NewCookie(cookieName, value,
-                null, null, null, maxAge, secure, httpOnly)
+                null, null, null, maxAge, SECURE, httpOnly)
 
         List<NewCookie> responseCookieList = wrapper.responseCookieList
         responseCookieList.add(cookie)
@@ -32,10 +33,8 @@ class CookieUtil {
 
     static void setCookie(ResponseBuilder responseBuilder, String cookieName,
                           String value, int maxAge = NewCookie.DEFAULT_MAX_AGE, boolean httpOnly = true) {
-        def secure = false // todo: read it from configuration service
-
         NewCookie cookie = new NewCookie(cookieName, value,
-                null, null, null, maxAge, secure, httpOnly)
+                null, null, null, maxAge, SECURE, httpOnly)
         responseBuilder.cookie(cookie)
     }
 
