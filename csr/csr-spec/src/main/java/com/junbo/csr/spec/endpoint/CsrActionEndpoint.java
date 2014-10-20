@@ -6,8 +6,11 @@
 package com.junbo.csr.spec.endpoint;
 
 import com.junbo.common.model.Results;
+import com.junbo.csr.spec.model.CsrCredential;
+import com.junbo.csr.spec.model.CsrToken;
 import com.junbo.csr.spec.model.SearchForm;
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -25,17 +28,11 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface CsrActionEndpoint {
-    /*
+
     @POST
     @Path("/login")
     @AuthorizationNotRequired
     Promise<CsrToken> login(CsrCredential csrCredential);
-
-    @GET
-    @Path("/refresh")
-    @AuthorizationNotRequired
-    Promise<CsrToken> refresh(@QueryParam("refreshToken")String refreshToken);
-    */
 
     @POST
     @Path("/search")
