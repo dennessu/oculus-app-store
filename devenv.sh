@@ -27,20 +27,12 @@ stop(){
   echo "All the dev-env containers have been stopped"
 }
 
-dockerssh(){
-  if [ -z "$1" ]; then
-    echo "! Please specify container id or container name"
-    exit 1
-  fi
-  sudo docker-ssh $1
-}
-
-dockerenter(){
+dockerexec(){
   if [ -z "$1" ]; then
     echo "Please specify container id or container name"
     exit 1
   fi
-  sudo docker-bash $1
+  sudo docker exec -it $1 bash
 }
 
 resume_container() {
@@ -134,13 +126,10 @@ case "$1" in
   status)
     sudo docker ps
     ;;
-  ssh)
-    dockerssh $2
-    ;;
-  enter)
-    dockerenter $2
+  bash)
+    dockerexec $2
     ;;
   *)
-    echo $"Usage: $0 {start|stop|kill|restart|status|ssh <id/name>|enter <id/name>}"
+    echo $"Usage: $0 {start|stop|kill|restart|status|bash <id/name>}"
     RETVAL=1
 esac
