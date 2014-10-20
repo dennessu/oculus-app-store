@@ -221,7 +221,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/fr_CF",
 		"id": "fr_CF"
-	}],
+	},
+    {
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Central African Republic",

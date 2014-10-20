@@ -15,6 +15,7 @@ import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.oauth.spec.model.TokenInfo;
+import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Property;
@@ -69,7 +70,10 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        Oauth.PostRegisterUser(cid, userName, email);
+        ViewModel viewModel = new ViewModel();
+        viewModel.setModel(new HashMap<String, Object>());
+        viewModel.getModel().put("REGISTRATIONSTATE", "NEWUSER");
+        Oauth.PostRegisterUser(cid, userName, email, viewModel);
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAfterRegisterUser);
         String authCode = Oauth.GetAuthCodeAfterRegisterUser(cid);
@@ -301,7 +305,7 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        Oauth.PostRegisterUser(cid, userName, email, null, false, false);
+        Oauth.PostRegisterUser(cid, userName, email, null, false, false, null);
         Oauth.VerifyEmail(cid, Oauth.DefaultOauthSecondaryEndpoint);
 
     }
@@ -450,7 +454,7 @@ public class authorizeUser {
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        Oauth.PostRegisterUser(cid, userName, email, null, true, true);
+        Oauth.PostRegisterUser(cid, userName, email, null, true, true, null);
     }
 
     @Test(groups = "dailies")
@@ -512,14 +516,10 @@ public class authorizeUser {
         Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        List<ErrorDetail> errorDetails = new ArrayList<>();
-        ErrorDetail errorDetail = new ErrorDetail();
-        errorDetail.setField("username");
-        errorDetail.setReason("Field value is invalid. username and email are occupied");
-        errorDetails.add(0, errorDetail);
         Error error = new Error();
-        error.setMessage("Input Error");
-        error.setDetails(errorDetails);
+        error.setMessage("Username and email are occupied");
+        error.setCode("132.142");
+        error.setDetails(new ArrayList<ErrorDetail>());
         Oauth.PostRegisterUser(cid, userName, RandomHelper.randomEmail(), error);
     }
 
@@ -551,7 +551,10 @@ public class authorizeUser {
         Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        Oauth.PostRegisterUser(cid, RandomHelper.randomAlphabetic(15), email);
+        ViewModel viewModel = new ViewModel();
+        viewModel.setModel(new HashMap<String, Object>());
+        viewModel.getModel().put("REGISTRATIONSTATE", "USERNAMEABANDON");
+        Oauth.PostRegisterUser(cid, RandomHelper.randomAlphabetic(15), email, viewModel);
     }
 
     @Test(groups = "dailies")
@@ -582,7 +585,10 @@ public class authorizeUser {
         Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        Oauth.PostRegisterUser(cid, userName, email);
+        ViewModel viewModel = new ViewModel();
+        viewModel.setModel(new HashMap<String, Object>());
+        viewModel.getModel().put("REGISTRATIONSTATE", "RETURNUSER");
+        Oauth.PostRegisterUser(cid, userName, email, viewModel);
     }
 
     @Test(groups = "dailies")

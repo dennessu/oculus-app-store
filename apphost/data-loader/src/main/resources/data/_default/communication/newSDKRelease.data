@@ -1,0 +1,20 @@
+{
+    "translations": [
+        {
+            "href": "/v1/locales/en_US",
+            "id": "en_US"
+        }
+    ],
+    "regions": [
+        {
+            "href": "/v1/countries/US",
+            "id": "US"
+        }
+    ],
+    "locales": {
+        "en_US": {
+            "name": "New SDK Releases",
+            "description": "Oculus New SDK Releases Newsletter"
+        }
+    }
+}

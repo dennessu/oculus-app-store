@@ -5,6 +5,7 @@
  */
 package com.junbo.store.rest.browse;
 
+import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
 import com.junbo.store.spec.model.browse.document.SectionInfoNode;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public interface SectionService {
 
-    List<SectionInfoNode> getTopLevelSectionInfoNode(ApiContext apiContext);
+    Promise<List<SectionInfoNode>> getTopLevelSectionInfoNode(ApiContext apiContext);
 
-    SectionInfoNode  getSectionInfoNode(String category, String criteria, ApiContext apiContext);
+    Promise<SectionInfoNode>  getSectionInfoNode(String category, String criteria, ApiContext apiContext);
 }

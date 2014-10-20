@@ -57,7 +57,11 @@
 	{
 		"href": "/v1/locales/fr_LU",
 		"id": "fr_LU"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Luxembourg",

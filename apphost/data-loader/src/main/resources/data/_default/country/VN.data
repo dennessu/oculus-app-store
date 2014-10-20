@@ -782,7 +782,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/vi_VN",
 		"id": "vi_VN"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Vietnam",

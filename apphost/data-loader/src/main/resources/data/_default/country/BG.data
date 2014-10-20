@@ -350,7 +350,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/bg_BG",
 		"id": "bg_BG"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Bulgaria",

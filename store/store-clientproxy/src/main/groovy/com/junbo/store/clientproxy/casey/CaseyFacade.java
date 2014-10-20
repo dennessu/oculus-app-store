@@ -28,6 +28,8 @@ public interface CaseyFacade {
 
     Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, Images.BuildType imageBuildType, ApiContext apiContext);
 
+    Promise<CaseyResults<Item>> search(String cmsPage, String cmsSlot, String cursor, Integer count, Images.BuildType imageBuildType, ApiContext apiContext);
+;
     Promise<CaseyResults<Item>> search(ItemId itemId, Images.BuildType imageBuildType, ApiContext apiContext);
 
     Promise<Map<String, AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext);

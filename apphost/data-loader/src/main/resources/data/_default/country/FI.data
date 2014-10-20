@@ -245,7 +245,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/fi_FI",
 		"id": "fi_FI"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Finland",

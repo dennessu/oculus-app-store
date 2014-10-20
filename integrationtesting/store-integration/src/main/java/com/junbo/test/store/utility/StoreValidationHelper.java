@@ -9,6 +9,7 @@ package com.junbo.test.store.utility;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.common.id.ItemId;
 import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.Entitlement;
 import com.junbo.store.spec.model.billing.BillingProfile;
@@ -27,6 +28,9 @@ import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import org.testng.Assert;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -65,7 +69,7 @@ public class StoreValidationHelper extends BaseValidationHelper {
     }
 
     public void verifyPreparePurchase(PreparePurchaseResponse response) {
-        verifyEqual(response.getFormattedTotalPrice(), String.format("10.0$"), "verify formatted total price");
+        verifyEqual(response.getFormattedTotalPrice(), String.format("10.00$"), "verify formatted total price");
         if (response.getPurchaseToken() == null || response.getPurchaseToken().isEmpty()) {
             throw new TestException("missing purchase token in prepare purchase response");
         }
@@ -78,6 +82,19 @@ public class StoreValidationHelper extends BaseValidationHelper {
         verifyEqual(response.getItems().get(0).getItemType(), item.getType(), "verify item type");
         verifyEqual(response.getItems().get(0).getTitle(), offerRevision.getLocales().get("en_US").getName(),"verify entitlement type");
         verifyEqual(response.getItems().get(0).getOwnedByCurrentUser(), Boolean.valueOf(true),"verify owned by current user");
+    }
+
+    public void verifyItemsInLibrary(LibraryResponse response, List<String> itemNames) throws Exception {
+        Set<ItemId> itemIdSet = new HashSet<>();
+        for (String itemName: itemNames) {
+            itemIdSet.add(new ItemId(storeTestDataProvider.getItemByName(itemName).getId()));
+        }
+        Set<ItemId> actual = new HashSet<>();
+        for (com.junbo.store.spec.model.browse.document.Item item : response.getItems()) {
+            Assert.assertTrue(!actual.contains(item.getSelf()), "duplicate item found in library");
+            actual.add(item.getSelf());
+        }
+        Assert.assertEquals(actual, itemIdSet);
     }
 
     public void verifyCommitPurchase(CommitPurchaseResponse response, String offerId) throws Exception {

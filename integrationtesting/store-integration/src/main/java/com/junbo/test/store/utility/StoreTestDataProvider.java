@@ -40,13 +40,11 @@ import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.catalog.*;
 import com.junbo.test.catalog.impl.*;
-import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
-import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.UserService;
@@ -69,14 +67,6 @@ import com.junbo.test.store.apihelper.impl.CaseyEmulatorServiceImpl;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreConfigServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
-import org.apache.http.Consts;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -129,6 +119,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         createUserRequest.setPreferredLocale("en_US");
         Tos tos = loginClient.GetRegisterTos();
         createUserRequest.setTosAgreed(tos.getTosId());
+        createUserRequest.setNewsPromotionsAgreed(true);
         return createUserRequest;
     }
 
@@ -735,6 +726,12 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.acceptTos(request);
     }
 
+    public AcceptTosResponse acceptTos(TosId tosId, int expectedCode) throws Exception {
+        AcceptTosRequest request = new AcceptTosRequest();
+        request.setTosId(tosId);
+        return storeClient.acceptTos(request, expectedCode);
+    }
+
     public DeliveryResponse getDelivery(ItemId itemId) throws Exception {
         return getDelivery(itemId, null, 200);
     }
@@ -844,6 +841,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public CaseyResults<CmsPage> getCmsPage(String path, String label, int expectedCode) throws Exception {
         return caseyEmulatorClient.getCmsPages(path, label, expectedCode);
+    }
+
+    public void setupCmsOffers(String cmsPageName, List<String> slots, List<List<OfferId>> offers) throws Exception {
+        Map<String, List<OfferId>> cmsOffers = new HashMap<>();
+        for (int i = 0; i < slots.size(); ++i) {
+            cmsOffers.put(cmsPageName + "-" + slots.get(i), offers.get(i));
+        }
+        postCaseyEmulatorData(null, null, cmsOffers);
     }
 
     public void resetEmulatorData() throws Exception {

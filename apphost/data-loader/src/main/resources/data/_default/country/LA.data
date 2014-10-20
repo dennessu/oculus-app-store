@@ -18,12 +18,20 @@
 				"en_SG": {
 					"shortName": "Attapeu",
 					"longName": "Attapeu"
+				},
+				"en_US": {
+					"shortName": "Attapeu",
+					"longName": "Attapeu"
 				}
 			}
 		},
 		"BK": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Bokeo",
+					"longName": "Bokeo"
+				},
+				"en_US": {
 					"shortName": "Bokeo",
 					"longName": "Bokeo"
 				}
@@ -34,12 +42,20 @@
 				"en_SG": {
 					"shortName": "Bolikhamsai",
 					"longName": "Bolikhamsai"
+				},
+				"en_US": {
+					"shortName": "Bolikhamsai",
+					"longName": "Bolikhamsai"
 				}
 			}
 		},
 		"CH": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Champasak",
+					"longName": "Champasak"
+				},
+				"en_US": {
 					"shortName": "Champasak",
 					"longName": "Champasak"
 				}
@@ -50,12 +66,20 @@
 				"en_SG": {
 					"shortName": "Houaphanh",
 					"longName": "Houaphanh"
+				},
+				"en_US": {
+					"shortName": "Houaphanh",
+					"longName": "Houaphanh"
 				}
 			}
 		},
 		"KH": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Khammouane",
+					"longName": "Khammouane"
+				},
+				"en_US": {
 					"shortName": "Khammouane",
 					"longName": "Khammouane"
 				}
@@ -66,12 +90,20 @@
 				"en_SG": {
 					"shortName": "Luang Namtha",
 					"longName": "Luang Namtha"
+				},
+				"en_US": {
+					"shortName": "Luang Namtha",
+					"longName": "Luang Namtha"
 				}
 			}
 		},
 		"LP": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Luang Prabang",
+					"longName": "Luang Prabang"
+				},
+				"en_US": {
 					"shortName": "Luang Prabang",
 					"longName": "Luang Prabang"
 				}
@@ -82,12 +114,20 @@
 				"en_SG": {
 					"shortName": "Oudomxay",
 					"longName": "Oudomxay"
+				},
+				"en_US": {
+					"shortName": "Oudomxay",
+					"longName": "Oudomxay"
 				}
 			}
 		},
 		"PH": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Phongsaly",
+					"longName": "Phongsaly"
+				},
+				"en_US": {
 					"shortName": "Phongsaly",
 					"longName": "Phongsaly"
 				}
@@ -98,12 +138,20 @@
 				"en_SG": {
 					"shortName": "Salavan",
 					"longName": "Salavan"
+				},
+				"en_US": {
+					"shortName": "Salavan",
+					"longName": "Salavan"
 				}
 			}
 		},
 		"SV": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Savannakhet",
+					"longName": "Savannakhet"
+				},
+				"en_US": {
 					"shortName": "Savannakhet",
 					"longName": "Savannakhet"
 				}
@@ -114,12 +162,20 @@
 				"en_SG": {
 					"shortName": "Vientiane Province",
 					"longName": "Vientiane Province"
+				},
+				"en_US": {
+					"shortName": "Vientiane Province",
+					"longName": "Vientiane Province"
 				}
 			}
 		},
 		"VT": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Vientiane Prefecture",
+					"longName": "Vientiane Prefecture"
+				},
+				"en_US": {
 					"shortName": "Vientiane Prefecture",
 					"longName": "Vientiane Prefecture"
 				}
@@ -130,12 +186,20 @@
 				"en_SG": {
 					"shortName": "Sainyabuli",
 					"longName": "Sainyabuli"
+				},
+				"en_US": {
+					"shortName": "Sainyabuli",
+					"longName": "Sainyabuli"
 				}
 			}
 		},
 		"XE": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Sekong",
+					"longName": "Sekong"
+				},
+				"en_US": {
 					"shortName": "Sekong",
 					"longName": "Sekong"
 				}
@@ -146,12 +210,20 @@
 				"en_SG": {
 					"shortName": "Xiangkhouang",
 					"longName": "Xiangkhouang"
+				},
+				"en_US": {
+					"shortName": "Xiangkhouang",
+					"longName": "Xiangkhouang"
 				}
 			}
 		},
 		"XN": {
 			"locales": {
 				"en_SG": {
+					"shortName": "Xaisomboun",
+					"longName": "Xaisomboun"
+				},
+				"en_US": {
 					"shortName": "Xaisomboun",
 					"longName": "Xaisomboun"
 				}
@@ -161,7 +233,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/en_SG",
 		"id": "en_SG"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Laos",

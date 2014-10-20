@@ -314,7 +314,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/es_VE",
 		"id": "es_VE"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Venezuela",

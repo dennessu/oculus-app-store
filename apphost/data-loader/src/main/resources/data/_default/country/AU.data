@@ -15,6 +15,10 @@
 	"subCountries": {
 		"ACT": {
 			"locales": {
+				"en_US": {
+					"shortName": "ACT",
+					"longName": "Australian Capital Territory"
+				},
 				"en_AU": {
 					"shortName": "ACT",
 					"longName": "Australian Capital Territory"
@@ -23,6 +27,10 @@
 		},
 		"NSW": {
 			"locales": {
+				"en_US": {
+					"shortName": "NSW",
+					"longName": "New South Wales"
+				},
 				"en_AU": {
 					"shortName": "NSW",
 					"longName": "New South Wales"
@@ -31,6 +39,10 @@
 		},
 		"NT": {
 			"locales": {
+				"en_US": {
+					"shortName": "NT",
+					"longName": "Northern Territory"
+				},
 				"en_AU": {
 					"shortName": "NT",
 					"longName": "Northern Territory"
@@ -39,6 +51,10 @@
 		},
 		"QLD": {
 			"locales": {
+				"en_US": {
+					"shortName": "QLD",
+					"longName": "Queensland"
+				},
 				"en_AU": {
 					"shortName": "QLD",
 					"longName": "Queensland"
@@ -47,6 +63,10 @@
 		},
 		"SA": {
 			"locales": {
+				"en_US": {
+					"shortName": "SA",
+					"longName": "South Australia"
+				},
 				"en_AU": {
 					"shortName": "SA",
 					"longName": "South Australia"
@@ -55,6 +75,10 @@
 		},
 		"TAS": {
 			"locales": {
+				"en_US": {
+					"shortName": "TAS",
+					"longName": "Tasmania"
+				},
 				"en_AU": {
 					"shortName": "TAS",
 					"longName": "Tasmania"
@@ -63,6 +87,10 @@
 		},
 		"VIC": {
 			"locales": {
+				"en_US": {
+					"shortName": "VIC",
+					"longName": "Victoria"
+				},
 				"en_AU": {
 					"shortName": "VIC",
 					"longName": "Victoria"
@@ -71,6 +99,10 @@
 		},
 		"WA": {
 			"locales": {
+				"en_US": {
+					"shortName": "WA",
+					"longName": "Western Australia"
+				},
 				"en_AU": {
 					"shortName": "WA",
 					"longName": "Western Australia"
@@ -79,9 +111,13 @@
 		}
 	},
 	"supportedLocales": [{
-		"href": "/v1/locales/en_AU",
-		"id": "en_AU"
-	}],
+        "href": "/v1/locales/en_AU",
+        "id": "en_AU"
+    },
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Australia",

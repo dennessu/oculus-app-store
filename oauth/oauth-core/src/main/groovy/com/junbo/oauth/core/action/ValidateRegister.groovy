@@ -13,6 +13,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.ExceptionUtil
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.spec.model.Gender
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -116,19 +117,20 @@ class ValidateRegister implements Action {
         return userService.checkUsernameAndEmailBlocker(username, email).recover { Throwable throwable ->
             ExceptionUtil.handleIdentityException(throwable, contextWrapper, false)
             return Promise.pure(null)
-        }.then { Boolean isBlocked ->
-            if (isBlocked == null) {
+        }.then { String blockState ->
+            if (StringUtils.isEmpty(blockState)) {
                 return Promise.pure(new ActionResult('error'))
             }
 
-            if (isBlocked) {
+            if (blockState.equalsIgnoreCase('ERROR')) {
                 LOGGER.debug('Username and email are occupied')
-                contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email are occupied').error())
+                contextWrapper.errors.add(AppErrors.INSTANCE.usernameAndEmailOccupied().error())
             }
 
             if (!contextWrapper.errors.isEmpty()) {
                 return Promise.pure(new ActionResult('error'))
             }
+            contextWrapper.registrationState = blockState
 
             return Promise.pure(new ActionResult('success'))
         }

@@ -85,4 +85,10 @@ public interface UserResource {
     @Path("/check-legacy-username-email")
     Promise<Boolean> checkUsernameEmailBlocker(@QueryParam("username") String username,
                                                @QueryParam("email") String email);
+
+    @ApiOperation("Get the email and username registration state, return will be []")
+    @GET
+    @Path("/get-legacy-username-email-occupy-state")
+    Promise<String> getUsernameEmailOccupyState(@QueryParam("username") String username,
+                                                @QueryParam("email") String email);
 }

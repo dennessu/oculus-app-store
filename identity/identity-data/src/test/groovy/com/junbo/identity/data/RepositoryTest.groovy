@@ -136,7 +136,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Qualifier('organizationRepository')
     private OrganizationRepository organizationRepository
 
-    @Test
+    @Test(enabled = false)
     public void testCountryRepository() {
         countryRepository.delete(new CountryId('US')).get()
 

@@ -6,11 +6,11 @@ import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
-import com.junbo.common.id.PIType
 import com.junbo.common.id.TosId
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
+import com.junbo.common.id.PIType
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
@@ -146,6 +146,8 @@ class RequestValidator {
         if (isBlocked) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email are occupied').exception()
         }
+        // Bug https://oculus.atlassian.net/browse/SER-693, it will always set nickName to username
+        request.nickName = request.username
         return this
     }
 
@@ -195,6 +197,9 @@ class RequestValidator {
         }
 
         notEmpty(request.userProfile, 'userProfile')
+        // https://oculus.atlassian.net/browse/SER-693
+        // Will disable nickname update, nickname should be the username, if user want to update nickname, he should update username
+        request.userProfile.nickName = request.userProfile.username
 
         return getUserProfileUpdatePasswordChallenge(request).then { UserProfileUpdateResponse response ->
             if (response != null) {

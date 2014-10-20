@@ -168,9 +168,13 @@
 		}
 	},
 	"supportedLocales": [{
-		"href": "/v1/locales/sr_BA",
-		"id": "sr_BA"
-	}],
+        "href": "/v1/locales/sr_BA",
+        "id": "sr_BA"
+    },
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Bosnia",

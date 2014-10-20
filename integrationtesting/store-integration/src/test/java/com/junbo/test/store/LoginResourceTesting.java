@@ -6,6 +6,7 @@
 package com.junbo.test.store;
 
 import com.junbo.common.error.Error;
+import com.junbo.common.id.OfferId;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
@@ -21,12 +22,12 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import com.junbo.test.store.apihelper.TestContext;
 import org.apache.commons.lang3.time.DateUtils;
-import org.jboss.netty.util.NetUtil;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by liangfu on 8/29/14.
@@ -83,6 +84,18 @@ public class LoginResourceTesting extends BaseTestClass {
 
         error = testDataProvider.CheckUserNameWithError("", RandomHelper.randomEmail(), 400, "130.001");
         Validator.Validate("Validate empty username error response", true, error != null);
+
+        error = testDataProvider.CheckUserNameWithError(RandomHelper.randomAlphabetic(10) + "  ", RandomHelper.randomEmail(), 400, "130.001");
+        Validator.Validate("Validate consecutive space error response", true, error != null);
+
+        error = testDataProvider.CheckUserNameWithError(RandomHelper.randomAlphabetic(10) + "___", RandomHelper.randomEmail(), 400, "130.001");
+        Validator.Validate("Validate consecutive underscores response", true, error != null);
+
+        error = testDataProvider.CheckUserNameWithError(RandomHelper.randomAlphabetic(10) + "----", RandomHelper.randomEmail(), 400, "130.001");
+        Validator.Validate("Validate consecutive dash response", true, error != null);
+
+        error = testDataProvider.CheckUserNameWithError(RandomHelper.randomAlphabetic(10) + "...", RandomHelper.randomEmail(), 400, "130.001");
+        Validator.Validate("Validate consecutive period response", true, error != null);
     }
 
     @Property(
@@ -355,6 +368,24 @@ public class LoginResourceTesting extends BaseTestClass {
 
         Validator.Validate("Validate username in userProfile", createUserRequest.getUsername(), userProfileGetResponse.getUserProfile().getUsername());
         Validator.Validate("Validate nickName in userProfile", createUserRequest.getNickName(), userProfileGetResponse.getUserProfile().getNickName());
+    }
+
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check username"
+            }
+    )
+    @Test
+    public void testCreateUserWithCommunication() throws Exception {
+        AuthTokenResponse createUserResponse = null;
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+
     }
 
     @Property(
@@ -895,13 +926,24 @@ public class LoginResourceTesting extends BaseTestClass {
         UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
         StoreUserProfile storeUserProfile = new StoreUserProfile();
         String newNickName = RandomHelper.randomAlphabetic(10);
+        String oldNickName = createUserRequest.getUsername();
         storeUserProfile.setNickName(newNickName);
         userProfileUpdateRequest.setUserProfile(storeUserProfile);
         UserProfileUpdateResponse response = testDataProvider.updateUserProfile(userProfileUpdateRequest);
-        assert response.getUserProfile().getNickName().equalsIgnoreCase(newNickName);
+        //https://oculus.atlassian.net/browse/SER-693?filter=-1
+        assert response.getUserProfile().getNickName().equalsIgnoreCase(oldNickName);
 
         UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
-        assert userProfileGetResponse.getUserProfile().getNickName().equalsIgnoreCase(newNickName);
+        assert userProfileGetResponse.getUserProfile().getNickName().equalsIgnoreCase(oldNickName);
+
+        String avatar = RandomHelper.randomAlphabetic(100);
+        storeUserProfile.setAvatar(avatar);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+        response = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert response.getUserProfile().getAvatar().equalsIgnoreCase(avatar);
+
+        userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse.getUserProfile().getAvatar().equalsIgnoreCase(avatar);
     }
 
     @Property(
@@ -1067,6 +1109,94 @@ public class LoginResourceTesting extends BaseTestClass {
             Master.getInstance().setEndPointType(Master.EndPointType.Primary);
         }
 
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store sign in",
+            component = Component.STORE,
+            owner = "fzhang",
+            status = Status.Enable,
+            description = "Test when user sign-in, it'll auto purchase the initial items if the user doesn't own those items",
+            steps = {
+                    "1. create user",
+                    "2. No initial apps configured, user sign in and verify no items are in user's library",
+                    "3. two free initial apps configured",
+                    "4. user sign in failed, verify no items in the library",
+                    "5. user sign in and verify those items are in user's library",
+                    "6. user sign in again, check those items are in user's library",
+                    "7. one more free initial apps configured",
+                    "8. user sign in again, check 3 items are in user's library",
+                    "9. user sign in again, error occurs in getting initial apps, the auth response still returns success"
+
+            }
+    )
+    @Test
+    public void testSignInPurchaseInitialItem() throws Exception {
+        testDataProvider.resetEmulatorData();
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        AuthTokenResponse response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() == null;
+        Assert.assertEquals(testDataProvider.getLibrary().getItems().size(), 0);
+
+        // config two free apps and 1 paid app, the paid app will be ignored
+        testDataProvider.setupCmsOffers(initialAppsCmsPage, Collections.singletonList(initialAppsCmsSlot),
+                Collections.singletonList(Arrays.asList(new OfferId(testDataProvider.getOfferIdByName(offer_digital_free)),
+                        new OfferId(testDataProvider.getOfferIdByName(offer_digital_oculus_free1)),
+                        new OfferId(testDataProvider.getOfferIdByName(offer_digital_normal1)))));
+
+        try {
+            testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword() + "123", 412);
+            Assert.assertEquals(testDataProvider.getLibrary().getItems().size(), 0);
+
+            response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+            assert response != null;
+            assert response.getChallenge() == null;
+            validationHelper.verifyItemsInLibrary(testDataProvider.getLibrary(), Arrays.asList(item_digital_free, item_digital_oculus_free1));
+
+            response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+            assert response != null;
+            assert response.getChallenge() == null;
+            validationHelper.verifyItemsInLibrary(testDataProvider.getLibrary(), Arrays.asList(item_digital_free, item_digital_oculus_free1));
+
+            testDataProvider.setupCmsOffers(initialAppsCmsPage, Collections.singletonList(initialAppsCmsSlot),
+                    Collections.singletonList(Arrays.asList(new OfferId(testDataProvider.getOfferIdByName(offer_digital_free)),
+                            new OfferId(testDataProvider.getOfferIdByName(offer_digital_oculus_free2)),
+                            new OfferId(testDataProvider.getOfferIdByName(offer_digital_normal1)))));
+
+            response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+            assert response != null;
+            assert response.getChallenge() == null;
+            validationHelper.verifyItemsInLibrary(testDataProvider.getLibrary(), Arrays.asList(item_digital_free, item_digital_oculus_free1, item_digital_oculus_free2));
+
+            TestContext.getData().putHeader("X_QA_CASEY_ERROR", "search");
+            response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+            assert response != null;
+            assert response.getChallenge() == null;
+        } finally {
+            testDataProvider.resetEmulatorData();
+        }
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Accept tos twice should fail"
+            }
+    )
+    @Test
+    public void testAcceptTosAlreadyAccepted() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+        testDataProvider.acceptTos(createUserRequest.getTosAgreed(), 409);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("131.002"));
     }
 
 }

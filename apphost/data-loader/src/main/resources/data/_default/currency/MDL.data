@@ -1,6 +1,9 @@
 {
 	"locales": {
-		
+		"en_US": {
+            "shortName": "MDL",
+        	"longName": "Moldovan leu"
+       	}
 	},
 	"countries": {
 		"href": "/v1/countries?defaultCurrencyId=MDL",

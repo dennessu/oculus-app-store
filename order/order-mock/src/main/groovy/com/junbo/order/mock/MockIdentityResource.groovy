@@ -80,4 +80,9 @@ class MockIdentityResource implements UserResource {
     Promise<Boolean> checkUsernameEmailBlocker(String username, String email) {
         return null
     }
+
+    @Override
+    Promise<String> getUsernameEmailOccupyState(String username, String email) {
+        return null
+    }
 }

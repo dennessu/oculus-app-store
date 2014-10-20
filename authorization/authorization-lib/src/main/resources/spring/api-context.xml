@@ -101,7 +101,7 @@
                 <entry key="ScopeEndpoint.getScope" value="scope.info"/>
                 <entry key="ScopeEndpoint.getByScopeNames" value="scope.info"/>
                 <entry key="EmailVerifyEndpoint.sendVerifyEmail" value="csr identity.service"/>
-                <entry key="EmailVerfiyEndpoint.sendWelcomeEmail" value="identity.service" />
+                <entry key="EmailVerifyEndpoint.sendWelcomeEmail" value="identity.service" />
                 <entry key="EmailVerifyEndpoint.getVerifyEmailLink" value="smoketest" />
                 <entry key="ResetPasswordEndpoint.getResetPasswordLink" value="smoketest" />
                 <!-- order -->

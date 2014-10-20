@@ -194,7 +194,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/et_EE",
 		"id": "et_EE"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Estonia",

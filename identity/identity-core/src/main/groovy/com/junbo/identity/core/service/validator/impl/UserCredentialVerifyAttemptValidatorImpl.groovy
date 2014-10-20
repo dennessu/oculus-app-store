@@ -53,7 +53,6 @@ import java.util.regex.Pattern
 @SuppressWarnings('UnnecessaryGetter')
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String EMAIL_ACTION = 'UserLockout_V1'
     private static final String MAIL_IDENTIFIER = "@"
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCredentialVerifyAttemptValidatorImpl)
@@ -73,6 +72,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                                                         // All of them are and operation, only when user's login history satisfy any configurations, it will be the same
     private Map<Integer, Integer> maxLockDownTime       // This is to control same user's lock out time
                                                         // The first parameter is the maxRetryCount, the second parameter is the lock down time
+    private Map<Integer, String> maxLockDownMail        // This is to control same user's lock out mail
+                                                        // The first parameter is the maxRetryCount, the second parametet is the lock down time email template
 
     // This is to check maxSameUserAttemptCount login attempts for the same user within attemptRetryCount time frame
     private Map<Integer, Integer> maxSameUserAttemptIntervalMap    // This is to control smae user's retry interval
@@ -352,7 +353,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             if (attemptList.size() < retryCount) {
                 userLoginAttempt.isLockDownPeriodAttempt = false
                 continue
-                        }
+            }
             UserCredentialVerifyAttempt attempt = attemptList.get(attemptList.size() - retryCount)
             // in lock down time
             if (attempt.createdTime.after(DateUtils.addSeconds(new Date(), -lockDownTime))) {
@@ -369,6 +370,11 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             return Promise.pure(null)
         }
 
+        String emailTemplate = this.maxLockDownMail.get(
+                this.maxLockDownMail.size() <= index ? this.maxLockDownMail.keySet().getAt(this.maxLockDownMail.size() - 1) : this.maxLockDownMail.keySet().getAt(index))
+        Integer lockDownTime = this.maxLockDownTime.get(
+                this.maxLockDownTime.size() <= index ? this.maxLockDownTime.keySet().getAt(this.maxLockDownTime.size() - 1) : this.maxLockDownTime.keySet().getAt(index))
+
         if (JunboHttpContext.getRequestHeaders() == null
                 || !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_DISABLE_EMAIL))) {
             return Promise.pure(null)
@@ -376,13 +382,13 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
         QueryParam queryParam = new QueryParam(
                 source: EMAIL_SOURCE,
-                action: EMAIL_ACTION,
+                action: emailTemplate,
                 locale: 'en_US'
         )
 
         return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
             if (results.items.isEmpty()) {
-                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(EMAIL_ACTION + ' with locale: en_US template not found')).exception()
+                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(emailTemplate + ' with locale: en_US template not found')).exception()
             }
             EmailTemplate template = results.items.get(0)
 
@@ -398,8 +404,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                             recipients: [userMail].asList(),
                             replacements: [
                                     'name': userLoginName,
-                                    'link': ConfigServiceManager.instance().getConfigValue('identity.conf.oculusHelpLink')
-                                    // todo:    May need to edit display time according to index
+                                    'link': ConfigServiceManager.instance().getConfigValue('identity.conf.oculusHelpLink'),
+                                    'minute': (lockDownTime/60).toString()
                             ]
                     )
 
@@ -675,6 +681,17 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         }
     }
 
+    @Required
+    void setMaxLockDownMail(String maxLockDownMailStr) {
+        String[] lockDownMailTemplates = maxLockDownMailStr.split(';')
+        this.maxLockDownMail = new HashMap<>()
+        lockDownMailTemplates.each { String lockDownMailTemplate ->
+            String[] lockDownMailTemplateMap = lockDownMailTemplate.split(':')
+            assert lockDownMailTemplateMap.size() == 2
+            this.maxLockDownMail.put(parseInteger(lockDownMailTemplateMap[0]), lockDownMailTemplateMap[1])
+        }
+    }
+
     private Integer parseInteger(String value) {
         if ("MAX_VALUE".equalsIgnoreCase(value)) {
             return Integer.MAX_VALUE
@@ -693,7 +710,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             assert retryIntervalStrArray.size() == 2
             this.maxSameIPIntervalMap.put(parseInteger(retryIntervalStrArray[0]), parseInteger(retryIntervalStrArray[1]))
         }
-        // todo:    Need to check the lockdown time is always increasing
     }
 
     @Required

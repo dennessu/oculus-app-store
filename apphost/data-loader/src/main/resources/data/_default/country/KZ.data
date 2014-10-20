@@ -209,7 +209,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/kk_KZ",
 		"id": "kk_KZ"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Kazakhstan",

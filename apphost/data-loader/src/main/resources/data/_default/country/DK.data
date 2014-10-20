@@ -77,7 +77,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/da_DK",
 		"id": "da_DK"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Denmark",

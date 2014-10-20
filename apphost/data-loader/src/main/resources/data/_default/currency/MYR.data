@@ -1,6 +1,10 @@
 {
 	"locales": {
-		"en_SG": {
+		"en_US": {
+			"shortName": "MYR",
+			"longName": "Malaysian ringgit"
+		},
+        "en_SG": {
 			"shortName": "MYR",
 			"longName": "Malaysian ringgit"
 		}

@@ -209,7 +209,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ko_KR",
 		"id": "ko_KR"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Korea",

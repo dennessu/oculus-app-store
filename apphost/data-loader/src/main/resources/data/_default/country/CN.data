@@ -241,7 +241,7 @@
 		"45": {
 			"locales": {
 				"zh_CN": {
-					"shortName": " 桂 ",
+					"shortName": "桂",
 					"longName": "广西"
 				},
 				"en_US": {
@@ -317,7 +317,7 @@
 					"longName": "Xizang"
 				},
 				"zh_CN": {
-					"shortName": " 藏",
+					"shortName": "藏",
 					"longName": "西藏"
 				}
 			}
@@ -325,7 +325,7 @@
 		"61": {
 			"locales": {
 				"zh_CN": {
-					"shortName": " 陕",
+					"shortName": "陕",
 					"longName": "陕西"
 				},
 				"en_US": {

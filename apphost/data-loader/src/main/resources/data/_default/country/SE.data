@@ -269,7 +269,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/sv_SE",
 		"id": "sv_SE"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Sweden",

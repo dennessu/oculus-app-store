@@ -341,7 +341,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/uk_UA",
 		"id": "uk_UA"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Ukraine",

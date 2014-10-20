@@ -49,5 +49,5 @@ interface UserService {
 
     Promise<List<String>> getResetPasswordLinks(String username, String email, String locale, String country)
 
-    Promise<Boolean> checkUsernameAndEmailBlocker(String username, String email)
+    Promise<String> checkUsernameAndEmailBlocker(String username, String email)
 }

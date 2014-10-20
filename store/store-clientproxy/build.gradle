@@ -16,6 +16,7 @@ dependencies {
     testCompile junboProject(':authorization-lib')
 
     processor junboProject(':oom-processor')
+    processor junboProject(':silkcloud-processor')
 
     compile junboProject(':catalog-spec')
     compile junboProject(':rating-spec')
@@ -28,4 +29,10 @@ dependencies {
     compile junboProject(':crypto-spec')
     compile junboProject(':identity-spec')
     compile junboProject(':oauth-spec')
+}
+
+ext {
+    processorClass = [
+            'com.junbo.langur.processor.ClientProxyProcessor'
+    ].join(',')
 }

@@ -69,4 +69,9 @@ public class MockUserResource implements UserResource {
     public Promise<Boolean> checkUsernameEmailBlocker(String username, String email) {
         return null;
     }
+
+    @Override
+    public Promise<String> getUsernameEmailOccupyState(String username, String email) {
+        return null;
+    }
 }

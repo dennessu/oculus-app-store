@@ -86,7 +86,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/he_IL",
 		"id": "he_IL"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Israel",

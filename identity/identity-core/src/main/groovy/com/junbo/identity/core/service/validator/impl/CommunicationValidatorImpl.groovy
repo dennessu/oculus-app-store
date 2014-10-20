@@ -30,6 +30,8 @@ import org.springframework.util.CollectionUtils
 @CompileStatic
 class CommunicationValidatorImpl implements CommunicationValidator {
 
+    private static final String DEFAULT_LOCALE = 'en_US'
+
     private CommunicationRepository communicationRepository
     private LocaleRepository localeRepository
     private CountryRepository countryRepository
@@ -105,7 +107,37 @@ class CommunicationValidatorImpl implements CommunicationValidator {
             if (communication.id != null) {
                 throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
-            return Promise.pure(null)
+
+            JsonNode inputJsonNode = communication.locales.get(DEFAULT_LOCALE)
+            if (inputJsonNode == null) {
+                return Promise.pure(null)
+            }
+
+            CommunicationLocale inputLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(inputJsonNode, CommunicationLocale)
+
+            return Promise.each(communication.regions) { CountryId region ->
+                return communicationRepository.searchByRegion(region, Integer.MAX_VALUE, 0).then { List<Communication> communicationList ->
+                    if (CollectionUtils.isEmpty(communicationList)) {
+                        return Promise.pure(null)
+                    }
+
+                    for (Communication existing : communicationList) {
+                        JsonNode jsonNode = existing.getLocales().get(DEFAULT_LOCALE)
+                        if (jsonNode == null) {
+                            continue
+                        }
+
+                        CommunicationLocale communicationLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(jsonNode, CommunicationLocale)
+                        if (communicationLocale.name.equalsIgnoreCase(inputLocale.name)) {
+                            throw AppCommonErrors.INSTANCE.fieldInvalid('regions', 'communication have overlap region support for same title').exception()
+                        }
+                    }
+
+                    return Promise.pure(null)
+                }
+            }.then {
+                return Promise.pure(null)
+            }
         }
     }
 
@@ -128,8 +160,35 @@ class CommunicationValidatorImpl implements CommunicationValidator {
         }
 
         return checkBasicCommunicationInfo(communication).then {
+            JsonNode updateJsonNode = communication.locales.get(DEFAULT_LOCALE)
+            if (updateJsonNode == null) {
+                return Promise.pure(null)
+            }
 
-            return Promise.pure(null)
+            CommunicationLocale inputCommunicationLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(updateJsonNode, CommunicationLocale)
+            return Promise.each(communication.regions) { CountryId region ->
+                return communicationRepository.searchByRegion(region, Integer.MAX_VALUE, 0).then { List<Communication> communicationList ->
+                    if (CollectionUtils.isEmpty(communicationList)) {
+                        return Promise.pure(null)
+                    }
+
+                    for (Communication existing : communicationList) {
+                        JsonNode jsonNode = existing.getLocales().get(DEFAULT_LOCALE)
+                        if (jsonNode == null || existing.getId() == communication.getId()) {
+                            continue
+                        }
+
+                        CommunicationLocale communicationLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(jsonNode, CommunicationLocale)
+                        if (communicationLocale.name.equalsIgnoreCase(inputCommunicationLocale.name)) {
+                            throw AppCommonErrors.INSTANCE.fieldInvalid('regions', 'communication have overlap region support for same title').exception()
+                        }
+                    }
+
+                    return Promise.pure(null)
+                }
+            }.then {
+                return Promise.pure(null)
+            }
         }
     }
 
