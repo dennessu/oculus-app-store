@@ -5,6 +5,7 @@
  */
 package com.junbo.test.buyerscenario;
 
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.buyerscenario.util.BaseTestClass;
 import com.junbo.test.common.ConfigHelper;
@@ -37,14 +38,14 @@ public class RouteTesting extends BaseTestClass {
                     "1. Register user against the first endpoint",
                     "2  Access email verification links against the second endpoint",
                     "3. Get user against the second endpoint",
-                    "4. Update user user's nickname against the first endpoint",
+                    "4. Update user user's preferred locale against the first endpoint",
                     "5. Sleep 3 seconds",
                     "6. Get user against the second endpoint",
-                    "7. Verify nickname should be updated",
+                    "7. Verify preferred locale should be updated",
             }
     )
     @Test
-    public void testUpdateNickNameRoute() throws Exception {
+    public void testUpdateUserRoute() throws Exception {
         if (ConfigHelper.getSetting("secondaryDcEndpoint") == null) return;
         UserInfo userInfo = UserInfo.getRandomUserInfo();
         String cid = testDataProvider.registerUser(userInfo);
@@ -56,8 +57,7 @@ public class RouteTesting extends BaseTestClass {
         Master.getInstance().setEndPointType(Master.EndPointType.Primary);
 
         User user = Master.getInstance().getUser(uid);
-        String nickName = RandomFactory.getRandomStringOfAlphabet(5);
-        user.setNickName(nickName);
+        user.setPreferredLocale(new LocaleId("en_CA"));
         testDataProvider.putUser(uid, user);
 
         Thread.sleep(3000);
@@ -65,7 +65,7 @@ public class RouteTesting extends BaseTestClass {
         testDataProvider.getUserByUid(uid);
 
         user = Master.getInstance().getUser(uid);
-        assert user.getNickName().equals(nickName);
+        assert user.getPreferredLocale().equals("en_CA");
 
     }
 
