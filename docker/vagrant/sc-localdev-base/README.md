@@ -39,3 +39,4 @@ Finally, log out the vagrant box, execute `vagrant package`, you will get a new 
 * 2014-07-24, add docker and docker-tools, Uploaded to `http://arti.silkcloud.info/sc-localdev-base-20140724.box` Image size = 579MB
 * 2014-07-25, add postgresql-client, uploaded to `http://arti.silkcloud.info/sc-localdev-base-20140725.box` Image size = 581MB
 * 2014-09-11, upgrade to gradle 2.1, include nodejs, uploaded to `http://arti.silkcloud.info/sc-localdev-base-20140911.box` Image size = 579 MB
+* 2014-10-20, upgrade to docker 1.3, remove nsenter docker tools, uploaded to `http://arti.silkcloud.info/sc-localdev-base-20141020.box` Image size = 582 MB

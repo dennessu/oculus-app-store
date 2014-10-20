@@ -19,9 +19,6 @@ RUN chmod +x /etc/service/couchdb/run
 ADD finish.sh /etc/service/couchdb/finish
 RUN chmod +x /etc/service/couchdb/finish
 
-# Enable insecure key so that docker-ssh can work, it is ok in dev env
-RUN /usr/sbin/enable_insecure_key
-
 # Expose data and log folder as volume, to get better performance.
 VOLUME ["/var/log/couchdb", "/var/lib/couchdb"]
 

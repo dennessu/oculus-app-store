@@ -149,7 +149,7 @@ Welcome, if you are from windows VMWare, you have made a great choice!
 
 Firstly, let install docker and docker tools
 ```
-curl -s https://gist.githubusercontent.com/jubot/4dd5ea0d8789ddc0eaa5/raw/f4b979c342f69ebc93c5835a7680241e4bebcd86/installdocker.sh | sudo sh
+curl -s https://get.docker.io/ubuntu/ | sudo sh
 ```
 
 Please notice that this script only support ubuntu, if you are using other disto, go to `https://docs.docker.com/` to get the instruction.
@@ -178,11 +178,9 @@ Our docker images are based on phusion-base, please checkout their site for more
 
 Our `devenv.sh` can simplify your work with docker, just run it without any argument to see what it supports.
 
-Our docker images are based on phusionbase, it supports both ssh and nsenter. To enter the running container, you can:
+To enter the running container, you can:
 ```
-$ sudo docker-bash <container id or name>
-or
-$ sudo docker-ssh <container id or name>
+$ sudo docker exec -it <container id or name> bash
 ```
 
 ## About our docker images

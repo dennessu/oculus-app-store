@@ -26,10 +26,7 @@ Make sure you have access to `onebox-app` before you continue.
 If you are using ubuntu, you can run the following command to install docker and phusion docker tools
 
 ```
-# from short url
-curl -s -L http://bit.ly/1vPArnJ | sudo sh
-# or from origin gist
-curl -s https://gist.githubusercontent.com/jubot/4dd5ea0d8789ddc0eaa5/raw/f4b979c342f69ebc93c5835a7680241e4bebcd86/installdocker.sh | sudo sh
+curl -s https://get.docker.io/ubuntu/ | sudo sh
 ```
 
 ## Launch db instances
@@ -81,7 +78,7 @@ Or, to use data-only container to store data:
 
 ```bash
 sudo docker run -d --name=psql -e PSQL_PASS='#Bugsfor$' \
-   --volumes-from scdataonly silkcloud/onebox-psql
+  --volumes-from scdataonly silkcloud/onebox-psql
 ```
 
 #### Launch couchdb container
@@ -99,7 +96,7 @@ Or, to use data-only container to store data:
 
 ```bash
 sudo docker run -d --name=couchdb \
-   --volumes-from scdataonly silkcloud/onebox-couchdb
+  --volumes-from scdataonly silkcloud/onebox-couchdb
 ```
 
 Run `sudo docker ps` to check if `psql` and `couchdb` are running.
