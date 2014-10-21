@@ -39,9 +39,6 @@ class InitialItemPurchaseUtils {
     @Resource(name = 'storeFacadeContainer')
     private FacadeContainer facadeContainer
 
-    @Resource(name = 'storeCatalogUtils')
-    private CatalogUtils catalogUtils
-
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
@@ -56,7 +53,7 @@ class InitialItemPurchaseUtils {
                     return Promise.pure([] as Set<ItemId>)
                 }
                 Set<ItemId> itemIdsToCheck = new HashSet<>(items.collect {Item item -> return item.self})
-                return catalogUtils.checkItemsOwnedByUser(itemIdsToCheck, userId)
+                return facadeContainer.entitlementFacade.checkEntitlements(userId, itemIdsToCheck)
             }.then { Set<ItemId> itemIdsOwned ->
                 List<OfferId> offerIdsToPurchase = items.findAll { Item item -> !itemIdsOwned.contains(item.self)}.collect {Item item -> item.offer.self}.asList()
                 if (CollectionUtils.isEmpty(offerIdsToPurchase)) {

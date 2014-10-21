@@ -583,7 +583,6 @@ public class StoreBrowseTesting extends BaseTestClass {
         List<CaseyReview> caseyReviews = new ArrayList<>();
         caseyReviews.add(DataGenerator.instance().generateCaseyReview(RandomStringUtils.randomAlphabetic(10), item.getSelf()));
         testDataProvider.postCaseyEmulatorData(caseyReviews, null, null);
-        testDataProvider.clearCache(); // clear the item cache to get the latest aggregate ratings
 
         // check no reviews should be returned in the items if item is not got by getDetails
         item = testDataProvider.getItemDetails(item.getSelf().getValue()).getItem();
@@ -592,7 +591,6 @@ public class StoreBrowseTesting extends BaseTestClass {
         storeBrowseValidationHelper.verifyReview(reviews.get(0), caseyReviews.get(0), null);
 
         testDataProvider.postCaseyEmulatorData((List<CaseyReview>) null, null, null);
-        testDataProvider.clearCache();
 
     }
 

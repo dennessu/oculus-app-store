@@ -6,9 +6,9 @@
 package com.junbo.store.spec.model.iap;
 
 /**
- * The IAPEntitlementConsumeResponse class.
+ * The IAPConsumeItemResponse class.
  */
-public class IAPEntitlementConsumeResponse {
+public class IAPConsumeItemResponse {
 
     private String payload;
 

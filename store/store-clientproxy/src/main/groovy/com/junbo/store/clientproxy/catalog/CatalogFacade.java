@@ -25,4 +25,6 @@ public interface CatalogFacade {
     Promise<OfferAttribute> getOfferCategoryByName(String name, LocaleId locale);
 
     Promise<OfferAttribute> getOfferAttribute(String attributeId, ApiContext apiContext);
+
+    Promise<com.junbo.catalog.spec.model.item.Item> getCatalogItemByPackageName(String packageName, Integer versionCode, String signatureHash);
 }

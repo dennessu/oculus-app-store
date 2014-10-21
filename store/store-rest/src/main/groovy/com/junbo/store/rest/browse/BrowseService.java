@@ -24,7 +24,7 @@ public interface BrowseService {
 
     Promise<ListResponse> getList(ListRequest request, ApiContext apiContext);
 
-    Promise<LibraryResponse> getLibrary(ApiContext apiContext);
+    Promise<LibraryResponse> getLibrary(boolean isIAP, ItemId hostItemId, ApiContext apiContext);
 
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request, ApiContext apiContext);
 

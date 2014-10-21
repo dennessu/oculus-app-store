@@ -9,6 +9,7 @@ import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.spec.model.ApiContext
@@ -36,6 +37,9 @@ class ApiContextBuilder {
 
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
+
+    @Resource(name = 'storeFacadeContainer')
+    private FacadeContainer facadeContainer
 
     @Resource(name = 'storeIdentityUtils')
     private IdentityUtils identityUtils

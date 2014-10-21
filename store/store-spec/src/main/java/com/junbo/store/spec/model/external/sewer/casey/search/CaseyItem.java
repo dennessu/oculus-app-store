@@ -37,6 +37,7 @@ public class CaseyItem {
     private String website;
     private String communityForumLink;
     private Images images;
+    private String sku;
     private ItemRevisionId currentRevision;
 
     public ItemId getSelf() {
@@ -165,6 +166,14 @@ public class CaseyItem {
 
     public void setImages(Images images) {
         this.images = images;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
     public ItemRevisionId getCurrentRevision() {

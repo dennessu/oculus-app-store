@@ -2,6 +2,7 @@ package com.junbo.store.clientproxy.utils
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.model.attribute.ItemAttribute
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
 import com.junbo.catalog.spec.model.common.RevisionNotes
@@ -109,21 +110,15 @@ class ItemBuilder {
         result.self = caseyItem?.self
         result.images = buildImages(caseyOffer?.images, type)
         result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext)
+        if (result.itemType == ItemType.CONSUMABLE_UNLOCK.name() || result.itemType == ItemType.PERMANENT_UNLOCK.name()) {
+            result.iapDetails = buildIAPDetails(caseyItem?.sku)
+        } else {
+            result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext)
+        }
         result.offer = buildOffer(caseyOffer, apiContext)
         result.aggregatedRatings = aggregatedRatings
         fillNullValueWithDefault(result, true)
         return result
-    }
-
-    public Item buildItem(SewerEntitlement expandedEntitlement,  Images.BuildType type,  ApiContext apiContext) {
-        try {
-            SewerItem expandedItem = ObjectMapperProvider.instance().treeToValue(expandedEntitlement.itemNode, SewerItem)
-            return buildItem(expandedItem, type, apiContext)
-        } catch (JsonProcessingException ex) {
-            LOGGER.error('name=Bad_Expanded_Entitlement, payload:\n{}',
-                    String.valueOf(expandedEntitlement.itemNode), ex)
-            throw new RuntimeException(ex)
-        }
     }
 
     public Item buildItem(SewerItem sewerItem,  Images.BuildType type,  ApiContext apiContext) {
@@ -173,7 +168,11 @@ class ItemBuilder {
         item.images = buildImages(itemLocaleProperties?.images, type)
         item.supportedLocales = currentRevision?.supportedLocales
         item.creator = developer?.name
-        item.appDetails = buildAppDetails(currentRevision, categories, genres, developer, itemLocaleProperties, apiContext)
+        if (item.itemType == ItemType.CONSUMABLE_UNLOCK.name() || item.itemType == ItemType.PERMANENT_UNLOCK.name()) {
+            item.iapDetails = buildIAPDetails(currentRevision?.sku)
+        } else {
+            item.appDetails = buildAppDetails(currentRevision, categories, genres, developer, itemLocaleProperties, apiContext)
+        }
         item.aggregatedRatings = reviewBuilder.buildAggregatedRatingsMap(aggregateRatingCaseyResults)
 
         fillNullValueWithDefault(item, false)
@@ -201,6 +200,12 @@ class ItemBuilder {
                 break
         }
         return result
+    }
+
+    private IAPDetails buildIAPDetails(String sku) {
+        return new IAPDetails(
+                sku: sku
+        )
     }
 
     private AppDetails buildAppDetails(ItemRevision itemRevision, List<OfferAttribute> categories, List<ItemAttribute> genres,
