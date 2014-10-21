@@ -31,7 +31,34 @@ public class MockFacebookPaymentApiImpl implements FacebookPaymentApi {
 
     @Override
     public Promise<FacebookCreditCard> addCreditCard(String accessToken, String paymentAccountId, FacebookCreditCard fbCreditCard) {
-        return facebookPaymentApi.addCreditCard(accessToken, paymentAccountId, fbCreditCard);
+        FacebookCreditCard fbCard = new FacebookCreditCard();
+        switch (fbCreditCard.getCcNumber()){
+            case "4111117711552927":
+                fbCard.setId("Y3JlZGl0X2NhcmRfMjk4NjI2NzgzNjAxMzYw");
+                fbCard.setLast4("2927");
+                break;
+            case "4111114869229598":
+                fbCard.setId("Y3JlZGl0X2NhcmRfMjk4NjI2NzkwMjY4MDI2");
+                fbCard.setLast4("9598");
+                break;
+            case "4111119315405122":
+                fbCard.setId("Y3JlZGl0X2NhcmRfMjk4NjI2NzkzNjAxMzU5");
+                fbCard.setLast4("5122");
+                break;
+            case "4111110448424155":
+                fbCard.setId("Y3JlZGl0X2NhcmRfMjk4NjI2Nzk2OTM0Njky");
+                fbCard.setLast4("4155");
+                break;
+            case "4111119818229052":
+                fbCard.setId("Y3JlZGl0X2NhcmRfMjk4NjI2ODAzNjAxMzU4");
+                fbCard.setLast4("9052");
+                break;
+            case "4111118096366644":
+                throw new RuntimeException("invalid card to auth");
+            default:
+                throw new RuntimeException("invalid card");
+        }
+        return Promise.pure(fbCard);
     }
 
     @Override

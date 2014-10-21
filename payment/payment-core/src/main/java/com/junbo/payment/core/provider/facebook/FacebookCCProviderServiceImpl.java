@@ -82,7 +82,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     @Override
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
         validateFacebookCC(request);
-        String[] tokens = request.getTypeSpecificDetails().getExpireDate().split("-");
+        final String[] tokens = request.getTypeSpecificDetails().getExpireDate().split("-");
         if (tokens == null || tokens.length < 2) {
             throw AppCommonErrors.INSTANCE.fieldInvalid("expire_date",
                     "only accept format: yyyy-MM or yyyy-MM-dd").exception();
@@ -93,7 +93,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 final String accessToken = s;
                 String existingAccount = getFacebookPaymentAccount(request.getUserId());
                 if(!CommonUtil.isNullOrEmpty(existingAccount)){
-                    return addCreditCard(accessToken, existingAccount, request);
+                    return addCreditCard(accessToken, existingAccount, request, tokens);
                 }
                 FacebookPaymentAccount fbPaymentAccount = new FacebookPaymentAccount();
                 fbPaymentAccount.setPayerId(request.getUserId().toString());
@@ -108,15 +108,21 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                         fbPaymentAccountMapping.setUserId(request.getUserId());
                         fbPaymentAccountMapping.setFbPaymentAccountId(fbAccount);
                         createFBPaymentAccountIfNotExist(fbPaymentAccountMapping);
-                        return addCreditCard(accessToken, fbAccount, request);
+                        return addCreditCard(accessToken, fbAccount, request, tokens);
                     }
                 });
             }
         });
     }
 
-    private Promise<PaymentInstrument> addCreditCard(String accessToken, String fbAccount, final PaymentInstrument request) {
+    private Promise<PaymentInstrument> addCreditCard(String accessToken, String fbAccount,
+                                                     final PaymentInstrument request, final String[] tokens) {
         FacebookCreditCard fbCreditCard = new FacebookCreditCard();
+        fbCreditCard.setCcNumber(request.getAccountNumber());
+        fbCreditCard.setCvv(request.getTypeSpecificDetails().getEncryptedCvmCode());
+        fbCreditCard.setCardHolderName(request.getAccountName());
+        fbCreditCard.setExpiryMonth(tokens[1]);
+        fbCreditCard.setExpiryYear(tokens[0]);
         // Billing address
         Address address = null;
         if(request.getBillingAddressId() != null){
@@ -141,12 +147,12 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
 
     @Override
     public Promise<Response> delete(PaymentInstrument pi) {
-        return null;
+        return Promise.pure(null);
     }
 
     @Override
     public Promise<PaymentInstrument> getByInstrumentToken(String token) {
-        return null;
+        return Promise.pure(null);
     }
 
     @Override
@@ -166,10 +172,15 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 }
                 FacebookPayment fbPayment = new FacebookPayment();
                 fbPayment.setCredential(piToken);
-                fbPayment.setAction(FacebookPaymentActionType.auth);
+                fbPayment.setAction(FacebookPaymentActionType.authorize);
                 fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                fbPayment.setPaymentDescription(paymentRequest.getChargeInfo().getBusinessDescriptor());
+                fbPayment.setItemType(FacebookItemType.open_graph_product);
+                FacebookItemDescription description = new FacebookItemDescription();
+                description.setId("https://someog.com");
+                description.setQuantity(1);
+                description.setTitle(paymentRequest.getChargeInfo().getBusinessDescriptor());
+                fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
                 return facebookPaymentApi.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
@@ -227,7 +238,12 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setAction(FacebookPaymentActionType.charge);
                 fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                fbPayment.setPaymentDescription(paymentRequest.getChargeInfo().getBusinessDescriptor());
+                fbPayment.setItemType(FacebookItemType.open_graph_product);
+                FacebookItemDescription description = new FacebookItemDescription();
+                description.setId("https://someog.com");
+                description.setQuantity(1);
+                description.setTitle(paymentRequest.getChargeInfo().getBusinessDescriptor());
+                fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
                 return facebookPaymentApi.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override

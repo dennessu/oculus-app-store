@@ -61,4 +61,9 @@
         <property name="facebookCCProviderService" ref="mockFacebookCCProviderService" />
     </bean>
 
+    <bean id="mockFBPaymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl">
+        <property name="providerRoutingService" ref="mockFBProviderRoutingService"  />
+        <property name="userInfoFacade" ref="mockUserResource"/>
+    </bean>
+
 </beans>

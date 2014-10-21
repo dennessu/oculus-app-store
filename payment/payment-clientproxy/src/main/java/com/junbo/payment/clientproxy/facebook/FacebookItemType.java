@@ -7,13 +7,8 @@
 package com.junbo.payment.clientproxy.facebook;
 
 /**
- * Facebook Payment Action Type.
+ * Facebook Item Type.
  */
-public enum FacebookPaymentActionType {
-    authorize,
-    capture,
-    charge,
-    settle,
-    cancel,
-    refund
+public enum FacebookItemType {
+    open_graph_product
 }
