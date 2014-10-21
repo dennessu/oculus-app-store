@@ -140,7 +140,7 @@
                 <wf:action ref="createUserPii"/>
                 <wf:action ref="createUserTosAgreement"/>
                 <wf:action ref="createUserCommunication" />
-                <wf:action ref="sendAccountVerifyEmail"/>
+                <wf:action ref="sendWelcomeEmail"/>
             </wf:transition>
             <wf:transition on="login" to="LOGIN_VIEW" />
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
