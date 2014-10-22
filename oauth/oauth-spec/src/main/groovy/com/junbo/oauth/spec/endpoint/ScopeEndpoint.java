@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.spec.endpoint;
 
+import com.junbo.common.model.Results;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -14,7 +15,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
  * ScopeEndpoint.
@@ -38,7 +38,7 @@ public interface ScopeEndpoint {
 
     @ApiOperation("Get or search scopes")
     @GET
-    Promise<List<Scope>> getByScopeNames(@QueryParam("scopeNames") String scopeNames);
+    Promise<Results<Scope>> getByScopeNames(@QueryParam("scopeNames") String scopeNames);
 
     @ApiOperation("Put a scope")
     @PUT
