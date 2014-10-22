@@ -1,5 +1,4 @@
 package com.junbo.store.rest.resource
-
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -12,7 +11,6 @@ import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
-import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.*
 import com.junbo.store.clientproxy.ResourceContainer
@@ -27,7 +25,6 @@ import com.junbo.store.rest.utils.DataConverter
 import com.junbo.store.rest.utils.InitialItemPurchaseUtils
 import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.spec.model.Challenge
-import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.identity.StoreUserEmail
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
@@ -36,7 +33,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
@@ -192,6 +188,7 @@ class LoginResourceImpl implements LoginResource {
         ApiContext apiContext = new ApiContext()
         ErrorContext errorContext = new ErrorContext()
         StoreUserEmail storeUserEmail
+        AuthTokenResponse authTokenResponse
 
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext storeApiContext ->
             apc = storeApiContext
@@ -234,10 +231,9 @@ class LoginResourceImpl implements LoginResource {
                 appErrorUtils.throwUnknownError('createUser', ex)
             }
         }.then {
-            return resourceContainer.emailVerifyEndpoint.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId())
-        }.then {
             // get the auth token
-            innerSignIn(request.email, request.password).then { AuthTokenResponse authTokenResponse ->
+            innerSignIn(request.email, request.password).then { AuthTokenResponse response ->
+                authTokenResponse = response
                 CommonUtils.pushAuthHeader(authTokenResponse.accessToken)
                 Promise.pure().then { // create user tos using the access token
                     return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: apiContext.user.getId(),
@@ -245,13 +241,19 @@ class LoginResourceImpl implements LoginResource {
                             agreementTime: new Date()))
                 }.then {
                     createUserCommunication(request, apiContext.user.getId(), apc) // create user communication using the access token
+                }.then {
+                    initialItemPurchaseUtils.checkAndPurchaseInitialOffers(authTokenResponse.userId, true, apc)
                 }.recover { Throwable ex ->
                     CommonUtils.popAuthHeader()
                     throw ex
                 }.then {
                     CommonUtils.popAuthHeader()
-                    return Promise.pure(authTokenResponse)
+                    return Promise.pure()
                 }
+            }
+        }.then {
+            return resourceContainer.emailVerifyEndpoint.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId()).then {
+                return Promise.pure(authTokenResponse)
             }
         }
     }
@@ -570,7 +572,7 @@ class LoginResourceImpl implements LoginResource {
                     return Promise.pure(response)
                 }
 
-                initialItemPurchaseUtils.checkAndPurchaseInitialOffers(response.userId, apiContext).then {
+                initialItemPurchaseUtils.checkAndPurchaseInitialOffers(response.userId, false, apiContext).then {
                     return Promise.pure(response)
                 }
             }

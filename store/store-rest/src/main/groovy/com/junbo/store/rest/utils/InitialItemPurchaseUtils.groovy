@@ -1,9 +1,7 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
-import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
@@ -47,13 +45,19 @@ class InitialItemPurchaseUtils {
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
-    Promise checkAndPurchaseInitialOffers(UserId userId, ApiContext apiContext) {
+    Promise checkAndPurchaseInitialOffers(UserId userId, boolean newUser, ApiContext apiContext) {
         getInitialItems(apiContext).then { List<Item> items ->
             if (CollectionUtils.isEmpty(items)) {
                 return Promise.pure()
             }
-            Set<ItemId> itemIdsToCheck = new HashSet<>(items.collect {Item item -> return item.self})
-            catalogUtils.checkItemsOwnedByUser(itemIdsToCheck, userId).then { Set<ItemId> itemIdsOwned ->
+
+            Promise.pure().then {
+                if (newUser) {
+                    return Promise.pure([] as Set<ItemId>)
+                }
+                Set<ItemId> itemIdsToCheck = new HashSet<>(items.collect {Item item -> return item.self})
+                return catalogUtils.checkItemsOwnedByUser(itemIdsToCheck, userId)
+            }.then { Set<ItemId> itemIdsOwned ->
                 List<OfferId> offerIdsToPurchase = items.findAll { Item item -> !itemIdsOwned.contains(item.self)}.collect {Item item -> item.offer.self}.asList()
                 if (CollectionUtils.isEmpty(offerIdsToPurchase)) {
                     return Promise.pure()
