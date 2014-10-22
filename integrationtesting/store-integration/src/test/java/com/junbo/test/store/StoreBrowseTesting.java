@@ -636,7 +636,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         Item item = testDataProvider.getItemDetails(itemId).getItem();
         storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
         // current user review also included in library
-        item = testDataProvider.getLibrary().getItems().get(0);
+        item = getItemFromLibrary(testDataProvider.getLibrary(), new ItemId(itemId));
         storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
 
         // update comfort
@@ -663,7 +663,7 @@ public class StoreBrowseTesting extends BaseTestClass {
             item = testDataProvider.getItemDetails(itemId).getItem();
             storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
             // current user review also included in library
-            item = testDataProvider.getLibrary().getItems().get(0);
+            item = getItemFromLibrary(testDataProvider.getLibrary(), new ItemId(itemId));
             storeBrowseValidationHelper.validateAddReview(addReviewRequest, item.getCurrentUserReview(), userProfile.getNickName());
         }
     }
@@ -964,6 +964,15 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private CmsPage getCmsPageFromEmulator() throws Exception {
         return testDataProvider.getCmsPage(null, caseyCmsPageLabel, 200).getItems().get(0);
+    }
+
+    private Item getItemFromLibrary(LibraryResponse libraryResponse, ItemId itemId) {
+        for (Item item : libraryResponse.getItems()) {
+            if (itemId.equals(item.getSelf())) {
+                return item;
+            }
+        }
+        return null;
     }
 }
 

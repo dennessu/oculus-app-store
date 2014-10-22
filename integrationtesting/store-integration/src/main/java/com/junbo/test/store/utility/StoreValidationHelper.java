@@ -78,10 +78,18 @@ public class StoreValidationHelper extends BaseValidationHelper {
     public void verifyLibraryResponse(LibraryResponse response, String offerId){
         OfferRevision offerRevision = Master.getInstance().getOfferRevision(Master.getInstance().getOffer(offerId).getCurrentRevisionId());
         Item item =  Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
+        com.junbo.store.spec.model.browse.document.Item responseItem = null;
+        for (com.junbo.store.spec.model.browse.document.Item e : response.getItems()) {
+            if (e.getOffer() != null && e.getOffer().getSelf() != null && offerId.equals(e.getOffer().getSelf().getValue())) {
+                responseItem = e;
+                break;
+            }
+        }
 
-        verifyEqual(response.getItems().get(0).getItemType(), item.getType(), "verify item type");
-        verifyEqual(response.getItems().get(0).getTitle(), offerRevision.getLocales().get("en_US").getName(),"verify entitlement type");
-        verifyEqual(response.getItems().get(0).getOwnedByCurrentUser(), Boolean.valueOf(true),"verify owned by current user");
+        Assert.assertNotNull(responseItem);
+        verifyEqual(responseItem.getItemType(), item.getType(), "verify item type");
+        verifyEqual(responseItem.getTitle(), offerRevision.getLocales().get("en_US").getName(),"verify entitlement type");
+        verifyEqual(responseItem.getOwnedByCurrentUser(), Boolean.valueOf(true),"verify owned by current user");
     }
 
     public void verifyItemsInLibrary(LibraryResponse response, List<String> itemNames) throws Exception {
