@@ -53,6 +53,8 @@ public class FacebookCreditCard {
     private String lastPaymentTime;
     @JsonProperty("is_enabled")
     private Boolean isEnabled;
+    private String error;
+
 
     public String getId() {
         return id;
@@ -169,6 +171,14 @@ public class FacebookCreditCard {
     @JsonIgnore
     public void setIsEnabled(Boolean isEnabled) {
         this.isEnabled = isEnabled;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }
 
