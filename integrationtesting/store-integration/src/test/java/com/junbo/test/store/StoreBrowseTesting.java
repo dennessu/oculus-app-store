@@ -946,7 +946,7 @@ public class StoreBrowseTesting extends BaseTestClass {
                 LOGGER.info("name=Verify_Item_InExplore, item={}", item.getSelf().getValue());
                 verifyItem(item, GetItemMethod.List, null);
                 LOGGER.info("name=Get_And_Verify_ItemDetail_InExplore, item={}", item.getSelf().getValue());
-                verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), GetItemMethod.Details, false);
+                verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), GetItemMethod.Details, initialItems.contains(item.getSelf().getValue()));
             }
         }
     }
