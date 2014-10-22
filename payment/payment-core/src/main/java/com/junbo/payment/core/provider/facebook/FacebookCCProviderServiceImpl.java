@@ -103,12 +103,19 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.createAccount(s, oculusAppId, fbPaymentAccount).then(new Promise.Func<FacebookPaymentAccount, Promise<PaymentInstrument>>() {
                     @Override
                     public Promise<PaymentInstrument> apply(FacebookPaymentAccount fbPaymentAccount) {
-                        String fbAccount = fbPaymentAccount.getId();
-                        FacebookPaymentAccountMapping fbPaymentAccountMapping = new FacebookPaymentAccountMapping();
-                        fbPaymentAccountMapping.setUserId(request.getUserId());
-                        fbPaymentAccountMapping.setFbPaymentAccountId(fbAccount);
-                        createFBPaymentAccountIfNotExist(fbPaymentAccountMapping);
-                        return addCreditCard(accessToken, fbAccount, request, tokens);
+                        if(!CommonUtil.isNullOrEmpty(fbPaymentAccount.getId())){
+                            String fbAccount = fbPaymentAccount.getId();
+                            FacebookPaymentAccountMapping fbPaymentAccountMapping = new FacebookPaymentAccountMapping();
+                            fbPaymentAccountMapping.setUserId(request.getUserId());
+                            fbPaymentAccountMapping.setFbPaymentAccountId(fbAccount);
+                            createFBPaymentAccountIfNotExist(fbPaymentAccountMapping);
+                            return addCreditCard(accessToken, fbAccount, request, tokens);
+                        }else if(!CommonUtil.isNullOrEmpty(fbPaymentAccount.getError())){
+                            LOGGER.error("error response:" + fbPaymentAccount.getError());
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPaymentAccount.getError()).exception();
+                        }else{
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
+                        }
                     }
                 });
             }
@@ -185,10 +192,16 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
-                        //TODO: check the return result
-                        paymentRequest.setExternalToken(fbPayment.getId());
-                        paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
-                        return Promise.pure(paymentRequest);
+                        if(!CommonUtil.isNullOrEmpty(fbPayment.getId())){
+                            paymentRequest.setExternalToken(fbPayment.getId());
+                            paymentRequest.setStatus(PaymentStatus.AUTHORIZED.toString());
+                            return Promise.pure(paymentRequest);
+                        }else if(!CommonUtil.isNullOrEmpty(fbPayment.getError())){
+                            LOGGER.error("error response:" + fbPayment.getError());
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPayment.getError()).exception();
+                        }else{
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
+                        }
                     }
                 });
             }
@@ -209,9 +222,15 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
-                        //TODO: check the return result
-                        paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
-                        return Promise.pure(paymentRequest);
+                        if(fbPayment.getSuccess()){
+                            paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+                            return Promise.pure(paymentRequest);
+                        }else if(!CommonUtil.isNullOrEmpty(fbPayment.getError())){
+                            LOGGER.error("error response:" + fbPayment.getError());
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPayment.getError()).exception();
+                        }else{
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
+                        }
                     }
                 });
             }
@@ -248,10 +267,16 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
-                        //TODO: check the return result
-                        paymentRequest.setExternalToken(fbPayment.getId());
-                        paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
-                        return Promise.pure(paymentRequest);
+                        if(!CommonUtil.isNullOrEmpty(fbPayment.getId())){
+                            paymentRequest.setExternalToken(fbPayment.getId());
+                            paymentRequest.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+                            return Promise.pure(paymentRequest);
+                        }else if(!CommonUtil.isNullOrEmpty(fbPayment.getError())){
+                            LOGGER.error("error response:" + fbPayment.getError());
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPayment.getError()).exception();
+                        }else{
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
+                        }
                     }
                 });
             }
@@ -268,9 +293,15 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
-                        //TODO: check the return result
-                        paymentRequest.setStatus(PaymentStatus.REVERSED.toString());
-                        return Promise.pure(paymentRequest);
+                        if(fbPayment.getSuccess()){
+                            paymentRequest.setStatus(PaymentStatus.REVERSED.toString());
+                            return Promise.pure(paymentRequest);
+                        }else if(!CommonUtil.isNullOrEmpty(fbPayment.getError())){
+                            LOGGER.error("error response:" + fbPayment.getError());
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPayment.getError()).exception();
+                        }else{
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
+                        }
                     }
                 });
             }
@@ -292,9 +323,15 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 return facebookPaymentApi.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
-                        //TODO: check the return result
-                        paymentRequest.setStatus(PaymentStatus.REFUNDED.toString());
-                        return Promise.pure(paymentRequest);
+                        if(fbPayment.getSuccess()){
+                            paymentRequest.setStatus(PaymentStatus.REFUNDED.toString());
+                            return Promise.pure(paymentRequest);
+                        }else if(!CommonUtil.isNullOrEmpty(fbPayment.getError())){
+                            LOGGER.error("error response:" + fbPayment.getError());
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, fbPayment.getError()).exception();
+                        }else{
+                            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
+                        }
                     }
                 });
             }
