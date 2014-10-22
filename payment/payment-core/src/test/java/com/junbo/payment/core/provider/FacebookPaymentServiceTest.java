@@ -18,6 +18,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import scala.tools.nsc.Global;
 
 import java.math.BigDecimal;
 import java.util.concurrent.ExecutionException;
@@ -95,7 +96,7 @@ public class FacebookPaymentServiceTest extends BaseTest {
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.REFUNDED.toString());
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testChargePartialRefundFB() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
         //hard code user to avoid create too many test users
@@ -125,7 +126,45 @@ public class FacebookPaymentServiceTest extends BaseTest {
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.REFUNDED.toString());
     }
 
-    @Test(enabled = false)
+    //negative: over refund would failed
+    @Test(enabled = true)
+    public void testChargeOverRefundFB() throws ExecutionException, InterruptedException {
+        PaymentInstrument request = buildPIRequest();
+        //hard code user to avoid create too many test users
+        request.setUserId(83886144L);
+        PaymentInstrument result = null;
+        request.setAccountNumber("4111117711552927");
+        request.setBillingAddressId(null);
+        request.setPhoneNumber(null);
+        result = addPI(request);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.piExternalToken);
+        //test payment
+        PaymentTransaction transaction = buildPaymentTransaction(request);
+        PaymentTransaction paymentResult = mockFBPaymentService.charge(transaction).get();
+        Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        ChargeInfo first = new ChargeInfo();
+        first.setCurrency(transaction.getChargeInfo().getCurrency());
+        first.setAmount(new BigDecimal("5.00"));
+        transaction.setChargeInfo(first);
+        paymentResult = mockFBPaymentService.refund(paymentResult.getId(), transaction).get();
+        Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.REFUNDED.toString());
+        ChargeInfo second = new ChargeInfo();
+        second.setCurrency(transaction.getChargeInfo().getCurrency());
+        second.setAmount(new BigDecimal("100.00"));
+        transaction.setChargeInfo(second);
+        try{
+            paymentResult = mockFBPaymentService.refund(paymentResult.getId(), transaction).get();
+        }catch (Exception ex){
+            //TODO, validate exception
+            return ;
+        }
+        throw new RuntimeException("expected exception");
+    }
+
+
+    //negative, should fail as reverse only apply to authorised
+    @Test(enabled = true)
     public void testChargeReverseFB() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
         //hard code user to avoid create too many test users
@@ -142,7 +181,70 @@ public class FacebookPaymentServiceTest extends BaseTest {
         PaymentTransaction paymentResult = mockFBPaymentService.charge(transaction).get();
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         transaction.setChargeInfo(null);
-        paymentResult = mockFBPaymentService.reverse(paymentResult.getId(), transaction).get();
+
+        try{
+            paymentResult = mockFBPaymentService.reverse(paymentResult.getId(), transaction).get();
+        }catch (Exception ex){
+            //TODO, validate exception
+            return;
+        }
+        throw new RuntimeException("expected exception");
+    }
+
+    //negative: charge fail card
+    @Test(enabled = true)
+    public void testChargeFailFB() throws ExecutionException, InterruptedException {
+        PaymentInstrument request = buildPIRequest();
+        //hard code user to avoid create too many test users
+        request.setUserId(83886144L);
+        PaymentInstrument result = null;
+        request.setAccountNumber("4111119315405122");
+        request.setBillingAddressId(null);
+        request.setPhoneNumber(null);
+        result = addPI(request);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.chargeFailToken);
+        //test payment
+        PaymentTransaction transaction = buildPaymentTransaction(request);
+
+        try{
+            PaymentTransaction paymentResult = mockFBPaymentService.charge(transaction).get();
+        }catch (Exception ex){
+            //TODO, validate exception
+            return;
+        }
+        throw new RuntimeException("expected exception");
+    }
+
+    //negative: refund fail card
+    @Test(enabled = true)
+    public void testChargeRefundFailFB() throws ExecutionException, InterruptedException {
+        PaymentInstrument request = buildPIRequest();
+        //hard code user to avoid create too many test users
+        request.setUserId(83886144L);
+        PaymentInstrument result = null;
+        request.setAccountNumber("4111110448424155");
+        request.setBillingAddressId(null);
+        request.setPhoneNumber(null);
+        result = addPI(request);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.refundFailToken);
+        //test payment
+        PaymentTransaction transaction = buildPaymentTransaction(request);
+        PaymentTransaction paymentResult = mockFBPaymentService.charge(transaction).get();
+        Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
+        ChargeInfo first = new ChargeInfo();
+        first.setCurrency(transaction.getChargeInfo().getCurrency());
+        first.setAmount(new BigDecimal("5.00"));
+        transaction.setChargeInfo(first);
+
+        try{
+            paymentResult = mockFBPaymentService.refund(paymentResult.getId(), transaction).get();
+        }catch (Exception ex){
+            //TODO, validate exception
+            return;
+        }
+        throw new RuntimeException("expected exception");
     }
 
     public PaymentInstrument addPI(final PaymentInstrument request){

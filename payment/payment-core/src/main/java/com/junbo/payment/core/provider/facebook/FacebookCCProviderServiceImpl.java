@@ -142,7 +142,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         return facebookPaymentApi.addCreditCard(accessToken, fbAccount, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(FacebookCreditCard facebookCreditCard) {
-                if(CommonUtil.isNullOrEmpty(facebookCreditCard.getId())){
+                if(!CommonUtil.isNullOrEmpty(facebookCreditCard.getId())){
                     request.setExternalToken(facebookCreditCard.getId());
                     request.getTypeSpecificDetails().setIssuerIdentificationNumber(facebookCreditCard.getFirst6());
                     request.getTypeSpecificDetails().setExpireDate(facebookCreditCard.getExpiryYear() + "-" + facebookCreditCard.getExpiryMonth());
