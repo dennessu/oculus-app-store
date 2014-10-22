@@ -125,11 +125,15 @@ class ClientServiceImpl implements ClientService {
         }
 
         if (client.idTokenIssuer == null || existingClient.idTokenIssuer != client.idTokenIssuer) {
-            throw AppErrors.INSTANCE.cantUpdateFields('id_token_issuer').exception()
+            if (existingClient.idTokenIssuer != null) {
+                throw AppErrors.INSTANCE.cantUpdateFields('id_token_issuer').exception()
+            }
         }
 
         if (client.needConsent == null || existingClient.needConsent != client.needConsent) {
-            throw AppErrors.INSTANCE.cantUpdateFields('need_consent').exception()
+            if (existingClient.needConsent != null) {
+                throw AppErrors.INSTANCE.cantUpdateFields('need_consent').exception()
+            }
         }
 
         validateClient(client)

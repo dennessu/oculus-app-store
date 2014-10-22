@@ -6,11 +6,19 @@
 
 package com.junbo.payment.spec.model;
 
+import com.junbo.common.jackson.annotation.CountryId;
+import com.junbo.common.jackson.annotation.CurrencyId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
+
 /**
  * ProviderOption.
  */
 public class ProviderOption {
+    @CountryId
+    @XSSFreeString
     private String country;
+    @CurrencyId
+    @XSSFreeString
     private String currency;
     private String cesType;
 

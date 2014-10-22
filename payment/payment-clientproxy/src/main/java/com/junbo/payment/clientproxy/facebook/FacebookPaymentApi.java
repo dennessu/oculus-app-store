@@ -34,7 +34,7 @@ public interface FacebookPaymentApi {
                                               @PathParam("payment-account-id") String paymentAccountId, @BeanParam FacebookPayment fbPayment);
 
     @POST
-    @Path("{payment-account-id}/payments")
+    @Path("{payment-id}")
     Promise<FacebookPayment> modifyPayment(@QueryParam("access_token") String accessToken,
-                                        @PathParam("payment-id") String paymentAccountId, @BeanParam FacebookPayment fbPayment);
+                                        @PathParam("payment-id") String paymentId, @BeanParam FacebookPayment fbPayment);
 }

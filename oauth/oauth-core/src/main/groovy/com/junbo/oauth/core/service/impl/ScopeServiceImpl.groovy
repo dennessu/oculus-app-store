@@ -23,9 +23,6 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class ScopeServiceImpl implements ScopeService {
-    private static final String SCOPE_INFO_SCOPE = 'scope.info'
-    private static final String SCOPE_MANAGE_SCOPE = 'scope.manage'
-
     private ScopeRepository scopeRepository
     private OAuthTokenService tokenService
 
@@ -41,10 +38,6 @@ class ScopeServiceImpl implements ScopeService {
 
     @Override
     Scope saveScope(Scope scope) {
-        if (!AuthorizeContext.hasScopes(SCOPE_MANAGE_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception()
-        }
-
         Scope existingScope = scopeRepository.getScope(scope.name)
 
         if (existingScope != null) {
@@ -70,31 +63,27 @@ class ScopeServiceImpl implements ScopeService {
 
     @Override
     List<Scope> getScopes(String scopeNames) {
-        if (!AuthorizeContext.hasScopes(SCOPE_INFO_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception()
-        }
+        if (StringUtils.isEmpty(scopeNames)) {
+            return scopeRepository.getScopes()
+        } else {
+            String[] names = scopeNames.split(',')
 
-        String[] names = scopeNames == null ? new String[0] : scopeNames.split(',')
-
-        List<Scope> scopes = []
-        names.each { String name ->
-            Scope scope = scopeRepository.getScope(name)
-            if (scope != null) {
-                scopes.add(scope)
+            List<Scope> scopes = []
+            names.each { String name ->
+                Scope scope = scopeRepository.getScope(name)
+                if (scope != null) {
+                    scopes.add(scope)
+                }
             }
-        }
 
-        return scopes
+            return scopes
+        }
     }
 
     @Override
     Scope updateScope(String scopeName, Scope scope) {
         if (StringUtils.isEmpty(scope.rev)) {
             throw AppCommonErrors.INSTANCE.fieldRequired('revision').exception()
-        }
-
-        if (!AuthorizeContext.hasScopes(SCOPE_MANAGE_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         Scope existingScope = scopeRepository.getScope(scopeName)

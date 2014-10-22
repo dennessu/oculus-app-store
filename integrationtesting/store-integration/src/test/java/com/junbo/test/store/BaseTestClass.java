@@ -14,7 +14,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.junbo.test.catalog.impl.ItemAttributeServiceImpl.instance;
 
@@ -53,6 +55,8 @@ public abstract class BaseTestClass {
 
     protected String initialAppsCmsPage = "android-initial-app";
     protected String initialAppsCmsSlot = "offers";
+    protected Set<String> initialItems = new HashSet<>();
+
 
     protected ItemService itemService;
     protected ItemRevisionService itemRevisionService;
@@ -121,6 +125,9 @@ public abstract class BaseTestClass {
         }
         if (ConfigHelper.getSetting("casey.useEmulator") != null) {
             useCaseyEmulator = Boolean.valueOf(ConfigHelper.getSetting("casey.useEmulator"));
+        }
+        if (ConfigHelper.getSetting("testdata.initial.items") != null) {
+            initialItems = new HashSet<>(Arrays.asList(ConfigHelper.getSetting("testdata.initial.items").split(",")));
         }
 
         cmsPageName = ConfigHelper.getSetting("testdata.cmspage.name");

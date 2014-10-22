@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.service.ScopeService
 import com.junbo.oauth.spec.endpoint.ScopeEndpoint
@@ -20,7 +21,6 @@ import javax.ws.rs.NotSupportedException
  * @see com.junbo.oauth.spec.endpoint.ScopeEndpoint
  */
 @CompileStatic
-@org.springframework.context.annotation.Scope('prototype')
 class ScopeEndpointImpl implements ScopeEndpoint {
     /**
      * The ScopeService to handle the scope related logic.
@@ -61,8 +61,11 @@ class ScopeEndpointImpl implements ScopeEndpoint {
      * @return The scopes information with the given scope names.
      */
     @Override
-    Promise<List<Scope>> getByScopeNames(String scopeNames) {
-        return Promise.pure(scopeService.getScopes(scopeNames))
+    Promise<Results<Scope>> getByScopeNames(String scopeNames) {
+        Results<Scope> results = new Results<>()
+        results.items = scopeService.getScopes(scopeNames)
+        results.total = results.items.size()
+        return Promise.pure(results)
     }
 
     /**

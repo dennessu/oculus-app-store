@@ -37,6 +37,11 @@ class ScopeFileRepositoryImpl implements ScopeRepository, InitializingBean {
     }
 
     @Override
+    List<Scope> getScopes() {
+        return scopes.values().asList()
+    }
+
+    @Override
     Scope getScope(String name) {
         return scopes[name]
     }

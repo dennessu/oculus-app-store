@@ -41,10 +41,12 @@ public class FacebookPayment {
     private String refundReason;
     //output response
     private String id;
+    private Boolean success;
+    private String error;
     @JsonProperty("payment_account")
     private String paymentAccountId;
     private String application;
-    @JsonProperty("created_time")
+    @JsonProperty("time_created")
     private String createdTime;
     private List<FacebookPaymentAction> actions;
 
@@ -118,6 +120,22 @@ public class FacebookPayment {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 
     public String getPaymentAccountId() {

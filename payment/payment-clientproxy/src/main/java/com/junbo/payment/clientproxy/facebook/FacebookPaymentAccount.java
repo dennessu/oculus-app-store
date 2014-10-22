@@ -28,6 +28,7 @@ public class FacebookPaymentAccount {
     @QueryParam("env")
     @JsonProperty
     private String env;
+    private String error;
 
     public FacebookAddress getPayerAddress() {
         return payerAddress;
@@ -67,5 +68,13 @@ public class FacebookPaymentAccount {
 
     public void setEnv(String env) {
         this.env = env;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }
