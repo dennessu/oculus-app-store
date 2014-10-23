@@ -8,7 +8,7 @@
 
     <changeSet id="0.1" author='shuz' context="PREDEPLOY">
         <sql><![CDATA[
-       
+
             CREATE TABLE pending_action (
                 id bigint NOT NULL,
                 version INT NOT NULL,
@@ -22,10 +22,16 @@
                 created_by VARCHAR(64) NOT NULL,
                 modified_time TIMESTAMP,
                 modified_by VARCHAR(64),
-                deleted BOOLEAN NOT NULL, 
+                deleted BOOLEAN NOT NULL,
 
                 PRIMARY KEY(id)
             );
+
+        ]]></sql>
+    </changeSet>
+
+    <changeSet id="0.2" author='shuz' context="PREDEPLOY">
+        <sql><![CDATA[
             CREATE INDEX ON pending_action (deleted, created_time DESC);
         ]]></sql>
     </changeSet>
