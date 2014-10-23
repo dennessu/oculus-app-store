@@ -11,7 +11,7 @@ import com.junbo.identity.auth.OrganizationAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.OrganizationFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.OrganizationValidator
-import com.junbo.identity.data.repository.OrganizationRepository
+import com.junbo.identity.service.OrganizationService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.option.list.OrganizationListOptions
@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response
 class OrganizationResourceImpl implements OrganizationResource {
 
     @Autowired
-    private OrganizationRepository organizationRepository
+    private OrganizationService organizationService
 
     @Autowired
     private OrganizationFilter organizationFilter
@@ -68,7 +68,7 @@ class OrganizationResourceImpl implements OrganizationResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return organizationRepository.create(organization).then { Organization newOrganization ->
+                return organizationService.create(organization).then { Organization newOrganization ->
                     Created201Marker.mark(newOrganization.getId())
 
                     newOrganization = organizationFilter.filterForGet(newOrganization, null)
@@ -88,7 +88,7 @@ class OrganizationResourceImpl implements OrganizationResource {
             throw new IllegalArgumentException('organization is null')
         }
 
-        return organizationRepository.get(organizationId).then { Organization oldOrganization ->
+        return organizationService.get(organizationId).then { Organization oldOrganization ->
             if (oldOrganization == null) {
                 throw AppErrors.INSTANCE.organizationNotFound(organizationId).exception()
             }
@@ -101,7 +101,7 @@ class OrganizationResourceImpl implements OrganizationResource {
                 organization = organizationFilter.filterForPut(organization, oldOrganization)
 
                 return organizationValidator.validateForUpdate(organizationId, organization, oldOrganization).then {
-                    return organizationRepository.update(organization, oldOrganization).then { Organization newOrganization ->
+                    return organizationService.update(organization, oldOrganization).then { Organization newOrganization ->
                         newOrganization = organizationFilter.filterForGet(newOrganization, null)
                         return Promise.pure(newOrganization)
                     }
@@ -120,7 +120,7 @@ class OrganizationResourceImpl implements OrganizationResource {
             throw new IllegalArgumentException('organization is null')
         }
 
-        return organizationRepository.get(organizationId).then { Organization oldOrganization ->
+        return organizationService.get(organizationId).then { Organization oldOrganization ->
             if (oldOrganization == null) {
                 throw AppErrors.INSTANCE.organizationNotFound(organizationId).exception()
             }
@@ -133,7 +133,7 @@ class OrganizationResourceImpl implements OrganizationResource {
                 organization = organizationFilter.filterForPatch(organization, oldOrganization)
 
                 return organizationValidator.validateForUpdate(organizationId, organization, oldOrganization).then {
-                    return organizationRepository.update(organization, oldOrganization).then { Organization newOrganization ->
+                    return organizationService.update(organization, oldOrganization).then { Organization newOrganization ->
                         newOrganization = organizationFilter.filterForGet(newOrganization, null)
                         return Promise.pure(newOrganization)
                     }
@@ -149,7 +149,7 @@ class OrganizationResourceImpl implements OrganizationResource {
         }
 
         return organizationValidator.validateForGet(organizationId).then {
-            return organizationRepository.get(organizationId).then { Organization newOrganization ->
+            return organizationService.get(organizationId).then { Organization newOrganization ->
                 def callback = authorizeCallbackFactory.create(newOrganization)
                 return RightsScope.with(authorizeService.authorize(callback)) {
                     if (!AuthorizeContext.hasRights('read')) {
@@ -206,12 +206,12 @@ class OrganizationResourceImpl implements OrganizationResource {
 
     Promise<Results<Organization>> search(OrganizationListOptions listOptions) {
         if (listOptions.ownerId != null) {
-            return organizationRepository.searchByOwner(listOptions.ownerId, listOptions.limit, listOptions.offset)
+            return organizationService.searchByOwner(listOptions.ownerId, listOptions.limit, listOptions.offset)
         } else if (!StringUtils.isEmpty(listOptions.name)) {
-            return organizationRepository.searchByCanonicalName(normalizeService.normalize(listOptions.name), listOptions.limit,
+            return organizationService.searchByCanonicalName(normalizeService.normalize(listOptions.name), listOptions.limit,
                     listOptions.offset)
         } else if (listOptions.ownerId == null && StringUtils.isEmpty(listOptions.name)) {
-            return organizationRepository.searchAll(listOptions.limit == null ? maximumFetchSize : listOptions.limit, listOptions.offset)
+            return organizationService.searchAll(listOptions.limit == null ? maximumFetchSize : listOptions.limit, listOptions.offset)
         } else {
             throw AppCommonErrors.INSTANCE.invalidOperation('Not support search').exception()
         }
@@ -226,7 +226,7 @@ class OrganizationResourceImpl implements OrganizationResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return organizationRepository.delete(organizationId).then {
+                return organizationService.delete(organizationId).then {
                     return Promise.pure(Response.status(204).build())
                 }
             }

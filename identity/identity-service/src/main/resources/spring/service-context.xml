@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean id="identityUserService" class="com.junbo.identity.service.impl.UserServiceImpl">
+        <property name="userRepository" ref="userRepository" />
+    </bean>
+
+    <bean id="communicationService" class="com.junbo.identity.service.impl.CommunicationServiceImpl">
+        <property name="communicationRepository" ref="communicationRepository" />
+    </bean>
+
+    <bean id="countryService" class="com.junbo.identity.service.impl.CountryServiceImpl">
+        <property name="countryRepository" ref="countryRepository" />
+    </bean>
+
+    <bean id="currencyService" class="com.junbo.identity.service.impl.CurrencyServiceImpl">
+        <property name="currencyRepository" ref="currencyRepository" />
+    </bean>
+
+    <bean id="deviceService" class="com.junbo.identity.service.impl.DeviceServiceImpl">
+        <property name="deviceRepository" ref="deviceRepository" />
+    </bean>
+
+    <bean id="deviceTypeService" class="com.junbo.identity.service.impl.DeviceTypeServiceImpl">
+        <property name="deviceTypeRepository" ref="deviceTypeRepository" />
+    </bean>
+
+    <bean id="errorInfoService" class="com.junbo.identity.service.impl.ErrorInfoServiceImpl">
+        <property name="errorInfoRepository" ref="errorInfoRepository" />
+    </bean>
+
+    <bean id="groupService" class="com.junbo.identity.service.impl.GroupServiceImpl">
+        <property name="groupRepository" ref="groupRepository" />
+    </bean>
+
+    <bean id="localeService" class="com.junbo.identity.service.impl.LocaleServiceImpl">
+        <property name="localeRepository" ref="localeRepository" />
+    </bean>
+
+    <bean id="organizationService" class="com.junbo.identity.service.impl.OrganizationServiceImpl">
+        <property name="organizationRepository" ref="organizationRepository" />
+    </bean>
+
+    <bean id="piTypeService" class="com.junbo.identity.service.impl.PITypeServiceImpl">
+        <property name="piTypeRepository" ref="piTypeRepository" />
+    </bean>
+
+    <bean id="tosService" class="com.junbo.identity.service.impl.TosServiceImpl">
+        <property name="tosRepository" ref="tosRepository" />
+    </bean>
+
+    <bean id="userAuthenticatorService" class="com.junbo.identity.service.impl.UserAuthenticatorServiceImpl">
+        <property name="userAuthenticatorRepository" ref="userAuthenticatorRepository" />
+    </bean>
+
+    <bean id="userCommunicationService" class="com.junbo.identity.service.impl.UserCommunicationServiceImpl">
+        <property name="userCommunicationRepository" ref="userCommunicationRepository" />
+    </bean>
+
+    <bean id="userCredentialVerifyAttemptService" class="com.junbo.identity.service.impl.UserCredentialVerifyAttemptServiceImpl">
+        <property name="userCredentialVerifyAttemptRepository" ref="userCredentialVerifyAttemptRepository" />
+    </bean>
+
+    <bean id="userGroupService" class="com.junbo.identity.service.impl.UserGroupServiceImpl">
+        <property name="userGroupRepository" ref="userGroupRepository" />
+    </bean>
+
+    <bean id="userPasswordService" class="com.junbo.identity.service.impl.UserPasswordServiceImpl">
+        <property name="userPasswordRepository" ref="userPasswordRepository" />
+    </bean>
+
+    <bean id="userPersonalInfoService" class="com.junbo.identity.service.impl.UserPersonalInfoServiceImpl">
+        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+    </bean>
+
+    <bean id="userPinService" class="com.junbo.identity.service.impl.UserPinServiceImpl">
+        <property name="userPinRepository" ref="userPinRepository" />
+    </bean>
+
+    <bean id="userSecurityQuestionAttemptService" class="com.junbo.identity.service.impl.UserSecurityQuestionAttemptServiceImpl">
+        <property name="userSecurityQuestionAttemptRepository" ref="userSecurityQuestionAttemptRepository" />
+    </bean>
+
+    <bean id="userSecurityQuestionService" class="com.junbo.identity.service.impl.UserSecurityQuestionServiceImpl">
+        <property name="userSecurityQuestionRepository" ref="userSecurityQuestionRepository" />
+    </bean>
+
+    <bean id="userTFAAttemptService" class="com.junbo.identity.service.impl.UserTFAAttemptServiceImpl">
+        <property name="userTFAAttemptRepository" ref="userTFAAttemptRepository" />
+    </bean>
+
+    <bean id="userTFAMailService" class="com.junbo.identity.service.impl.UserTFAMailServiceImpl">
+        <property name="userTFAMailRepository" ref="userTFAMailRepository" />
+    </bean>
+
+    <bean id="userTFAPhoneBackupCodeAttemptService" class="com.junbo.identity.service.impl.UserTFAPhoneBackupCodeAttemptServiceImpl">
+        <property name="userTFAPhoneBackupCodeAttemptRepository" ref="userTFAPhoneBackupCodeAttemptRepository" />
+    </bean>
+
+    <bean id="userTFAPhoneBackupCodeService" class="com.junbo.identity.service.impl.UserTFAPhoneBackupCodeServiceImpl">
+        <property name="userTFAPhoneBackupCodeRepository" ref="userTFAPhoneBackupCodeRepository" />
+    </bean>
+
+    <bean id="userTFAPhoneService" class="com.junbo.identity.service.impl.UserTFAPhoneServiceImpl">
+        <property name="userTFAPhoneRepository" ref="userTFAPhoneRepository" />
+    </bean>
+
+    <bean id="userTosService" class="com.junbo.identity.service.impl.UserTosServiceImpl">
+        <property name="userTosRepository" ref="userTosRepository" />
+    </bean>
+
+    <bean id="usernameEmailBlockerService" class="com.junbo.identity.service.impl.UsernameEmailBlockerServiceImpl">
+        <property name="usernameEmailBlockerRepository" ref="usernameEmailBlockerRepository" />
+    </bean>
+</beans>

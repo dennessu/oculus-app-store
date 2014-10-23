@@ -24,6 +24,10 @@ dependencies {
     compile (libraries.HikariCP)
     compile (libraries.rs_api)
 
+    compile (libraries.gson)
+    compile (libraries.common_codec)
+    compile (libraries.hamcrest_core)
+
     compile (libraries.querydsl_jpa)
     compile (libraries.querydsl_collections)
     compile (libraries.ehcache)

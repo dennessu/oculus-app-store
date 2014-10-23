@@ -8,7 +8,7 @@ import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
-import com.junbo.identity.data.repository.CountryRepository
+import com.junbo.identity.service.CountryService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.Country
@@ -22,15 +22,15 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class AddressValidatorImpl implements PiiValidator {
 
-    CountryRepository countryRepository
+    CountryService countryService
 
     AddressValidatorResource addressValidatorResource
 
     Boolean externalValidatorEnabled
 
     @Required
-    void setCountryRepository(CountryRepository countryRepository) {
-        this.countryRepository = countryRepository
+    void setCountryService(CountryService countryService) {
+        this.countryService = countryService
     }
 
     @Required
@@ -91,7 +91,7 @@ class AddressValidatorImpl implements PiiValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired("postalCode").exception()
         }
 
-        return countryRepository.get(address.countryId).then { Country country ->
+        return countryService.get(address.countryId).then { Country country ->
             if (country == null) {
                 throw AppErrors.INSTANCE.countryNotFound(address.countryId).exception()
             }

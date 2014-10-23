@@ -8,9 +8,9 @@ import com.junbo.common.id.CommunicationId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.CommunicationValidator
-import com.junbo.identity.data.repository.CommunicationRepository
-import com.junbo.identity.data.repository.CountryRepository
-import com.junbo.identity.data.repository.LocaleRepository
+import com.junbo.identity.service.CommunicationService
+import com.junbo.identity.service.CountryService
+import com.junbo.identity.service.LocaleService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Communication
 import com.junbo.identity.spec.v1.model.CommunicationLocale
@@ -32,9 +32,9 @@ class CommunicationValidatorImpl implements CommunicationValidator {
 
     private static final String DEFAULT_LOCALE = 'en_US'
 
-    private CommunicationRepository communicationRepository
-    private LocaleRepository localeRepository
-    private CountryRepository countryRepository
+    private CommunicationService communicationService
+    private LocaleService localeService
+    private CountryService countryService
 
     private Integer minCommunicationLocaleName
     private Integer maxCommunicationLocaleName
@@ -43,18 +43,18 @@ class CommunicationValidatorImpl implements CommunicationValidator {
     private Integer maxCommunicationLocaleDescription
 
     @Required
-    void setCommunicationRepository(CommunicationRepository communicationRepository) {
-        this.communicationRepository = communicationRepository
+    void setCommunicationService(CommunicationService communicationService) {
+        this.communicationService = communicationService
     }
 
     @Required
-    void setLocaleRepository(LocaleRepository localeRepository) {
-        this.localeRepository = localeRepository
+    void setLocaleService(LocaleService localeService) {
+        this.localeService = localeService
     }
 
     @Required
-    void setCountryRepository(CountryRepository countryRepository) {
-        this.countryRepository = countryRepository
+    void setCountryService(CountryService countryService) {
+        this.countryService = countryService
     }
 
     @Required
@@ -83,7 +83,7 @@ class CommunicationValidatorImpl implements CommunicationValidator {
             throw new IllegalArgumentException('communicationId is null')
         }
 
-        return communicationRepository.get(communicationId).then { Communication communication ->
+        return communicationService.get(communicationId).then { Communication communication ->
             if (communication == null) {
                 throw AppErrors.INSTANCE.communicationNotFound(communicationId).exception()
             }
@@ -116,19 +116,14 @@ class CommunicationValidatorImpl implements CommunicationValidator {
             CommunicationLocale inputLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(inputJsonNode, CommunicationLocale)
 
             return Promise.each(communication.regions) { CountryId region ->
-                return communicationRepository.searchByRegion(region, Integer.MAX_VALUE, 0).then { List<Communication> communicationList ->
+                return communicationService.searchByRegion(region, Integer.MAX_VALUE, 0).then { List<Communication> communicationList ->
                     if (CollectionUtils.isEmpty(communicationList)) {
                         return Promise.pure(null)
                     }
 
                     for (Communication existing : communicationList) {
-                        JsonNode jsonNode = existing.getLocales().get(DEFAULT_LOCALE)
-                        if (jsonNode == null) {
-                            continue
-                        }
-
-                        CommunicationLocale communicationLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(jsonNode, CommunicationLocale)
-                        if (communicationLocale.name.equalsIgnoreCase(inputLocale.name)) {
+                        String name = getDefaultLocaleName(existing)
+                        if (name.equalsIgnoreCase(inputLocale.name)) {
                             throw AppCommonErrors.INSTANCE.fieldInvalid('regions', 'communication have overlap region support for same title').exception()
                         }
                     }
@@ -167,19 +162,17 @@ class CommunicationValidatorImpl implements CommunicationValidator {
 
             CommunicationLocale inputCommunicationLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(updateJsonNode, CommunicationLocale)
             return Promise.each(communication.regions) { CountryId region ->
-                return communicationRepository.searchByRegion(region, Integer.MAX_VALUE, 0).then { List<Communication> communicationList ->
+                return communicationService.searchByRegion(region, Integer.MAX_VALUE, 0).then { List<Communication> communicationList ->
                     if (CollectionUtils.isEmpty(communicationList)) {
                         return Promise.pure(null)
                     }
 
                     for (Communication existing : communicationList) {
-                        JsonNode jsonNode = existing.getLocales().get(DEFAULT_LOCALE)
-                        if (jsonNode == null || existing.getId() == communication.getId()) {
+                        if (existing.getId() == communication.getId()) {
                             continue
                         }
-
-                        CommunicationLocale communicationLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(jsonNode, CommunicationLocale)
-                        if (communicationLocale.name.equalsIgnoreCase(inputCommunicationLocale.name)) {
+                        String name = getDefaultLocaleName(existing)
+                        if (name.equalsIgnoreCase(inputCommunicationLocale.name)) {
                             throw AppCommonErrors.INSTANCE.fieldInvalid('regions', 'communication have overlap region support for same title').exception()
                         }
                     }
@@ -260,7 +253,7 @@ class CommunicationValidatorImpl implements CommunicationValidator {
         }
 
         Promise.each(communication.regions) { CountryId countryId ->
-            return countryRepository.get(countryId).then { Country country ->
+            return countryService.get(countryId).then { Country country ->
                 if (country == null) {
                     throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
                 }
@@ -286,7 +279,7 @@ class CommunicationValidatorImpl implements CommunicationValidator {
         }
 
         Promise.each(communication.translations) { LocaleId localeId ->
-            return localeRepository.get(localeId).then { com.junbo.identity.spec.v1.model.Locale locale ->
+            return localeService.get(localeId).then { com.junbo.identity.spec.v1.model.Locale locale ->
                 if (locale == null) {
                     throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
                 }
@@ -296,5 +289,18 @@ class CommunicationValidatorImpl implements CommunicationValidator {
         }.then {
             return Promise.pure(null)
         }
+    }
+
+    private String getDefaultLocaleName(Communication communication) {
+        if (communication == null || communication.locales == null) {
+            return ''
+        }
+        JsonNode jsonNode = communication.getLocales().get(DEFAULT_LOCALE)
+        if (jsonNode == null) {
+            return ''
+        }
+
+        CommunicationLocale communicationLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(jsonNode, CommunicationLocale)
+        return communicationLocale.name
     }
 }

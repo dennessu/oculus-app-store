@@ -3,13 +3,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="teleSign" class="com.junbo.identity.clientproxy.impl.TeleSignImpl">
-        <constructor-arg><value>${identity.conf.teleSign.customerId}</value></constructor-arg>
-        <constructor-arg><value>${identity.conf.teleSign.secretKey}</value></constructor-arg>
-        <constructor-arg ref="userPersonalInfoRepository"></constructor-arg>
-        <constructor-arg ref="localeRepository"></constructor-arg>
-    </bean>
-
     <bean id="identityAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
         <property name="scope" value="crypto.service billing.service payment.service csr.service identity.service email.service"/>
         <property name="deflectionInSeconds" value="300"/>

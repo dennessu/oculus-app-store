@@ -12,7 +12,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserTFABackupCodeAttemptFilter
 import com.junbo.identity.core.service.validator.UserTFABackupCodeAttemptValidator
-import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeAttemptRepository
+import com.junbo.identity.service.UserTFAPhoneBackupCodeAttemptService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserTFABackupCodeAttempt
 import com.junbo.identity.spec.v1.option.list.UserTFABackupCodeAttemptListOptions
@@ -36,7 +36,7 @@ import javax.transaction.Transactional
 @Transactional
 class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptResource {
     @Autowired
-    private UserTFAPhoneBackupCodeAttemptRepository userTFABackupCodeAttemptRepository
+    private UserTFAPhoneBackupCodeAttemptService userTFAPhoneBackupCodeAttemptService
 
     @Autowired
     private UserTFABackupCodeAttemptFilter userTFABackupCodeAttemptFilter
@@ -153,7 +153,7 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return template.execute(new TransactionCallback<Promise<UserTFABackupCodeAttempt>>() {
             Promise<UserTFABackupCodeAttempt> doInTransaction(TransactionStatus txnStatus) {
-                return userTFABackupCodeAttemptRepository.create(attempt)
+                return userTFAPhoneBackupCodeAttemptService.create(attempt)
             }
         }
         )
@@ -161,7 +161,7 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
 
     private Promise<List<UserTFABackupCodeAttempt>> search(UserTFABackupCodeAttemptListOptions listOptions) {
         if (listOptions.userId != null) {
-            return userTFABackupCodeAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
+            return userTFAPhoneBackupCodeAttemptService.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)
         } else {
             throw AppCommonErrors.INSTANCE.invalidOperation('Not Supported search operation').exception()

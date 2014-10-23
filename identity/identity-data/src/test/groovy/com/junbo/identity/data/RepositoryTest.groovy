@@ -149,7 +149,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         assert  country.countryCode == newCountry.countryCode
     }
 
-    @Test
+    @Test(enabled = false)
     public void testCurrencyRepository() {
         currencyRepository.delete(new CurrencyId('USD')).get()
 
@@ -161,7 +161,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         assert  currency.currencyCode == newCurrency.currencyCode
     }
 
-    @Test
+    @Test(enabled = false)
     public void testLocaleRepository() {
         localeRepository.delete(new LocaleId('en_US')).get()
 

@@ -88,4 +88,6 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "120", message = "item not purchased.")
     AppError itemNotPurchased();
+
+    
 }

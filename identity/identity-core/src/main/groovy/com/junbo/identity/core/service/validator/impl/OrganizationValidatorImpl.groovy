@@ -12,9 +12,9 @@ import com.junbo.identity.data.identifiable.OrganizationTaxType
 import com.junbo.identity.data.identifiable.OrganizationType
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.OrganizationRepository
-import com.junbo.identity.data.repository.UserPersonalInfoRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.OrganizationService
+import com.junbo.identity.service.UserPersonalInfoService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
@@ -34,9 +34,9 @@ import org.springframework.util.StringUtils
 class OrganizationValidatorImpl implements OrganizationValidator {
     private static String ORGANIZATION_GROUP_ADMIN = 'organization.group.admin'
 
-    private OrganizationRepository organizationRepository
-    private UserRepository userRepository
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private OrganizationService organizationService
+    private UserService userService
+    private UserPersonalInfoService userPersonalInfoService
     private NormalizeService normalizeService
 
     @Override
@@ -44,7 +44,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
         if (organizationId == null) {
             throw new IllegalArgumentException('organizationId is null')
         }
-        return organizationRepository.get(organizationId).then { Organization organization ->
+        return organizationService.get(organizationId).then { Organization organization ->
             if (organization == null) {
                 throw AppErrors.INSTANCE.organizationNotFound(organizationId).exception()
             }
@@ -167,12 +167,12 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             if (organization.ownerId == null) {
                 return Promise.pure(null)
             }
-            return userRepository.get(organization.ownerId).then { User user ->
+            return userService.getNonDeletedUser(organization.ownerId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(organization.ownerId).exception()
                 }
 
-                if (user.isAnonymous == null || user.status != UserStatus.ACTIVE.toString()) {
+                if (user.isAnonymous == null || user.isAnonymous || user.status != UserStatus.ACTIVE.toString()) {
                     throw AppErrors.INSTANCE.userInInvalidStatus(organization.ownerId).exception()
                 }
 
@@ -183,7 +183,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
 
     private Promise<Void> checkValidOrganizationNameUnique(Organization organization) {
 
-        return organizationRepository.searchByCanonicalName(organization.canonicalName, Integer.MAX_VALUE, 0).then { Results<Organization> results ->
+        return organizationService.searchByCanonicalName(organization.canonicalName, Integer.MAX_VALUE, 0).then { Results<Organization> results ->
             if (results == null || CollectionUtils.isEmpty(results.items)) {
                 return Promise.pure(null)
             }
@@ -203,7 +203,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     }
 
     private Promise<UserPersonalInfo> checkPersonalInfoIdOwner(UserPersonalInfoId userPersonalInfoId, UserId ownerId, String expectedType) {
-        return userPersonalInfoRepository.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
             if (userPersonalInfo == null) {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoId).exception()
             }
@@ -221,18 +221,18 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     }
 
     @Required
-    void setOrganizationRepository(OrganizationRepository organizationRepository) {
-        this.organizationRepository = organizationRepository
+    void setOrganizationService(OrganizationService organizationService) {
+        this.organizationService = organizationService
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
-        this.userPersonalInfoRepository = userPersonalInfoRepository
+    void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
+        this.userPersonalInfoService = userPersonalInfoService
     }
 
     @Required

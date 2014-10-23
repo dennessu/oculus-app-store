@@ -15,7 +15,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserAuthenticatorFilter
 import com.junbo.identity.core.service.validator.UserAuthenticatorValidator
-import com.junbo.identity.data.repository.UserAuthenticatorRepository
+import com.junbo.identity.service.UserAuthenticatorService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.identity.spec.v1.option.list.AuthenticatorListOptions
@@ -23,7 +23,6 @@ import com.junbo.identity.spec.v1.option.model.AuthenticatorGetOptions
 import com.junbo.identity.spec.v1.resource.AuthenticatorResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.hibernate.engine.spi.Status
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
@@ -37,7 +36,7 @@ import javax.ws.rs.core.Response
 class AuthenticatorResourceImpl implements AuthenticatorResource {
 
     @Autowired
-    private UserAuthenticatorRepository userAuthenticatorRepository
+    private UserAuthenticatorService userAuthenticatorService
 
     @Autowired
     private UserAuthenticatorFilter userAuthenticatorFilter
@@ -66,7 +65,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
             userAuthenticator = userAuthenticatorFilter.filterForCreate(userAuthenticator)
 
             return userAuthenticatorValidator.validateForCreate(userAuthenticator).then {
-                return userAuthenticatorRepository.create(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+                return userAuthenticatorService.create(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
                     Created201Marker.mark(newUserAuthenticator.getId())
 
                     newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
@@ -87,7 +86,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
             throw new IllegalArgumentException('userAuthenticator is null')
         }
 
-        return userAuthenticatorRepository.get(userAuthenticatorId).then { UserAuthenticator oldUserAuthenticator ->
+        return userAuthenticatorService.get(userAuthenticatorId).then { UserAuthenticator oldUserAuthenticator ->
             if (oldUserAuthenticator == null) {
                 throw AppErrors.INSTANCE.userAuthenticatorNotFound(userAuthenticatorId).exception()
             }
@@ -102,7 +101,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
                 return userAuthenticatorValidator.validateForUpdate(
                         userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                    return userAuthenticatorRepository.update(userAuthenticator, oldUserAuthenticator).then {
+                    return userAuthenticatorService.update(userAuthenticator, oldUserAuthenticator).then {
                         UserAuthenticator newUserAuthenticator ->
                         newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
                         return Promise.pure(newUserAuthenticator)
@@ -123,7 +122,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
             throw new IllegalArgumentException('userAuthenticator is null')
         }
 
-        return userAuthenticatorRepository.get(userAuthenticatorId).then { UserAuthenticator oldUserAuthenticator ->
+        return userAuthenticatorService.get(userAuthenticatorId).then { UserAuthenticator oldUserAuthenticator ->
             if (oldUserAuthenticator == null) {
                 throw AppErrors.INSTANCE.userAuthenticatorNotFound(userAuthenticatorId).exception()
             }
@@ -138,7 +137,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
                 return userAuthenticatorValidator.validateForUpdate(
                         userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                    return userAuthenticatorRepository.update(userAuthenticator, oldUserAuthenticator).then {
+                    return userAuthenticatorService.update(userAuthenticator, oldUserAuthenticator).then {
                         UserAuthenticator newUserAuthenticator ->
                         newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
                         return Promise.pure(newUserAuthenticator)
@@ -213,7 +212,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return userAuthenticatorRepository.delete(userAuthenticatorId).then {
+                return userAuthenticatorService.delete(userAuthenticatorId).then {
                     return Promise.pure(Response.status(204).build())
                 }
             }
@@ -222,21 +221,21 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
     private Promise<List<UserAuthenticator>> search(AuthenticatorListOptions listOptions) {
         if (listOptions.userId != null && listOptions.type != null && listOptions.externalId != null) {
-            return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(listOptions.userId, listOptions.type,
+            return userAuthenticatorService.searchByUserIdAndTypeAndExternalId(listOptions.userId, listOptions.type,
                     listOptions.externalId, listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null && listOptions.type != null) {
-            return userAuthenticatorRepository.searchByUserIdAndType(listOptions.userId, listOptions.type,
+            return userAuthenticatorService.searchByUserIdAndType(listOptions.userId, listOptions.type,
                     listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null && listOptions.externalId != null) {
-            return userAuthenticatorRepository.searchByUserIdAndExternalId(listOptions.userId, listOptions.externalId,
+            return userAuthenticatorService.searchByUserIdAndExternalId(listOptions.userId, listOptions.externalId,
                     listOptions.limit, listOptions.offset)
         } else if (listOptions.externalId != null && listOptions.type != null) {
-            return userAuthenticatorRepository.searchByExternalIdAndType(listOptions.externalId, listOptions.type,
+            return userAuthenticatorService.searchByExternalIdAndType(listOptions.externalId, listOptions.type,
                     listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
-            return userAuthenticatorRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+            return userAuthenticatorService.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else if (listOptions.externalId != null) {
-            return userAuthenticatorRepository.searchByExternalId(listOptions.externalId, listOptions.limit,
+            return userAuthenticatorService.searchByExternalId(listOptions.externalId, listOptions.limit,
                     listOptions.offset)
         } else {
             throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()

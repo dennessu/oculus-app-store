@@ -11,7 +11,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserSecurityQuestionFilter
 import com.junbo.identity.core.service.validator.UserSecurityQuestionValidator
-import com.junbo.identity.data.repository.UserSecurityQuestionRepository
+import com.junbo.identity.service.UserSecurityQuestionService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
@@ -32,7 +32,7 @@ import javax.ws.rs.core.Response
 class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
     @Autowired
-    private UserSecurityQuestionRepository userSecurityQuestionRepository
+    private UserSecurityQuestionService userSecurityQuestionService
 
     @Autowired
     private UserSecurityQuestionFilter userSecurityQuestionFilter
@@ -61,7 +61,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             userSecurityQuestion = userSecurityQuestionFilter.filterForCreate(userSecurityQuestion)
 
             return userSecurityQuestionValidator.validateForCreate(userId, userSecurityQuestion).then {
-                return userSecurityQuestionRepository.create(userSecurityQuestion).
+                return userSecurityQuestionService.create(userSecurityQuestion).
                         then { UserSecurityQuestion newUserSecurityQuestion ->
                             Created201Marker.mark(newUserSecurityQuestion.getId())
 
@@ -118,7 +118,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             throw new IllegalArgumentException('userSecurityQuestion is null')
         }
 
-        return userSecurityQuestionRepository.get(userSecurityQuestionId).then {
+        return userSecurityQuestionService.get(userSecurityQuestionId).then {
             UserSecurityQuestion oldUserSecurityQuestion ->
             def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
@@ -136,7 +136,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
                 return userSecurityQuestionValidator.validateForUpdate(
                         userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
 
-                    return userSecurityQuestionRepository.update(userSecurityQuestion, oldUserSecurityQuestion).
+                    return userSecurityQuestionService.update(userSecurityQuestion, oldUserSecurityQuestion).
                             then { UserSecurityQuestion newUserSecurityQuestion ->
                         newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
                         return Promise.pure(newUserSecurityQuestion)
@@ -167,7 +167,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
-            return userSecurityQuestionRepository.get(userSecurityQuestionId).then {
+            return userSecurityQuestionService.get(userSecurityQuestionId).then {
                 UserSecurityQuestion oldUserSecurityQuestion ->
                 if (oldUserSecurityQuestion == null) {
                     throw AppErrors.INSTANCE.userSecurityQuestionNotFound(userSecurityQuestionId).exception()
@@ -178,7 +178,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
                 return userSecurityQuestionValidator.validateForUpdate(
                         userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
-                    return userSecurityQuestionRepository.update(userSecurityQuestion, oldUserSecurityQuestion).
+                    return userSecurityQuestionService.update(userSecurityQuestion, oldUserSecurityQuestion).
                             then { UserSecurityQuestion newUserSecurityQuestion ->
                         newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
                         return Promise.pure(newUserSecurityQuestion)
@@ -198,7 +198,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return userSecurityQuestionRepository.delete(userSecurityQuestionId).then {
+                return userSecurityQuestionService.delete(userSecurityQuestionId).then {
                     return Promise.pure(Response.status(204).build())
                 }
             }
@@ -249,7 +249,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
     private Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions listOptions) {
         if (listOptions.userId != null) {
-            return userSecurityQuestionRepository.searchByUserId(listOptions.userId, listOptions.limit,
+            return userSecurityQuestionService.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)
         } else {
             throw AppCommonErrors.INSTANCE.invalidOperation("Unsupported search operation.").exception()

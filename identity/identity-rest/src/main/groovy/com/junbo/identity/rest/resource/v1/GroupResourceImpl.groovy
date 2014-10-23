@@ -14,8 +14,8 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.GroupAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.GroupFilter
 import com.junbo.identity.core.service.validator.GroupValidator
-import com.junbo.identity.data.repository.GroupRepository
-import com.junbo.identity.data.repository.UserGroupRepository
+import com.junbo.identity.service.GroupService
+import com.junbo.identity.service.UserGroupService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.UserGroup
@@ -38,10 +38,10 @@ import javax.ws.rs.core.Response
 class GroupResourceImpl implements GroupResource {
 
     @Autowired
-    private GroupRepository groupRepository
+    private GroupService groupService
 
     @Autowired
-    private UserGroupRepository userGroupRepository
+    private UserGroupService userGroupService
 
     @Autowired
     private GroupFilter groupFilter
@@ -69,7 +69,7 @@ class GroupResourceImpl implements GroupResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return groupRepository.create(group).then { Group newGroup ->
+                return groupService.create(group).then { Group newGroup ->
                     Created201Marker.mark(newGroup.getId())
 
                     newGroup = groupFilter.filterForGet(newGroup, null)
@@ -98,7 +98,7 @@ class GroupResourceImpl implements GroupResource {
                 group = groupFilter.filterForPut(group, oldGroup)
 
                 return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                    return groupRepository.update(group, oldGroup).then { Group newGroup ->
+                    return groupService.update(group, oldGroup).then { Group newGroup ->
                         newGroup = groupFilter.filterForGet(newGroup, null)
                         return Promise.pure(newGroup)
                     }
@@ -126,7 +126,7 @@ class GroupResourceImpl implements GroupResource {
                 group = groupFilter.filterForPatch(group, oldGroup)
 
                 return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                    return groupRepository.update(group, oldGroup).then { Group newGroup ->
+                    return groupService.update(group, oldGroup).then { Group newGroup ->
                         newGroup = groupFilter.filterForGet(newGroup, null)
                         return Promise.pure(newGroup)
                     }
@@ -142,7 +142,7 @@ class GroupResourceImpl implements GroupResource {
         }
 
         return groupValidator.validateForGet(groupId).then {
-            return groupRepository.get(groupId).then { Group newGroup ->
+            return groupService.get(groupId).then { Group newGroup ->
                 if (newGroup == null) {
                     throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
                 }
@@ -186,7 +186,7 @@ class GroupResourceImpl implements GroupResource {
                     }
                 }
             } else {
-                return userGroupRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset).then { List<UserGroup> userGroupList ->
+                return userGroupService.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset).then { List<UserGroup> userGroupList ->
                     if (CollectionUtils.isEmpty(userGroupList)) {
                         return Promise.pure(resultList)
                     }
@@ -215,7 +215,7 @@ class GroupResourceImpl implements GroupResource {
     private Promise<List<Group>> search(GroupListOptions listOptions) {
         List<Group> result = new ArrayList<>()
         if (listOptions.organizationId != null && listOptions.name != null) {
-            return groupRepository.searchByOrganizationIdAndName(listOptions.organizationId, listOptions.name,
+            return groupService.searchByOrganizationIdAndName(listOptions.organizationId, listOptions.name,
                     listOptions.limit, listOptions.offset).then { Group group ->
                 if (group != null) {
                     result.add(group)
@@ -224,7 +224,7 @@ class GroupResourceImpl implements GroupResource {
                 return Promise.pure(result)
             }
         } else if (listOptions.organizationId != null) {
-            return groupRepository.searchByOrganizationId(listOptions.organizationId, listOptions.limit, listOptions.offset)
+            return groupService.searchByOrganizationId(listOptions.organizationId, listOptions.limit, listOptions.offset)
         }
     }
 
@@ -237,7 +237,7 @@ class GroupResourceImpl implements GroupResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return groupRepository.delete(groupId).then {
+                return groupService.delete(groupId).then {
                     return Promise.pure(Response.status(204).build())
                 }
             }

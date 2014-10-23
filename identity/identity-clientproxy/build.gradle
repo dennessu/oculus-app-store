@@ -1,11 +1,6 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile (libraries.gson)
-    compile (libraries.common_codec)
-    compile (libraries.hamcrest_core)
-
-    compile junboProject(':identity-data')
     compile junboProject(':identity-spec')
     compile junboProject(':billing-spec')
     compile junboProject(':payment-spec')

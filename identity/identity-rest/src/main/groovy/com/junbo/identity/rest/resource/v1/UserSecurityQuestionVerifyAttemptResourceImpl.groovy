@@ -12,7 +12,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
-import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
+import com.junbo.identity.service.UserSecurityQuestionAttemptService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
@@ -36,7 +36,7 @@ import org.springframework.transaction.support.TransactionCallback
 class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuestionVerifyAttemptResource {
 
     @Autowired
-    private UserSecurityQuestionAttemptRepository userSecurityQuestionAttemptRepository
+    private UserSecurityQuestionAttemptService userSecurityQuestionAttemptService
 
     @Autowired
     private UserSecurityQuestionAttemptFilter userSecurityQuestionAttemptFilter
@@ -156,7 +156,7 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return template.execute(new TransactionCallback<Promise<UserSecurityQuestionVerifyAttempt>>() {
                 Promise<UserSecurityQuestionVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
-                    return userSecurityQuestionAttemptRepository.create(userLoginAttempt)
+                    return userSecurityQuestionAttemptService.create(userLoginAttempt)
                 }
             }
         )
@@ -164,10 +164,10 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
 
     private Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions listOptions) {
         if (listOptions.userId != null && listOptions.userSecurityQuestionId != null) {
-            return userSecurityQuestionAttemptRepository.searchByUserIdAndSecurityQuestionId(listOptions.userId,
+            return userSecurityQuestionAttemptService.searchByUserIdAndSecurityQuestionId(listOptions.userId,
                     listOptions.userSecurityQuestionId, listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
-            return userSecurityQuestionAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
+            return userSecurityQuestionAttemptService.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)
         } else {
             throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()

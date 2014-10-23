@@ -12,7 +12,7 @@ import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserCredentialVerifyAttemptFilter
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
 import com.junbo.identity.data.identifiable.CredentialType
-import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
+import com.junbo.identity.service.UserCredentialVerifyAttemptService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
@@ -35,7 +35,7 @@ import org.springframework.transaction.support.TransactionCallback
 @CompileStatic
 class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAttemptResource {
     @Autowired
-    private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
+    private UserCredentialVerifyAttemptService userCredentialVerifyAttemptService
 
     @Autowired
     private UserCredentialVerifyAttemptFilter userCredentialVerifyAttemptFilter
@@ -156,17 +156,17 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return template.execute(new TransactionCallback<Promise<UserCredentialVerifyAttempt>>() {
             Promise<UserCredentialVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
-                return userCredentialVerifyAttemptRepository.create(userLoginAttempt)
+                return userCredentialVerifyAttemptService.create(userLoginAttempt)
             }
         })
     }
 
     private Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions listOptions) {
         if (listOptions.userId != null && listOptions.type != null) {
-            return userCredentialVerifyAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(listOptions.userId,
+            return userCredentialVerifyAttemptService.searchByUserIdAndCredentialTypeAndInterval(listOptions.userId,
                     listOptions.type, 0L, listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
-            return userCredentialVerifyAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
+            return userCredentialVerifyAttemptService.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)
         } else {
             throw new IllegalArgumentException('Unsupported search operation')

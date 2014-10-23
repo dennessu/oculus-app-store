@@ -6,7 +6,7 @@ import com.junbo.common.id.PITypeId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.PITypeValidator
-import com.junbo.identity.data.repository.PITypeRepository
+import com.junbo.identity.service.PITypeService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.LocaleName
 import com.junbo.identity.spec.v1.model.PIType
@@ -23,14 +23,14 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class PITypeValidatorImpl implements PITypeValidator {
 
-    private PITypeRepository piTypeRepository
+    private PITypeService piTypeService
 
     private Integer minLocaleNameLength
     private Integer maxLocaleNameLength
 
     @Required
-    void setPiTypeRepository(PITypeRepository piTypeRepository) {
-        this.piTypeRepository = piTypeRepository
+    void setPiTypeService(PITypeService piTypeService) {
+        this.piTypeService = piTypeService
     }
 
     @Required
@@ -49,7 +49,7 @@ class PITypeValidatorImpl implements PITypeValidator {
             throw new IllegalArgumentException('piTypeId is null')
         }
 
-        return piTypeRepository.get(piTypeId).then { PIType piType ->
+        return piTypeService.get(piTypeId).then { PIType piType ->
             if (piType == null) {
                 throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
             }
@@ -74,7 +74,7 @@ class PITypeValidatorImpl implements PITypeValidator {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
-        return piTypeRepository.searchByTypeCode(piType.typeCode, Integer.MAX_VALUE, 0).then { List<PIType> existing ->
+        return piTypeService.searchByTypeCode(piType.typeCode, Integer.MAX_VALUE, 0).then { List<PIType> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
                 throw AppCommonErrors.INSTANCE.fieldDuplicate('typeCode').exception()
             }

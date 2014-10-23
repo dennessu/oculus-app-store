@@ -11,7 +11,7 @@ import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.TosFilter
 import com.junbo.identity.core.service.validator.TosValidator
-import com.junbo.identity.data.repository.TosRepository
+import com.junbo.identity.service.TosService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.option.list.TosListOptions
@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response
 @CompileStatic
 class TosResourceImpl implements TosResource {
     @Autowired
-    private TosRepository tosRepository
+    private TosService tosService
 
     @Autowired
     private TosFilter tosFilter
@@ -53,7 +53,7 @@ class TosResourceImpl implements TosResource {
         tos = tosFilter.filterForCreate(tos)
 
         return tosValidator.validateForCreate(tos).then {
-            return tosRepository.create(tos).then { Tos newTos ->
+            return tosService.create(tos).then { Tos newTos ->
                 Created201Marker.mark(newTos.getId())
 
                 newTos = tosFilter.filterForGet(newTos, null)
@@ -72,7 +72,7 @@ class TosResourceImpl implements TosResource {
         }
 
         return tosValidator.validateForGet(tosId).then {
-            return tosRepository.get(tosId).then { Tos newTos ->
+            return tosService.get(tosId).then { Tos newTos ->
                 if (newTos == null) {
                     throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
                 }
@@ -116,7 +116,7 @@ class TosResourceImpl implements TosResource {
             throw new IllegalArgumentException('tos is null')
         }
 
-        return tosRepository.get(tosId).then { Tos oldTos ->
+        return tosService.get(tosId).then { Tos oldTos ->
             if (oldTos == null) {
                 throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
             }
@@ -124,7 +124,7 @@ class TosResourceImpl implements TosResource {
             tos = tosFilter.filterForPatch(tos, oldTos)
 
             return tosValidator.validateForUpdate(tosId, tos, oldTos).then {
-                return tosRepository.update(tos, oldTos).then { Tos newTos ->
+                return tosService.update(tos, oldTos).then { Tos newTos ->
                     newTos = tosFilter.filterForGet(newTos, null)
                     return Promise.pure(newTos)
                 }
@@ -142,7 +142,7 @@ class TosResourceImpl implements TosResource {
             throw new IllegalArgumentException('tos is null')
         }
 
-        return tosRepository.get(tosId).then { Tos oldTos ->
+        return tosService.get(tosId).then { Tos oldTos ->
             if (oldTos == null) {
                 throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
             }
@@ -150,7 +150,7 @@ class TosResourceImpl implements TosResource {
             tos = tosFilter.filterForPut(tos, oldTos)
 
             return tosValidator.validateForUpdate(tosId, tos, oldTos).then {
-                return tosRepository.update(tos, oldTos).then { Tos newTos ->
+                return tosService.update(tos, oldTos).then { Tos newTos ->
                     newTos = tosFilter.filterForGet(newTos, null)
                     return Promise.pure(newTos)
                 }
@@ -161,7 +161,7 @@ class TosResourceImpl implements TosResource {
     @Override
     Promise<Response> delete(TosId tosId) {
         return tosValidator.validateForGet(tosId).then {
-            return tosRepository.delete(tosId).then {
+            return tosService.delete(tosId).then {
                 return Promise.pure(Response.status(204).build())
             }
         }
@@ -170,38 +170,38 @@ class TosResourceImpl implements TosResource {
     private Promise<List<Tos>> search(TosListOptions listOptions) {
         Promise.pure().then {
             if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state) && !StringUtils.isEmpty(listOptions.type) && listOptions.countryId != null) {
-                return tosRepository.searchByTitleAndTypeAndStateAndCountry(listOptions.title, listOptions.type, listOptions.state,
+                return tosService.searchByTitleAndTypeAndStateAndCountry(listOptions.title, listOptions.type, listOptions.state,
                         listOptions.countryId, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state) && !StringUtils.isEmpty(listOptions.type)) {
-                return tosRepository.searchByTitleAndTypeAndState(listOptions.title, listOptions.type, listOptions.state, listOptions.limit, listOptions.offset)
+                return tosService.searchByTitleAndTypeAndState(listOptions.title, listOptions.type, listOptions.state, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state) && listOptions.countryId != null) {
-                return tosRepository.searchByTitleAndStateAndCountry(listOptions.title, listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
+                return tosService.searchByTitleAndStateAndCountry(listOptions.title, listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.type) && listOptions.countryId != null) {
-                return tosRepository.searchByTitleAndTypeAndCountry(listOptions.title, listOptions.type, listOptions.countryId, listOptions.limit, listOptions.offset)
+                return tosService.searchByTitleAndTypeAndCountry(listOptions.title, listOptions.type, listOptions.countryId, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.type) && !StringUtils.isEmpty(listOptions.state) && listOptions.countryId != null) {
-                return tosRepository.searchByTypeAndStateAndCountry(listOptions.type, listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
+                return tosService.searchByTypeAndStateAndCountry(listOptions.type, listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.type)) {
-                return tosRepository.searchByTitleAndType(listOptions.title, listOptions.type, listOptions.limit, listOptions.offset)
+                return tosService.searchByTitleAndType(listOptions.title, listOptions.type, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state)) {
-                return tosRepository.searchByTitleAndState(listOptions.title, listOptions.state, listOptions.limit, listOptions.offset)
+                return tosService.searchByTitleAndState(listOptions.title, listOptions.state, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.title) && listOptions.countryId != null) {
-                return tosRepository.searchByTitleAndCountry(listOptions.title, listOptions.countryId, listOptions.limit, listOptions.offset)
+                return tosService.searchByTitleAndCountry(listOptions.title, listOptions.countryId, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.type) && !StringUtils.isEmpty(listOptions.state)) {
-                return tosRepository.searchByTypeAndState(listOptions.type, listOptions.state, listOptions.limit, listOptions.offset)
+                return tosService.searchByTypeAndState(listOptions.type, listOptions.state, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.type) && listOptions.countryId != null) {
-                return tosRepository.searchByTypeAndCountry(listOptions.type, listOptions.countryId, listOptions.limit, listOptions.offset)
+                return tosService.searchByTypeAndCountry(listOptions.type, listOptions.countryId, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.state) && listOptions.countryId != null) {
-                return tosRepository.searchByStateAndCountry(listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
+                return tosService.searchByStateAndCountry(listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.title)) {
-                return tosRepository.searchByTitle(listOptions.title, listOptions.limit, listOptions.offset)
+                return tosService.searchByTitle(listOptions.title, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.type)) {
-                return tosRepository.searchByType(listOptions.type, listOptions.limit, listOptions.offset)
+                return tosService.searchByType(listOptions.type, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.state)) {
-                return tosRepository.searchByState(listOptions.state, listOptions.limit, listOptions.offset)
+                return tosService.searchByState(listOptions.state, listOptions.limit, listOptions.offset)
             } else if (listOptions.countryId != null) {
-                return tosRepository.searchByCountry(listOptions.countryId, listOptions.limit, listOptions.offset)
+                return tosService.searchByCountry(listOptions.countryId, listOptions.limit, listOptions.offset)
             } else {
-                return tosRepository.searchAll(listOptions.limit, listOptions.offset)
+                return tosService.searchAll(listOptions.limit, listOptions.offset)
             }
         }.then { List<Tos> tosList ->
             if (listOptions.countryId != null && !listOptions.countryId.getValue().equalsIgnoreCase(defaultCountryCode) && CollectionUtils.isEmpty(tosList)) {
