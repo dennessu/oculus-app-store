@@ -23,8 +23,10 @@ import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
+import com.junbo.store.spec.model.browse.document.AppDetails
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.Review
+import com.junbo.store.spec.model.browse.document.RevisionNote
 import com.junbo.store.spec.model.browse.document.SectionInfo
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
 import com.junbo.store.spec.model.external.casey.CaseyResults
@@ -283,6 +285,7 @@ class BrowseServiceImpl implements BrowseService {
                 fillItemDetails(item, apiContext)
             }
         }.then {
+            fillNullValueWithDefault(item)
             return Promise.pure(item)
         }
     }
@@ -374,7 +377,45 @@ class BrowseServiceImpl implements BrowseService {
         }
     }
 
-    int getPageSize(Integer count) {
+    private int getPageSize(Integer count) {
         return (count == null || count <= 0) ? DEFAULT_PAGE_SIZE : Math.min(count, MAX_PAGE_SIZE)
+    }
+
+    private void fillNullValueWithDefault(Item item) {
+        item.title = CommonUtils.toDefaultIfNull(item.title)
+        item.descriptionHtml = CommonUtils.toDefaultIfNull(item.descriptionHtml)
+        item.creator = CommonUtils.toDefaultIfNull(item.creator)
+        item.supportedLocales = CommonUtils.toDefaultIfNull(item.supportedLocales)
+        if (item.images == null) {
+            item.images = new Images(main: [:] as Map, gallery: [] as List)
+        }
+        if (item.appDetails != null) {
+            fillNullValueWithDefault(item.appDetails)
+        }
+    }
+
+    private void fillNullValueWithDefault(AppDetails appDetails) {
+        appDetails.categories = CommonUtils.toDefaultIfNull(appDetails.categories)
+        appDetails.genres = CommonUtils.toDefaultIfNull(appDetails.genres)
+        appDetails.releaseDate = CommonUtils.toDefaultIfNull(appDetails.releaseDate)
+        appDetails.developerName = CommonUtils.toDefaultIfNull(appDetails.developerName)
+        appDetails.publisherName = CommonUtils.toDefaultIfNull(appDetails.publisherName)
+        appDetails.packageName = CommonUtils.toDefaultIfNull(appDetails.packageName)
+        appDetails.versionString = CommonUtils.toDefaultIfNull(appDetails.versionString)
+        appDetails.versionCode = CommonUtils.toDefaultIfNull(appDetails.versionCode)
+        appDetails.installationSize = CommonUtils.toDefaultIfNull(appDetails.installationSize)
+        if (appDetails.revisionNotes != null) {
+            for (RevisionNote revisionNote : appDetails.revisionNotes) {
+                fillNullValueWithDefault(revisionNote)
+            }
+        }
+    }
+
+    private void fillNullValueWithDefault(RevisionNote revisionNote) {
+        revisionNote.description = CommonUtils.toDefaultIfNull(revisionNote.description)
+        revisionNote.releaseDate = CommonUtils.toDefaultIfNull(revisionNote.releaseDate)
+        revisionNote.title = CommonUtils.toDefaultIfNull(revisionNote.title)
+        revisionNote.versionCode = CommonUtils.toDefaultIfNull(revisionNote.versionCode)
+        revisionNote.versionString = CommonUtils.toDefaultIfNull(revisionNote.versionString)
     }
 }

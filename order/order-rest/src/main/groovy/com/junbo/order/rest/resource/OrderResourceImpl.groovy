@@ -79,7 +79,6 @@ class OrderResourceImpl implements OrderResource {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
             LOGGER.info('name=authorize_complete. user: {}', order.user.value)
-            orderValidator.validateSettleOrderRequest(order)
             Boolean isTentative = order.tentative
             order.tentative = true
             return orderService.createQuote(order,

@@ -52,18 +52,12 @@ class OrderFacadeImpl implements OrderFacade {
                 country: apiContext.country.getId(),
                 currency: currencyId,
                 locale: apiContext.locale.getId(),
-                tentative: true,
+                tentative: false,
                 orderItems: offerIdList.collect {OfferId offerId -> new OrderItem(offer: offerId, quantity: 1)}
         )
 
-        return resourceContainer.orderResource.createOrder(order).then { Order o ->
-            order = o
-            return Promise.pure()
-        }.then {
-            order.tentative = false
-            resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
-                return Promise.pure(settled)
-            }
+        return resourceContainer.orderResource.createOrder(order).then { Order settled ->
+            return Promise.pure(settled)
         }
     }
 }
