@@ -75,7 +75,7 @@ public abstract class HttpClientBase {
         return new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setMaxRequestRetry(3).build());
     }
 
-    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope, List<String> headersToRemove) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
         headers.add(Header.CONTENT_TYPE, contentType);
         headers.add(Header.OCULUS_INTERNAL, String.valueOf(true));
@@ -88,6 +88,12 @@ public abstract class HttpClientBase {
 
         if (currentEndPointType != null && currentEndPointType.equals(Master.EndPointType.Secondary)) {
             headers.put("Cache-Control", Collections.singletonList("no-cache"));
+        }
+
+        if (headersToRemove != null && !headersToRemove.isEmpty()) {
+            for (String headerToRemove : headersToRemove) {
+                headers.remove(headerToRemove);
+            }
         }
 
         //for further header, we can set dynamic value from properties here
@@ -149,6 +155,11 @@ public abstract class HttpClientBase {
         return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, null, isServiceScope);
     }
 
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody, int expectedResponseCode,
+                                 boolean isServiceScope, List<String> headersToRemove) throws Exception {
+        return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, null, isServiceScope, headersToRemove);
+    }
+
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, int expectedResponseCode) throws Exception {
         return restApiCall(httpMethod, restUrl, null, expectedResponseCode, null);
     }
@@ -156,6 +167,12 @@ public abstract class HttpClientBase {
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
                                  int expectedResponseCode, HashMap<String, List<String>> httpParameters,
                                  boolean isServiceScope) throws Exception {
+        return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, httpParameters, isServiceScope, null);
+    }
+
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
+                                 int expectedResponseCode, HashMap<String, List<String>> httpParameters,
+                                 boolean isServiceScope, List<String> headersToRemove) throws Exception {
         switch (httpMethod) {
             case PUT:
             case POST: {
@@ -163,7 +180,7 @@ public abstract class HttpClientBase {
                     asyncClient = new AsyncHttpClient();
                     Request req = new RequestBuilder(httpMethod.getHttpMethod())
                             .setUrl(restUrl)
-                            .setHeaders(getHeader(isServiceScope))
+                            .setHeaders(getHeader(isServiceScope, headersToRemove))
                             .setBodyEncoding("UTF-8")
                             .setBody(requestBody)
                             .build();
@@ -206,7 +223,7 @@ public abstract class HttpClientBase {
 
                     Request req = new RequestBuilder("GET")
                             .setUrl(restUrl)
-                            .setHeaders(getHeader(isServiceScope))
+                            .setHeaders(getHeader(isServiceScope, headersToRemove))
                             .build();
 
                     logger.LogRequest(req);
@@ -223,7 +240,7 @@ public abstract class HttpClientBase {
                         }
                         req = new RequestBuilder("GET")
                                 .setUrl(redirectUrl)
-                                .setHeaders(getHeader(isServiceScope))
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
                                 .build();
 
                         logger.LogRequest(req);
@@ -255,7 +272,7 @@ public abstract class HttpClientBase {
                     asyncClient = new AsyncHttpClient();
                     Request req = new RequestBuilder(httpMethod.getHttpMethod())
                             .setUrl(restUrl)
-                            .setHeaders(getHeader(isServiceScope))
+                            .setHeaders(getHeader(isServiceScope, headersToRemove))
                             .build();
 
                     logger.LogRequest(req);

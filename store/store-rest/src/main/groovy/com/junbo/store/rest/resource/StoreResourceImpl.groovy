@@ -153,7 +153,7 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request) {
+    Promise<VerifyEmailResponse> verifyEmail() {
         requestValidator.validateRequiredApiHeaders()
         return identityUtils.getActiveUserFromToken().then { User user->
             return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), null).then {

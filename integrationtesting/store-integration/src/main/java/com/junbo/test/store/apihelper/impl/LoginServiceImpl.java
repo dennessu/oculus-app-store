@@ -20,6 +20,7 @@ import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 
 import java.net.URLEncoder;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,8 +41,8 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         endPointUrlSuffix = "/horizon-api/id";
     }
 
-    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
-        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope, List<String> headersToRemove) {
+        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope, headersToRemove);
         headers.put("X-ANDROID-ID", Collections.singletonList(DataGenerator.instance().generateAndroidId()));
         headers.put("Accept-Language", Collections.singletonList("en-US"));
         for (Map.Entry<String, String> entry : TestContext.getData().getHeaders().entrySet()) {

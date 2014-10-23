@@ -15,7 +15,6 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
-import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.apihelper.Header;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
@@ -51,7 +50,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         endPointUrlSuffix = "/oauth2";
     }
 
-    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope, List<String> headersToRemove) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
         headers.add(Header.OCULUS_INTERNAL, String.valueOf(true));
         String uid = Master.getInstance().getCurrentUid();

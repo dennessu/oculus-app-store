@@ -33,8 +33,9 @@ public interface StoreResource {
     @POST
     @Path("/resend-confirmation-email")
     @RouteByAccessToken(switchable = true)
+    @Consumes()
     // This doesn't require email verification
-    Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request);
+    Promise<VerifyEmailResponse> verifyEmail();
 
     @GET
     @Path("/user-profile")
