@@ -26,15 +26,15 @@ public interface FacebookPaymentApi {
     @POST
     @Path("{payment-account-id}/credit_cards")
     Promise<FacebookCreditCard> addCreditCard(@QueryParam("access_token") String accessToken,
-                    @PathParam("payment-account-id") String paymentAccountId, FacebookCreditCard fbCreditCard);
+                    @PathParam("payment-account-id") String paymentAccountId, @BeanParam FacebookCreditCard fbCreditCard);
 
     @POST
     @Path("{payment-account-id}/payments")
     Promise<FacebookPayment> addPayment(@QueryParam("access_token") String accessToken,
-                                              @PathParam("payment-account-id") String paymentAccountId, FacebookPayment fbPayment);
+                                              @PathParam("payment-account-id") String paymentAccountId, @BeanParam FacebookPayment fbPayment);
 
     @POST
-    @Path("{payment-account-id}/payments")
+    @Path("{payment-id}")
     Promise<FacebookPayment> modifyPayment(@QueryParam("access_token") String accessToken,
-                                        @PathParam("payment-id") String paymentAccountId, FacebookPayment fbPayment);
+                                        @PathParam("payment-id") String paymentId, @BeanParam FacebookPayment fbPayment);
 }

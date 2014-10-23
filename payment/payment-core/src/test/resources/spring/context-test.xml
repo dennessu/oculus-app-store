@@ -48,8 +48,22 @@
         <property name="userInfoFacade" ref="mockUserResource"/>
     </bean>
 
+    <bean id="mockFacebookCCProviderService" class="com.junbo.payment.core.provider.facebook.FacebookCCProviderServiceImpl">
+        <property name="facebookPaymentUtils" ref="facebookPaymentUtil"/>
+        <property name="oculusAppId" value="${payment.provider.facebook.appid}"/>
+        <property name="env" value="${payment.provider.facebook.env}"/>
+        <property name="facebookPaymentApi" ref="mockFacebookPaymentClient"/>
+        <property name="personalInfoFacade" ref="personalInfoFacade"/>
+        <property name="piRepository" ref="paymentInstrumentRepositoryFacade"/>
+    </bean>
+
     <bean id="mockFBProviderRoutingService" class="com.junbo.payment.core.mock.MockFBProviderRoutingServiceImpl">
-        <property name="facebookCCProviderService" ref="facebookCCProviderService" />
+        <property name="facebookCCProviderService" ref="mockFacebookCCProviderService" />
+    </bean>
+
+    <bean id="mockFBPaymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl">
+        <property name="providerRoutingService" ref="mockFBProviderRoutingService"  />
+        <property name="userInfoFacade" ref="mockUserResource"/>
     </bean>
 
 </beans>

@@ -41,16 +41,14 @@ class LocalSessionFactoryWithListenerBean extends LocalSessionFactoryBean {
 
         EventListenerRegistry registry = sessionFactory.serviceRegistry.getService(EventListenerRegistry)
 
-        registry.appendListeners(EventType.PRE_INSERT, new SqlEventListeners.preInsert())
+        registry.prependListeners(EventType.PRE_INSERT, new SqlEventListeners.preInsert())
         registry.appendListeners(EventType.POST_INSERT, new SqlEventListeners.postInsert())
-        registry.appendListeners(EventType.PRE_UPDATE, new SqlEventListeners.preUpdate())
+        registry.prependListeners(EventType.PRE_UPDATE, new SqlEventListeners.preUpdate())
         registry.appendListeners(EventType.POST_UPDATE, new SqlEventListeners.postUpdate())
-        registry.appendListeners(EventType.PRE_LOAD, new SqlEventListeners.preLoad())
+        registry.prependListeners(EventType.PRE_LOAD, new SqlEventListeners.preLoad())
         registry.appendListeners(EventType.POST_LOAD, new SqlEventListeners.postLoad())
-        registry.appendListeners(EventType.PRE_DELETE, new SqlEventListeners.preDelete())
+        registry.prependListeners(EventType.PRE_DELETE, new SqlEventListeners.preDelete())
         registry.appendListeners(EventType.POST_DELETE, new SqlEventListeners.postDelete())
-        registry.appendListeners(EventType.SAVE, new SqlEventListeners.save())
-        registry.appendListeners(EventType.UPDATE, new SqlEventListeners.update())
 
         if (postInsertEventListeners != null) {
             registry.appendListeners(EventType.POST_INSERT, postInsertEventListeners)

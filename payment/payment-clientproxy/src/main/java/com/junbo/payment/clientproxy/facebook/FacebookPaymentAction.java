@@ -18,12 +18,10 @@ public class FacebookPaymentAction {
     private FacebookPaymentStatus status;
     private BigDecimal amount;
     private String currency;
-    @JsonProperty("payer_amount")
-    private BigDecimal payerAmount;
-    @JsonProperty("payer_currency")
-    private String payerCurrency;
-    @JsonProperty("created_time")
+    @JsonProperty("time_created")
     private String createdTime;
+    @JsonProperty("time_updated")
+    private String updatedTime;
 
 
     public String getCreatedTime() {
@@ -66,20 +64,12 @@ public class FacebookPaymentAction {
         this.currency = currency;
     }
 
-    public BigDecimal getPayerAmount() {
-        return payerAmount;
+    public String getUpdatedTime() {
+        return updatedTime;
     }
 
-    public void setPayerAmount(BigDecimal payerAmount) {
-        this.payerAmount = payerAmount;
-    }
-
-    public String getPayerCurrency() {
-        return payerCurrency;
-    }
-
-    public void setPayerCurrency(String payerCurrency) {
-        this.payerCurrency = payerCurrency;
+    public void setUpdatedTime(String updatedTime) {
+        this.updatedTime = updatedTime;
     }
 
 }

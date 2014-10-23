@@ -17,7 +17,8 @@ import java.util.List;
  */
 public class FacebookPayment {
     //input request
-    @QueryParam("credential")
+    @QueryParam("credential_id")
+    @JsonProperty
     private String credential;
     @QueryParam("amount")
     private BigDecimal amount;
@@ -28,19 +29,24 @@ public class FacebookPayment {
     @QueryParam("payer_ip")
     @JsonProperty("payer_ip")
     private String payerIp;
-    @QueryParam("payment_description")
-    @JsonProperty("payment_description")
-    private String paymentDescription;
+    @QueryParam("item_type")
+    @JsonProperty("item_type")
+    private FacebookItemType itemType;
+    @QueryParam("item_description")
+    @JsonProperty("item_description")
+    private FacebookItemDescription itemDescription;
     @QueryParam("refund_reason")
     @JsonProperty("refund_reason")
 
     private String refundReason;
     //output response
     private String id;
+    private Boolean success;
+    private String error;
     @JsonProperty("payment_account")
     private String paymentAccountId;
     private String application;
-    @JsonProperty("created_time")
+    @JsonProperty("time_created")
     private String createdTime;
     private List<FacebookPaymentAction> actions;
 
@@ -84,12 +90,20 @@ public class FacebookPayment {
         this.payerIp = payerIp;
     }
 
-    public String getPaymentDescription() {
-        return paymentDescription;
+    public FacebookItemType getItemType() {
+        return itemType;
     }
 
-    public void setPaymentDescription(String paymentDescription) {
-        this.paymentDescription = paymentDescription;
+    public void setItemType(FacebookItemType itemType) {
+        this.itemType = itemType;
+    }
+
+    public FacebookItemDescription getItemDescription() {
+        return itemDescription;
+    }
+
+    public void setItemDescription(FacebookItemDescription itemDescription) {
+        this.itemDescription = itemDescription;
     }
 
     public String getRefundReason() {
@@ -106,6 +120,22 @@ public class FacebookPayment {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 
     public String getPaymentAccountId() {

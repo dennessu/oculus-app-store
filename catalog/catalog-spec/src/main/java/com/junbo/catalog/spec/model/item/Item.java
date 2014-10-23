@@ -38,7 +38,6 @@ public class Item extends BaseEntityModel {
     @HateoasLink("/item-revisions?itemId={itemId}")
     private Link revisions;
 
-
     @JsonProperty("developer")
     @ApiModelProperty(position = 22, required = true, value = "Organization owner of the item")
     private OrganizationId ownerId;
@@ -50,6 +49,14 @@ public class Item extends BaseEntityModel {
     @OfferId
     @ApiModelProperty(position = 28, required = true, value = "Default offer")
     private String defaultOffer;
+
+    @ApiModelProperty(position = 29, required = true, value = "[Client Immutable] The link to the rating of this item")
+    @HateoasLink("/ratings/item/{itemId}")
+    private Link rating;
+
+    @OfferAttributeId
+    @ApiModelProperty(position = 30, required = true, value = "Manufacturer Suggested Categories.")
+    private List<String> categories;
 
     // current revision used for index & search
     @JsonIgnore
@@ -119,6 +126,22 @@ public class Item extends BaseEntityModel {
 
     public void setActiveRevision(ItemRevision activeRevision) {
         this.activeRevision = activeRevision;
+    }
+
+    public Link getRating() {
+        return rating;
+    }
+
+    public void setRating(Link rating) {
+        this.rating = rating;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
     }
 
     @Override

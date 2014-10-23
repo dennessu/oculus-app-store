@@ -1,5 +1,4 @@
 package com.junbo.store.rest.resource
-
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -193,6 +192,7 @@ class LoginResourceImpl implements LoginResource {
         ApiContext apiContext = new ApiContext()
         ErrorContext errorContext = new ErrorContext()
         StoreUserEmail storeUserEmail
+        AuthTokenResponse authTokenResponse
 
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext storeApiContext ->
             apc = storeApiContext
@@ -248,10 +248,9 @@ class LoginResourceImpl implements LoginResource {
                 appErrorUtils.throwUnknownError('createUser', ex)
             }
         }.then {
-            return resourceContainer.emailVerifyEndpoint.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId())
-        }.then {
             // get the auth token
-            innerSignIn(request.email, request.password).then { AuthTokenResponse authTokenResponse ->
+            innerSignIn(request.email, request.password).then { AuthTokenResponse response ->
+                authTokenResponse = response
                 CommonUtils.pushAuthHeader(authTokenResponse.accessToken)
                 Promise.pure().then { // create user tos using the access token
                     return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: apiContext.user.getId(),
@@ -259,13 +258,19 @@ class LoginResourceImpl implements LoginResource {
                             agreementTime: new Date()))
                 }.then {
                     createUserCommunication(request, apiContext.user.getId(), apc) // create user communication using the access token
+                }.then {
+                    initialItemPurchaseUtils.checkAndPurchaseInitialOffers(authTokenResponse.userId, true, apc)
                 }.recover { Throwable ex ->
                     CommonUtils.popAuthHeader()
                     throw ex
                 }.then {
                     CommonUtils.popAuthHeader()
-                    return Promise.pure(authTokenResponse)
+                    return Promise.pure()
                 }
+            }
+        }.then {
+            return resourceContainer.emailVerifyEndpoint.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId()).then {
+                return Promise.pure(authTokenResponse)
             }
         }
     }
@@ -597,7 +602,7 @@ class LoginResourceImpl implements LoginResource {
                     return Promise.pure(response)
                 }
 
-                initialItemPurchaseUtils.checkAndPurchaseInitialOffers(response.userId, apiContext).then {
+                initialItemPurchaseUtils.checkAndPurchaseInitialOffers(response.userId, false, apiContext).then {
                     return Promise.pure(response)
                 }
             }

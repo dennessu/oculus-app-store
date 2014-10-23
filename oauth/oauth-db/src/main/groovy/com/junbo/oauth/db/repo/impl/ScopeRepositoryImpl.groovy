@@ -12,6 +12,8 @@ import com.junbo.oauth.spec.model.Scope
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
+import javax.ws.rs.NotSupportedException
+
 /**
  * ScopeRepositoryImpl.
  */
@@ -22,6 +24,11 @@ class ScopeRepositoryImpl implements ScopeRepository {
     @Required
     void setScopeDAO(ScopeDAO scopeDAO) {
         this.scopeDAO = scopeDAO
+    }
+
+    @Override
+    List<Scope> getScopes() {
+        throw new NotSupportedException()
     }
 
     @Override

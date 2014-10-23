@@ -28,6 +28,14 @@ public class ProfilingHelper {
 
     public static final String PROFILE_OUTPUT_KEY = "X-Oculus-Profile-Info";
 
+    public static boolean hasProfilingHeader() {
+        MultivaluedMap<String, String> headers = JunboHttpContext.getRequestHeaders();
+        if (headers != null) {
+            return ("true".equalsIgnoreCase(headers.getFirst("X-Enable-Profiling")));
+        }
+        return false;
+    }
+
     public static boolean isProfileEnabled() {
         Data data = profileData.get();
         if (data == null) {
@@ -35,10 +43,7 @@ public class ProfilingHelper {
             profileData.set(data);
 
             if (TrackContextManager.get().getDebugEnabled()) {
-                MultivaluedMap<String, String> headers = JunboHttpContext.getRequestHeaders();
-                if (headers != null) {
-                    data.profileEnabled = ("true".equalsIgnoreCase(headers.getFirst("X-Enable-Profiling")));
-                }
+                data.profileEnabled = hasProfilingHeader();
             }
             if (data.profileEnabled) {
                 data.init();
@@ -91,6 +96,21 @@ public class ProfilingHelper {
 
     public static String dumpProfileData() {
         return profileData.get().profileOutput.toString();
+    }
+
+    public static String prettyPrint(String data) {
+        StringBuilder builder = new StringBuilder(data.length() * 2);
+
+        int indent = 0;
+        for (String line : data.split("\\|")) {
+            if (line.equals("]")) indent--;
+            for (int i = 0; i < indent; ++i) {
+                builder.append("    ");
+            }
+            builder.append(line).append("\n");
+            if (line.equals("[")) indent++;
+        }
+        return builder.toString();
     }
 
     public static void clear() {

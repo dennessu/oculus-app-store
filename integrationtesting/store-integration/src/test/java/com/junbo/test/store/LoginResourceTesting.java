@@ -372,6 +372,33 @@ public class LoginResourceTesting extends BaseTestClass {
 
 
     @Property(
+            priority = Priority.BVT,
+            features = "Store sign in",
+            component = Component.STORE,
+            owner = "fzhang",
+            status = Status.Enable,
+            description = "Test when user register, it'll auto purchase the initial items"
+    )
+    @Test
+    public void testCreateUserPurchaseInitialItem() throws Exception {
+        testDataProvider.resetEmulatorData();
+        // config two free apps and 1 paid app, the paid app will be ignored
+        testDataProvider.setupCmsOffers(initialAppsCmsPage, Collections.singletonList(initialAppsCmsSlot),
+                Collections.singletonList(Arrays.asList(new OfferId(testDataProvider.getOfferIdByName(offer_digital_free)),
+                        new OfferId(testDataProvider.getOfferIdByName(offer_digital_oculus_free1)),
+                        new OfferId(testDataProvider.getOfferIdByName(offer_digital_normal1)))));
+
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+        try {
+            validationHelper.verifyItemsInLibrary(testDataProvider.getLibrary(), Arrays.asList(item_digital_free, item_digital_oculus_free1));
+        } finally {
+            testDataProvider.resetEmulatorData();
+        }
+    }
+
+
+    @Property(
             priority = Priority.Dailies,
             features = "Store",
             component = Component.STORE,

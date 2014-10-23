@@ -12,4 +12,6 @@ import org.springframework.jms.core.MessageCreator;
  */
 public interface Event extends MessageCreator {
     String getId();
+
+    String requestId();
 }

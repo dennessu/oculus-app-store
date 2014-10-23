@@ -77,4 +77,8 @@
         <property name="exceptionHandler" ref="facebookPaymentException"/>
     </bean>
 
+    <bean id="mockFacebookPaymentClient" class="com.junbo.payment.clientproxy.impl.MockFacebookPaymentApiImpl">
+        <property name="facebookPaymentApi" ref="facebookPaymentClient" />
+    </bean>
+
 </beans>

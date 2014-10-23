@@ -52,10 +52,9 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         if (!CollectionUtils.isEmpty(resultList.getItems()) && (resultList.getItems().get(0) instanceof UserLog)) {
             return;
         }
+        Link self = getSelf(responseContext);
+        resultList.setSelf(self);
         if (needResetNext(resultList)) {
-            Link self = getSelf(responseContext);
-            resultList.setSelf(self);
-
             if ((resultList.hasNext())
                     || (resultList.getTotal() != null && resultList.getItems() != null && resultList.getTotal() != resultList.getItems().size())) {
                 resultList.setNext(getNext(resultList.getTotal(), self));

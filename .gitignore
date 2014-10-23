@@ -9,6 +9,7 @@
 build/
 target/
 /build.log
+/out/**
 
 # OS files
 Thumbs.db
