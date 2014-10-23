@@ -11,7 +11,6 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
-import com.junbo.common.id.PIType
 import com.junbo.entitlement.spec.model.Entitlement
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -68,7 +67,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     Promise<Order> rateOrder(Order order, OrderServiceContext orderServiceContext) throws AppErrorException {
-        LOGGER.info('name=OrderInternalServiceImpl_Rate_Order')
+        LOGGER.info('name=internal.rateOrder')
         return facadeContainer.ratingFacade.rateOrder(order).then { RatingRequest ratingResult ->
             // todo handle rating violation
             assert (ratingResult != null)
@@ -94,7 +93,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 throw AppCommonErrors.INSTANCE.parameterRequired('paymentInstruments').exception()
             } else {
                 // calculate tax
-                validatePayments(orderServiceContext).then {
+                return validatePayments(orderServiceContext).then {
                     if (CoreUtils.hasPhysicalOffer(order)) {
                         // check whether the shipping address id are there
                         if (order.shippingAddress == null) {
@@ -107,20 +106,26 @@ class OrderInternalServiceImpl implements OrderInternalService {
                         }
                     }
                     // calculateTax
+                    LOGGER.info('name=order_calculateTax')
                     return facadeContainer.billingFacade.quoteBalance(
                             CoreBuilder.buildBalance(order, BalanceType.DEBIT)).then { Balance balance ->
                         assert (balance != null)
                         CoreBuilder.fillTaxInfo(order, balance)
+                        LOGGER.info('name=order_calculateTax_completed')
                         return Promise.pure(order)
                     }
                 }
             }
+        }.then { Order o ->
+            LOGGER.info('name=internal.rateOrder_done')
+            return Promise.pure(o)
         }
     }
 
     @Override
     @Transactional
     Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext orderServiceContext, Boolean updateOrderStatus) {
+        LOGGER.info('name=internal.getOrderByOrderId')
         if (orderId == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('orderId').exception()
         }
@@ -130,12 +135,12 @@ class OrderInternalServiceImpl implements OrderInternalService {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
         orderServiceContext.order = order
-        completeOrder(order, orderServiceContext, updateOrderStatus)
+        return completeOrder(order, orderServiceContext, updateOrderStatus)
     }
 
     @Override
     Promise<Order> refundOrCancelOrder(Order order, OrderServiceContext context) {
-
+        LOGGER.info('name=internal.refundOrCancelOrder')
         assert (order != null)
 
         Boolean isRefundable = CoreUtils.isRefundable(order)
@@ -219,6 +224,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     Promise<Order> captureOrder(Order order, OrderServiceContext orderServiceContext) {
+        LOGGER.info('name=internal.captureOrder')
         assert (order != null)
         return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
             Balance pendingBalance = balances.find { Balance balance ->
@@ -243,7 +249,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Override
     @Transactional
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext context, OrderQueryParam orderQueryParam, PageParam pageParam) {
-
+        LOGGER.info('name=internal.getOrdersByUserId')
         if (userId == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
@@ -262,6 +268,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     // readonly
     private Promise<Order> completeOrder(Order order, OrderServiceContext orderServiceContext, Boolean updateOrderStatus) {
         // order items
+        LOGGER.info('name=internal.completeOrder')
         def hasFulfillment = false
         order.orderItems = orderRepository.getOrderItems(order.getId().value)
         if (!CollectionUtils.isEmpty(order.orderItems)) {
@@ -314,6 +321,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Override
     @Transactional
     Order refreshOrderStatus(Order order, boolean updateOrder) {
+        LOGGER.info('name=internal.refreshOrderStatus')
         def oldStatus = order.status
         order.status = OrderStatusBuilder.buildOrderStatus(order)
         if (updateOrder && order.status != oldStatus) {
@@ -325,7 +333,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Override
     @Transactional
     void markSettlement(Order order) {
-
+        LOGGER.info('name=internal.markSettlement')
         def latest = orderRepository.getOrder(order.getId().value)
         if (latest == null) {
             throw AppErrors.INSTANCE.orderNotFound().exception()
@@ -342,6 +350,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Override
     @Transactional
     void persistBillingHistory(Balance balance, BillingAction action, Order order) {
+        LOGGER.info('name=internal.persistBillingHistory')
         def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
         if(action != null) {
             billingHistory.billingEvent = action.name()
@@ -361,6 +370,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Transactional
     void persistOrderSnapshot(Order order) {
+        LOGGER.info('name=internal.persistOrderSnapshot')
         if (!storeSnapshot || CollectionUtils.isEmpty(order.orderSnapshot)) {
             return
         }
@@ -375,6 +385,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     OrderEvent checkOrderEventStatus(Order order, OrderEvent event, List<Balance> balances) {
+        LOGGER.info('name=internal.checkOrderEventStatus')
         if (event.action == OrderActionType.CHARGE.name()) {
             switch(event.status) {
                 case EventStatus.COMPLETED.name():
@@ -405,6 +416,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Override
     @Transactional
     Promise<Order> auditTax(Order order) {
+        LOGGER.info('name=internal.auditTax')
         return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).recover { Throwable throwable ->
             LOGGER.error('name=Tax_Audit_Fail', throwable)
             throw AppErrors.INSTANCE.billingAuditFailed('billing returns error: ' + throwable.message).exception()
@@ -448,6 +460,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     Promise<List<PaymentInstrument>> validatePayments(OrderServiceContext orderServiceContext) {
+        LOGGER.info('name=internal.validatePayments')
         // validate payments
         if (CollectionUtils.isEmpty(orderServiceContext.order.payments)) {
             return Promise.pure(null)
@@ -464,6 +477,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     Promise<PaymentInstrument> validateRefundPaymentInstrument(OrderServiceContext orderServiceContext) {
+        LOGGER.info('name=internal.validateRefundPaymentInstrument')
         if (orderServiceContext.order.refundPaymentInstrument == null) {
             return Promise.pure(null)
         }
@@ -475,6 +489,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     Promise<UserPersonalInfo> validateUserPersonalInfo(OrderServiceContext context) {
+        LOGGER.info('name=internal.validateUserPersonalInfo')
         def order = context.order
         return facadeContainer.identityFacade.getUserPersonalInfo(order.shippingAddress)
                 .then { UserPersonalInfo shippingAddressInfo ->
@@ -502,26 +517,30 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     Promise<Order> validateDuplicatePurchase(Order order, Offer offer) {
+        LOGGER.info('name=internal.validateDuplicatePurchase')
         if (offer.items.any { Item item ->
             !['APP', 'DOWNLOADED_ADDITION', 'PERMANENT_UNLOCK'].contains(item.type)
         }) {
+            LOGGER.info("name=skip_validateDuplicatePurchase")
             return Promise.pure(order)
         }
+        LOGGER.info("name=validateDuplicatePurchase_start_get_entitlements_by_user, userId={}", order.user.value)
         return facadeContainer.entitlementFacade.getEntitlements(order.user, offer)
                 .syncThen { List<Entitlement> entitlements ->
+            LOGGER.info("name=validateDuplicatePurchase_check_entitlement")
             if (entitlements == null || entitlements.size() == 0) {
                 return order
             }
-
-            offer.items.each { Item item ->
-                if (entitlements.every { Entitlement entitlement ->
-                    entitlement.itemId != item.id
-                }) {
-                    return order
+            def isDup = offer.items.every() { Item item ->
+                return entitlements.any() { Entitlement entitlement ->
+                    entitlement.itemId == item.id
                 }
             }
-
-            throw AppErrors.INSTANCE.duplicatePurchase().exception()
+            LOGGER.info("name=validateDuplicatePurchase_Complete, isDup={}", isDup)
+            if (isDup) {
+                throw AppErrors.INSTANCE.duplicatePurchase().exception()
+            }
+            return Promise.pure(order)
         }
     }
 }
