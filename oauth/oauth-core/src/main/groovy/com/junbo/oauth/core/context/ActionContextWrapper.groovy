@@ -51,6 +51,7 @@ class ActionContextWrapper {
     public static final String REMOTE_ADDRESS = 'remote_address'
     public static final String CAPTCHA_REQUIRED = 'captcha_required'
     public static final String CAPTCHA_SUCCEED = 'captcha_succeed'
+    public static final String SENTRY_SUCCEED = 'sentry_succeed'
     public static final String VIEW_LOCALE = 'view_locale'
     public static final String VIEW_COUNTRY = 'view_country'
     public static final String EXTRA_PARAM_MAP = 'extra_param_map'
@@ -328,6 +329,18 @@ class ActionContextWrapper {
 
     void setCaptchaSucceed(Boolean captchaRequired) {
         actionContext.requestScope[CAPTCHA_SUCCEED] = captchaRequired
+    }
+
+    Boolean getSentrySucceed() {
+        if (actionContext.requestScope[SENTRY_SUCCEED] == null) {
+            actionContext.requestScope[SENTRY_SUCCEED] = false
+        }
+
+        return (Boolean) actionContext.requestScope[SENTRY_SUCCEED]
+    }
+
+    void setSentrySucceed(Boolean sentrySucceed) {
+        actionContext.requestScope[SENTRY_SUCCEED] = sentrySucceed
     }
 
     String getViewLocale() {

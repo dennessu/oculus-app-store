@@ -51,8 +51,6 @@
         <property name="transcoder" ref="rawDataTranscoder"/>
     </bean>
 
-    <bean id="rawDataTranscoder" class="com.junbo.payment.clientproxy.adyen.RawDataTranscoder"/>
-
     <bean id="countryServiceFacade" class="com.junbo.payment.clientproxy.impl.CountryServiceFacadeImpl">
         <property name="countryResource" ref="countryClient" />
     </bean>

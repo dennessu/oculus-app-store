@@ -89,5 +89,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "120", message = "item not purchased.")
     AppError itemNotPurchased();
 
-    
+    // Please don't user 121 and 122.
+
+    @ErrorDef(httpStatusCode = 412, code = "123", message = "Sentry block access.")
+    AppError sentryBlockAccess();
 }

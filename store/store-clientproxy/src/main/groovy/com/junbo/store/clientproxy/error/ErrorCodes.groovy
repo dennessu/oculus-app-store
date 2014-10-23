@@ -36,4 +36,8 @@ class ErrorCodes {
         static final String majorCode = '130'
         static final String UnknownError = AppErrors.INSTANCE.unknownError().error().code
     }
+
+    class Sentry {
+        static final String BlockAccess = '130.123'
+    }
 }

@@ -1,4 +1,4 @@
-package com.junbo.store.clientproxy.sentry
+package com.junbo.oauth.clientproxy.facebook.sentry
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.spec.model.external.sentry.SentryRequest

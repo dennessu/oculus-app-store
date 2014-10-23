@@ -1,45 +1,37 @@
-package com.junbo.store.clientproxy.sentry
+package com.junbo.oauth.clientproxy.facebook.sentry
 
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
-import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.model.StoreApiHeader
 import com.junbo.store.spec.model.external.sentry.SentryFieldConstant
 import com.junbo.store.spec.model.external.sentry.SentryQueryParam
 import com.junbo.store.spec.model.external.sentry.SentryRequest
 import com.junbo.store.spec.model.external.sentry.SentryResponse
+import com.junbo.store.spec.resource.external.SentryResource
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.stereotype.Component
-
-import javax.annotation.Resource
 
 /**
  * Created by liangfu on 9/24/14.
  */
 @CompileStatic
-@Component('storeSentryFacade')
+@Component('oauthSentryFacade')
 public class SentryFacadeImpl implements SentryFacade {
 
-    @Value('${store.sentry.format}')
     private String sentryFormat
 
-    @Value('${store.sentry.namespace}')
     private String sentryNamespace
 
-    @Value('${store.sentry.enable}')
     private Boolean enableSentry
 
-    @Resource(name = 'storeResourceContainer')
-    private ResourceContainer resourceContainer
-
-    @Value('${store.sentry.access_token}')
     private String accessToken
 
-    @Value('${store.sentry.method}')
     private String method
+
+    private SentryResource sentryResource
 
     @Override
     Promise<SentryResponse> doSentryCheck(SentryRequest request) {
@@ -61,7 +53,7 @@ public class SentryFacadeImpl implements SentryFacade {
                 locale: JunboHttpContext.requestHeaders?.getFirst(StoreApiHeader.ACCEPT_LANGUAGE.value)
         )
 
-        return resourceContainer.sentryResource.doSentryCheck(queryParam).then { String response ->
+        return sentryResource.doSentryCheck(queryParam).then { String response ->
 
             if (response == "[]") {
                 return Promise.pure(new SentryResponse())
@@ -95,5 +87,35 @@ public class SentryFacadeImpl implements SentryFacade {
         def appJson = [:];
         appJson[SentryFieldConstant.ANDRIOD_ID.value] = JunboHttpContext.requestHeaders?.getFirst(StoreApiHeader.ANDROID_ID.value)
         otherMap[SentryFieldConstant.APP_JSON.value] = appJson
+    }
+
+    @Required
+    void setSentryFormat(String sentryFormat) {
+        this.sentryFormat = sentryFormat
+    }
+
+    @Required
+    void setSentryNamespace(String sentryNamespace) {
+        this.sentryNamespace = sentryNamespace
+    }
+
+    @Required
+    void setEnableSentry(Boolean enableSentry) {
+        this.enableSentry = enableSentry
+    }
+
+    @Required
+    void setAccessToken(String accessToken) {
+        this.accessToken = accessToken
+    }
+
+    @Required
+    void setMethod(String method) {
+        this.method = method
+    }
+
+    @Required
+    void setSentryResource(SentryResource sentryResource) {
+        this.sentryResource = sentryResource
     }
 }

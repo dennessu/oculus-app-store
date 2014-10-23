@@ -139,4 +139,19 @@
         <property name="transcoder" ref="commonIgnoreUnknownTranscoder"/>
         <property name="exceptionHandler" ref="googleExceptionHandler"/>
     </bean>
+
+    <bean id="oauth_sentryClientProxy"
+          class="com.junbo.store.spec.resource.external.proxy.SentryResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.sentry.url}" />
+        <property name="transcoder" ref="rawDataTranscoder"/>
+    </bean>
+
+    <bean id="oauth_sentryFacade" class="com.junbo.oauth.clientproxy.facebook.sentry.SentryFacadeImpl">
+        <property name="accessToken" value="${store.sentry.access_token}" />
+        <property name="enableSentry" value="${store.sentry.enable}" />
+        <property name="sentryNamespace" value="${store.sentry.namespace}" />
+        <property name="sentryFormat" value="${store.sentry.format}" />
+        <property name="method" value="${store.sentry.method}" />
+        <property name="sentryResource" ref="oauth_sentryClientProxy" />
+    </bean>
 </beans>

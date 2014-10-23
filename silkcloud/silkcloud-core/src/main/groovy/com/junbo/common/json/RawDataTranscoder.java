@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.clientproxy.adyen;
+package com.junbo.common.json;
 
 import com.junbo.langur.core.client.MessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
