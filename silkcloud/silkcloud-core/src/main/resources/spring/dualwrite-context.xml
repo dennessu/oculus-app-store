@@ -7,6 +7,7 @@
         <property name="sqlPendingActionRepository" ref="pendingActionSqlRepo" />
         <property name="cloudantPendingActionRepository" ref="pendingActionCloudantRepo" />
         <property name="sqlUseAsyncDualWrite" value="false" />
+
         <property name="ignoreDualWriteErrors" value="${dualwrite.ignoreDualWriteErrors}" />
         <property name="platformTransactionManager" ref="transactionManager" />
         <property name="transactionManager" ref="simpleTransactionManager" />
@@ -18,8 +19,8 @@
 
     <bean id="pendingActionSqlRepo" class="com.junbo.sharding.dualwrite.data.PendingActionRepositorySqlImpl">
         <property name="sessionFactory" ref="dualwriteSessionFactory"/>
-        <property name="shardAlgorithm" ref="externalShardAlgorithm"/>
-        <property name="hardDelete" value="false" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="hardDelete" value="true" />
         <property name="mapper" ref="pendingActionMapper" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
         <property name="maxRetryCount" value="${common.sharding.pendingAction.maxRetryCount}" />
@@ -27,7 +28,7 @@
 
     <bean id="pendingActionCloudantRepo" class="com.junbo.sharding.dualwrite.data.PendingActionRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="dualwrite_pending_action"/>
-        <property name="hardDelete" value="false" />
+        <property name="hardDelete" value="true" />
         <property name="mapper" ref="pendingActionMapper" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
     </bean>

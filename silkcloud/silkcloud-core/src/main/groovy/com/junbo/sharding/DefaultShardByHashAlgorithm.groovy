@@ -1,5 +1,6 @@
 package com.junbo.sharding
 
+import com.junbo.configuration.topo.DataCenters
 import groovy.transform.CompileStatic
 
 /**
@@ -48,7 +49,7 @@ class DefaultShardByHashAlgorithm implements ShardAlgorithm {
     @Override
     int dataCenterId(Object key) {
         // In this case, it should not have datacenter concept
-        return 0
+        return DataCenters.instance().currentDataCenterId();
     }
 }
 

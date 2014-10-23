@@ -92,12 +92,23 @@ public class Context {
         }
 
         public Promise<Void> executeCleanupActions() {
-            return Promise.each(cleanupActions, new Promise.Func<Closure<Promise<Void>>, Promise>() {
+            ProfilingHelper.appendRow(logger, "(PCA) BEGIN execute cleanup actions");
+            Promise<Void> future = Promise.each(cleanupActions, new Promise.Func<Closure<Promise<Void>>, Promise>() {
                 @Override
                 public Promise<Void> apply(Closure<Promise<Void>> promiseClosure) {
                     return promiseClosure.call();
                 }
             });
+            if (ProfilingHelper.isProfileEnabled()) {
+                future = future.then(new Promise.Func<Void, Promise<Void>>() {
+                    @Override
+                    public Promise<Void> apply(Void aVoid) {
+                        ProfilingHelper.appendRow(logger, "(PCA) END execute cleanup actions");
+                        return Promise.pure();
+                    }
+                });
+            }
+            return future;
         }
 
         /**
@@ -109,10 +120,12 @@ public class Context {
          * @param closure The closure which generates the promise.
          */
         public void registerPendingTask(Closure<Promise> closure) {
+            ProfilingHelper.appendRow(logger, "(PT) BEGIN registering pending task");
             try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
                 Promise promise = closure.call();
                 this.pendingTasks.add(promise);
             }
+            ProfilingHelper.appendRow(logger, "(PT) END registering pending task");
         }
 
         /**
@@ -124,10 +137,12 @@ public class Context {
          * @param func The function which generates the promise.
          */
         public void registerPendingTask(Promise.Func0<Promise> func) {
+            ProfilingHelper.appendRow(logger, "(PT) BEGIN registering pending task");
             try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
                 Promise promise = func.apply();
                 this.pendingTasks.add(promise);
             }
+            ProfilingHelper.appendRow(logger, "(PT) END registering pending task");
         }
 
         /**
@@ -135,12 +150,24 @@ public class Context {
          * @return The promise that all pending tasks are drained.
          */
         public Promise<Void> drainPendingTasks() {
-            return Promise.each(pendingTasks, new Promise.Func<Promise, Promise>() {
+            ProfilingHelper.appendRow(logger, "(PT) BEGIN draining pending task");
+            Promise<Void> future = Promise.each(pendingTasks, new Promise.Func<Promise, Promise>() {
                 @Override
                 public Promise<Void> apply(Promise promise) {
                     return promise;
                 }
             });
+
+            if (ProfilingHelper.isProfileEnabled()) {
+                future = future.then(new Promise.Func<Void, Promise<Void>>() {
+                    @Override
+                    public Promise<Void> apply(Void aVoid) {
+                        ProfilingHelper.appendRow(logger, "(PT) END draining pending task");
+                        return Promise.pure();
+                    }
+                });
+            }
+            return future;
         }
     }
 
