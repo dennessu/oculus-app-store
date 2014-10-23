@@ -11,16 +11,11 @@ import com.junbo.catalog.clientproxy.OrganizationFacade;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.core.validators.ItemRevisionValidator;
-import com.junbo.catalog.db.repo.ItemAttributeRepository;
-import com.junbo.catalog.db.repo.ItemRepository;
-import com.junbo.catalog.db.repo.ItemRevisionRepository;
-import com.junbo.catalog.db.repo.OfferRepository;
-import com.junbo.catalog.spec.enums.EntitlementType;
-import com.junbo.catalog.spec.enums.ItemAttributeType;
-import com.junbo.catalog.spec.enums.ItemType;
-import com.junbo.catalog.spec.enums.Status;
+import com.junbo.catalog.db.repo.*;
+import com.junbo.catalog.spec.enums.*;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppCommonErrors;
@@ -43,6 +38,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     private ItemRepository itemRepo;
     private ItemRevisionRepository itemRevisionRepo;
     private ItemAttributeRepository itemAttributeRepo;
+    private OfferAttributeRepository offerAttributeRepo;
     private OfferRepository offerRepo;
     private ItemRevisionValidator revisionValidator;
     private OrganizationFacade organizationFacade;
@@ -75,6 +71,11 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     @Required
     public void setOrganizationFacade(OrganizationFacade organizationFacade) {
         this.organizationFacade = organizationFacade;
+    }
+
+    @Required
+    public void setOfferAttributeRepo(OfferAttributeRepository offerAttributeRepo) {
+        this.offerAttributeRepo = offerAttributeRepo;
     }
 
     @Override
@@ -286,6 +287,18 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                     ItemAttribute attribute = itemAttributeRepo.get(genreId);
                     if (attribute == null || !ItemAttributeType.GENRE.is(attribute.getType())) {
                         errors.add(AppErrors.INSTANCE.genreNotFound("genres", genreId));
+                    }
+                }
+            }
+        }
+        if (!CollectionUtils.isEmpty(item.getCategories())) {
+            for (String categoryId : item.getCategories()) {
+                if (categoryId == null) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("categories"));
+                } else {
+                    OfferAttribute attribute = offerAttributeRepo.get(categoryId);
+                    if (attribute == null || !OfferAttributeType.CATEGORY.is(attribute.getType())) {
+                        errors.add(AppErrors.INSTANCE.categoryNotFound("categories", categoryId));
                     }
                 }
             }
