@@ -13,6 +13,7 @@ import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.LogHelper;
 import com.ning.http.client.*;
+import com.ning.http.client.providers.netty.NettyAsyncHttpProviderConfig;
 import com.ning.http.client.providers.netty.NettyResponse;
 import org.apache.http.client.HttpResponseException;
 import org.testng.Assert;
@@ -72,7 +73,16 @@ public abstract class HttpClientBase {
     }
 
     protected AsyncHttpClient getAsyncHttpClient() {
-        return new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setMaxRequestRetry(3).build());
+
+        AsyncHttpClientConfigBean config = new AsyncHttpClientConfigBean();
+        NettyAsyncHttpProviderConfig nettyConfig = new NettyAsyncHttpProviderConfig();
+        int maxHeadersSize = 65536;
+        nettyConfig.addProperty(NettyAsyncHttpProviderConfig.HTTP_CLIENT_CODEC_MAX_HEADER_SIZE, maxHeadersSize);
+        nettyConfig.addProperty(NettyAsyncHttpProviderConfig.HTTPS_CLIENT_CODEC_MAX_HEADER_SIZE, maxHeadersSize);
+        config.setProviderConfig(nettyConfig);
+        config.setMaxRequestRetry(3);
+
+        return new AsyncHttpClient(config);
     }
 
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
