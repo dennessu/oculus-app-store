@@ -343,7 +343,7 @@ public class StoreTesting extends BaseTestClass {
         }
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
-        validationHelper.verifyLibraryResponse(libraryResponse, offerId);
+        validationHelper.verifyLibraryResponse(libraryResponse, freePurchaseResponse.getEntitlements().get(0).getItem());
 
         Master.getInstance().setCurrentUid(null);
 
@@ -413,7 +413,7 @@ public class StoreTesting extends BaseTestClass {
             }
             Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
             LibraryResponse libraryResponse = testDataProvider.getLibrary();
-            validationHelper.verifyLibraryResponse(libraryResponse, offerId);
+            validationHelper.verifyLibraryResponse(libraryResponse, freePurchaseResponse.getEntitlements().get(0).getItem());
 
             Master.getInstance().setCurrentUid(null);
 

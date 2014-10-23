@@ -2,12 +2,13 @@ package com.junbo.store.rest.browse.impl
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
+import com.junbo.store.common.cache.Cache
 import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
-import com.junbo.store.spec.model.external.casey.cms.CmsContentSlot
-import com.junbo.store.spec.model.external.casey.cms.CmsPage
-import com.junbo.store.spec.model.external.casey.cms.ContentItem
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsContentSlot
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage
+import com.junbo.store.spec.model.external.sewer.casey.cms.ContentItem
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
@@ -29,6 +30,8 @@ class SectionServiceImpl implements SectionService {
 
     private static final String Cms_Criteria = 'cms'
 
+    private static final String SectionInfo_Cache_Key = 'section_info'
+
     @Resource(name = 'storeFacadeContainer')
     private FacadeContainer facadeContainer
 
@@ -37,6 +40,9 @@ class SectionServiceImpl implements SectionService {
 
     @Value('${store.browse.cmsPage.section.path}')
     private String sectionCmsPagePath
+
+    @Resource(name = 'storeSectionInfoCache')
+    private Cache<String, List<SectionInfoNode>> sectionCache
 
     @Override
     Promise<List<SectionInfoNode>> getTopLevelSectionInfoNode(ApiContext apiContext) {
@@ -51,6 +57,11 @@ class SectionServiceImpl implements SectionService {
     }
 
     private Promise<List<SectionInfoNode>> buildSectionInfoNode(ApiContext apiContext) {
+        List<SectionInfoNode> cached = sectionCache.get(SectionInfo_Cache_Key)
+        if (cached != null) {
+            return Promise.pure(cached)
+        }
+
         List<SectionInfoNode> results = []
         facadeContainer.caseyFacade.getCmsPage(sectionCmsPagePath, null, apiContext.country.getId().value, apiContext.locale.getId().value).then { CmsPage menuCmsPage ->
             if (menuCmsPage == null) {
@@ -69,6 +80,7 @@ class SectionServiceImpl implements SectionService {
                     return Promise.pure()
                 }
             }.then {
+                sectionCache.put(SectionInfo_Cache_Key, results)
                 return Promise.pure(results)
             }
         }

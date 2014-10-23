@@ -1,5 +1,6 @@
 {
     "item": {
+        "categories": [{"id" : "App"}],
         "genres": [{"id" : "Educational"}],
         "defaultOffer": null, 
         "rev": null,

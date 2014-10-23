@@ -26,7 +26,7 @@
 
     <bean id="store.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
           parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
@@ -34,15 +34,21 @@
 
     <bean id="store.offerItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
           parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
+    <bean id="store.sewerOfferItemClient"
+          class="com.junbo.store.clientproxy.sewer.proxy.SewerItemResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.store.sewer.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
     <bean id="store.offerAttributeClient" class="com.junbo.catalog.spec.resource.proxy.OfferAttributeResourceClientProxy"
           parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
@@ -50,7 +56,7 @@
 
     <bean id="store.itemAttributeClient" class="com.junbo.catalog.spec.resource.proxy.ItemAttributeResourceClientProxy"
           parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
@@ -58,7 +64,7 @@
 
     <bean id="store.priceTierClient" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxy"
           parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
@@ -66,14 +72,14 @@
 
     <bean id="store.ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy"
           parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
           parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
@@ -81,7 +87,7 @@
 
     <bean id="store.offerItemRevisionClient"
           class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
@@ -89,22 +95,28 @@
 
     <bean id="store.entitlementClient"
           class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
+    <bean id="store.sewerEntitlementResource"
+          class="com.junbo.store.clientproxy.sewer.proxy.SewerEntitlementResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.store.sewer.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
     <bean id="store.downloadUrlClient"
           class="com.junbo.entitlement.spec.resource.proxy.DownloadUrlResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.paymentInstrumentClient"
           class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
@@ -112,7 +124,7 @@
 
     <bean id="store.orderClient"
           class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
@@ -132,70 +144,70 @@
 
     <bean id="store.userResourceClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.userCredentialResourceClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.userCredentialVerifyAttemptResourceClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialVerifyAttemptResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.userPersonalInfoResourceClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.piTypeResourceClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.PITypeResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.currencyResourceClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.organizationClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.tosResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.TosResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.userTosAgreementResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
         <property name="attachUserToken" value="true"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
     </bean>
 
     <bean id="store.communicationResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.CommunicationResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}" />
+        <property name="target" value="${clientproxy.store.core.api.url}" />
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.userCommunicationResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserCommunicationResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}" />
+        <property name="target" value="${clientproxy.store.core.api.url}" />
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
         <property name="attachUserToken" value="true"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
@@ -203,31 +215,31 @@
 
     <bean id="store.tokenEndpointClientProxy"
           class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.tokenInfoEndpointClientProxy"
           class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.emailVerifyEndpointClientProxy"
           class="com.junbo.store.clientproxy.oauth.proxy.OAuthEmailVerifyEndpointClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
     <bean id="store.countryClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.localeClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
@@ -255,7 +267,7 @@
 
     <bean id="store.user.userResourceClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
@@ -263,7 +275,7 @@
 
     <bean id="store.user.userPersonalInfoResourceClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
@@ -271,7 +283,7 @@
 
     <bean id="store.user.userCredentialResourceClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.sewer.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
         <property name="attachUserToken" value="true"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>

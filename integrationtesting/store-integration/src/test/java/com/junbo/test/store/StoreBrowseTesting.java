@@ -11,12 +11,12 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.browse.document.*;
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
-import com.junbo.store.spec.model.external.casey.CaseyReview;
-import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
-import com.junbo.store.spec.model.external.casey.cms.CmsPage;
-import com.junbo.store.spec.model.external.casey.cms.CmsSchedule;
-import com.junbo.store.spec.model.external.casey.cms.Placement;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsCampaign;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsSchedule;
+import com.junbo.store.spec.model.external.sewer.casey.cms.Placement;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
@@ -202,11 +202,12 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertNotNull(libraryResponse.getItems().get(0).getAggregatedRatings());
         Assert.assertNotNull(libraryResponse.getItems().get(0).getCurrentUserReview());
 
-        // get library with simulated casey error and check aggregate rating/current user review is null
-        TestContext.getData().putHeader("X_QA_CASEY_ERROR", "getReviews,getRatings");
-        libraryResponse = testDataProvider.getLibrary();
-        storeBrowseValidationHelper.verifyDefaultAggregateRatings(libraryResponse.getItems().get(0).getAggregatedRatings());
-        Assert.assertNull(libraryResponse.getItems().get(0).getCurrentUserReview());
+        // get library with simulated casey error and check aggregate rating/current user review is null.
+        // This behavior is changed since we use expand to get ratings
+        // TestContext.getData().putHeader("X_QA_CASEY_ERROR", "getReviews,getRatings");
+        // libraryResponse = testDataProvider.getLibrary();
+        // storeBrowseValidationHelper.verifyDefaultAggregateRatings(libraryResponse.getItems().get(0).getAggregatedRatings());
+        // Assert.assertNull(libraryResponse.getItems().get(0).getCurrentUserReview());
     }
 
     @Test
@@ -233,10 +234,10 @@ public class StoreBrowseTesting extends BaseTestClass {
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
         assert libraryResponse.getItems().size() == 1;
         ItemId itemId = libraryResponse.getItems().get(0).getSelf();
-        Assert.assertNotNull(libraryResponse.getItems().get(0).getOffer());
+        Assert.assertNull(libraryResponse.getItems().get(0).getOffer());
 
         DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId.getValue());
-        verifyItem(response.getEntitlements().get(0).getItemDetails(), GetItemMethod.Details, true);
+        verifyItem(response.getEntitlements().get(0).getItemDetails(), GetItemMethod.Purchase, true);
         Assert.assertTrue(detailsResponse.getItem().getOwnedByCurrentUser());
         Assert.assertTrue(detailsResponse.getItem().getOffer().getIsFree());
 
@@ -913,7 +914,11 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     private void verifyItem(Item item, GetItemMethod method, Boolean ownedByUser) throws Exception {
-        storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled, useCaseyEmulator, method == GetItemMethod.List);
+        storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled, useCaseyEmulator, method == GetItemMethod.List,
+                method != GetItemMethod.Library && method != GetItemMethod.Purchase);
+        if (method == GetItemMethod.Library || method == GetItemMethod.Purchase) {
+            Assert.assertNull(item.getOffer());
+        }
         if (offer_digital_free.equals(item.getTitle())) {
             verifyItemImage(item);
         }

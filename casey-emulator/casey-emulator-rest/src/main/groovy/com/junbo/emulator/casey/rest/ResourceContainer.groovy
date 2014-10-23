@@ -1,17 +1,12 @@
 package com.junbo.emulator.casey.rest
-
-import com.junbo.catalog.spec.resource.ItemAttributeResource
-import com.junbo.catalog.spec.resource.ItemResource
-import com.junbo.catalog.spec.resource.ItemRevisionResource
-import com.junbo.catalog.spec.resource.OfferAttributeResource
-import com.junbo.catalog.spec.resource.OfferResource
-import com.junbo.catalog.spec.resource.OfferRevisionResource
+import com.junbo.catalog.spec.resource.*
+import com.junbo.entitlement.spec.resource.EntitlementResource
 import com.junbo.identity.spec.v1.resource.LocaleResource
+import com.junbo.identity.spec.v1.resource.OrganizationResource
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * The ResourceContainer class.
  */
@@ -33,4 +28,8 @@ class ResourceContainer {
     ItemAttributeResource itemAttributeResource
     @Resource(name = 'casey.localeResource')
     LocaleResource localeResource
+    @Resource(name = 'sewer.entitlementResource')
+    EntitlementResource entitlementResource
+    @Resource(name = 'sewer.organizationResource')
+    OrganizationResource organizationResource
 }

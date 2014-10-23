@@ -11,9 +11,7 @@ import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
@@ -23,18 +21,11 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.casey.CaseyFacade
 import com.junbo.store.clientproxy.error.AppErrorUtils
-import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.clientproxy.utils.ReviewBuilder
 import com.junbo.store.common.utils.CommonUtils
-import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
-import com.junbo.store.spec.model.browse.Images
-import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.catalog.Offer
-import com.junbo.store.spec.model.catalog.data.CaseyData
-import com.junbo.store.spec.model.catalog.data.ItemData
-import com.junbo.store.spec.model.catalog.data.OfferData
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -67,67 +58,6 @@ class CatalogFacadeImpl implements CatalogFacade {
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
 
-    @Override
-    Promise<Item> getItem(ItemId itemId, Images.BuildType buildType, ApiContext apiContext) {
-        ItemData itemData = new ItemData()
-        itemData.genres = []
-        Item catalogItem
-        Promise.pure().then {
-            resourceContainer.itemResource.getItem(itemId.value).recover { Throwable ex ->
-                if (appErrorUtils.isAppError(ex, ErrorCodes.Catalog.ResourceNotFound)) {
-                    throw AppCommonErrors.INSTANCE.resourceNotFound('Item', itemId).exception()
-                }
-                throw ex
-            }.then { Item e ->
-                catalogItem = e
-                itemData.item = e
-                return Promise.pure()
-            }
-        }.then { // get developer
-            getOrganization(itemData.item?.ownerId).then { Organization organization ->
-                itemData.developer = organization
-                return Promise.pure()
-            }
-        }.then {  // get genres
-            Promise.each(catalogItem.genres) { String genresId ->
-                getItemAttribute(genresId, apiContext).then { ItemAttribute itemAttribute ->
-                    if (itemAttribute != null) {
-                        itemData.genres << itemAttribute
-                    }
-                    return Promise.pure()
-                }
-            }
-        }.then {
-            if (catalogItem.currentRevisionId == null) {
-                return Promise.pure()
-            }
-            resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions(locale: apiContext.locale.getId().value)).then { ItemRevision e ->
-                itemData.currentRevision = e
-                return Promise.pure()
-            }
-        }.then {
-            // get offer
-            resourceContainer.offerResource.getOffers(new OffersGetOptions(itemId: catalogItem.itemId)).then { Results<com.junbo.catalog.spec.model.offer.Offer> offerResults ->
-                if (offerResults.items.size() > 1) {
-                    LOGGER.warn('name=Store_Multiple_Offers_Found, item={}, useOffer={}', catalogItem.itemId, offerResults.items[0].offerId)
-                }
-                if (CollectionUtils.isEmpty(offerResults.items)) {
-                    return Promise.pure()
-                }
-                getOfferData(offerResults.items[0], apiContext).then { OfferData offerData ->
-                    itemData.offer = offerData
-                    return Promise.pure()
-                }
-            }
-        }.then {
-            return getCaseyData(catalogItem.getId(), apiContext).then { CaseyData caseyData ->
-                itemData.caseyData = caseyData
-                return Promise.pure()
-            }
-        }.then {
-            return Promise.pure(itemBuilder.buildItem(itemData, buildType, apiContext))
-        }
-    }
 
     @Override
     Promise<Offer> getOffer(String offerId, LocaleId locale) {
@@ -225,55 +155,6 @@ class CatalogFacadeImpl implements CatalogFacade {
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_Get_OfferAttribute_Fail, attribute={}', attributeId, ex)
             return Promise.pure()
-        }
-    }
-
-    private Promise<OfferData> getOfferData(com.junbo.catalog.spec.model.offer.Offer catalogOffer, ApiContext apiContext) {
-        OfferData result = new OfferData()
-        result.offer = catalogOffer
-        result.categories = []
-        Promise.pure().then { // get offer revision
-            if (catalogOffer.currentRevisionId == null) {
-                return Promise.pure()
-            }
-            resourceContainer.offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions(locale: apiContext.locale.getId().value)).then { OfferRevision e ->
-                result.offerRevision = e
-                return Promise.pure()
-            }
-        }.then {
-            if (!result.offerRevision?.countries?.get(apiContext.country.getId().value)?.isPurchasable) { // return null if offer not purchasable from the country
-                return Promise.pure()
-            }
-            // get categories
-            Promise.each(catalogOffer.categories) { String categoryId ->
-                getOfferAttribute(categoryId, apiContext).then { OfferAttribute offerAttribute ->
-                    if (offerAttribute != null) {
-                        result.categories << offerAttribute
-                    }
-                    return Promise.pure()
-                }
-            }.then { // get publisher
-                getOrganization(catalogOffer.ownerId).then { Organization organization->
-                    result.publisher = organization
-                    return Promise.pure()
-                }
-            }.then {
-                return Promise.pure(result)
-            }
-        }
-    }
-
-    private Promise<CaseyData> getCaseyData(String itemId, ApiContext apiContext) {
-        CaseyData result = new CaseyData()
-        caseyFacade.getAggregatedRatings(new ItemId(itemId), apiContext).recover { Throwable ex ->
-            if (ex instanceof CaseyException) {
-                LOGGER.error('name=GetCaseyData_Get_AggregateRatings_Error', ex)
-                return Promise.pure(reviewBuilder.buildDefaultAggregatedRatingsMap())
-            }
-            throw ex
-        }.then { Map<String, AggregatedRatings> aggregatedRatings ->
-            result.aggregatedRatings = aggregatedRatings
-            return Promise.pure(result)
         }
     }
 

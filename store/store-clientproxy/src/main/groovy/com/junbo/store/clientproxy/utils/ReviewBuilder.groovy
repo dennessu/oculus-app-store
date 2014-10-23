@@ -1,5 +1,4 @@
 package com.junbo.store.clientproxy.utils
-
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Link
@@ -8,10 +7,10 @@ import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
 import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.browse.document.Review
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
-import com.junbo.store.spec.model.external.casey.CaseyLink
-import com.junbo.store.spec.model.external.casey.CaseyReview
-import com.junbo.store.spec.model.external.casey.search.CaseyRating
+import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating
+import com.junbo.store.spec.model.external.sewer.casey.CaseyLink
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview
+import com.junbo.store.spec.model.external.sewer.casey.search.CaseyRating
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
@@ -88,6 +87,16 @@ class ReviewBuilder {
             }
         }
         return review
+    }
+
+    Map<String, AggregatedRatings> buildAggregatedRatingsMap(List<CaseyAggregateRating> caseyAggregateRatingList) {
+        Map<String, AggregatedRatings> aggregatedRatingsMap = [:]
+        [CaseyReview.RatingType.quality.name(), CaseyReview.RatingType.comfort.name()].each { String type ->
+            aggregatedRatingsMap[type] = buildAggregatedRatings(caseyAggregateRatingList?.find { CaseyAggregateRating e ->
+                e.type == type
+            })
+        }
+        return aggregatedRatingsMap
     }
 
     AggregatedRatings buildAggregatedRatings(CaseyAggregateRating caseyAggregateRating) {

@@ -29,14 +29,14 @@ import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
-import com.junbo.store.spec.model.external.casey.CaseyResults
-import com.junbo.store.spec.model.external.casey.CaseyReview
-import com.junbo.store.spec.model.external.casey.ReviewSearchParams
-import com.junbo.store.spec.model.external.casey.cms.*
-import com.junbo.store.spec.model.external.casey.search.CaseyItem
-import com.junbo.store.spec.model.external.casey.search.CaseyOffer
-import com.junbo.store.spec.model.external.casey.search.OfferSearchParams
+import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating
+import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview
+import com.junbo.store.spec.model.external.sewer.casey.ReviewSearchParams
+import com.junbo.store.spec.model.external.sewer.casey.cms.*
+import com.junbo.store.spec.model.external.sewer.casey.search.CaseyItem
+import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer
+import com.junbo.store.spec.model.external.sewer.casey.search.OfferSearchParams
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
@@ -104,17 +104,10 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     @Override
     Promise<Map<String, AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext) {
-        Map<String, AggregatedRatings> aggregatedRatingsMap = [:]
         resourceContainer.caseyResource.getRatingByItemId(itemId.value).recover { Throwable throwable ->
             wrapAndThrow(throwable)
         }.then { CaseyResults<CaseyAggregateRating> results ->
-            [CaseyReview.RatingType.quality.name(), CaseyReview.RatingType.comfort.name()].each { String type ->
-                aggregatedRatingsMap[type] = reviewBuilder.buildAggregatedRatings(results?.items?.find { CaseyAggregateRating e ->
-                    e.type == type
-                })
-            }
-            return Promise.pure()
-        }.then {
+            Map<String, AggregatedRatings> aggregatedRatingsMap = reviewBuilder.buildAggregatedRatingsMap(results?.items)
             return Promise.pure(aggregatedRatingsMap)
         }
     }

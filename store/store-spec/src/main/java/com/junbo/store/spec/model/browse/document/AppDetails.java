@@ -36,6 +36,7 @@ public class AppDetails {
     private String packageName;
     private Integer versionCode;
     private String versionString;
+    private List<String> permissions;
 
     private Long installationSize;
 
@@ -159,6 +160,14 @@ public class AppDetails {
 
     public void setVersionString(String versionString) {
         this.versionString = versionString;
+    }
+
+    public List<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<String> permissions) {
+        this.permissions = permissions;
     }
 
     public Long getInstallationSize() {

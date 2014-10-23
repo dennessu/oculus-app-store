@@ -16,7 +16,7 @@ import com.junbo.store.spec.model.browse.document.Item;
  */
 public interface BrowseService {
 
-    Promise<Item> getItem(ItemId itemId, boolean useSearch, boolean includeDetails, ApiContext apiContext);
+    Promise<Item> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext);
 
     Promise<TocResponse> getToc(ApiContext apiContext);
 

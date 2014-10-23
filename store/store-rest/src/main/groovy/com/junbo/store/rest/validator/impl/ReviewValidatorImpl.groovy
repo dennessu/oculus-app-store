@@ -7,7 +7,7 @@ import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
-import com.junbo.store.spec.model.external.casey.CaseyReview
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils

@@ -7,10 +7,10 @@ package com.junbo.test.store.utility;
 
 import com.junbo.common.id.ItemId;
 import com.junbo.store.spec.model.browse.AddReviewRequest;
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
-import com.junbo.store.spec.model.external.casey.CaseyLink;
-import com.junbo.store.spec.model.external.casey.CaseyReview;
-import com.junbo.store.spec.model.external.casey.cms.*;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyLink;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
+import com.junbo.store.spec.model.external.sewer.casey.cms.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.security.SecureRandom;

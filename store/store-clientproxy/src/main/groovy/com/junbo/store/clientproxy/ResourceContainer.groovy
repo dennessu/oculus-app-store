@@ -11,6 +11,8 @@ import com.junbo.order.spec.resource.OrderResource
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import com.junbo.rating.spec.resource.RatingResource
 import com.junbo.store.clientproxy.oauth.OAuthEmailVerifyEndpoint
+import com.junbo.store.clientproxy.sewer.SewerEntitlementResource
+import com.junbo.store.clientproxy.sewer.SewerItemResource
 import com.junbo.store.spec.resource.external.CaseyResource
 import com.junbo.store.spec.resource.external.CaseyReviewResource
 import com.junbo.store.spec.resource.external.SentryResource
@@ -28,6 +30,9 @@ class ResourceContainer {
     @Resource(name='store.offerItemClient')
     ItemResource itemResource
 
+    @Resource(name='store.sewerOfferItemClient')
+    SewerItemResource sewerItemResource
+
     @Resource(name='store.offerClient')
     OfferResource offerResource
 
@@ -39,6 +44,9 @@ class ResourceContainer {
 
     @Resource(name='store.entitlementClient')
     EntitlementResource entitlementResource
+
+    @Resource(name='store.sewerEntitlementResource')
+    SewerEntitlementResource sewerEntitlementResource
 
     @Resource(name='store.downloadUrlClient')
     DownloadUrlResource downloadUrlResource

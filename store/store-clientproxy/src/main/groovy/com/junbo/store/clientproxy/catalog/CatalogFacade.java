@@ -11,16 +11,12 @@ import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.ItemId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
-import com.junbo.store.spec.model.browse.Images;
-import com.junbo.store.spec.model.browse.document.Item;
 import com.junbo.store.spec.model.catalog.Offer;
 
 /**
  * The CatalogFacade class.
  */
 public interface CatalogFacade {
-
-    Promise<Item> getItem(ItemId itemId, Images.BuildType buildType, ApiContext apiContext);
 
     Promise<Offer> getOffer(String offerId, LocaleId locale);
 
