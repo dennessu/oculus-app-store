@@ -16,6 +16,9 @@ import java.util.List;
 public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderService {
     private static final String providerName = "AdyenCC";
     public static final String piExternalToken = "Y3JlZGl0X2NhcmRfMjk4NjI2NzgzNjAxMzYw";
+    public static final String chargeFailToken = "Y3JlZGl0X2NhcmRfMjk4NjI2NzkzNjAxMzU5";
+    public static final String refundFailToken = "Y3JlZGl0X2NhcmRfMjk4NjI2Nzk2OTM0Njky";
+    public static final String captureFailTOken = "Y3JlZGl0X2NhcmRfMjk4NjI2NzkwMjY4MDI2";
     public static final String authExternalToken = "1234";
     public static final String chargeExternalToken = "12345";
 

@@ -720,7 +720,13 @@
       "views": {
         "byTrackingUuid": {
           "map": "function(doc) {emit(doc.trackingUuid.toString(), doc._id)}"
-        }, 
+        },
+        "byUserId": {
+          "map": "function(doc) {emit(doc.userId, doc._id)}"
+        },
+        "byUserIdAndType": {
+          "map": "function(doc) {emit(doc.userId.toString() + ':' + doc.type, doc._id)}"
+        },
         "byUserIdAndItemIdAndType": {
           "map": "function(doc) {emit(doc.userId.toString() + ':' + doc.itemId.toString() + ':' + doc.type, doc._id)}"
         }

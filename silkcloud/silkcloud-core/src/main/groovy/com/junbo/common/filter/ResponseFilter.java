@@ -11,6 +11,8 @@ import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.configuration.ConfigServiceManager;
 import com.junbo.langur.core.profiling.ProfilingHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Priority;
 import javax.inject.Singleton;
@@ -31,6 +33,7 @@ import java.util.List;
 @Singleton
 @Priority(Priorities.HEADER_DECORATOR)
 public class ResponseFilter implements ContainerResponseFilter {
+    private static Logger profilingLogger = LoggerFactory.getLogger(ProfilingHelper.class);
 
     private static final String ACCESS_CONTROL_ALLOW_ORIGIN_NAME = "common.accesscontrol.allowOrigin";
     private static final String ACCESS_CONTROL_ALLOW_HEADER_NAME = "common.accesscontrol.allowHeader";
@@ -84,10 +87,24 @@ public class ResponseFilter implements ContainerResponseFilter {
         }
 
         if (ProfilingHelper.hasProfileOutput()) {
-            // keep header line small
             String data = ProfilingHelper.dumpProfileData();
+
+            if (profilingLogger.isDebugEnabled()) {
+                profilingLogger.debug(ProfilingHelper.prettyPrint(data));
+            }
+
+            // keep header line small and make it smaller than 64k
+            // Netty supports headers up to 64k.
             Iterable<String> chunks = Splitter.fixedLength(8000).split(data);
-            headers.put(PROFILE_OUTPUT_KEY, (List)Lists.newArrayList(chunks));
+            List<String> chunkList = Lists.newArrayList(chunks);
+            int maxHeaders = 7;
+            int toSize = Math.min(chunkList.size(), maxHeaders);
+            for (int i = 0; i < toSize; ++i) {
+                headers.add(PROFILE_OUTPUT_KEY, chunkList.get(i));
+            }
+            if (chunkList.size() > maxHeaders) {
+                headers.add(PROFILE_OUTPUT_KEY, "... (truncated)");
+            }
 
             ProfilingHelper.clear();
         }

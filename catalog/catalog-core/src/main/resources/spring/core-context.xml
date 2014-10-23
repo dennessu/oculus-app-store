@@ -58,6 +58,7 @@
         <property name="offerRepo" ref="offerCloudantRepo"/>
         <property name="itemAttributeRepo" ref="itemAttributeCloudantRepo"/>
         <property name="itemRevisionRepo" ref="itemRevisionCloudantRepo"/>
+        <property name="offerAttributeRepo" ref="offerAttributeCloudantRepo"/>
         <property name="revisionValidator" ref="itemRevisionValidator"/>
         <property name="organizationFacade" ref="catalogOrganizationFacade"/>
     </bean>

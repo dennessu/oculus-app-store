@@ -5,6 +5,7 @@
  */
 package com.junbo.test.store.utility;
 
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.common.AgeRating;
@@ -35,6 +36,7 @@ import org.springframework.util.ObjectUtils;
 import org.testng.Assert;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -285,24 +287,28 @@ public class StoreBrowseValidationHelper {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void verifyItem(com.junbo.store.spec.model.browse.document.Item item, Item catalogItem, ItemRevision itemRevision,
                             OfferRevision offerRevision,
                             Organization developer, boolean serviceClientEnabled) {
         Assert.assertEquals(item.getSelf(), new ItemId(catalogItem.getItemId()));
         Assert.assertEquals(item.getItemType(), catalogItem.getType());
         OfferRevisionLocaleProperties localeProperties = offerRevision.getLocales().get(locale);
-        Assert.assertEquals(item.getTitle(), localeProperties.getName(), "item title not match");
-        Assert.assertEquals(item.getDescriptionHtml(), localeProperties.getLongDescription(), "description html not match");
-        verifySupportedLocaleEquals(item.getSupportedLocales(), itemRevision.getSupportedLocales());
+        Assert.assertEquals(item.getTitle(), defaultIfNull(localeProperties.getName()),
+                "item title not match");
+        Assert.assertEquals(item.getDescriptionHtml(), defaultIfNull(localeProperties.getLongDescription()),
+                "description html not match");
+        verifySupportedLocaleEquals(item.getSupportedLocales(), defaultIfNull(itemRevision.getSupportedLocales()));
 
         if (serviceClientEnabled) {
-            Assert.assertEquals(item.getCreator(), developer == null ? null : developer.getName());
+            Assert.assertEquals(item.getCreator(), defaultIfNull(developer == null ? null : developer.getName()));
         }
     }
 
     private void verifyItemImages(Images images, com.junbo.catalog.spec.model.common.Images catalogImages, boolean isList) {
         if (catalogImages == null) {
-            Assert.assertNull(images);
+            Assert.assertEquals(images.getGallery(), new ArrayList<Map<String, Image>>());
+            Assert.assertEquals(images.getMain(), new HashMap<String, Image>());
             return;
         }
         verifyImageEquals(images.getMain(), buildExpectedImage(catalogImages, isList));
@@ -322,7 +328,7 @@ public class StoreBrowseValidationHelper {
 
     private void verifyAppDetails(AppDetails appDetails, List<OfferAttribute> categories, List<ItemAttribute> genres,
                                   OfferRevision offerRevision, ItemRevision itemRevision, List<ItemRevision> itemRevisions,
-                                  Organization developer, Organization publisher, boolean serviceClientEnabled, boolean verifyAttributes) {
+                                  Organization developer, Organization publisher, boolean serviceClientEnabled, boolean verifyAttributes) throws ParseException {
         // verify categories
         ItemRevisionLocaleProperties localeProperties = itemRevision.getLocales().get(locale);
         if (verifyAttributes) {
@@ -351,26 +357,26 @@ public class StoreBrowseValidationHelper {
         }
 
         if (serviceClientEnabled) {
-            Assert.assertEquals(appDetails.getPublisherName(), publisher == null ? null : publisher.getName());
-            Assert.assertEquals(appDetails.getDeveloperName(), developer == null ? null : developer.getName());
+            Assert.assertEquals(appDetails.getPublisherName(), defaultIfNull(publisher == null ? null : publisher.getName()));
+            Assert.assertEquals(appDetails.getDeveloperName(), defaultIfNull(developer == null ? null : developer.getName()));
         }
 
         Assert.assertEquals(appDetails.getWebsite(), localeProperties.getWebsite());
         Assert.assertEquals(appDetails.getForumUrl(), localeProperties.getCommunityForumLink());
-        Assert.assertEquals(appDetails.getDeveloperEmail(), localeProperties.getSupportEmail());
-        Assert.assertEquals(appDetails.getPackageName(), itemRevision.getPackageName());
+        Assert.assertEquals(appDetails.getDeveloperEmail(), defaultIfNull(localeProperties.getSupportEmail()));
+        Assert.assertEquals(appDetails.getPackageName(), defaultIfNull(itemRevision.getPackageName()));
 
         if (itemRevision.getBinaries() != null && itemRevision.getBinaries().get(Platform) != null) {
             Binary binary = itemRevision.getBinaries().get(Platform);
-            Assert.assertEquals(appDetails.getVersionString(), binary.getVersion());
-            Assert.assertEquals(appDetails.getInstallationSize(), binary.getSize());
-            Assert.assertEquals(appDetails.getVersionCode(), binary.getMetadata() == null
-                    || binary.getMetadata().get("versionCode") == null ? null : binary.getMetadata().get("versionCode").asInt());
+            Assert.assertEquals(appDetails.getVersionString(), defaultIfNull(binary.getVersion()));
+            Assert.assertEquals(appDetails.getInstallationSize(), defaultIfNull(binary.getSize()));
+            Assert.assertEquals(appDetails.getVersionCode(), defaultIfNull(binary.getMetadata() == null
+                    || binary.getMetadata().get("versionCode") == null ? null : binary.getMetadata().get("versionCode").asInt()));
         }
         if (offerRevision.getCountries() != null && offerRevision.getCountries().get(country) != null) {
             if (offerRevision.getCountries() == null && offerRevision.getCountries().get(country) == null &&
                     offerRevision.getCountries().get(country).getReleaseDate() == null) {
-                Assert.assertNull(appDetails.getReleaseDate());
+                Assert.assertEquals(appDetails.getReleaseDate(), defaultIfNull((Date) null));
             } else {
                 Assert.assertEquals(appDetails.getReleaseDate(), offerRevision.getCountries().get(country).getReleaseDate());
             }
@@ -380,7 +386,6 @@ public class StoreBrowseValidationHelper {
         verifyRevisionNote(appDetails.getRevisionNotes(), itemRevisions);
 
         Assert.assertNull(appDetails.getContentRating());
-        Assert.assertNull(appDetails.getDeveloperWebsite());
         Assert.assertNull(appDetails.getDeveloperWebsite());
         Assert.assertNull(appDetails.getPublisherEmail());
         Assert.assertNull(appDetails.getPublisherWebsite());
@@ -402,11 +407,13 @@ public class StoreBrowseValidationHelper {
             ItemRevisionLocaleProperties historyLocalProperties = historyItemRevision.getLocales().get(locale);
             Binary historyBinary = historyItemRevision.getBinaries() == null ? null : historyItemRevision.getBinaries().get(Platform);
 
-            Assert.assertEquals(revisionNote.getTitle(), historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getShortNotes());
-            Assert.assertEquals(revisionNote.getDescription(), historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getLongNotes());
-            Assert.assertEquals(revisionNote.getVersionCode(), historyBinary == null || historyBinary.getMetadata() == null
-                    || historyBinary.getMetadata().get("versionCode") == null ? null : historyBinary.getMetadata().get("versionCode").asInt());
-            Assert.assertEquals(revisionNote.getVersionString(), historyBinary == null ? null : historyBinary.getVersion());
+            Assert.assertEquals(revisionNote.getTitle(),
+                    defaultIfNull(historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getShortNotes()));
+            Assert.assertEquals(revisionNote.getDescription(),
+                    defaultIfNull(historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getLongNotes()));
+            Assert.assertEquals(revisionNote.getVersionCode(), defaultIfNull(historyBinary == null || historyBinary.getMetadata() == null
+                    || historyBinary.getMetadata().get("versionCode") == null ? null : historyBinary.getMetadata().get("versionCode").asInt()));
+            Assert.assertEquals(revisionNote.getVersionString(), defaultIfNull(historyBinary == null ? null : historyBinary.getVersion()));
         }
     }
 
@@ -570,5 +577,40 @@ public class StoreBrowseValidationHelper {
             LOGGER.error("name=Get_Organization_Error", e);
             return null;
         }
+    }
+
+    private String defaultIfNull(String val) {
+        if (val == null) {
+            return "";
+        }
+        return val;
+    }
+
+    private Integer defaultIfNull(Integer val) {
+        if (val == null) {
+            return 0;
+        }
+        return val;
+    }
+
+    private Long defaultIfNull(Long val) {
+        if (val == null) {
+            return 0L;
+        }
+        return val;
+    }
+
+    private Date defaultIfNull(Date val) throws ParseException {
+        if (val == null) {
+            return new ISO8601DateFormat().parse("1900-01-01T00:00:00Z");
+        }
+        return val;
+    }
+
+    private Map defaultIfNull(Map val) {
+        if (val == null) {
+            return Collections.emptyMap();
+        }
+        return val;
     }
 }
