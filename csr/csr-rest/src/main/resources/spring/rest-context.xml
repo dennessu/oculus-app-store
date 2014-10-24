@@ -12,11 +12,7 @@
     <bean id="defaultCsrUpdateResource" class="com.junbo.csr.rest.resource.CsrUpdateResourceImpl" />
     <bean id="defaultCsrLogResource" class="com.junbo.csr.rest.resource.CsrLogResourceImpl" />
     <bean id="defaultCsrActionEndpoint" class="com.junbo.csr.rest.endpoint.CsrActionEndpointImpl">
-        <property name="clientId" value="${csr.login.clientId}"/>
-        <property name="clientSecret" value="${csr.login.clientSecret}"/>
-        <property name="tokenScope" value="${csr.login.token.scope}" />
         <property name="identityService" ref="csrIdentityService" />
-        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
 
     <bean id="defaultCsrGroupResource" class="com.junbo.csr.rest.resource.CsrGroupResourceImpl">

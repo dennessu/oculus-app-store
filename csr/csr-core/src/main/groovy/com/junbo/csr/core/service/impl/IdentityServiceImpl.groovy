@@ -199,11 +199,6 @@ class IdentityServiceImpl implements IdentityService {
         if (results.items.empty) {
             return userGroupMembershipResource.create(new UserGroup(userId: userId, groupId: groupId)).get()
         }
-        else if (results.items.size() == 1) {
-            UserGroup updated = results.items.get(0)
-            updated.groupId = groupId
-            return userGroupMembershipResource.put(updated.id as UserGroupId, updated).get()
-        }
         else {
             for (UserGroup userGroup in results.items) {
                 userGroupMembershipResource.delete(userGroup.id as UserGroupId).get()
@@ -222,11 +217,6 @@ class IdentityServiceImpl implements IdentityService {
         else {
             return userGroupMembershipResource.create(new UserGroup(userId: userId, groupId: groupId)).get()
         }
-    }
-
-    @Override
-    UserGroup updateUserGroupMembership(UserGroupId userGroupId, UserId userId, GroupId groupId) {
-        return userGroupMembershipResource.patch(userGroupId, new UserGroup(id:userGroupId, userId: userId, groupId: groupId)).get()
     }
 
     private Promise<Results<User>> getUsers(Results<UserPersonalInfo> results) {
