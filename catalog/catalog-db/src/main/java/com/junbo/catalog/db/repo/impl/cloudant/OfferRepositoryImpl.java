@@ -70,6 +70,12 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                 }
             }
             options.setTotal(Long.valueOf(offers.size()));
+        } else if (!StringUtils.isEmpty(options.getQuery())) {
+            CloudantSearchResult<Offer> searchResult =
+                    search("search", "(" + options.getQuery() + ") AND published:true", options.getValidSize(), options.getCursor()).get();
+            offers = searchResult.getResults();
+            options.setNextCursor(searchResult.getBookmark());
+            options.setTotal(searchResult.getTotal());
         } else if (options.getCategory() != null || options.getPublished() != null || options.getOwnerId() != null || options.getCountry() != null) {
             StringBuilder sb = new StringBuilder();
             if (options.getCategory() != null) {
@@ -96,12 +102,6 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
             }
             CloudantSearchResult<Offer> searchResult =
                     search("search", sb.toString(), options.getValidSize(), options.getCursor()).get();
-            offers = searchResult.getResults();
-            options.setNextCursor(searchResult.getBookmark());
-            options.setTotal(searchResult.getTotal());
-        } else if (!StringUtils.isEmpty(options.getQuery())) {
-            CloudantSearchResult<Offer> searchResult =
-                    search("search", "(" + options.getQuery() + ") AND published:true", options.getValidSize(), options.getCursor()).get();
             offers = searchResult.getResults();
             options.setNextCursor(searchResult.getBookmark());
             options.setTotal(searchResult.getTotal());
