@@ -36,6 +36,8 @@ class AuthenticateClient implements Action {
 
     private PasswordEncoder passwordEncoder
 
+    private boolean enableInternalCheck
+
     @Required
     void setClientRepository(ClientRepository clientRepository) {
         this.clientRepository = clientRepository
@@ -44,6 +46,11 @@ class AuthenticateClient implements Action {
     @Required
     void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder
+    }
+
+    @Required
+    void setEnableInternalCheck(boolean enableInternalCheck) {
+        this.enableInternalCheck = enableInternalCheck
     }
 
     /**
@@ -101,7 +108,7 @@ class AuthenticateClient implements Action {
             throw AppCommonErrors.INSTANCE.fieldInvalid('client_secret', "*****").exception()
         }
 
-        if (Boolean.TRUE.equals(appClient.internal)) {
+        if (enableInternalCheck && Boolean.TRUE.equals(appClient.internal)) {
             String internal = headerMap.getFirst(INTERNAL_HEADER_NAME)
             if (!Boolean.TRUE.equals(Boolean.parseBoolean(internal))) {
                 throw AppCommonErrors.INSTANCE

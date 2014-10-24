@@ -22,6 +22,7 @@
     <bean id="authenticateClient" class="com.junbo.oauth.core.action.AuthenticateClient">
         <property name="clientRepository" ref="encryptedClientRepository"/>
         <property name="passwordEncoder" ref="passwordEncoder"/>
+        <property name="enableInternalCheck" value="${oauth.internalCheck.enabled}"/>
     </bean>
 
     <bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder"/>
