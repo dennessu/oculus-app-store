@@ -49,6 +49,9 @@ public class CaseyEmulatorServiceImpl extends HttpClientBase  implements CaseyEm
         if (label != null) {
             builder.addParameter("label", "\"" + label + "\"");
         }
+        builder.addParameter("expand", "(results(schedule))"); // expand is required, otherwise the emulator will fail
+        builder.addParameter("country", "US");
+        builder.addParameter("locale", "en_US");
 
         String responseBody = restApiCall(HTTPMethod.GET, builder.build().toString(), expectedResponseCode);
 

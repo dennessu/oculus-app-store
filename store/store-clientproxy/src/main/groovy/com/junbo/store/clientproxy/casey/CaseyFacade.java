@@ -38,5 +38,7 @@ public interface CaseyFacade {
 
     Promise<CmsPage> getCmsPage(String path, String label, String country, String locale);
 
+    Promise<CmsPage> getCmsPage(String cmsPageId, String country, String locale);
+
     Promise<Review> addReview(AddReviewRequest request, ApiContext apiContext);
 }

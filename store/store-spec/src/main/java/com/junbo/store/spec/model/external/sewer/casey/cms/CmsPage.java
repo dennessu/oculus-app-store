@@ -18,6 +18,7 @@ public class CmsPage {
     private String label;
     private String path;
     private Map<String, CmsContentSlot> slots;
+    private CmsSchedule schedule;
 
     public CaseyLink getSelf() {
         return self;
@@ -49,5 +50,13 @@ public class CmsPage {
 
     public void setSlots(Map<String, CmsContentSlot> slots) {
         this.slots = slots;
+    }
+
+    public CmsSchedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(CmsSchedule schedule) {
+        this.schedule = schedule;
     }
 }

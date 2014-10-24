@@ -29,6 +29,7 @@ import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
+import com.junbo.store.spec.model.external.sewer.SewerParam
 import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
 import com.junbo.store.spec.model.external.sewer.casey.CaseyReview
@@ -57,6 +58,10 @@ class CaseyFacadeImpl implements CaseyFacade {
     private static final int CASEY_RESULTS_CURSOR_INDEX = 1;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CaseyFacadeImpl)
+
+    private final static String CMSPAGE_GET_EXPAND = '(schedule)'
+
+    private final static String CMSPAGE_LIST_EXPAND = '(results(schedule))'
 
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
@@ -156,22 +161,28 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     @Override
     Promise<CmsPage> getCmsPage(String path, String label, String country, String locale) {
-        CmsPage page
         resourceContainer.caseyResource.getCmsPages(
-            new CmsPageGetParams(path: StringUtils.isBlank(path) ? null : "\"${path}\"", label: StringUtils.isBlank(label) ? null : "\"${label}\"")
+            new CmsPageGetParams(path: StringUtils.isBlank(path) ? null : "\"${path}\"", label: StringUtils.isBlank(label) ? null : "\"${label}\""),
+            new SewerParam(country: country, locale: locale, expand: CMSPAGE_LIST_EXPAND)
         ).then { CaseyResults<CmsPage> results ->
             if (CollectionUtils.isEmpty(results?.items) || results.items.size() > 1) {
                 LOGGER.error('name=GetCmsPageIncorrectResponse, payload={}', ObjectMapperProvider.instance().writeValueAsString(results))
                 throw new RuntimeException('Invalid Number Of CmsPage returned, should be 1')
             }
-            page = results.items[0]
-            if (CollectionUtils.isEmpty(page?.slots)) {
-                return Promise.pure(page)
-            }
-            return fillPageContent(page, country, locale)
+            return Promise.pure(results.items[0])
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_GetCmsPage_Error, path={}, label={}', path, label, ex)
+            return Promise.pure(null)
+        }
+    }
+
+    @Override
+    Promise<CmsPage> getCmsPage(String cmsPageId, String country, String locale) {
+        resourceContainer.caseyResource.getCmsPages(cmsPageId, new SewerParam(country: country, locale: locale, expand: CMSPAGE_GET_EXPAND)).then { CmsPage page ->
             return Promise.pure(page)
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_GetCmsPage_Error, id={}', cmsPageId, ex)
+            return Promise.pure(null)
         }
     }
 
@@ -313,20 +324,6 @@ class CaseyFacadeImpl implements CaseyFacade {
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_Get_Organization_Fail, organization={}', organizationId, ex)
             return Promise.pure()
-        }
-    }
-
-    private Promise<CmsPage> fillPageContent(CmsPage cmsPage, String country, String locale) {
-        assert cmsPage?.slots != null, 'cmsPage.slot should not be null'
-        resourceContainer.caseyResource.getCmsSchedules(cmsPage?.self?.id, new CmsScheduleGetParams(country: country, locale: locale)).then { CmsSchedule cmsSchedule ->
-            cmsPage.slots.each { Map.Entry<String, CmsContentSlot> entry ->
-                String slot = entry.key
-                CmsContentSlot content = entry.value
-                if (content != null) {
-                    content.contents = cmsSchedule?.slots?.get(slot)?.content?.getContents()
-                }
-            }
-            return Promise.pure(cmsPage)
         }
     }
 
