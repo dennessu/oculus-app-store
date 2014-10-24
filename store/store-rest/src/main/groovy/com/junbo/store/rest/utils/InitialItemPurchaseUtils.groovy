@@ -9,7 +9,7 @@ import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.Images
 import com.junbo.store.spec.model.browse.document.Item
-import com.junbo.store.spec.model.external.casey.CaseyResults
+import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger

@@ -47,6 +47,9 @@ host    all             ${PGUSER}       ${REPLICA_HOST}/32      ident
 host    all             ${READONLY_PGUSER}  127.0.0.1/0         ident
 # IPv6 local connections:
 host    all             ${PGUSER}       ::1/128                 ident
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+host    replication     ${PGUSER}       ${REPLICA_HOST:-127.0.0.1}/32   ident
 EOF
 
 echo "[SETUP][REPLICA] configure postgres.conf"

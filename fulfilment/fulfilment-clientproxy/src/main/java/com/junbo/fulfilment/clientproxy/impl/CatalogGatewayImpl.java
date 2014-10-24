@@ -7,18 +7,19 @@ package com.junbo.fulfilment.clientproxy.impl;
 
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
-import com.junbo.catalog.spec.model.offer.Action;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
+import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
+import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.model.Results;
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.spec.error.AppErrors;
 import com.junbo.fulfilment.spec.fusion.*;
+import com.junbo.fulfilment.spec.fusion.Offer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,14 +42,23 @@ public class CatalogGatewayImpl implements CatalogGateway {
     @Qualifier("itemRevisionClient")
     private ItemRevisionResource itemRevisionResource;
 
+    @Autowired
+    @Qualifier("offerClient")
+    private OfferResource offerResource;
+
+    @Autowired
+    @Qualifier("itemClient")
+    private ItemResource itemResource;
+
     @Override
     public Offer getOffer(String offerId, Long timestamp) {
-        return wash(retrieveOfferRevision(offerId, timestamp));
+        // TODO support get offer with timestamp
+        return wash(retrieveLatestOfferRevision(offerId));
     }
 
     @Override
     public Item getItem(String itemId, Long timestamp) {
-        return wash(retrieveItemRevision(itemId, timestamp));
+        return wash(retrieveLatestItemRevision(itemId));
     }
 
     @Override
@@ -76,6 +86,29 @@ public class CatalogGatewayImpl implements CatalogGateway {
         }
     }
 
+    // use offerid to get offer to hit memcached
+    protected OfferRevision retrieveLatestOfferRevision(String offerId) {
+        try {
+            com.junbo.catalog.spec.model.offer.Offer offer = offerResource.getOffer(offerId).get();
+            if (offer == null) {
+                LOGGER.error("Offer [" + offerId + "] does not exist");
+                throw AppErrors.INSTANCE.offerNotFound(offerId).exception();
+            }
+
+            OfferRevision revision = offerRevisionResource.getOfferRevision(offer.getCurrentRevisionId(), new OfferRevisionGetOptions()).get();
+
+            if (revision == null) {
+                LOGGER.error("Offer [" + offerId + "] does not exist");
+                throw AppErrors.INSTANCE.offerNotFound(offerId).exception();
+            }
+
+            return revision;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred during calling [Catalog] component.", e);
+            throw AppErrors.INSTANCE.gatewayFailure("Catalog").exception();
+        }
+    }
+
     protected ItemRevision retrieveItemRevision(String itemId, Long timestamp) {
         try {
             ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
@@ -90,6 +123,29 @@ public class CatalogGatewayImpl implements CatalogGateway {
             }
 
             return revisions.getItems().get(Constant.UNIQUE_RESULT);
+        } catch (Exception e) {
+            LOGGER.error("Error occurred during calling [Catalog] component.", e);
+            throw AppErrors.INSTANCE.gatewayFailure("Catalog").exception();
+        }
+    }
+
+    // use id to get item to hit memcached
+    protected ItemRevision retrieveLatestItemRevision(String itemId) {
+        try {
+            com.junbo.catalog.spec.model.item.Item item = itemResource.getItem(itemId).get();
+            if (item == null) {
+                LOGGER.error("Item [" + itemId + "] does not exist");
+                throw AppErrors.INSTANCE.itemNotFound(itemId).exception();
+            }
+
+            ItemRevision revision = itemRevisionResource.getItemRevision(item.getCurrentRevisionId(), new ItemRevisionGetOptions()).get();
+
+            if (revision == null) {
+                LOGGER.error("Item [" + itemId + "] does not exist");
+                throw AppErrors.INSTANCE.itemNotFound(itemId).exception();
+            }
+
+            return revision;
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Catalog] component.", e);
             throw AppErrors.INSTANCE.gatewayFailure("Catalog").exception();

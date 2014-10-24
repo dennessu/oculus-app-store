@@ -3,11 +3,11 @@
   "client_secret" : "893D713D96AEE56E2F75B4A33B01BFA0#94D55921FD155B44E94C17FD4C868D523A290A0638E8D44F4B458F569CA4BA5B96DB95A476146E37BBAE13BCA0C46BA1",
   "client_name" : "answerHub",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*", "http://ovr.staging.cloud.answerhub.com/*", "https://ovr.staging.cloud.answerhub.com/*" ],
-  "default_redirect_uri" : "http://localhost",
+  "redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*", "http://ovr.staging.cloud.answerhub.com/*", "https://ovr.staging.cloud.answerhub.com/*" ],
+  "default_redirect_uri" : "https://ovr.staging.cloud.answerhub.com",
 
-  "logout_redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*", "http://ovr.staging.cloud.answerhub.com/*", "https://ovr.staging.cloud.answerhub.com/*" ],
-  "default_logout_redirect_uri" : "http://localhost",
+  "logout_redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*", "http://ovr.staging.cloud.answerhub.com/*", "https://ovr.staging.cloud.answerhub.com/*" ],
+  "default_logout_redirect_uri" : "https://ovr.staging.cloud.answerhub.com",
 
   "scopes" : [ "everyone", "identity", "identity.pii", "openid", "offline" ],
   "default_scopes" : [ "everyone", "identity", "identity.pii", "openid", "offline" ],

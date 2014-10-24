@@ -16,8 +16,8 @@ import com.junbo.store.spec.model.browse.document.AggregatedRatings;
 import com.junbo.store.spec.model.browse.document.Item;
 import com.junbo.store.spec.model.browse.document.Review;
 import com.junbo.store.spec.model.browse.document.SectionInfoNode;
-import com.junbo.store.spec.model.external.casey.CaseyResults;
-import com.junbo.store.spec.model.external.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
 
 import java.util.Map;
 

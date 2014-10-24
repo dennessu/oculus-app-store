@@ -6,8 +6,8 @@
 package com.junbo.test.store.apihelper;
 
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
-import com.junbo.store.spec.model.external.casey.CaseyResults;
-import com.junbo.store.spec.model.external.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
 
 /**
  * The CaseyEmulatorService class.

@@ -6,6 +6,7 @@ dependencies {
     compile junboProject(':catalog-spec')
     compile junboProject(':payment-spec')
     compile junboProject(':identity-spec')
+    compile junboProject(':entitlement-spec')
 
     compile (libraries.rs_api)
     compile (libraries.guava)

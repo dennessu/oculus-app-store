@@ -5,6 +5,8 @@
  */
 package com.junbo.test.store.utility;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
@@ -17,6 +19,7 @@ import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrganizationId;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.store.spec.model.browse.AddReviewRequest;
@@ -24,8 +27,8 @@ import com.junbo.store.spec.model.browse.Images;
 import com.junbo.store.spec.model.browse.ListResponse;
 import com.junbo.store.spec.model.browse.SectionLayoutResponse;
 import com.junbo.store.spec.model.browse.document.*;
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
-import com.junbo.store.spec.model.external.casey.CaseyReview;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
 import com.junbo.test.catalog.enums.PriceType;
 import com.junbo.test.common.Validator;
 import org.apache.commons.collections.CollectionUtils;
@@ -170,24 +173,44 @@ public class StoreBrowseValidationHelper {
     }
 
     public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled, boolean verifyAttributes,
-                           boolean isList) throws Exception {
-        com.junbo.catalog.spec.model.offer.Offer catalogOffer =
-                storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue(), true);
+                           boolean isList, boolean offerAvailable) throws Exception {
+        com.junbo.catalog.spec.model.offer.Offer catalogOffer = null;
+        if (offerAvailable) {
+            catalogOffer = storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue(), true);
+        }
         com.junbo.catalog.spec.model.item.Item catalogItem = storeTestDataProvider.getItemByItemId(item.getSelf().getValue(), true);
-        if (catalogOffer == null || catalogItem == null) {
+        if ((offerAvailable && catalogOffer == null) || catalogItem == null) {
             LOGGER.info("Offer/Item not found, skip verify item:{}", item.getSelf());
             return;
         }
-        OfferRevision currentOfferRevision = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
+
+        OfferRevision currentOfferRevision = null;
+        OfferRevisionLocaleProperties offerLocaleProperties = null;
+        Organization publisher = null;
+        if (offerAvailable) {
+            currentOfferRevision = storeTestDataProvider.getOfferRevision(item.getOffer().getCurrentRevision().getValue());
+            offerLocaleProperties = currentOfferRevision.getLocales().get(locale);
+            publisher = getOrganization(catalogOffer.getOwnerId(), serviceClientEnabled);
+        }
         ItemRevision currentItemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevision().getValue());
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = currentItemRevision.getLocales().get(locale);
+        Organization developer = getOrganization(catalogItem.getOwnerId(), serviceClientEnabled);
 
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
         List<ItemRevision> itemRevisions = Arrays.asList(currentItemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
 
-        if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
-            for (String id : catalogOffer.getCategories()) {
-                offerAttributes.add(storeTestDataProvider.getOfferAttribute(id));
+        if (offerAvailable) {
+            if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
+                for (String id : catalogOffer.getCategories()) {
+                    offerAttributes.add(storeTestDataProvider.getOfferAttribute(id));
+                }
+            }
+        } else {
+            if (!org.springframework.util.CollectionUtils.isEmpty(catalogItem.getCategories())) {
+                for (String id : catalogItem.getCategories()) {
+                    offerAttributes.add(storeTestDataProvider.getOfferAttribute(id));
+                }
             }
         }
         if (!org.springframework.util.CollectionUtils.isEmpty(catalogItem.getGenres())) {
@@ -196,16 +219,15 @@ public class StoreBrowseValidationHelper {
             }
         }
 
-        OfferRevisionLocaleProperties localeProperties = currentOfferRevision.getLocales().get(locale);
-        Organization developer = getOrganization(catalogItem.getOwnerId(), serviceClientEnabled);
-        Organization publisher = getOrganization(catalogOffer.getOwnerId(), serviceClientEnabled);
-
-        verifyItem(item, catalogItem, currentItemRevision, currentOfferRevision, developer, serviceClientEnabled);
-        verifyItemImages(item.getImages(), localeProperties.getImages(), isList);
+        verifyItem(item, catalogItem, currentItemRevision, currentOfferRevision, developer, serviceClientEnabled, offerAvailable);
+        verifyItemImages(item.getImages(), offerAvailable ? offerLocaleProperties.getImages() : itemRevisionLocaleProperties.getImages(), isList);
         verifyAppDetails(item.getAppDetails(), offerAttributes, itemAttributes, currentOfferRevision, currentItemRevision, itemRevisions,
-                developer, publisher, serviceClientEnabled, verifyAttributes);
-        boolean isFree = PriceType.FREE.name().equals(currentOfferRevision.getPrice().getPriceType());
-        verifyItemOffer(item.getOffer(), catalogOffer, currentOfferRevision, isFree);
+                developer, publisher, serviceClientEnabled, verifyAttributes, offerAvailable);
+
+        if (offerAvailable) {
+            boolean isFree = PriceType.FREE.name().equals(currentOfferRevision.getPrice().getPriceType());
+            verifyItemOffer(item.getOffer(), catalogOffer, currentOfferRevision, isFree);
+        }
 
         verifyAggregateRatingsBasic(item.getAggregatedRatings());
     }
@@ -290,13 +312,14 @@ public class StoreBrowseValidationHelper {
     @SuppressWarnings("unchecked")
     private void verifyItem(com.junbo.store.spec.model.browse.document.Item item, Item catalogItem, ItemRevision itemRevision,
                             OfferRevision offerRevision,
-                            Organization developer, boolean serviceClientEnabled) {
+                            Organization developer, boolean serviceClientEnabled, boolean offerAvailable) {
         Assert.assertEquals(item.getSelf(), new ItemId(catalogItem.getItemId()));
         Assert.assertEquals(item.getItemType(), catalogItem.getType());
-        OfferRevisionLocaleProperties localeProperties = offerRevision.getLocales().get(locale);
-        Assert.assertEquals(item.getTitle(), defaultIfNull(localeProperties.getName()),
+        OfferRevisionLocaleProperties offerLocaleProperties = !offerAvailable ? null : offerRevision.getLocales().get(locale);
+        ItemRevisionLocaleProperties itemLocaleProperties = itemRevision.getLocales().get(locale);
+        Assert.assertEquals(item.getTitle(), defaultIfNull(offerAvailable ? offerLocaleProperties.getName() : itemLocaleProperties.getName()),
                 "item title not match");
-        Assert.assertEquals(item.getDescriptionHtml(), defaultIfNull(localeProperties.getLongDescription()),
+        Assert.assertEquals(item.getDescriptionHtml(), defaultIfNull(offerAvailable ? offerLocaleProperties.getLongDescription() : itemLocaleProperties.getLongDescription()),
                 "description html not match");
         verifySupportedLocaleEquals(item.getSupportedLocales(), defaultIfNull(itemRevision.getSupportedLocales()));
 
@@ -328,7 +351,8 @@ public class StoreBrowseValidationHelper {
 
     private void verifyAppDetails(AppDetails appDetails, List<OfferAttribute> categories, List<ItemAttribute> genres,
                                   OfferRevision offerRevision, ItemRevision itemRevision, List<ItemRevision> itemRevisions,
-                                  Organization developer, Organization publisher, boolean serviceClientEnabled, boolean verifyAttributes) throws ParseException {
+                                  Organization developer, Organization publisher, boolean serviceClientEnabled, boolean verifyAttributes,
+                                  boolean offerAvailable) throws Exception {
         // verify categories
         ItemRevisionLocaleProperties localeProperties = itemRevision.getLocales().get(locale);
         if (verifyAttributes) {
@@ -373,8 +397,11 @@ public class StoreBrowseValidationHelper {
             Assert.assertEquals(appDetails.getVersionCode(), defaultIfNull(binary.getMetadata() == null
                     || binary.getMetadata().get("versionCode") == null ? null : binary.getMetadata().get("versionCode").asInt()));
         }
-        if (offerRevision.getCountries() != null && offerRevision.getCountries().get(country) != null) {
-            if (offerRevision.getCountries() == null && offerRevision.getCountries().get(country) == null &&
+
+        if (!offerAvailable) {
+            Assert.assertNull(appDetails.getReleaseDate());
+        } else {
+            if (offerRevision.getCountries() == null || offerRevision.getCountries().get(country) == null ||
                     offerRevision.getCountries().get(country).getReleaseDate() == null) {
                 Assert.assertEquals(appDetails.getReleaseDate(), defaultIfNull((Date) null));
             } else {
@@ -383,15 +410,19 @@ public class StoreBrowseValidationHelper {
         }
 
         // verify release notes
-        verifyRevisionNote(appDetails.getRevisionNotes(), itemRevisions);
+        verifyRevisionNote(appDetails.getRevisionNotes(), itemRevisions, offerAvailable);
 
+        JsonNode jsonNode = itemRevision.getBinaries().get(Platform).getMetadata().get("permissions");
+        Assert.assertEquals(appDetails.getPermissions(), jsonNode == null || jsonNode.isNull() ?
+                new ArrayList<String>() :
+                ObjectMapperProvider.instance().readValue(jsonNode.traverse(), new TypeReference<List<String>>() {}));
         Assert.assertNull(appDetails.getContentRating());
         Assert.assertNull(appDetails.getDeveloperWebsite());
         Assert.assertNull(appDetails.getPublisherEmail());
         Assert.assertNull(appDetails.getPublisherWebsite());
     }
 
-    private void verifyRevisionNote(List<RevisionNote> revisionNotes, List<ItemRevision> itemRevisions) {
+    private void verifyRevisionNote(List<RevisionNote> revisionNotes, List<ItemRevision> itemRevisions, boolean offerAvailable) {
         // verify release notes
         List<ItemRevision> revisions = new ArrayList<>(itemRevisions);
         Collections.sort(revisions, new Comparator<ItemRevision>() {

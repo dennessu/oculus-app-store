@@ -15,9 +15,11 @@
    "item-binaries.manage", "cms.admin", "organization.group.admin", "client.register", "scope.manage" ],
 
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
-  "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
+  "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN", "PASSWORD" ],
 
   "id_token_issuer" : "api.oculus.com",
   "need_consent" : false,
+  "allowed_groups" : [ "Oculus.CatalogAdmin", "Oculus.IdentityAdmin" ],
+  "allow_partial_scopes" : true,
   "internal" : true
 }

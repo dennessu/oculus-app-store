@@ -1,7 +1,5 @@
 package com.junbo.store.rest.resource.raw
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.catalog.spec.enums.EntitlementType
-import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.model.item.*
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
@@ -15,12 +13,9 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.common.model.Link
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.crypto.spec.model.ItemCryptoMessage
-import com.junbo.entitlement.spec.model.EntitlementSearchParam
-import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
@@ -332,95 +327,9 @@ class StoreResourceImpl implements StoreResource {
         requestValidator.validateRequiredApiHeaders()
         return identityUtils.getVerifiedUserFromToken().then {
             EntitlementsGetRequest request = new EntitlementsGetRequest(packageName: iapEntitlementGetRequest.packageName)
-            return innerGetEntitlements(request, true, pageParam).then { Results<Entitlement> entitlementResults ->
-                return new IAPEntitlementGetResponse(
-                        entitlements : entitlementResults.items
-                )
-            }
-        }
-    }
-
-    Promise<Results<Entitlement>> innerGetEntitlements(EntitlementsGetRequest entitlementsGetRequest, boolean isIAP, PageParam pageParam) {
-        pageParam.start = pageParam.start == null ? 0 : pageParam.start
-        User user
-        Item hostItem = null
-        List<Entitlement> entitlements = [] as LinkedList<Entitlement>
-        // build entitlement search parameter
-        EntitlementSearchParam entitlementSearchParam = null
-        String itemType = entitlementsGetRequest.itemType == null ? ItemType.APP.name() : entitlementsGetRequest.itemType
-        String entitlementType = entitlementsGetRequest.entitlementType == null ? EntitlementType.DOWNLOAD.name() : entitlementsGetRequest.entitlementType
-        identityUtils.getVerifiedUserFromToken().then { User u ->
-            user = u
-            return Promise.pure(null)
-        }.then {
-            // get host item
-            if (isIAP) {
-                return getItemByPackageName(entitlementsGetRequest.packageName).syncThen { Item item ->
-                    hostItem = item
-                }
-            } else {
-                return Promise.pure(null)
-            }
-        }.then {
-            entitlementSearchParam = new EntitlementSearchParam(
-                    userId: user.getId(),
-                    itemIds: new HashSet<ItemId>(),
-                    isActive: true,
-                    type: entitlementType
-            )
-            if (isIAP) {
-                entitlementSearchParam.hostItemId = new ItemId(hostItem.getId())
-            }
-            return Promise.pure(null)
-        }.then { // read entitlements from entitlement component
-            PageMetadata entitlementPageMetaData = new PageMetadata(start: pageParam.start, count: pageParam.count != null  ? pageParam.count : PAGE_SIZE)
-            CommonUtils.loop {
-                return resourceContainer.entitlementResource.searchEntitlements(
-                        entitlementSearchParam,
-                        entitlementPageMetaData
-                ).then { Results<com.junbo.entitlement.spec.model.Entitlement> results -> // get the IAP entitlements from entitlement & catalog component
-                    // start page, offset, last index
-                    Promise.each(results.items) { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
-                        return convertEntitlement(catalogEntitlement, null).then { Entitlement entitlement ->
-                            if ((!isIAP || entitlement.iapEntitlement.useCount > 0) && itemType == entitlement.itemType) {
-                                entitlements << entitlement
-                            }
-                            entitlementPageMetaData.start++
-                            if (pageParam.count != null && entitlements.size() > pageParam.count) {
-                                return Promise.pure(Promise.BREAK)
-                            } else {
-                                return Promise.pure(null)
-                            }
-                        }
-                    }.then { // check more entitlement to read
-                        if ((pageParam.count != null && entitlements.size() >= pageParam.count) || results.items.size() < entitlementPageMetaData.count) {
-                            return Promise.pure(Promise.BREAK)
-                        } else {
-                            return Promise.pure()
-                        }
-                    }
-                }
-            }
-        }.then {
-            Results<Entitlement> results = new Results<>()
-            if (pageParam.count != null && entitlements.size() > pageParam.count) {
-                results.hasNext = true;
-                results.next = new Link(href: buildEntitlementNextUrl(entitlementsGetRequest, isIAP, pageParam))
-                results.items = entitlements.subList(0, pageParam.count)
-            } else {
-                results.items = entitlements
-            }
-
-            return Promise.pure(null).then {
-                if (isIAP) { // sign the iap entitlements
-                    return Promise.each(results.items) { Entitlement entitlement ->
-                        return signEntitlement(entitlement, hostItem.itemId)
-                    }
-                }
-                return Promise.pure(null)
-            }.then {
-                return Promise.pure(results)
-            }
+            return Promise.pure(new IAPEntitlementGetResponse(
+                    entitlements : []
+            ))
         }
     }
 
@@ -462,11 +371,9 @@ class StoreResourceImpl implements StoreResource {
             facadeContainer.orderFacade.freePurchaseOrder(user.getId(), Collections.singletonList(request.offer), apiContext).then { Order settled ->
                 MakeFreePurchaseResponse response = new MakeFreePurchaseResponse()
                 response.order = settled.getId()
-                getEntitlementsByOrder(settled, null).then { List<Entitlement> entitlements ->
+                getEntitlementsByOrder(settled, false, apiContext).then { List<Entitlement> entitlements ->
                     response.entitlements = entitlements
-                    expandEntitlementItem(response.entitlements, apiContext).then {
-                        return Promise.pure(response)
-                    }
+                    return Promise.pure(response)
                 }
             }
         }
@@ -735,7 +642,7 @@ class StoreResourceImpl implements StoreResource {
     Promise<DetailsResponse> getItemDetails(DetailsRequest request) {
         requestValidator.validateRequiredApiHeaders().validateDetailsRequest(request)
         prepareBrowse().then { ApiContext apiContext ->
-            return browseService.getItem(request.itemId, true, true, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
+            return browseService.getItem(request.itemId, true, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
                 return Promise.pure(new DetailsResponse(item: item))
             }
         }
@@ -854,7 +761,7 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<List<Entitlement>>  getEntitlementsByOrder(Order order, String hostPackageName) {
+    private Promise<List<Entitlement>>  getEntitlementsByOrder(Order order, boolean isIAP, ApiContext apiContext) {
         Assert.notNull(order)
         List<Entitlement> result = [] as LinkedList
         Set<EntitlementId> entitlementIds = [] as HashSet
@@ -873,21 +780,19 @@ class StoreResourceImpl implements StoreResource {
         }
 
         // get entitlements
-        return Promise.each(entitlementIds) { EntitlementId entitlementId ->
-            return resourceContainer.entitlementResource.getEntitlement(entitlementId).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
-                if (StringUtils.isEmpty(hostPackageName) && catalogEntitlement.type != EntitlementType.DOWNLOAD.name()) {
-                    return Promise.pure(null)
+        return Promise.each(entitlementIds) { EntitlementId entitlementId -> // digital only currently
+            return facadeContainer.entitlementFacade.getDigitalEntitlement(entitlementId, isIAP, apiContext).then { Entitlement entitlement ->
+                if (entitlement != null) { // get only digital entitlement
+                    result << entitlement
                 }
-                return convertEntitlement(catalogEntitlement, hostPackageName).then { Entitlement e ->
-                    result << e
-                    return Promise.pure(null)
-                }
+                return Promise.pure()
             }
         }.then {
             return Promise.pure(result)
         }
     }
 
+    /*
     private Promise<Entitlement> convertEntitlement(com.junbo.entitlement.spec.model.Entitlement catalogEntitlement, String hostPackageName) {
         return resourceContainer.itemResource.getItem(catalogEntitlement.itemId).then { Item item ->
             return resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
@@ -919,7 +824,7 @@ class StoreResourceImpl implements StoreResource {
             )
         }
         return result
-    }
+    }*/
 
     private Promise<Item> getItemByPackageName(String packageName) {
         ItemsGetOptions option = new ItemsGetOptions(packageName: packageName)
@@ -1138,7 +1043,7 @@ class StoreResourceImpl implements StoreResource {
                 order.tentative = false
                 resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
                     response.order = settled.getId()
-                    getEntitlementsByOrder(settled, purchaseState.iapPackageName).then { List<Entitlement> entitlements ->
+                    getEntitlementsByOrder(settled, inappPurchase, apiContext).then { List<Entitlement> entitlements ->
                         response.entitlements = entitlements
                         return Promise.pure(null)
                     }
@@ -1151,9 +1056,7 @@ class StoreResourceImpl implements StoreResource {
                     }
                 }
             }.then {
-                expandEntitlementItem(response.entitlements, apiContext).then {
-                    return Promise.pure(response)
-                }
+                return Promise.pure(response)
             }
         }
 
@@ -1207,16 +1110,6 @@ class StoreResourceImpl implements StoreResource {
             }
         } else {
             return apiContextBuilder.buildApiContext()
-        }
-    }
-
-    private Promise expandEntitlementItem(List<Entitlement> entitlements, ApiContext apiContext) {
-        Promise.each(entitlements) { Entitlement entitlement ->
-            browseService.getItem(entitlement.item, false, false, apiContext).then { com.junbo.store.spec.model.browse.document.Item item ->
-                entitlement.itemDetails = item
-                entitlement.itemDetails.ownedByCurrentUser = true
-                return Promise.pure()
-            }
         }
     }
 }

@@ -88,4 +88,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "120", message = "item not purchased.")
     AppError itemNotPurchased();
+
+    @ErrorDef(httpStatusCode = 412, code = "123", message = "Register TOS Not Found.")
+    AppError RegisterTosNotFound();
 }

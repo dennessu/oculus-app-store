@@ -1,5 +1,6 @@
 {
    "item": {
+        "categories": [{"id" : "Game"}],
         "genres": [{"id" : "Shooter"}],
         "defaultOffer": null, 
         "rev": null,
@@ -114,7 +115,14 @@
                 "version": "1.1",
                 "size": 1024,
                 "metadata": {
-                    "versionCode": 1
+                    "versionCode": 1,
+                    "permissions": [
+                        "android.permission.CAMERA",
+                        "android.permission.WRITE_EXTERNAL_STORAGE",
+                        "android.permission.RECORD_AUDIO",
+                        "android.permission.MODIFY_AUDIO_SETTINGS",
+                        "android.permission.INTERNET"
+                    ]
                 }
             }
         }, 

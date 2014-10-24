@@ -24,6 +24,7 @@ import com.junbo.store.rest.utils.ApiContextBuilder
 import com.junbo.store.rest.utils.DataConverter
 import com.junbo.store.rest.utils.InitialItemPurchaseUtils
 import com.junbo.store.rest.utils.RequestValidator
+import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.identity.StoreUserEmail
 import com.junbo.store.spec.model.login.*
@@ -351,7 +352,7 @@ class LoginResourceImpl implements LoginResource {
                 return tos.state == 'APPROVED'
             }
             if (tos == null) {
-                return Promise.pure(null)
+                throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
             }
             return Promise.pure(dataConverter.toStoreTos(tos, null))
         }

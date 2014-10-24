@@ -597,6 +597,103 @@ class OAuthTests(ut.TestBase):
         assert location.endswith('denied/')
         pass
 
+    def testInvalidScope(self):
+        user = self.testRegister()
+
+        adminToken = self.getServiceAccessToken('identity.service')
+
+        organization = curlJson('GET', ut.test_uri, '/v1/organizations?name=Oculus', headers = {
+            "Authorization": "Bearer " + adminToken
+        })
+
+        groups = curlJson('GET', ut.test_uri, '/v1/groups?name=IdentityAdmin&organizationId=' + organization['results'][0]['self']['id'], headers = {
+            "Authorization": "Bearer " + adminToken
+        })
+
+        group = groups['results'][0]
+
+        # create the group membership
+        groupMembership = curlJson('POST', ut.test_uri, '/v1/user-group-memberships', headers =  {
+            "Authorization": "Bearer " + adminToken
+        }, data = {
+            "user": {
+                "href": user.href,
+                "id": user.id
+            },
+            "group": {
+                "href": group['self']['href'],
+                "id": group['self']['id']
+            }
+        })
+
+        # test get access token with a user in group IdentityAdmin
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': 'curationTool',
+            'response_type': 'token id_token',
+            'scope': 'scope.manage catalog.admin',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'test'
+        }, headers = {'oculus-internal': 'true'})
+
+        assert getqueryparam(location, 'access_token') is not None
+        assert getqueryparam(location, 'cid') is None
+
+        tokenInfo = curlJson('GET', ut.test_uri, '/v1/oauth2/tokeninfo?access_token=' + getqueryparam(location, 'access_token'))
+        # should only get scope.manage scope
+        assert 'scope.manage' in tokenInfo['scopes']
+        assert 'catalog.admin' not in tokenInfo['scopes']
+
+        groups = curlJson('GET', ut.test_uri, '/v1/groups?name=CatalogAdmin&organizationId=' + organization['results'][0]['self']['id'], headers = {
+            "Authorization": "Bearer " + adminToken
+        })
+
+        group = groups['results'][0]
+
+        # create the group membership
+        groupMembership = curlJson('POST', ut.test_uri, '/v1/user-group-memberships', headers =  {
+            "Authorization": "Bearer " + adminToken
+        }, data = {
+            "user": {
+                "href": user.href,
+                "id": user.id
+            },
+            "group": {
+                "href": group['self']['href'],
+                "id": group['self']['id']
+            }
+        })
+
+        # test get access token with a user in group IdentityAdmin
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': 'curationTool',
+            'response_type': 'token id_token',
+            'scope': 'scope.manage catalog.admin',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'test'
+        }, headers = {'oculus-internal': 'true'})
+
+        assert getqueryparam(location, 'access_token') is not None
+        assert getqueryparam(location, 'cid') is None
+
+        tokenInfo = curlJson('GET', ut.test_uri, '/v1/oauth2/tokeninfo?access_token=' + getqueryparam(location, 'access_token'))
+        # should have scope.manage
+        assert 'scope.manage' in tokenInfo['scopes']
+        assert 'catalog.admin' in tokenInfo['scopes']
+
+        # create normal user
+        user1 = self.testRegister()
+
+        # try get token for curationTool with a normal user
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': 'curationTool',
+            'response_type': 'token id_token',
+            'scope': 'identity scope.manage catalog.admin',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'test'
+        }, headers = {'oculus-internal': 'true'})
+        # expect access_denied error
+        assert location.endswith('denied/')
+
     def testInternalClient(self):
         error = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
             'client_id': ut.test_service_client_id,

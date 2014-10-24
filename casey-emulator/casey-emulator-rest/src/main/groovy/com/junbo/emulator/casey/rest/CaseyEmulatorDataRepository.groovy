@@ -4,8 +4,8 @@ import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
 import com.junbo.common.model.Results
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData
 import com.junbo.store.common.utils.CommonUtils
-import com.junbo.store.spec.model.external.casey.CaseyLink
-import com.junbo.store.spec.model.external.casey.cms.*
+import com.junbo.store.spec.model.external.sewer.casey.CaseyLink
+import com.junbo.store.spec.model.external.sewer.casey.cms.*
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.InitializingBean

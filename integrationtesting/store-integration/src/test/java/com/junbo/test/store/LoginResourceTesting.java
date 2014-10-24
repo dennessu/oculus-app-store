@@ -54,7 +54,7 @@ public class LoginResourceTesting extends BaseTestClass {
     )
     @Test
     public void testCheckUsername() throws Exception {
-        String invalidUsername = "123Test";
+        String invalidUsername = "---123Test";
         UserNameCheckResponse userNameCheckResponse = null;
         Error error = testDataProvider.CheckUserNameWithError(invalidUsername, RandomHelper.randomEmail(), 400, "130.001");
         assert error != null;
@@ -299,7 +299,7 @@ public class LoginResourceTesting extends BaseTestClass {
         AuthTokenResponse createUserResponse = null;
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         createUserRequest.setNickName(createUserRequest.getUsername());
-        String invalidUsername = "123yunlong";
+        String invalidUsername = "---123yunlong";
         String oldUsername = createUserRequest.getUsername();
         createUserRequest.setUsername(invalidUsername);
         Error error = testDataProvider.CreateUserWithError(createUserRequest, true, 400, "130.001");

@@ -20,6 +20,7 @@
     </bean>
 
     <bean id="defaultCaseyEmulatorResourceClientFactory" class="com.junbo.emulator.casey.spec.resource.proxy.CaseyEmulatorResourceClientProxyFactory"/>
+    <bean id="defaultSewerEmulatorResourceClientFactory" class="com.junbo.emulator.casey.spec.resource.proxy.SewerEmulatorResourceClientProxyFactory"/>
 
     <bean id="casey.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
           parent="baseClientProxy">
@@ -60,6 +61,18 @@
     <bean id="casey.offerItemRevisionClient"
           class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
+    </bean>
+
+    <bean id="sewer.entitlementResource" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.entitlement.url}"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
+    </bean>
+
+    <bean id="sewer.organizationResource" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
         <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
     </bean>
 </beans>

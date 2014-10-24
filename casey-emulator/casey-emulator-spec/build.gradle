@@ -3,6 +3,7 @@ apply plugin: 'java'
 dependencies {
     compile junboProject(':silkcloud-core')
     compile junboProject(':store-spec')
+    compile junboProject(':store-clientproxy')
 
     compile (libraries.rs_api)
     compile (libraries.guava)

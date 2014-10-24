@@ -5,6 +5,19 @@
     "type": "TOS",
     "countries": [
         "US",
-        "CN"
+        "CN",
+        "AT",
+        "AU",
+        "BE",
+        "CA",
+        "CH",
+        "DE",
+        "ES",
+        "FR",
+        "GB",
+        "IT",
+        "KR",
+        "NL",
+        "SE"
     ]
 }

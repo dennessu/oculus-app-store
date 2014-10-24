@@ -49,6 +49,24 @@ public class MockCatalogGatewayImpl extends CatalogGatewayImpl {
         return mockItem;
     }
 
+    @Override
+    protected OfferRevision retrieveLatestOfferRevision(String offerId) {
+        OfferRevision mockOffer = mockOffers.get(offerId);
+        if (mockOffer == null) {
+            throw new RuntimeException("offer [" + offerId + "] not prepared in mock");
+        }
+
+        return mockOffer;
+    }
+
+    @Override
+    protected ItemRevision retrieveLatestItemRevision(String itemId) {
+        ItemRevision mockItem = new ItemRevision();
+        mockItem.setSku("TEST_SKU");
+
+        return mockItem;
+    }
+
     /**
      * offer 100 is a bundle offers.
      * - offer200 *2

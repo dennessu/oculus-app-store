@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.util.IdFormatter
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
-import com.junbo.store.spec.model.external.casey.CaseyLink
-import com.junbo.store.spec.model.external.casey.CaseyReview
+import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating
+import com.junbo.store.spec.model.external.sewer.casey.CaseyLink
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.stereotype.Component
