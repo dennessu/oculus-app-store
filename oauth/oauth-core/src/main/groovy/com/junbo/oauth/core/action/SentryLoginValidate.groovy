@@ -39,7 +39,7 @@ class SentryLoginValidate implements Action {
             return Promise.pure()
         }.then { SentryResponse sentryResponse ->
             if (sentryResponse != null && sentryResponse.isBlockAccess()) {
-                contextWrapper.errors.add(AppErrors.INSTANCE.sentryBlockAccess().error())
+                contextWrapper.errors.add(AppErrors.INSTANCE.sentryBlockLoginAccess().error())
                 contextWrapper.sentrySucceed = false
                 return Promise.pure(new ActionResult('error'))
             }

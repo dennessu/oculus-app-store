@@ -194,7 +194,9 @@ interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = '142', message = 'Username and email are occupied')
     AppError usernameAndEmailOccupied()
 
-    // Please don't use 143 & 144 error code
-    @ErrorDef(httpStatusCode = 412, code = "145", message = 'Sentry block access.')
-    AppError sentryBlockAccess()
+    @ErrorDef(httpStatusCode = 412, code = '143', message = 'Sentry block register access')
+    AppError sentryBlockRegisterAccess()
+
+    @ErrorDef(httpStatusCode = 412, code = '144', message = 'Sentry block login access')
+    AppError sentryBlockLoginAccess()
 }

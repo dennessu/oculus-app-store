@@ -215,7 +215,7 @@ class LoginResourceImpl implements LoginResource {
             return Promise.pure()
         }.then { SentryResponse sentryResponse ->
             if (sentryResponse != null && sentryResponse.isBlockAccess()) {
-                throw AppErrors.INSTANCE.sentryBlockAccess().exception()
+                throw AppErrors.INSTANCE.sentryBlockRegisterAccess().exception()
             }
             return Promise.pure()
         }.then {
@@ -293,7 +293,7 @@ class LoginResourceImpl implements LoginResource {
             return Promise.pure()
         }.then { SentryResponse sentryResponse ->
             if (sentryResponse.isBlockAccess()) {
-                throw AppErrors.INSTANCE.sentryBlockAccess().exception()
+                throw AppErrors.INSTANCE.sentryBlockLoginAccess().exception()
             }
             return Promise.pure()
         }.then {
