@@ -246,6 +246,11 @@ public class postUser {
 
         response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(2),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validator username length", 200, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(1),
+                "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator username length", 400, response.getStatusLine().getStatusCode());
         response.close();
 
@@ -256,7 +261,7 @@ public class postUser {
 
         response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomNumeric(2) + RandomHelper.randomAlphabetic(10),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
-        Validator.Validate("Validator username not start with string", 400, response.getStatusLine().getStatusCode());
+        Validator.Validate("Validator username not start with string", 200, response.getStatusLine().getStatusCode());
         response.close();
 
         response = HttpclientHelper.GetHttpResponse(

@@ -101,8 +101,8 @@
     </bean>
 
     <bean id="usernameValidator" class="com.junbo.identity.core.service.validator.impl.UsernameValidatorImpl">
-        <property name="minLength" value="4"/>
-        <property name="maxLength" value="30"/>
+        <property name="minLength" value="2"/>
+        <property name="maxLength" value="20"/>
         <property name="disallowedPatterns">
             <list>
                 <value>[a-zA-Z0-9\. _-]*[ ]{2,}[a-zA-Z0-9\. _-]*</value>
@@ -113,7 +113,7 @@
         </property>
         <property name="allowedPatterns">
             <list>
-                <value>^[a-zA-Z]+[a-zA-Z0-9 \. _-]{2,19}$</value>
+                <value>^[a-zA-Z0-9]+[a-zA-Z0-9 \. _-]{1,19}$</value>
             </list>
         </property>
     </bean>
