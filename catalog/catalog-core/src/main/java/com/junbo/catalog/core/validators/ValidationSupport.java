@@ -7,6 +7,7 @@
 package com.junbo.catalog.core.validators;
 
 import com.google.common.base.Joiner;
+import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.db.repo.PriceTierRepository;
 import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.enums.Status;
@@ -32,7 +33,6 @@ import java.util.*;
 public abstract class ValidationSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationSupport.class);
     protected static final List<String> COUNTRY_CODES = Collections.unmodifiableList(genAllCountryCodes());
-    protected static final String DEFAULT_COUNTRY = "ZZ";
     protected static final List<String> CURRENCY_CODES = Collections.unmodifiableList(Arrays.asList(
             "AED","AFN","ALL","AMD","ANG","AOA","ARS","AUD","AWG","AZN","BAM","BBD","BDT","BGN","BHD","BIF","BMD","BND",
             "BOB","BOV","BRL","BSD","BTN","BWP","BYR","BZD","CAD","CDF","CHE","CHF","CHW","CLF","CLP","CNY","COP","COU",
@@ -55,7 +55,7 @@ public abstract class ValidationSupport {
 
     private static List<String> genAllCountryCodes() {
         List<String> result = new ArrayList<>(Arrays.asList(Locale.getISOCountries()));
-        result.add(DEFAULT_COUNTRY);
+        result.add(Constants.DEFAULT_COUNTRY);
         return result;
     }
 

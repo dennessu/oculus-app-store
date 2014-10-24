@@ -8,6 +8,7 @@ package com.junbo.catalog.core.validators;
 
 import com.google.common.base.Joiner;
 import com.junbo.catalog.clientproxy.OrganizationFacade;
+import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
@@ -25,7 +26,10 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * OfferRevisionValidator.
@@ -158,7 +162,7 @@ public class OfferRevisionValidator extends ValidationSupport {
                     || !PriceType.CUSTOM.is(price.getPriceType()) || price.getPrices() == null) {
                 continue;
             }
-            if (!DEFAULT_COUNTRY.equals(countryCode) && !price.getPrices().containsKey(countryCode)) {
+            if (!Constants.DEFAULT_COUNTRY.equals(countryCode) && !price.getPrices().containsKey(countryCode)) {
                 errors.add(AppCommonErrors.INSTANCE.fieldInvalid("regions",
                         "offer is purchasable in " + countryCode + ", but no price defined for that country."));
             }

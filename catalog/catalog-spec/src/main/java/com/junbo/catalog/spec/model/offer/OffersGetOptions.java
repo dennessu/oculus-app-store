@@ -28,6 +28,8 @@ public class OffersGetOptions extends PageableGetOptions {
     private OrganizationId ownerId;
     @QueryParam("q")
     private String query;
+    @QueryParam("country")
+    private String country;
 
     public Set<String> getOfferIds() {
         return offerIds;
@@ -75,5 +77,13 @@ public class OffersGetOptions extends PageableGetOptions {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }
