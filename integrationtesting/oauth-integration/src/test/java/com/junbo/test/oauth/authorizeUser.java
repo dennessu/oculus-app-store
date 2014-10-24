@@ -759,8 +759,8 @@ public class authorizeUser {
         List<ErrorDetail> errorDetails = new ArrayList<>();
         // missing username error
         ErrorDetail errorDetail = new ErrorDetail();
-        errorDetail.setField("");
-        errorDetail.setReason("");
+        errorDetail.setField("login");
+        errorDetail.setReason("Query parameter is required");
         errorDetails.add(errorDetail);
         error.setDetails(errorDetails);
         CloseableHttpResponse response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);

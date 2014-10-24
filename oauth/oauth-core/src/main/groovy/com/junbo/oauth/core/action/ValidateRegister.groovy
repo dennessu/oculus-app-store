@@ -114,6 +114,9 @@ class ValidateRegister implements Action {
             }
         }
 
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(email)) {
+            return Promise.pure(new ActionResult('error'))
+        }
         return userService.checkUsernameAndEmailBlocker(username, email).recover { Throwable throwable ->
             ExceptionUtil.handleIdentityException(throwable, contextWrapper, false)
             return Promise.pure(null)
