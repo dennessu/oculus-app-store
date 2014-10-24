@@ -3,11 +3,11 @@
   "client_secret" : "88C8FEDC26E414B428DD701BDA41C101#7F186E6EB1B8001EDD4223DA2A7FFAE4FAAB3423BCBA68B4824351530AA2ABEF944DF8AD2384265296F7EBAF77B2D564",
   "client_name" : "curationTool",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
-  "default_redirect_uri" : "http://localhost",
+  "redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
+  "default_redirect_uri" : "https://id.oculus.com",
 
-  "logout_redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
-  "default_logout_redirect_uri" : "http://localhost",
+  "logout_redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
+  "default_logout_redirect_uri" : "https://id.oculus.com",
 
   "scopes" : [ "everyone", "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline",
    "item-binaries.manage", "cms.admin", "organization.group.admin", "client.register", "scope.manage" ],

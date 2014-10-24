@@ -3,11 +3,11 @@
   "client_secret" : "43280A49725BCBBF3F3C3F1CEEE46E42#5829C8F7F7FE316F21D6FF5663DA59E97D7CFB9AED197075C70F000F2C222770498D0D1732095665E8556F9C667F9C6F",
   "client_name" : "developerCenter",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
-  "default_redirect_uri" : "http://localhost",
+  "redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
+  "default_redirect_uri" : "https://id.oculus.com",
 
-  "logout_redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
-  "default_logout_redirect_uri" : "http://localhost",
+  "logout_redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
+  "default_logout_redirect_uri" : "https://id.oculus.com",
 
   "scopes" : [ "identity", "identity.pii", "catalog", "commerce", "openid", "offline" ],
   "default_scopes" : [ "identity", "identity.pii", "catalog", "commerce", "openid", "offline" ],
