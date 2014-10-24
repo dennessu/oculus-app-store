@@ -433,7 +433,7 @@ public class StoreTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable, // todo : disable by fzhang temporarily
             description = "Test iap offer checkout",
             steps = {
                     "1. Create user",
