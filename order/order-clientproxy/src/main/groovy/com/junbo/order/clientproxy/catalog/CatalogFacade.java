@@ -16,7 +16,7 @@ import java.util.Date;
  */
 public interface CatalogFacade {
 
-    Promise<Offer> getOfferRevision(String offerId);
+    Promise<Offer> getLatestOfferRevision(String offerId);
 
     Promise<Offer> getOfferRevision(String offerId, Date honoredTime);
 }

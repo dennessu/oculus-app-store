@@ -8,9 +8,11 @@ package com.junbo.order.clientproxy.catalog.impl
 
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
+import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions
 import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.ItemRevisionResource
@@ -124,8 +126,8 @@ class CatalogFacadeImpl implements CatalogFacade {
                     items << item
                     return itemRevisionResource.getItemRevisions(itemRevisionGetOption).syncRecover {
                         Throwable throwable ->
-                        LOGGER.error('CatalogFacadeImpl_Get_Item_Revision_Error, itemId: {}', ie.itemId, throwable)
-                        throw convertError(throwable).exception()
+                            LOGGER.error('CatalogFacadeImpl_Get_Item_Revision_Error, itemId: {}', ie.itemId, throwable)
+                            throw convertError(throwable).exception()
                     }.syncThen { Results<ItemRevision> itemRevisionResults ->
                         List<ItemRevision> itemRevisions = itemRevisionResults?.items
                         ItemRevision itemRevision = itemRevisions?.get(0)
@@ -149,6 +151,64 @@ class CatalogFacadeImpl implements CatalogFacade {
             }
         }
     }
+
+    @Override
+    Promise<Offer> getLatestOfferRevision(String offerId) {
+        return offerResource.getOffer(offerId).then { com.junbo.catalog.spec.model.offer.Offer offer ->
+            if (offer == null) {
+                throw AppErrors.INSTANCE.offerNotFound(offerId).exception()
+            }
+            return Promise.pure(offer)
+        }.then { com.junbo.catalog.spec.model.offer.Offer o ->
+            return offerRevisionResource.getOfferRevision(o.currentRevisionId, new OfferRevisionGetOptions()).then {
+                OfferRevision or ->
+                    if (or == null) {
+                        LOGGER.info('name=Can_Not_Get_OfferRevision. offerRevisionId: {}', o.currentRevisionId)
+                        throw AppErrors.INSTANCE.offerNotFound(offerId).exception()
+                    }
+                    def offer = new Offer(
+                            id: or.offerId,
+                            revisionId: or.id,
+                            countryReleaseDates: new HashMap<String, Date>(),
+                            locales: new HashMap<String, OfferLocale>()
+                    )
+                    or.countries?.keySet()?.each { String key ->
+                        offer.countryReleaseDates.put(key, or.countries.get(key)?.releaseDate)
+                    }
+                    or.locales?.keySet()?.each { String key ->
+                        def properties = or.locales.get(key)
+                        offer.locales.put(key, new OfferLocale(
+                                name: properties?.name,
+                                shortDescription: properties?.shortDescription,
+                                longDescription: properties?.longDescription
+                        ))
+                    }
+                    def items = []
+                    HashMap itemMap = new HashMap<String, String>()
+                    return Promise.each(or.items) { ItemEntry ie ->
+                        return itemResource.getItem(ie.itemId).then { Item item ->
+                            assert item != null
+                            items << item
+                            return itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions()).syncThen {
+                                ItemRevision itemRevision ->
+                                    if (itemRevision != null) {
+                                        itemMap.put(ie.itemId, itemRevision.revisionId)
+                                    }
+                            }
+                        }
+                    }.then {
+                        offer.type = getType(items)
+                        offer.items = items
+                        offer.itemIds = itemMap
+                        return identityFacade.getOrganization(or.ownerId?.value).syncThen { Organization org ->
+                            offer.owner = org
+                            return offer
+                        }
+                    }
+            }
+        }
+    }
+
 
     private ItemType getType(List<Item> items) {
         if (items.any { Item item ->
@@ -181,11 +241,6 @@ class CatalogFacadeImpl implements CatalogFacade {
             }
             return ItemType.DIGITAL
         }
-    }
-
-    @Override
-    Promise<Offer> getOfferRevision(String offerId) {
-        return getOfferRevision(offerId, new Date())
     }
 
     private AppError convertError(Throwable throwable) {
