@@ -195,7 +195,7 @@
     </bean>
 
     <bean id="store.userTosAgreementResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.store.core.api.url}"/>
+        <property name="target" value="${clientproxy.store.core.api.fallback.url}"/>
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
         <property name="attachUserToken" value="true"/>
         <property name="accessTokenProvider" ref="storeUserAccessTokenProvider"/>
