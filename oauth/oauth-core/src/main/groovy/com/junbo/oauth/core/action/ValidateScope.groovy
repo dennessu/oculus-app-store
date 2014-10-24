@@ -39,7 +39,7 @@ class ValidateScope implements Action {
 
             if (invalidScopes.length > 0) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('scope',
-                        StringUtils.arrayToCommaDelimitedString(invalidScopes)).exception()
+                        StringUtils.arrayToCommaDelimitedString(invalidScopes) + ' clientId: ' + client.clientId).exception()
             }
 
             scopes.addAll(scopeTokens)
