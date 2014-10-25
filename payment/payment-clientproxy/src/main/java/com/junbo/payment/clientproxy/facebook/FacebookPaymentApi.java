@@ -28,6 +28,11 @@ public interface FacebookPaymentApi {
     Promise<FacebookCreditCard> addCreditCard(@QueryParam("access_token") String accessToken,
                     @PathParam("payment-account-id") String paymentAccountId, @BeanParam FacebookCreditCard fbCreditCard);
 
+
+    @GET
+    @Path("{creditcard-id}")
+    Promise<FacebookCreditCard> getCreditCard(@QueryParam("access_token") String accessToken, @PathParam("creditcard-id") String creditcardId);
+
     @POST
     @Path("{payment-account-id}/payments")
     Promise<FacebookPayment> addPayment(@QueryParam("access_token") String accessToken,

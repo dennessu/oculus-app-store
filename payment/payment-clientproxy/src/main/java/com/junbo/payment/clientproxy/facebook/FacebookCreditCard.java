@@ -16,12 +16,8 @@ import javax.ws.rs.QueryParam;
  */
 public class FacebookCreditCard {
     private String id;
-    @QueryParam("cc_number")
-    @JsonProperty("cc_number")
-    private String ccNumber;
-    @QueryParam("cvv")
-    @JsonProperty
-    private String cvv;
+    @QueryParam("token")
+    private String token;
     @QueryParam("card_holder_name")
     @JsonProperty("card_holder_name")
     private String cardHolderName;
@@ -64,20 +60,12 @@ public class FacebookCreditCard {
         this.id = id;
     }
 
-    @JsonIgnore
-    public String getCcNumber() {
-        return ccNumber;
-    }
-    public void setCcNumber(String ccNumber) {
-        this.ccNumber = ccNumber;
+    public String getToken() {
+        return token;
     }
 
-    @JsonIgnore
-    public String getCvv() {
-        return cvv;
-    }
-    public void setCvv(String cvv) {
-        this.cvv = cvv;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @JsonIgnore
