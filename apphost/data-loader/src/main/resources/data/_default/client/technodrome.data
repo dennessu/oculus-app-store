@@ -1,7 +1,7 @@
 {
   "scopes" : ["everyone", "cms.service", "catalog.service", "catalog.admin", "organization.group.admin"],
   "client_id" : "technodrome",
-  "client_secret" : "B384316D12A22048622F2A984EA051E7#7B8272F118E34739BD5E3EC196D17CAB532781C2C8C97DF136E218F881E295E8AB51FEDBE3473B26C60490A039CC7368",
+  "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
   "client_name" : "technodrome",
   "default_scopes" : ["everyone", "cms.service", "catalog.service", "catalog.admin", "organization.group.admin"],
   "response_types" : [ ],

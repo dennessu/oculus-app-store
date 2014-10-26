@@ -66,10 +66,10 @@
                 <entry key="CurrencyResource" value="identity.admin"/>
                 <entry key="DeviceTypeResource" value="identity.admin"/>
                 <entry key="ErrorInfoResource" value="identity.admin"/>
-                <entry key="GroupResource" value="identity identity.service csr group.readonly.service"/>
+                <entry key="GroupResource" value="identity identity.service csr group.readonly.service organization.group.admin"/>
                 <entry key="LocaleResource" value="identity.admin"/>
                 <entry key="MigrationResource" value="identity.migration"/>
-                <entry key="OrganizationResource" value="identity identity.service csr"/>
+                <entry key="OrganizationResource" value="identity identity.service csr organization.group.admin"/>
                 <entry key="PITypeResource" value="identity.admin"/>
                 <entry key="TosResource" value="identity.admin"/>
                 <entry key="UserCommunicationResource" value="identity identity.service identity.pii csr"/>
@@ -78,7 +78,7 @@
                 <entry key="UserCredentialVerifyAttemptResource.create" value="identity.service"/>
                 <entry key="UserGroupMembershipResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserLogResource" value="identity.service csr"/>
-                <entry key="UserPersonalInfoResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserPersonalInfoResource" value="identity identity.service identity.pii csr organization.group.admin"/>
                 <entry key="UserResource" value="identity identity.service identity.pii csr organization.group.admin"/>
                 <entry key="UserResource.checkUsername" value="*" />
                 <entry key="UserResource.checkEmail" value="*" />
