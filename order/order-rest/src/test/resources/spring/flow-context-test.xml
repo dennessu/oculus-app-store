@@ -132,6 +132,9 @@
     <bean id="mockRiskReviewAction" class="com.junbo.order.core.impl.orderaction.RiskReviewAction">
         <property name="riskService" ref="riskService"/>
     </bean>
-
+    <bean id="mockValidateTentativeOrderAction" class="com.junbo.order.core.impl.orderaction.ValidateOrderAction">
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
+        <property name="builder" ref="mockOrderServiceContextBuilder"/>
+    </bean>
 
 </beans>

@@ -638,10 +638,12 @@ public class RefundTesting extends BaseOrderTestClass {
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
-        String orderId = testDataProvider.postOrder(
-                uid, country, currency, creditCardId, false, offerList);
 
-        testDataProvider.updateOrderTentative(orderId, false);
+
+        String orderId = testDataProvider.postOrder(
+                uid, country, currency, creditCardId, false, offerList, false);
+
+        //testDataProvider.updateOrderTentative(orderId, false);
 
         Map<String, Integer> refundOfferList = new HashedMap();
         refundOfferList.put(offer_digital_free, 1);

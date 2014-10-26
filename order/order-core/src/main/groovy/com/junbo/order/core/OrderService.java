@@ -32,4 +32,6 @@ public interface OrderService {
     Promise<Order> updateTentativeOrder(Order order, OrderServiceContext orderServiceContext);
 
     Promise<Order> updateNonTentativeOrder(Order order, OrderServiceContext orderServiceContext);
+
+    Promise<Order> createFreeOrder(Order order, OrderServiceContext orderServiceContext);
 }
