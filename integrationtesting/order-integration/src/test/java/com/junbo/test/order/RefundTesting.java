@@ -20,6 +20,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -638,12 +639,32 @@ public class RefundTesting extends BaseOrderTestClass {
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
-
+        Date now = new Date();
 
         String orderId = testDataProvider.postOrder(
+                uid, country, currency, creditCardId, true, offerList);
+
+        testDataProvider.updateOrderTentative(orderId, false);
+
+        Date later = new Date();
+        System.out.println("start: " + now.toString());
+        System.out.println("end: " + later.toString());
+
+
+        System.out.println("latency: " + ((Long)(later.getTime() - now.getTime())).toString());
+        //testDataProvider.updateOrderTentative(orderId, false);
+
+
+        now = new Date();
+
+        orderId = testDataProvider.postOrder(
                 uid, country, currency, creditCardId, false, offerList, false);
 
-        //testDataProvider.updateOrderTentative(orderId, false);
+        later = new Date();
+        System.out.println("start2: " + now.toString());
+        System.out.println("end2: " + later.toString());
+
+        System.out.println("latency2: " + ((Long)(later.getTime() - now.getTime())).toString());
 
         Map<String, Integer> refundOfferList = new HashedMap();
         refundOfferList.put(offer_digital_free, 1);
