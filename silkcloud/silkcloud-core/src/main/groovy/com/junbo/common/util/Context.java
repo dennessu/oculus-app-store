@@ -34,6 +34,7 @@ public class Context {
         private Integer dataCenterId;
         private Topology topology;
         private DataAccessPolicy dataAccessPolicy;
+        private boolean isInitialRestCallBeforeClear;
         private boolean isInitialRestCall;
 
         private List<Promise> pendingTasks = new ArrayList<>();
@@ -61,6 +62,14 @@ public class Context {
 
         public void setTopology(Topology topology) {
             this.topology = topology;
+        }
+
+        public boolean isInitialRestCallBeforeClear() {
+            return isInitialRestCallBeforeClear;
+        }
+
+        public void setIsInitialRestCallBeforeClear(boolean isInitialRestCallBeforeClear) {
+            this.isInitialRestCallBeforeClear = isInitialRestCallBeforeClear;
         }
 
         public boolean isInitialRestCall() {

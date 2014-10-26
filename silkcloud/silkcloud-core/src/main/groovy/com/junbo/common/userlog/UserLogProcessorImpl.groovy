@@ -10,6 +10,7 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.common.error.Error
 import com.junbo.common.filter.SequenceIdFilter
 import com.junbo.common.id.UserId
+import com.junbo.common.util.Context
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.track.TrackContextManager
@@ -36,9 +37,14 @@ class UserLogProcessorImpl implements UserLogProcessor {
             return
         }
         try {
-            if (JunboHttpContext.getRequestMethod().equalsIgnoreCase(HttpMethod.GET.toString()) ||
-                    JunboHttpContext.getRequestUri().getPath().contains("oauth2") ||
-                    JunboHttpContext.getRequestUri().getPath().contains("horizon-api/id") ||
+            String requestPath = JunboHttpContext.getRequestUri().getPath();
+            if (!Context.get().isInitialRestCall() ||
+                    JunboHttpContext.getRequestMethod().equalsIgnoreCase(HttpMethod.GET.toString()) ||
+                    requestPath.contains("oauth2") ||
+                    requestPath.contains("crypto") ||
+                    (
+                            requestPath.contains("horizon-api/id") &&
+                            !requestPath.contains("horizon-api/id/register")) ||
                     TrackContextManager.isRouted()) {
                 return
             }
