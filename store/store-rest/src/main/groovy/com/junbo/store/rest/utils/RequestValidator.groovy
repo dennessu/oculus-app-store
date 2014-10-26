@@ -139,10 +139,6 @@ class RequestValidator {
             notEmpty(request.lastName, 'lastName')
         }
 
-        Boolean isBlocked = resourceContainer.userResource.checkUsernameEmailBlocker(request.username, request.email).get()
-        if (isBlocked) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email are occupied').exception()
-        }
         // Bug https://oculus.atlassian.net/browse/SER-693, it will always set nickName to username
         request.nickName = request.username
         return this
@@ -294,7 +290,7 @@ class RequestValidator {
 
     Promise<Tos> validateTosExists(TosId tosId) {
         return resourceContainer.tosResource.get(tosId, new TosGetOptions()).then { Tos tos ->
-            if (tos == null && tos.state != 'APPROVED') {
+            if (tos == null || tos.state != 'APPROVED') {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('tosAgreed', 'Tos with Id ' + tos.id.toString() + ' not exists').exception()
             }
 

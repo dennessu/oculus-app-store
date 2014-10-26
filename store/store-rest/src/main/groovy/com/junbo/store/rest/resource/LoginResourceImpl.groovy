@@ -139,15 +139,7 @@ class LoginResourceImpl implements LoginResource {
         }.then {
             if (response == null) {
                 errorContext.fieldName = 'username'
-                return resourceContainer.userResource.checkUsername(userNameCheckRequest.username).then {
-                    return resourceContainer.userResource.checkUsernameEmailBlocker(userNameCheckRequest.username, userNameCheckRequest.email).then { Boolean blocker ->
-                        if (blocker) {
-                            response = new UserNameCheckResponse(isAvailable: false)
-                        }
-
-                        return Promise.pure(null)
-                    }
-                }
+                return resourceContainer.userResource.checkUsername(userNameCheckRequest.username)
             }
             return Promise.pure(null)
         }.recover { Throwable ex ->

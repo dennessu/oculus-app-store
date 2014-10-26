@@ -72,7 +72,6 @@ public class authorizeUser {
         String email = RandomHelper.randomEmail();
         ViewModel viewModel = new ViewModel();
         viewModel.setModel(new HashMap<String, Object>());
-        viewModel.getModel().put("REGISTRATIONSTATE", "NEWUSER");
         Oauth.PostRegisterUser(cid, userName, email, viewModel);
 
         Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAfterRegisterUser);
@@ -486,109 +485,6 @@ public class authorizeUser {
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
         List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, true);
-    }
-
-    @Test(groups = "dailies")
-    public void registerBlockedUsernameOtherEmail() throws Exception {
-        String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomHelper.randomEmail();
-
-        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
-        usernameMailBlocker.setUsername(userName);
-        usernameMailBlocker.setEmail(email);
-        Identity.GetHttpAuthorizationHeaderForMigration();
-        Identity.UsernameMailBlockerPost(usernameMailBlocker);
-
-        HttpclientHelper.ResetHttpClient();
-
-        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
-        String cid = Oauth.GetRegistrationCid();
-
-        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
-        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
-
-        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
-        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
-        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewResponse = Oauth.GetViewStateByCid(cid);
-        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
-
-        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        Error error = new Error();
-        error.setMessage("Username and email are occupied");
-        error.setCode("132.142");
-        error.setDetails(new ArrayList<ErrorDetail>());
-        Oauth.PostRegisterUser(cid, userName, RandomHelper.randomEmail(), error);
-    }
-
-    @Test(groups = "dailies")
-    public void registerBlockedEmailOtherUsername() throws Exception {
-        String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomHelper.randomEmail();
-
-        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
-        usernameMailBlocker.setUsername(userName);
-        usernameMailBlocker.setEmail(email);
-        Identity.GetHttpAuthorizationHeaderForMigration();
-        Identity.UsernameMailBlockerPost(usernameMailBlocker);
-
-        HttpclientHelper.ResetHttpClient();
-
-        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
-        String cid = Oauth.GetRegistrationCid();
-
-        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
-        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
-
-        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
-        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
-        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewResponse = Oauth.GetViewStateByCid(cid);
-        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
-
-        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        ViewModel viewModel = new ViewModel();
-        viewModel.setModel(new HashMap<String, Object>());
-        viewModel.getModel().put("REGISTRATIONSTATE", "USERNAMEABANDON");
-        Oauth.PostRegisterUser(cid, RandomHelper.randomAlphabetic(15), email, viewModel);
-    }
-
-    @Test(groups = "dailies")
-    public void registerBlockedUsernameEmail() throws Exception {
-        String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomHelper.randomEmail();
-
-        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
-        usernameMailBlocker.setUsername(userName);
-        usernameMailBlocker.setEmail(email);
-        Identity.GetHttpAuthorizationHeaderForMigration();
-        Identity.UsernameMailBlockerPost(usernameMailBlocker);
-
-        HttpclientHelper.ResetHttpClient();
-
-        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
-        String cid = Oauth.GetRegistrationCid();
-
-        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
-        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
-
-        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
-        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
-        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewResponse = Oauth.GetViewStateByCid(cid);
-        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
-
-        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        ViewModel viewModel = new ViewModel();
-        viewModel.setModel(new HashMap<String, Object>());
-        viewModel.getModel().put("REGISTRATIONSTATE", "RETURNUSER");
-        Oauth.PostRegisterUser(cid, userName, email, viewModel);
     }
 
     @Test(groups = "dailies")

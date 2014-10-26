@@ -135,7 +135,7 @@ public class LoginResourceTesting extends BaseTestClass {
             features = "Store",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             steps = {
                     "Check username"
             }
@@ -239,7 +239,7 @@ public class LoginResourceTesting extends BaseTestClass {
             features = "Store",
             component = Component.STORE,
             owner = "Zhaoyunlong",
-            status = Status.Enable
+            status = Status.Disable
     )
     @Test
     public void testCreateUserBlock() throws Exception {
