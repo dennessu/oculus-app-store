@@ -32,6 +32,7 @@
             <list>
                 <value>oculus-request-id</value>
                 <value>X-Routing-Path</value>
+                <value>X-Enable-Profiling</value>
                 <value>Cache-Control</value>
                 <value>oculus-end-user-ip</value>
             </list>

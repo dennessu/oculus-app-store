@@ -20,6 +20,7 @@ public class ContextFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) throws IOException {
         // request filter, clear context
         Context.clear();
+        Context.get().setIsInitialRestCallBeforeClear(true);
         Context.get().setIsInitialRestCall(true);
 
         // clear profiling info
