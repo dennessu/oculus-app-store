@@ -5,9 +5,9 @@ import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
-import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
-import com.junbo.entitlement.spec.model.*
+import com.junbo.entitlement.spec.model.DownloadUrlGetOptions
+import com.junbo.entitlement.spec.model.DownloadUrlResponse
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.priceRating.RatingItem
 import com.junbo.store.clientproxy.FacadeContainer
@@ -17,7 +17,6 @@ import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.rest.challenge.ChallengeHelper
-
 import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.exception.casey.CaseyException
@@ -29,7 +28,6 @@ import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.browse.document.SectionInfo
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
-import com.junbo.store.spec.model.external.sewer.entitlement.SewerEntitlement
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -86,7 +84,7 @@ class BrowseServiceImpl implements BrowseService {
     @Override
     Promise<Item> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext) {
         Promise.pure().then {
-            facadeContainer.caseyFacade.search(itemId, Images.BuildType.Item_Details, apiContext).then { CaseyResults<Item> results ->
+            facadeContainer.caseyFacade.search(itemId, Images.BuildType.Item_Details, true, apiContext).then { CaseyResults<Item> results ->
                 if (CollectionUtils.isEmpty(results?.items)) {
                     throw AppCommonErrors.INSTANCE.resourceNotFound('Item', itemId).exception()
                 }
@@ -201,7 +199,8 @@ class BrowseServiceImpl implements BrowseService {
 
     private Promise<ListResponse> innerGetList(ListRequest request, SectionInfoNode sectionInfoNode, ApiContext apiContext) {
         ListResponse listResponse = new ListResponse(items: [])
-        facadeContainer.caseyFacade.search(sectionInfoNode, request.cursor, request.count, Images.BuildType.Item_List, apiContext).then { CaseyResults<Item> caseyResults ->
+        facadeContainer.caseyFacade.search(sectionInfoNode, request.cursor, request.count, Images.BuildType.Item_List, true,
+                apiContext).then { CaseyResults<Item> caseyResults ->
             if (caseyResults.cursorString != null) {
                 listResponse.next = new ListResponse.NextOption(
                         cursor: caseyResults.cursorString,

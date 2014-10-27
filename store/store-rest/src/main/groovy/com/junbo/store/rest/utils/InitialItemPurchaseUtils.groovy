@@ -5,6 +5,7 @@ import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.common.cache.Cache
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.Images
@@ -30,6 +31,8 @@ class InitialItemPurchaseUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InitialItemPurchaseUtils)
 
+    private static final String InitialOffer_Cache_Key = 'initial_offer'
+
     @Value('${store.initialOffer.cmsPage}')
     private String initialOfferSearchPage
 
@@ -41,6 +44,9 @@ class InitialItemPurchaseUtils {
 
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
+
+    @Resource(name = 'storeInitialOfferCache')
+    private Cache<String, List<Item>> initialOfferCache
 
     Promise checkAndPurchaseInitialOffers(UserId userId, boolean newUser, ApiContext apiContext) {
         getInitialItems(apiContext).then { List<Item> items ->
@@ -70,9 +76,14 @@ class InitialItemPurchaseUtils {
     private Promise<List<Item>> getInitialItems(ApiContext apiContext) {
         List<Item> result = []
         String cursor = null
+        List<Item> itemList = initialOfferCache.get(InitialOffer_Cache_Key)
+        if (itemList != null) {
+            return Promise.pure(itemList)
+        }
+
         CommonUtils.loop {
             facadeContainer.caseyFacade.search(initialOfferSearchPage, initialOfferSearchSlot,
-                    cursor, Page_Size, Images.BuildType.Item_List, apiContext).then { CaseyResults<Item> caseyResults ->
+                    cursor, Page_Size, Images.BuildType.Item_List, false, apiContext).then { CaseyResults<Item> caseyResults ->
                 if (!CollectionUtils.isEmpty(caseyResults?.items)) {
                     result.addAll(caseyResults.items.findAll {Item item -> item?.offer?.isFree})
                 }
@@ -83,6 +94,7 @@ class InitialItemPurchaseUtils {
                 return Promise.pure()
             }
         }.then {
+            initialOfferCache.put(InitialOffer_Cache_Key, result)
             return Promise.pure(result)
         }
     }

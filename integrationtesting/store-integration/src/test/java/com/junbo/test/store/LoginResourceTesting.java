@@ -18,6 +18,7 @@ import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
@@ -358,6 +359,7 @@ public class LoginResourceTesting extends BaseTestClass {
         validationHelper.verifyEmailInAuthResponse(createUserResponse, createUserRequest.getEmail(), false);
 
         // validate create with same username failure
+        createUserRequest.setEmail(RandomFactory.getRandomEmailAddress());
         error = testDataProvider.CreateUserWithError(createUserRequest, true, 409, "131.002");
         assert error != null;
         assert error.getDetails().get(0).getField().contains("username");

@@ -79,7 +79,8 @@ class CaseyFacadeImpl implements CaseyFacade {
     private String clientSecret
 
     @Override
-    Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, Images.BuildType imageBuildType, ApiContext apiContext) {
+    Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count,
+                                       Images.BuildType imageBuildType, boolean includeOrganization, ApiContext apiContext) {
         assert sectionInfoNode.sectionType != null, 'sectionType could not be null'
         CaseyResults<Item> results = new CaseyResults<Item>(
                 items: [] as List,
@@ -89,22 +90,23 @@ class CaseyFacadeImpl implements CaseyFacade {
             return Promise.pure(results)
         }
         OfferSearchParams searchParams = buildOfferSearchParams(sectionInfoNode, cursor, count, apiContext)
-        return doSearch(searchParams, imageBuildType, apiContext)
+        return doSearch(searchParams, imageBuildType, includeOrganization, apiContext)
     }
 
     @Override
-    Promise<CaseyResults<Item>> search(String cmsPage, String cmsSlot, String cursor, Integer count, Images.BuildType imageBuildType, ApiContext apiContext) {
+    Promise<CaseyResults<Item>> search(String cmsPage, String cmsSlot, String cursor, Integer count, Images.BuildType imageBuildType,
+                                       boolean includeOrganization, ApiContext apiContext) {
         Assert.notNull(cmsPage)
         Assert.notNull(cmsSlot)
         Assert.notNull(apiContext)
         OfferSearchParams searchParams = buildOfferSearchParams(cmsPage, cmsSlot, cursor, count, apiContext)
-        return doSearch(searchParams, imageBuildType, apiContext)
+        return doSearch(searchParams, imageBuildType, includeOrganization, apiContext)
     }
     
     @Override
-    Promise<CaseyResults<Item>> search(ItemId itemId, Images.BuildType imageBuildType, ApiContext apiContext) {
+    Promise<CaseyResults<Item>> search(ItemId itemId, Images.BuildType imageBuildType, boolean includeOrganization,  ApiContext apiContext) {
         OfferSearchParams searchParams = buildOfferSearchParams(itemId, apiContext)
-        return doSearch(searchParams, imageBuildType, apiContext)
+        return doSearch(searchParams, imageBuildType, includeOrganization, apiContext)
     }
 
     @Override
@@ -232,7 +234,8 @@ class CaseyFacadeImpl implements CaseyFacade {
         }
     }
 
-    private Promise<CaseyResults<Item>> doSearch(OfferSearchParams searchParams, Images.BuildType imageBuildType, ApiContext apiContext) {
+    private Promise<CaseyResults<Item>> doSearch(OfferSearchParams searchParams, Images.BuildType imageBuildType, boolean includeOrganization, ApiContext apiContext) {
+        Map<OrganizationId, Organization> organizationMap = [:] as Map
         CaseyResults<Item> results = new CaseyResults<Item>(
                 items: [] as List
         )
@@ -250,14 +253,17 @@ class CaseyFacadeImpl implements CaseyFacade {
                 CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer.items) ? null : caseyOffer.items[0]
                 Organization publisher, developer
                 Promise.pure().then {
-                    getOrganization(caseyOffer.publisher).then { Organization organization ->
-                        publisher = organization
+                    if (!includeOrganization) {
                         return Promise.pure()
                     }
-                }.then {
-                    getOrganization(caseyItem?.developer).then { Organization organization ->
-                        developer = organization
+                    getOrganization(caseyOffer.publisher, organizationMap).then { Organization organization ->
+                        publisher = organization
                         return Promise.pure()
+                    }.then {
+                        getOrganization(caseyItem?.developer, organizationMap).then { Organization organization ->
+                            developer = organization
+                            return Promise.pure()
+                        }
                     }
                 }.then {
                     Map<String, AggregatedRatings> aggregatedRatings = [:] as Map
@@ -318,7 +324,11 @@ class CaseyFacadeImpl implements CaseyFacade {
         return true
     }
 
-    private Promise<Organization> getOrganization(OrganizationId organizationId) {
+    private Promise<Organization> getOrganization(OrganizationId organizationId, Map<OrganizationId, Organization> organizationMap) {
+        Organization cached = organizationMap?.get(organizationId)
+        if (cached != null) {
+            return Promise.pure(cached)
+        }
         Promise.pure().then {
             resourceContainer.organizationResource.get(organizationId, new OrganizationGetOptions())
         }.recover { Throwable ex ->
