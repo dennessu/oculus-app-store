@@ -199,7 +199,7 @@ class OrderServiceImpl implements OrderService {
             orderValidator.validateSettleOrderRequest(ratedOrder)
 
             ratedOrder.purchaseTime = ratedOrder.honoredTime
-            return prepareOrder(order, orderServiceContext, true).then {
+            return prepareOrder(order, orderServiceContext).then {
                 return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_FREE).then { String flowName ->
                     // Prepare Flow Request
                     Map<String, Object> requestScope = [:]
@@ -384,36 +384,22 @@ class OrderServiceImpl implements OrderService {
 
     private Promise<Void> prepareOrder(Order order, OrderServiceContext context) {
         LOGGER.info('name=PrepareOrder')
-        return prepareOrder(order, context, false)
-    }
-
-
-    private Promise<Void> prepareOrder(Order order, OrderServiceContext context, boolean skipDupValidation) {
-        LOGGER.info('name=PrepareOrder')
         return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
             LOGGER.info('name=get_offers')
             return orderServiceContextBuilder.getOffer(item.offer, context).then { Offer offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
-                if (!skipDupValidation) {
-                    return orderInternalService.validateDuplicatePurchase(order, offer).syncThen {
-                        item.type = offer.type.name()
-                        item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
-                        updateOfferInfo(order, item, offer)
-                        item.offerOrganizationName = offer.owner?.name
-                    }
-                } else {
+                return orderInternalService.validateDuplicatePurchase(order, offer).syncThen {
                     item.type = offer.type.name()
                     item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
                     updateOfferInfo(order, item, offer)
                     item.offerOrganizationName = offer.owner?.name
                 }
-                return Promise.pure(null)
             }
-        }.then {
+        }.syncThen {
             LOGGER.info('name=PrepareOrder_Complete')
-            return Promise.pure(null)
+            return null
         }
     }
 
