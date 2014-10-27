@@ -18,8 +18,10 @@ import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.model.GrantType
 import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.clientproxy.utils.ReviewBuilder
+import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
@@ -219,10 +221,16 @@ class CaseyFacadeImpl implements CaseyFacade {
             ).then { AccessTokenResponse accessTokenResponse ->
                 if (createReview) {
                     return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).recover { Throwable ex ->
+                        if (isCaseyError(ex, ErrorCodes.Casey.ReviewCreateError)) {
+                            throw AppErrors.INSTANCE.retryableError().exception()
+                        }
                         wrapAndThrow(ex)
                     }
                 } else {
                     return resourceContainer.caseyReviewResource.putReview("Bearer $accessTokenResponse.accessToken", review.self.getId(), review).recover { Throwable ex ->
+                        if (isCaseyError(ex, ErrorCodes.Casey.ReviewUpdateError)) {
+                            throw AppErrors.INSTANCE.retryableError().exception()
+                        }
                         wrapAndThrow(ex)
                     }
                 }
@@ -374,6 +382,15 @@ class CaseyFacadeImpl implements CaseyFacade {
         if (throwable instanceof CaseyException) {
             throw throwable
         }
-        throw new CaseyException('Call_Casey_Error', throwable)
+        throw new CaseyException('Call_Casey_Error', null, throwable)
+    }
+
+    private static boolean isCaseyError(Throwable throwable, String... errorCode) {
+        if (throwable instanceof  CaseyException) {
+            if (errorCode == null || Arrays.asList(errorCode).contains(throwable.errorCode)) {
+                return true
+            }
+        }
+        return false
     }
 }

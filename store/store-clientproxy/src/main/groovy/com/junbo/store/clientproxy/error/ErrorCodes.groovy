@@ -36,4 +36,10 @@ class ErrorCodes {
         static final String majorCode = '130'
         static final String UnknownError = AppErrors.INSTANCE.unknownError().error().code
     }
+
+    class Casey {
+        static final String ReviewCreateError = '104.102'
+        static final String ReviewUpdateError = '104.103'
+    }
+
 }

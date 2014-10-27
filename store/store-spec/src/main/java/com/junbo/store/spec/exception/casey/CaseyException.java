@@ -10,11 +10,19 @@ package com.junbo.store.spec.exception.casey;
  */
 public class CaseyException extends Exception {
 
-    public CaseyException(String msg, Throwable cause) {
-        super(msg, cause);
+    private final String errorCode;
+
+    public String getErrorCode() {
+        return errorCode;
     }
 
-    public CaseyException(String msg) {
+    public CaseyException(String errorCode, String msg, Throwable cause) {
+        super(msg, cause);
+        this.errorCode = errorCode;
+    }
+
+    public CaseyException(String errorCode, String msg) {
         super(msg);
+        this.errorCode = errorCode;
     }
 }

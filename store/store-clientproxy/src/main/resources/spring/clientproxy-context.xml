@@ -22,7 +22,9 @@
         <property name="tokenEndpoint" ref="store.tokenEndpointClientProxy"/>
     </bean>
 
-    <bean id="store.CaseyExceptionHandler" class="com.junbo.store.clientproxy.casey.CaseyExceptionHandler"/>
+    <bean id="store.CaseyExceptionHandler" class="com.junbo.store.clientproxy.casey.CaseyExceptionHandler">
+        <property name="messageTranscoder" ref="caseyTranscoder"/>
+    </bean>
 
     <bean id="store.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
           parent="baseClientProxy">

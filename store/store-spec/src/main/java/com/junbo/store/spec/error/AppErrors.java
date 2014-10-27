@@ -91,4 +91,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "123", message = "Register TOS Not Found.")
     AppError RegisterTosNotFound();
+
+    @ErrorDef(httpStatusCode = 412, code = "124", message = "Error occurs, please retry again.")
+    AppError retryableError();
 }
