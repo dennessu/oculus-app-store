@@ -175,4 +175,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "147", message = "Rating result error.")
     AppError ratingResultError(AppError error);
+
+    @ErrorDef(httpStatusCode = 412, code = "148", message = "Free Offer Required")
+    AppError notFreeOrder();
 }

@@ -220,12 +220,12 @@ class CloudantClientCached implements CloudantClientInternal {
                     isSuccessful = (casResponse == CASResponse.OK)
                 }
                 if (!isSuccessful) {
-                    logger.debug("Update conflict for {} rev {} to memcached.", entity.cloudantId, entity.cloudantRev)
+                    logger.warn("Update conflict for {} rev {} to memcached.", entity.cloudantId, entity.cloudantRev)
                     deleteCacheOnError(dbUri, entity.cloudantId)
                 }
             } else {
                 memcachedClient.delete(getKey(dbUri, entity.cloudantId)).get()
-                logger.debug("Entity {} of type {} oversized for memcached. Entity size: {}", entity.cloudantId, entityClass, value.length())
+                logger.warn("Entity {} of type {} oversized for memcached. Entity size: {}", entity.cloudantId, entityClass, value.length())
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("Updated {} rev {} to memcached.", entity.cloudantId, entity.cloudantRev)

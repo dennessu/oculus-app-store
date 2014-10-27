@@ -80,15 +80,19 @@ class OrderResourceImpl implements OrderResource {
             }
             LOGGER.info('name=authorize_complete. user: {}', order.user.value)
             Boolean isTentative = order.tentative
-            order.tentative = true
-            return orderService.createQuote(order,
-                    new OrderServiceContext(order, new ApiContext())).then { Order ratedOrder ->
-                if (!isTentative) {
-                    ratedOrder.tentative = isTentative
-                    return orderService.settleQuote(ratedOrder, new OrderServiceContext(order, new ApiContext()))
+            if (!isTentative) {
+                // must be free to skip 2 step checkout
+                return orderService.createFreeOrder(order,
+                        new OrderServiceContext(order, new ApiContext())).then { Order o ->
+                    LOGGER.info('name=OrderResourceImpl.createOrder_Free_Complete. order: {}', o.getId().value)
+                    return Promise.pure(o)
                 }
-                LOGGER.info('name=OrderResourceImpl.createOrder_Complete. order: {}', ratedOrder.getId().value)
-                return Promise.pure(ratedOrder)
+            } else {
+                return orderService.createQuote(order,
+                        new OrderServiceContext(order, new ApiContext())).then { Order ratedOrder ->
+                    LOGGER.info('name=OrderResourceImpl.createOrder_Complete. order: {}', ratedOrder.getId().value)
+                    return Promise.pure(ratedOrder)
+                }
             }
         }
     }

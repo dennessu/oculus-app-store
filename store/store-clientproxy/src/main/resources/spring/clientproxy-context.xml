@@ -22,7 +22,9 @@
         <property name="tokenEndpoint" ref="store.tokenEndpointClientProxy"/>
     </bean>
 
-    <bean id="store.CaseyExceptionHandler" class="com.junbo.store.clientproxy.casey.CaseyExceptionHandler"/>
+    <bean id="store.CaseyExceptionHandler" class="com.junbo.store.clientproxy.casey.CaseyExceptionHandler">
+        <property name="messageTranscoder" ref="caseyTranscoder"/>
+    </bean>
 
     <bean id="store.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
           parent="baseClientProxy">
@@ -173,13 +175,11 @@
     <bean id="store.piTypeResourceClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.PITypeResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.core.api.url}"/>
-        <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.currencyResourceClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.core.api.url}"/>
-        <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.organizationClientProxy"
@@ -216,13 +216,11 @@
     <bean id="store.tokenEndpointClientProxy"
           class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.core.api.url}"/>
-        <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.tokenInfoEndpointClientProxy"
           class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.core.api.url}"/>
-        <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.emailVerifyEndpointClientProxy"
@@ -234,13 +232,11 @@
     <bean id="store.countryClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.core.api.url}"/>
-        <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.localeClientProxy"
           class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.core.api.url}"/>
-        <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.caseyClientProxy"

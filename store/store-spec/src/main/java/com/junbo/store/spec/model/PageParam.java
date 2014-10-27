@@ -12,18 +12,18 @@ import javax.ws.rs.QueryParam;
  */
 public class PageParam {
 
-    @QueryParam("start")
-    Integer start;
+    @QueryParam("cursor")
+    String cursor;
 
     @QueryParam("count")
     Integer count;
 
-    public Integer getStart() {
-        return start;
+    public String getCursor() {
+        return cursor;
     }
 
-    public void setStart(Integer start) {
-        this.start = start;
+    public void setCursor(String cursor) {
+        this.cursor = cursor;
     }
 
     public Integer getCount() {

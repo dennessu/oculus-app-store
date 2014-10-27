@@ -11,7 +11,7 @@
     <context:component-scan base-package="com.junbo.store.rest" />
     <bean id="defaultLoginResourceClientFactory" class="com.junbo.store.spec.resource.proxy.LoginResourceClientProxyFactory"/>
     <bean id="defaultStoreResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreResourceClientProxyFactory"/>
-    <bean id="defaultStoreConfigResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreConfigResourceClientProxyFactory"/>
+    <bean id="defaultIAPResourceClient" class="com.junbo.store.spec.resource.proxy.IAPResourceClientProxyFactory"/>
 
     <bean id="storeCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation">
@@ -28,4 +28,9 @@
         <property name="cacheName" value="store.item.sectionInfo"/>
     </bean>
 
+    <bean id="storeInitialOfferCache" class="com.junbo.store.common.cache.impl.SimpleCache">
+        <property name="cacheEnabled" value="${store.cache.enabled}"/>
+        <property name="cacheManager" ref="storeCacheManager"/>
+        <property name="cacheName" value="store.initial.offer"/>
+    </bean>
 </beans>

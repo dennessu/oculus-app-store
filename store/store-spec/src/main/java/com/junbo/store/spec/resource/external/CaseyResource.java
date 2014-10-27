@@ -7,14 +7,11 @@ package com.junbo.store.spec.resource.external;
 
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.store.spec.model.external.sewer.SewerParam;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
 import com.junbo.store.spec.model.external.sewer.casey.ReviewSearchParams;
-import com.junbo.store.spec.model.external.sewer.casey.cms.CmsCampaign;
-import com.junbo.store.spec.model.external.sewer.casey.cms.CmsContent;
-import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
-import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPageGetParams;
 import com.junbo.store.spec.model.external.sewer.casey.cms.*;
 import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer;
 import com.junbo.store.spec.model.external.sewer.casey.search.OfferSearchParams;
@@ -41,7 +38,11 @@ public interface CaseyResource {
 
     @GET
     @Path("cms-pages")
-    Promise<CaseyResults<CmsPage>> getCmsPages(@BeanParam CmsPageGetParams pageGetParams);
+    Promise<CaseyResults<CmsPage>> getCmsPages(@BeanParam CmsPageGetParams pageGetParams, @BeanParam SewerParam sewerParam);
+
+    @GET
+    @Path("cms-pages/{pageId}")
+    Promise<CmsPage> getCmsPages(@PathParam("pageId") String pageId, @BeanParam SewerParam sewerParam);
 
     @GET
     @Path("cms-pages/{pageId}/cms-schedule")

@@ -79,16 +79,14 @@ class OrderValidator {
         assert (order != null)
         if (!order.tentative) {
             // validate pi is there if amount is zero
-            if (!order.tentative) {
-                if (CoreUtils.hasPhysicalOffer(order)) {
-                    notNull(order.shippingMethod, 'shippingMethod')
-                    notNull(order.shippingAddress, 'shippingToAddress')
-                    notNull(order.shippingToName, 'shippingToName')
-                    notNull(order.shippingToPhone, 'shippingToPhone')
-                }
-                if (!CoreUtils.isFreeOrder(order)) {
-                    notEmpty(order.payments, 'payments')
-                }
+            if (CoreUtils.hasPhysicalOffer(order)) {
+                notNull(order.shippingMethod, 'shippingMethod')
+                notNull(order.shippingAddress, 'shippingToAddress')
+                notNull(order.shippingToName, 'shippingToName')
+                notNull(order.shippingToPhone, 'shippingToPhone')
+            }
+            if (!CoreUtils.isFreeOrder(order)) {
+                notEmpty(order.payments, 'payments')
             }
         }
     }

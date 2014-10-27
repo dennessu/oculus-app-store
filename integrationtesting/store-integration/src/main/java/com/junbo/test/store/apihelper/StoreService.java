@@ -5,7 +5,6 @@
  */
 package com.junbo.test.store.apihelper;
 
-import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
@@ -45,35 +44,32 @@ public interface StoreService {
 
     InstrumentUpdateResponse updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest, int expectedResponseCode) throws Exception;
 
-    PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest) throws Exception;
+    PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest, IAPParam iapParam) throws Exception;
 
-    PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest, int expectedResponseCode) throws Exception;
+    PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest,  IAPParam iapParam, int expectedResponseCode) throws Exception;
 
-    com.junbo.common.error.Error preparePurchaseWithException(PreparePurchaseRequest preparePurchaseRequest, int expectedResponseCode, String errorCode) throws Exception;
+    com.junbo.common.error.Error preparePurchaseWithException(PreparePurchaseRequest preparePurchaseRequest, IAPParam iapParam,
+                                                              int expectedResponseCode, String errorCode) throws Exception;
 
     CommitPurchaseResponse commitPurchase(CommitPurchaseRequest commitPurchaseRequest) throws Exception;
 
     CommitPurchaseResponse commitPurchase(CommitPurchaseRequest commitPurchaseRequest, int expectedResponseCode) throws Exception;
 
-    IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest) throws Exception;
+    IAPConsumeItemResponse iapConsumeEntitlement(IAPConsumeItemRequest iapEntitlementConsumeRequest, IAPParam iapParam) throws Exception;
 
-    IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest, int expectedResponseCode) throws Exception;
+    IAPConsumeItemResponse iapConsumeEntitlement(IAPConsumeItemRequest iapEntitlementConsumeRequest, IAPParam iapParam, int expectedResponseCode) throws Exception;
 
     MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request) throws Exception;
 
     MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request, int expectedResponseCode) throws Exception;
 
-    EntitlementsGetResponse getEntitlement() throws Exception;
+    IAPItemsResponse getIAPItems(IAPParam iapParam) throws Exception;
 
-    EntitlementsGetResponse getEntitlement(int expectedResponseCode) throws Exception;
+    IAPItemsResponse getIAPItems(IAPParam iapParam, int expectedResponseCode) throws Exception;
 
-    IAPOfferGetResponse getIAPOffers(IAPOfferGetRequest request) throws Exception;
+    LibraryResponse getIAPLibrary(IAPParam iapParam) throws Exception;
 
-    IAPOfferGetResponse getIAPOffers(IAPOfferGetRequest request, int expectedResponseCode) throws Exception;
-
-    IAPEntitlementGetResponse getIAPEntitlement(IAPEntitlementGetRequest request) throws Exception;
-
-    IAPEntitlementGetResponse getIAPEntitlement(IAPEntitlementGetRequest request, int expectedResponseCode) throws Exception;
+    LibraryResponse getIAPLibrary(IAPParam iapParam, int expectedResponseCode) throws Exception;
 
     TocResponse getTOC() throws Exception;
 

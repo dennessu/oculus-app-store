@@ -10,7 +10,6 @@ import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
 import com.junbo.store.spec.model.browse.document.Item;
-import com.junbo.store.spec.model.iap.IAPEntitlement;
 
 /**
  * Entitlement used for IAP.
@@ -29,8 +28,6 @@ public class Entitlement {
     private String itemType;
 
     private Item itemDetails;
-
-    private IAPEntitlement iapEntitlement;
 
     public UserId getUser() {
         return user;
@@ -80,11 +77,4 @@ public class Entitlement {
         this.entitlementType = entitlementType;
     }
 
-    public IAPEntitlement getIapEntitlement() {
-        return iapEntitlement;
-    }
-
-    public void setIapEntitlement(IAPEntitlement iapEntitlement) {
-        this.iapEntitlement = iapEntitlement;
-    }
 }

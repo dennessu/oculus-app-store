@@ -15,8 +15,12 @@ public class ContextScopeListener implements JunboHttpContextScopeListener {
 
     @Override
     public void begin() {
+        boolean isInitialRestCallBeforeClear = Context.get().isInitialRestCallBeforeClear();
         JunboHttpContext.getProperties().put("routing-context", Context.get());
         Context.clear();
+        if (isInitialRestCallBeforeClear) {
+            Context.get().setIsInitialRestCall(true);
+        }
     }
 
     @Override

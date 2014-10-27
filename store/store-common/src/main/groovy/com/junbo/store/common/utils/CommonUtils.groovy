@@ -1,5 +1,6 @@
 package com.junbo.store.common.utils
 
+import com.junbo.common.error.AppCommonErrors
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
@@ -66,6 +67,28 @@ class CommonUtils {
         return number == null ? 0 : number.doubleValue()
     }
 
+    public static String getHeaderString(String name, boolean required) {
+        String value = JunboHttpContext.requestHeaders.getFirst(name)
+        if (required && StringUtils.isBlank(value)) {
+            throw AppCommonErrors.INSTANCE.headerRequired(name).exception()
+        }
+        return value
+    }
+
+    public static Integer getHeaderInteger(String name, boolean required) {
+        String value = JunboHttpContext.requestHeaders.getFirst(name)
+        if (StringUtils.isBlank(value)) {
+            if (required) {
+                throw AppCommonErrors.INSTANCE.headerRequired(name).exception()
+            }
+            return null
+        }
+        try {
+            return Integer.valueOf(value)
+        } catch (NumberFormatException ex) {
+            throw AppCommonErrors.INSTANCE.headerInvalid(name).exception()
+        }
+    }
     public static String toDefaultIfNull(String val) {
         if (val == null) {
             return ''

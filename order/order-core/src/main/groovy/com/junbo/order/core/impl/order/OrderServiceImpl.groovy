@@ -181,6 +181,45 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    Promise<Order> createFreeOrder(Order order, OrderServiceContext orderServiceContext) {
+        LOGGER.info('name=Create_Free_Order. userId: {}', order.user.value)
+
+        order.id = null
+        setHonoredTime(order)
+
+        return orderInternalService.rateOrder(order, orderServiceContext).then { Order ratedOrder ->
+            if (!CoreUtils.isFreeOrder(ratedOrder)) {
+                throw AppErrors.INSTANCE.notFreeOrder().exception()
+            }
+            LOGGER.info('name=Order_is_free')
+            //return validateDuplicatePurchase(ratedOrder, orderServiceContext).then {
+            orderServiceContext.order = ratedOrder
+
+            // TODO: compare the request and the order persisted
+            orderValidator.validateSettleOrderRequest(ratedOrder)
+
+            ratedOrder.purchaseTime = ratedOrder.honoredTime
+            return prepareOrder(order, orderServiceContext).then {
+                return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_FREE).then { String flowName ->
+                    // Prepare Flow Request
+                    Map<String, Object> requestScope = [:]
+                    def orderActionContext = new OrderActionContext()
+                    orderActionContext.orderServiceContext = orderServiceContext
+                    orderActionContext.trackingUuid = UUID.randomUUID()
+                    requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
+                    return executeFlow(flowName, orderServiceContext, requestScope)
+                }.then {
+                    return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true).then { Order o ->
+                        LOGGER.info('name=Create_Free_Order_completed. orderId: {}', o.getId().value)
+                        return Promise.pure(o)
+                    }
+                }
+                //}
+            }
+        }
+    }
+
+    @Override
     Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate = true, OrderServiceContext context, Boolean updateOrderStatus) {
         LOGGER.info('name=getOrderByOrderId')
         return orderInternalService.getOrderByOrderId(orderId, context, updateOrderStatus).then { Order order ->

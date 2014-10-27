@@ -32,13 +32,21 @@ public class Item {
 
     private Images images;
 
+    private IAPDetails iapDetails;
+
     private AppDetails appDetails;
 
     private ReviewsResponse reviews;
 
     private Offer offer;
 
+    private Integer useCount;
+
     private Boolean ownedByCurrentUser;
+
+    private String payload;
+
+    private String signature;
 
     private Review currentUserReview; // only appears in getLibrary response, or in getDetails response.
 
@@ -94,6 +102,14 @@ public class Item {
         this.creator = creator;
     }
 
+    public IAPDetails getIapDetails() {
+        return iapDetails;
+    }
+
+    public void setIapDetails(IAPDetails iapDetails) {
+        this.iapDetails = iapDetails;
+    }
+
     public Images getImages() {
         return images;
     }
@@ -108,6 +124,30 @@ public class Item {
 
     public void setAppDetails(AppDetails appDetails) {
         this.appDetails = appDetails;
+    }
+
+    public Integer getUseCount() {
+        return useCount;
+    }
+
+    public void setUseCount(Integer useCount) {
+        this.useCount = useCount;
+    }
+
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     public Review getCurrentUserReview() {

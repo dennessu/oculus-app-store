@@ -61,7 +61,6 @@ class ActionContextWrapper {
     public static final String USER_DEFAULT_EMAIL = 'default_email'
     public static final String EMAIL_VERIFY_LINK = 'email_verify_link'
     public static final String OVERRIDE_EXPIRATION = 'override_expiration'
-    public static final String REGISTRATION_STATE = 'registration_state'
 
     @Delegate
     private final ActionContext actionContext
@@ -387,14 +386,6 @@ class ActionContextWrapper {
 
     void setUserDefaultEmail(String userDefaultEmail) {
         actionContext.flowScope[USER_DEFAULT_EMAIL] = userDefaultEmail
-    }
-
-    String getRegistrationState() {
-        return actionContext.flowScope[REGISTRATION_STATE] as String
-    }
-
-    void setRegistrationState(String registrationState) {
-        actionContext.flowScope[REGISTRATION_STATE] = registrationState
     }
 
     String getSubFlowName() {

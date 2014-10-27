@@ -18,8 +18,10 @@ import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.model.GrantType
 import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.clientproxy.utils.ReviewBuilder
+import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
@@ -29,6 +31,7 @@ import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.Review
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
+import com.junbo.store.spec.model.external.sewer.SewerParam
 import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
 import com.junbo.store.spec.model.external.sewer.casey.CaseyReview
@@ -58,6 +61,10 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CaseyFacadeImpl)
 
+    private final static String CMSPAGE_GET_EXPAND = '(schedule)'
+
+    private final static String CMSPAGE_LIST_EXPAND = '(results(schedule))'
+
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
@@ -74,7 +81,8 @@ class CaseyFacadeImpl implements CaseyFacade {
     private String clientSecret
 
     @Override
-    Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, Images.BuildType imageBuildType, ApiContext apiContext) {
+    Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count,
+                                       Images.BuildType imageBuildType, boolean includeOrganization, ApiContext apiContext) {
         assert sectionInfoNode.sectionType != null, 'sectionType could not be null'
         CaseyResults<Item> results = new CaseyResults<Item>(
                 items: [] as List,
@@ -84,22 +92,23 @@ class CaseyFacadeImpl implements CaseyFacade {
             return Promise.pure(results)
         }
         OfferSearchParams searchParams = buildOfferSearchParams(sectionInfoNode, cursor, count, apiContext)
-        return doSearch(searchParams, imageBuildType, apiContext)
+        return doSearch(searchParams, imageBuildType, includeOrganization, apiContext)
     }
 
     @Override
-    Promise<CaseyResults<Item>> search(String cmsPage, String cmsSlot, String cursor, Integer count, Images.BuildType imageBuildType, ApiContext apiContext) {
+    Promise<CaseyResults<Item>> search(String cmsPage, String cmsSlot, String cursor, Integer count, Images.BuildType imageBuildType,
+                                       boolean includeOrganization, ApiContext apiContext) {
         Assert.notNull(cmsPage)
         Assert.notNull(cmsSlot)
         Assert.notNull(apiContext)
         OfferSearchParams searchParams = buildOfferSearchParams(cmsPage, cmsSlot, cursor, count, apiContext)
-        return doSearch(searchParams, imageBuildType, apiContext)
+        return doSearch(searchParams, imageBuildType, includeOrganization, apiContext)
     }
     
     @Override
-    Promise<CaseyResults<Item>> search(ItemId itemId, Images.BuildType imageBuildType, ApiContext apiContext) {
+    Promise<CaseyResults<Item>> search(ItemId itemId, Images.BuildType imageBuildType, boolean includeOrganization,  ApiContext apiContext) {
         OfferSearchParams searchParams = buildOfferSearchParams(itemId, apiContext)
-        return doSearch(searchParams, imageBuildType, apiContext)
+        return doSearch(searchParams, imageBuildType, includeOrganization, apiContext)
     }
 
     @Override
@@ -156,22 +165,28 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     @Override
     Promise<CmsPage> getCmsPage(String path, String label, String country, String locale) {
-        CmsPage page
         resourceContainer.caseyResource.getCmsPages(
-            new CmsPageGetParams(path: StringUtils.isBlank(path) ? null : "\"${path}\"", label: StringUtils.isBlank(label) ? null : "\"${label}\"")
+            new CmsPageGetParams(path: StringUtils.isBlank(path) ? null : "\"${path}\"", label: StringUtils.isBlank(label) ? null : "\"${label}\""),
+            new SewerParam(country: country, locale: locale, expand: CMSPAGE_LIST_EXPAND)
         ).then { CaseyResults<CmsPage> results ->
             if (CollectionUtils.isEmpty(results?.items) || results.items.size() > 1) {
                 LOGGER.error('name=GetCmsPageIncorrectResponse, payload={}', ObjectMapperProvider.instance().writeValueAsString(results))
                 throw new RuntimeException('Invalid Number Of CmsPage returned, should be 1')
             }
-            page = results.items[0]
-            if (CollectionUtils.isEmpty(page?.slots)) {
-                return Promise.pure(page)
-            }
-            return fillPageContent(page, country, locale)
+            return Promise.pure(results.items[0])
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_GetCmsPage_Error, path={}, label={}', path, label, ex)
+            return Promise.pure(null)
+        }
+    }
+
+    @Override
+    Promise<CmsPage> getCmsPage(String cmsPageId, String country, String locale) {
+        resourceContainer.caseyResource.getCmsPages(cmsPageId, new SewerParam(country: country, locale: locale, expand: CMSPAGE_GET_EXPAND)).then { CmsPage page ->
             return Promise.pure(page)
+        }.recover { Throwable ex ->
+            LOGGER.error('name=Store_GetCmsPage_Error, id={}', cmsPageId, ex)
+            return Promise.pure(null)
         }
     }
 
@@ -206,10 +221,16 @@ class CaseyFacadeImpl implements CaseyFacade {
             ).then { AccessTokenResponse accessTokenResponse ->
                 if (createReview) {
                     return resourceContainer.caseyReviewResource.addReview("Bearer $accessTokenResponse.accessToken", review).recover { Throwable ex ->
+                        if (isCaseyError(ex, ErrorCodes.Casey.ReviewCreateError)) {
+                            throw AppErrors.INSTANCE.retryableError().exception()
+                        }
                         wrapAndThrow(ex)
                     }
                 } else {
                     return resourceContainer.caseyReviewResource.putReview("Bearer $accessTokenResponse.accessToken", review.self.getId(), review).recover { Throwable ex ->
+                        if (isCaseyError(ex, ErrorCodes.Casey.ReviewUpdateError)) {
+                            throw AppErrors.INSTANCE.retryableError().exception()
+                        }
                         wrapAndThrow(ex)
                     }
                 }
@@ -221,7 +242,8 @@ class CaseyFacadeImpl implements CaseyFacade {
         }
     }
 
-    private Promise<CaseyResults<Item>> doSearch(OfferSearchParams searchParams, Images.BuildType imageBuildType, ApiContext apiContext) {
+    private Promise<CaseyResults<Item>> doSearch(OfferSearchParams searchParams, Images.BuildType imageBuildType, boolean includeOrganization, ApiContext apiContext) {
+        Map<OrganizationId, Organization> organizationMap = [:] as Map
         CaseyResults<Item> results = new CaseyResults<Item>(
                 items: [] as List
         )
@@ -239,14 +261,17 @@ class CaseyFacadeImpl implements CaseyFacade {
                 CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer.items) ? null : caseyOffer.items[0]
                 Organization publisher, developer
                 Promise.pure().then {
-                    getOrganization(caseyOffer.publisher).then { Organization organization ->
-                        publisher = organization
+                    if (!includeOrganization) {
                         return Promise.pure()
                     }
-                }.then {
-                    getOrganization(caseyItem?.developer).then { Organization organization ->
-                        developer = organization
+                    getOrganization(caseyOffer.publisher, organizationMap).then { Organization organization ->
+                        publisher = organization
                         return Promise.pure()
+                    }.then {
+                        getOrganization(caseyItem?.developer, organizationMap).then { Organization organization ->
+                            developer = organization
+                            return Promise.pure()
+                        }
                     }
                 }.then {
                     Map<String, AggregatedRatings> aggregatedRatings = [:] as Map
@@ -307,26 +332,16 @@ class CaseyFacadeImpl implements CaseyFacade {
         return true
     }
 
-    private Promise<Organization> getOrganization(OrganizationId organizationId) {
+    private Promise<Organization> getOrganization(OrganizationId organizationId, Map<OrganizationId, Organization> organizationMap) {
+        Organization cached = organizationMap?.get(organizationId)
+        if (cached != null) {
+            return Promise.pure(cached)
+        }
         Promise.pure().then {
             resourceContainer.organizationResource.get(organizationId, new OrganizationGetOptions())
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_Get_Organization_Fail, organization={}', organizationId, ex)
             return Promise.pure()
-        }
-    }
-
-    private Promise<CmsPage> fillPageContent(CmsPage cmsPage, String country, String locale) {
-        assert cmsPage?.slots != null, 'cmsPage.slot should not be null'
-        resourceContainer.caseyResource.getCmsSchedules(cmsPage?.self?.id, new CmsScheduleGetParams(country: country, locale: locale)).then { CmsSchedule cmsSchedule ->
-            cmsPage.slots.each { Map.Entry<String, CmsContentSlot> entry ->
-                String slot = entry.key
-                CmsContentSlot content = entry.value
-                if (content != null) {
-                    content.contents = cmsSchedule?.slots?.get(slot)?.content?.getContents()
-                }
-            }
-            return Promise.pure(cmsPage)
         }
     }
 
@@ -367,6 +382,15 @@ class CaseyFacadeImpl implements CaseyFacade {
         if (throwable instanceof CaseyException) {
             throw throwable
         }
-        throw new CaseyException('Call_Casey_Error', throwable)
+        throw new CaseyException('Call_Casey_Error', null, throwable)
+    }
+
+    private static boolean isCaseyError(Throwable throwable, String... errorCode) {
+        if (throwable instanceof  CaseyException) {
+            if (errorCode == null || Arrays.asList(errorCode).contains(throwable.errorCode)) {
+                return true
+            }
+        }
+        return false
     }
 }

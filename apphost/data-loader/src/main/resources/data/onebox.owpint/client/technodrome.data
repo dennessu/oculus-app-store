@@ -1,10 +1,10 @@
 {
-  "scopes" : ["everyone", "cms.service", "catalog.service"],
+  "scopes" : ["everyone", "cms.service", "catalog.service", "catalog.admin", "organization.group.admin"],
   "client_id" : "technodrome",
   "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
-  "client_name" : "service",
-  "default_scopes" : ["everyone", "cms.service", "catalog.service"],
-  "response_types" : ["ID_TOKEN", "CODE", "TOKEN"],
+  "client_name" : "technodrome",
+  "default_scopes" : ["everyone", "cms.service", "catalog.service", "catalog.admin", "organization.group.admin"],
+  "response_types" : [ ],
   "grant_types" : [ "CLIENT_CREDENTIALS" ],
   "id_token_issuer" : "www.junbo.com",
   "need_consent" : false

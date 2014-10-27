@@ -24,7 +24,6 @@ import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
-import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.browse.document.Tos;
@@ -33,8 +32,9 @@ import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
 import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
 import com.junbo.store.spec.model.external.sewer.casey.cms.CmsSchedule;
-import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
-import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
+import com.junbo.store.spec.model.iap.IAPConsumeItemRequest;
+import com.junbo.store.spec.model.iap.IAPConsumeItemResponse;
+import com.junbo.store.spec.model.iap.IAPParam;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
@@ -61,11 +61,9 @@ import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.payment.utility.PaymentTestDataProvider;
 import com.junbo.test.store.apihelper.CaseyEmulatorService;
 import com.junbo.test.store.apihelper.LoginService;
-import com.junbo.test.store.apihelper.StoreConfigService;
 import com.junbo.test.store.apihelper.StoreService;
 import com.junbo.test.store.apihelper.impl.CaseyEmulatorServiceImpl;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
-import com.junbo.test.store.apihelper.impl.StoreConfigServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
 import org.springframework.util.StringUtils;
 
@@ -88,7 +86,6 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     ItemRevisionService itemRevisionClient = ItemRevisionServiceImpl.instance();
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
     CaseyEmulatorService caseyEmulatorClient = CaseyEmulatorServiceImpl.getInstance();
-    StoreConfigService storeConfigService = StoreConfigServiceImpl.getInstance();
     UserService identityClient = UserServiceImpl.instance();
     OfferAttributeService offerAttributeClient = OfferAttributeServiceImpl.instance();
     ItemAttributeService itemAttributeClient = ItemAttributeServiceImpl.instance();
@@ -366,6 +363,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         request.setPurchaseToken(token);
         request.setInstrument(pid);
         request.setOffer(new OfferId(offerId));
+        IAPParam params = null;
 
         if (!StringUtils.isEmpty(pin)) {
             ChallengeAnswer challengeAnswer = new ChallengeAnswer();
@@ -381,19 +379,19 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         }
         if (isIAP) {
             Offer offer = Master.getInstance().getOffer(offerId);
+            request.setIsIAP(true);
             OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
             Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
             ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
             Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
             ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
-            IAPParams params = new IAPParams();
+            params = new IAPParam();
             params.setPackageName(hostItemRevision.getPackageName());
             // Todo:    This value is workaround
             params.setPackageSignatureHash(UUID.randomUUID().toString());
-            params.setPackageVersion(UUID.randomUUID().toString());
-            request.setIapParams(params);
+            params.setPackageVersion(RandomFactory.getRandomInteger(0, 1000));
         }
-        return storeClient.preparePurchase(request, expectedCode);
+        return storeClient.preparePurchase(request, params, expectedCode);
     }
 
     public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid,
@@ -407,7 +405,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         request.setPurchaseToken(token);
         request.setInstrument(piid);
         request.setOffer(new OfferId(offerId));
-
+        IAPParam params = null;
         if (!StringUtils.isEmpty(pin)) {
             ChallengeAnswer challengeAnswer = new ChallengeAnswer();
             challengeAnswer.setType("PIN");
@@ -427,14 +425,13 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
             Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
             ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
-            IAPParams params = new IAPParams();
+            params = new IAPParam();
             params.setPackageName(hostItemRevision.getPackageName());
             // Todo:    This value is workaround
             params.setPackageSignatureHash(UUID.randomUUID().toString());
-            params.setPackageVersion(UUID.randomUUID().toString());
-            request.setIapParams(params);
+            params.setPackageVersion(RandomFactory.getRandomInteger(0, 1000));
         }
-        return storeClient.preparePurchaseWithException(request, expectedResponseCode, errorCode);
+        return storeClient.preparePurchaseWithException(request, params, expectedResponseCode, errorCode);
     }
 
     public String getOfferIdByName(String offerName) throws Exception {
@@ -535,19 +532,18 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.commitPurchase(commitPurchaseRequest, expectedResponseCode);
     }
 
-    public IAPEntitlementConsumeResponse iapConsumeEntitlement(EntitlementId entitlementId, String offerId)
+    public IAPConsumeItemResponse iapConsumeEntitlement(String sku, String offerId, IAPParam iapParam)
             throws Exception {
-        IAPEntitlementConsumeRequest request = new IAPEntitlementConsumeRequest();
+        IAPConsumeItemRequest request = new IAPConsumeItemRequest();
         request.setTrackingGuid(UUID.randomUUID().toString());
-        request.setEntitlement(entitlementId);
+        request.setSku(sku);
         request.setUseCountConsumed(1);
         Offer offer = offerClient.getOffer(offerId);
         OfferRevision offerRevision = offerRevisionClient.getOfferRevision(offer.getCurrentRevisionId());
         Item item = itemClient.getItem(offerRevision.getItems().get(0).getItemId());
         ItemRevision itemRevision = itemRevisionClient.getItemRevision(item.getCurrentRevisionId());
         String packageName = itemRevision.getPackageName();
-        request.setPackageName(packageName);
-        return storeClient.iapConsumeEntitlement(request);
+        return storeClient.iapConsumeEntitlement(request, iapParam);
     }
 
     private Address getBillingAddress() throws Exception {
@@ -654,10 +650,6 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public VerifyEmailResponse verifyEmail(VerifyEmailRequest verifyEmailRequest, int exceptedResponseCode)
             throws Exception {
         return storeClient.verifyEmail(verifyEmailRequest, exceptedResponseCode);
-    }
-
-    public EntitlementsGetResponse getEntitlement() throws Exception {
-        return storeClient.getEntitlement();
     }
 
     public Error getTokenWithError(String refreshToken, int expectedCode, String errorCode) throws Exception {
@@ -799,10 +791,6 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         data.setCmsPages(pages);
         data.setCmsPageOffers(offerIds);
         return caseyEmulatorClient.postEmulatorData(data);
-    }
-
-    public void clearCache() throws Exception {
-        storeConfigService.clearCache();
     }
 
     public DeliveryResponse getDeliveryByOfferId(String offerId) throws Exception {

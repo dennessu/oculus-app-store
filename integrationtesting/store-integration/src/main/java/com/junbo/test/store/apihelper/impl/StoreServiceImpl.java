@@ -7,7 +7,6 @@ package com.junbo.test.store.apihelper.impl;
 
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
@@ -37,6 +36,10 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     private static StoreService instance;
 
+    private ThreadLocal<IAPParam> iapParamThreadLocal = new ThreadLocal<>();
+
+
+
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
         FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
         headers.put("X-ANDROID-ID", Collections.singletonList(DataGenerator.instance().generateAndroidId()));
@@ -47,6 +50,13 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
         if (currentEndPointType.equals(Master.EndPointType.Secondary)) {
             headers.put("Cache-Control", Collections.singletonList("no-cache"));
+        }
+
+        IAPParam iapParam = iapParamThreadLocal.get();
+        if (iapParam != null) {
+            headers.add("X-PACKAGE-NAME", iapParam.getPackageName());
+            headers.add("X-PACKAGE-VERSION", iapParam.getPackageVersion().toString());
+            headers.add("X-PACKAGE-SIGNATURE-HASH", iapParam.getPackageSignatureHash());
         }
         //for further header, we can set dynamic value from properties here
         return headers;
@@ -164,12 +174,13 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     }
 
     @Override
-    public PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest) throws Exception {
-        return preparePurchase(preparePurchaseRequest, 200);
+    public PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest, IAPParam iapParam) throws Exception {
+        return preparePurchase(preparePurchaseRequest, iapParam, 200);
     }
 
     @Override
-    public PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest, int expectedResponseCode) throws Exception {
+    public PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest, IAPParam iapParam, int expectedResponseCode) throws Exception {
+        iapParamThreadLocal.set(iapParam);
         String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/purchase/prepare", preparePurchaseRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
             PreparePurchaseResponse preparePurchaseResponse = new JsonMessageTranscoder().decode(new TypeReference<PreparePurchaseResponse>() {
@@ -181,7 +192,9 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     }
 
     @Override
-    public com.junbo.common.error.Error preparePurchaseWithException(PreparePurchaseRequest preparePurchaseRequest, int expectedResponseCode, String errorCode) throws Exception {
+    public com.junbo.common.error.Error preparePurchaseWithException(PreparePurchaseRequest preparePurchaseRequest,
+                                                                     IAPParam iapParam, int expectedResponseCode, String errorCode) throws Exception {
+        iapParamThreadLocal.set(iapParam);
         String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/purchase/prepare", preparePurchaseRequest, expectedResponseCode);
         com.junbo.common.error.Error appErrorException = new JsonMessageTranscoder().decode(new TypeReference<com.junbo.common.error.Error>() {
         }, responseBody);
@@ -207,15 +220,16 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     }
 
     @Override
-    public IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest request) throws Exception {
-        return iapConsumeEntitlement(request, 200);
+    public IAPConsumeItemResponse iapConsumeEntitlement(IAPConsumeItemRequest request, IAPParam iapParam) throws Exception {
+        return iapConsumeEntitlement(request, iapParam, 200);
     }
 
     @Override
-    public IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest request, int expectedResponseCode) throws Exception {
+    public IAPConsumeItemResponse iapConsumeEntitlement(IAPConsumeItemRequest request, IAPParam iapParam, int expectedResponseCode) throws Exception {
+        iapParamThreadLocal.set(iapParam);
         String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/iap/consumption", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
-            IAPEntitlementConsumeResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPEntitlementConsumeResponse>() {
+            IAPConsumeItemResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPConsumeItemResponse>() {
             }, responseBody);
 
             return response;
@@ -241,15 +255,17 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     }
 
     @Override
-    public EntitlementsGetResponse getEntitlement() throws Exception {
-        return getEntitlement(200);
+    public IAPItemsResponse getIAPItems(IAPParam iapParam) throws Exception {
+        return getIAPItems(iapParam, 200);
     }
 
     @Override
-    public EntitlementsGetResponse getEntitlement(int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/entitlements", expectedResponseCode);
+    public IAPItemsResponse getIAPItems(IAPParam iapParam, int expectedResponseCode) throws Exception {
+        //TODO url
+        iapParamThreadLocal.set(iapParam);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/iap/items", expectedResponseCode);
         if (expectedResponseCode == 200) {
-            EntitlementsGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<EntitlementsGetResponse>() {
+            IAPItemsResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPItemsResponse>() {
             }, responseBody);
 
             return response;
@@ -258,34 +274,17 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     }
 
     @Override
-    public IAPOfferGetResponse getIAPOffers(IAPOfferGetRequest request) throws Exception {
-        return getIAPOffers(request, 200);
+    public LibraryResponse getIAPLibrary(IAPParam iapParam) throws Exception {
+        return getIAPLibrary(iapParam, 200);
     }
 
     @Override
-    public IAPOfferGetResponse getIAPOffers(IAPOfferGetRequest request, int expectedResponseCode) throws Exception {
+    public LibraryResponse getIAPLibrary(IAPParam iapParam, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/iap/offers", expectedResponseCode);
+        iapParamThreadLocal.set(iapParam);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/iap/library", expectedResponseCode);
         if (expectedResponseCode == 200) {
-            IAPOfferGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPOfferGetResponse>() {
-            }, responseBody);
-
-            return response;
-        }
-        return null;
-    }
-
-    @Override
-    public IAPEntitlementGetResponse getIAPEntitlement(IAPEntitlementGetRequest request) throws Exception {
-        return getIAPEntitlement(request, 200);
-    }
-
-    @Override
-    public IAPEntitlementGetResponse getIAPEntitlement(IAPEntitlementGetRequest request, int expectedResponseCode) throws Exception {
-        //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/iap/entitlements", expectedResponseCode);
-        if (expectedResponseCode == 200) {
-            IAPEntitlementGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPEntitlementGetResponse>() {
+            LibraryResponse response = new JsonMessageTranscoder().decode(new TypeReference<LibraryResponse>() {
             }, responseBody);
 
             return response;

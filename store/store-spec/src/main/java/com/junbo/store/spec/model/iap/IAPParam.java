@@ -5,21 +5,24 @@
  */
 package com.junbo.store.spec.model.iap;
 
-import javax.ws.rs.QueryParam;
-
 /**
- * The IAPEntitlementGetRequest class.
+ * The IAPParam class.
  */
-public class IAPEntitlementGetRequest {
+public class IAPParam {
 
-    @QueryParam("packageName")
     private String packageName;
-
-    @QueryParam("packageVersion")
-    private String packageVersion;
-
-    @QueryParam("packageSignatureHash")
+    private Integer packageVersion;
     private String packageSignatureHash;
+
+    public IAPParam() {
+
+    }
+
+    public IAPParam(String packageName, Integer packageVersion, String packageSignatureHash) {
+        this.packageName = packageName;
+        this.packageVersion = packageVersion;
+        this.packageSignatureHash = packageSignatureHash;
+    }
 
     public String getPackageName() {
         return packageName;
@@ -29,11 +32,11 @@ public class IAPEntitlementGetRequest {
         this.packageName = packageName;
     }
 
-    public String getPackageVersion() {
+    public Integer getPackageVersion() {
         return packageVersion;
     }
 
-    public void setPackageVersion(String packageVersion) {
+    public void setPackageVersion(Integer packageVersion) {
         this.packageVersion = packageVersion;
     }
 

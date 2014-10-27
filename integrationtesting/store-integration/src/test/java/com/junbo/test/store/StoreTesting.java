@@ -433,7 +433,7 @@ public class StoreTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Disable, // todo : disable by fzhang temporarily
+            status = Status.Enable,
             description = "Test iap offer checkout",
             steps = {
                     "1. Create user",
@@ -448,7 +448,7 @@ public class StoreTesting extends BaseTestClass {
                     "10. Verify library response"
             }
     )
-    @Test(enabled = false)
+    @Test
     public void testIAPCheckoutByWallet() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);

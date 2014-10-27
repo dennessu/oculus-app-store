@@ -111,11 +111,23 @@ public class OrderTestDataProvider {
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
                             boolean hasPhysicalGood, Map<String, Integer> offers)
             throws Exception {
-        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200);
+        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200, true);
+    }
+
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            boolean hasPhysicalGood, Map<String, Integer> offers, boolean tentative)
+            throws Exception {
+        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200, tentative);
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
                             boolean hasPhysicalGood, Map<String, Integer> offers, int expectedResponseCode)
+            throws Exception {
+        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, expectedResponseCode, true);
+    }
+
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            boolean hasPhysicalGood, Map<String, Integer> offers, int expectedResponseCode, boolean tentative)
             throws Exception {
         Order order = new Order();
         UserId userId = new UserId();
@@ -162,7 +174,7 @@ public class OrderTestDataProvider {
 
         }
         order.setOrderItems(orderItemList);
-        order.setTentative(true);
+        order.setTentative(tentative);
         order.setLocale(new LocaleId("en_US"));
         Master.getInstance().setCurrentUid(uid);
         return orderClient.postOrder(order, expectedResponseCode);

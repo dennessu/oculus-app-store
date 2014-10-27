@@ -22,6 +22,7 @@ public class ContentItem {
         item,
         string,
         offerAttribute,
+        cmsPage,
         tos
     }
 

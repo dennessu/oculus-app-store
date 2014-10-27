@@ -8,6 +8,7 @@ import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
+import com.junbo.catalog.spec.model.item.ItemsGetOptions
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
@@ -24,6 +25,8 @@ import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.clientproxy.utils.ReviewBuilder
 import com.junbo.store.common.utils.CommonUtils
+import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.catalog.Offer
 import groovy.transform.CompileStatic
@@ -156,6 +159,17 @@ class CatalogFacadeImpl implements CatalogFacade {
             LOGGER.error('name=Store_Get_OfferAttribute_Fail, attribute={}', attributeId, ex)
             return Promise.pure()
         }
+    }
+
+    @Override
+    Promise<Item> getCatalogItemByPackageName(String packageName, Integer versionCode, String signatureHash) {
+        ItemsGetOptions option = new ItemsGetOptions(packageName: packageName)
+        return resourceContainer.itemResource.getItems(option).then { Results<Item> itemResults ->
+            if (itemResults.items.isEmpty()) {
+                throw AppErrors.INSTANCE.itemNotFoundWithPackageName().exception()
+            }
+            return Promise.pure(itemResults.items[0])
+        } // todo verify the signatureHash if versionCode & signatureHash is provided
     }
 
     private Promise<Organization> getOrganization(OrganizationId organizationId) {

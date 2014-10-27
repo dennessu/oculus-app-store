@@ -20,11 +20,8 @@ import com.junbo.emulator.casey.spec.resource.CaseyEmulatorResource
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.common.utils.CommonUtils
-import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating
-import com.junbo.store.spec.model.external.sewer.casey.CaseyLink
-import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
-import com.junbo.store.spec.model.external.sewer.casey.CaseyReview
-import com.junbo.store.spec.model.external.sewer.casey.ReviewSearchParams
+import com.junbo.store.spec.model.external.sewer.SewerParam
+import com.junbo.store.spec.model.external.sewer.casey.*
 import com.junbo.store.spec.model.external.sewer.casey.cms.*
 import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer
 import com.junbo.store.spec.model.external.sewer.casey.search.OfferSearchParams
@@ -36,6 +33,7 @@ import org.springframework.util.Assert
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
+import javax.ws.rs.BeanParam
 /**
  * The CaseyEmulatorResourceImpl class.
  */
@@ -196,7 +194,9 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     @Override
-    Promise<CaseyResults<CmsPage>> getCmsPages(CmsPageGetParams pageGetParams) {
+    Promise<CaseyResults<CmsPage>> getCmsPages(
+            @BeanParam CmsPageGetParams pageGetParams, @BeanParam SewerParam sewerParam) {
+        Assert.isTrue("(results(schedule))".equals(sewerParam.expand))
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('getCmsPages')
         List<CmsPage> pages = caseyEmulatorDataRepository.get().cmsPages
@@ -216,8 +216,28 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
             }
             return true
         }.asList()
-
+        cmsPages.each { CmsPage cmsPage ->
+            fillSchedule(cmsPage, sewerParam.country, sewerParam.locale)
+        }
         return Promise.pure(new CaseyResults<CmsPage>(items: cmsPages))
+    }
+
+    @Override
+    Promise<CmsPage> getCmsPages(String pageId, SewerParam sewerParam) {
+        emulatorUtils.emulateLatency()
+        emulatorUtils.emulateError('getCmsPagesDirect')
+        List<CmsPage> pages = caseyEmulatorDataRepository.get().cmsPages
+        if (pages == null) {
+            throw AppCommonErrors.INSTANCE.resourceNotFound('cmsPage', pageId).exception()
+        }
+        CmsPage page = pages.find { CmsPage cmsPage ->
+            cmsPage?.self?.getId() == pageId
+        }
+        if (page == null) {
+            throw AppCommonErrors.INSTANCE.resourceNotFound('cmsPage', pageId).exception()
+        }
+        fillSchedule(page, sewerParam.country, sewerParam.locale)
+        return Promise.pure(page)
     }
 
     @Override
@@ -241,6 +261,10 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         }
         cmsSchedule = filterLocale(cmsSchedule, cmsScheduleGetParams.getLocale())
         return Promise.pure(cmsSchedule)
+    }
+
+    private void fillSchedule(CmsPage cmsPage, String country, String locale) {
+        cmsPage.schedule = getCmsSchedules(cmsPage.getSelf().getId(), new CmsScheduleGetParams(locale: locale, country: country)).get()
     }
 
     private CaseyResults<CaseyOffer> searchFromCms(OfferSearchParams searchParams) {

@@ -7,7 +7,7 @@
 package com.junbo.store.spec.model.iap;
 
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
-import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
 
@@ -17,16 +17,13 @@ import com.junbo.common.model.ResourceMeta;
 public class Consumption extends ResourceMeta<String> {
 
     private UserId user;
-    private EntitlementId entitlement;
     private Integer useCountConsumed;
     private String sku;
     private String trackingGuid;
-    private String packageName;
+    private ItemId hostItem;
+
     @CloudantIgnore
     private Long signatureTimestamp;
-
-    private String payload;
-    private String signature;
 
     public UserId getUser() {
         return user;
@@ -34,14 +31,6 @@ public class Consumption extends ResourceMeta<String> {
 
     public void setUser(UserId user) {
         this.user = user;
-    }
-
-    public EntitlementId getEntitlement() {
-        return entitlement;
-    }
-
-    public void setEntitlement(EntitlementId entitlement) {
-        this.entitlement = entitlement;
     }
 
     public Integer getUseCountConsumed() {
@@ -68,20 +57,20 @@ public class Consumption extends ResourceMeta<String> {
         this.trackingGuid = trackingGuid;
     }
 
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
     public Long getSignatureTimestamp() {
         return signatureTimestamp;
     }
 
     public void setSignatureTimestamp(Long signatureTimestamp) {
         this.signatureTimestamp = signatureTimestamp;
+    }
+
+    public ItemId getHostItem() {
+        return hostItem;
+    }
+
+    public void setHostItem(ItemId hostItem) {
+        this.hostItem = hostItem;
     }
 
     @Override
@@ -92,21 +81,5 @@ public class Consumption extends ResourceMeta<String> {
     @Override
     public void setId(String id) {
         setTrackingGuid(id);
-    }
-
-    public String getPayload() {
-        return payload;
-    }
-
-    public void setPayload(String payload) {
-        this.payload = payload;
-    }
-
-    public String getSignature() {
-        return signature;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
     }
 }

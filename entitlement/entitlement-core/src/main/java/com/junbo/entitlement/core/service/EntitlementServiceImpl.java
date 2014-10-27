@@ -110,12 +110,14 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Override
     @Transactional
     public Entitlement addEntitlement(final Entitlement entitlement) {
+        /**  remove byTrackingUuid to save time
         if (entitlement.getTrackingUuid() != null) {
             Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "create");
             if (existing != null) {
                 return existing;
             }
         }
+         **/
 
         fillCreate(entitlement);
         validateCreate(entitlement);
@@ -155,12 +157,14 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public Entitlement updateEntitlement(final String entitlementId, final Entitlement entitlement) {
         validateUpdateId(entitlementId, entitlement);
+        /**  remove byTrackingUuid to save time
         if (entitlement.getTrackingUuid() != null) {
             Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "update");
             if (existing != null) {
                 return existing;
             }
         }
+         **/
 
         final Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
@@ -270,12 +274,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         checkDateFormat("startExpirationTime", entitlementSearchParam.getStartExpirationTime());
         checkDateFormat("endExpirationTime", entitlementSearchParam.getEndExpirationTime());
         checkDateFormat("lastModifiedTime", entitlementSearchParam.getLastModifiedTime());
-    }
-
-    @Override
-    @Transactional
-    public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
-        return entitlementRepository.getByTrackingUuid(shardMasterId, trackingUuid);
     }
 
     @Override
