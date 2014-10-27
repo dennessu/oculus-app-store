@@ -92,6 +92,8 @@
         <property name="dbName" value="non_exists" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
         <property name="piiHashFactory" ref="piiHashFactory" />
+        <property name="maxEntitySize" value="${common.cloudant.cache.maxentitysize}" />
+        <property name="expiration" value="${common.cloudant.cache.expiration}" />
     </bean>
 
     <bean id="cloudantCommunicationRepository" class="com.junbo.identity.data.repository.impl.cloudant.CommunicationRepositoryCloudantImpl" parent="cloudantClient">
