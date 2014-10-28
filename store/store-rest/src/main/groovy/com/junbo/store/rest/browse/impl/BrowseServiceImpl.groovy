@@ -5,31 +5,29 @@ import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
-import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
-import com.junbo.entitlement.spec.model.*
+import com.junbo.entitlement.spec.model.DownloadUrlGetOptions
+import com.junbo.entitlement.spec.model.DownloadUrlResponse
 import com.junbo.langur.core.promise.Promise
 import com.junbo.rating.spec.model.priceRating.RatingItem
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.clientproxy.utils.ItemBuilder
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.rest.challenge.ChallengeHelper
-import com.junbo.store.rest.utils.CatalogUtils
 import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.AppDetails
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.Review
-import com.junbo.store.spec.model.browse.document.RevisionNote
 import com.junbo.store.spec.model.browse.document.SectionInfo
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
-import com.junbo.store.spec.model.external.casey.CaseyResults
+import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -65,29 +63,28 @@ class BrowseServiceImpl implements BrowseService {
     @Resource(name = 'storeChallengeHelper')
     private ChallengeHelper challengeHelper
 
-    @Resource(name = 'storeCatalogUtils')
-    private CatalogUtils catalogUtils
-
     @Resource(name = 'storeSectionService')
     private SectionService sectionService
 
-    @Resource(name = 'storeLocaleUtils')
-    private LocaleUtils localeUtils
-
     @Resource(name = 'storeReviewValidator')
     private ReviewValidator reviewValidator
+
+    @Resource(name = 'storeItemBuilder')
+    private ItemBuilder itemBuilder
 
     private Set<String> libraryItemTypes = [
             ItemType.APP.name()
     ] as Set
 
+    private Set<String> iapLibraryItemTypes = [
+            ItemType.CONSUMABLE_UNLOCK.name(),
+            ItemType.PERMANENT_UNLOCK.name()
+    ] as Set
+
     @Override
-    Promise<Item> getItem(ItemId itemId, boolean useSearch, boolean includeDetails, ApiContext apiContext) {
+    Promise<Item> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext) {
         Promise.pure().then {
-            if (!useSearch) {
-                return facadeContainer.catalogFacade.getItem(itemId, Images.BuildType.Item_Details, apiContext)
-            }
-            facadeContainer.caseyFacade.search(itemId, Images.BuildType.Item_Details, apiContext).then { CaseyResults<Item> results ->
+            facadeContainer.caseyFacade.search(itemId, Images.BuildType.Item_Details, true, apiContext).then { CaseyResults<Item> results ->
                 if (CollectionUtils.isEmpty(results?.items)) {
                     throw AppCommonErrors.INSTANCE.resourceNotFound('Item', itemId).exception()
                 }
@@ -121,7 +118,7 @@ class BrowseServiceImpl implements BrowseService {
             }
 
             SectionLayoutResponse response = new SectionLayoutResponse()
-            response.breadcrumbs = generateBreadcrumbs(sectionInfoNode, apiContext)
+            response.breadcrumbs = generateBreadcrumbs(sectionInfoNode)
             response.name = sectionInfoNode.name
             response.children = sectionInfoNode.children?.collect {SectionInfoNode e -> e.toSectionInfo() }
             response.ordered = false
@@ -142,38 +139,21 @@ class BrowseServiceImpl implements BrowseService {
     }
 
     @Override
-    Promise<LibraryResponse> getLibrary(ApiContext apiContext) {
+    Promise<LibraryResponse> getLibrary(boolean isIAP, ItemId hostItemId, ApiContext apiContext) {
         LibraryResponse result = new LibraryResponse(items: [])
-        Set<String> itemIdSet = [] as Set
-        PageMetadata pageMetadata = new PageMetadata()
-        EntitlementSearchParam searchParam = new EntitlementSearchParam(userId: apiContext.user, type: EntitlementType.DOWNLOAD.name(), isActive: true)
-        CommonUtils.loop {
-            resourceContainer.entitlementResource.searchEntitlements(searchParam, pageMetadata).then { Results<Entitlement> results ->
-                Promise.each(results.items) { Entitlement entitlement ->
-                    if (itemIdSet.contains(entitlement.itemId)) {
-                        LOGGER.warn('name=Store_Library_Duplicate_Item_Found, itemId={}, userId={}', entitlement.itemId, apiContext.user)
-                        return Promise.pure()
-                    }
-                    itemIdSet << entitlement.itemId
-                    getLibraryItemFromEntitlement(entitlement, apiContext).then { Item item ->
-                        if (item != null) {
-                            result.items << item
-                        }
-                        return Promise.pure()
-                    }
-                }.then {
-                    String cursor = CommonUtils.getQueryParam(results.next?.href, 'bookmark')
-                    if (results.items.isEmpty() || StringUtils.isEmpty(cursor)) {
-                        return Promise.pure(Promise.BREAK)
-                    }
-                    pageMetadata.bookmark = cursor
-                    return Promise.pure()
-                }
+        EntitlementType entitlementType = isIAP ? EntitlementType.ALLOW_IN_APP : EntitlementType.DOWNLOAD
+        Set<String> itemTypes = isIAP ? iapLibraryItemTypes : libraryItemTypes
+
+        facadeContainer.entitlementFacade.getEntitlements(entitlementType, itemTypes, hostItemId, true, apiContext).then { List<com.junbo.store.spec.model.Entitlement> entitlementList ->
+            result.items = entitlementList.collect {com.junbo.store.spec.model.Entitlement entitlement -> entitlement.itemDetails}.asList()
+            if (isIAP) {
+                return Promise.pure()
             }
-        }.then {
             fillCurrentUserReview(result?.items, apiContext).then {
                 return Promise.pure(result)
             }
+        }.then {
+            return Promise.pure(result)
         }
     }
 
@@ -181,7 +161,7 @@ class BrowseServiceImpl implements BrowseService {
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request, ApiContext apiContext) {
         ItemRevision itemRevision
         DeliveryResponse result = new DeliveryResponse()
-        catalogUtils.checkItemOwnedByUser(request.itemId, apiContext.user).then { Boolean owned ->
+        facadeContainer.entitlementFacade.checkEntitlements(apiContext.user, request.itemId).then { Boolean owned ->
             if (!owned) {
                 throw AppErrors.INSTANCE.itemNotPurchased().exception()
             }
@@ -219,7 +199,8 @@ class BrowseServiceImpl implements BrowseService {
 
     private Promise<ListResponse> innerGetList(ListRequest request, SectionInfoNode sectionInfoNode, ApiContext apiContext) {
         ListResponse listResponse = new ListResponse(items: [])
-        facadeContainer.caseyFacade.search(sectionInfoNode, request.cursor, request.count, Images.BuildType.Item_List, apiContext).then { CaseyResults<Item> caseyResults ->
+        facadeContainer.caseyFacade.search(sectionInfoNode, request.cursor, request.count, Images.BuildType.Item_List, true,
+                apiContext).then { CaseyResults<Item> caseyResults ->
             if (caseyResults.cursorString != null) {
                 listResponse.next = new ListResponse.NextOption(
                         cursor: caseyResults.cursorString,
@@ -257,21 +238,13 @@ class BrowseServiceImpl implements BrowseService {
         return null
     }
 
-    private Promise<Item> getLibraryItemFromEntitlement(Entitlement entitlement, ApiContext apiContext) {
-        resourceContainer.itemResource.getItem(entitlement.itemId).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
-            if (!libraryItemTypes.contains(catalogItem.type)) {
-                return Promise.pure(null)
-            }
-            getItem(new ItemId(entitlement.itemId), false, false, apiContext).then { Item item ->
-                item.ownedByCurrentUser = true
-                return Promise.pure(item)
-            }
-        }
-    }
-
     private Promise<Item> decorateItem(boolean ratePrice, boolean includeDetails, ApiContext apiContext, Item item) {
         Promise.pure().then {
             if (!ratePrice || item?.offer == null) {
+                return Promise.pure()
+            }
+            if (item.offer.isFree) {
+                item.offer.price = BigDecimal.ZERO
                 return Promise.pure()
             }
             facadeContainer.priceRatingFacade.rateOffer(item.offer.self, apiContext).then { RatingItem ratingItem ->
@@ -285,13 +258,12 @@ class BrowseServiceImpl implements BrowseService {
                 fillItemDetails(item, apiContext)
             }
         }.then {
-            fillNullValueWithDefault(item)
             return Promise.pure(item)
         }
     }
 
     private Promise fillItemDetails(Item item, ApiContext apiContext) {
-        catalogUtils.checkItemOwnedByUser(item.getSelf(), apiContext.user).then { Boolean owned ->
+        facadeContainer.entitlementFacade.checkEntitlements(apiContext.user, item.getSelf()).then { Boolean owned ->
             item.ownedByCurrentUser = owned
             return Promise.pure()
         }.then { // get current user review
@@ -323,7 +295,7 @@ class BrowseServiceImpl implements BrowseService {
         }
     }
 
-    private static List<SectionInfo> generateBreadcrumbs(SectionInfoNode sectionInfoNode, ApiContext apiContext) {
+    private static List<SectionInfo> generateBreadcrumbs(SectionInfoNode sectionInfoNode) {
         List<SectionInfo> breadCrumbs = []
         while (sectionInfoNode.parent != null) {
             breadCrumbs << sectionInfoNode.parent.toSectionInfo()
@@ -379,43 +351,5 @@ class BrowseServiceImpl implements BrowseService {
 
     private int getPageSize(Integer count) {
         return (count == null || count <= 0) ? DEFAULT_PAGE_SIZE : Math.min(count, MAX_PAGE_SIZE)
-    }
-
-    private void fillNullValueWithDefault(Item item) {
-        item.title = CommonUtils.toDefaultIfNull(item.title)
-        item.descriptionHtml = CommonUtils.toDefaultIfNull(item.descriptionHtml)
-        item.creator = CommonUtils.toDefaultIfNull(item.creator)
-        item.supportedLocales = CommonUtils.toDefaultIfNull(item.supportedLocales)
-        if (item.images == null) {
-            item.images = new Images(main: [:] as Map, gallery: [] as List)
-        }
-        if (item.appDetails != null) {
-            fillNullValueWithDefault(item.appDetails)
-        }
-    }
-
-    private void fillNullValueWithDefault(AppDetails appDetails) {
-        appDetails.categories = CommonUtils.toDefaultIfNull(appDetails.categories)
-        appDetails.genres = CommonUtils.toDefaultIfNull(appDetails.genres)
-        appDetails.releaseDate = CommonUtils.toDefaultIfNull(appDetails.releaseDate)
-        appDetails.developerName = CommonUtils.toDefaultIfNull(appDetails.developerName)
-        appDetails.publisherName = CommonUtils.toDefaultIfNull(appDetails.publisherName)
-        appDetails.packageName = CommonUtils.toDefaultIfNull(appDetails.packageName)
-        appDetails.versionString = CommonUtils.toDefaultIfNull(appDetails.versionString)
-        appDetails.versionCode = CommonUtils.toDefaultIfNull(appDetails.versionCode)
-        appDetails.installationSize = CommonUtils.toDefaultIfNull(appDetails.installationSize)
-        if (appDetails.revisionNotes != null) {
-            for (RevisionNote revisionNote : appDetails.revisionNotes) {
-                fillNullValueWithDefault(revisionNote)
-            }
-        }
-    }
-
-    private void fillNullValueWithDefault(RevisionNote revisionNote) {
-        revisionNote.description = CommonUtils.toDefaultIfNull(revisionNote.description)
-        revisionNote.releaseDate = CommonUtils.toDefaultIfNull(revisionNote.releaseDate)
-        revisionNote.title = CommonUtils.toDefaultIfNull(revisionNote.title)
-        revisionNote.versionCode = CommonUtils.toDefaultIfNull(revisionNote.versionCode)
-        revisionNote.versionString = CommonUtils.toDefaultIfNull(revisionNote.versionString)
     }
 }

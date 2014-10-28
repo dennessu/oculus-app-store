@@ -8,13 +8,11 @@ package com.junbo.store.spec.resource;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.routing.RouteByAccessToken;
-import com.junbo.store.spec.model.PageParam;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.browse.*;
-import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
 
@@ -80,24 +78,6 @@ public interface StoreResource {
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest);
 
     @GET
-    @Path("/iap/offers")
-    @RouteByAccessToken(switchable = true)
-    // This requires email verification
-    Promise<IAPOfferGetResponse> iapGetOffers(@BeanParam IAPOfferGetRequest iapOfferGetRequest);
-
-    @GET
-    @Path("/iap/entitlements")
-    @RouteByAccessToken(switchable = true)
-    // This requires email verification
-    Promise<IAPEntitlementGetResponse> iapGetEntitlements(@BeanParam IAPEntitlementGetRequest iapEntitlementGetRequest, @BeanParam PageParam pageParam);
-
-    @POST
-    @Path("/iap/consumption")
-    @RouteByAccessToken(switchable = true)
-    // This requires email verification
-    Promise<IAPEntitlementConsumeResponse> iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest);
-
-    @GET
     @Path("/toc")
     @RouteByAccessToken(switchable = true)
     Promise<TocResponse> getToc();
@@ -141,4 +121,5 @@ public interface StoreResource {
     @Path("/generate-download-info")
     @RouteByAccessToken(switchable = true)
     Promise<DeliveryResponse> getDelivery(@BeanParam DeliveryRequest request);
+
 }

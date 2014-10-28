@@ -19,5 +19,7 @@
 
   "id_token_issuer" : "api.oculus.com",
   "need_consent" : false,
+  "allowed_groups" : [ "Oculus.CatalogAdmin", "Oculus.IdentityAdmin" ],
+  "allow_partial_scopes" : true,
   "internal" : true
 }

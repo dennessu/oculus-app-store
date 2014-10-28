@@ -17,19 +17,21 @@ import com.junbo.emulator.casey.spec.resource.CaseyEmulatorResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.common.utils.CommonUtils
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating
-import com.junbo.store.spec.model.external.casey.CaseyResults
-import com.junbo.store.spec.model.external.casey.CaseyReview
-import com.junbo.store.spec.model.external.casey.ReviewSearchParams
-import com.junbo.store.spec.model.external.casey.cms.*
-import com.junbo.store.spec.model.external.casey.search.CaseyOffer
-import com.junbo.store.spec.model.external.casey.search.OfferSearchParams
+import com.junbo.store.spec.model.external.sewer.SewerParam
+import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating
+import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview
+import com.junbo.store.spec.model.external.sewer.casey.ReviewSearchParams
+import com.junbo.store.spec.model.external.sewer.casey.cms.*
+import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer
+import com.junbo.store.spec.model.external.sewer.casey.search.OfferSearchParams
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
+import javax.ws.rs.BeanParam
 /**
  * The CaseyEmulatorResourceRandomImpl class.
  */
@@ -129,7 +131,13 @@ class CaseyEmulatorResourceRandomImpl implements CaseyEmulatorResource {
     }
 
     @Override
-    Promise<CaseyResults<CmsPage>> getCmsPages(CmsPageGetParams pageGetParams) {
+    Promise<CaseyResults<CmsPage>> getCmsPages(
+            @BeanParam CmsPageGetParams pageGetParams, @BeanParam SewerParam sewerParam) {
+        throw new RuntimeException('not implemented')
+    }
+
+    @Override
+    Promise<CmsPage> getCmsPages(String pageId, SewerParam sewerParam) {
         throw new RuntimeException('not implemented')
     }
 

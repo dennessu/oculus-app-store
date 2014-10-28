@@ -8,8 +8,8 @@ package com.junbo.test.store.apihelper.impl;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.store.spec.model.external.casey.CaseyResults;
-import com.junbo.store.spec.model.external.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.store.apihelper.CaseyEmulatorService;
@@ -49,6 +49,9 @@ public class CaseyEmulatorServiceImpl extends HttpClientBase  implements CaseyEm
         if (label != null) {
             builder.addParameter("label", "\"" + label + "\"");
         }
+        builder.addParameter("expand", "(results(schedule))"); // expand is required, otherwise the emulator will fail
+        builder.addParameter("country", "US");
+        builder.addParameter("locale", "en_US");
 
         String responseBody = restApiCall(HTTPMethod.GET, builder.build().toString(), expectedResponseCode);
 

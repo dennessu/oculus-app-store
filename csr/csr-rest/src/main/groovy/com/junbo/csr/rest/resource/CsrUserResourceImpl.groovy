@@ -209,13 +209,16 @@ class CsrUserResourceImpl implements CsrUserResource {
         if (csrInvitationCode == null) {
             throw AppErrors.INSTANCE.csrInvitationCodeInvalid().exception()
         }
-
         csrInvitationCodeRepository.removeByUserIdEmail(csrInvitationCode.userId.value, csrInvitationCode.email)
 
         // move user from pending group to tier group
-        identityService.updateUserGroupMembership(csrInvitationCode.userGroupId, csrInvitationCode.userId, csrInvitationCode.inviteGroupId)
+        Results<CsrGroup> csrGroupResults = csrGroupResource.list(new CsrGroupListOptions()).get()
+        List<GroupId> groupIds = csrGroupResults.items.empty ?
+                (List<GroupId>) Collections.emptyList() :
+                csrGroupResults.items.collect { CsrGroup csrGroup -> csrGroup.groupId }
 
-        return Promise.pure(Response.ok().entity('You have joined OculusVR CSR group').build())
+        identityService.switchUserGroupMembershipWithinGroups(csrInvitationCode.userId, csrInvitationCode.inviteGroupId, groupIds)
+        return Promise.pure(Response.ok().entity('You are a member of Oculus CSR').build())
     }
 
     private Promise<String> getUserName(User user) {

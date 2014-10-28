@@ -20,7 +20,7 @@ public class PreparePurchaseRequest {
 
     private OfferId offer;
 
-    private IAPParams iapParams;
+    private Boolean isIAP;
 
     private ChallengeAnswer challengeAnswer;
 
@@ -48,19 +48,19 @@ public class PreparePurchaseRequest {
         this.purchaseToken = purchaseToken;
     }
 
-    public IAPParams getIapParams() {
-        return iapParams;
-    }
-
-    public void setIapParams(IAPParams iapParams) {
-        this.iapParams = iapParams;
-    }
-
     public ChallengeAnswer getChallengeAnswer() {
         return challengeAnswer;
     }
 
     public void setChallengeAnswer(ChallengeAnswer challengeAnswer) {
         this.challengeAnswer = challengeAnswer;
+    }
+
+    public Boolean getIsIAP() {
+        return isIAP;
+    }
+
+    public void setIsIAP(Boolean isIAP) {
+        this.isIAP = isIAP;
     }
 }

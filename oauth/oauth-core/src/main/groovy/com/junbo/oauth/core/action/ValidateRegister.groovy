@@ -114,29 +114,11 @@ class ValidateRegister implements Action {
             }
         }
 
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(email)) {
+        if (!contextWrapper.errors.isEmpty()) {
             return Promise.pure(new ActionResult('error'))
         }
-        return userService.checkUsernameAndEmailBlocker(username, email).recover { Throwable throwable ->
-            ExceptionUtil.handleIdentityException(throwable, contextWrapper, false)
-            return Promise.pure(null)
-        }.then { String blockState ->
-            if (StringUtils.isEmpty(blockState)) {
-                return Promise.pure(new ActionResult('error'))
-            }
 
-            if (blockState.equalsIgnoreCase('ERROR')) {
-                LOGGER.debug('Username and email are occupied')
-                contextWrapper.errors.add(AppErrors.INSTANCE.usernameAndEmailOccupied().error())
-            }
-
-            if (!contextWrapper.errors.isEmpty()) {
-                return Promise.pure(new ActionResult('error'))
-            }
-            contextWrapper.registrationState = blockState
-
-            return Promise.pure(new ActionResult('success'))
-        }
+        return Promise.pure(new ActionResult('success'))
     }
 
     @Required

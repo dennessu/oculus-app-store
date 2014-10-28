@@ -48,6 +48,4 @@ interface UserService {
     Promise<String> buildResponseLink(EmailVerifyCode emailVerifyCode)
 
     Promise<List<String>> getResetPasswordLinks(String username, String email, String locale, String country)
-
-    Promise<String> checkUsernameAndEmailBlocker(String username, String email)
 }

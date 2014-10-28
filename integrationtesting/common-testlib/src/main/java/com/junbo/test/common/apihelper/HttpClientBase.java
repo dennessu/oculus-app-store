@@ -12,6 +12,7 @@ import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RandomFactory;
 import com.ning.http.client.*;
 import com.ning.http.client.providers.netty.NettyAsyncHttpProviderConfig;
 import com.ning.http.client.providers.netty.NettyResponse;
@@ -107,6 +108,7 @@ public abstract class HttpClientBase {
         }
 
         //for further header, we can set dynamic value from properties here
+        headers.add(Header.USER_IP, RandomFactory.getRandomIp());
         return headers;
     }
 

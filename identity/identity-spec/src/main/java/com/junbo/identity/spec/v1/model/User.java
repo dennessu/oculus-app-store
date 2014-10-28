@@ -129,8 +129,8 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
     @HateoasLink("tos-agreements?userId={id}")
     private Link tosAgreements;
 
-    @ApiModelProperty(position = 11, required = false, value = "[Client Immutable] A Link to UserCredential resource to Search user credentials of the user.")
-    @HateoasLink("/users/{id}/credentials")
+    @ApiModelProperty(position = 11, required = false, value = "[Client Immutable] A Link to UserCredential resource to Search user password type credentials of the user.")
+    @HateoasLink("/users/{id}/credentials?credentialType=PASSWORD")
     private Link credentials;
 
     @ApiModelProperty(position = 12, required = false, value = "[Client Immutable] A Link to CredentialAttempt-List resource to " +

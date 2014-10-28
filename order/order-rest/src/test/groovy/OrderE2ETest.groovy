@@ -56,6 +56,33 @@ class OrderE2ETest extends BaseTest {
     }
 
     @Test(enabled = true)
+    void testPostFreeOrder() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
+            @Override
+            Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return Promise.pure('MOCK_FREE_ORDER')
+            }
+        }
+        def order = TestBuilder.buildOrderRequest()
+        order.orderItems.add(TestBuilder.buildOrderItem())
+        order.user = new UserId(idGenerator.nextId(UserId))
+        order.tentative = false
+        order.shippingMethod = 'free'
+        order.shippingAddress = null
+        order.shippingToName = null
+        order.shippingToPhone = null
+
+        def orderResult = orderResource.createOrder(order).get()
+        def orderGet = orderResource.getOrderByOrderId(orderResult.getId()).get()
+
+        assert orderResult.status == OrderStatus.COMPLETED.name()
+        assert !orderResult.tentative
+        assert orderGet.status == OrderStatus.COMPLETED.name()
+        assert !orderGet.tentative
+        assert order.getId() != null
+    }
+
+    @Test(enabled = true)
     Order testPutTentativeOrder() {
         def tentativeOrder = testPostTentativeOrder()
         orderServiceImpl.flowSelector = new FlowSelector() {

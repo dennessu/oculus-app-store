@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -51,19 +49,19 @@ public class ItemFacadeImpl implements ItemFacade {
 
     @Override
     public ItemRevision getItem(String itemId) {
-        Date now = new Date();
         ItemRevision itemRevision = null;
-        ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
-        options.setItemIds(Collections.singleton(itemId));
-        options.setTimestamp(now.getTime());
         try {
             LOGGER.info("Getting itemRevisions for item [{}] started.", itemId);
-            Results<ItemRevision> results = itemRevisionClient.getItemRevisions(options).get();
-            if (results.getItems().size() == 0) {
+            Item item = itemClient.getItem(itemId).get();
+            if (item == null) {
+                LOGGER.info("There is no item for itemId [{}].", itemId);
+                return null;
+            }
+            itemRevision = itemRevisionClient.getItemRevision(item.getCurrentRevisionId(), new ItemRevisionGetOptions()).get();
+            if (itemRevision == null) {
                 LOGGER.info("There is no itemRevision for item [{}].", itemId);
                 return null;
             }
-            itemRevision = results.getItems().get(0);
             LOGGER.info("Getting itemRevisions for item [{}] finished.", itemId);
         } catch (Exception e) {
             LOGGER.error("Getting itemRevisions for item [{" + itemId + "}] failed.", e);

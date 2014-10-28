@@ -56,7 +56,7 @@ def main():
             comm_array.append({comm_id : True if user["optins"][comm_name] else False})
         del user["optins"]
         user["communications"] = comm_array
-        user["nickname"] = "getanickname"
+        user["nickname"] = user["username"]
         input_users.append(user)
         count += 1
         if count == 20:
@@ -109,7 +109,7 @@ def write_worker(users, write_q, results, output):
         user_id = users[start]['id']
         user = results.pop(str(user_id), None)
         if user:
-            output.write('"' + str(user_id) + '"')
+            output.write('"' + users[start]['username'] + '"')
             output.write(":")
             if not user["error"]: del user["error"]
             output.write(json.dumps(user))

@@ -7,6 +7,7 @@
 package com.junbo.test.store.utility;
 
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.ItemId;
@@ -23,7 +24,6 @@ import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.common.Utility.BaseValidationHelper;
-import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import org.testng.Assert;
@@ -75,12 +75,12 @@ public class StoreValidationHelper extends BaseValidationHelper {
         }
     }
 
-    public void verifyLibraryResponse(LibraryResponse response, String offerId){
-        OfferRevision offerRevision = Master.getInstance().getOfferRevision(Master.getInstance().getOffer(offerId).getCurrentRevisionId());
-        Item item =  Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
+    public void verifyLibraryResponse(LibraryResponse response, ItemId itemId) throws Exception {
+        Item item =  storeTestDataProvider.getItemByItemId(itemId.getValue());
+        ItemRevision itemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevisionId());
         com.junbo.store.spec.model.browse.document.Item responseItem = null;
         for (com.junbo.store.spec.model.browse.document.Item e : response.getItems()) {
-            if (e.getOffer() != null && e.getOffer().getSelf() != null && offerId.equals(e.getOffer().getSelf().getValue())) {
+            if (e.getSelf().equals(itemId)) {
                 responseItem = e;
                 break;
             }
@@ -88,7 +88,7 @@ public class StoreValidationHelper extends BaseValidationHelper {
 
         Assert.assertNotNull(responseItem);
         verifyEqual(responseItem.getItemType(), item.getType(), "verify item type");
-        verifyEqual(responseItem.getTitle(), offerRevision.getLocales().get("en_US").getName(),"verify entitlement type");
+        verifyEqual(responseItem.getTitle(), itemRevision.getLocales().get("en_US").getName(),"verify entitlement type");
         verifyEqual(responseItem.getOwnedByCurrentUser(), Boolean.valueOf(true),"verify owned by current user");
     }
 

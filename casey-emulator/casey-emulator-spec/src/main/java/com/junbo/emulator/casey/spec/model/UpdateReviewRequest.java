@@ -5,7 +5,7 @@
  */
 package com.junbo.emulator.casey.spec.model;
 
-import com.junbo.store.spec.model.external.casey.CaseyReview;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
 
 import java.util.List;
 

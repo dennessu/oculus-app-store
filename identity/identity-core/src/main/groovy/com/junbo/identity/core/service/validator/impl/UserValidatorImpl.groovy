@@ -82,7 +82,7 @@ class UserValidatorImpl implements UserValidator {
         if (user.status == null) {
             user.status = UserStatus.ACTIVE.toString()
         }
-        return validateUserInfo(user).then {
+        return validateUserInfo(null, user).then {
             if (user.username != null) {
                 return validateUserNameDuplicate(user, user).then {
                     return userPersonalInfoService.get(user.username).then { UserPersonalInfo userPersonalInfo ->
@@ -134,7 +134,7 @@ class UserValidatorImpl implements UserValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('isAnonymous').exception()
         }
 
-        return validateUserInfo(user).then {
+        return validateUserInfo(oldUser, user).then {
             if (user.username != oldUser.username) {
                 return validateUserNameDuplicate(user, oldUser).then {
                     return validateEmailUpdate(user, oldUser)
@@ -301,77 +301,73 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
-    private Promise<Void> validateUserInfo(User user) {
-        if (user.username != null) {
-            if (user.isAnonymous == null) {
-                user.isAnonymous = false
+    private Promise<Void> validateUserInfo(User oldUser, User newUser) {
+        if (newUser.username != null) {
+            if (newUser.isAnonymous == null) {
+                newUser.isAnonymous = false
             }
 
-            if (user.isAnonymous) {
-                throw AppCommonErrors.INSTANCE.fieldNotWritable('isAnonymous', user.isAnonymous, "false").exception()
+            if (newUser.isAnonymous) {
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('isAnonymous', newUser.isAnonymous, "false").exception()
             }
         } else {
-            if (user.isAnonymous == null) {
-                user.isAnonymous = true
+            if (newUser.isAnonymous == null) {
+                newUser.isAnonymous = true
             }
 
-            if (!user.isAnonymous) {
-                throw AppCommonErrors.INSTANCE.fieldNotWritable('isAnonymous', user.isAnonymous, "true").exception()
+            if (!newUser.isAnonymous) {
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('isAnonymous', newUser.isAnonymous, "true").exception()
             }
         }
 
-        if (user.preferredTimezone != null) {
-            if (!timezoneValidator.isValidTimezone(user.preferredTimezone)) {
+        if (newUser.preferredTimezone != null && oldUser?.preferredTimezone != newUser.preferredTimezone) {
+            if (!timezoneValidator.isValidTimezone(newUser.preferredTimezone)) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('preferredTimezone').exception()
             }
         } else {
-            user.preferredTimezone = timezoneValidator.defaultTimezone
+            newUser.preferredTimezone = timezoneValidator.defaultTimezone
         }
 
-        if (user.isAnonymous == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('isAnonymous').exception()
-        }
-
-        if (user.status != null) {
+        if (newUser.status != null && oldUser?.status != newUser.status) {
             if (!UserStatus.values().any { UserStatus userStatus ->
-                return userStatus.toString() == user.status
+                return userStatus.toString() == newUser.status
             }) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('status').exception()
             }
         }
 
-        return validateUserName(user).then {
-                return validateLocale(user)
+        return validateUserName(oldUser, newUser).then {
+                return validateLocale(oldUser, newUser)
             }.then {
-                return validateAddresses(user)
+                return validateAddresses(oldUser, newUser)
             }.then {
-                return validateEmails(user)
+                return validateEmails(oldUser, newUser)
             }.then {
-                return validatePhones(user)
+                return validatePhones(oldUser, newUser)
             }.then {
-                return validateName(user)
+                return validateName(oldUser, newUser)
             }.then {
-                return validateDob(user)
+                return validateDob(oldUser, newUser)
             }.then {
-                return validateSMS(user)
+                return validateSMS(oldUser, newUser)
             }.then {
-                return validateQQ(user)
+                return validateQQ(oldUser, newUser)
             }.then {
-                return validateWhatsApp(user)
+                return validateWhatsApp(oldUser, newUser)
             }.then {
-                return validatePassport(user)
+                return validatePassport(oldUser, newUser)
             }.then {
-                return validateGovernmentId(user)
+                return validateGovernmentId(oldUser, newUser)
             }.then {
-                return validateDriversLicense(user)
+                return validateDriversLicense(oldUser, newUser)
             }.then {
-                return validateGender(user)
+                return validateGender(oldUser, newUser)
             }.then {
-                return validateCountryOfResidence(user)
+                return validateCountryOfResidence(oldUser, newUser)
             }.then {
-                return validateVat(user)
+                return validateVat(newUser)
             }.then {
-                return validateDefaultPI(user)
+                return validateDefaultPI(oldUser, newUser)
             }
     }
 
@@ -479,11 +475,14 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
-    Promise<Void> validateUserName(User user) {
-        if (user.username != null) {
-            return userPersonalInfoService.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+    Promise<Void> validateUserName(User oldUser, User newUser) {
+        if (isUserPIISame(oldUser?.username, newUser?.username)) {
+            return Promise.pure(null)
+        }
+        if (newUser.username != null) {
+            return userPersonalInfoService.get(newUser.username).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
-                    throw AppErrors.INSTANCE.userPersonalInfoNotFound(user.username).exception()
+                    throw AppErrors.INSTANCE.userPersonalInfoNotFound(newUser.username).exception()
                 }
 
                 if (userPersonalInfo.type != UserPersonalInfoType.USERNAME.toString()) {
@@ -497,11 +496,14 @@ class UserValidatorImpl implements UserValidator {
         return Promise.pure(null)
     }
 
-    Promise<Void> validateLocale(User user) {
-        if (user.preferredLocale != null) {
-            return localeService.get(user.preferredLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
+    Promise<Void> validateLocale(User oldUser, User newUser) {
+        if (oldUser?.preferredLocale == newUser?.preferredLocale) {
+            return Promise.pure(null)
+        }
+        if (newUser.preferredLocale != null) {
+            return localeService.get(newUser.preferredLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
                 if (locale == null) {
-                    throw AppCommonErrors.INSTANCE.fieldInvalid(user.preferredLocale.value).exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid(newUser.preferredLocale.value).exception()
                 }
 
                 return Promise.pure(null)
@@ -525,17 +527,23 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
-    Promise<Void> validateAddresses(User user) {
-        if (user.addresses != null) {
-            checkSinglePersonalInfoLink(user.addresses)
-            return validateUserPersonalInfoLinkIterator(user, user.addresses.iterator(),
+    Promise<Void> validateAddresses(User oldUser, User newUser) {
+        if (isUserPIILinkListSame(oldUser?.addresses, newUser?.addresses)) {
+            return Promise.pure(null)
+        }
+        if (newUser.addresses != null) {
+            checkSinglePersonalInfoLink(newUser.addresses)
+            return validateUserPersonalInfoLinkIterator(newUser, newUser.addresses.iterator(),
                     UserPersonalInfoType.ADDRESS.toString())
         }
 
         return Promise.pure(null)
     }
 
-    Promise<Void> validateEmails(User user) {
+    Promise<Void> validateEmails(User oldUser, User user) {
+        if (isUserPIILinkListSame(oldUser?.emails, user?.emails)) {
+            return Promise.pure(null)
+        }
         if (user.emails != null) {
             checkSinglePersonalInfoLink(user.emails)
             return validateUserPersonalInfoLinkIterator(user, user.emails.iterator(),
@@ -544,92 +552,125 @@ class UserValidatorImpl implements UserValidator {
         return Promise.pure(null)
     }
 
-    Promise<Void> validatePhones(User user) {
-        if (user.phones != null) {
-            checkSinglePersonalInfoLink(user.phones)
-            return validateUserPersonalInfoLinkIterator(user, user.phones.iterator(),
+    Promise<Void> validatePhones(User oldUser, User newUser) {
+        if (isUserPIILinkListSame(oldUser?.phones, newUser?.phones)) {
+            return Promise.pure(null)
+        }
+        if (newUser.phones != null) {
+            checkSinglePersonalInfoLink(newUser.phones)
+            return validateUserPersonalInfoLinkIterator(newUser, newUser.phones.iterator(),
                     UserPersonalInfoType.PHONE.toString())
         }
 
         return Promise.pure(null)
     }
 
-    Promise<Void> validateName(User user) {
-        if (user.name != null) {
-            return validateUserPersonalInfoId(user, user.name, UserPersonalInfoType.NAME.toString())
+    Promise<Void> validateName(User oldUser, User newUser) {
+        if (isUserPIISame(oldUser?.name, newUser?.name)) {
+            return Promise.pure(null)
+        }
+        if (newUser.name != null) {
+            return validateUserPersonalInfoId(newUser, newUser.name, UserPersonalInfoType.NAME.toString())
         }
 
         return Promise.pure(null)
     }
 
-    Promise<Void> validateDob(User user) {
-        if (user.dob != null) {
-            return validateUserPersonalInfoId(user, user.dob, UserPersonalInfoType.DOB.toString())
+    Promise<Void> validateDob(User oldUser, User newUser) {
+        if (isUserPIISame(oldUser?.name, newUser?.name)) {
+            return Promise.pure(null)
+        }
+        if (newUser.dob != null) {
+            return validateUserPersonalInfoId(newUser, newUser.dob, UserPersonalInfoType.DOB.toString())
         }
 
         return Promise.pure(null)
     }
 
-    Promise<Void> validateSMS(User user) {
-        if (user.textMessages != null) {
-            checkSinglePersonalInfoLink(user.textMessages)
-            return validateUserPersonalInfoLinkIterator(user, user.textMessages.iterator(),
+    Promise<Void> validateSMS(User oldUser, User newUser) {
+        if (isUserPIILinkListSame(oldUser?.textMessages, newUser?.textMessages)) {
+            return Promise.pure(null)
+        }
+        if (newUser.textMessages != null) {
+            checkSinglePersonalInfoLink(newUser.textMessages)
+            return validateUserPersonalInfoLinkIterator(newUser, newUser.textMessages.iterator(),
                     UserPersonalInfoType.SMS.toString())
         }
         return Promise.pure(null)
     }
 
-    Promise<Void> validateQQ(User user) {
-        if (user.qqs != null) {
-            checkSinglePersonalInfoLink(user.qqs)
-            return validateUserPersonalInfoLinkIterator(user, user.qqs.iterator(), UserPersonalInfoType.QQ.toString())
+    Promise<Void> validateQQ(User oldUser, User newUser) {
+        if (isUserPIILinkListSame(oldUser?.qqs, newUser?.qqs)) {
+            return Promise.pure(null)
+        }
+        if (newUser.qqs != null) {
+            checkSinglePersonalInfoLink(newUser.qqs)
+            return validateUserPersonalInfoLinkIterator(newUser, newUser.qqs.iterator(), UserPersonalInfoType.QQ.toString())
         }
         return Promise.pure(null)
     }
 
-    Promise<Void> validateWhatsApp(User user) {
-        if (user.whatsApps != null) {
-            checkSinglePersonalInfoLink(user.whatsApps)
-            return validateUserPersonalInfoLinkIterator(user, user.whatsApps.iterator(),
+    Promise<Void> validateWhatsApp(User oldUser, User newUser) {
+        if (isUserPIILinkListSame(oldUser?.whatsApps, newUser?.whatsApps)) {
+            return Promise.pure(null)
+        }
+        if (newUser.whatsApps != null) {
+            checkSinglePersonalInfoLink(newUser.whatsApps)
+            return validateUserPersonalInfoLinkIterator(newUser, newUser.whatsApps.iterator(),
                     UserPersonalInfoType.WHATSAPP.toString())
         }
         return Promise.pure(null)
     }
 
-    Promise<Void> validatePassport(User user) {
-        if (user.passport != null) {
-            return validateUserPersonalInfoId(user, user.passport, UserPersonalInfoType.PASSPORT.toString())
+    Promise<Void> validatePassport(User oldUser, User newUser) {
+        if (isUserPIISame(oldUser?.passport, newUser?.passport)) {
+            return Promise.pure(null)
+        }
+        if (newUser.passport != null) {
+            return validateUserPersonalInfoId(newUser, newUser.passport, UserPersonalInfoType.PASSPORT.toString())
         }
         return Promise.pure(null)
     }
 
-    Promise<Void> validateGovernmentId(User user) {
-        if (user.governmentId != null) {
-            return validateUserPersonalInfoId(user, user.governmentId, UserPersonalInfoType.GOVERNMENT_ID.toString())
+    Promise<Void> validateGovernmentId(User oldUser, User newUser) {
+        if (isUserPIISame(oldUser?.governmentId, newUser?.governmentId)) {
+            return Promise.pure(null)
+        }
+        if (newUser.governmentId != null) {
+            return validateUserPersonalInfoId(newUser, newUser.governmentId, UserPersonalInfoType.GOVERNMENT_ID.toString())
         }
         return Promise.pure(null)
     }
 
-    Promise<Void> validateDriversLicense(User user) {
-        if (user.driversLicense != null) {
-            return validateUserPersonalInfoId(user, user.driversLicense, UserPersonalInfoType.DRIVERS_LICENSE.toString())
+    Promise<Void> validateDriversLicense(User oldUser, User newUser) {
+        if (isUserPIISame(oldUser?.driversLicense, newUser?.driversLicense)) {
+            return Promise.pure(null)
+        }
+        if (newUser.driversLicense != null) {
+            return validateUserPersonalInfoId(newUser, newUser.driversLicense, UserPersonalInfoType.DRIVERS_LICENSE.toString())
         }
         return Promise.pure(null)
     }
 
-    Promise<Void> validateGender(User user) {
-        if (user.gender != null) {
-            return validateUserPersonalInfoId(user, user.gender, UserPersonalInfoType.GENDER.toString())
+    Promise<Void> validateGender(User oldUser, User newUser) {
+        if (isUserPIISame(oldUser?.gender, newUser?.gender)) {
+            return Promise.pure(null)
+        }
+        if (newUser.gender != null) {
+            return validateUserPersonalInfoId(newUser, newUser.gender, UserPersonalInfoType.GENDER.toString())
         }
 
         return Promise.pure(null)
     }
 
-    Promise<Void> validateCountryOfResidence(User user) {
-        if (user.countryOfResidence != null) {
-            return countryService.get(user.countryOfResidence).then { Country country ->
+    Promise<Void> validateCountryOfResidence(User oldUser, User newUser) {
+        if (oldUser?.countryOfResidence != newUser?.countryOfResidence) {
+            return Promise.pure(null)
+        }
+        if (newUser.countryOfResidence != null) {
+            return countryService.get(newUser.countryOfResidence).then { Country country ->
                 if (country == null) {
-                    throw AppErrors.INSTANCE.countryNotFound(user.countryOfResidence).exception()
+                    throw AppErrors.INSTANCE.countryNotFound(newUser.countryOfResidence).exception()
                 }
 
                 return Promise.pure(null)
@@ -668,14 +709,17 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
-    Promise<Void> validateDefaultPI(User user) {
-        if (user.defaultPI == null) {
+    Promise<Void> validateDefaultPI(User oldUser, User newUser) {
+        if (oldUser?.defaultPI == newUser?.defaultPI) {
+            return Promise.pure(null)
+        }
+        if (newUser.defaultPI == null) {
             return Promise.pure(null)
         }
 
-        return paymentInstrumentResource.getById(user.defaultPI).then { PaymentInstrument pi ->
+        return paymentInstrumentResource.getById(newUser.defaultPI).then { PaymentInstrument pi ->
             if (pi ==  null) {
-                throw AppErrors.INSTANCE.paymentInstrumentNotFound(user.defaultPI).exception()
+                throw AppErrors.INSTANCE.paymentInstrumentNotFound(newUser.defaultPI).exception()
             }
 
             return piTypeService.get(new PITypeId(pi.getType())).then { PIType piType ->
@@ -790,6 +834,51 @@ class UserValidatorImpl implements UserValidator {
         }
 
         return hash
+    }
+
+    private boolean isUserPIISame(UserPersonalInfoId oldPIIId, UserPersonalInfoId piiId) {
+        if (oldPIIId != piiId) {
+            return false
+        }
+
+        return true
+    }
+
+    private boolean isUserPIILinkListSame(List<UserPersonalInfoLink> oldLinks, List<UserPersonalInfoLink> links) {
+        if (CollectionUtils.isEmpty(oldLinks) && CollectionUtils.isEmpty(links)) {
+            return true
+        }
+
+        if (CollectionUtils.isEmpty(oldLinks) || CollectionUtils.isEmpty(links)) {
+            return false
+        }
+
+        if (oldLinks.size() != links.size()) {
+            return false
+        }
+
+        boolean sameLinkList = true
+
+        oldLinks.each { UserPersonalInfoLink link ->
+            UserPersonalInfoLink existing = links.find { UserPersonalInfoLink newLink ->
+                return newLink == link
+            }
+
+            if (existing == null) {
+                sameLinkList = false
+            }
+        }
+
+        links.each { UserPersonalInfoLink link ->
+            UserPersonalInfoLink existing = links.find { UserPersonalInfoLink newLink ->
+                return newLink == link
+            }
+
+            if (existing == null) {
+                sameLinkList = false
+            }
+        }
+        return sameLinkList
     }
 
     @Required

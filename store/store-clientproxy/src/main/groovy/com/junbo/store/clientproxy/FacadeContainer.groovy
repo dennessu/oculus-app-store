@@ -2,6 +2,7 @@ package com.junbo.store.clientproxy
 
 import com.junbo.store.clientproxy.casey.CaseyFacade
 import com.junbo.store.clientproxy.catalog.CatalogFacade
+import com.junbo.store.clientproxy.entitlement.EntitlementFacade
 import com.junbo.store.clientproxy.order.OrderFacade
 import com.junbo.store.clientproxy.rating.PriceRatingFacade
 import groovy.transform.CompileStatic
@@ -27,4 +28,7 @@ class FacadeContainer {
 
     @Resource(name = 'storeOrderFacade')
     OrderFacade orderFacade
+
+    @Resource(name = 'storeEntitlementFacade')
+    EntitlementFacade entitlementFacade
 }

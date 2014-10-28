@@ -1,0 +1,11 @@
+{
+  "scopes" : ["everyone", "cms.service", "catalog.service", "catalog.admin", "organization.group.admin"],
+  "client_id" : "technodrome",
+  "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
+  "client_name" : "technodrome",
+  "default_scopes" : ["everyone", "cms.service", "catalog.service", "catalog.admin", "organization.group.admin"],
+  "response_types" : [ ],
+  "grant_types" : [ "CLIENT_CREDENTIALS" ],
+  "id_token_issuer" : "api.oculus.com",
+  "need_consent" : false
+}

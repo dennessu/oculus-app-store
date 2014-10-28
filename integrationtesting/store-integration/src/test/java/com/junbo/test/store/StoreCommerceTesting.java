@@ -766,7 +766,7 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
         assert libraryResponse.getItems().size() == 1;
-        validationHelper.verifyLibraryResponse(libraryResponse, offerId);
+        validationHelper.verifyLibraryResponse(libraryResponse, freePurchaseResponse.getEntitlements().get(0).getItem());
 
     }
 

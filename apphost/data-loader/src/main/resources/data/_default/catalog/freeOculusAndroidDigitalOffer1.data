@@ -1,5 +1,6 @@
 {
    "item": {
+        "categories": [{"id" : "Game"}],
         "type":"APP",
         "genres":[{"id" : "Shooter"}],
         "defaultOffer":null,
@@ -31,7 +32,13 @@
                 "version": "1",
                 "md5": "eb8014a72ea56d6b308e35b9f0d36cd1",
                 "metadata": {
-                    "versionCode": 1
+                    "versionCode": 1,
+                    "permissions": [
+                        "android.permission.CAMERA",
+                        "android.permission.RECORD_AUDIO",
+                        "android.permission.MODIFY_AUDIO_SETTINGS",
+                        "android.permission.INTERNET"
+                    ]
                 }
             }
         },

@@ -1,9 +1,12 @@
 package com.junbo.identity.data.repository.impl.cloudant
+
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.common.memcached.JunboMemcachedClient
 import com.junbo.crypto.spec.model.CryptoMessage
 import com.junbo.crypto.spec.resource.CryptoResource
+import com.junbo.identity.common.util.HashHelper
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.data.hash.PiiHash
 import com.junbo.identity.data.hash.PiiHashFactory
@@ -16,17 +19,24 @@ import com.junbo.identity.spec.v1.model.*
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
+import net.spy.memcached.CASValue
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import java.util.Locale
+
 /**
  * Created by liangfu on 5/14/14.
  */
 @CompileStatic
 class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserPersonalInfo>
         implements UserPersonalInfoRepository {
+    private static final String MD5_ALGORITHM = 'MD5'
+    Logger logger = LoggerFactory.getLogger(UserPersonalInfoEncryptRepositoryCloudantImpl)
+    private static JunboMemcachedClient junboMemcachedClient = JunboMemcachedClient.instance()
 
     private PiiHashFactory piiHashFactory
 
@@ -40,45 +50,34 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
     private IdGenerator idGenerator
 
+    private Integer expiration
+
+    private Integer maxEntitySize
+
     @Override
     Promise<List<UserPersonalInfo>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return userIdLinkRepository.searchByUserId(userId, limit, offset).then {
-            List<UserPersonalInfoIdToUserIdLink> links ->
+        return userIdLinkRepository.searchByUserId(userId, limit, offset).then { List<UserPersonalInfoIdToUserIdLink> links ->
             List<UserPersonalInfo> userPersonalInfoList = new ArrayList<>()
             if (CollectionUtils.isEmpty(links)) {
                 return Promise.pure(userPersonalInfoList)
             }
 
             return Promise.each(links) { UserPersonalInfoIdToUserIdLink link ->
-                return decryptUserPersonalInfo(userId, link.userPersonalInfoId, userPersonalInfoList)
+                if (link == null || link.userPersonalInfoId == null) {
+                    return Promise.pure(null)
+                }
+                return get(link.userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+                    if (userPersonalInfo != null) {
+                        userPersonalInfoList.add(userPersonalInfo)
+                    }
+
+                    return Promise.pure(null)
+                }
             }.then {
                 return Promise.pure(userPersonalInfoList)
             }
         }
     }
-
-    Promise<Void> decryptUserPersonalInfo(UserId userId, UserPersonalInfoId userPersonalInfoId,
-                                          List<UserPersonalInfo> infoList) {
-        return encryptUserPersonalInfoRepository.get(userPersonalInfoId).then { EncryptUserPersonalInfo info ->
-            return decryptUserPersonalInfo(userId, info.encryptUserPersonalInfo).then {
-                UserPersonalInfo userPersonalInfo ->
-                    if (userPersonalInfo != null) {
-                        infoList.add(userPersonalInfo)
-                    }
-
-                    return Promise.pure(null)
-            }
-        }
-    }
-
-    Promise<UserPersonalInfo> decryptUserPersonalInfo(UserId userId, String message) {
-        CryptoMessage cryptoMessage = new CryptoMessage()
-        cryptoMessage.value = message
-        return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decryptValue ->
-            return Promise.pure(unmarshall(decryptValue.value, UserPersonalInfo))
-        }
-    }
-
     @Override
     Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type, Integer limit, Integer offset) {
         return searchByUserId(userId, limit, offset).then { List<UserPersonalInfo> userPersonalInfoList ->
@@ -268,12 +267,16 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
             return encryptUserPersonalInfoRepository.get(model.getId()).then { EncryptUserPersonalInfo info ->
                 info.encryptUserPersonalInfo = messageValue.value
                 return encryptUserPersonalInfoRepository.update(info, info).then { EncryptUserPersonalInfo updateInfo ->
+                    // Delete cache, then get it again
+                    deleteCache(updateInfo.encryptUserPersonalInfo)
                     return hashUserPersonalInfoRepository.get(model.getId()).then { HashUserPersonalInfo hashInfo ->
                         PiiHash piiHash = getPiiHash(model.type)
                         hashInfo.hashSearchInfo = piiHash.generateHash(model.value)
                         return hashUserPersonalInfoRepository.update(hashInfo, hashInfo)
                     }.then {
-                        return get(updateInfo.getId())
+                        return get(updateInfo.getId()).then { UserPersonalInfo updated ->
+                            return Promise.pure(updated)
+                        }
                     }
                 }
             }
@@ -285,25 +288,30 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         if (personalInfoId == null || personalInfoId.value == null) {
             return Promise.pure(null)
         }
-        return encryptUserPersonalInfoRepository.get(personalInfoId).then {
-            EncryptUserPersonalInfo encryptUserPersonalInfo ->
 
-                if (encryptUserPersonalInfo == null) {
-                    return Promise.pure(null)
-                }
+        return encryptUserPersonalInfoRepository.get(personalInfoId).then { EncryptUserPersonalInfo encryptUserPersonalInfo ->
+            if (encryptUserPersonalInfo == null) {
+                return Promise.pure(null)
+            }
 
-                CryptoMessage cryptoMessage = new CryptoMessage(
-                        value: encryptUserPersonalInfo.encryptUserPersonalInfo
-                )
-                return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decrypt ->
-                    UserPersonalInfo userPersonalInfo = unmarshall(decrypt.value, UserPersonalInfo)
-                    userPersonalInfo.createdBy = encryptUserPersonalInfo.createdBy
-                    userPersonalInfo.createdTime = encryptUserPersonalInfo.createdTime
-                    userPersonalInfo.updatedBy = encryptUserPersonalInfo.updatedBy
-                    userPersonalInfo.updatedTime = encryptUserPersonalInfo.updatedTime
-                    userPersonalInfo.resourceAge = encryptUserPersonalInfo.resourceAge
-                    return Promise.pure(userPersonalInfo)
-                }
+            CASValue<UserPersonalInfoEncryptPair> cachedValue = getCache(encryptUserPersonalInfo.encryptUserPersonalInfo)
+            if (cachedValue != null && encryptUserPersonalInfo.encryptUserPersonalInfo == cachedValue.value.encryptMessage) {
+                return Promise.pure(cachedValue.value.userPersonalInfo)
+            }
+
+            CryptoMessage cryptoMessage = new CryptoMessage(
+                    value: encryptUserPersonalInfo.encryptUserPersonalInfo
+            )
+            return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decrypt ->
+                UserPersonalInfo userPersonalInfo = unmarshall(decrypt.value, UserPersonalInfo)
+                userPersonalInfo.createdBy = encryptUserPersonalInfo.createdBy
+                userPersonalInfo.createdTime = encryptUserPersonalInfo.createdTime
+                userPersonalInfo.updatedBy = encryptUserPersonalInfo.updatedBy
+                userPersonalInfo.updatedTime = encryptUserPersonalInfo.updatedTime
+                userPersonalInfo.resourceAge = encryptUserPersonalInfo.resourceAge
+                addOrUpdateCache(encryptUserPersonalInfo.encryptUserPersonalInfo, userPersonalInfo)
+                return Promise.pure(userPersonalInfo)
+            }
         }
     }
 
@@ -358,6 +366,74 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         return hash
     }
 
+    private void addOrUpdateCache(String rawValue, UserPersonalInfo userPersonalInfo) {
+        if (junboMemcachedClient == null) {
+            return
+        }
+        deleteCache(rawValue)
+        try {
+            UserPersonalInfoEncryptPair pair = new UserPersonalInfoEncryptPair()
+            pair.encryptMessage = rawValue
+            pair.userPersonalInfo = userPersonalInfo
+            junboMemcachedClient.add(getKey(rawValue), expiration, marshaller.marshall(pair))
+        } catch (Exception ex) {
+            logger.warn("Error add or update from memcached", ex)
+        }
+    }
+
+    private CASValue<UserPersonalInfoEncryptPair> getCache(String rawValue) {
+        if (junboMemcachedClient == null) {
+            return null
+        }
+        try {
+            CASValue<String> casValue = (CASValue<String>)junboMemcachedClient.gets(getKey(rawValue))
+            if (casValue == null) {
+                return null
+            }
+            try {
+                UserPersonalInfoEncryptPair result =
+                        (UserPersonalInfoEncryptPair) marshaller.unmarshall(casValue.value, UserPersonalInfoEncryptPair)
+                if (result != null && logger.isDebugEnabled()) {
+                    logger.debug("Found {} from memcached.", getKey(rawValue))
+                }
+                return new CASValue<UserPersonalInfoEncryptPair>(casValue.getCas(), result)
+            } catch (Exception ex) {
+                logger.warn("Error unmarshalling from memcached.", ex)
+                deleteCacheOnError(rawValue)
+            }
+        } catch (Exception ex) {
+            logger.warn("Error getting from memcached.", ex)
+        }
+        return null
+    }
+
+    void deleteCache(String rawValue) {
+        if (junboMemcachedClient == null) {
+            return
+        }
+        try {
+            junboMemcachedClient.delete(getKey(rawValue)).get()
+        } catch (Exception ex) {
+            logger.warn("Error deleting from memcached.", ex)
+        }
+    }
+
+    void deleteCacheOnError(String rawValue) {
+        if (junboMemcachedClient == null) {
+            return
+        }
+        try {
+            // async delete
+            junboMemcachedClient.delete(getKey(rawValue))
+        } catch (Exception ex) {
+            logger.warn("Error deleting key on error from memcached.", ex)
+        }
+    }
+
+    private String getKey(String encryptedMessage) {
+        return HashHelper.shaHash(encryptedMessage, null, MD5_ALGORITHM)
+    }
+
     @Required
     void setPiiHashFactory(PiiHashFactory piiHashFactory) {
         this.piiHashFactory = piiHashFactory
@@ -386,5 +462,20 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     @Required
     void setIdGenerator(IdGenerator idGenerator) {
         this.idGenerator = idGenerator
+    }
+
+    @Required
+    void setExpiration(Integer expiration) {
+        this.expiration = expiration
+    }
+
+    @Required
+    void setMaxEntitySize(Integer maxEntitySize) {
+        this.maxEntitySize = maxEntitySize
+    }
+
+    static class UserPersonalInfoEncryptPair implements Serializable {
+        public String encryptMessage
+        public UserPersonalInfo userPersonalInfo
     }
 }

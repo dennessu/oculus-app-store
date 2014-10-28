@@ -4,8 +4,8 @@ import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
 import com.junbo.common.model.Results
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData
 import com.junbo.store.common.utils.CommonUtils
-import com.junbo.store.spec.model.external.casey.CaseyLink
-import com.junbo.store.spec.model.external.casey.cms.*
+import com.junbo.store.spec.model.external.sewer.casey.CaseyLink
+import com.junbo.store.spec.model.external.sewer.casey.cms.*
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.InitializingBean
@@ -19,9 +19,6 @@ import javax.annotation.Resource
 @CompileStatic
 @Component('caseyEmulatorDataRepository')
 class CaseyEmulatorDataRepository implements InitializingBean {
-
-    @Value('${store.browse.featured.page.label}')
-    private String defaultPageLabel
 
     @Value('${store.browse.cmsPage.section.path}')
     private String sectionCmsPagePath
@@ -64,7 +61,7 @@ class CaseyEmulatorDataRepository implements InitializingBean {
                 caseyAggregateRatings: [],
                 caseyReviews: [],
                 cmsPages: [page, sectionPage] as List,
-                cmsSchedules: [generateDefaultCmsSchedule(page.self.getId()), generateSectionCmsSchedule(sectionPage.self.getId())] as List
+                cmsSchedules: [generateDefaultCmsSchedule(page.self.getId()), generateSectionCmsSchedule(sectionPage.self.getId(), page.self.getId())] as List
         )
     }
 
@@ -76,7 +73,7 @@ class CaseyEmulatorDataRepository implements InitializingBean {
     private CmsPage generateDefaultCmsPage() {
         CmsPage page =  new CmsPage(
                 path: 'android',
-                label: defaultPageLabel,
+                label: 'featured',
                 slots: [:] as Map,
                 self: new CaseyLink(
                         id:  UUID.randomUUID().toString()
@@ -104,22 +101,22 @@ class CaseyEmulatorDataRepository implements InitializingBean {
     private CmsSchedule generateDefaultCmsSchedule(String pageId) {
         CmsSchedule cmsSchedule = new CmsSchedule(self: new CaseyLink(id: pageId))
         cmsSchedule.slots = [:] as Map
-        cmsSchedule.slots['slot1'] = generateCmsScheduleStringContent('category', 'Featured All');
-        cmsSchedule.slots['slot2'] = generateCmsScheduleStringContent('category', 'Featured SS');
+        cmsSchedule.slots['slot1'] = generateCmsScheduleStringContent('Featured All');
+        cmsSchedule.slots['slot2'] = generateCmsScheduleStringContent('Featured SS');
         return cmsSchedule
     }
 
-    private CmsSchedule generateSectionCmsSchedule(String pageId) {
+    private CmsSchedule generateSectionCmsSchedule(String pageId, String featuredPageId) {
         CmsSchedule cmsSchedule = new CmsSchedule(self: new CaseyLink(id: pageId))
         cmsSchedule.slots = [:] as LinkedHashMap<String, CmsScheduleContent>
-        cmsSchedule.slots['featured'] = generateCmsScheduleStringContent('title', 'Featured');
+        cmsSchedule.slots['featured'] = generateCmsMenuContent('Featured', featuredPageId);
         cmsSchedule.slots['game'] = generateCmsScheduleOfferAttributeContent('category', 'Game');
         cmsSchedule.slots['app'] = generateCmsScheduleOfferAttributeContent('category', 'App');
         cmsSchedule.slots['experience'] = generateCmsScheduleOfferAttributeContent('category', 'Experience');
         return cmsSchedule
     }
 
-    private CmsScheduleContent generateCmsScheduleStringContent(String name, String value) {
+    private CmsScheduleContent generateCmsScheduleStringContent(String value) {
         CaseyContentItemString strings = new CaseyContentItemString()
         strings.locales = [:]
         strings.locales['en_US'] = value
@@ -129,7 +126,31 @@ class CaseyEmulatorDataRepository implements InitializingBean {
         contentItem.type = ContentItem.Type.string.name()
 
         CmsContent cmsContent = new CmsContent()
-        cmsContent.contents = Collections.singletonMap(name, contentItem)
+        cmsContent.contents = [:] as Map
+        cmsContent.contents['title'] = contentItem
+
+        return new CmsScheduleContent(content: cmsContent)
+    }
+
+    private CmsScheduleContent generateCmsMenuContent(String value, String featuredPageId) {
+        CaseyContentItemString strings = new CaseyContentItemString()
+        strings.locales = [:]
+        strings.locales['en_US'] = value
+
+        ContentItem contentItem = new ContentItem()
+        contentItem.strings = [strings]
+        contentItem.type = ContentItem.Type.string.name()
+
+        CmsContent cmsContent = new CmsContent()
+        cmsContent.contents = [:] as Map
+        cmsContent.contents['title'] = contentItem
+
+        CaseyLink link = new CaseyLink(id : featuredPageId)
+        ContentItem linkContentItem = new ContentItem()
+        linkContentItem.links = [link]
+        linkContentItem.type = ContentItem.Type.cmsPage.name()
+        cmsContent.contents['page'] = linkContentItem
+
         return new CmsScheduleContent(content: cmsContent)
     }
 

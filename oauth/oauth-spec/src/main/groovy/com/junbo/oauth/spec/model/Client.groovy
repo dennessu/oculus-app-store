@@ -80,6 +80,9 @@ class Client extends ResourceMeta<String> {
 
     Boolean internal
 
+    @JsonProperty('allow_partial_scopes')
+    Boolean allowPartialScopes = false
+
     @Override
     String getId() {
         return clientId

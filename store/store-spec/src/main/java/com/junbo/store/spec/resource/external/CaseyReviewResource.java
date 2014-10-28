@@ -8,7 +8,7 @@ package com.junbo.store.spec.resource.external;
 import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.store.spec.model.external.casey.CaseyReview;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

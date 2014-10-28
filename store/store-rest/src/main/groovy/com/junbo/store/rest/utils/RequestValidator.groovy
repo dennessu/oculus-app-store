@@ -4,13 +4,9 @@ import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.OrderId
-import com.junbo.common.id.TosId
-import com.junbo.common.id.UserId
+import com.junbo.common.id.*
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
-import com.junbo.common.id.PIType
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
@@ -35,6 +31,7 @@ import com.junbo.store.spec.model.browse.AcceptTosRequest
 import com.junbo.store.spec.model.browse.DeliveryRequest
 import com.junbo.store.spec.model.browse.DetailsRequest
 import com.junbo.store.spec.model.browse.ReviewsRequest
+import com.junbo.store.spec.model.iap.IAPConsumeItemRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
 import com.junbo.store.spec.model.login.*
@@ -142,10 +139,6 @@ class RequestValidator {
             notEmpty(request.lastName, 'lastName')
         }
 
-        Boolean isBlocked = resourceContainer.userResource.checkUsernameEmailBlocker(request.username, request.email).get()
-        if (isBlocked) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email are occupied').exception()
-        }
         // Bug https://oculus.atlassian.net/browse/SER-693, it will always set nickName to username
         request.nickName = request.username
         return this
@@ -297,7 +290,7 @@ class RequestValidator {
 
     Promise<Tos> validateTosExists(TosId tosId) {
         return resourceContainer.tosResource.get(tosId, new TosGetOptions()).then { Tos tos ->
-            if (tos == null && tos.state != 'APPROVED') {
+            if (tos == null || tos.state != 'APPROVED') {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('tosAgreed', 'Tos with Id ' + tos.id.toString() + ' not exists').exception()
             }
 
@@ -353,11 +346,6 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         notEmpty(request.offer, 'offerId')
-        if (request.iapParams != null) {
-            notEmpty(request.iapParams.packageName, 'iapParams.packageName')
-            notEmpty(request.iapParams.packageSignatureHash, 'iapParams.packageSignatureHash')
-            notEmpty(request.iapParams.packageVersion, 'iapParams.packageVersion')
-        }
         if (request.challengeAnswer != null) {
             if (request.challengeAnswer.type == Constants.ChallengeType.PIN) {
                 notEmpty(request.challengeAnswer.pin, 'challengeAnswer.pin')
@@ -476,6 +464,12 @@ class RequestValidator {
 
     public void validateConfirmEmailRequest(ConfirmEmailRequest request) {
         notEmpty(request.evc, 'evc')
+    }
+
+    public void validateIAPConsumeItemRequest(IAPConsumeItemRequest iapConsumeItemRequest) {
+        notEmpty(iapConsumeItemRequest.sku, 'sku')
+        notEmpty(iapConsumeItemRequest.trackingGuid, 'trackingGuid')
+        notEmpty(iapConsumeItemRequest.useCountConsumed, 'useCountConsumed')
     }
 
     private Promise<Boolean> isMailChanged(UserProfileUpdateRequest request, User currentUser) {

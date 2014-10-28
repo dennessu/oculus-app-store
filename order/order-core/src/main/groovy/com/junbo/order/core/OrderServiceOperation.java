@@ -22,5 +22,6 @@ public enum OrderServiceOperation {
     UPDATE_NON_TENTATIVE,
     HANDLE_EVENT,
     REFUND,
-    PARTIAL_REFUND
+    PARTIAL_REFUND,
+    SETTLE_FREE
 }

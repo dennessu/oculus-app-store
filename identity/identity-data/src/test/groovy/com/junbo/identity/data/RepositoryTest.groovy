@@ -10,6 +10,7 @@ import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -615,7 +616,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo.setLastValidateTime(new Date())
         userPersonalInfo.setUserId(userId)
         Email email = new Email()
-        email.info = UUID.randomUUID().toString()
+        email.info = UUID.randomUUID().toString() + '@hotmail.com'
         ObjectMapper objectMapper = new ObjectMapper()
         userPersonalInfo.setValue(objectMapper.valueToTree(email))
 
@@ -623,6 +624,32 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).get()
 
         assert newUserPersonalInfo.type == userPersonalInfo.type
+    }
+
+    @Test(enabled = false)
+    public void testUserPersonalInfoRepositoryUpdate() {
+        UserId userId = new UserId(idGenerator.nextId())
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo()
+        String email1 = UUID.randomUUID().toString() + '@hotmail.com'
+        String email2 = UUID.randomUUID().toString() + '@hotmial.com'
+        userPersonalInfo.setType('EMAIL')
+        userPersonalInfo.setIsNormalized(true)
+        userPersonalInfo.setLastValidateTime(new Date())
+        userPersonalInfo.setUserId(userId)
+        Email email = new Email(
+                info: email1
+        )
+        userPersonalInfo.setValue(ObjectMapperProvider.instance().valueToTree(email))
+        UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).get()
+        newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.getId()).get()
+        Email gotEmail = (Email)ObjectMapperProvider.instance().treeToValue(newUserPersonalInfo.getValue(), Email)
+        assert gotEmail.info == email1
+
+        email.setInfo(email2)
+        newUserPersonalInfo.setValue(ObjectMapperProvider.instance().valueToTree(email))
+        newUserPersonalInfo = userPersonalInfoRepository.update(newUserPersonalInfo, newUserPersonalInfo)
+        gotEmail = ObjectMapperProvider.instance().treeToValue(newUserPersonalInfo.getValue(), Email)
+        assert gotEmail.info == email2
     }
 
     @Test

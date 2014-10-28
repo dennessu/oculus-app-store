@@ -2,12 +2,12 @@ package com.junbo.store.rest.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
-import com.junbo.store.rest.utils.CatalogUtils
+
 import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
-import com.junbo.store.spec.model.external.casey.CaseyReview
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
@@ -29,9 +29,6 @@ class ReviewValidatorImpl implements ReviewValidator {
     @Resource(name = 'storeFacadeContainer')
     private FacadeContainer facadeContainer
 
-    @Resource(name = 'storeCatalogUtils')
-    private CatalogUtils catalogUtils
-
     @Override
     Promise validateAddReview(AddReviewRequest request, ApiContext apiContext) {
         if (CollectionUtils.isEmpty(request.starRatings)) {
@@ -50,11 +47,12 @@ class ReviewValidatorImpl implements ReviewValidator {
             }
         }
 
-        catalogUtils.checkItemOwnedByUser(request.itemId, apiContext.user).then { Boolean owned ->
+        facadeContainer.entitlementFacade.checkEntitlements(apiContext.user, request.itemId).then { Boolean owned ->
             if (!owned) {
                 throw AppErrors.INSTANCE.itemNotPurchased().exception()
             }
             return Promise.pure()
+
         }
     }
 }

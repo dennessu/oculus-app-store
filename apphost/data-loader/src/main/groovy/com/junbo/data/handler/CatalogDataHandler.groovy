@@ -108,6 +108,7 @@ class CatalogDataHandler extends BaseDataHandler {
 
         //Judge if item and its revision have been loaded
         item.genres = getItemAttributeIds(item.genres)
+        item.categories = getOfferAttributeIds(item.categories)
         Item itemExisting = null
         String itemId
         try {
@@ -152,10 +153,12 @@ class CatalogDataHandler extends BaseDataHandler {
             }
         } else {
             itemId = itemExisting.itemId
-            if (new HashSet<>(item.genres).equals(new HashSet(itemExisting.genres))) {
+            if (attributeEquals(item.genres, itemExisting.genres) &&
+                    attributeEquals(item.categories, itemExisting.categories)) {
                 logger.info("----The item $itemRevisionName and its revision have been loaded, skip")
             } else {
                 itemExisting.genres = item.genres
+                itemExisting.categories = item.categories
                 itemResource.update(itemExisting.getId(), itemExisting).get()
                 logger.info("----The item $itemRevisionName and its revision have been loaded, greners changed, update")
             }
@@ -196,7 +199,7 @@ class CatalogDataHandler extends BaseDataHandler {
             offerRevision.offerId = offerId
             handle(offerRevision)
         } else {
-            if (new HashSet<>(offer.categories).equals(new HashSet(offerExisting.categories))) {
+            if (attributeEquals(offer.categories, offerExisting.categories)) {
                 logger.info("----The offer $offerRevisionName and its revision have been loaded, skip")
             } else {
                 offerExisting.categories = offer.categories
@@ -310,4 +313,10 @@ class CatalogDataHandler extends BaseDataHandler {
         return result
     }
 
+    private boolean attributeEquals(List<String> left, List<String> right) {
+        if (left == null || right == null) {
+            return left == right
+        }
+        return new HashSet<>(left).equals(new HashSet(right))
+    }
 }

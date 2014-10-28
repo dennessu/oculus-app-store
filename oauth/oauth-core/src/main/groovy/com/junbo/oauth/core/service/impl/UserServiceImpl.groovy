@@ -401,11 +401,6 @@ class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    Promise<String> checkUsernameAndEmailBlocker(String username, String email) {
-        return userResource.getUsernameEmailOccupyState(username, email)
-    }
-
     private Promise<String> getDefaultUserEmail(User user) {
         if (user == null) {
             throw AppErrors.INSTANCE.errorCallingIdentity().exception()

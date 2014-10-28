@@ -34,5 +34,4 @@ public interface IdentityService {
 
     UserGroup switchUserGroupMembershipWithinGroups(UserId userId, GroupId groupId, List<GroupId> groupIdList)
     UserGroup saveUserGroupMembership(UserId userId, GroupId groupId)
-    UserGroup updateUserGroupMembership(UserGroupId userGroupId, UserId userId, GroupId groupId)
 }

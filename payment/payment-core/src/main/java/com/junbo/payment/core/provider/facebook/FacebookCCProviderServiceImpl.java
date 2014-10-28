@@ -122,11 +122,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         });
     }
 
-    private Promise<PaymentInstrument> addCreditCard(String accessToken, String fbAccount,
+    private Promise<PaymentInstrument> addCreditCard(final String accessToken, String fbAccount,
                                                      final PaymentInstrument request, final String[] tokens) {
         FacebookCreditCard fbCreditCard = new FacebookCreditCard();
-        fbCreditCard.setCcNumber(request.getAccountNumber());
-        fbCreditCard.setCvv(request.getTypeSpecificDetails().getEncryptedCvmCode());
+        fbCreditCard.setToken(request.getAccountNumber());
         fbCreditCard.setCardHolderName(request.getAccountName());
         fbCreditCard.setExpiryMonth(tokens[1]);
         fbCreditCard.setExpiryYear(tokens[0]);
@@ -144,10 +143,16 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             public Promise<PaymentInstrument> apply(FacebookCreditCard facebookCreditCard) {
                 if(!CommonUtil.isNullOrEmpty(facebookCreditCard.getId())){
                     request.setExternalToken(facebookCreditCard.getId());
-                    request.getTypeSpecificDetails().setIssuerIdentificationNumber(facebookCreditCard.getFirst6());
-                    request.getTypeSpecificDetails().setExpireDate(facebookCreditCard.getExpiryYear() + "-" + facebookCreditCard.getExpiryMonth());
-                    request.setAccountNumber(facebookCreditCard.getLast4());
-                    return Promise.pure(request);
+                    return facebookPaymentApi.getCreditCard(accessToken, facebookCreditCard.getId())
+                            .then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
+                                @Override
+                                public Promise<PaymentInstrument> apply(FacebookCreditCard getCreditCatd) {
+                                    request.getTypeSpecificDetails().setIssuerIdentificationNumber(getCreditCatd.getFirst6());
+                                    request.getTypeSpecificDetails().setExpireDate(getCreditCatd.getExpiryYear() + "-" + getCreditCatd.getExpiryMonth());
+                                    request.setAccountNumber(getCreditCatd.getLast4());
+                                    return Promise.pure(request);
+                                }
+                            });
                 }else if(!CommonUtil.isNullOrEmpty(facebookCreditCard.getError())){
                     LOGGER.error("error response:" + facebookCreditCard.getError());
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, facebookCreditCard.getError()).exception();

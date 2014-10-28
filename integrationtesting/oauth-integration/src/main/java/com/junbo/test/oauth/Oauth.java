@@ -418,9 +418,6 @@ public class Oauth {
                 Object obj =viewModelResponse.getModel().get(objectEntry.getKey());
                 assert obj.equals(objectEntry.getValue());
             }
-        } else if (emailVerifyRequiredViewModel == null) {
-            Object obj =viewModelResponse.getModel().get("REGISTRATIONSTATE");
-            assert obj.equals("NEWUSER");
         }
         return viewModelResponse.getModel().get("link").toString();
     }

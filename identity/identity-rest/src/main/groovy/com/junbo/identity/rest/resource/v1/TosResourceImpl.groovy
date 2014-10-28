@@ -71,15 +71,13 @@ class TosResourceImpl implements TosResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return tosValidator.validateForGet(tosId).then {
-            return tosService.get(tosId).then { Tos newTos ->
-                if (newTos == null) {
-                    throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
-                }
-
-                newTos = tosFilter.filterForGet(newTos, getOptions.properties?.split(',') as List<String>)
-                return Promise.pure(newTos)
+        return tosValidator.validateForGet(tosId).then { Tos newTos ->
+            if (newTos == null) {
+                throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
             }
+
+            newTos = tosFilter.filterForGet(newTos, getOptions.properties?.split(',') as List<String>)
+            return Promise.pure(newTos)
         }
     }
 

@@ -18,7 +18,6 @@ import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.enums.OrderActionType
-import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -62,6 +61,8 @@ class DefaultFlowSelector implements FlowSelector {
                 return selectUpdateFlow(context)
             case OrderServiceOperation.REFUND:
                 return Promise.pure(FlowType.REFUND_ORDER.name())
+            case OrderServiceOperation.SETTLE_FREE:
+                return Promise.pure(FlowType.FREE_ORDER.name())
             default:
                 LOGGER.error('name=Order_Action_Not_Supported, action: {0}', operation.toString())
                 throw AppErrors.INSTANCE.orderActionNotSupported(

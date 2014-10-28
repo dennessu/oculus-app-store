@@ -197,7 +197,7 @@ class OrderServiceContextBuilder {
 
         List<Offer> offers = []
         return Promise.each(context.order.orderItems) { OrderItem oi ->
-            return facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).then { Offer of ->
+            return facadeContainer.catalogFacade.getLatestOfferRevision(oi.offer.value).then { Offer of ->
                 offers << of
                 return Promise.pure(null)
             }
