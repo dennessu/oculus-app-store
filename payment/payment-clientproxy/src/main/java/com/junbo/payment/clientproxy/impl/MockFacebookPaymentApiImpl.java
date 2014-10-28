@@ -31,9 +31,10 @@ public class MockFacebookPaymentApiImpl implements FacebookPaymentApi {
 
     @Override
     public Promise<FacebookCreditCard> addCreditCard(String accessToken, String paymentAccountId, FacebookCreditCard fbCreditCard) {
-        //if(1 == 1){
-        //    return facebookPaymentApi.addCreditCard(accessToken, paymentAccountId, fbCreditCard);
-        //}
+
+        return facebookPaymentApi.addCreditCard(accessToken, paymentAccountId, fbCreditCard);
+
+        /*
         FacebookCreditCard fbCard = new FacebookCreditCard();
         switch (fbCreditCard.getToken()){
             case "4111117711552927":
@@ -62,6 +63,7 @@ public class MockFacebookPaymentApiImpl implements FacebookPaymentApi {
                 throw new RuntimeException("invalid card");
         }
         return Promise.pure(fbCard);
+        */
     }
 
     @Override
