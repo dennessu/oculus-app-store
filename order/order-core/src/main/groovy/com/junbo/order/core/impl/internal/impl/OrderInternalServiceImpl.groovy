@@ -516,13 +516,17 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
-    Promise<Order> validateDuplicatePurchase(Order order, Offer offer) {
+    Promise<Order> validateDuplicatePurchase(Order order, Offer offer, int quantity) {
         LOGGER.info('name=internal.validateDuplicatePurchase')
         if (offer.items.any { Item item ->
             !['APP', 'DOWNLOADED_ADDITION', 'PERMANENT_UNLOCK'].contains(item.type)
         }) {
             LOGGER.info("name=skip_validateDuplicatePurchase")
             return Promise.pure(order)
+        }
+        if ( quantity > 1 ) {
+            LOGGER.info("name=dup_purchase. offerId: {}, quantity: {}", offer.getId(), quantity)
+            throw AppErrors.INSTANCE.duplicatePurchase().exception()
         }
         LOGGER.info("name=validateDuplicatePurchase_start_get_entitlements_by_user, userId={}", order.user.value)
         return facadeContainer.entitlementFacade.getEntitlements(order.user, offer)
@@ -538,6 +542,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             }
             LOGGER.info("name=validateDuplicatePurchase_Complete, isDup={}", isDup)
             if (isDup) {
+                LOGGER.info("name=dup_purchase. offerId: {}", offer.getId())
                 throw AppErrors.INSTANCE.duplicatePurchase().exception()
             }
             return Promise.pure(order)
