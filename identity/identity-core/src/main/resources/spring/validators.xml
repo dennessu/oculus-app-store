@@ -91,6 +91,9 @@
         <property name="maxSameIPIntervalMap" value="${identity.conf.maxCredentialSameIPRetryCountMap}" />
         <property name="maxSameUserAttemptIntervalMap" value="${identity.conf.maxCredentialSameUserRetryCountMap}" />
         <property name="maxLockDownMail" value="${identity.conf.maxSameUserLockDownMail}" />
+        <property name="maxRetryCountEnable" value="${identity.conf.maxRetryCountEnable}" />
+        <property name="maxSameIPAttemptsEnable" value="${identity.conf.maxSameIPAttemptsEnable}" />
+        <property name="maxSameUserAttemptsEnable" value="${identity.conf.maxSameUserAttemptsEnable}" />
     </bean>
 
     <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">

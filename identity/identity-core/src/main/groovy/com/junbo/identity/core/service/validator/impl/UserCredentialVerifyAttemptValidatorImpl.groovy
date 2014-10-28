@@ -95,6 +95,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private PlatformTransactionManager transactionManager
     private Boolean enableMailSend
 
+    private Boolean maxRetryCountEnable
+    private Boolean maxSameIPAttemptsEnable
+    private Boolean maxSameUserAttemptsEnable
+
     @Override
     Promise<UserCredentialVerifyAttempt> validateForGet(UserCredentialVerifyAttemptId userLoginAttemptId) {
         if (userLoginAttemptId == null) {
@@ -290,6 +294,9 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (!maxRetryCountEnable) {
+            return Promise.pure(null)
+        }
         return getActiveCredentialCreatedTime(user, userLoginAttempt).then { Date passwordActiveTime ->
             Integer maxRetryCount = maxLockDownTime.keySet().max()
             Long maxRetryIntervalFromTime = System.currentTimeMillis() - maxRetryInterval * 1000L
@@ -480,6 +487,9 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumSameUserAttemptCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (!maxSameUserAttemptsEnable) {
+            return Promise.pure(null)
+        }
         return Promise.each(this.maxSameUserAttemptIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
             Integer maxSameUserAttemptCount = entry.key
             Integer sameUserAttemptRetryInterval = entry.value
@@ -497,6 +507,9 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumSameIPAttemptCount(UserCredentialVerifyAttempt userLoginAttempt) {
+        if (!maxSameIPAttemptsEnable) {
+            return Promise.pure(null)
+        }
         if (StringUtils.isEmpty(userLoginAttempt.ipAddress) || isInIP4WhiteList(userLoginAttempt.ipAddress)) {
             return Promise.pure(null)
         }
@@ -759,5 +772,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setEnableMailSend(Boolean enableMailSend) {
         this.enableMailSend = enableMailSend
+    }
+
+    @Required
+    void setMaxRetryCountEnable(Boolean maxRetryCountEnable) {
+        this.maxRetryCountEnable = maxRetryCountEnable
+    }
+
+    @Required
+    void setMaxSameIPAttemptsEnable(Boolean maxSameIPAttemptsEnable) {
+        this.maxSameIPAttemptsEnable = maxSameIPAttemptsEnable
+    }
+
+    @Required
+    void setMaxSameUserAttemptsEnable(Boolean maxSameUserAttemptsEnable) {
+        this.maxSameUserAttemptsEnable = maxSameUserAttemptsEnable
     }
 }
