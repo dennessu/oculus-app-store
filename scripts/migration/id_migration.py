@@ -109,7 +109,7 @@ def write_worker(users, write_q, results, output):
         user_id = users[start]['id']
         user = results.pop(str(user_id), None)
         if user:
-            output.write('"' + str(user_id) + '"')
+            output.write('"' + users[start]['username'] + '"')
             output.write(":")
             if not user["error"]: del user["error"]
             output.write(json.dumps(user))
