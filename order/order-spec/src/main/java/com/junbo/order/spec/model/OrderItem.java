@@ -330,4 +330,13 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     public void setPreorderAmount(BigDecimal preorderAmount) {
         this.preorderAmount = preorderAmount;
     }
+
+    @Override
+    public int hashCode() {
+        assert (this.offer != null);
+        String hashStr = this.offer.getValue() +
+                (this.shippingMethod == null ? "" : this.shippingMethod.toString()) +
+                (this.shippingAddress == null ? "" : this.shippingAddress.toString());
+        return hashStr.hashCode();
+    }
 }

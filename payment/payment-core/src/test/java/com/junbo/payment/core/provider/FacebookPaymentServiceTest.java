@@ -91,7 +91,7 @@ public class FacebookPaymentServiceTest extends BaseTest {
         //hard code user to avoid create too many test users
         request.setUserId(83886144L);
         PaymentInstrument result = null;
-        request.setAccountNumber("4111117711552927");
+        request.setAccountNumber("eyJjYyI6NDExMTExNzcxMTU1MjkyNywiY3Z2IjoxMjMsInNhbHQiOjQyODg2MTU2NjExODgyNTA2MjN9");
         request.setBillingAddressId(null);
         request.setPhoneNumber(null);
         result = addPI(request);

@@ -33,7 +33,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
@@ -42,7 +41,6 @@ import javax.annotation.Resource
  */
 @CompileStatic
 @TypeChecked
-@Service('orderService')
 class OrderServiceImpl implements OrderService {
     @Qualifier('orderFacadeContainer')
     @Autowired
@@ -65,6 +63,8 @@ class OrderServiceImpl implements OrderService {
     OrderServiceContextBuilder orderServiceContextBuilder
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl)
 
+    Integer offerCountLimitation
+    Integer itemCountLimitation
 
     void setFlowSelector(FlowSelector flowSelector) {
         this.flowSelector = flowSelector
@@ -186,20 +186,19 @@ class OrderServiceImpl implements OrderService {
 
         order.id = null
         setHonoredTime(order)
+        return prepareOrder(order, orderServiceContext).then {
+            return orderInternalService.rateOrder(order, orderServiceContext).then { Order ratedOrder ->
+                if (!CoreUtils.isFreeOrder(ratedOrder)) {
+                    throw AppErrors.INSTANCE.notFreeOrder().exception()
+                }
+                LOGGER.info('name=Order_is_free')
+                //return validateDuplicatePurchase(ratedOrder, orderServiceContext).then {
+                orderServiceContext.order = ratedOrder
 
-        return orderInternalService.rateOrder(order, orderServiceContext).then { Order ratedOrder ->
-            if (!CoreUtils.isFreeOrder(ratedOrder)) {
-                throw AppErrors.INSTANCE.notFreeOrder().exception()
-            }
-            LOGGER.info('name=Order_is_free')
-            //return validateDuplicatePurchase(ratedOrder, orderServiceContext).then {
-            orderServiceContext.order = ratedOrder
+                // TODO: compare the request and the order persisted
+                orderValidator.validateSettleOrderRequest(ratedOrder)
 
-            // TODO: compare the request and the order persisted
-            orderValidator.validateSettleOrderRequest(ratedOrder)
-
-            ratedOrder.purchaseTime = ratedOrder.honoredTime
-            return prepareOrder(order, orderServiceContext).then {
+                ratedOrder.purchaseTime = ratedOrder.honoredTime
                 return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_FREE).then { String flowName ->
                     // Prepare Flow Request
                     Map<String, Object> requestScope = [:]
@@ -384,13 +383,15 @@ class OrderServiceImpl implements OrderService {
 
     private Promise<Void> prepareOrder(Order order, OrderServiceContext context) {
         LOGGER.info('name=PrepareOrder')
+        mergeSameOrderItems(order)
+        checkItemCount(order)
         return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
             LOGGER.info('name=get_offers')
             return orderServiceContextBuilder.getOffer(item.offer, context).then { Offer offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
-                return orderInternalService.validateDuplicatePurchase(order, offer).syncThen {
+                return orderInternalService.validateDuplicatePurchase(order, offer, item.quantity).syncThen {
                     item.type = offer.type.name()
                     item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
                     updateOfferInfo(order, item, offer)
@@ -403,6 +404,37 @@ class OrderServiceImpl implements OrderService {
         }
     }
 
+    private void mergeSameOrderItems (Order order) {
+        def temp = new HashMap<OrderItem, Integer>()
+        order.orderItems?.each { OrderItem oi ->
+            temp[oi] = temp.get(oi, 0) + oi.quantity
+        }
+        order.orderItems = []
+        temp.each { OrderItem k, Integer v ->
+            k.quantity = v
+            order.orderItems << k
+            LOGGER.info('name=Print_Order_Item. offerId: {}, quantity: {}', k.offer.toString(), k.quantity)
+        }
+    }
+
+    private void checkItemCount (Order order) {
+        assert (order != null && order.orderItems != null)
+        if (order.orderItems.size() > itemCountLimitation) {
+            LOGGER.error('name=tooManyItems:' + order.orderItems.size() + ' should not exceed: ' + itemCountLimitation)
+            throw AppErrors.INSTANCE.tooManyItems(itemCountLimitation).exception()
+        }
+        LOGGER.info('name=total_order_items: {}. limits: {}', order.orderItems.size(), itemCountLimitation)
+        def offerCount = 0L
+        order.orderItems.each { OrderItem oi ->
+            offerCount += oi.quantity
+        }
+        if (offerCount > offerCountLimitation) {
+            LOGGER.error('name=tooManyOffers:' + offerCount + ' should not exceed: ' + offerCountLimitation)
+            throw AppErrors.INSTANCE.tooManyOffers(offerCountLimitation).exception()
+        }
+        LOGGER.info('name=total_offers: {}. limits: {}', offerCount, offerCountLimitation)
+    }
+
     private Promise<Void> validateDuplicatePurchase(Order order, OrderServiceContext context) {
         def orderSnapshot = []
         return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
@@ -411,7 +443,7 @@ class OrderServiceImpl implements OrderService {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
                 orderSnapshot << CoreBuilder.buildOfferSnapshot(offer)
-                return orderInternalService.validateDuplicatePurchase(order, offer)
+                return orderInternalService.validateDuplicatePurchase(order, offer, item.quantity)
             }
         }.syncThen {
             order.orderSnapshot = orderSnapshot

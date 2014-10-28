@@ -178,4 +178,10 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "148", message = "Free Offer Required")
     AppError notFreeOrder();
+
+    @ErrorDef(httpStatusCode = 412, code = "149", message = "Too Many Order Items", reason = "The number of items can not exceed: {0}")
+    AppError tooManyItems(int count);
+
+    @ErrorDef(httpStatusCode = 412, code = "150", message = "Too Many Offers", reason = "The number of offers can not exceed: {0}")
+    AppError tooManyOffers(int count);
 }

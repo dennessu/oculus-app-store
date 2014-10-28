@@ -216,17 +216,27 @@
     <bean id="store.tokenEndpointClientProxy"
           class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.core.api.url}"/>
+        <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.tokenInfoEndpointClientProxy"
           class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.core.api.url}"/>
+        <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
     <bean id="store.emailVerifyEndpointClientProxy"
           class="com.junbo.store.clientproxy.oauth.proxy.OAuthEmailVerifyEndpointClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.core.api.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="inProcessCallable" value="false"/>  <!-- for rest call only -->
+    </bean>
+
+    <bean id="store.emailVerifyEndpointClientProxyInProc"
+          class="com.junbo.oauth.spec.endpoint.proxy.EmailVerifyEndpointClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="inProcessCallable" value="true"/> <!-- for in-proc call only -->
     </bean>
 
     <bean id="store.countryClientProxy"

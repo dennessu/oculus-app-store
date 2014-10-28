@@ -1,12 +1,7 @@
 package com.junbo.store.rest.resource.raw
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
-import com.junbo.catalog.spec.model.item.*
-import com.junbo.catalog.spec.model.offer.OfferRevision
-import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
-import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.catalog.spec.model.item.Item
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
@@ -15,17 +10,12 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.*
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
-import com.junbo.common.util.IdFormatter
-import com.junbo.crypto.spec.model.ItemCryptoMessage
-import com.junbo.entitlement.spec.model.EntitlementSearchParam
-import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.client.PathParamTranscoder
-import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.FulfillmentHistory
 import com.junbo.order.spec.model.Order
@@ -36,7 +26,6 @@ import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.error.ErrorContext
-import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
 import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.browse.BrowseService
@@ -44,10 +33,12 @@ import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.rest.utils.*
 import com.junbo.store.spec.error.AppErrors
-import com.junbo.store.spec.model.*
+import com.junbo.store.spec.model.ApiContext
+import com.junbo.store.spec.model.Challenge
+import com.junbo.store.spec.model.Entitlement
 import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.iap.*
+import com.junbo.store.spec.model.iap.IAPParam
 import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.resource.StoreResource
@@ -63,8 +54,6 @@ import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
 import javax.ws.rs.BeanParam
-import javax.ws.rs.GET
-import javax.ws.rs.Path
 import javax.ws.rs.core.UriBuilder
 import javax.ws.rs.ext.Provider
 
@@ -147,7 +136,7 @@ class StoreResourceImpl implements StoreResource {
     Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request) {
         requestValidator.validateRequiredApiHeaders()
         return identityUtils.getActiveUserFromToken().then { User user->
-            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), null).then {
+            return facadeContainer.oAuthFacade.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), null).then {
                 return Promise.pure(new VerifyEmailResponse(
                         emailSent: true
                 ))

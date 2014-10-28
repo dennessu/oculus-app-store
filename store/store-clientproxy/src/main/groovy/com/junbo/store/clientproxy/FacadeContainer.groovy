@@ -3,6 +3,7 @@ package com.junbo.store.clientproxy
 import com.junbo.store.clientproxy.casey.CaseyFacade
 import com.junbo.store.clientproxy.catalog.CatalogFacade
 import com.junbo.store.clientproxy.entitlement.EntitlementFacade
+import com.junbo.store.clientproxy.oauth.OAuthFacade
 import com.junbo.store.clientproxy.order.OrderFacade
 import com.junbo.store.clientproxy.rating.PriceRatingFacade
 import groovy.transform.CompileStatic
@@ -31,4 +32,7 @@ class FacadeContainer {
 
     @Resource(name = 'storeEntitlementFacade')
     EntitlementFacade entitlementFacade
+
+    @Resource(name = 'storeOAuthFacade')
+    OAuthFacade oAuthFacade
 }

@@ -13,6 +13,7 @@ import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.*
+import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
@@ -63,6 +64,9 @@ class LoginResourceImpl implements LoginResource {
 
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
+
+    @Resource(name = 'storeFacadeContainer')
+    private FacadeContainer facadeContainer
 
     @Resource(name = 'storeRequestValidator')
     private RequestValidator requestValidator
@@ -239,7 +243,7 @@ class LoginResourceImpl implements LoginResource {
                 }
             }
         }.then {
-            return resourceContainer.emailVerifyEndpoint.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId()).then {
+            return facadeContainer.oAuthFacade.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId()).then {
                 return Promise.pure(authTokenResponse)
             }
         }
@@ -295,7 +299,7 @@ class LoginResourceImpl implements LoginResource {
         requestValidator.validateRequiredApiHeaders().validateConfirmEmailRequest(confirmEmailRequest);
 
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
-            return resourceContainer.emailVerifyEndpoint.verifyEmail(confirmEmailRequest.evc, apiContext.locale.toString())
+            return facadeContainer.oAuthFacade.verifyEmail(confirmEmailRequest.evc, apiContext.locale.toString())
         }.recover { Throwable ex ->
             appErrorUtils.throwUnknownError('confirmEmail', ex)
         }.then { ViewModel viewModel ->

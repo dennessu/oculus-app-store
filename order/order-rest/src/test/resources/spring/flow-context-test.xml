@@ -55,6 +55,8 @@
         <property name="orderRepository" ref="orderRepositoryFacade"/>
         <property name="orderInternalService" ref="mockOrderInternalService"/>
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+        <property name="itemCountLimitation" value="5"/>
+        <property name="offerCountLimitation" value="6"/>
     </bean>
 
     <bean id="mockFacadeContainer" class="com.junbo.order.clientproxy.FacadeContainer">
