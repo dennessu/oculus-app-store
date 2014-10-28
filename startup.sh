@@ -25,17 +25,22 @@ function cleanup {
 
 trap cleanup EXIT INT TERM
 
-# wait for the log file to be created.
-while [[ ! -f $LOG_FILE ]]; do
-    sleep 1
+# wait until 8081 port is open
+retrycount="0"
+while [ $retrycount -lt 150 ]; do
+  if (: < /dev/tcp/127.0.0.1/8081) 2>/dev/null
+  then
+    echo "apphost is ready to serve, exit this shell script"
+    trap - EXIT INT TERM
+    exit 0
+  else
+    echo "port 8081 still not ready yet, waiting..."
+    sleep 2
+    retrycount=$[$retrycount+1]
+  fi
 done
 
-echo Waiting until application fully start...
-tail -f -n0 $LOG_FILE | while read LOGLINE
-do
-    if [[ "${LOGLINE}" == *"Started Junbo Application Host"* ]]; then
-        ps -aef | grep tail | grep $$ | grep -v grep | awk '{print $2}' | xargs kill
-    fi
-done
-
+echo "## Apphost is still not ready after 5 minutes, there might be something wrong."
+echo "##   Exit here, apphost log can be found here: $LOGFILE"
 trap - EXIT INT TERM
+exit 2
