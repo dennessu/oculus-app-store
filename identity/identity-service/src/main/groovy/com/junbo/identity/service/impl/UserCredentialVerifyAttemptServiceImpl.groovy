@@ -56,6 +56,16 @@ class UserCredentialVerifyAttemptServiceImpl implements UserCredentialVerifyAtte
         return userCredentialVerifyAttemptRepository.searchByIPAddressAndCredentialTypeAndInterval(ipAddress, type, fromTimeStamp, limit, offset)
     }
 
+    @Override
+    Promise<Integer> searchByUserIdAndCredentialTypeAndIntervalCount(UserId userId, String type, Long fromTimeStamp, Integer limit, Integer offset) {
+        return userCredentialVerifyAttemptRepository.searchByUserIdAndCredentialTypeAndIntervalCount(userId, type, fromTimeStamp, limit, offset)
+    }
+
+    @Override
+    Promise<Integer> searchByIPAddressAndCredentialTypeAndIntervalCount(String ipAddress, String type, Long fromTimeStamp, Integer limit, Integer offset) {
+        return userCredentialVerifyAttemptRepository.searchByIPAddressAndCredentialTypeAndIntervalCount(ipAddress, type, fromTimeStamp, limit, offset)
+    }
+
     @Required
     void setUserCredentialVerifyAttemptRepository(UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository) {
         this.userCredentialVerifyAttemptRepository = userCredentialVerifyAttemptRepository

@@ -494,9 +494,9 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             Integer maxSameUserAttemptCount = entry.key
             Integer sameUserAttemptRetryInterval = entry.value
             Long timeInterval = System.currentTimeMillis() - sameUserAttemptRetryInterval * 1000
-            return userCredentialVerifyAttemptService.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval,
-                    maxSameUserAttemptCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-                if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameUserAttemptCount) {
+            return userCredentialVerifyAttemptService.searchByUserIdAndCredentialTypeAndIntervalCount(user.getId(), userLoginAttempt.type, timeInterval,
+                    maxSameUserAttemptCount + 1, 0).then { Integer attemptListCount ->
+                if (attemptListCount == null || attemptListCount <= maxSameUserAttemptCount) {
                     return Promise.pure(null)
                 }
                 throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
@@ -520,15 +520,14 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
             Long fromTimeStamp = System.currentTimeMillis() - maxSameIPRetryInterval * 1000
 
-            return userCredentialVerifyAttemptService.searchByIPAddressAndCredentialTypeAndInterval(userLoginAttempt.ipAddress, userLoginAttempt.type, fromTimeStamp,
-                    maxSameIPRetryCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-                if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameIPRetryCount) {
+            return userCredentialVerifyAttemptService.searchByIPAddressAndCredentialTypeAndIntervalCount(userLoginAttempt.ipAddress, userLoginAttempt.type,
+                    fromTimeStamp, maxSameIPRetryCount + 1, 0).then { Integer count ->
+                if (count == null || count <= maxSameIPRetryCount) {
                     return Promise.pure(null)
                 }
 
                 throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
             }
-
         }
     }
 

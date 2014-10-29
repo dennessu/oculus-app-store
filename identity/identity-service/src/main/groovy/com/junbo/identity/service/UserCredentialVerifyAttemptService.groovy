@@ -24,8 +24,12 @@ public interface UserCredentialVerifyAttemptService {
     Promise<List<UserCredentialVerifyAttempt>> searchByUserIdAndCredentialTypeAndInterval(UserId userId, String type, Long fromTimeStamp,
                                                                                           Integer limit, Integer offset)
 
+    Promise<Integer> searchByUserIdAndCredentialTypeAndIntervalCount(UserId userId, String type, Long fromTimeStamp, Integer limit, Integer offset)
+
     Promise<List<UserCredentialVerifyAttempt>> searchNonLockPeriodHistory(UserId userId, String type, Long fromTimeStamp, Integer limit, Integer offset)
 
     Promise<List<UserCredentialVerifyAttempt>> searchByIPAddressAndCredentialTypeAndInterval(String ipAddress, String type, Long fromTimeStamp,
                                                                                              Integer limit, Integer offset)
+
+    Promise<Integer> searchByIPAddressAndCredentialTypeAndIntervalCount(String ipAddress, String type, Long fromTimeStamp, Integer limit, Integer offset)
 }
