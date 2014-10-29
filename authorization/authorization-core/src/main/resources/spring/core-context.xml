@@ -14,6 +14,8 @@
     <bean id="roleAssignmentValidator" class="com.junbo.authorization.core.validator.RoleAssignmentValidatorImpl">
         <property name="roleAssignmentRepository" ref="roleAssignmentRepository"/>
         <property name="roleRepository" ref="roleRepository"/>
+        <property name="groupResource" ref="authorization_groupResource" />
+        <property name="userResource" ref="authorization_userResource" />
     </bean>
 
     <bean id="roleAuthorizeCallbackFactory"

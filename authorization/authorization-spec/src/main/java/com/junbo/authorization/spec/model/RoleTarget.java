@@ -14,13 +14,13 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class RoleTarget {
 
-    @ApiModelProperty(position = 1, required = true, value = "The target type.")
+    @ApiModelProperty(position = 1, required = true, value = "The target type, only support organizations.")
     private String targetType;
 
-    @ApiModelProperty(position = 2, required = true, value = "The filter type. Could be self, user, etc.")
+    @ApiModelProperty(position = 2, required = true, value = "The filter type. only support SINGLEINSTANCEFILTER.")
     private String filterType;
 
-    @ApiModelProperty(position = 3, required = true, value = "The filter link. Needs to be an item resource.")
+    @ApiModelProperty(position = 3, required = true, value = "The filter link. Needs to be an organization resource.")
     private Link filterLink;
 
     @JsonIgnore

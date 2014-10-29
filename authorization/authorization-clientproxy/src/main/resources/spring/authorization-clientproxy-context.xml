@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="authorizationAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service email.service payment.service csr.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${oauth.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${oauth.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
+    <bean id="authorization_userResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="userResourceClientProxy">
+        <property name="accessTokenProvider" ref="authorizationAccessTokenProvider"/>
+    </bean>
+
+    <bean id="authorization_groupResource" class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxy"
+          parent="groupResourceClientProxy">
+        <property name="accessTokenProvider" ref="authorizationAccessTokenProvider" />
+    </bean>
+</beans>
