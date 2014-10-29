@@ -1,0 +1,32 @@
+{
+	"countryCode": "PF",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_PF",
+		"id": "fr_PF"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XPF",
+		"id": "XPF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_PF",
+		"id": "fr_PF"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "French Polynesia",
+			"longName": "French Polynesia"
+		},
+		"fr_PF": {
+			"shortName": "Polynésie française",
+			"longName": "Polynésie française"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

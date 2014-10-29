@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Cuban peso",
+			"longName": "Cuban peso"
+		},
+		"es_CU": {
+			"shortName": "peso cubano",
+			"longName": "peso cubano"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=CUP",
+		"id": null
+	},
+	"currencyCode": "CUP",
+	"symbol": "$MN",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

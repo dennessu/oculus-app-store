@@ -1,0 +1,135 @@
+{
+	"countryCode": "MR",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_MR",
+		"id": "ar_MR"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/MRO",
+		"id": "MRO"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Hodh ech Chargui",
+					"longName": "Hodh ech Chargui"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Hodh el Gharbi",
+					"longName": "Hodh el Gharbi"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Assaba",
+					"longName": "Assaba"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gorgol",
+					"longName": "Gorgol"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Brakna",
+					"longName": "Brakna"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Trarza",
+					"longName": "Trarza"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Adrar",
+					"longName": "Adrar"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dakhlet Nouâdhibou",
+					"longName": "Dakhlet Nouâdhibou"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tagant",
+					"longName": "Tagant"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Guidimaka",
+					"longName": "Guidimaka"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tiris Zemmour",
+					"longName": "Tiris Zemmour"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_US": {
+					"shortName": "Inchiri",
+					"longName": "Inchiri"
+				}
+			}
+		},
+		"NKC": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nouakchott",
+					"longName": "Nouakchott"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_MR",
+		"id": "ar_MR"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Mauritania",
+			"longName": "Islamic Republic of Mauritania"
+		},
+		"ar_MR": {
+			"shortName": "Mūrītānyā",
+			"longName": "الجمهورية الإسلامية الموريتانية"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

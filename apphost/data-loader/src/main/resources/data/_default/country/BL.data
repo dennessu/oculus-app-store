@@ -1,0 +1,36 @@
+{
+	"countryCode": "BL",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_BL",
+		"id": "fr_BL"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_BL",
+		"id": "fr_BL"
+	},
+	{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Saint Barthélemy",
+			"longName": "Territorial collectivity of Saint Barthélemy"
+		},
+		"fr_BL": {
+			"shortName": "Saint-Barthélemy",
+			"longName": "Collectivité de Saint-Barthélemy"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

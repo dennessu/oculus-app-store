@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_VG",
+   "shortName" : "English (VG)",
+   "longName" : "English (British Virgin Islands)",
+   "localeName" : "English (VG)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

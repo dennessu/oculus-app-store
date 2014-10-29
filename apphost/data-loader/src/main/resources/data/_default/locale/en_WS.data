@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_WS",
+   "shortName" : "English (WS)",
+   "longName" : "English (Samoa)",
+   "localeName" : "English (WS)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

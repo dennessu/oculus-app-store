@@ -1,0 +1,28 @@
+{
+	"countryCode": "GI",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/GIP",
+		"id": "GIP"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Gibraltar",
+			"longName": "Gibraltar"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

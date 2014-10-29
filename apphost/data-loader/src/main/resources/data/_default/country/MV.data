@@ -1,0 +1,255 @@
+{
+	"countryCode": "MV",
+	"defaultLocale": {
+		"href": "/v1/locales/dv_MV",
+		"id": "dv_MV"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/MVR",
+		"id": "MVR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"00": {
+			"locales": {
+				"en_US": {
+					"shortName": "Alifu Dhaalu",
+					"longName": "Ari Atholhu Dhekunuburi"
+				}
+			}
+		},
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Seenu ",
+					"longName": "Addu Atholhu"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Alifu Alifu",
+					"longName": "Ari Atholhu Uthuruburi"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lhaviyani",
+					"longName": "Faadhippolhu"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vaavu",
+					"longName": "Felidhu Atholhu"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Laamu",
+					"longName": "Hadhdhunmathi"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Haa Alifu",
+					"longName": "Thiladhunmathee Uthuruburi"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Thaa",
+					"longName": "Kolhumadulu"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_US": {
+					"shortName": "Meemu",
+					"longName": "Mulakatholhu"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_US": {
+					"shortName": "Raa",
+					"longName": "Maalhosmadulu Uthuruburi"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"en_US": {
+					"shortName": "Faafu",
+					"longName": "Nilandhe Atholhu Uthuruburi"
+				}
+			}
+		},
+		"17": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dhaalu",
+					"longName": "Nilandhe Atholhu Dhekunuburi"
+				}
+			}
+		},
+		"20": {
+			"locales": {
+				"en_US": {
+					"shortName": "Baa",
+					"longName": "Maalhosmadulu Dhekunuburi"
+				}
+			}
+		},
+		"23": {
+			"locales": {
+				"en_US": {
+					"shortName": "Haa Dhaalu",
+					"longName": "Thiladhunmathee Dhekunuburi"
+				}
+			}
+		},
+		"24": {
+			"locales": {
+				"en_US": {
+					"shortName": "Shaviyani",
+					"longName": "Miladhunmadulu Uthuruburi"
+				}
+			}
+		},
+		"25": {
+			"locales": {
+				"en_US": {
+					"shortName": "Noonu",
+					"longName": "Miladhunmadulu Dhekunuburi"
+				}
+			}
+		},
+		"26": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kaafu",
+					"longName": "Maale Atholhu"
+				}
+			}
+		},
+		"27": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gaafu Alifu",
+					"longName": "Huvadhu Atholhu Uthuruburi"
+				}
+			}
+		},
+		"28": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gaafu Dhaalu",
+					"longName": "Huvadhu Atholhu Dhekunuburi"
+				}
+			}
+		},
+		"29": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gnaviyani",
+					"longName": "Fuvammulah"
+				}
+			}
+		},
+		"CE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central",
+					"longName": "Medhu"
+				}
+			}
+		},
+		"MLE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Male",
+					"longName": "Maale"
+				}
+			}
+		},
+		"NC": {
+			"locales": {
+				"en_US": {
+					"shortName": "North Central",
+					"longName": "Medhu-Uthuru"
+				}
+			}
+		},
+		"NO": {
+			"locales": {
+				"en_US": {
+					"shortName": "North",
+					"longName": "Uthuru"
+				}
+			}
+		},
+		"SC": {
+			"locales": {
+				"en_US": {
+					"shortName": "South Central",
+					"longName": "Medhu-Dhekunu"
+				}
+			}
+		},
+		"SU": {
+			"locales": {
+				"en_US": {
+					"shortName": "South",
+					"longName": "Dhekunu"
+				}
+			}
+		},
+		"UN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Upper North",
+					"longName": "Mathi-Uthuru"
+				}
+			}
+		},
+		"US": {
+			"locales": {
+				"en_US": {
+					"shortName": "Upper South",
+					"longName": "Mathi-Dhekunu"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/dv_MV",
+		"id": "dv_MV"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Maldives",
+			"longName": "Republic of the Maldives"
+		},
+		"dv_MV": {
+			"shortName": "ދިވެހިރާއްޖޭގެ ޖުމްހޫރިއްޔާ",
+			"longName": "ދިވެހިރާއްޖޭގެ ޖުމްހޫރިއްޔާ"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,39 @@
+{
+	"countryCode": "CC",
+	"defaultLocale": {
+		"href": "/v1/locales/en_AU",
+		"id": "en_AU"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AUD",
+		"id": "AUD"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/COB",
+		"id": "COB"
+	}],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_AU",
+		"id": "en_AU"
+	},
+	{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Cocos (Keeling) Islands",
+			"longName": "Territory of the Cocos (Keeling) Islands"
+		},
+		"en_AU": {
+			"shortName": "Cocos (Keeling) Islands",
+			"longName": "Territory of the Cocos (Keeling) Islands"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

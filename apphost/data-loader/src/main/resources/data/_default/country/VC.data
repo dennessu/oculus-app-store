@@ -1,0 +1,75 @@
+{
+	"countryCode": "VC",
+	"defaultLocale": {
+		"href": "/v1/locales/en_VC",
+		"id": "en_VC"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XCD",
+		"id": "XCD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Charlotte",
+					"longName": "Charlotte"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Andrew",
+					"longName": "Saint Andrew"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint David",
+					"longName": "Saint David"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint George",
+					"longName": "Saint George"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Patrick",
+					"longName": "Saint Patrick"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Grenadines",
+					"longName": "Grenadines"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_VC",
+		"id": "en_VC"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Saint Vincent and the Grenadines",
+			"longName": "Saint Vincent and the Grenadines"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "TOP",
+			"longName": "Tongan paʻanga"
+		},
+		"to_TO": {
+			"shortName": "Tongan paʻanga",
+			"longName": "Tongan paʻanga"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=TOP",
+		"id": null
+	},
+	"currencyCode": "TOP",
+	"symbol": "T$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

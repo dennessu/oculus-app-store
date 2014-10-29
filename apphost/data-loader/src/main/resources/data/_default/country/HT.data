@@ -1,0 +1,151 @@
+{
+	"countryCode": "HT",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_HT",
+		"id": "fr_HT"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/HTG",
+		"id": "HTG"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AR": {
+			"locales": {
+				"fr_HT": {
+					"shortName": "Artibonite",
+					"longName": "Artibonite"
+				},
+				"en_US": {
+					"shortName": "Artibonite",
+					"longName": "Artibonite"
+				}
+			}
+		},
+		"CE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Centre",
+					"longName": "Centre"
+				},
+				"fr_HT": {
+					"shortName": "Centre",
+					"longName": "Centre"
+				}
+			}
+		},
+		"GA": {
+			"locales": {
+				"fr_HT": {
+					"shortName": "Grande-Anse",
+					"longName": "Grande-Anse"
+				},
+				"en_US": {
+					"shortName": "Grand'Anse",
+					"longName": "Grand'Anse"
+				}
+			}
+		},
+		"ND": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nippes",
+					"longName": "Nippes"
+				},
+				"fr_HT": {
+					"shortName": "Nord",
+					"longName": "Nord"
+				}
+			}
+		},
+		"NE": {
+			"locales": {
+				"en_US": {
+					"shortName": "North",
+					"longName": "North"
+				},
+				"fr_HT": {
+					"shortName": "Nord-Est",
+					"longName": "Nord-Est"
+				}
+			}
+		},
+		"NI": {
+			"locales": {
+				"en_US": {
+					"shortName": "North-East",
+					"longName": "North-East"
+				},
+				"fr_HT": {
+					"shortName": "Nippes",
+					"longName": "Nippes"
+				}
+			}
+		},
+		"NO": {
+			"locales": {
+				"en_US": {
+					"shortName": "North-West",
+					"longName": "North-West"
+				},
+				"fr_HT": {
+					"shortName": "Nord-Ouest",
+					"longName": "Nord-Ouest"
+				}
+			}
+		},
+		"OU": {
+			"locales": {
+				"en_US": {
+					"shortName": "West",
+					"longName": "West"
+				},
+				"fr_HT": {
+					"shortName": "Ouest",
+					"longName": "Ouest"
+				}
+			}
+		},
+		"SD": {
+			"locales": {
+				"en_US": {
+					"shortName": "South",
+					"longName": "South"
+				},
+				"fr_HT": {
+					"shortName": "Sud",
+					"longName": "Sud"
+				}
+			}
+		},
+		"SE": {
+			"locales": {
+				"fr_HT": {
+					"shortName": "Sud-Est",
+					"longName": "Sud-Est"
+				},
+				"en_US": {
+					"shortName": "South-East",
+					"longName": "South-East"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_HT",
+		"id": "fr_HT"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Haiti",
+			"longName": "Republic of Haiti"
+		},
+		"fr_HT": {
+			"shortName": "Haïti",
+			"longName": "République d'Haïti"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Djiboutian franc",
+			"longName": "Djiboutian franc"
+		},
+		"ar_DJ": {
+			"shortName": "الفرنك الجيبوتي",
+			"longName": "الفرنك الجيبوتي"
+		},
+		"fr_DJ": {
+			"shortName": "franc djibouti",
+			"longName": "franc djibouti"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=DJF",
+		"id": null
+	},
+	"currencyCode": "DJF",
+	"symbol": "Fdj",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Samoan tālā",
+			"longName": "Samoan tālā"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=WST",
+		"id": null
+	},
+	"currencyCode": "WST",
+	"symbol": "WS$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

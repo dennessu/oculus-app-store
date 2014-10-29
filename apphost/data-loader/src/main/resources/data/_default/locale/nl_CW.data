@@ -1,0 +1,11 @@
+{
+  "localeCode": "nl_CW",
+  "shortName": "Dutch (CW)",
+  "longName": "Dutch (Curaçao)",
+  "localeName": "Dutch (CW)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

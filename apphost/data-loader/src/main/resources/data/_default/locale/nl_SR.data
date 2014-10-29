@@ -1,0 +1,11 @@
+{
+  "localeCode": "nl_SR",
+  "shortName": "Dutch (SR)",
+  "longName": "Dutch (Suriname)",
+  "localeName": "Dutch (SR)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

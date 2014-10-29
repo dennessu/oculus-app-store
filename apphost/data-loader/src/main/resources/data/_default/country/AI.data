@@ -1,0 +1,28 @@
+{
+	"countryCode": "AI",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XCD",
+		"id": "XCD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Anguilla",
+			"longName": "Anguilla"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,83 @@
+{
+	"countryCode": "VU",
+	"defaultLocale": {
+		"href": "/v1/locales/en_VU",
+		"id": "en_VU"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/VUV",
+		"id": "VUV"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"MAP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Malampa",
+					"longName": "Malampa"
+				}
+			}
+		},
+		"PAM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pénama",
+					"longName": "Pénama"
+				}
+			}
+		},
+		"SAM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sanma",
+					"longName": "Sanma"
+				}
+			}
+		},
+		"SEE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Shéfa",
+					"longName": "Shéfa"
+				}
+			}
+		},
+		"TAE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Taféa",
+					"longName": "Taféa"
+				}
+			}
+		},
+		"TOB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Torba",
+					"longName": "Torba"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_VU",
+		"id": "en_VU"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Vanuatu",
+			"longName": "Republic of Vanuatu"
+		},
+		"fr_VU": {
+			"shortName": "Vanuatu ",
+			"longName": "République de Vanuatu "
+		},
+		"bi_VU": {
+			"shortName": "Vanuatu ",
+			"longName": "République de Vanuatu"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

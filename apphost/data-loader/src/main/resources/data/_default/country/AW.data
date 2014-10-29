@@ -1,0 +1,36 @@
+{
+	"countryCode": "AW",
+	"defaultLocale": {
+		"href": "/v1/locales/nl_AW",
+		"id": "nl_AW"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AWG",
+		"id": "AWG"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/nl_AW",
+		"id": "nl_AW"
+	},
+	{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Aruba",
+			"longName": "Aruba"
+		},
+		"nl_AW": {
+			"shortName": "Aruba",
+			"longName": "Aruba"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

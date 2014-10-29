@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Gibraltar pound",
+			"longName": "Gibraltar pound"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=GIP",
+		"id": null
+	},
+	"currencyCode": "GIP",
+	"symbol": "£",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

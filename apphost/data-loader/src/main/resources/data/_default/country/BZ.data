@@ -1,0 +1,75 @@
+{
+	"countryCode": "BZ",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/BZD",
+		"id": "BZD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BZ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Belize",
+					"longName": "Belize"
+				}
+			}
+		},
+		"CY": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cayo",
+					"longName": "Cayo"
+				}
+			}
+		},
+		"CZL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Corozal",
+					"longName": "Corozal"
+				}
+			}
+		},
+		"OW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Orange Walk",
+					"longName": "Orange Walk"
+				}
+			}
+		},
+		"SC": {
+			"locales": {
+				"en_US": {
+					"shortName": "Stann Creek",
+					"longName": "Stann Creek"
+				}
+			}
+		},
+		"TOL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Toledo",
+					"longName": "Toledo"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Belize",
+			"longName": "Belize"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

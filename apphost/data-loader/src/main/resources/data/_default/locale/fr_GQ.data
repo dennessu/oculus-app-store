@@ -1,0 +1,11 @@
+{
+  "localeCode": "fr_GQ",
+  "shortName": "French (GQ)",
+  "longName": "French (Equatorial Guinea)",
+  "localeName": "French (GQ)",
+  "fallbackLocale": {
+    "href": "/v1/locales/fr_FR",
+    "id": "fr_FR"
+  },
+  "futureExpansion": {}
+}

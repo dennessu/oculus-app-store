@@ -1,0 +1,55 @@
+{
+	"countryCode": "SH",
+	"defaultLocale": {
+		"href": "/v1/locales/en_SH",
+		"id": "en_SH"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/SHP",
+		"id": "SHP"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AC": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ascension",
+					"longName": "Ascension"
+				}
+			}
+		},
+		"HL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Helena",
+					"longName": "Saint Helena"
+				}
+			}
+		},
+		"TA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tristan da Cunha",
+					"longName": "Tristan da Cunha"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_SH",
+		"id": "en_SH"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Saint Helena",
+			"longName": "Saint Helena, Ascension and Tristan da Cunha"
+		},
+		"en_SH": {
+			"shortName": "Saint Helena",
+			"longName": "Saint Helena, Ascension and Tristan da Cunha"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

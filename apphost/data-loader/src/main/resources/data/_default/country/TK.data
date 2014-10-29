@@ -1,0 +1,28 @@
+{
+	"countryCode": "TK",
+	"defaultLocale": {
+		"href": "/v1/locales/en_TK",
+		"id": "en_TK"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/NZD",
+		"id": "NZD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_TK",
+		"id": "en_TK"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Tokelau",
+			"longName": "Tokelau"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

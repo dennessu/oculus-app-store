@@ -1,0 +1,32 @@
+{
+	"countryCode": "MF",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_MF",
+		"id": "fr_MF"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_MF",
+		"id": "fr_MF"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Saint Martin",
+			"longName": "Collectivity of Saint Martin"
+		},
+		"fr_MF": {
+			"shortName": "Saint Martin",
+			"longName": "Collectivity of Saint Martin"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

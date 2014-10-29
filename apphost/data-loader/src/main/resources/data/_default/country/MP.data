@@ -1,0 +1,32 @@
+{
+	"countryCode": "MP",
+	"defaultLocale": {
+		"href": "/v1/locales/en_MP",
+		"id": "en_MP"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_MP",
+		"id": "en_MP"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Northern Mariana Islands",
+			"longName": "Commonwealth of the Northern Mariana Islands"
+		},
+		"en_MP": {
+			"shortName": "Northern Mariana Islands",
+			"longName": "Commonwealth of the Northern Mariana Islands"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

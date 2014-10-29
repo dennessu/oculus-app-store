@@ -1,0 +1,107 @@
+{
+	"countryCode": "SB",
+	"defaultLocale": {
+		"href": "/v1/locales/en_SB",
+		"id": "en_SB"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/SBD",
+		"id": "SBD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"CE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central",
+					"longName": "Central"
+				}
+			}
+		},
+		"CH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Choiseul",
+					"longName": "Choiseul"
+				}
+			}
+		},
+		"CT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Capital Territory (Honiara)",
+					"longName": "Capital Territory (Honiara)"
+				}
+			}
+		},
+		"GU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Guadalcanal",
+					"longName": "Guadalcanal"
+				}
+			}
+		},
+		"IS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Isabel",
+					"longName": "Isabel"
+				}
+			}
+		},
+		"MK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Makira",
+					"longName": "Makira"
+				}
+			}
+		},
+		"ML": {
+			"locales": {
+				"en_US": {
+					"shortName": "Malaita",
+					"longName": "Malaita"
+				}
+			}
+		},
+		"RB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rennell and Bellona",
+					"longName": "Rennell and Bellona"
+				}
+			}
+		},
+		"TE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Temotu",
+					"longName": "Temotu"
+				}
+			}
+		},
+		"WE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Western",
+					"longName": "Western"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_SB",
+		"id": "en_SB"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Solomon Islands",
+			"longName": "Solomon Islands"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

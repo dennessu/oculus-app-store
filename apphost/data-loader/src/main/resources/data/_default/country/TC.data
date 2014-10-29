@@ -1,0 +1,28 @@
+{
+	"countryCode": "TC",
+	"defaultLocale": {
+		"href": "/v1/locales/en_TC",
+		"id": "en_TC"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_TC",
+		"id": "en_TC"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Turks and Caicos Islands",
+			"longName": "Turks and Caicos Islands"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

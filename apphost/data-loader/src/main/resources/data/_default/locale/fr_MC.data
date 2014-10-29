@@ -1,0 +1,11 @@
+{
+  "localeCode": "fr_MC",
+  "shortName": "French (MC)",
+  "longName": "French (Monaco)",
+  "localeName": "French (MC)",
+  "fallbackLocale": {
+    "href": "/v1/locales/fr_FR",
+    "id": "fr_FR"
+  },
+  "futureExpansion": {}
+}

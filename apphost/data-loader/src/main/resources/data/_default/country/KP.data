@@ -1,0 +1,163 @@
+{
+	"countryCode": "KP",
+	"defaultLocale": {
+		"href": "/v1/locales/ko_KP",
+		"id": "ko_KP"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/KPW",
+		"id": "KPW"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"ko_KP": {
+					"shortName": "P’yŏngyang",
+					"longName": "P’yŏngyang"
+				},
+				"en_US": {
+					"shortName": "Pyongyang",
+					"longName": "Pyongyang"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"ko_KP": {
+					"shortName": "P’yŏngan-namdo",
+					"longName": "P’yŏngan-namdo"
+				},
+				"en_US": {
+					"shortName": "South Pyongan",
+					"longName": "South Pyongan"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"ko_KP": {
+					"shortName": "P’yŏngan-bukto",
+					"longName": "P’yŏngan-bukto"
+				},
+				"en_US": {
+					"shortName": "North Pyongan",
+					"longName": "North Pyongan"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"ko_KP": {
+					"shortName": "Chagang-do",
+					"longName": "Chagang-do"
+				},
+				"en_US": {
+					"shortName": "Chagang",
+					"longName": "Chagang"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "South Hwanghae",
+					"longName": "South Hwanghae"
+				},
+				"ko_KP": {
+					"shortName": "Hwanghae-namdo",
+					"longName": "Hwanghae-namdo"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"ko_KP": {
+					"shortName": "Hwanghae-bukto",
+					"longName": "Hwanghae-bukto"
+				},
+				"en_US": {
+					"shortName": "North Hwanghae",
+					"longName": "North Hwanghae"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"ko_KP": {
+					"shortName": "Kangwŏn-do",
+					"longName": "Kangwŏn-do"
+				},
+				"en_US": {
+					"shortName": "Kangwon",
+					"longName": "Kangwon"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "South Hamgyong",
+					"longName": "South Hamgyong"
+				},
+				"ko_KP": {
+					"shortName": "Hamgyŏng-namdo",
+					"longName": "Hamgyŏng-namdo"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "North Hamgyong",
+					"longName": "North Hamgyong"
+				},
+				"ko_KP": {
+					"shortName": "Hamgyŏng-bukto",
+					"longName": "Hamgyŏng-bukto"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"ko_KP": {
+					"shortName": "Yanggang-do",
+					"longName": "Yanggang-do"
+				},
+				"en_US": {
+					"shortName": "Ryanggang",
+					"longName": "Ryanggang"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rason",
+					"longName": "Rason"
+				},
+				"ko_KP": {
+					"shortName": "Nasŏn (Najin-Sŏnbong)",
+					"longName": "Nasŏn (Najin-Sŏnbong)"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ko_KP",
+		"id": "ko_KP"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "North Korea",
+			"longName": "Democratic People's Republic of Korea"
+		},
+		"ko_KP": {
+			"shortName": "한국",
+			"longName": "조선민주주의인민공화국"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,75 @@
+{
+	"countryCode": "GM",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/GMD",
+		"id": "GMD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"B": {
+			"locales": {
+				"en_US": {
+					"shortName": "Banjul",
+					"longName": "Banjul"
+				}
+			}
+		},
+		"L": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lower River",
+					"longName": "Lower River"
+				}
+			}
+		},
+		"M": {
+			"locales": {
+				"en_US": {
+					"shortName": "MacCarthy Island",
+					"longName": "MacCarthy Island"
+				}
+			}
+		},
+		"N": {
+			"locales": {
+				"en_US": {
+					"shortName": "North Bank",
+					"longName": "North Bank"
+				}
+			}
+		},
+		"U": {
+			"locales": {
+				"en_US": {
+					"shortName": "Upper River",
+					"longName": "Upper River"
+				}
+			}
+		},
+		"W": {
+			"locales": {
+				"en_US": {
+					"shortName": "Western",
+					"longName": "Western"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "The Gambia",
+			"longName": "Republic of the Gambia"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

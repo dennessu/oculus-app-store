@@ -1,0 +1,319 @@
+{
+	"countryCode": "CV",
+	"defaultLocale": {
+		"href": "/v1/locales/pt_CV",
+		"id": "pt_CV"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/CVE",
+		"id": "CVE"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"B": {
+			"locales": {
+				"pt_CV": {
+					"shortName": "Ilhas de Barlavento",
+					"longName": "Ilhas de Barlavento"
+				},
+				"en_US": {
+					"shortName": "Barlavento Islands",
+					"longName": "Barlavento Islands"
+				}
+			}
+		},
+		"BR": {
+			"locales": {
+				"pt_CV": {
+					"shortName": "Brava",
+					"longName": "Brava"
+				},
+				"en_US": {
+					"shortName": "Brava",
+					"longName": "Brava"
+				}
+			}
+		},
+		"BV": {
+			"locales": {
+				"en_US": {
+					"shortName": "Boa Vista",
+					"longName": "Boa Vista"
+				},
+				"pt_CV": {
+					"shortName": "Boa Vista",
+					"longName": "Boa Vista"
+				}
+			}
+		},
+		"CA": {
+			"locales": {
+				"pt_CV": {
+					"shortName": "Santa Catarina",
+					"longName": "Santa Catarina"
+				},
+				"en_US": {
+					"shortName": "Santa Catarina",
+					"longName": "Santa Catarina"
+				}
+			}
+		},
+		"CF": {
+			"locales": {
+				"en_US": {
+					"shortName": "Santa Catarina do Fogo",
+					"longName": "Santa Catarina do Fogo"
+				},
+				"pt_CV": {
+					"shortName": "Santa Catarina do Fogo",
+					"longName": "Santa Catarina do Fogo"
+				}
+			}
+		},
+		"CR": {
+			"locales": {
+				"pt_CV": {
+					"shortName": "Santa Cruz",
+					"longName": "Santa Cruz"
+				},
+				"en_US": {
+					"shortName": "Santa Cruz",
+					"longName": "Santa Cruz"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"pt_CV": {
+					"shortName": "Maio",
+					"longName": "Maio"
+				},
+				"en_US": {
+					"shortName": "Maio",
+					"longName": "Maio"
+				}
+			}
+		},
+		"MO": {
+			"locales": {
+				"pt_CV": {
+					"shortName": "Mosteiros",
+					"longName": "Mosteiros"
+				},
+				"en_US": {
+					"shortName": "Mosteiros",
+					"longName": "Mosteiros"
+				}
+			}
+		},
+		"PA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Paul",
+					"longName": "Paul"
+				},
+				"pt_CV": {
+					"shortName": "Paul",
+					"longName": "Paul"
+				}
+			}
+		},
+		"PN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Porto Novo",
+					"longName": "Porto Novo"
+				},
+				"pt_CV": {
+					"shortName": "Porto Novo",
+					"longName": "Porto Novo"
+				}
+			}
+		},
+		"PR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Praia",
+					"longName": "Praia"
+				},
+				"pt_CV": {
+					"shortName": "Praia",
+					"longName": "Praia"
+				}
+			}
+		},
+		"RB": {
+			"locales": {
+				"pt_CV": {
+					"shortName": "Ribeira Brava",
+					"longName": "Ribeira Brava"
+				},
+				"en_US": {
+					"shortName": "Ribeira Brava",
+					"longName": "Ribeira Brava"
+				}
+			}
+		},
+		"RG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ribeira Grande",
+					"longName": "Ribeira Grande"
+				},
+				"pt_CV": {
+					"shortName": "Ribeira Grande",
+					"longName": "Ribeira Grande"
+				}
+			}
+		},
+		"RS": {
+			"locales": {
+				"pt_CV": {
+					"shortName": "Ribeira Grande de Santiago",
+					"longName": "Ribeira Grande de Santiago"
+				},
+				"en_US": {
+					"shortName": "Ribeira Grande de Santiago",
+					"longName": "Ribeira Grande de Santiago"
+				}
+			}
+		},
+		"S": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sotavento Islands",
+					"longName": "Sotavento Islands"
+				},
+				"pt_CV": {
+					"shortName": "Ilhas de Sotavento",
+					"longName": "Ilhas de Sotavento"
+				}
+			}
+		},
+		"SD": {
+			"locales": {
+				"pt_CV": {
+					"shortName": "São Domingos",
+					"longName": "São Domingos"
+				},
+				"en_US": {
+					"shortName": "São Domingos",
+					"longName": "São Domingos"
+				}
+			}
+		},
+		"SF": {
+			"locales": {
+				"en_US": {
+					"shortName": "São Filipe",
+					"longName": "São Filipe"
+				},
+				"pt_CV": {
+					"shortName": "São Filipe",
+					"longName": "São Filipe"
+				}
+			}
+		},
+		"SL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sal",
+					"longName": "Sal"
+				},
+				"pt_CV": {
+					"shortName": "Sal",
+					"longName": "Sal"
+				}
+			}
+		},
+		"SM": {
+			"locales": {
+				"en_US": {
+					"shortName": "São Miguel",
+					"longName": "São Miguel"
+				},
+				"pt_CV": {
+					"shortName": "São Miguel",
+					"longName": "São Miguel"
+				}
+			}
+		},
+		"SO": {
+			"locales": {
+				"en_US": {
+					"shortName": "São Lourenço dos Órgãos",
+					"longName": "São Lourenço dos Órgãos"
+				},
+				"pt_CV": {
+					"shortName": "São Lourenço dos Órgãos",
+					"longName": "São Lourenço dos Órgãos"
+				}
+			}
+		},
+		"SS": {
+			"locales": {
+				"en_US": {
+					"shortName": "São Salvador do Mundo",
+					"longName": "São Salvador do Mundo"
+				},
+				"pt_CV": {
+					"shortName": "São Salvador do Mundo",
+					"longName": "São Salvador do Mundo"
+				}
+			}
+		},
+		"SV": {
+			"locales": {
+				"en_US": {
+					"shortName": "São Vicente",
+					"longName": "São Vicente"
+				},
+				"pt_CV": {
+					"shortName": "São Vicente",
+					"longName": "São Vicente"
+				}
+			}
+		},
+		"TA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tarrafal",
+					"longName": "Tarrafal"
+				},
+				"pt_CV": {
+					"shortName": "Tarrafal",
+					"longName": "Tarrafal"
+				}
+			}
+		},
+		"TS": {
+			"locales": {
+				"pt_CV": {
+					"shortName": "Tarrafal de São Nicolau",
+					"longName": "Tarrafal de São Nicolau"
+				},
+				"en_US": {
+					"shortName": "Tarrafal de São Nicolau",
+					"longName": "Tarrafal de São Nicolau"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/pt_CV",
+		"id": "pt_CV"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Cape Verde",
+			"longName": "Republic of Cabo Verde"
+		},
+		"pt_CV": {
+			"shortName": "Cabo Verde",
+			"longName": "República de Cabo Verde"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,227 @@
+{
+	"countryCode": "GQ",
+	"defaultLocale": {
+		"href": "/v1/locales/es_GQ",
+		"id": "es_GQ"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XAF",
+		"id": "XAF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AN": {
+			"locales": {
+				"es_GQ": {
+					"shortName": "Annobón",
+					"longName": "Annobón"
+				},
+				"pt_GQ": {
+					"shortName": "Ano Bom",
+					"longName": "Ano Bom"
+				},
+				"en_US": {
+					"shortName": "Annabon",
+					"longName": "Annabon"
+				},
+				"fr_GQ": {
+					"shortName": "Annobon",
+					"longName": "Annobon"
+				}
+			}
+		},
+		"BN": {
+			"locales": {
+				"pt_GQ": {
+					"shortName": "Bioko Norte",
+					"longName": "Bioko Norte"
+				},
+				"fr_GQ": {
+					"shortName": "Bioko Nord",
+					"longName": "Bioko Nord"
+				},
+				"es_GQ": {
+					"shortName": "Bioko Norte",
+					"longName": "Bioko Norte"
+				},
+				"en_US": {
+					"shortName": "Bioko Norte",
+					"longName": "Bioko Norte"
+				}
+			}
+		},
+		"BS": {
+			"locales": {
+				"fr_GQ": {
+					"shortName": " Bioko Sud",
+					"longName": " Bioko Sud"
+				},
+				"pt_GQ": {
+					"shortName": "Bioko Sul",
+					"longName": "Bioko Sul"
+				},
+				"es_GQ": {
+					"shortName": "Bioko Sur",
+					"longName": "Bioko Sur"
+				},
+				"en_US": {
+					"shortName": "Bioko Sur",
+					"longName": "Bioko Sur"
+				}
+			}
+		},
+		"C": {
+			"locales": {
+				"pt_GQ": {
+					"shortName": " Região Continental",
+					"longName": " Região Continental"
+				},
+				"en_US": {
+					"shortName": "Río Muni",
+					"longName": "Río Muni"
+				},
+				"es_GQ": {
+					"shortName": "Región Continental",
+					"longName": "Región Continental"
+				},
+				"fr_GQ": {
+					"shortName": " Région Continentale ",
+					"longName": " Région Continentale "
+				}
+			}
+		},
+		"CS": {
+			"locales": {
+				"fr_GQ": {
+					"shortName": "Centre Sud",
+					"longName": "Centre Sud"
+				},
+				"es_GQ": {
+					"shortName": "Centro Sur",
+					"longName": "Centro Sur"
+				},
+				"pt_GQ": {
+					"shortName": "Centro Sul",
+					"longName": "Centro Sul"
+				},
+				"en_US": {
+					"shortName": "Centro Sur",
+					"longName": "Centro Sur"
+				}
+			}
+		},
+		"I": {
+			"locales": {
+				"en_US": {
+					"shortName": "Insular Region",
+					"longName": "Insular Region"
+				},
+				"pt_GQ": {
+					"shortName": "Região Insular",
+					"longName": "Região Insular"
+				},
+				"fr_GQ": {
+					"shortName": "Région Insulaire",
+					"longName": "Région Insulaire"
+				},
+				"es_GQ": {
+					"shortName": "Región Insular",
+					"longName": "Región Insular"
+				}
+			}
+		},
+		"KN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kié-Ntem",
+					"longName": "Kié-Ntem"
+				},
+				"fr_GQ": {
+					"shortName": "Kié-Ntem",
+					"longName": "Kié-Ntem"
+				},
+				"pt_GQ": {
+					"shortName": " Kié-Ntem",
+					"longName": " Kié-Ntem"
+				},
+				"es_GQ": {
+					"shortName": "Kié-Ntem",
+					"longName": "Kié-Ntem"
+				}
+			}
+		},
+		"LI": {
+			"locales": {
+				"es_GQ": {
+					"shortName": "Litoral",
+					"longName": "Litoral"
+				},
+				"pt_GQ": {
+					"shortName": "Litoral",
+					"longName": "Litoral"
+				},
+				"fr_GQ": {
+					"shortName": "Littoral",
+					"longName": "Littoral"
+				},
+				"en_US": {
+					"shortName": "Litoral",
+					"longName": "Litoral"
+				}
+			}
+		},
+		"WN": {
+			"locales": {
+				"pt_GQ": {
+					"shortName": "Wele-Nzas",
+					"longName": "Wele-Nzas"
+				},
+				"en_US": {
+					"shortName": "Wele-Nzas",
+					"longName": "Wele-Nzas"
+				},
+				"es_GQ": {
+					"shortName": "Wele-Nzas",
+					"longName": "Wele-Nzas"
+				},
+				"fr_GQ": {
+					"shortName": "Wele-Nzas",
+					"longName": "Wele-Nzas"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/es_GQ",
+		"id": "es_GQ"
+	},
+	{
+		"href": "/v1/locales/fr_GQ",
+		"id": "fr_GQ"
+	},
+	{
+		"href": "/v1/locales/pt_GQ",
+		"id": "pt_GQ"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Equatorial Guinea",
+			"longName": "Republic of Equatorial Guinea"
+		},
+		"es_GQ": {
+			"shortName": "Guinea Ecuatorial",
+			"longName": "República de Guinea Ecuatorial"
+		},
+		"fr_GQ": {
+			"shortName": "Guinée équatoriale",
+			"longName": "République de Guinée équatoriale"
+		},
+		"pt_GQ": {
+			"shortName": "Guiné Equatorial",
+			"longName": "República da Guiné Equatorial"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

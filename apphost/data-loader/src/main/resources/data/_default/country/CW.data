@@ -1,0 +1,32 @@
+{
+	"countryCode": "CW",
+	"defaultLocale": {
+		"href": "/v1/locales/nl_CW",
+		"id": "nl_CW"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/ANG",
+		"id": "ANG"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/nl_CW",
+		"id": "nl_CW"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Curaçao",
+			"longName": "Country of Curaçao"
+		},
+		"nl_CW": {
+			"shortName": "Curaçao",
+			"longName": "Land Curaçao"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

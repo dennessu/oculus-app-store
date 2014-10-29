@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "XCD",
+			"longName": "East Caribbean dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=XCD",
+		"id": null
+	},
+	"currencyCode": "XCD",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

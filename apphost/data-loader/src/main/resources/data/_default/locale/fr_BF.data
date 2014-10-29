@@ -1,0 +1,14 @@
+{
+   "localeCode" : "fr_BF",
+   "shortName" : "French (BF)",
+   "longName" : "French (Burkina Faso)",
+   "localeName" : "French (BF)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/fr_FR",
+         "id" : "fr_FR"
+      },
+   "futureExpansion" :
+      {
+      }
+}

@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_TC",
+   "shortName" : "English (TC)",
+   "longName" : "English (Turks and Caicos Islands)",
+   "localeName" : "English (TC)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

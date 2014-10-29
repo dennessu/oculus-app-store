@@ -1,0 +1,11 @@
+{
+  "localeCode": "fr_JE",
+  "shortName": "French (JE)",
+  "longName": "French (Jersey)",
+  "localeName": "French (JE)",
+  "fallbackLocale": {
+    "href": "/v1/locales/fr_FR",
+    "id": "fr_FR"
+  },
+  "futureExpansion": {}
+}

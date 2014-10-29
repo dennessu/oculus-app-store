@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "KPW",
+			"longName": "North Korean won"
+		},
+		"ko_KP": {
+			"shortName": "원",
+			"longName": "조선민주주의인민공화국 원 "
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=KPW",
+		"id": null
+	},
+	"currencyCode": "KPW",
+	"symbol": "₩",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

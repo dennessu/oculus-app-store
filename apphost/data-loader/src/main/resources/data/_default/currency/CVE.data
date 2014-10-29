@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Cape Verdean escudo",
+			"longName": "Cape Verdean escudo"
+		},
+		"pt_CV": {
+			"shortName": "escudo cabo-verdiano",
+			"longName": "escudo cabo-verdiano"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=CVE",
+		"id": null
+	},
+	"currencyCode": "CVE",
+	"symbol": "$",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

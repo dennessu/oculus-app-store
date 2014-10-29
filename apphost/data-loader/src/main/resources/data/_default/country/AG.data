@@ -1,0 +1,91 @@
+{
+	"countryCode": "AG",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XCD",
+		"id": "XCD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint George",
+					"longName": "Saint George Parish"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint John",
+					"longName": "Saint John Parish"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Mary",
+					"longName": "Saint Mary Parish"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Paul",
+					"longName": "Saint Paul Parish"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Peter",
+					"longName": "Saint Peter Parish"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Philip",
+					"longName": "Saint Philip Parish"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Barbuda",
+					"longName": "Barbuda"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Redonda",
+					"longName": "Redonda"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Antigua and Barbuda",
+			"longName": "Antigua and Barbuda"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

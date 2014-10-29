@@ -1,0 +1,95 @@
+{
+	"countryCode": "NE",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_NE",
+		"id": "fr_NE"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XOF",
+		"id": "XOF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"1": {
+			"locales": {
+				"en_US": {
+					"shortName": "Agadez",
+					"longName": "Agadez"
+				}
+			}
+		},
+		"2": {
+			"locales": {
+				"en_US": {
+					"shortName": "Diffa",
+					"longName": "Diffa"
+				}
+			}
+		},
+		"3": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dosso",
+					"longName": "Dosso"
+				}
+			}
+		},
+		"4": {
+			"locales": {
+				"en_US": {
+					"shortName": "Maradi",
+					"longName": "Maradi"
+				}
+			}
+		},
+		"5": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tahoua",
+					"longName": "Tahoua"
+				}
+			}
+		},
+		"6": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tillabéri",
+					"longName": "Tillabéri"
+				}
+			}
+		},
+		"7": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zinder",
+					"longName": "Zinder"
+				}
+			}
+		},
+		"8": {
+			"locales": {
+				"en_US": {
+					"shortName": "Niamey",
+					"longName": "Niamey"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_NE",
+		"id": "fr_NE"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Niger",
+			"longName": "Republic of Niger"
+		},
+		"fr_NE": {
+			"shortName": "Niger",
+			"longName": "République du Niger "
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

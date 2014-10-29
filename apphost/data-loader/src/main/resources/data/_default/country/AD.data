@@ -1,0 +1,83 @@
+{
+	"countryCode": "AD",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Canillo",
+					"longName": "Canillo"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Encamp",
+					"longName": "Encamp"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "La Massana",
+					"longName": "La Massana"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ordino",
+					"longName": "Ordino"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sant Julià de Lòria",
+					"longName": "Sant Julià de Lòria"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Andorra la Vella",
+					"longName": "Andorra la Vella"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Escaldes-Engordany",
+					"longName": "Escaldes-Engordany"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Andorra",
+			"longName": "Principality of Andorra"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

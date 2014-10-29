@@ -1,0 +1,71 @@
+{
+	"countryCode": "BQ",
+	"defaultLocale": {
+		"href": "/v1/locales/nl_NL",
+		"id": "nl_NL"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BO": {
+			"locales": {
+				"nl_NL": {
+					"shortName": "Bonaire",
+					"longName": "Bonaire"
+				},
+				"en_US": {
+					"shortName": "Bonaire",
+					"longName": "Bonaire"
+				}
+			}
+		},
+		"SA": {
+			"locales": {
+				"nl_NL": {
+					"shortName": "Saba",
+					"longName": "Saba"
+				},
+				"en_US": {
+					"shortName": "Saba",
+					"longName": "Saba"
+				}
+			}
+		},
+		"SE": {
+			"locales": {
+				"nl_NL": {
+					"shortName": "Sint Eustatius",
+					"longName": "Sint Eustatius"
+				},
+				"en_US": {
+					"shortName": "Sint Eustatius",
+					"longName": "Sint Eustatius"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/nl_NL",
+		"id": "nl_NL"
+	},
+	{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Caribbean Netherlands",
+			"longName": "Caribbean Netherlands"
+		},
+		"nl_NL": {
+			"shortName": "Caribisch Nederland",
+			"longName": "Caribisch Nederland"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

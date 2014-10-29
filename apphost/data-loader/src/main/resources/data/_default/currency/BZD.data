@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Belize dollar",
+			"longName": "Belize dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=BZD",
+		"id": null
+	},
+	"currencyCode": "BZD",
+	"symbol": "BZ$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

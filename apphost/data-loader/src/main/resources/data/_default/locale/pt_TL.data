@@ -1,0 +1,11 @@
+{
+  "localeCode": "pt_TL",
+  "shortName": "Portuguese (TL)",
+  "longName": "Portuguese (East Timor)",
+  "localeName": "Portuguese (TL)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

@@ -1,0 +1,187 @@
+{
+	"countryCode": "PG",
+	"defaultLocale": {
+		"href": "/v1/locales/en_PG",
+		"id": "en_PG"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/PGK",
+		"id": "PGK"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"CPK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chimbu",
+					"longName": "Chimbu"
+				}
+			}
+		},
+		"CPM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central",
+					"longName": "Central"
+				}
+			}
+		},
+		"EBR": {
+			"locales": {
+				"en_US": {
+					"shortName": "East New Britain",
+					"longName": "East New Britain"
+				}
+			}
+		},
+		"EHG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Eastern Highlands",
+					"longName": "Eastern Highlands"
+				}
+			}
+		},
+		"EPW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Enga",
+					"longName": "Enga"
+				}
+			}
+		},
+		"ESW": {
+			"locales": {
+				"en_US": {
+					"shortName": "East Sepik",
+					"longName": "East Sepik"
+				}
+			}
+		},
+		"GPK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gulf",
+					"longName": "Gulf"
+				}
+			}
+		},
+		"MBA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Milne Bay",
+					"longName": "Milne Bay"
+				}
+			}
+		},
+		"MPL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Morobe",
+					"longName": "Morobe"
+				}
+			}
+		},
+		"MPM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Madang",
+					"longName": "Madang"
+				}
+			}
+		},
+		"MRL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Manus",
+					"longName": "Manus"
+				}
+			}
+		},
+		"NCD": {
+			"locales": {
+				"en_US": {
+					"shortName": "National Capital District (Port Moresby)",
+					"longName": "National Capital District (Port Moresby)"
+				}
+			}
+		},
+		"NIK": {
+			"locales": {
+				"en_US": {
+					"shortName": "New Ireland",
+					"longName": "New Ireland"
+				}
+			}
+		},
+		"NPP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Northern",
+					"longName": "Northern"
+				}
+			}
+		},
+		"NSB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bougainville",
+					"longName": "Bougainville"
+				}
+			}
+		},
+		"SAN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sandaun [West Sepik]",
+					"longName": "Sandaun [West Sepik]"
+				}
+			}
+		},
+		"SHM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Southern Highlands",
+					"longName": "Southern Highlands"
+				}
+			}
+		},
+		"WBK": {
+			"locales": {
+				"en_US": {
+					"shortName": "West New Britain",
+					"longName": "West New Britain"
+				}
+			}
+		},
+		"WHM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Western Highlands",
+					"longName": "Western Highlands"
+				}
+			}
+		},
+		"WPD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Western",
+					"longName": "Western"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_PG",
+		"id": "en_PG"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Papua New Guinea",
+			"longName": "Independent State of Papua New Guinea"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_VC",
+   "shortName" : "English (VC)",
+   "longName" : "English (Saint Vincent and the Grenadines)",
+   "localeName" : "English (VC)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

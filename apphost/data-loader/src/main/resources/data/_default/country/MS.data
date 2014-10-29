@@ -1,0 +1,32 @@
+{
+	"countryCode": "MS",
+	"defaultLocale": {
+		"href": "/v1/locales/en_MS",
+		"id": "en_MS"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_MS",
+		"id": "en_MS"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Montserrat",
+			"longName": "Montserrat"
+		},
+		"en_MS": {
+			"shortName": "Montserrat",
+			"longName": "Montserrat"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

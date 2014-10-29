@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Eritrean nakfa",
+			"longName": "Eritrean nakfa"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=ERN",
+		"id": null
+	},
+	"currencyCode": "ERN",
+	"symbol": "Nfk",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

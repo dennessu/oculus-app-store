@@ -1,0 +1,187 @@
+{
+	"countryCode": "BT",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/BTN",
+		"id": "BTN"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Paro",
+					"longName": "Paro"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chhukha",
+					"longName": "Chhukha"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ha",
+					"longName": "Ha"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"en_US": {
+					"shortName": "Samtse",
+					"longName": "Samtse"
+				}
+			}
+		},
+		"15": {
+			"locales": {
+				"en_US": {
+					"shortName": "Thimphu",
+					"longName": "Thimphu"
+				}
+			}
+		},
+		"21": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tsirang",
+					"longName": "Tsirang"
+				}
+			}
+		},
+		"22": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dagana",
+					"longName": "Dagana"
+				}
+			}
+		},
+		"23": {
+			"locales": {
+				"en_US": {
+					"shortName": "Punakha",
+					"longName": "Punakha"
+				}
+			}
+		},
+		"24": {
+			"locales": {
+				"en_US": {
+					"shortName": "Wangdue Phodrang",
+					"longName": "Wangdue Phodrang"
+				}
+			}
+		},
+		"31": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sarpang",
+					"longName": "Sarpang"
+				}
+			}
+		},
+		"32": {
+			"locales": {
+				"en_US": {
+					"shortName": "Trongsa",
+					"longName": "Trongsa"
+				}
+			}
+		},
+		"33": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bumthang",
+					"longName": "Bumthang"
+				}
+			}
+		},
+		"34": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zhemgang",
+					"longName": "Zhemgang"
+				}
+			}
+		},
+		"41": {
+			"locales": {
+				"en_US": {
+					"shortName": "Trashigang",
+					"longName": "Trashigang"
+				}
+			}
+		},
+		"42": {
+			"locales": {
+				"en_US": {
+					"shortName": "Monggar",
+					"longName": "Monggar"
+				}
+			}
+		},
+		"43": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pemagatshel",
+					"longName": "Pemagatshel"
+				}
+			}
+		},
+		"44": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lhuentse",
+					"longName": "Lhuentse"
+				}
+			}
+		},
+		"45": {
+			"locales": {
+				"en_US": {
+					"shortName": "Samdrup Jongkha",
+					"longName": "Samdrup Jongkha"
+				}
+			}
+		},
+		"GA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gasa",
+					"longName": "Gasa"
+				}
+			}
+		},
+		"TY": {
+			"locales": {
+				"en_US": {
+					"shortName": "Trashi Yangtse",
+					"longName": "Trashi Yangtse"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Bhutan",
+			"longName": "Kingdom of Bhutan"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"countryCode": "NF",
+	"defaultLocale": {
+		"href": "/v1/locales/en_NF",
+		"id": "en_NF"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AUD",
+		"id": "AUD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_NF",
+		"id": "en_NF"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Norfolk Island",
+			"longName": "Territory of Norfolk Island"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

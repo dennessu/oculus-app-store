@@ -1,0 +1,115 @@
+{
+	"countryCode": "BB",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/BBD",
+		"id": "BBD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Christ Church",
+					"longName": "Christ Church"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Andrew",
+					"longName": "Saint Andrew"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint George",
+					"longName": "Saint George"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint James",
+					"longName": "Saint James"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint James",
+					"longName": "Saint James"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Joseph",
+					"longName": "Saint Joseph"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Lucy",
+					"longName": "Saint Lucy"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Michael",
+					"longName": "Saint Michael"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Peter",
+					"longName": "Saint Peter"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Philip",
+					"longName": "Saint Philip"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Thomas",
+					"longName": "Saint Thomas"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Barbados",
+			"longName": "Barbados"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,32 @@
+{
+	"countryCode": "NU",
+	"defaultLocale": {
+		"href": "/v1/locales/en_NU",
+		"id": "en_NU"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/NZD",
+		"id": "NZD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_NU",
+		"id": "en_NU"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Niue",
+			"longName": "Niue"
+		},
+		"niu_NU": {
+			"shortName": "Niuē",
+			"longName": "Niuē"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,32 @@
+{
+	"countryCode": "YT",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_YT",
+		"id": "fr_YT"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_YT",
+		"id": "fr_YT"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Mayotte",
+			"longName": "Department of Mayotte"
+		},
+		"fr_YT": {
+			"shortName": "Mayotte",
+			"longName": "Mayotte"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

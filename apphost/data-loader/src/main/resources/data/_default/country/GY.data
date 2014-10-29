@@ -1,0 +1,107 @@
+{
+	"countryCode": "GY",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/GYD",
+		"id": "GYD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Barima-Waini",
+					"longName": "Barima-Waini"
+				}
+			}
+		},
+		"CU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cuyuni-Mazaruni",
+					"longName": "Cuyuni-Mazaruni"
+				}
+			}
+		},
+		"DE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Demerara-Mahaica",
+					"longName": "Demerara-Mahaica"
+				}
+			}
+		},
+		"EB": {
+			"locales": {
+				"en_US": {
+					"shortName": "East Berbice-Corentyne",
+					"longName": "East Berbice-Corentyne"
+				}
+			}
+		},
+		"ES": {
+			"locales": {
+				"en_US": {
+					"shortName": "Essequibo Islands-West Demerara",
+					"longName": "Essequibo Islands-West Demerara"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mahaica-Berbice",
+					"longName": "Mahaica-Berbice"
+				}
+			}
+		},
+		"PM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pomeroon-Supenaam",
+					"longName": "Pomeroon-Supenaam"
+				}
+			}
+		},
+		"PT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Potaro-Siparuni",
+					"longName": "Potaro-Siparuni"
+				}
+			}
+		},
+		"UD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Upper Demerara-Berbice",
+					"longName": "Upper Demerara-Berbice"
+				}
+			}
+		},
+		"UT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Upper Takutu-Upper Essequibo",
+					"longName": "Upper Takutu-Upper Essequibo"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Guyana",
+			"longName": "Co-operative Republic of Guyana"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

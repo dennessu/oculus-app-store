@@ -1,0 +1,28 @@
+{
+	"countryCode": "IO",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/GBP",
+		"id": "GBP"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "British Indian Ocean Territory",
+			"longName": "British Indian Ocean Territory"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

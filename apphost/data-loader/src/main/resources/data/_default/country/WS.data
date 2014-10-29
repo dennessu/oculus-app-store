@@ -1,0 +1,119 @@
+{
+	"countryCode": "WS",
+	"defaultLocale": {
+		"href": "/v1/locales/en_WS",
+		"id": "en_WS"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/WST",
+		"id": "WST"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AA": {
+			"locales": {
+				"en_US": {
+					"shortName": "A'ana",
+					"longName": "A'ana"
+				}
+			}
+		},
+		"AL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Aiga-i-le-Tai",
+					"longName": "Aiga-i-le-Tai"
+				}
+			}
+		},
+		"AT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Atua",
+					"longName": "Atua"
+				}
+			}
+		},
+		"FA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Fa'asaleleaga",
+					"longName": "Fa'asaleleaga"
+				}
+			}
+		},
+		"GE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gaga'emauga",
+					"longName": "Gaga'emauga"
+				}
+			}
+		},
+		"GI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gagaifomauga",
+					"longName": "Gagaifomauga"
+				}
+			}
+		},
+		"PA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Palauli",
+					"longName": "Palauli"
+				}
+			}
+		},
+		"SA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Satupa'itea",
+					"longName": "Satupa'itea"
+				}
+			}
+		},
+		"TU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tuamasaga",
+					"longName": "Tuamasaga"
+				}
+			}
+		},
+		"VF": {
+			"locales": {
+				"en_US": {
+					"shortName": "Va'a-o-Fonoti",
+					"longName": "Va'a-o-Fonoti"
+				}
+			}
+		},
+		"VS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vaisigano",
+					"longName": "Vaisigano"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_WS",
+		"id": "en_WS"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Samoa",
+			"longName": "Independent State of Samoa"
+		},
+		"sm_WS": {
+			"shortName": "Sāmoa",
+			"longName": "Malo Saʻoloto Tutoʻatasi o Sāmoa"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

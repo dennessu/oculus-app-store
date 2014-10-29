@@ -1,0 +1,32 @@
+{
+	"countryCode": "VA",
+	"defaultLocale": {
+		"href": "/v1/locales/it_VA",
+		"id": "it_VA"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/it_VA",
+		"id": "it_VA"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Vatican City",
+			"longName": "Vatican City"
+		},
+		"it_VA": {
+			"shortName": "Stato della Città del Vaticano",
+			"longName": "Stato della Città del Vaticano"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

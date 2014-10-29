@@ -1,0 +1,32 @@
+{
+	"countryCode": "NC",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_NC",
+		"id": "fr_NC"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XPF",
+		"id": "XPF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_NC",
+		"id": "fr_NC"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "New Caledonia",
+			"longName": "New Caledonia"
+		},
+		"fr_NC": {
+			"shortName": "Nouvelle-Calédonie",
+			"longName": "Nouvelle-Calédonie"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

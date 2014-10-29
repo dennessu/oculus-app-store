@@ -1,0 +1,32 @@
+{
+	"countryCode": "FO",
+	"defaultLocale": {
+		"href": "/v1/locales/da_FO",
+		"id": "da_FO"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/DKK",
+		"id": "DKK"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/da_FO",
+		"id": "da_FO"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Faroe Islands",
+			"longName": "Faroe Islands"
+		},
+		"da_FO": {
+			"shortName": "Færøerne",
+			"longName": "Færøerne"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

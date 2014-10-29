@@ -1,0 +1,119 @@
+{
+	"countryCode": "LC",
+	"defaultLocale": {
+		"href": "/v1/locales/en_LC",
+		"id": "en_LC"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XCD",
+		"id": "XCD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Anse la Raye",
+					"longName": "Anse la Raye"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Castries",
+					"longName": "Castries"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Choiseul",
+					"longName": "Choiseul"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dauphin",
+					"longName": "Dauphin"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dennery",
+					"longName": "Dennery"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gros Islet",
+					"longName": "Gros Islet"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Laborie",
+					"longName": "Laborie"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Micoud",
+					"longName": "Micoud"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Praslin",
+					"longName": "Praslin"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Soufrière",
+					"longName": "Soufrière"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vieux Fort",
+					"longName": "Vieux Fort"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_LC",
+		"id": "en_LC"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Saint Lucia",
+			"longName": "Saint Lucia"
+		},
+		"en_LC": {
+			"shortName": "Saint Lucia",
+			"longName": "Saint Lucia"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}
