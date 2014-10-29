@@ -23,7 +23,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Sint Maarten",
-			"longName": "Sint Maarten"
+			"longName": "Sint Maarten",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

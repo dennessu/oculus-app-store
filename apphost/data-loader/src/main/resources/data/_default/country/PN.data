@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Pitcairn Islands",
-			"longName": "Pitcairn Group of Islands"
+			"longName": "Pitcairn Group of Islands",
+			"postalCode": "Postal Code"
 		},
 		"en_PN": {
 			"shortName": "Pitcairn Islands",
-			"longName": "Pitcairn Group of Islands"
+			"longName": "Pitcairn Group of Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -23,11 +23,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Aruba",
-			"longName": "Aruba"
+			"longName": "Aruba",
+			"postalCode": "Postal Code"
 		},
 		"nl_AW": {
 			"shortName": "Aruba",
-			"longName": "Aruba"
+			"longName": "Aruba",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

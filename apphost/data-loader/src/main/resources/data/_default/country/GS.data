@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "South Georgia and the South Sandwich Islands",
-			"longName": "South Georgia and the South Sandwich Islands"
+			"longName": "South Georgia and the South Sandwich Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

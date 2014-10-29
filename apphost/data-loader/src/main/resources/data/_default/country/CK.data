@@ -26,11 +26,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Cook Islands",
-			"longName": "Cook Islands"
+			"longName": "Cook Islands",
+			"postalCode": "Postal Code"
 		},
 		"en_NZ": {
 			"shortName": "Cook Islands",
-			"longName": "Cook Islands"
+			"longName": "Cook Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

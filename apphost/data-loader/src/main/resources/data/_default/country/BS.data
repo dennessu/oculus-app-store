@@ -266,7 +266,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "The Bahamas",
-			"longName": "Commonwealth of the Bahamas"
+			"longName": "Commonwealth of the Bahamas",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

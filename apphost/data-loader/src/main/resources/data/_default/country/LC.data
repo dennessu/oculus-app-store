@@ -106,11 +106,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Saint Lucia",
-			"longName": "Saint Lucia"
+			"longName": "Saint Lucia",
+			"postalCode": "Postal Code"
 		},
 		"en_LC": {
 			"shortName": "Saint Lucia",
-			"longName": "Saint Lucia"
+			"longName": "Saint Lucia",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

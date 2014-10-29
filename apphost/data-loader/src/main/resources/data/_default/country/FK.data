@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Falkland Islands",
-			"longName": "Falkland Islands"
+			"longName": "Falkland Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -162,11 +162,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Guinea-Bissau",
-			"longName": "Republic of Guinea-Bissau"
+			"longName": "Republic of Guinea-Bissau",
+			"postalCode": "Postal Code"
 		},
 		"pt_GW": {
 			"shortName": "Guiné-Bissau",
-			"longName": "República da Guiné-Bissau"
+			"longName": "República da Guiné-Bissau",
+			"postalCode": "código postal"
 		}
 	},
 	"futureExpansion": {

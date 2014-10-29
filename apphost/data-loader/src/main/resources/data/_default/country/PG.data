@@ -178,7 +178,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Papua New Guinea",
-			"longName": "Independent State of Papua New Guinea"
+			"longName": "Independent State of Papua New Guinea",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -98,11 +98,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Suriname",
-			"longName": "Republic of Suriname"
+			"longName": "Republic of Suriname",
+            "postalCode": "Postal Code"
 		},
 		"nl_SR": {
 			"shortName": "Suriname",
-			"longName": "Republiek Suriname"
+			"longName": "Republiek Suriname",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

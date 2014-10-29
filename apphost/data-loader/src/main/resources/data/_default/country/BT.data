@@ -178,7 +178,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Bhutan",
-			"longName": "Kingdom of Bhutan"
+			"longName": "Kingdom of Bhutan",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

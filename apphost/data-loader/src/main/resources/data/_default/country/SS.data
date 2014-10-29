@@ -98,7 +98,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "South Sudan",
-			"longName": "Republic of South Sudan"
+			"longName": "Republic of South Sudan",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

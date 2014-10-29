@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Antarctica",
-			"longName": "Antarctica"
+			"longName": "Antarctica",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

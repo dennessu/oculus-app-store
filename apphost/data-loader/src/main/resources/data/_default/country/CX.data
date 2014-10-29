@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Christmas Island",
-			"longName": "Territory of Christmas Island"
+			"longName": "Territory of Christmas Island",
+			"postalCode": "Postal Code"
 		},
 		"en_AU": {
 			"shortName": "Christmas Island",
-			"longName": "Territory of Christmas Island"
+			"longName": "Territory of Christmas Island",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -118,15 +118,18 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Djibouti",
-			"longName": "Republic of Djibouti"
+			"longName": "Republic of Djibouti",
+			"postalCode": "Postal Code"
 		},
 		"ar_DJ": {
 			"shortName": "جيبوتي",
-			"longName": "جمهورية جيبوتي"
+			"longName": "جمهورية جيبوتي",
+			"postalCode": "الرمز البريدي"
 		},
 		"fr_DJ": {
 			"shortName": "Djibouti",
-			"longName": "République de Djibouti"
+			"longName": "République de Djibouti",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

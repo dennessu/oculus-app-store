@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Niue",
-			"longName": "Niue"
+			"longName": "Niue",
+			"postalCode": "Postal Code"
 		},
 		"niu_NU": {
 			"shortName": "Niuē",
-			"longName": "Niuē"
+			"longName": "Niuē",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

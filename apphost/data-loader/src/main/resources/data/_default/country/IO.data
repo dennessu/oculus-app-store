@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "British Indian Ocean Territory",
-			"longName": "British Indian Ocean Territory"
+			"longName": "British Indian Ocean Territory",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

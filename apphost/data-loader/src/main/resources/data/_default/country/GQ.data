@@ -206,19 +206,23 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Equatorial Guinea",
-			"longName": "Republic of Equatorial Guinea"
+			"longName": "Republic of Equatorial Guinea",
+			"postalCode": "Postal Code"
 		},
 		"es_GQ": {
 			"shortName": "Guinea Ecuatorial",
-			"longName": "República de Guinea Ecuatorial"
+			"longName": "República de Guinea Ecuatorial",
+			"postalCode": "Código Postal"
 		},
 		"fr_GQ": {
 			"shortName": "Guinée équatoriale",
-			"longName": "République de Guinée équatoriale"
+			"longName": "République de Guinée équatoriale",
+			"postalCode": "code postal"
 		},
 		"pt_GQ": {
 			"shortName": "Guiné Equatorial",
-			"longName": "República da Guiné Equatorial"
+			"longName": "República da Guiné Equatorial",
+			"postalCode": "código postal"
 		}
 	},
 	"futureExpansion": {

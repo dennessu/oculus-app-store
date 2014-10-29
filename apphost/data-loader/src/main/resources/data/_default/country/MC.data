@@ -154,11 +154,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Monaco",
-			"longName": "Principality of Monaco"
+			"longName": "Principality of Monaco",
+			"postalCode": "Postal Code"
 		},
 		"fr_MC": {
 			"shortName": "Monaco",
-			"longName": "Principality of Monaco"
+			"longName": "Principality of Monaco",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

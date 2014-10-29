@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "United States Virgin Islands",
-			"longName": "Virgin Islands of the United States"
+			"longName": "Virgin Islands of the United States",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

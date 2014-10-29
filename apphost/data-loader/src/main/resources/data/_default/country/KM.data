@@ -70,15 +70,18 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Comoros",
-			"longName": "Union of the Comoros"
+			"longName": "Union of the Comoros",
+			"postalCode": "Postal Code"
 		},
 		"fr_KM": {
 			"shortName": "Comores",
-			"longName": "Union des Comores"
+			"longName": "Union des Comores",
+			"postalCode": "code postal"
 		},
 		"ar_KM": {
 			"shortName": "جزر القمر",
-			"longName": "الاتحاد القمري‎"
+			"longName": "الاتحاد القمري‎",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

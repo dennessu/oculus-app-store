@@ -98,7 +98,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Guyana",
-			"longName": "Co-operative Republic of Guyana"
+			"longName": "Co-operative Republic of Guyana",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

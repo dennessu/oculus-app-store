@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Gibraltar",
-			"longName": "Gibraltar"
+			"longName": "Gibraltar",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

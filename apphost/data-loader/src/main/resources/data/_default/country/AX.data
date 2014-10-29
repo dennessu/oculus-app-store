@@ -23,11 +23,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Åland Islands",
-			"longName": "Åland Islands"
+			"longName": "Åland Islands",
+			"postalCode": "Postal Code"
 		},
 		"sv_AX": {
 			"shortName": "Landskapet Åland",
-			"longName": "Landskapet Åland"
+			"longName": "Landskapet Åland",
+			"postalCode": "postnummer"
 		}
 	},
 	"futureExpansion": {

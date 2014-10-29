@@ -50,7 +50,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Brunei",
-			"longName": "Nation of Brunei, the Abode of Peace"
+			"longName": "Nation of Brunei, the Abode of Peace",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

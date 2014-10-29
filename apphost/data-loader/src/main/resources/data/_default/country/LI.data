@@ -106,11 +106,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Liechtenstein",
-			"longName": "Liechtenstein"
+			"longName": "Liechtenstein",
+			"postalCode": "Postal Code"
 		},
 		"de_LI": {
 			"shortName": "Liechtenstein",
-			"longName": "Liechtenstein"
+			"longName": "Liechtenstein",
+            "postalCode": "Postleitzahl"
 		}
 	},
 	"futureExpansion": {

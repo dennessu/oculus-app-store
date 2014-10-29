@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Bermuda",
-			"longName": "the Bermudas or Somers Isles"
+			"longName": "the Bermudas or Somers Isles",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

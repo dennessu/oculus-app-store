@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Mayotte",
-			"longName": "Department of Mayotte"
+			"longName": "Department of Mayotte",
+			"postalCode": "Postal Code"
 		},
 		"fr_YT": {
 			"shortName": "Mayotte",
-			"longName": "Mayotte"
+			"longName": "Mayotte",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

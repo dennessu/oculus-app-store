@@ -98,7 +98,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Solomon Islands",
-			"longName": "Solomon Islands"
+			"longName": "Solomon Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

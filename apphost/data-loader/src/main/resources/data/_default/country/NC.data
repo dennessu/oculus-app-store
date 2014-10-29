@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "New Caledonia",
-			"longName": "New Caledonia"
+			"longName": "New Caledonia",
+			"postalCode": "Postal Code"
 		},
 		"fr_NC": {
 			"shortName": "Nouvelle-Calédonie",
-			"longName": "Nouvelle-Calédonie"
+			"longName": "Nouvelle-Calédonie",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

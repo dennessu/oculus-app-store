@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Heard Island and McDonald Islands",
-			"longName": "Heard Island and McDonald Islands"
+			"longName": "Heard Island and McDonald Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

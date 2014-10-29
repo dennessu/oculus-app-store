@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Norfolk Island",
-			"longName": "Territory of Norfolk Island"
+			"longName": "Territory of Norfolk Island",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

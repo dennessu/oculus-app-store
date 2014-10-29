@@ -242,11 +242,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Maldives",
-			"longName": "Republic of the Maldives"
+			"longName": "Republic of the Maldives",
+			"postalCode": "Postal Code"
 		},
 		"dv_MV": {
 			"shortName": "ދިވެހިރާއްޖޭގެ ޖުމްހޫރިއްޔާ",
-			"longName": "ދިވެހިރާއްޖޭގެ ޖުމްހޫރިއްޔާ"
+			"longName": "ދިވެހިރާއްޖޭގެ ޖުމްހޫރިއްޔާ",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

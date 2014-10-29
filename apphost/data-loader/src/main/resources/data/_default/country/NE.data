@@ -82,11 +82,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Niger",
-			"longName": "Republic of Niger"
+			"longName": "Republic of Niger",
+			"postalCode": "Postal Code"
 		},
 		"fr_NE": {
 			"shortName": "Niger",
-			"longName": "République du Niger "
+			"longName": "République du Niger",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

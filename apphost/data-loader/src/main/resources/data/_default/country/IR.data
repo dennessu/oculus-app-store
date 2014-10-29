@@ -378,11 +378,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Iran",
-			"longName": "Islamic Republic of Iran"
+			"longName": "Islamic Republic of Iran",
+			"postalCode": "Postal Code"
 		},
 		"fa_IR": {
 			"shortName": "ایران",
-			"longName": "جمهوری اسلامی ایران"
+			"longName": "جمهوری اسلامی ایران",
+			"postalCode": "Poštanski broj"
 		}
 	},
 	"futureExpansion": {

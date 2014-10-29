@@ -146,11 +146,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Palau",
-			"longName": "Republic of Palau"
+			"longName": "Republic of Palau",
+			"postalCode": "Postal Code"
 		},
 		"pau_PW": {
 			"shortName": "Belau",
-			"longName": "Beluu er a Belau"
+			"longName": "Beluu er a Belau",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

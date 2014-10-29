@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Turks and Caicos Islands",
-			"longName": "Turks and Caicos Islands"
+			"longName": "Turks and Caicos Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

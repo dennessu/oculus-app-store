@@ -106,11 +106,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Samoa",
-			"longName": "Independent State of Samoa"
+			"longName": "Independent State of Samoa",
+			"postalCode": "Postal Code"
 		},
 		"sm_WS": {
 			"shortName": "Sāmoa",
-			"longName": "Malo Saʻoloto Tutoʻatasi o Sāmoa"
+			"longName": "Malo Saʻoloto Tutoʻatasi o Sāmoa",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

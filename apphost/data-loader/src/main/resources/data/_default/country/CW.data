@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Curaçao",
-			"longName": "Country of Curaçao"
+			"longName": "Country of Curaçao",
+			"postalCode": "Postal Code"
 		},
 		"nl_CW": {
 			"shortName": "Curaçao",
-			"longName": "Land Curaçao"
+			"longName": "Land Curaçao",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

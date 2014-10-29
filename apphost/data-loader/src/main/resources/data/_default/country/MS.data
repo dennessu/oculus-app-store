@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Montserrat",
-			"longName": "Montserrat"
+			"longName": "Montserrat",
+			"postalCode": "Postal Code"
 		},
 		"en_MS": {
 			"shortName": "Montserrat",
-			"longName": "Montserrat"
+			"longName": "Montserrat",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

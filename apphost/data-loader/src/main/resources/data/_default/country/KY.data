@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Cayman Islands",
-			"longName": "Cayman Islands"
+			"longName": "Cayman Islands",
+			"postalCode": "Postal Code"
 		},
 		"en_KY": {
 			"shortName": "Cayman Islands",
-			"longName": "Cayman Islands"
+			"longName": "Cayman Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

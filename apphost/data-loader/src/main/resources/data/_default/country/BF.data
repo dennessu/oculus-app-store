@@ -718,11 +718,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Burkina",
-			"longName": "Burkina Faso"
+			"longName": "Burkina Faso",
+			"postalCode": "Postal Code"
 		},
 		"fr_BF": {
 			"shortName": "Burkina",
-			"longName": "Burkina Faso"
+			"longName": "Burkina Faso",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

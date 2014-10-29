@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Bouvet Island",
-			"longName": "Bouvet Island"
+			"longName": "Bouvet Island",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

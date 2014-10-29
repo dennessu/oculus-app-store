@@ -66,7 +66,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Belize",
-			"longName": "Belize"
+			"longName": "Belize",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

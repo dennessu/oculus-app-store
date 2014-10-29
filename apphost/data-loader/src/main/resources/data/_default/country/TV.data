@@ -82,7 +82,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Tuvalu",
-			"longName": "Tuvalu"
+			"longName": "Tuvalu",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

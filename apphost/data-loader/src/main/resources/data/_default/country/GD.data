@@ -74,7 +74,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Grenada",
-			"longName": "Grenada"
+			"longName": "Grenada",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

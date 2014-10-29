@@ -66,15 +66,18 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Vanuatu",
-			"longName": "Republic of Vanuatu"
+			"longName": "Republic of Vanuatu",
+			"postalCode": "Postal Code"
 		},
 		"fr_VU": {
-			"shortName": "Vanuatu ",
-			"longName": "République de Vanuatu "
+			"shortName": "Vanuatu",
+			"longName": "République de Vanuatu",
+			"postalCode": "code postal"
 		},
 		"bi_VU": {
-			"shortName": "Vanuatu ",
-			"longName": "République de Vanuatu"
+			"shortName": "Vanuatu",
+			"longName": "République de Vanuatu",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

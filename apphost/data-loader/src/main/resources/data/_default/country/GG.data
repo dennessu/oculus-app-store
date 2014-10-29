@@ -23,11 +23,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Guernsey",
-			"longName": "Bailiwick of Guernsey"
+			"longName": "Bailiwick of Guernsey",
+			"postalCode": "Postal Code"
 		},
 		"fr_GG": {
 			"shortName": "Guernesey",
-			"longName": "Bailliage de Guernesey"
+			"longName": "Bailliage de Guernesey",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

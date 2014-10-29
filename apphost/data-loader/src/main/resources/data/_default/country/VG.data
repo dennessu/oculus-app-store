@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Virgin Islands",
-			"longName": "British Virgin Islands"
+			"longName": "British Virgin Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -58,11 +58,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Caribbean Netherlands",
-			"longName": "Caribbean Netherlands"
+			"longName": "Caribbean Netherlands",
+			"postalCode": "Postal Code"
 		},
 		"nl_NL": {
 			"shortName": "Caribisch Nederland",
-			"longName": "Caribisch Nederland"
+			"longName": "Caribisch Nederland",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

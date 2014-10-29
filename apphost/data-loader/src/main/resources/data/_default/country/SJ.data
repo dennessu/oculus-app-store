@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Svalbard and Jan Mayen",
-			"longName": "Svalbard and Jan Mayen"
+			"longName": "Svalbard and Jan Mayen",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

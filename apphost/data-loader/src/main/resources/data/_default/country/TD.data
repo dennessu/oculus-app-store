@@ -282,11 +282,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Chad",
-			"longName": "Republic of Chad"
+			"longName": "Republic of Chad",
+			"postalCode": "Postal Code"
 		},
 		"fr_TD": {
 			"shortName": "Tchad",
-			"longName": "République du Tchad"
+			"longName": "République du Tchad",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

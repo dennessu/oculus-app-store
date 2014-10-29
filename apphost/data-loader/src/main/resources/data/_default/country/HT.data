@@ -138,11 +138,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Haiti",
-			"longName": "Republic of Haiti"
+			"longName": "Republic of Haiti",
+			"postalCode": "Postal Code"
 		},
 		"fr_HT": {
 			"shortName": "Haïti",
-			"longName": "République d'Haïti"
+			"longName": "République d'Haïti",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

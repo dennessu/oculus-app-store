@@ -198,11 +198,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Cuba",
-			"longName": "Republic of Cuba"
+			"longName": "Republic of Cuba",
+			"postalCode": "Postal Code"
 		},
 		"es_CU": {
 			"shortName": "Cuba",
-			"longName": "República de Cuba"
+			"longName": "República de Cuba",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

@@ -226,11 +226,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Marshall Islands",
-			"longName": "Republic of the Marshall Islands"
+			"longName": "Republic of the Marshall Islands",
+			"postalCode": "Postal Code"
 		},
 		"en_MH": {
 			"shortName": "Marshall Islands",
-			"longName": "Republic of the Marshall Islands"
+			"longName": "Republic of the Marshall Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

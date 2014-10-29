@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Vatican City",
-			"longName": "Vatican City"
+			"longName": "Vatican City",
+			"postalCode": "Postal Code"
 		},
 		"it_VA": {
 			"shortName": "Stato della Città del Vaticano",
-			"longName": "Stato della Città del Vaticano"
+			"longName": "Stato della Città del Vaticano",
+			"postalCode": "Codice Postale"
 		}
 	},
 	"futureExpansion": {

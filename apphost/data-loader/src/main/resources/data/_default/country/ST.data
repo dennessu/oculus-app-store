@@ -34,11 +34,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "São Tomé and Príncipe",
-			"longName": "Democratic Republic ofnSão Tomé and Príncipe"
+			"longName": "Democratic Republic ofnSão Tomé and Príncipe",
+			"postalCode": "Postal Code"
 		},
 		"pt_ST": {
 			"shortName": "São Tomé e Príncipe",
-			"longName": "República Democrática de São Tomé e Príncipe"
+			"longName": "República Democrática de São Tomé e Príncipe",
+			"postalCode": "código postal"
 		}
 	},
 	"futureExpansion": {

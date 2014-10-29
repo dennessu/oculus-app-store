@@ -19,7 +19,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Tokelau",
-			"longName": "Tokelau"
+			"longName": "Tokelau",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

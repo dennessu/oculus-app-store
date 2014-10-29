@@ -122,11 +122,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "East Timor",
-			"longName": "Democratic Republic of Timor-Leste"
+			"longName": "Democratic Republic of Timor-Leste",
+			"postalCode": "Postal Code"
 		},
 		"pt_TL": {
 			"shortName": "Timor-Leste",
-			"longName": "República Democrática de Timor-Leste"
+			"longName": "República Democrática de Timor-Leste",
+			"postalCode": "código postal"
 		}
 	},
 	"futureExpansion": {

@@ -150,11 +150,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "North Korea",
-			"longName": "Democratic People's Republic of Korea"
+			"longName": "Democratic People's Republic of Korea",
+			"postalCode": "Postal Code"
 		},
 		"ko_KP": {
 			"shortName": "한국",
-			"longName": "조선민주주의인민공화국"
+			"longName": "조선민주주의인민공화국",
+			"postalCode": "우편 번호"
 		}
 	},
 	"futureExpansion": {

@@ -266,11 +266,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Malawi",
-			"longName": "Republic of Malawi"
+			"longName": "Republic of Malawi",
+			"postalCode": "Postal Code"
 		},
 		"ny_MW": {
 			"shortName": "Malaŵi",
-			"longName": "Chalo cha Malawi, Dziko la Malaŵi"
+			"longName": "Chalo cha Malawi, Dziko la Malaŵi",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

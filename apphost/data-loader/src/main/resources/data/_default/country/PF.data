@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "French Polynesia",
-			"longName": "French Polynesia"
+			"longName": "French Polynesia",
+			"postalCode": "Postal Code"
 		},
 		"fr_PF": {
 			"shortName": "Polynésie française",
-			"longName": "Polynésie française"
+			"longName": "Polynésie française",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

@@ -122,11 +122,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Mauritania",
-			"longName": "Islamic Republic of Mauritania"
+			"longName": "Islamic Republic of Mauritania",
+			"postalCode": "Postal Code"
 		},
 		"ar_MR": {
 			"shortName": "Mūrītānyā",
-			"longName": "الجمهورية الإسلامية الموريتانية"
+			"longName": "الجمهورية الإسلامية الموريتانية",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

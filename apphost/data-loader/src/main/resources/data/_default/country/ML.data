@@ -90,11 +90,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Mali",
-			"longName": "Republic of Mali"
+			"longName": "Republic of Mali",
+			"postalCode": "Postal Code"
 		},
 		"fr_ML": {
 			"shortName": "Mali",
-			"longName": "Republic of Mali"
+			"longName": "Republic of Mali",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

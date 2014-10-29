@@ -58,11 +58,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Tonga",
-			"longName": "Kingdom of Tonga"
+			"longName": "Kingdom of Tonga",
+			"postalCode": "Postal Code"
 		},
 		"to_TO": {
 			"shortName": "Tonga",
-			"longName": "Puleʻanga Fakatuʻi ʻo Tonga"
+			"longName": "Puleʻanga Fakatuʻi ʻo Tonga",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

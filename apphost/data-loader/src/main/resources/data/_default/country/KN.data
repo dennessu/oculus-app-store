@@ -130,11 +130,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Saint Kitts and Nevis",
-			"longName": "Federation of Saint Christopher and Nevisa"
+			"longName": "Federation of Saint Christopher and Nevisa",
+			"postalCode": "Postal Code"
 		},
 		"en_KN": {
 			"shortName": "Saint Kitts and Nevis",
-			"longName": "Federation of Saint Christopher and Nevisa"
+			"longName": "Federation of Saint Christopher and Nevisa",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

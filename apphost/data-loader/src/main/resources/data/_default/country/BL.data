@@ -23,11 +23,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Saint Barthélemy",
-			"longName": "Territorial collectivity of Saint Barthélemy"
+			"longName": "Territorial collectivity of Saint Barthélemy",
+			"postalCode": "Postal Code"
 		},
 		"fr_BL": {
 			"shortName": "Saint-Barthélemy",
-			"longName": "Collectivité de Saint-Barthélemy"
+			"longName": "Collectivité de Saint-Barthélemy",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

@@ -98,7 +98,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Dominica",
-			"longName": "Commonwealth of Dominica"
+			"longName": "Commonwealth of Dominica",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

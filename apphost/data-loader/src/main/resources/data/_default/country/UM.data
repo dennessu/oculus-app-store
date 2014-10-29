@@ -90,7 +90,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "United States Minor Outlying Islands",
-			"longName": "United States Minor Outlying Islands"
+			"longName": "United States Minor Outlying Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

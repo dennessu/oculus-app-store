@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "French Southern and Antarctic Lands",
-			"longName": "Territory of the French Southern and Antarctic Lands"
+			"longName": "Territory of the French Southern and Antarctic Lands",
+			"postalCode": "Postal Code"
 		},
 		"fr_TF": {
 			"shortName": "Terres australes et antarctiques françaises",
-			"longName": "Terres australes et antarctiques françaises"
+			"longName": "Terres australes et antarctiques françaises",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

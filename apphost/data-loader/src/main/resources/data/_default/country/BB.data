@@ -106,7 +106,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Barbados",
-			"longName": "Barbados"
+			"longName": "Barbados",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

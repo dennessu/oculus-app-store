@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Faroe Islands",
-			"longName": "Faroe Islands"
+			"longName": "Faroe Islands",
+			"postalCode": "Postal Code"
 		},
 		"da_FO": {
 			"shortName": "Færøerne",
-			"longName": "Færøerne"
+			"longName": "Færøerne",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -42,7 +42,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Kiribati",
-			"longName": "Independent and Sovereign Republic of Kiribati"
+			"longName": "Independent and Sovereign Republic of Kiribati",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

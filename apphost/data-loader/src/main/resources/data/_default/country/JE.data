@@ -23,11 +23,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Jersey",
-			"longName": "Bailiwick of Jersey"
+			"longName": "Bailiwick of Jersey",
+			"postalCode": "Postal Code"
 		},
 		"fr_JE": {
 			"shortName": "Jersey",
-			"longName": "Bailliage de Jersey"
+			"longName": "Bailliage de Jersey",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

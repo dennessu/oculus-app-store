@@ -23,15 +23,18 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Western Sahara",
-			"longName": "Western Sahara"
+			"longName": "Western Sahara",
+			"postalCode": "Postal Code"
 		},
 		"ar_EH": {
 			"shortName": "الصحراء الغربية‎",
-			"longName": "الصحراء الغربية‎"
+			"longName": "الصحراء الغربية‎",
+			"postalCode": "الرمز البريدي"
 		},
 		"es_EH": {
 			"shortName": "Sahara Occidental",
-			"longName": "Sahara Occidental"
+			"longName": "Sahara Occidental",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

@@ -130,11 +130,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Nauru",
-			"longName": "Republic of Nauru"
+			"longName": "Republic of Nauru",
+			"postalCode": "Postal Code"
 		},
 		"na_NR": {
 			"shortName": "Naoero",
-			"longName": "Ripublik"
+			"longName": "Ripublik",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

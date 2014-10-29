@@ -66,11 +66,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Greenland",
-			"longName": "Greenland"
+			"longName": "Greenland",
+			"postalCode": "Postal Code"
 		},
 		"kl_GL": {
 			"shortName": "Kalaallit Nunaat",
-			"longName": "Kalaallit Nunaat"
+			"longName": "Kalaallit Nunaat",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

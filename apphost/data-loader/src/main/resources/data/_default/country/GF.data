@@ -22,11 +22,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "French Guiana",
-			"longName": "French Guiana"
+			"longName": "French Guiana",
+			"postalCode": "Postal Code"
 		},
 		"fr_FR": {
 			"shortName": "Guyane française",
-			"longName": "Guyane française"
+			"longName": "Guyane française",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

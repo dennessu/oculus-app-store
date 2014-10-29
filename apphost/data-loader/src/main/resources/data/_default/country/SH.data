@@ -42,11 +42,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Saint Helena",
-			"longName": "Saint Helena, Ascension and Tristan da Cunha"
+			"longName": "Saint Helena, Ascension and Tristan da Cunha",
+			"postalCode": "Postal Code"
 		},
 		"en_SH": {
 			"shortName": "Saint Helena",
-			"longName": "Saint Helena, Ascension and Tristan da Cunha"
+			"longName": "Saint Helena, Ascension and Tristan da Cunha",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

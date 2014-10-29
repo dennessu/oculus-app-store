@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Northern Mariana Islands",
-			"longName": "Commonwealth of the Northern Mariana Islands"
+			"longName": "Commonwealth of the Northern Mariana Islands",
+			"postalCode": "Postal Code"
 		},
 		"en_MP": {
 			"shortName": "Northern Mariana Islands",
-			"longName": "Commonwealth of the Northern Mariana Islands"
+			"longName": "Commonwealth of the Northern Mariana Islands",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

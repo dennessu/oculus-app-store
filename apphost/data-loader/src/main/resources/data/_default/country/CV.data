@@ -306,11 +306,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Cape Verde",
-			"longName": "Republic of Cabo Verde"
+			"longName": "Republic of Cabo Verde",
+			"postalCode": "Postal Code"
 		},
 		"pt_CV": {
 			"shortName": "Cabo Verde",
-			"longName": "República de Cabo Verde"
+			"longName": "República de Cabo Verde",
+			"postalCode": "código postal"
 		}
 	},
 	"futureExpansion": {

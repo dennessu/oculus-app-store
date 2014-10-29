@@ -82,7 +82,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Antigua and Barbuda",
-			"longName": "Antigua and Barbuda"
+			"longName": "Antigua and Barbuda",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

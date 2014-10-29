@@ -58,7 +58,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Fiji",
-			"longName": "Republic of Fiji"
+			"longName": "Republic of Fiji",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

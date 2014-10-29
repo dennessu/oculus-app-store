@@ -74,7 +74,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Andorra",
-			"longName": "Principality of Andorra"
+			"longName": "Principality of Andorra",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

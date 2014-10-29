@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Wallis and Futuna",
-			"longName": "Territory of the Wallis and Futuna Islands"
+			"longName": "Territory of the Wallis and Futuna Islands",
+			"postalCode": "Postal Code"
 		},
 		"fr_WF": {
 			"shortName": "Wallis et Futuna",
-			"longName": "Wallis et Futuna or Territoire des îles Wallis et Futuna"
+			"longName": "Wallis et Futuna or Territoire des îles Wallis et Futuna",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

@@ -322,11 +322,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Seychelles",
-			"longName": "Republic of Seychelles"
+			"longName": "Republic of Seychelles",
+			"postalCode": "Postal Code"
 		},
 		"fr_SC": {
 			"shortName": "Seychelles",
-			"longName": "République des Seychelles"
+			"longName": "République des Seychelles",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

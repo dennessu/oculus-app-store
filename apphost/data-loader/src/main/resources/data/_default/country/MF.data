@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Saint Martin",
-			"longName": "Collectivity of Saint Martin"
+			"longName": "Collectivity of Saint Martin",
+			"postalCode": "Postal Code"
 		},
 		"fr_MF": {
 			"shortName": "Saint Martin",
-			"longName": "Collectivity of Saint Martin"
+			"longName": "Collectivity of Saint Martin",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

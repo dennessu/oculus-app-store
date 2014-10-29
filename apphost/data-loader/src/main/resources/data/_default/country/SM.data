@@ -90,11 +90,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "San Marino",
-			"longName": "Most Serene Republic of San Marin"
+			"longName": "Most Serene Republic of San Marin",
+			"postalCode": "Postal Code"
 		},
 		"it_SM": {
 			"shortName": "San Marino",
-			"longName": "Serenissima Repubblica di San Marino"
+			"longName": "Serenissima Repubblica di San Marino",
+			"postalCode": "Codice Postale"
 		}
 	},
 	"futureExpansion": {
