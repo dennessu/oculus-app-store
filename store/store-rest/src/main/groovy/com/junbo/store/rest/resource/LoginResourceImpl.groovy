@@ -278,7 +278,7 @@ class LoginResourceImpl implements LoginResource {
             LOGGER.error("SignIn: Call sentry error, Ignore")
             return Promise.pure()
         }.then { SentryResponse sentryResponse ->
-            if (sentryResponse.isBlockAccess()) {
+            if (sentryResponse != null && sentryResponse.isBlockAccess()) {
                 throw AppErrors.INSTANCE.sentryBlockLoginAccess().exception()
             }
             return Promise.pure()

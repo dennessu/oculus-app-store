@@ -38,6 +38,7 @@ public interface StoreResource {
     @GET
     @Path("/user-profile")
     @RouteByAccessToken(switchable = true)
+    @Consumes()
     // This requires email verification
     Promise<UserProfileGetResponse> getUserProfile();
 
@@ -50,6 +51,7 @@ public interface StoreResource {
     @GET
     @Path("/billing-profile")
     @RouteByAccessToken
+    @Consumes()
     // This requires email verification
     Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest billingProfileGetRequest);
 
@@ -80,6 +82,7 @@ public interface StoreResource {
     @GET
     @Path("/toc")
     @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<TocResponse> getToc();
 
     @POST
@@ -90,26 +93,31 @@ public interface StoreResource {
     @GET
     @Path("/section-layout")
     @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<SectionLayoutResponse> getSectionLayout(@BeanParam SectionLayoutRequest request);
 
     @GET
     @Path("/section-items")
     @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<ListResponse> getList(@BeanParam ListRequest request);
 
     @GET
     @Path("/library")
     @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<LibraryResponse> getLibrary();
 
     @GET
     @Path("/item-details")
     @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<DetailsResponse> getItemDetails(@BeanParam DetailsRequest request);
 
     @GET
     @Path("/reviews")
     @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<ReviewsResponse> getReviews(@BeanParam ReviewsRequest request);
 
     @POST
@@ -120,6 +128,7 @@ public interface StoreResource {
     @GET
     @Path("/generate-download-info")
     @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<DeliveryResponse> getDelivery(@BeanParam DeliveryRequest request);
 
 }
