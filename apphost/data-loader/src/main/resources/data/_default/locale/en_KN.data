@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_KN",
+   "shortName" : "English (KN)",
+   "longName" : "English(Saint Kitts and Nevis)",
+   "localeName" : "English(KN)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

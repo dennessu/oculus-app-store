@@ -1,0 +1,38 @@
+{
+	"countryCode": "GG",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/GBP",
+		"id": "GBP"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	{
+		"href": "/v1/locales/fr_GG",
+		"id": "fr_GG"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Guernsey",
+			"longName": "Bailiwick of Guernsey",
+			"postalCode": "Postal Code"
+		},
+		"fr_GG": {
+			"shortName": "Guernesey",
+			"longName": "Bailliage de Guernesey",
+			"postalCode": "code postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

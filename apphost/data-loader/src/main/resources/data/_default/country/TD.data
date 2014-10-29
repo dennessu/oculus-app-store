@@ -1,0 +1,297 @@
+{
+	"countryCode": "TD",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_TD",
+		"id": "fr_TD"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XAF",
+		"id": "XAF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BA": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Batha",
+					"longName": "Batha"
+				},
+				"en_US": {
+					"shortName": "Al Baṭḩah",
+					"longName": "Al Baṭḩah"
+				}
+			}
+		},
+		"BG": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Bahr el Gazel",
+					"longName": "Bahr el Gazel"
+				},
+				"en_US": {
+					"shortName": "Baḩr al Ghazāl",
+					"longName": "Baḩr al Ghazāl"
+				}
+			}
+		},
+		"BO": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Borkou",
+					"longName": "Borkou"
+				},
+				"en_US": {
+					"shortName": "Būrkū",
+					"longName": "Būrkū"
+				}
+			}
+		},
+		"CB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Shārī Bāqirmī",
+					"longName": "Shārī Bāqirmī"
+				},
+				"fr_TD": {
+					"shortName": "Chari-Baguirmi",
+					"longName": "Chari-Baguirmi"
+				}
+			}
+		},
+		"EN": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Ennedi",
+					"longName": "Ennedi"
+				},
+				"en_US": {
+					"shortName": "Innīdī",
+					"longName": "Innīdī"
+				}
+			}
+		},
+		"GR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Qīrā",
+					"longName": "Qīrā"
+				},
+				"fr_TD": {
+					"shortName": "Guéra",
+					"longName": "Guéra"
+				}
+			}
+		},
+		"HL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ḥajjar Lamīs",
+					"longName": "Ḥajjar Lamīs"
+				},
+				"fr_TD": {
+					"shortName": "Hadjer Lamis",
+					"longName": "Hadjer Lamis"
+				}
+			}
+		},
+		"KA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kānim",
+					"longName": "Kānim"
+				},
+				"fr_TD": {
+					"shortName": "Kanem",
+					"longName": "Kanem"
+				}
+			}
+		},
+		"LC": {
+			"locales": {
+				"en_US": {
+					"shortName": "Al Buḩayrah",
+					"longName": "Al Buḩayrah"
+				},
+				"fr_TD": {
+					"shortName": "Lac",
+					"longName": "Lac"
+				}
+			}
+		},
+		"LO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lūqūn al Gharbī",
+					"longName": "Lūqūn al Gharbī"
+				},
+				"fr_TD": {
+					"shortName": "LogoOccidental",
+					"longName": "LogoOccidental"
+				}
+			}
+		},
+		"LR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lūqūn ash Sharqī",
+					"longName": "Lūqūn ash Sharqī"
+				},
+				"fr_TD": {
+					"shortName": "LogoOriental",
+					"longName": "LogoOriental"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Mandoul",
+					"longName": "Mandoul"
+				},
+				"en_US": {
+					"shortName": "Māndūl",
+					"longName": "Māndūl"
+				}
+			}
+		},
+		"MC": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Moyen-Chari",
+					"longName": "Moyen-Chari"
+				},
+				"en_US": {
+					"shortName": "Shārī al Awsaṭ",
+					"longName": "Shārī al Awsaṭ"
+				}
+			}
+		},
+		"ME": {
+			"locales": {
+				"en_US": {
+					"shortName": "Māyū Kībbī ash Sharqī",
+					"longName": "Māyū Kībbī ash Sharqī"
+				},
+				"fr_TD": {
+					"shortName": "Mayo-Kébbi-Est",
+					"longName": "Mayo-Kébbi-Est"
+				}
+			}
+		},
+		"MO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Māyū Kībbī al Gharbī",
+					"longName": "Māyū Kībbī al Gharbī"
+				},
+				"fr_TD": {
+					"shortName": "Mayo-Kébbi-Ouest",
+					"longName": "Mayo-Kébbi-Ouest"
+				}
+			}
+		},
+		"ND": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Ville de Ndjamena",
+					"longName": "Ville de Ndjamena"
+				},
+				"en_US": {
+					"shortName": "Madīnat Injamīnā",
+					"longName": "Madīnat Injamīnā"
+				}
+			}
+		},
+		"OD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Waddāy",
+					"longName": "Waddāy"
+				},
+				"fr_TD": {
+					"shortName": "Ouaddaï",
+					"longName": "Ouaddaï"
+				}
+			}
+		},
+		"SA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Salāmāt",
+					"longName": "Salāmāt"
+				},
+				"fr_TD": {
+					"shortName": "Salamat",
+					"longName": "Salamat"
+				}
+			}
+		},
+		"SI": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Sila",
+					"longName": "Sila"
+				},
+				"en_US": {
+					"shortName": "Sīlā",
+					"longName": "Sīlā"
+				}
+			}
+		},
+		"TA": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Tandjilé",
+					"longName": "Tandjilé"
+				},
+				"en_US": {
+					"shortName": "Tānjilī",
+					"longName": "Tānjilī"
+				}
+			}
+		},
+		"TI": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Tibesti",
+					"longName": "Tibesti"
+				},
+				"en_US": {
+					"shortName": "Tibastī",
+					"longName": "Tibastī"
+				}
+			}
+		},
+		"WF": {
+			"locales": {
+				"fr_TD": {
+					"shortName": "Wadi Fira",
+					"longName": "Wadi Fira"
+				},
+				"en_US": {
+					"shortName": "Wādī Fīrā",
+					"longName": "Wādī Fīrā"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_TD",
+		"id": "fr_TD"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Chad",
+			"longName": "Republic of Chad",
+			"postalCode": "Postal Code"
+		},
+		"fr_TD": {
+			"shortName": "Tchad",
+			"longName": "République du Tchad",
+			"postalCode": "code postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"countryCode": "VI",
+	"defaultLocale": {
+		"href": "/v1/locales/en_VI",
+		"id": "en_VI"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_VI",
+		"id": "en_VI"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "United States Virgin Islands",
+			"longName": "Virgin Islands of the United States",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

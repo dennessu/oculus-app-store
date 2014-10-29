@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Brunei dollar",
+			"longName": "Brunei dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=BND",
+		"id": null
+	},
+	"currencyCode": "BND",
+	"symbol": "B$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

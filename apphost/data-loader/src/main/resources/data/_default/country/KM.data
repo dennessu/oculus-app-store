@@ -1,0 +1,90 @@
+{
+	"countryCode": "KM",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_KM",
+		"id": "fr_KM"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/KMF",
+		"id": "KMF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"A": {
+			"locales": {
+				"ar_KM": {
+					"shortName": "Andjouân",
+					"longName": "Andjouân"
+				},
+				"en_US": {
+					"shortName": "Anjouan",
+					"longName": "Anjouan"
+				},
+				"fr_KM": {
+					"shortName": "Anjouan",
+					"longName": "Anjouan"
+				}
+			}
+		},
+		"G": {
+			"locales": {
+				"ar_KM": {
+					"shortName": "Andjazîdja",
+					"longName": "Andjazîdja"
+				},
+				"en_US": {
+					"shortName": "Grande Comore",
+					"longName": "Grande Comore"
+				},
+				"fr_KM": {
+					"shortName": "Grande Comore",
+					"longName": "Grande Comore"
+				}
+			}
+		},
+		"M": {
+			"locales": {
+				"ar_KM": {
+					"shortName": "Moûhîlî",
+					"longName": "Moûhîlî"
+				},
+				"en_US": {
+					"shortName": "Mohéli",
+					"longName": "Mohéli"
+				},
+				"fr_KM": {
+					"shortName": "Mohéli",
+					"longName": "Mohéli"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_KM",
+		"id": "ar_KM"
+	},
+	{
+		"href": "/v1/locales/fr_KM",
+		"id": "fr_KM"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Comoros",
+			"longName": "Union of the Comoros",
+			"postalCode": "Postal Code"
+		},
+		"fr_KM": {
+			"shortName": "Comores",
+			"longName": "Union des Comores",
+			"postalCode": "code postal"
+		},
+		"ar_KM": {
+			"shortName": "جزر القمر",
+			"longName": "الاتحاد القمري‎",
+			"postalCode": "الرمز البريدي"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

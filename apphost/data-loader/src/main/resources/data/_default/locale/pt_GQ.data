@@ -1,0 +1,11 @@
+{
+  "localeCode": "pt_GQ",
+  "shortName": "Portuguese (GQ)",
+  "longName": "Portuguese (Equatorial Guinea)",
+  "localeName": "Portuguese (GQ)",
+  "fallbackLocale": {
+    "href": "/v1/locales/pt_PT",
+    "id": "pt_PT"
+  },
+  "futureExpansion": {}
+}

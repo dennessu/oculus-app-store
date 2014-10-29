@@ -1,0 +1,11 @@
+{
+  "localeCode": "it_SM",
+  "shortName": "Italian (SM)",
+  "longName": "Italian (San Marino)",
+  "localeName": "Italian (SM)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

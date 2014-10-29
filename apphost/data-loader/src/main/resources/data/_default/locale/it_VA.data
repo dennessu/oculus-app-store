@@ -1,0 +1,11 @@
+{
+  "localeCode": "it_VA",
+  "shortName": "Italian (VA)",
+  "longName": "Italian (Vatican City)",
+  "localeName": "Italian (VA)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

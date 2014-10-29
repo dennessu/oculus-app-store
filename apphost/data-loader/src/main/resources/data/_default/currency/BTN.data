@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Bhutanese ngultrum",
+			"longName": "Bhutanese ngultrum"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=BTN",
+		"id": null
+	},
+	"currencyCode": "BTN",
+	"symbol": "Nu.",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

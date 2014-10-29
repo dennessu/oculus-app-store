@@ -1,0 +1,14 @@
+{
+   "localeCode" : "dv_MV",
+   "shortName" : "Maldivian (MV)",
+   "longName" : "Maldivian (Maldives)",
+   "localeName" : "Maldivian (MV)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Haitian gourde",
+			"longName": "Haitian gourde"
+		},
+		"fr_HT": {
+			"shortName": "gourde haïtienne",
+			"longName": "gourde haïtienne"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=HTG",
+		"id": null
+	},
+	"currencyCode": "HTG",
+	"symbol": "G",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

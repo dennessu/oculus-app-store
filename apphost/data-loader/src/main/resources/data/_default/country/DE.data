@@ -33,7 +33,7 @@
 				},
 				"en_US": {
 					"shortName": "BE",
-					"longName": "Berlin "
+					"longName": "Berlin"
 				}
 			}
 		},
@@ -41,7 +41,7 @@
 			"locales": {
 				"en_US": {
 					"shortName": "BW",
-					"longName": "Baden-Wurttemberg "
+					"longName": "Baden-Wurttemberg"
 				},
 				"de_DE": {
 					"shortName": "BW",
@@ -53,7 +53,7 @@
 			"locales": {
 				"en_US": {
 					"shortName": "BY",
-					"longName": "Bavaria "
+					"longName": "Bavaria"
 				},
 				"de_DE": {
 					"shortName": "BY",
@@ -65,7 +65,7 @@
 			"locales": {
 				"en_US": {
 					"shortName": "HB",
-					"longName": "Bremen "
+					"longName": "Bremen"
 				},
 				"de_DE": {
 					"shortName": "HB",
@@ -81,7 +81,7 @@
 				},
 				"en_US": {
 					"shortName": "HE",
-					"longName": "Hesse "
+					"longName": "Hesse"
 				}
 			}
 		},
@@ -89,7 +89,7 @@
 			"locales": {
 				"en_US": {
 					"shortName": "HH",
-					"longName": "Hamburg "
+					"longName": "Hamburg"
 				},
 				"de_DE": {
 					"shortName": "HH",
@@ -101,7 +101,7 @@
 			"locales": {
 				"en_US": {
 					"shortName": "MV",
-					"longName": "Mecklenburg-Western Pomerania "
+					"longName": "Mecklenburg-Western Pomerania"
 				},
 				"de_DE": {
 					"shortName": "MV",
@@ -113,7 +113,7 @@
 			"locales": {
 				"en_US": {
 					"shortName": "NI",
-					"longName": "Lower Saxony "
+					"longName": "Lower Saxony"
 				},
 				"de_DE": {
 					"shortName": "NI",
@@ -129,7 +129,7 @@
 				},
 				"en_US": {
 					"shortName": "NW",
-					"longName": "North Rhine-Westphalia "
+					"longName": "North Rhine-Westphalia"
 				}
 			}
 		},
@@ -137,7 +137,7 @@
 			"locales": {
 				"en_US": {
 					"shortName": "RP",
-					"longName": "Rhineland-Palatinate "
+					"longName": "Rhineland-Palatinate"
 				},
 				"de_DE": {
 					"shortName": "RP",
@@ -149,7 +149,7 @@
 			"locales": {
 				"en_US": {
 					"shortName": "SH",
-					"longName": "Schleswig-Holstein "
+					"longName": "Schleswig-Holstein"
 				},
 				"de_DE": {
 					"shortName": "SH",
@@ -161,7 +161,7 @@
 			"locales": {
 				"en_US": {
 					"shortName": "SL",
-					"longName": "Saarland "
+					"longName": "Saarland"
 				},
 				"de_DE": {
 					"shortName": "SL",
@@ -177,7 +177,7 @@
 				},
 				"en_US": {
 					"shortName": "SN",
-					"longName": "Saxony "
+					"longName": "Saxony"
 				}
 			}
 		},
@@ -189,7 +189,7 @@
 				},
 				"en_US": {
 					"shortName": "ST",
-					"longName": "Saxony-Anhalt "
+					"longName": "Saxony-Anhalt"
 				}
 			}
 		},

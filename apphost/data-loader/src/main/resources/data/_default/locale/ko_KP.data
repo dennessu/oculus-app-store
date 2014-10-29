@@ -1,0 +1,11 @@
+{
+  "localeCode": "ko_KP",
+  "shortName": "Korean (KP)",
+  "longName": "Korean (North Korea)",
+  "localeName": "Korean (KP)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

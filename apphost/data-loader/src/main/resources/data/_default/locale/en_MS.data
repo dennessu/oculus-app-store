@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_MS",
+   "shortName" : "English (MS)",
+   "longName" : "English (Montserrat)",
+   "localeName" : "English (MS)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

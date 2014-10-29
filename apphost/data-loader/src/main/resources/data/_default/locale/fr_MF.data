@@ -1,0 +1,11 @@
+{
+  "localeCode": "fr_MF",
+  "shortName": "French (MF)",
+  "longName": "French (Saint Martin)",
+  "localeName": "French (MF)",
+  "fallbackLocale": {
+    "href": "/v1/locales/fr_FR",
+    "id": "fr_FR"
+  },
+  "futureExpansion": {}
+}

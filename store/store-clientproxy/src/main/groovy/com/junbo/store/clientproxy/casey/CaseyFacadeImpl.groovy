@@ -130,6 +130,7 @@ class CaseyFacadeImpl implements CaseyFacade {
                 cursor: cursor,
                 count: count
         )
+        Map<String, String> userIdAuthorNameMap = [:] as Map
 
         return resourceContainer.caseyResource.getReviews(params).recover { Throwable ex ->
             wrapAndThrow(ex)
@@ -152,9 +153,14 @@ class CaseyFacadeImpl implements CaseyFacade {
 
             reviews.reviews = []
             Promise.each(results.items) { CaseyReview caseyReview ->
-                getReviewAuthorName(caseyReview).then { String author ->
-                    Review review = reviewBuilder.buildItemReview(caseyReview, author)
-                    reviews.reviews << review
+                String reviewUserId = caseyReview?.user?.getId()?.trim()
+                if (userIdAuthorNameMap.containsKey(reviewUserId)) {
+                    reviews.reviews <<  reviewBuilder.buildItemReview(caseyReview, userIdAuthorNameMap[reviewUserId])
+                    return Promise.pure()
+                }
+                getReviewAuthorName(reviewUserId).then { String author ->
+                    userIdAuthorNameMap[reviewUserId] = author
+                    reviews.reviews << reviewBuilder.buildItemReview(caseyReview, author)
                     return Promise.pure()
                 }
             }.then {
@@ -235,7 +241,7 @@ class CaseyFacadeImpl implements CaseyFacade {
                     }
                 }
             }.then { CaseyReview newReview ->
-                getReviewAuthorName(newReview).then { String author ->
+                getReviewAuthorName(newReview.user?.getId()?.trim()).then { String author ->
                     return Promise.pure(reviewBuilder.buildItemReview(newReview, author))
                 }
             }
@@ -345,9 +351,9 @@ class CaseyFacadeImpl implements CaseyFacade {
         }
     }
 
-    Promise<String> getReviewAuthorName(CaseyReview caseyReview) {
+    private Promise<String> getReviewAuthorName(String userId) {
         Promise.pure().then {
-            resourceContainer.userResource.get(new UserId(IdFormatter.decodeId(UserId, caseyReview.user.getId())), new UserGetOptions()).then { User user ->
+            resourceContainer.userResource.get(new UserId(IdFormatter.decodeId(UserId, userId)), new UserGetOptions()).then { User user ->
                 if (!StringUtils.isBlank(user.nickName)) {
                     return Promise.pure(user.nickName)
                 }

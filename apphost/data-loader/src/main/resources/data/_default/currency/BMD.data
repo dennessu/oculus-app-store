@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Bermudian dollar",
+			"longName": "Bermudian dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=BMD",
+		"id": null
+	},
+	"currencyCode": "BMD",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

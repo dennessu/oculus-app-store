@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "MWK",
+			"longName": "Malawian kwacha"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=MWK",
+		"id": null
+	},
+	"currencyCode": "MWK",
+	"symbol": "MK",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "PGK",
+			"longName": "Papua New Guinean kina"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=PGK",
+		"id": null
+	},
+	"currencyCode": "PGK",
+	"symbol": "K",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

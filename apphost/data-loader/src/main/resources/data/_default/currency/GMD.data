@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Gambian dalasi",
+			"longName": "Gambian dalasi"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=GMD",
+		"id": null
+	},
+	"currencyCode": "GMD",
+	"symbol": "D",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

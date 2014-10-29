@@ -1,0 +1,34 @@
+{
+	"countryCode": "PN",
+	"defaultLocale": {
+		"href": "/v1/locales/en_PN",
+		"id": "en_PN"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/NZD",
+		"id": "NZD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_PN",
+		"id": "en_PN"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Pitcairn Islands",
+			"longName": "Pitcairn Group of Islands",
+			"postalCode": "Postal Code"
+		},
+		"en_PN": {
+			"shortName": "Pitcairn Islands",
+			"longName": "Pitcairn Group of Islands",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

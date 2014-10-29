@@ -1,0 +1,145 @@
+{
+	"countryCode": "NR",
+	"defaultLocale": {
+		"href": "/v1/locales/en_NR",
+		"id": "en_NR"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AUD",
+		"id": "AUD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Aiwo",
+					"longName": "Aiwo"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Anabar",
+					"longName": "Anabar"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Anetan",
+					"longName": "Anetan"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Anibare",
+					"longName": "Anibare"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Baiti",
+					"longName": "Baiti"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Boe",
+					"longName": "Boe"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Buada",
+					"longName": "Buada"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Denigomodu",
+					"longName": "Denigomodu"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ewa",
+					"longName": "Ewa"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ijuw",
+					"longName": "Ijuw"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Meneng",
+					"longName": "Meneng"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nibok",
+					"longName": "Nibok"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_US": {
+					"shortName": "Uaboe",
+					"longName": "Uaboe"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"en_US": {
+					"shortName": "Yaren",
+					"longName": "Yaren"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_NR",
+		"id": "en_NR"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Nauru",
+			"longName": "Republic of Nauru",
+			"postalCode": "Postal Code"
+		},
+		"na_NR": {
+			"shortName": "Naoero",
+			"longName": "Ripublik",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

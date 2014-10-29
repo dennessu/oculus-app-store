@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "MRO",
+			"longName": "Mauritanian ouguiya"
+		},
+		"ar_MR": {
+			"shortName": "أوقية‎",
+			"longName": "أوقية‎"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=MRO",
+		"id": null
+	},
+	"currencyCode": "MRO",
+	"symbol": "أوقية‎",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

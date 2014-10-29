@@ -1,0 +1,121 @@
+{
+	"countryCode": "LI",
+	"defaultLocale": {
+		"href": "/v1/locales/de_LI",
+		"id": "de_LI"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/CHF",
+		"id": "CHF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Balzers",
+					"longName": "Balzers"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Eschen",
+					"longName": "Eschen"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gamprin",
+					"longName": "Gamprin"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mauren",
+					"longName": "Mauren"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Planken",
+					"longName": "Planken"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ruggell",
+					"longName": "Ruggell"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Schaan",
+					"longName": "Schaan"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Schellenberg",
+					"longName": "Schellenberg"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Triesen",
+					"longName": "Triesen"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Triesenberg",
+					"longName": "Triesenberg"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vaduz",
+					"longName": "Vaduz"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/de_LI",
+		"id": "de_LI"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Liechtenstein",
+			"longName": "Liechtenstein",
+			"postalCode": "Postal Code"
+		},
+		"de_LI": {
+			"shortName": "Liechtenstein",
+			"longName": "Liechtenstein",
+            "postalCode": "Postleitzahl"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

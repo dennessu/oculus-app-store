@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "SBD",
+			"longName": "Solomon Islands dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=SBD",
+		"id": null
+	},
+	"currencyCode": "SBD",
+	"symbol": "SI$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

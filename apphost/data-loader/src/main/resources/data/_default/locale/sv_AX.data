@@ -1,0 +1,11 @@
+{
+  "localeCode": "sv_AX",
+  "shortName": "Swedish (AX)",
+  "longName": "Swedish (Åland Islands)",
+  "localeName": "Swedish (AX)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

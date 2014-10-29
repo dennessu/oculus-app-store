@@ -1,0 +1,33 @@
+{
+	"countryCode": "SX",
+	"defaultLocale": {
+		"href": "/v1/locales/en_SX",
+		"id": "en_SX"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/ANG",
+		"id": "ANG"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_SX",
+		"id": "en_SX"
+	},
+	{
+		"href": "/v1/locales/nl_SX",
+		"id": "nl_SX"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Sint Maarten",
+			"longName": "Sint Maarten",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

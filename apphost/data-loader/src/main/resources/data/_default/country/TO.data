@@ -1,0 +1,73 @@
+{
+	"countryCode": "TO",
+	"defaultLocale": {
+		"href": "/v1/locales/en_TO",
+		"id": "en_TO"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/TOP",
+		"id": "TOP"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Eua",
+					"longName": "Eua"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ha'apai",
+					"longName": "Ha'apai"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Niuas",
+					"longName": "Niuas"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tongatapu",
+					"longName": "Tongatapu"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vava'u",
+					"longName": "Vava'u"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_TO",
+		"id": "en_TO"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Tonga",
+			"longName": "Kingdom of Tonga",
+			"postalCode": "Postal Code"
+		},
+		"to_TO": {
+			"shortName": "Tonga",
+			"longName": "Puleʻanga Fakatuʻi ʻo Tonga",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

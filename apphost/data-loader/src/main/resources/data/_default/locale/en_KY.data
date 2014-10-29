@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_KY",
+   "shortName" : "English (KY)",
+   "longName" : "English (Cayman Islands)",
+   "localeName" : "English (KY)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

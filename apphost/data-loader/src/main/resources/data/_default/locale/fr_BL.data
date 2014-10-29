@@ -1,0 +1,14 @@
+{
+   "localeCode" : "fr_BL",
+   "shortName" : "French (BL)",
+   "longName" : "French (Saint Barthélemy)",
+   "localeName" : "French (BL)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/fr_FR",
+         "id" : "fr_FR"
+      },
+   "futureExpansion" :
+      {
+      }
+}

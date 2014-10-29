@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "SHP",
+			"longName": "Saint Helena pound"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=SHP",
+		"id": null
+	},
+	"currencyCode": "SHP",
+	"symbol": "£",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

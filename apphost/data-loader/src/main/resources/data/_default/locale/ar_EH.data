@@ -1,0 +1,14 @@
+{
+   "localeCode" : "ar_EH",
+   "shortName" : "Arabic (EH)",
+   "longName" : "Arabic (Western Sahara)",
+   "localeName" : "Arabic (EH)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "SCR",
+			"longName": "Seychellois rupee"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=SCR",
+		"id": null
+	},
+	"currencyCode": "SCR",
+	"symbol": "SR",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

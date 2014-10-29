@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_LC",
+   "shortName" : "English (LC)",
+   "longName" : "English (Saint Lucia)",
+   "localeName" : "English (LC)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

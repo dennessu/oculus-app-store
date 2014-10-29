@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Guyanese dollar",
+			"longName": "Guyanese dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=GYD",
+		"id": null
+	},
+	"currencyCode": "GYD",
+	"symbol": "G$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

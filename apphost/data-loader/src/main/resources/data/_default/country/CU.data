@@ -1,0 +1,213 @@
+{
+	"countryCode": "CU",
+	"defaultLocale": {
+		"href": "/v1/locales/es_CU",
+		"id": "es_CU"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/CUP",
+		"id": "CUP"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"es_CU": {
+					"shortName": "Pinar del Río",
+					"longName": "Pinar del Río"
+				},
+				"en_US": {
+					"shortName": "Pinar del Río",
+					"longName": "Pinar del Río"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"es_CU": {
+					"shortName": "La Habana Province",
+					"longName": "La Habana Province"
+				},
+				"en_US": {
+					"shortName": "Havana Province",
+					"longName": "Havana Province"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"es_CU": {
+					"shortName": "La Habana",
+					"longName": "La Habana"
+				},
+				"en_US": {
+					"shortName": "Havana",
+					"longName": "Havana"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Matanzas",
+					"longName": "Matanzas"
+				},
+				"es_CU": {
+					"shortName": "Matanzas",
+					"longName": "Matanzas"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"es_CU": {
+					"shortName": "Villa Clara",
+					"longName": "Villa Clara"
+				},
+				"en_US": {
+					"shortName": "Villa Clara",
+					"longName": "Villa Clara"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cienfuegos",
+					"longName": "Cienfuegos"
+				},
+				"es_CU": {
+					"shortName": "Cienfuegos",
+					"longName": "Cienfuegos"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"es_CU": {
+					"shortName": "Sancti Spíritus",
+					"longName": "Sancti Spíritus"
+				},
+				"en_US": {
+					"shortName": "Sancti Spíritus",
+					"longName": "Sancti Spíritus"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ciego de Ávila",
+					"longName": "Ciego de Ávila"
+				},
+				"es_CU": {
+					"shortName": "Ciego de Ávila",
+					"longName": "Ciego de Ávila"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"es_CU": {
+					"shortName": "Camagüey",
+					"longName": "Camagüey"
+				},
+				"en_US": {
+					"shortName": "Camagüey",
+					"longName": "Camagüey"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Las Tunas",
+					"longName": "Las Tunas"
+				},
+				"es_CU": {
+					"shortName": "Las Tunas",
+					"longName": "Las Tunas"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Holguín",
+					"longName": "Holguín"
+				},
+				"es_CU": {
+					"shortName": "Holguín",
+					"longName": "Holguín"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_US": {
+					"shortName": "Granma",
+					"longName": "Granma"
+				},
+				"es_CU": {
+					"shortName": "Granma",
+					"longName": "Granma"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_US": {
+					"shortName": "Santiago de Cuba",
+					"longName": "Santiago de Cuba"
+				},
+				"es_CU": {
+					"shortName": "Santiago de Cuba",
+					"longName": "Santiago de Cuba"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"en_US": {
+					"shortName": "Guantánamo",
+					"longName": "Guantánamo"
+				},
+				"es_CU": {
+					"shortName": "Guantánamo",
+					"longName": "Guantánamo"
+				}
+			}
+		},
+		"99": {
+			"locales": {
+				"es_CU": {
+					"shortName": "Isla de la Juventud",
+					"longName": "Isla de la Juventud"
+				},
+				"en_US": {
+					"shortName": "Isla de la Juventud",
+					"longName": "Isla de la Juventud"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/es_CU",
+		"id": "es_CU"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Cuba",
+			"longName": "Republic of Cuba",
+			"postalCode": "Postal Code"
+		},
+		"es_CU": {
+			"shortName": "Cuba",
+			"longName": "República de Cuba",
+			"postalCode": "Código Postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

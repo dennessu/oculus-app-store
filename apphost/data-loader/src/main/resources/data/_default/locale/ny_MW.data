@@ -1,0 +1,11 @@
+{
+  "localeCode": "ny_MW",
+  "shortName": "Nyanja (MW)",
+  "longName": "Nyanja (Malawi)",
+  "localeName": "Nyanja (MW)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

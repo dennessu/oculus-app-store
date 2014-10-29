@@ -1,0 +1,281 @@
+{
+	"countryCode": "MW",
+	"defaultLocale": {
+		"href": "/v1/locales/ny_MW",
+		"id": "ny_MW"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/MWK",
+		"id": "MWK"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Balaka",
+					"longName": "Balaka"
+				}
+			}
+		},
+		"BL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Blantyre",
+					"longName": "Blantyre"
+				}
+			}
+		},
+		"C": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central Region",
+					"longName": "Central Region"
+				}
+			}
+		},
+		"CK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chikwawa",
+					"longName": "Chikwawa"
+				}
+			}
+		},
+		"CR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chiradzulu",
+					"longName": "Chiradzulu"
+				}
+			}
+		},
+		"CT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chitipa",
+					"longName": "Chitipa"
+				}
+			}
+		},
+		"DE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dedza",
+					"longName": "Dedza"
+				}
+			}
+		},
+		"DO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dowa",
+					"longName": "Dowa"
+				}
+			}
+		},
+		"KR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Karonga",
+					"longName": "Karonga"
+				}
+			}
+		},
+		"KS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kasungu",
+					"longName": "Kasungu"
+				}
+			}
+		},
+		"LI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lilongwe",
+					"longName": "Lilongwe"
+				}
+			}
+		},
+		"LK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Likoma",
+					"longName": "Likoma"
+				}
+			}
+		},
+		"MC": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mchinji",
+					"longName": "Mchinji"
+				}
+			}
+		},
+		"MG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mangochi",
+					"longName": "Mangochi"
+				}
+			}
+		},
+		"MH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Machinga",
+					"longName": "Machinga"
+				}
+			}
+		},
+		"MU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mulanje",
+					"longName": "Mulanje"
+				}
+			}
+		},
+		"MW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mwanza",
+					"longName": "Mwanza"
+				}
+			}
+		},
+		"MZ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mzimba",
+					"longName": "Mzimba"
+				}
+			}
+		},
+		"N": {
+			"locales": {
+				"en_US": {
+					"shortName": "Northern Region",
+					"longName": "Northern Region"
+				}
+			}
+		},
+		"NB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nkhata Bay",
+					"longName": "Nkhata Bay"
+				}
+			}
+		},
+		"NE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Neno",
+					"longName": "Neno"
+				}
+			}
+		},
+		"NI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ntchisi",
+					"longName": "Ntchisi"
+				}
+			}
+		},
+		"NK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nkhotakota",
+					"longName": "Nkhotakota"
+				}
+			}
+		},
+		"NS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nsanje",
+					"longName": "Nsanje"
+				}
+			}
+		},
+		"NU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ntcheu",
+					"longName": "Ntcheu"
+				}
+			}
+		},
+		"PH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Phalombe",
+					"longName": "Phalombe"
+				}
+			}
+		},
+		"RU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rumphi",
+					"longName": "Rumphi"
+				}
+			}
+		},
+		"S": {
+			"locales": {
+				"en_US": {
+					"shortName": "Southern Region",
+					"longName": "Southern Region"
+				}
+			}
+		},
+		"SA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Salima",
+					"longName": "Salima"
+				}
+			}
+		},
+		"TH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Thyolo",
+					"longName": "Thyolo"
+				}
+			}
+		},
+		"ZO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zomba",
+					"longName": "Zomba"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ny_MW",
+		"id": "ny_MW"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Malawi",
+			"longName": "Republic of Malawi",
+			"postalCode": "Postal Code"
+		},
+		"ny_MW": {
+			"shortName": "Malaŵi",
+			"longName": "Chalo cha Malawi, Dziko la Malaŵi",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

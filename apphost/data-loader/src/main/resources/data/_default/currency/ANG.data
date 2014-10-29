@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Netherlands Antillean guilder",
+			"longName": "Netherlands Antillean guilder"
+		},
+		"nl_CW": {
+			"shortName": "Antilliaanse gulden",
+			"longName": "Antilliaanse gulden"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=ANG",
+		"id": null
+	},
+	"currencyCode": "ANG",
+	"symbol": "ƒ",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

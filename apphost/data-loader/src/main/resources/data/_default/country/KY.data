@@ -1,0 +1,34 @@
+{
+	"countryCode": "KY",
+	"defaultLocale": {
+		"href": "/v1/locales/en_KY",
+		"id": "en_KY"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/KYD",
+		"id": "KYD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_KY",
+		"id": "en_KY"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Cayman Islands",
+			"longName": "Cayman Islands",
+			"postalCode": "Postal Code"
+		},
+		"en_KY": {
+			"shortName": "Cayman Islands",
+			"longName": "Cayman Islands",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

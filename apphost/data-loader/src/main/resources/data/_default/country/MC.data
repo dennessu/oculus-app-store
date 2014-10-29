@@ -1,0 +1,169 @@
+{
+	"countryCode": "MC",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_MC",
+		"id": "fr_MC"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"CL": {
+			"locales": {
+				"en_US": {
+					"shortName": "La Colle",
+					"longName": "La Colle"
+				}
+			}
+		},
+		"CO": {
+			"locales": {
+				"en_US": {
+					"shortName": "La Condamine",
+					"longName": "La Condamine"
+				}
+			}
+		},
+		"FO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Fontvieille",
+					"longName": "Fontvieille"
+				}
+			}
+		},
+		"GA": {
+			"locales": {
+				"en_US": {
+					"shortName": "La Gare",
+					"longName": "La Gare"
+				}
+			}
+		},
+		"JE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jardin Exotique",
+					"longName": "Jardin Exotique"
+				}
+			}
+		},
+		"LA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Larvotto",
+					"longName": "Larvotto"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Malbousquet",
+					"longName": "Malbousquet"
+				}
+			}
+		},
+		"MC": {
+			"locales": {
+				"en_US": {
+					"shortName": "Monte-Carlo",
+					"longName": "Monte-Carlo"
+				}
+			}
+		},
+		"MG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Moneghetti",
+					"longName": "Moneghetti"
+				}
+			}
+		},
+		"MO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Monaco-Ville",
+					"longName": "Monaco-Ville"
+				}
+			}
+		},
+		"MU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Moulins",
+					"longName": "Moulins"
+				}
+			}
+		},
+		"PH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Port-Hercule",
+					"longName": "Port-Hercule"
+				}
+			}
+		},
+		"SD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sainte-Dévote",
+					"longName": "Sainte-Dévote"
+				}
+			}
+		},
+		"SO": {
+			"locales": {
+				"en_US": {
+					"shortName": "La Source",
+					"longName": "La Source"
+				}
+			}
+		},
+		"SP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Spélugues",
+					"longName": "Spélugues"
+				}
+			}
+		},
+		"SR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint-Roman",
+					"longName": "Saint-Roman"
+				}
+			}
+		},
+		"VR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vallon de la Rousse",
+					"longName": "Vallon de la Rousse"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_MC",
+		"id": "fr_MC"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Monaco",
+			"longName": "Principality of Monaco",
+			"postalCode": "Postal Code"
+		},
+		"fr_MC": {
+			"shortName": "Monaco",
+			"longName": "Principality of Monaco",
+			"postalCode": "code postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

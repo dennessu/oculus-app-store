@@ -1,0 +1,105 @@
+{
+	"countryCode": "SM",
+	"defaultLocale": {
+		"href": "/v1/locales/it_SM",
+		"id": "it_SM"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Acquaviva",
+					"longName": "Acquaviva"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chiesanuova",
+					"longName": "Chiesanuova"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Domagnano",
+					"longName": "Domagnano"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Faetano",
+					"longName": "Faetano"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Fiorentino",
+					"longName": "Fiorentino"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Borgo Maggiore",
+					"longName": "Borgo Maggiore"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "San Marino",
+					"longName": "San Marino"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Montegiardino",
+					"longName": "Montegiardino"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Serravalle",
+					"longName": "Serravalle"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/it_SM",
+		"id": "it_SM"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "San Marino",
+			"longName": "Most Serene Republic of San Marin",
+			"postalCode": "Postal Code"
+		},
+		"it_SM": {
+			"shortName": "San Marino",
+			"longName": "Serenissima Repubblica di San Marino",
+			"postalCode": "Codice Postale"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

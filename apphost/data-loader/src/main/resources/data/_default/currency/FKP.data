@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Falkland Islands pound",
+			"longName": "Falkland Islands pound"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=FKP",
+		"id": null
+	},
+	"currencyCode": "FKP",
+	"symbol": "FK£",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

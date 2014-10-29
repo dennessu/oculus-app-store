@@ -1,0 +1,14 @@
+{
+   "localeCode" : "ar_DJ",
+   "shortName" : "Arabic (DJ)",
+   "longName" : "Arabic (Djibouti)",
+   "localeName" : "Arabic (DJ)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}
