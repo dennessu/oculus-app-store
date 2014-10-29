@@ -661,5 +661,77 @@ public class authorizeUser {
         error.setDetails(errorDetails);
         CloseableHttpResponse response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);
         Oauth.validateViewModeResponse(response, "register", error);
+
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEvent, "next"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNUserName, userName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPassword, Oauth.DefaultUserPwd));
+        //nvps.add(new BasicNameValuePair(Oauth.DefaultFNEmail, email));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNFirstName, firstName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNLastName, lastName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNGender, "male"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNDoB, "1980-01-01"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPin, RandomHelper.randomNumeric(4)));
+
+        error = new Error();
+        error.setMessage("Input Error");
+        errorDetails = new ArrayList<>();
+        // missing email error
+        errorDetail = new ErrorDetail();
+        errorDetail.setField("email");
+        errorDetail.setReason("Field is required");
+        errorDetails.add(errorDetail);
+        error.setDetails(errorDetails);
+        response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);
+        Oauth.validateViewModeResponse(response, "register", error);
+
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEvent, "next"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNUserName, userName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPassword, Oauth.DefaultUserPwd));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEmail, email));
+        //nvps.add(new BasicNameValuePair(Oauth.DefaultFNFirstName, firstName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNLastName, lastName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNGender, "male"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNDoB, "1980-01-01"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPin, RandomHelper.randomNumeric(4)));
+
+        error = new Error();
+        error.setMessage("Input Error");
+        errorDetails = new ArrayList<>();
+        // missing firstname error
+        errorDetail = new ErrorDetail();
+        errorDetail.setField("first_name");
+        errorDetail.setReason("Field is required");
+        errorDetails.add(errorDetail);
+        error.setDetails(errorDetails);
+        response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);
+        Oauth.validateViewModeResponse(response, "register", error);
+
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEvent, "next"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNUserName, userName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPassword, Oauth.DefaultUserPwd));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEmail, email));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNFirstName, firstName));
+        //nvps.add(new BasicNameValuePair(Oauth.DefaultFNLastName, lastName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNGender, "male"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNDoB, "1980-01-01"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPin, RandomHelper.randomNumeric(4)));
+
+        error = new Error();
+        error.setMessage("Input Error");
+        errorDetails = new ArrayList<>();
+        // missing firstname error
+        errorDetail = new ErrorDetail();
+        errorDetail.setField("last_name");
+        errorDetail.setReason("Field is required");
+        errorDetails.add(errorDetail);
+        error.setDetails(errorDetails);
+        response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);
+        Oauth.validateViewModeResponse(response, "register", error);
     }
 }
