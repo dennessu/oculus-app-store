@@ -32,7 +32,6 @@ import java.util.*;
  * Created by lizwu on 2/7/14.
  */
 public abstract class RatingServiceSupport implements RatingService<PriceRatingContext> {
-    private static final String DEFAULT_COUNTRY = "ZZ";
     @Autowired
     @Qualifier("ratingCatalogGateway")
     protected CatalogGateway catalogGateway;
@@ -49,10 +48,6 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
 
             if (countries.containsKey(context.getCountry())) {
                 if (!Boolean.TRUE.equals(countries.get(context.getCountry()).isPurchasable())) {
-                    throw AppErrors.INSTANCE.offerNotPurchasable(item.getOfferId(), context.getCountry()).exception();
-                }
-            } else if (countries.containsKey(DEFAULT_COUNTRY)) {
-                if (!Boolean.TRUE.equals(countries.get(DEFAULT_COUNTRY).isPurchasable())) {
                     throw AppErrors.INSTANCE.offerNotPurchasable(item.getOfferId(), context.getCountry()).exception();
                 }
             } else {
@@ -186,26 +181,16 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
             return BigDecimal.ZERO;
         }
 
-        if (price.getPrices() == null) {
+        if (price.getPrices() == null || !price.getPrices().containsKey(country)) {
             return Constants.PRICE_NOT_FOUND;
         }
-        if (price.getPrices().containsKey(country)) {
-            Map<String, BigDecimal> prices = price.getPrices().get(country);
-            if (!prices.containsKey(currency)) {
-                return Constants.PRICE_NOT_FOUND;
-            }
 
-            return prices.get(currency);
-        } else if (price.getPrices().containsKey(DEFAULT_COUNTRY)){
-            Map<String, BigDecimal> prices = price.getPrices().get(DEFAULT_COUNTRY);
-            if (!prices.containsKey(currency)) {
-                return Constants.PRICE_NOT_FOUND;
-            }
-
-            return prices.get(currency);
-        } else {
+        Map<String, BigDecimal> prices = price.getPrices().get(country);
+        if (!prices.containsKey(currency)) {
             return Constants.PRICE_NOT_FOUND;
         }
+
+        return prices.get(currency);
     }
 
     protected BigDecimal getPreOrderPrice(RatingOffer offer, String country, String currency) {
@@ -214,23 +199,15 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
         }
 
         Map<String, Properties> countries = offer.getCountries();
-        if (countries.containsKey(country)) {
-            if (countries.get(country).getReleaseDate() == null) {
-                return BigDecimal.ZERO;
-            }
+        if (!countries.containsKey(country)) {
+            return BigDecimal.ZERO;
+        }
 
-            if (Utils.now().after(countries.get(country).getReleaseDate())) {
-                return BigDecimal.ZERO;
-            }
-        } else if (countries.containsKey(DEFAULT_COUNTRY)) {
-            if (countries.get(DEFAULT_COUNTRY).getReleaseDate() == null) {
-                return BigDecimal.ZERO;
-            }
+        if (countries.get(country).getReleaseDate() == null) {
+            return BigDecimal.ZERO;
+        }
 
-            if (Utils.now().after(countries.get(DEFAULT_COUNTRY).getReleaseDate())) {
-                return BigDecimal.ZERO;
-            }
-        } else {
+        if (Utils.now().after(countries.get(country).getReleaseDate())) {
             return BigDecimal.ZERO;
         }
 
