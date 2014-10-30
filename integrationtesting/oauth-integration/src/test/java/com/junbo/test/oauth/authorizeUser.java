@@ -701,7 +701,7 @@ public class authorizeUser {
         error = new Error();
         error.setMessage("Input Error");
         errorDetails = new ArrayList<>();
-        // missing firstname error
+        // missing first name error
         errorDetail = new ErrorDetail();
         errorDetail.setField("first_name");
         errorDetail.setReason("Field is required");
@@ -725,7 +725,7 @@ public class authorizeUser {
         error = new Error();
         error.setMessage("Input Error");
         errorDetails = new ArrayList<>();
-        // missing firstname error
+        // missing last name error
         errorDetail = new ErrorDetail();
         errorDetail.setField("last_name");
         errorDetail.setReason("Field is required");

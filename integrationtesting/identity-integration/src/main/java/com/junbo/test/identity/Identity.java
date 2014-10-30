@@ -846,14 +846,6 @@ public class Identity {
         return IdConverter.idToUrlString(UserId.class, userId);
     }
 
-    // ****** start API sample logging ******
-    public static final String MessageDefaultPostUser = "[Include In Sample][1] Description: Post_User_Default";
-    public static final String MessageGetUserByUserId = "[Include In Sample][1] Description: Get_User_By_UserId";
-
-    public static void StartLoggingAPISample(String message) {
-        System.out.println(message);
-    }
-
     public static String buildIdentityCount(Integer count) {
         if (count == null) {
             return "";
