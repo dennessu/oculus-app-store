@@ -72,6 +72,7 @@
         <property name="csrLogResource" ref="oauth_csrLogResource" />
         <property name="successRedirectUri" value="${oauth.core.portal.emailVerifySuccessUri}" />
         <property name="failedRedirectUri" value="${oauth.core.portal.emailVerifyFailUri}" />
+        <property name="verifyEmailAutoLogin" value="${oauth.core.verifyEmailAutoLogin}" />
     </bean>
 
     <bean id="defaultEmailVerifyEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.EmailVerifyEndpointClientProxyFactory"/>
