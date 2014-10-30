@@ -1,12 +1,10 @@
-// CHECKSTYLE:OFF
-
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.test.identity;
-
+// CHECKSTYLE:OFF
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.*;
 import com.junbo.common.id.OrganizationId;

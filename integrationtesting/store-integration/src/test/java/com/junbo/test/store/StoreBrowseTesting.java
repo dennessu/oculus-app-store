@@ -724,6 +724,11 @@ public class StoreBrowseTesting extends BaseTestClass {
         TestContext.getData().putHeader("Accept-Language", "en_US");
         detailsResponse = testDataProvider.getItemDetails(itemId);
         verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+
+        // invalid Accept-Language format, fall back to en_US
+        TestContext.getData().putHeader("Accept-Language", "es-US");
+        detailsResponse = testDataProvider.getItemDetails(itemId);
+        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
     }
 
     @Test

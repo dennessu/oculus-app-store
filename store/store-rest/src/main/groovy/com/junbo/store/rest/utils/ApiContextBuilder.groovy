@@ -10,12 +10,12 @@ import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.StoreApiHeader
-import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
@@ -117,7 +117,25 @@ class ApiContextBuilder {
         resourceContainer.localeResource.get(new LocaleId(localeId), new LocaleGetOptions()).recover { Throwable ex ->
             if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.LocaleNotFound)) {
                 LOGGER.warn('name=Store_Locale_Not_Found, locale={}, fallback to default', localeId)
-                return resourceContainer.localeResource.get(new LocaleId(defaultLocale), new LocaleGetOptions())
+                String[] locales = localeId.toString().split('_')
+                if (locales.size() != 2) {
+                    return resourceContainer.localeResource.get(new LocaleId(defaultLocale), new LocaleGetOptions())
+                }
+                CountryId countryId = new CountryId(locales[1])
+                return resourceContainer.countryResource.get(countryId, new CountryGetOptions()).then { Country country ->
+                    if (country == null || country.defaultLocale == null) {
+                        return resourceContainer.localeResource.get(new LocaleId(defaultLocale), new LocaleGetOptions())
+                    }
+
+                    // If the default locale isn't exist, fall back to default
+                    return resourceContainer.localeResource.get(country.defaultLocale, new LocaleGetOptions()).recover { Throwable ex2 ->
+                        if (appErrorUtils.isAppError(ex2, ErrorCodes.Identity.LocaleNotFound)) {
+                            LOGGER.warn('name=Store_Locale_Not_Found_Again, locale={}, fallback to default', country.defaultLocale)
+                            return resourceContainer.localeResource.get(new LocaleId(defaultLocale), new LocaleGetOptions())
+                        }
+                        throw ex2
+                    }
+                }
             }
             throw ex
         }

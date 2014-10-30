@@ -9,8 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.authorization.spec.model.Role;
 import com.junbo.common.id.RoleId;
 import com.junbo.common.model.Results;
-import com.junbo.common.util.IdFormatter;
-import com.junbo.identity.spec.v1.model.UserCredential;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
@@ -19,7 +17,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import sun.org.mozilla.javascript.internal.ast.Assignment;
 
 /**
  * @author dw

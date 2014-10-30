@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.test.identity;
-
+// CHECKSTYLE:OFF
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.*;
 import com.junbo.common.json.ObjectMapperProvider;
