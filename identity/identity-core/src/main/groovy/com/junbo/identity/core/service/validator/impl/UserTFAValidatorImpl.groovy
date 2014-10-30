@@ -10,7 +10,7 @@ import com.junbo.identity.core.service.validator.UserTFAValidator
 import com.junbo.identity.data.identifiable.TFASearchType
 import com.junbo.identity.data.identifiable.TFAVerifyType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.*
+import com.junbo.identity.service.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserTFAListOptions
@@ -32,11 +32,11 @@ class UserTFAValidatorImpl implements UserTFAValidator {
 
     private CodeGenerator codeGenerator
 
-    private UserRepository userRepository
-    private UserTFAPhoneRepository userTFAPhoneRepository
-    private UserTFAMailRepository userTFAMailRepository
-    private UserPersonalInfoRepository userPersonalInfoRepository
-    private LocaleRepository localeRepository
+    private UserService userService
+    private UserTFAPhoneService userTFAPhoneService
+    private UserTFAMailService userTFAMailService
+    private UserPersonalInfoService userPersonalInfoService
+    private LocaleService localeService
 
     private Integer minTemplateLength
     private Integer maxTemplateLength
@@ -51,7 +51,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
             throw AppCommonErrors.INSTANCE.parameterRequired('userTFAId').exception()
         }
 
-        return userRepository.get(userId).then { User existing ->
+        return userService.getNonDeletedUser(userId).then { User existing ->
             if (existing == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -64,7 +64,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTFAPhoneRepository.get(userTFAId).then { UserTFA existingUserTFACode ->
+            return userTFAPhoneService.get(userTFAId).then { UserTFA existingUserTFACode ->
                 if (existingUserTFACode == null) {
                     throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
                 }
@@ -149,7 +149,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
 
         userTFA.verifyCode = oldUserTFA.verifyCode
         return basicTFACheck(userId, userTFA).then {
-            return userTFAPhoneRepository.get(userTFAId).then { UserTFA tfa ->
+            return userTFAPhoneService.get(userTFAId).then { UserTFA tfa ->
                 if (tfa == null) {
                     throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
                 }
@@ -201,7 +201,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     private Promise<Void> tfaMailAdvanceCheck(UserTFA userTFA) {
-        return userTFAMailRepository.searchTFACodeByUserIdAndPIIAfterTime(userTFA.userId, userTFA.personalInfo,
+        return userTFAMailService.searchTFACodeByUserIdAndPIIAfterTime(userTFA.userId, userTFA.personalInfo,
                 maxSMSRequestsPerHour + 1, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { List<UserTFA> userTFAList ->
             if (CollectionUtils.isEmpty(userTFAList) || userTFAList.size() <= maxSMSRequestsPerHour) {
                 return Promise.pure(null)
@@ -212,7 +212,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     private Promise<Void> tfaPhoneAdvanceCheck(UserTFA userTFA) {
-        return userTFAPhoneRepository.searchTFACodeByUserIdAndPIIAfterTime(userTFA.userId, userTFA.personalInfo,
+        return userTFAPhoneService.searchTFACodeByUserIdAndPIIAfterTime(userTFA.userId, userTFA.personalInfo,
                 maxSMSRequestsPerHour + 1, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { List<UserTFA> userTeleCodeList ->
             if (CollectionUtils.isEmpty(userTeleCodeList) || userTeleCodeList.size() <= maxSMSRequestsPerHour) {
                 return Promise.pure(null)
@@ -231,7 +231,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     private Promise<Void> fillEmailCode(UserId userId, UserTFA userTFA) {
-        return userTFAMailRepository.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo, 1, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
+        return userTFAMailService.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo, 1, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
             if (CollectionUtils.isEmpty(codeList)) {
                 userTFA.verifyCode = codeGenerator.generateCode()
             } else {
@@ -243,7 +243,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     private Promise<Void> fillPhoneCode(UserId userId, UserTFA userTFA) {
-        return userTFAPhoneRepository.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo,
+        return userTFAPhoneService.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo,
                 1, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
             if (CollectionUtils.isEmpty(codeList)) {
                 String code = codeGenerator.generateCode()
@@ -323,7 +323,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
             return Promise.pure(null)
         }
 
-        return localeRepository.get(userTFA.sentLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
+        return localeService.get(userTFA.sentLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
             if (locale == null) {
                 throw AppErrors.INSTANCE.localeNotFound(userTFA.sentLocale).exception()
             }
@@ -335,7 +335,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     private Promise<Void> validatePersonalInfo(UserId userId, UserPersonalInfoId personalInfoId, String verifyType, UserTFA userTFA) {
         if (verifyType == TFAVerifyType.EMAIL.toString()) {
             return validateEmail(userId, personalInfoId, userTFA).then {
-                return userPersonalInfoRepository.get(personalInfoId).then { UserPersonalInfo personalInfo ->
+                return userPersonalInfoService.get(personalInfoId).then { UserPersonalInfo personalInfo ->
                     Email email = (Email)JsonHelper.jsonNodeToObj(personalInfo.value, Email)
                     userTFA.email = email.info
 
@@ -348,7 +348,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     private Promise<Void> validateEmail(UserId userId, UserPersonalInfoId mail, UserTFA userTFA) {
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -393,7 +393,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     private Promise<Void> validatePhoneNumber(UserId userId, UserPersonalInfoId phoneNumber, UserTFA userTFA) {
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -444,8 +444,8 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
@@ -454,23 +454,23 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     @Required
-    void setUserTFAPhoneRepository(UserTFAPhoneRepository userTFAPhoneRepository) {
-        this.userTFAPhoneRepository = userTFAPhoneRepository
+    void setUserTFAPhoneService(UserTFAPhoneService userTFAPhoneService) {
+        this.userTFAPhoneService = userTFAPhoneService
     }
 
     @Required
-    void setUserTFAMailRepository(UserTFAMailRepository userTFAMailRepository) {
-        this.userTFAMailRepository = userTFAMailRepository
+    void setUserTFAMailService(UserTFAMailService userTFAMailService) {
+        this.userTFAMailService = userTFAMailService
     }
 
     @Required
-    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
-        this.userPersonalInfoRepository = userPersonalInfoRepository
+    void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
+        this.userPersonalInfoService = userPersonalInfoService
     }
 
     @Required
-    void setLocaleRepository(LocaleRepository localeRepository) {
-        this.localeRepository = localeRepository
+    void setLocaleService(LocaleService localeService) {
+        this.localeService = localeService
     }
 
     @Required

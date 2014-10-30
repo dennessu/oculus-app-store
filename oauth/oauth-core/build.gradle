@@ -20,6 +20,7 @@ dependencies {
     compile ("com.nimbusds:nimbus-jose-jwt:2.22.1")
 
     compile junboProject(':oauth-spec')
+    compile junboProject(':store-spec')
     compile junboProject(':oauth-db')
     compile junboProject(':oauth-clientproxy')
 }

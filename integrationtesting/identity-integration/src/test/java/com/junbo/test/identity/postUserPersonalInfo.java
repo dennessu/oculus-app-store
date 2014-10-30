@@ -11,10 +11,19 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.Validator;
-import org.apache.commons.lang3.time.DateUtils;
-import org.testng.annotations.*;
+import com.junbo.test.common.libs.IdConverter;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author dw
@@ -69,5 +78,36 @@ public class postUserPersonalInfo {
 
         UserPersonalInfo gotten = Identity.UserPersonalInfoGetByUserPersonalInfoId(posted.getId());
         Validator.Validate("validate lastvalidationTime", gotten.getLastValidateTime(), null);
+    }
+
+    @Test(groups = "dailies")
+    public void postInvalidUserPersonalInfo() throws Exception {
+        User user = Identity.UserPostDefault();
+        UserPersonalInfo upi = IdentityModel.DefaultUserPersonalInfoAddress();
+        upi.setType("FAKE");
+        upi.setUserId(user.getId());
+
+        // https://oculus.atlassian.net/browse/SER-752
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserPersonalInfoURI,
+                JsonHelper.JsonSerializer(upi), HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
+        String errorMessage = "Field value is invalid";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        // https://oculus.atlassian.net/browse/SER-753
+        upi = IdentityModel.DefaultUserPersonalInfoAddress();
+        UserPersonalInfo posted = Identity.UserPersonalInfoPost(user.getId(), upi);
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserPersonalInfoURI + "/" + IdConverter.idToHexString(posted.getId()),
+                null, HttpclientHelper.HttpRequestType.delete, nvps);
+        Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
+        errorMessage = "pii operation is not supported";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
     }
 }

@@ -58,6 +58,20 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
     }
 
     @Override
+    Promise<Integer> searchByUserIdAndCredentialTypeAndIntervalCount(UserId userId, String type, Long fromTimeStamp, Integer limit, Integer skip) {
+        def startKey = [userId, type, fromTimeStamp]
+        def endKey = [userId, type]
+        return queryViewCount('by_user_id_credential_type_time', startKey.toArray(new String()), endKey.toArray(new String()), true, true, limit, skip)
+    }
+
+    @Override
+    Promise<Integer> searchByIPAddressAndCredentialTypeAndIntervalCount(String ipAddress, String type, Long fromTimeStamp, Integer limit, Integer skip) {
+        def startKey = [ipAddress, type, fromTimeStamp]
+        def endKey = [ipAddress, type]
+        return queryViewCount('by_ip_address_credential_type_time', startKey.toArray(new String()), endKey.toArray(new String()), true, true, limit, skip)
+    }
+
+    @Override
     Promise<Void> delete(UserCredentialVerifyAttemptId id) {
         return cloudantDelete(id.toString())
     }

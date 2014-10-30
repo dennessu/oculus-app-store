@@ -7,8 +7,8 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CountryFilter
 import com.junbo.identity.core.service.validator.CountryValidator
 import com.junbo.identity.data.identifiable.LocaleAccuracy
-import com.junbo.identity.data.repository.CountryRepository
-import com.junbo.identity.data.repository.LocaleRepository
+import com.junbo.identity.service.CountryService
+import com.junbo.identity.service.LocaleService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.CountryLocaleKey
@@ -36,10 +36,10 @@ class CountryResourceImpl implements CountryResource {
     private static final String SORT_BY_SHORT_NAME = 'shortName'
 
     @Autowired
-    private CountryRepository countryRepository
+    private CountryService countryService
 
     @Autowired
-    private LocaleRepository localeRepository
+    private LocaleService localeService
 
     @Autowired
     private CountryFilter countryFilter
@@ -56,7 +56,7 @@ class CountryResourceImpl implements CountryResource {
         country = countryFilter.filterForCreate(country)
 
         return countryValidator.validateForCreate(country).then {
-            return countryRepository.create(country).then { Country newCountry ->
+            return countryService.create(country).then { Country newCountry ->
                 Created201Marker.mark(newCountry.id)
 
                 newCountry = countryFilter.filterForGet(newCountry, null)
@@ -75,7 +75,7 @@ class CountryResourceImpl implements CountryResource {
             throw new IllegalArgumentException('country is null')
         }
 
-        return countryRepository.get(countryId).then { Country oldCountry ->
+        return countryService.get(countryId).then { Country oldCountry ->
             if (oldCountry == null) {
                 throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
             }
@@ -83,7 +83,7 @@ class CountryResourceImpl implements CountryResource {
             country = countryFilter.filterForPut(country, oldCountry)
 
             return countryValidator.validateForUpdate(countryId, country, oldCountry).then {
-                return countryRepository.update(country, oldCountry).then { Country newCountry ->
+                return countryService.update(country, oldCountry).then { Country newCountry ->
                     newCountry = countryFilter.filterForGet(newCountry, null)
                     return Promise.pure(newCountry)
                 }
@@ -101,7 +101,7 @@ class CountryResourceImpl implements CountryResource {
             throw new IllegalArgumentException('country is null')
         }
 
-        return countryRepository.get(countryId).then { Country oldCountry ->
+        return countryService.get(countryId).then { Country oldCountry ->
             if (oldCountry == null) {
                 throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
             }
@@ -110,7 +110,7 @@ class CountryResourceImpl implements CountryResource {
 
             return countryValidator.validateForUpdate(
                     countryId, country, oldCountry).then {
-                return countryRepository.update(country, oldCountry).then { Country newCountry ->
+                return countryService.update(country, oldCountry).then { Country newCountry ->
                     newCountry = countryFilter.filterForGet(newCountry, null)
                     return Promise.pure(newCountry)
                 }
@@ -125,7 +125,7 @@ class CountryResourceImpl implements CountryResource {
         }
 
         return countryValidator.validateForGet(countryId).then {
-            return countryRepository.get(countryId).then { Country newCountry ->
+            return countryService.get(countryId).then { Country newCountry ->
                 if (newCountry == null) {
                     throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
                 }
@@ -182,7 +182,7 @@ class CountryResourceImpl implements CountryResource {
         }
 
         return countryValidator.validateForGet(countryId).then {
-            return countryRepository.delete(countryId).then {
+            return countryService.delete(countryId).then {
                 return Promise.pure(Response.status(204).build())
             }
         }
@@ -190,16 +190,16 @@ class CountryResourceImpl implements CountryResource {
 
     private Promise<List<Country>> search(CountryListOptions countryListOptions) {
         if (countryListOptions.currencyId != null && countryListOptions.localeId != null) {
-            return countryRepository.searchByDefaultCurrencyIdAndLocaleId(countryListOptions.currencyId,
+            return countryService.searchByDefaultCurrencyIdAndLocaleId(countryListOptions.currencyId,
                     countryListOptions.localeId, countryListOptions.limit, countryListOptions.offset)
         } else if (countryListOptions.currencyId != null) {
-            return countryRepository.searchByDefaultCurrencyId(countryListOptions.currencyId, countryListOptions.limit,
+            return countryService.searchByDefaultCurrencyId(countryListOptions.currencyId, countryListOptions.limit,
                     countryListOptions.offset)
         } else if (countryListOptions.localeId != null) {
-            return countryRepository.searchByDefaultLocaleId(countryListOptions.localeId, countryListOptions.limit,
+            return countryService.searchByDefaultLocaleId(countryListOptions.localeId, countryListOptions.limit,
                     countryListOptions.offset)
         } else {
-            return countryRepository.searchAll(countryListOptions.limit, countryListOptions.offset)
+            return countryService.searchAll(countryListOptions.limit, countryListOptions.offset)
         }
     }
 
@@ -360,7 +360,7 @@ class CountryResourceImpl implements CountryResource {
             }
         }
 
-        return localeRepository.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
+        return localeService.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
             if (locale1 == null || locale1.fallbackLocale == null) {
                 return Promise.pure(null)
             }
@@ -384,7 +384,7 @@ class CountryResourceImpl implements CountryResource {
             }
         }
 
-        return localeRepository.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
+        return localeService.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
             if (locale1 == null || locale1.fallbackLocale == null) {
                 return Promise.pure(null)
             }

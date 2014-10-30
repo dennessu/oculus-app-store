@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.billing.spec.resource.VatResource
 import com.junbo.common.error.AppCommonErrors
@@ -17,8 +18,7 @@ import com.junbo.identity.data.hash.PiiHash
 import com.junbo.identity.data.hash.PiiHashFactory
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.*
-import com.junbo.identity.data.repository.migration.UsernameEmailBlockerRepository
+import com.junbo.identity.service.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker
@@ -39,17 +39,17 @@ import java.util.Locale
 @CompileStatic
 class UserValidatorImpl implements UserValidator {
 
-    private UserRepository userRepository
+    private UserService userService
 
     private UsernameValidator usernameValidator
 
     private EmailValidator emailValidator
 
-    private LocaleRepository localeRepository
+    private LocaleService localeService
 
-    private CountryRepository countryRepository
+    private CountryService countryService
 
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private UserPersonalInfoService userPersonalInfoService
 
     private TimezoneValidator timezoneValidator
 
@@ -59,13 +59,13 @@ class UserValidatorImpl implements UserValidator {
 
     private PaymentInstrumentResource paymentInstrumentResource
 
-    private PITypeRepository piTypeRepository
+    private PITypeService piTypeService
 
     private Boolean enableVatValidation
     // Any data that will use this data should be data issue, we may need to fix this.
     private Integer maximumFetchSize
 
-    private UsernameEmailBlockerRepository usernameEmailBlockerRepository
+    private UsernameEmailBlockerService usernameEmailBlockerService
 
     private PiiHashFactory piiHashFactory
 
@@ -85,7 +85,7 @@ class UserValidatorImpl implements UserValidator {
         return validateUserInfo(null, user).then {
             if (user.username != null) {
                 return validateUserNameDuplicate(user, user).then {
-                    return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+                    return userPersonalInfoService.get(user.username).then { UserPersonalInfo userPersonalInfo ->
                         if (userPersonalInfo == null || userPersonalInfo.value == null) {
                             return Promise.pure(null)
                         }
@@ -145,7 +145,7 @@ class UserValidatorImpl implements UserValidator {
         }.then {
             // https://oculus.atlassian.net/browse/SER-693
             // Will treat username as primary
-            return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(user.username).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null || userPersonalInfo.value == null) {
                     return Promise.pure(null)
                 }
@@ -164,7 +164,13 @@ class UserValidatorImpl implements UserValidator {
             throw new IllegalArgumentException('userId')
         }
 
-        return userRepository.get(userId).then { User user ->
+        return Promise.pure().then {
+            if (AuthorizeContext.hasScopes('csr')) {
+                return userService.get(userId)
+            } else {
+                return userService.getNonDeletedUser(userId)
+            }
+        }.then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -197,7 +203,7 @@ class UserValidatorImpl implements UserValidator {
     Promise<Void> validateEmail(String email) {
         emailValidator.validateEmail(email)
 
-        return userPersonalInfoRepository.searchByEmail(email.toLowerCase(Locale.ENGLISH), null, Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+        return userPersonalInfoService.searchByEmail(email.toLowerCase(Locale.ENGLISH), null, Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
             if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                 return Promise.pure(null)
             }
@@ -207,8 +213,8 @@ class UserValidatorImpl implements UserValidator {
             }
 
             return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
-                return userRepository.get(userPersonalInfo.getUserId()).then { User existingUser ->
-                    if (CollectionUtils.isEmpty(existingUser.emails)) {
+                return userService.getNonDeletedUser(userPersonalInfo.getUserId()).then { User existingUser ->
+                    if (existingUser == null || CollectionUtils.isEmpty(existingUser.emails)) {
                         return Promise.pure(null)
                     }
 
@@ -232,7 +238,7 @@ class UserValidatorImpl implements UserValidator {
     Promise<Void> validateUsername(String username) {
         usernameValidator.validateUsername(username);
 
-        return userPersonalInfoRepository.searchByCanonicalUsername(normalizeService.normalize(username), Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+        return userPersonalInfoService.searchByCanonicalUsername(normalizeService.normalize(username), Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
             if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                 return Promise.pure(null)
             }
@@ -242,7 +248,7 @@ class UserValidatorImpl implements UserValidator {
             }
 
             return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
-                return userRepository.get(userPersonalInfo.getUserId()).then { User existingUser ->
+                return userService.getNonDeletedUser(userPersonalInfo.getUserId()).then { User existingUser ->
                     if (existingUser.username == userPersonalInfo.getId()) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('username').exception()
                     }
@@ -267,10 +273,10 @@ class UserValidatorImpl implements UserValidator {
             throw AppCommonErrors.INSTANCE.parameterRequired('username or email').exception()
         }
 
-        return usernameEmailBlockerRepository.searchByUsername(normalizeService.normalize(username), Integer.MAX_VALUE, 0).then {
+        return usernameEmailBlockerService.searchByUsername(normalizeService.normalize(username), Integer.MAX_VALUE, 0).then {
             List<UsernameMailBlocker> blockerList ->
             if (CollectionUtils.isEmpty(blockerList)) {
-                return usernameEmailBlockerRepository.searchByEmail(email.toLowerCase(Locale.ENGLISH), Integer.MAX_VALUE, 0).then {
+                return usernameEmailBlockerService.searchByEmail(email.toLowerCase(Locale.ENGLISH), Integer.MAX_VALUE, 0).then {
                     List<UsernameMailBlocker> mailBlockerList ->
                         if (CollectionUtils.isEmpty(mailBlockerList)) {
                             return Promise.pure('NEWUSER')
@@ -377,7 +383,7 @@ class UserValidatorImpl implements UserValidator {
                 throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
             }
 
-            return userPersonalInfoRepository.get(userPersonalInfoLink.value).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(userPersonalInfoLink.value).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
                     throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
                 }
@@ -409,7 +415,7 @@ class UserValidatorImpl implements UserValidator {
     }
 
     Promise<Void> validateEmailNotUsed(User user, Email email) {
-        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase(Locale.ENGLISH), null, Integer.MAX_VALUE,
+        return userPersonalInfoService.searchByEmail(email.info.toLowerCase(Locale.ENGLISH), null, Integer.MAX_VALUE,
                 0).then { List<UserPersonalInfo> existing ->
             if (CollectionUtils.isEmpty(existing)) {
                 return Promise.pure(null)
@@ -428,8 +434,8 @@ class UserValidatorImpl implements UserValidator {
             }
 
             return Promise.each(existing) { UserPersonalInfo info ->
-                return userRepository.get(info.userId).then { User existingUser ->
-                    if (existingUser == null || CollectionUtils.isEmpty(existingUser.emails) || existingUser.status == UserStatus.DELETED.toString()) {
+                return userService.getNonDeletedUser(info.userId).then { User existingUser ->
+                    if (existingUser == null || CollectionUtils.isEmpty(existingUser.emails)) {
                         return Promise.pure(null)
                     }
 
@@ -451,7 +457,7 @@ class UserValidatorImpl implements UserValidator {
         if (userPersonalInfoId == null) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('userPersonalInfoId is null').exception()
         }
-        return userPersonalInfoRepository.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
             if (userPersonalInfo == null) {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoId).exception()
             }
@@ -474,7 +480,7 @@ class UserValidatorImpl implements UserValidator {
             return Promise.pure(null)
         }
         if (newUser.username != null) {
-            return userPersonalInfoRepository.get(newUser.username).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(newUser.username).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
                     throw AppErrors.INSTANCE.userPersonalInfoNotFound(newUser.username).exception()
                 }
@@ -495,7 +501,7 @@ class UserValidatorImpl implements UserValidator {
             return Promise.pure(null)
         }
         if (newUser.preferredLocale != null) {
-            return localeRepository.get(newUser.preferredLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
+            return localeService.get(newUser.preferredLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
                 if (locale == null) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid(newUser.preferredLocale.value).exception()
                 }
@@ -662,7 +668,7 @@ class UserValidatorImpl implements UserValidator {
             return Promise.pure(null)
         }
         if (newUser.countryOfResidence != null) {
-            return countryRepository.get(newUser.countryOfResidence).then { Country country ->
+            return countryService.get(newUser.countryOfResidence).then { Country country ->
                 if (country == null) {
                     throw AppErrors.INSTANCE.countryNotFound(newUser.countryOfResidence).exception()
                 }
@@ -716,7 +722,7 @@ class UserValidatorImpl implements UserValidator {
                 throw AppErrors.INSTANCE.paymentInstrumentNotFound(newUser.defaultPI).exception()
             }
 
-            return piTypeRepository.get(new PITypeId(pi.getType())).then { PIType piType ->
+            return piTypeService.get(new PITypeId(pi.getType())).then { PIType piType ->
                 if (piType == null) {
                     throw AppErrors.INSTANCE.piTypeNotFound(new PITypeId(pi.getType())).exception()
                 }
@@ -741,9 +747,9 @@ class UserValidatorImpl implements UserValidator {
             return Promise.pure()
         }
 
-        return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(user.username).then { UserPersonalInfo userPersonalInfo ->
             UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
-            return userPersonalInfoRepository.searchByCanonicalUsername(loginName.canonicalUsername, Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+            return userPersonalInfoService.searchByCanonicalUsername(loginName.canonicalUsername, Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
                 if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                     return Promise.pure(null)
                 }
@@ -754,9 +760,8 @@ class UserValidatorImpl implements UserValidator {
 
                 List<UserPersonalInfo> userPersonalInfos = new ArrayList<>()
                 return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo personalInfo ->
-                    return userRepository.get(personalInfo.userId).then { User existing ->
-                        if (existing != null && existing.username != null && existing.username == personalInfo.getId() && existing.getId() != oldUser.getId()
-                         && existing.status != UserStatus.DELETED.toString()) {
+                    return userService.getNonDeletedUser(personalInfo.userId).then { User existing ->
+                        if (existing != null && existing.username != null && existing.username == personalInfo.getId() && existing.getId() != oldUser.getId()) {
                             userPersonalInfos.add(personalInfo)
                             return Promise.pure(Promise.BREAK)
                         }
@@ -788,7 +793,7 @@ class UserValidatorImpl implements UserValidator {
             return Promise.pure(null)
         }
 
-        return userPersonalInfoRepository.get(oldLink.getValue()).then { UserPersonalInfo oldPII ->
+        return userPersonalInfoService.get(oldLink.getValue()).then { UserPersonalInfo oldPII ->
             if (oldPII == null || oldPII.lastValidateTime == null) {
                 return Promise.pure(null)
             }
@@ -809,7 +814,7 @@ class UserValidatorImpl implements UserValidator {
                 return Promise.pure(null)
             }
 
-            return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo pii ->
+            return userPersonalInfoService.get(link.value).then { UserPersonalInfo pii ->
                 if (pii == null || pii.lastValidateTime == null) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('emails', 'Only validated emails can update validated emails').exception()
                 }
@@ -877,8 +882,8 @@ class UserValidatorImpl implements UserValidator {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
@@ -902,18 +907,18 @@ class UserValidatorImpl implements UserValidator {
     }
 
     @Required
-    void setLocaleRepository(LocaleRepository localeRepository) {
-        this.localeRepository = localeRepository
+    void setLocaleService(LocaleService localeService) {
+        this.localeService = localeService
     }
 
     @Required
-    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
-        this.userPersonalInfoRepository = userPersonalInfoRepository
+    void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
+        this.userPersonalInfoService = userPersonalInfoService
     }
 
     @Required
-    void setCountryRepository(CountryRepository countryRepository) {
-        this.countryRepository = countryRepository
+    void setCountryService(CountryService countryService) {
+        this.countryService = countryService
     }
 
     @Required
@@ -927,8 +932,8 @@ class UserValidatorImpl implements UserValidator {
     }
 
     @Required
-    void setPiTypeRepository(PITypeRepository piTypeRepository) {
-        this.piTypeRepository = piTypeRepository
+    void setPiTypeService(PITypeService piTypeService) {
+        this.piTypeService = piTypeService
     }
 
     @Required
@@ -942,8 +947,8 @@ class UserValidatorImpl implements UserValidator {
     }
 
     @Required
-    void setUsernameEmailBlockerRepository(UsernameEmailBlockerRepository usernameEmailBlockerRepository) {
-        this.usernameEmailBlockerRepository = usernameEmailBlockerRepository
+    void setUsernameEmailBlockerService(UsernameEmailBlockerService usernameEmailBlockerService) {
+        this.usernameEmailBlockerService = usernameEmailBlockerService
     }
 
     @Required

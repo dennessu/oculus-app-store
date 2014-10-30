@@ -37,9 +37,12 @@ class ErrorCodes {
         static final String UnknownError = AppErrors.INSTANCE.unknownError().error().code
     }
 
+    class Sentry {
+        static final String BlockAccess = '130.123'
+    }
+
     class Casey {
         static final String ReviewCreateError = '104.102'
         static final String ReviewUpdateError = '104.103'
     }
-
 }

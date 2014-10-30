@@ -18,7 +18,7 @@ import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
 import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.*
+import com.junbo.identity.service.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
@@ -57,11 +57,11 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCredentialVerifyAttemptValidatorImpl)
 
-    private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
-    private UserRepository userRepository
-    private UserPasswordRepository userPasswordRepository
-    private UserPinRepository userPinRepository
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private UserCredentialVerifyAttemptService userCredentialVerifyAttemptService
+    private UserService userService
+    private UserPasswordService userPasswordService
+    private UserPinService userPinService
+    private UserPersonalInfoService userPersonalInfoService
 
     private List<Pattern> allowedIpAddressPatterns
     private Integer userAgentMinLength
@@ -95,18 +95,22 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private PlatformTransactionManager transactionManager
     private Boolean enableMailSend
 
+    private Boolean maxRetryCountEnable
+    private Boolean maxSameIPAttemptsEnable
+    private Boolean maxSameUserAttemptsEnable
+
     @Override
     Promise<UserCredentialVerifyAttempt> validateForGet(UserCredentialVerifyAttemptId userLoginAttemptId) {
         if (userLoginAttemptId == null) {
             throw new IllegalArgumentException('userLoginAttemptId is null')
         }
 
-        return userLoginAttemptRepository.get(userLoginAttemptId).then { UserCredentialVerifyAttempt userLoginAttempt ->
+        return userCredentialVerifyAttemptService.get(userLoginAttemptId).then { UserCredentialVerifyAttempt userLoginAttempt ->
             if (userLoginAttempt == null) {
                 throw AppErrors.INSTANCE.userLoginAttemptNotFound(userLoginAttemptId).exception()
             }
 
-            return userRepository.get(userLoginAttempt.userId).then { User user ->
+            return userService.getNonDeletedUser(userLoginAttempt.userId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.userId).exception()
                 }
@@ -169,7 +173,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 userLoginAttempt.setUserId((UserId)user.id)
 
                 if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-                    return userPasswordRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
+                    return userPasswordService.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
                             0).then { List<UserPassword> userPasswordList ->
                         if (CollectionUtils.isEmpty(userPasswordList) || userPasswordList.size() > 1) {
                             throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
@@ -186,7 +190,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
                 }
                 else if (userLoginAttempt.type == CredentialType.PIN.toString()) {
-                    return userPinRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
+                    return userPinService.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
                             0).then { List<UserPin> userPinList ->
                         if (CollectionUtils.isEmpty(userPinList) || userPinList.size() > 1) {
                             throw AppErrors.INSTANCE.userPinIncorrect().exception()
@@ -214,11 +218,11 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<User> findUser(UserCredentialVerifyAttempt userLoginAttempt) {
         if (userLoginAttempt.userId != null) {
-            return userRepository.get(userLoginAttempt.userId)
+            return userService.getNonDeletedUser(userLoginAttempt.userId)
         }
 
         if (isEmail(userLoginAttempt.username)) {
-            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase(Locale.ENGLISH), null, maximumFetchSize,
+            return userPersonalInfoService.searchByEmail(userLoginAttempt.username.toLowerCase(Locale.ENGLISH), null, maximumFetchSize,
                     0).then { List<UserPersonalInfo> personalInfos ->
                     if (CollectionUtils.isEmpty(personalInfos)) {
                         throw AppErrors.INSTANCE.userNotFoundByName(userLoginAttempt.username).exception()
@@ -242,7 +246,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
                 }
         } else {
-            return userPersonalInfoRepository.searchByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username),
+            return userPersonalInfoService.searchByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username),
                     maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
                 if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                     return Promise.pure(null)
@@ -250,7 +254,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
                 User user = null;
                 return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
-                    return userRepository.get(userPersonalInfo.userId).then { User existing ->
+                    return userService.getNonDeletedUser(userPersonalInfo.userId).then { User existing ->
                         if (existing.username == userPersonalInfo.getId() && existing.status != UserStatus.DELETED.toString()) {
                             user = existing
                             return Promise.pure(Promise.BREAK)
@@ -268,7 +272,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     Promise<User> getDefaultEmailUser(List<UserPersonalInfo> userPersonalInfoList) {
         User user = null
         return Promise.each(userPersonalInfoList){ UserPersonalInfo info ->
-            return userRepository.get(info.userId).then { User existing ->
+            return userService.getNonDeletedUser(info.userId).then { User existing ->
                 if (existing == null || CollectionUtils.isEmpty(existing.emails) || existing.status == UserStatus.DELETED.toString()) {
                     return Promise.pure(null)
                 }
@@ -290,12 +294,15 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (!maxRetryCountEnable) {
+            return Promise.pure(null)
+        }
         return getActiveCredentialCreatedTime(user, userLoginAttempt).then { Date passwordActiveTime ->
             Integer maxRetryCount = maxLockDownTime.keySet().max()
             Long maxRetryIntervalFromTime = System.currentTimeMillis() - maxRetryInterval * 1000L
             Long timeInterval = maxRetryIntervalFromTime > passwordActiveTime.getTime() ? maxRetryIntervalFromTime : passwordActiveTime.getTime()
 
-            return userLoginAttemptRepository.searchNonLockPeriodHistory(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+            return userCredentialVerifyAttemptService.searchNonLockPeriodHistory(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
                 // If no credential verify attempt found, return
                 if (CollectionUtils.isEmpty(attemptList)) {
                     return Promise.pure(null)
@@ -425,7 +432,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (user.name == null) {
             return Promise.pure('')
         } else {
-            return userPersonalInfoRepository.get(user.name).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(user.name).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
                     return Promise.pure('')
                 }
@@ -451,7 +458,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             }
 
             link = link == null ? user.emails.get(0) : link;
-            return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(link.value).then { UserPersonalInfo userPersonalInfo ->
                 com.junbo.identity.spec.v1.model.Email email = (com.junbo.identity.spec.v1.model.Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value,
                         com.junbo.identity.spec.v1.model.Email)
                 return Promise.pure(email.info)
@@ -461,7 +468,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<Date> getActiveCredentialCreatedTime(User user, UserCredentialVerifyAttempt userLoginAttempt) {
         if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-            return userPasswordRepository.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPassword> userPasswordList ->
+            return userPasswordService.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPassword> userPasswordList ->
                 if (CollectionUtils.isEmpty(userPasswordList)) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'No Active password exists').exception()
                 }
@@ -469,7 +476,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 return Promise.pure(userPasswordList.get(0).createdTime)
             }
         } else {
-            return userPinRepository.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPin> userPinList ->
+            return userPinService.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPin> userPinList ->
                 if (CollectionUtils.isEmpty(userPinList)) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'No Active pin exists').exception()
                 }
@@ -480,13 +487,16 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumSameUserAttemptCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (!maxSameUserAttemptsEnable) {
+            return Promise.pure(null)
+        }
         return Promise.each(this.maxSameUserAttemptIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
             Integer maxSameUserAttemptCount = entry.key
             Integer sameUserAttemptRetryInterval = entry.value
             Long timeInterval = System.currentTimeMillis() - sameUserAttemptRetryInterval * 1000
-            return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval,
-                    maxSameUserAttemptCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-                if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameUserAttemptCount) {
+            return userCredentialVerifyAttemptService.searchByUserIdAndCredentialTypeAndIntervalCount(user.getId(), userLoginAttempt.type, timeInterval,
+                    maxSameUserAttemptCount + 1, 0).then { Integer attemptListCount ->
+                if (attemptListCount == null || attemptListCount <= maxSameUserAttemptCount) {
                     return Promise.pure(null)
                 }
                 throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
@@ -497,6 +507,9 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumSameIPAttemptCount(UserCredentialVerifyAttempt userLoginAttempt) {
+        if (!maxSameIPAttemptsEnable) {
+            return Promise.pure(null)
+        }
         if (StringUtils.isEmpty(userLoginAttempt.ipAddress) || isInIP4WhiteList(userLoginAttempt.ipAddress)) {
             return Promise.pure(null)
         }
@@ -507,15 +520,14 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
             Long fromTimeStamp = System.currentTimeMillis() - maxSameIPRetryInterval * 1000
 
-            return userLoginAttemptRepository.searchByIPAddressAndCredentialTypeAndInterval(userLoginAttempt.ipAddress, userLoginAttempt.type, fromTimeStamp,
-                    maxSameIPRetryCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-                if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameIPRetryCount) {
+            return userCredentialVerifyAttemptService.searchByIPAddressAndCredentialTypeAndIntervalCount(userLoginAttempt.ipAddress, userLoginAttempt.type,
+                    fromTimeStamp, maxSameIPRetryCount + 1, 0).then { Integer count ->
+                if (count == null || count <= maxSameIPRetryCount) {
                     return Promise.pure(null)
                 }
 
                 throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
             }
-
         }
     }
 
@@ -624,13 +636,13 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     @Required
-    void setUserLoginAttemptRepository(UserCredentialVerifyAttemptRepository userLoginAttemptRepository) {
-        this.userLoginAttemptRepository = userLoginAttemptRepository
+    void setUserCredentialVerifyAttemptService(UserCredentialVerifyAttemptService userCredentialVerifyAttemptService) {
+        this.userCredentialVerifyAttemptService = userCredentialVerifyAttemptService
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
@@ -651,13 +663,13 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     @Required
-    void setUserPasswordRepository(UserPasswordRepository userPasswordRepository) {
-        this.userPasswordRepository = userPasswordRepository
+    void setUserPasswordService(UserPasswordService userPasswordService) {
+        this.userPasswordService = userPasswordService
     }
 
     @Required
-    void setUserPinRepository(UserPinRepository userPinRepository) {
-        this.userPinRepository = userPinRepository
+    void setUserPinService(UserPinService userPinService) {
+        this.userPinService = userPinService
     }
 
     @Required
@@ -727,8 +739,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     @Required
-    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
-        this.userPersonalInfoRepository = userPersonalInfoRepository
+    void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
+        this.userPersonalInfoService = userPersonalInfoService
     }
 
     @Required
@@ -759,5 +771,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setEnableMailSend(Boolean enableMailSend) {
         this.enableMailSend = enableMailSend
+    }
+
+    @Required
+    void setMaxRetryCountEnable(Boolean maxRetryCountEnable) {
+        this.maxRetryCountEnable = maxRetryCountEnable
+    }
+
+    @Required
+    void setMaxSameIPAttemptsEnable(Boolean maxSameIPAttemptsEnable) {
+        this.maxSameIPAttemptsEnable = maxSameIPAttemptsEnable
+    }
+
+    @Required
+    void setMaxSameUserAttemptsEnable(Boolean maxSameUserAttemptsEnable) {
+        this.maxSameUserAttemptsEnable = maxSameUserAttemptsEnable
     }
 }

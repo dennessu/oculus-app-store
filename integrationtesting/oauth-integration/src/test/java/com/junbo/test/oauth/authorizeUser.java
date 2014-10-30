@@ -615,4 +615,123 @@ public class authorizeUser {
         }
         throw new Exception("response header location not validated");
     }
+
+    @Test(groups = "dailies")
+    public void registerWithoutMissingFields() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        String firstName = RandomHelper.randomAlphabetic(15);
+        String lastName = RandomHelper.randomAlphabetic(15);
+
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEvent, "next"));
+        //nvps.add(new BasicNameValuePair(Oauth.DefaultFNUserName, userName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPassword, Oauth.DefaultUserPwd));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEmail, email));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNFirstName, firstName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNLastName, lastName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNGender, "male"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNDoB, "1980-01-01"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPin, RandomHelper.randomNumeric(4)));
+
+        Error error = new Error();
+        error.setMessage("Input Error");
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        // missing username error
+        ErrorDetail errorDetail = new ErrorDetail();
+        errorDetail.setField("login");
+        errorDetail.setReason("Query parameter is required");
+        errorDetails.add(errorDetail);
+        error.setDetails(errorDetails);
+        CloseableHttpResponse response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);
+        Oauth.validateViewModeResponse(response, "register", error);
+
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEvent, "next"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNUserName, userName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPassword, Oauth.DefaultUserPwd));
+        //nvps.add(new BasicNameValuePair(Oauth.DefaultFNEmail, email));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNFirstName, firstName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNLastName, lastName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNGender, "male"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNDoB, "1980-01-01"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPin, RandomHelper.randomNumeric(4)));
+
+        error = new Error();
+        error.setMessage("Input Error");
+        errorDetails = new ArrayList<>();
+        // missing email error
+        errorDetail = new ErrorDetail();
+        errorDetail.setField("email");
+        errorDetail.setReason("Field is required");
+        errorDetails.add(errorDetail);
+        error.setDetails(errorDetails);
+        response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);
+        Oauth.validateViewModeResponse(response, "register", error);
+
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEvent, "next"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNUserName, userName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPassword, Oauth.DefaultUserPwd));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEmail, email));
+        //nvps.add(new BasicNameValuePair(Oauth.DefaultFNFirstName, firstName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNLastName, lastName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNGender, "male"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNDoB, "1980-01-01"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPin, RandomHelper.randomNumeric(4)));
+
+        error = new Error();
+        error.setMessage("Input Error");
+        errorDetails = new ArrayList<>();
+        // missing first name error
+        errorDetail = new ErrorDetail();
+        errorDetail.setField("first_name");
+        errorDetail.setReason("Field is required");
+        errorDetails.add(errorDetail);
+        error.setDetails(errorDetails);
+        response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);
+        Oauth.validateViewModeResponse(response, "register", error);
+
+        nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEvent, "next"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNUserName, userName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPassword, Oauth.DefaultUserPwd));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNEmail, email));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNFirstName, firstName));
+        //nvps.add(new BasicNameValuePair(Oauth.DefaultFNLastName, lastName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNGender, "male"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNDoB, "1980-01-01"));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNPin, RandomHelper.randomNumeric(4)));
+
+        error = new Error();
+        error.setMessage("Input Error");
+        errorDetails = new ArrayList<>();
+        // missing last name error
+        errorDetail = new ErrorDetail();
+        errorDetail.setField("last_name");
+        errorDetail.setReason("Field is required");
+        errorDetails.add(errorDetail);
+        error.setDetails(errorDetails);
+        response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);
+        Oauth.validateViewModeResponse(response, "register", error);
+    }
 }

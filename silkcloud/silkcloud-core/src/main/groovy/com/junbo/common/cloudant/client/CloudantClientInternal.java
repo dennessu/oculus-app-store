@@ -48,4 +48,8 @@ public interface CloudantClientInternal {
                                         String queryString, String sort, Integer limit, String bookmark, boolean includeDocs);
 
     Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String key, String viewName);
+
+    <T extends CloudantEntity>
+    Promise<Integer> queryViewCount(CloudantDbUri dbUri, Class<T> entityClass, Object[] startKey, Object[] endKey, String viewName, boolean withHighKey,
+                                    boolean descending, Integer limit, Integer skip);
 }

@@ -1,0 +1,26 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile (libraries.servlet_api)
+    // compile (libraries.jersey_spring3)
+    compile (libraries.jackson_jaxrs_json_provider)
+    compile (libraries.jackson_annotations)
+    compile (libraries.common_beanutils)
+
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_web)
+    compile junboProject(':silkcloud-core')
+
+    compile (libraries.asyncclient)
+    compile (libraries.jersey_common)
+
+    compile junboProject(':identity-spec')
+    compile junboProject(':identity-common')
+    compile junboProject(':identity-data')
+    compile junboProject(':identity-auth')
+    compile junboProject(':identity-clientproxy')
+}

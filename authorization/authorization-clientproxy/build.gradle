@@ -1,0 +1,6 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':identity-spec')
+    compile junboProject(':oauth-spec')
+}

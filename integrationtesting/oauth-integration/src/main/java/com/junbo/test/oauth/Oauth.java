@@ -671,6 +671,23 @@ public class Oauth {
         }
     }
 
+    public static void validateViewModeResponse(CloseableHttpResponse response, String viewIdentifier, Error error)
+            throws Exception {
+        try {
+            ViewModel viewModel = JsonHelper.JsonDeserializer(
+                    new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
+            Validator.Validate("validate view identifier", viewIdentifier.replace("_", "-"), viewModel.getView());
+            Validator.Validate("validate errors in response", false, viewModel.getErrors().isEmpty());
+            Validator.Validate("validate error message", error.getMessage(), viewModel.getErrors().get(0).getMessage());
+            Validator.Validate("validate error field", error.getDetails().get(0).getField(),
+                    viewModel.getErrors().get(0).getDetails().get(0).getField());
+            Validator.Validate("validate error reason", error.getDetails().get(0).getReason(),
+                    viewModel.getErrors().get(0).getDetails().get(0).getReason());
+        } finally {
+            response.close();
+        }
+    }
+
     /**
      * view model type enum.
      */

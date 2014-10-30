@@ -2,7 +2,7 @@ package com.junbo.identity.job
 
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.billing.spec.resource.VatResource
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserVAT
 import com.junbo.langur.core.promise.Promise
@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Required
 class IdentityVatCheckProcessor implements IdentityProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(IdentityVatCheckProcessor)
 
-    private UserRepository userRepository
+    private UserService userService
 
     private VatResource vatResource
 
@@ -41,7 +41,7 @@ class IdentityVatCheckProcessor implements IdentityProcessor {
             if (!result.success) {
                 return Promise.pure(result)
             }
-            return userRepository.update(updated, user).recover { Throwable e ->
+            return userService.update(updated, user).recover { Throwable e ->
                 LOGGER.error('update user error')
                 result.success = false
             }.then {
@@ -92,8 +92,8 @@ class IdentityVatCheckProcessor implements IdentityProcessor {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required

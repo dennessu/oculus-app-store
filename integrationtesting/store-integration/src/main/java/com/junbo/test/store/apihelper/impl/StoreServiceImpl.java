@@ -15,6 +15,7 @@ import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
+import com.junbo.test.common.apihelper.Header;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -23,7 +24,9 @@ import com.junbo.test.store.apihelper.TestContext;
 import com.junbo.test.store.utility.DataGenerator;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 //import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
@@ -38,10 +41,8 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     private ThreadLocal<IAPParam> iapParamThreadLocal = new ThreadLocal<>();
 
-
-
-    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
-        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope, List<String> headersToRemove) {
+        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope, headersToRemove);
         headers.put("X-ANDROID-ID", Collections.singletonList(DataGenerator.instance().generateAndroidId()));
         headers.put("Accept-Language", Collections.singletonList("en-US"));
         for (Map.Entry<String, String> entry: TestContext.getData().getHeaders().entrySet()) {
@@ -80,7 +81,11 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public VerifyEmailResponse verifyEmail(VerifyEmailRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/resend-confirmation-email", request, expectedResponseCode);
+        List<String> headersToRemove = new ArrayList<>();
+        headersToRemove.add(Header.CONTENT_TYPE);
+
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/resend-confirmation-email", null,
+                expectedResponseCode, false, headersToRemove);
         if (expectedResponseCode == 200) {
             VerifyEmailResponse response = new JsonMessageTranscoder().decode(new TypeReference<VerifyEmailResponse>() {
             }, responseBody);

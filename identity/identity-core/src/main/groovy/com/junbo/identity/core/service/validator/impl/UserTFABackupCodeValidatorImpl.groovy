@@ -6,8 +6,8 @@ import com.junbo.common.id.UserTFABackupCodeId
 import com.junbo.identity.core.service.util.CodeGenerator
 import com.junbo.identity.core.service.validator.UserTFABackupCodeValidator
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeRepository
+import com.junbo.identity.service.UserService
+import com.junbo.identity.service.UserTFAPhoneBackupCodeService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserTFABackupCode
@@ -21,9 +21,8 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class UserTFABackupCodeValidatorImpl implements UserTFABackupCodeValidator {
-
-    private UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository
-    private UserRepository userRepository
+    private UserTFAPhoneBackupCodeService userTFAPhoneBackupCodeService
+    private UserService userService
     private CodeGenerator codeGenerator
 
     @Override
@@ -36,7 +35,7 @@ class UserTFABackupCodeValidatorImpl implements UserTFABackupCodeValidator {
             throw new IllegalArgumentException('userTFABackupCodeId is null')
         }
 
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -47,18 +46,17 @@ class UserTFABackupCodeValidatorImpl implements UserTFABackupCodeValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTFABackupCodeRepository.get(userTFABackupCodeId).then {
-                UserTFABackupCode userTFABackupCode ->
-                    if (userTFABackupCode == null) {
-                        throw AppErrors.INSTANCE.userTFABackupCodeIncorrect().exception()
-                    }
+            return userTFAPhoneBackupCodeService.get(userTFABackupCodeId).then { UserTFABackupCode userTFABackupCode ->
+                if (userTFABackupCode == null) {
+                    throw AppErrors.INSTANCE.userTFABackupCodeIncorrect().exception()
+                }
 
-                    if (userTFABackupCode.userId != userId) {
-                        throw AppCommonErrors.INSTANCE.fieldInvalid('userId',
-                                'userId and userTFABackupCodeId doesn\'t match.').exception()
-                    }
+                if (userTFABackupCode.userId != userId) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('userId',
+                            'userId and userTFABackupCodeId doesn\'t match.').exception()
+                }
 
-                    return Promise.pure(userTFABackupCode)
+                return Promise.pure(userTFABackupCode)
             }
         }
     }
@@ -164,7 +162,7 @@ class UserTFABackupCodeValidatorImpl implements UserTFABackupCodeValidator {
 
     Promise<Void> checkBasicUserTFABackupCode(UserTFABackupCode userTFABackupCode) {
 
-        return userRepository.get(userTFABackupCode.userId).then { User user ->
+        return userService.getNonDeletedUser(userTFABackupCode.userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userTFABackupCode.userId).exception()
             }
@@ -181,13 +179,13 @@ class UserTFABackupCodeValidatorImpl implements UserTFABackupCodeValidator {
     }
 
     @Required
-    void setUserTFABackupCodeRepository(UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository) {
-        this.userTFABackupCodeRepository = userTFABackupCodeRepository
+    void setUserTFAPhoneBackupCodeService(UserTFAPhoneBackupCodeService userTFAPhoneBackupCodeService) {
+        this.userTFAPhoneBackupCodeService = userTFAPhoneBackupCodeService
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required

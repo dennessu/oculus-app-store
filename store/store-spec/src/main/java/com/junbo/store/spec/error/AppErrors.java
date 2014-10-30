@@ -89,6 +89,12 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "120", message = "item not purchased.")
     AppError itemNotPurchased();
 
+    @ErrorDef(httpStatusCode = 412, code = "121", message = "Sentry block register access.")
+    AppError sentryBlockRegisterAccess();
+
+    @ErrorDef(httpStatusCode = 412, code = "122", message = "Sentry block login access.")
+    AppError sentryBlockLoginAccess();
+
     @ErrorDef(httpStatusCode = 412, code = "123", message = "Register TOS Not Found.")
     AppError RegisterTosNotFound();
 

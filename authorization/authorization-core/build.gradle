@@ -3,6 +3,7 @@ apply plugin: 'groovy'
 dependencies {
     compile junboProject(':authorization-common')
     compile junboProject(':authorization-db')
+    compile junboProject(':authorization-clientproxy')
 
     compile junboProject(':authorization-lib')
     runtime junboProject(':catalog-auth')

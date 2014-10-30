@@ -200,6 +200,12 @@ class CloudantClientBulk implements CloudantClientInternal {
     }
 
     @Override
+    def <T extends CloudantEntity> Promise<Integer> queryViewCount(CloudantDbUri dbUri, Class<T> entityClass,
+                                   Object[] startKey, Object[] endKey, String viewName, boolean withHighKey, boolean descending, Integer limit, Integer skip) {
+        return impl.queryViewCount(dbUri, entityClass, startKey, endKey, viewName, withHighKey, descending, limit, skip)
+    }
+
+    @Override
     def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, String sort, Integer limit, String bookmark, boolean includeDocs) {
         return impl.search(dbUri, entityClass, searchName, queryString, sort, limit, bookmark, includeDocs).then { CloudantQueryResult results ->
             Callback callback = threadLocalCallback.get()
