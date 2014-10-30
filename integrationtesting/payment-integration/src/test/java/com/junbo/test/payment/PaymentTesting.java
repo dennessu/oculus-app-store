@@ -62,7 +62,199 @@ public class PaymentTesting extends BaseTestClass {
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with invalid billing address",
+                    "3. Validation: response error code and message",
+            }
+    )
+    @Test
+    public void testPostPIWithInvalidBillingAddress() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        logHelper.LogSample("Create a payment instrument");
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        validationHelper.validatePaymentInstrument(creditCardInfo);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with invalid type",
+                    "3. Validation: response error code and message",
+            }
+    )
+      @Test
+      public void testPostPIWithInvalidType() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        logHelper.LogSample("Create a payment instrument");
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        validationHelper.validatePaymentInstrument(creditCardInfo);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with invalid account name",
+                    "3. Validation: response error code and message",
+            }
+    )
+    @Test
+    public void testPostPIWithInvalidAccountName() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        logHelper.LogSample("Create a payment instrument");
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        validationHelper.validatePaymentInstrument(creditCardInfo);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with invalid account num",
+                    "3. Validation: response error code and message",
+            }
+    )
+    @Test
+    public void testPostPIWithInvalidAccountNum() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        logHelper.LogSample("Create a payment instrument");
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        validationHelper.validatePaymentInstrument(creditCardInfo);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with invalid phone num",
+                    "3. Validation: response error code and message",
+            }
+    )
+    @Test
+    public void testPostPIWithInvalidPhoneNumber() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        logHelper.LogSample("Create a payment instrument");
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        validationHelper.validatePaymentInstrument(creditCardInfo);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with invalid email",
+                    "3. Validation: response error code and message",
+            }
+    )
+    @Test
+    public void testPostPIWithInvalidEmail() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        logHelper.LogSample("Create a payment instrument");
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        validationHelper.validatePaymentInstrument(creditCardInfo);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with invalid user",
+                    "3, Validation: response",
+            }
+    )
+    @Test
+    public void testPostPIWithInvalidUser() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        logHelper.LogSample("Create a payment instrument");
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        validationHelper.validatePaymentInstrument(creditCardInfo);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with invalid phone",
+                    "3, Validation: response",
+            }
+    )
+    @Test
+    public void testPostPIWithInvalidPhone() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        logHelper.LogSample("Create a payment instrument");
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        validationHelper.validatePaymentInstrument(creditCardInfo);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
@@ -158,6 +350,35 @@ public class PaymentTesting extends BaseTestClass {
         validationHelper.validatePaymentInstrument(creditCardInfo);
     }
 
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "PUT /users/{userId}/payment-instruments/{paymentInstrumentId}",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "put payment instruments",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card for user",
+                    "3  Put payment fields which not allowed",
+                    "3, Validation: response"
+            }
+    )
+    @Test
+    public void testPutPIFieldsNotAllowed() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        String creditCardId = testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+        testDataProvider.getPaymentInstrument(creditCardId);
+
+        logHelper.LogSample("Put a payment instrument");
+        CreditCardInfo creditCardInfoForUpdate = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.updatePaymentInstrument(randomUid, creditCardId, creditCardInfoForUpdate);
+
+        validationHelper.validatePaymentInstrument(creditCardInfo);
+    }
+
 
     @Property(
             priority = Priority.BVT,
@@ -209,7 +430,44 @@ public class PaymentTesting extends BaseTestClass {
             }
     )
     @Test
-    public void testSearchPaymentInstrument() throws Exception {
+    public void testSearchPaymentInstrumentByUserId() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+        Master.getInstance().getPaymentInstruments().clear();
+
+        CreditCardInfo creditCardInfo1 = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo1);
+
+        CreditCardInfo creditCardInfo2 = CreditCardInfo.getRandomCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo2);
+
+        logHelper.LogSample("Get payment instruments");
+        testDataProvider.getPaymentInstruments(randomUid);
+
+        List<PaymentInstrumentBase> paymentList = new ArrayList<>();
+        paymentList.add(creditCardInfo1);
+        paymentList.add(creditCardInfo2);
+
+        validationHelper.validatePaymentInstruments(paymentList);
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "GET /payment-instruments?userId={userId}",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "search payment instruments",
+            steps = {
+                    "1. Create an user",
+                    "2. Post two credit cards to user",
+                    "3. Post ewallet to user",
+                    "4. Post paypal to user",
+                    "3. Search all payment instruments by type",
+                    "4. Validation: response "
+            }
+    )
+    @Test
+    public void testSearchPaymentInstrumentByType() throws Exception {
         String randomUid = testDataProvider.CreateUser();
         Master.getInstance().getPaymentInstruments().clear();
 
@@ -244,6 +502,31 @@ public class PaymentTesting extends BaseTestClass {
     )
     @Test
     public void testPostEwallet() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
+        testDataProvider.postPaymentInstrument(randomUid, ewalletInfo);
+
+        logHelper.LogSample("Post ewallet");
+
+        validationHelper.validatePaymentInstrument(ewalletInfo);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "post ewallet",
+            steps = {
+                    "1. Create an user",
+                    "2. Post ewallet with invalid currency",
+                    "3, Validation: response "
+            }
+    )
+    @Test
+    public void testPostEwalletWithInvalidCurrency() throws Exception {
         String randomUid = testDataProvider.CreateUser();
 
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
