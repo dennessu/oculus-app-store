@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -173,21 +174,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
     @Override
     Promise<Response> delete(UserPersonalInfoId userPiiId) {
-        if (userPiiId == null) {
-            throw new IllegalArgumentException('userPiiId is null')
-        }
-
-        return userPersonalInfoValidator.validateForGet(userPiiId).then { UserPersonalInfo userPii ->
-            def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
-            PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPii)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                piiAdvanceFilter.checkDeletePermission()
-
-                return userPersonalInfoService.delete(userPiiId).then {
-                    return Promise.pure(Response.status(204).build())
-                }
-            }
-        }
+        throw AppCommonErrors.INSTANCE.invalidOperation('pii operation is not supported').exception()
     }
 
     @Override
@@ -261,7 +248,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         }
 
         if (filter == null) {
-            throw new IllegalStateException('can\'t find filter for type ' + userPersonalInfo.type)
+            throw AppCommonErrors.INSTANCE.fieldInvalid('type').exception()
         }
 
         return filter

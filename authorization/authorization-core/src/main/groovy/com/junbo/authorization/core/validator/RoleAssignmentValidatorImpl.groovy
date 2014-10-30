@@ -1,4 +1,5 @@
 package com.junbo.authorization.core.validator
+
 import com.junbo.authorization.db.repository.RoleAssignmentRepository
 import com.junbo.authorization.db.repository.RoleRepository
 import com.junbo.authorization.spec.model.Role
@@ -16,6 +17,7 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.model.GroupGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.resource.GroupResource
+import com.junbo.identity.spec.v1.resource.OrganizationResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -35,6 +37,8 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
     private UserResource userResource
 
     private GroupResource groupResource
+
+    private OrganizationResource organizationResource
 
     @Required
     void setRoleRepository(RoleRepository roleRepository) {
@@ -56,6 +60,11 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
         this.groupResource = groupResource
     }
 
+    @Required
+    void setOrganizationResource(OrganizationResource organizationResource) {
+        this.organizationResource = organizationResource
+    }
+
     @Override
     Promise<Role> validateForCreate(RoleAssignment roleAssignment) {
         Assert.notNull(roleAssignment, 'roleAssignment is null')
@@ -64,14 +73,15 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('roleId').exception()
         }
 
-        return checkAssignee(roleAssignment.assignee).then { UniversalId resourceId ->
+        return checkAssignee(roleAssignment.assignee, roleAssignment).then { Group group ->
             return roleRepository.get(roleAssignment.roleId).then { Role role ->
                 if (role == null) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('roleId').exception()
                 }
 
-                roleAssignment.assigneeType = resourceId.class.canonicalName
-                roleAssignment.assigneeId = resourceId.toString()
+                if (group != null && role.target.filterLinkId != group.organizationId.toString()) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('target.filterLink', 'Only support same organization role assignment').exception()
+                }
 
                 return Promise.pure(role)
             }
@@ -116,7 +126,7 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
         return Promise.pure(null)
     }
 
-    Promise<UniversalId> checkAssignee(Link assignee) {
+    Promise<Group> checkAssignee(Link assignee, RoleAssignment roleAssignment) {
         if (assignee == null || StringUtils.isEmpty(assignee.href) || StringUtils.isEmpty(assignee.id)) {
             throw AppCommonErrors.INSTANCE.fieldRequired('assignee').exception()
         }
@@ -127,13 +137,20 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
             throw AppCommonErrors.INSTANCE.fieldInvalid('assignee').exception()
         }
 
+        roleAssignment.assigneeType = resourceId.class.canonicalName
+        roleAssignment.assigneeId = resourceId.toString()
+
         if (resourceId instanceof GroupId) {
             return groupResource.get(resourceId, new GroupGetOptions()).then { Group existing ->
-                if (existing == null || !existing.active) {
+                if (existing == null) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('assignee', 'group not exists').exception()
                 }
 
-                return Promise.pure(resourceId)
+                if (!existing.active) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('assignee', 'group not active').exception()
+                }
+
+                return Promise.pure(existing)
             }
         } else if (resourceId instanceof UserId) {
             return userResource.get(resourceId, new UserGetOptions()).then { User existing ->
@@ -141,7 +158,7 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('assignee', 'user not exists').exception()
                 }
 
-                return Promise.pure(resourceId)
+                return Promise.pure(null)
             }
         } else {
             throw AppCommonErrors.INSTANCE.fieldInvalid('assignee', 'assignee only support Group or User').exception()

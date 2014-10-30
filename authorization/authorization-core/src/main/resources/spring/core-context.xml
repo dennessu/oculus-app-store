@@ -7,6 +7,24 @@
 
     <bean id="roleValidator" class="com.junbo.authorization.core.validator.RoleValidatorImpl">
         <property name="roleRepository" ref="roleRepository"/>
+        <property name="allowedFilterTypes">
+            <list>
+                <value>SINGLEINSTANCEFILTER</value>
+            </list>
+        </property>
+        <property name="allowedRoleNames">
+            <list>
+                <value>Admin</value>
+                <value>Developer</value>
+                <value>Publisher</value>
+            </list>
+        </property>
+        <property name="allowedTargetTypes">
+            <list>
+                <value>organizations</value>
+            </list>
+        </property>
+        <property name="organizationResource" ref="authorization_organizationResource" />
     </bean>
 
     <bean id="roleAssignmentFilter" class="com.junbo.authorization.core.filter.RoleAssignmentFilterImpl"/>
@@ -16,6 +34,7 @@
         <property name="roleRepository" ref="roleRepository"/>
         <property name="groupResource" ref="authorization_groupResource" />
         <property name="userResource" ref="authorization_userResource" />
+        <property name="organizationResource" ref="authorization_organizationResource" />
     </bean>
 
     <bean id="roleAuthorizeCallbackFactory"

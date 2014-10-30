@@ -20,4 +20,9 @@
           parent="groupResourceClientProxy">
         <property name="accessTokenProvider" ref="authorizationAccessTokenProvider" />
     </bean>
+
+    <bean id="authorization_organizationResource" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
+          parent="organizationResourceClientProxy">
+        <property name="accessTokenProvider" ref="authorizationAccessTokenProvider" />
+    </bean>
 </beans>
