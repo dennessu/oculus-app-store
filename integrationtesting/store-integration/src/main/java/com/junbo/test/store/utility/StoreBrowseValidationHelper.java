@@ -416,7 +416,6 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(appDetails.getPermissions(), jsonNode == null || jsonNode.isNull() ?
                 new ArrayList<String>() :
                 ObjectMapperProvider.instance().readValue(jsonNode.traverse(), new TypeReference<List<String>>() {}));
-        Assert.assertNull(appDetails.getContentRating());
         Assert.assertNull(appDetails.getDeveloperWebsite());
         Assert.assertNull(appDetails.getPublisherEmail());
         Assert.assertNull(appDetails.getPublisherWebsite());

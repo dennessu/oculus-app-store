@@ -9,14 +9,13 @@ import com.junbo.common.id.ItemId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
 import com.junbo.store.spec.model.browse.*;
-import com.junbo.store.spec.model.browse.document.Item;
 
 /**
  * The BrowseService class.
  */
 public interface BrowseService {
 
-    Promise<Item> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext);
+    Promise<DetailsResponse> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext);
 
     Promise<TocResponse> getToc(ApiContext apiContext);
 

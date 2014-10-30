@@ -17,8 +17,6 @@ public class AppDetails {
 
     private List<GenreInfo> genres;
 
-    private Long contentRating;
-
     private Date releaseDate;
 
     private String website;
@@ -56,14 +54,6 @@ public class AppDetails {
 
     public void setGenres(List<GenreInfo> genres) {
         this.genres = genres;
-    }
-
-    public Long getContentRating() {
-        return contentRating;
-    }
-
-    public void setContentRating(Long contentRating) {
-        this.contentRating = contentRating;
     }
 
     public Date getReleaseDate() {

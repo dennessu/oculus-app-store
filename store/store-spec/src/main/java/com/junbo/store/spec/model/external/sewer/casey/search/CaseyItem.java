@@ -11,7 +11,6 @@ import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.SupportedLocale;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.ItemRevisionId;
-import com.junbo.common.id.OrganizationId;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,7 @@ public class CaseyItem {
 
     private ItemId self;
     private String type;
-    private OrganizationId developer;
+    private OrganizationInfo developer;
     private String packageName;
     private Map<String, Binary> binaries;
     private Map<String, SupportedLocale> supportedLocales;
@@ -56,11 +55,11 @@ public class CaseyItem {
         this.type = type;
     }
 
-    public OrganizationId getDeveloper() {
+    public OrganizationInfo getDeveloper() {
         return developer;
     }
 
-    public void setDeveloper(OrganizationId developer) {
+    public void setDeveloper(OrganizationInfo developer) {
         this.developer = developer;
     }
 

@@ -265,20 +265,29 @@ class CaseyFacadeImpl implements CaseyFacade {
             results.totalCount = rawResults.totalCount
             Promise.each (rawResults.items) { CaseyOffer caseyOffer ->
                 CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer.items) ? null : caseyOffer.items[0]
-                Organization publisher, developer
+                String publisher, developer
                 Promise.pure().then {
                     if (!includeOrganization) {
                         return Promise.pure()
                     }
-                    getOrganization(caseyOffer.publisher, organizationMap).then { Organization organization ->
-                        publisher = organization
+                    if (caseyOffer.publisher.organizationId == null) { // new organization format from search
+                        publisher = caseyOffer.publisher.name
+                        developer = caseyItem?.developer?.name
                         return Promise.pure()
-                    }.then {
-                        getOrganization(caseyItem?.developer, organizationMap).then { Organization organization ->
-                            developer = organization
+                    } else { // old organization format from search
+                        OrganizationId publisherId = new OrganizationId(IdFormatter.decodeId(OrganizationId, caseyOffer.publisher.organizationId))
+                        getOrganization(publisherId, organizationMap).then { Organization organization ->
+                            publisher = organization.name
                             return Promise.pure()
+                        }.then {
+                            OrganizationId developerId = caseyItem?.developer?.organizationId == null ? null : new OrganizationId(IdFormatter.decodeId(OrganizationId, caseyItem?.developer?.organizationId))
+                            getOrganization(developerId, organizationMap).then { Organization organization ->
+                                developer = organization.name
+                                return Promise.pure()
+                            }
                         }
                     }
+
                 }.then {
                     Map<String, AggregatedRatings> aggregatedRatings = [:] as Map
                     aggregatedRatings[CaseyReview.RatingType.quality.name()] = reviewBuilder.buildAggregatedRatings(caseyItem?.qualityRating)

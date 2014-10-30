@@ -19,6 +19,10 @@ import com.junbo.common.id.ItemId
 import com.junbo.common.id.ItemRevisionId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OfferRevisionId
+import com.junbo.common.id.OrganizationId
+import com.junbo.common.util.IdFormatter
+import com.junbo.identity.spec.v1.model.Organization
+import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
@@ -28,6 +32,7 @@ import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer
 import com.junbo.store.spec.model.external.sewer.casey.search.CaseyPrice
 import com.junbo.store.spec.model.external.sewer.casey.search.CaseyRating
 import com.junbo.store.spec.model.external.sewer.casey.search.CatalogAttribute
+import com.junbo.store.spec.model.external.sewer.casey.search.OrganizationInfo
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Value
@@ -35,6 +40,7 @@ import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
+import java.security.SecureRandom
 
 /**
  * The EmulatorUtils class.
@@ -48,6 +54,8 @@ public class EmulatorUtils {
 
     @Value('${emulator.casey.latency}')
     private int defaultSimulateLatency
+
+    private Random random = new SecureRandom()
 
     void emulateLatency() {
         String latency = JunboHttpContext.getData().getRequestHeaders().getFirst(EmulatorHeaders.X_QA_CASEY_EMULATE_LATENCY.name())
@@ -74,6 +82,7 @@ public class EmulatorUtils {
     }
 
     CaseyOffer buildCaseyOffer(Offer offer, LocaleId localeId, CountryId countryId, Closure<CaseyResults<CaseyAggregateRating> > caseyAggregateRatingGetFunc) {
+        boolean oldOrganizationFormat = random.nextBoolean()
         CaseyOffer caseyOffer = new CaseyOffer()
         caseyOffer.self = new OfferId(offer.getId())
         caseyOffer.categories = offer.categories?.collect { String categoryId ->
@@ -97,11 +106,11 @@ public class EmulatorUtils {
             // Set<String> currencies = offerRevision.price?.prices?.get(countryId.value)?.keySet()
             // todo set the price
             caseyOffer.items = offerRevision?.items?.collect { ItemEntry itemEntry ->
-                return getCaseyItem(new ItemId(itemEntry.itemId), localeId, caseyAggregateRatingGetFunc)
+                return getCaseyItem(new ItemId(itemEntry.itemId), localeId, oldOrganizationFormat, caseyAggregateRatingGetFunc)
             }
         }
 
-        caseyOffer.publisher = offer.ownerId
+        caseyOffer.publisher = buildOrganizationInfo(offer.ownerId, oldOrganizationFormat)
         return caseyOffer
     }
 
@@ -125,12 +134,12 @@ public class EmulatorUtils {
         return caseyRatingMap
     }
 
-    private CaseyItem getCaseyItem(ItemId itemId, LocaleId localeId, Closure<CaseyResults<CaseyAggregateRating>> caseyAggregateRatingGetFunc) {
+    private CaseyItem getCaseyItem(ItemId itemId, LocaleId localeId, boolean oldOrganizationFormat, Closure<CaseyResults<CaseyAggregateRating>> caseyAggregateRatingGetFunc) {
         CaseyItem caseyItem = new CaseyItem()
         Item item = resourceContainer.itemResource.getItem(itemId.value).get()
         caseyItem.self = itemId
         caseyItem.type = item.type
-        caseyItem.developer = item.ownerId
+        caseyItem.developer = buildOrganizationInfo(item.ownerId, oldOrganizationFormat)
         caseyItem.genres = item.genres?.collect { String genreId ->
             ItemAttribute itemAttribute = resourceContainer.itemAttributeResource.getAttribute(genreId, new ItemAttributeGetOptions(locale: localeId.value)).get()
             CatalogAttribute catalogAttribute = new CatalogAttribute()
@@ -160,5 +169,18 @@ public class EmulatorUtils {
         caseyItem.qualityRating = ratingMap[CaseyReview.RatingType.quality.name()]
         caseyItem.comfortRating = ratingMap[CaseyReview.RatingType.comfort.name()]
         return caseyItem
+    }
+
+    OrganizationInfo buildOrganizationInfo(OrganizationId organizationId, boolean oldFormat) {
+        OrganizationInfo organizationInfo = new OrganizationInfo()
+        if (oldFormat) {
+            organizationInfo.organizationId = IdFormatter.encodeId(organizationId)
+            organizationInfo.href = "/v1/organizations/${organizationInfo.organizationId}"
+            return organizationInfo
+        }
+        organizationInfo.self = organizationId
+        Organization organization = resourceContainer.organizationResource.get(organizationId, new OrganizationGetOptions()).get()
+        organizationInfo.name = organization.name
+        return organizationInfo
     }
 }

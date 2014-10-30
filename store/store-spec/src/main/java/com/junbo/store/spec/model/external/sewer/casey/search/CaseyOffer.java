@@ -9,7 +9,6 @@ import com.junbo.catalog.spec.model.common.Images;
 import com.junbo.catalog.spec.model.offer.CountryProperties;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OfferRevisionId;
-import com.junbo.common.id.OrganizationId;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,7 @@ public class CaseyOffer {
 
     private OfferId self;
     private List<CatalogAttribute> categories;
-    private OrganizationId publisher;
+    private OrganizationInfo publisher;
     private List<CaseyItem> items;
     private CaseyPrice price;
     private Map<String, CountryProperties> regions;
@@ -47,11 +46,11 @@ public class CaseyOffer {
         this.categories = categories;
     }
 
-    public OrganizationId getPublisher() {
+    public OrganizationInfo getPublisher() {
         return publisher;
     }
 
-    public void setPublisher(OrganizationId publisher) {
+    public void setPublisher(OrganizationInfo publisher) {
         this.publisher = publisher;
     }
 
