@@ -1,7 +1,7 @@
 package com.junbo.identity.job
 
 import com.junbo.configuration.topo.DataCenters
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -24,7 +24,7 @@ class IdentityJob implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(IdentityJob)
 
     private IdentityProcessor identityProcessor
-    private UserRepository userRepository
+    private UserService userService
     private Integer limit
     private Integer maxThreadPoolSize
     private ThreadPoolTaskExecutor  threadPoolTaskExecutor
@@ -93,7 +93,7 @@ class IdentityJob implements InitializingBean {
     }
 
     private Promise<List<User>> readUsers(int limit, int offset) {
-        return userRepository.searchInvalidVatUser(limit, offset).then { List<User> userList ->
+        return userService.getActiveUsersWithInvalidVatUser(limit, offset).then { List<User> userList ->
             return Promise.pure(userList)
         }
     }
@@ -104,8 +104,8 @@ class IdentityJob implements InitializingBean {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required

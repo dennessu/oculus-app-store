@@ -8,7 +8,6 @@ package com.junbo.catalog.db.repo.impl.cloudant;
 
 import com.junbo.catalog.common.cache.CacheFacade;
 import com.junbo.catalog.common.util.Callable;
-import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.OfferRepository;
 import com.junbo.catalog.spec.model.offer.CountryProperties;
@@ -97,7 +96,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("(availableCountry:('").append(options.getCountry()).append("' OR ").append(Constants.DEFAULT_COUNTRY).append(")");
+                sb.append("(availableCountry:('").append(options.getCountry()).append("')");
                 sb.append(" AND ").append("-unavailableCountry:'").append(options.getCountry()).append("')");
             }
             CloudantSearchResult<Offer> searchResult =
@@ -134,9 +133,9 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
         }
         Map<String, CountryProperties> countries = offer.getActiveRevision().getCountries();
         if (countries.get(countryCode)==null) {
-            if (countries.get(Constants.DEFAULT_COUNTRY) != null) {
+            /*if (countries.get(Constants.DEFAULT_COUNTRY) != null) {
                 return Boolean.TRUE.equals(countries.get(Constants.DEFAULT_COUNTRY).getIsPurchasable());
-            }
+            }*/
             return false;
         } else {
             return Boolean.TRUE.equals(countries.get(countryCode).getIsPurchasable());

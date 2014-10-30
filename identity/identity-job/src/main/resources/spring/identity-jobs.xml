@@ -40,13 +40,13 @@
     <bean id="identityJob" class="com.junbo.identity.job.IdentityJob">
         <property name="threadPoolTaskExecutor" ref="identityJobAsyncTaskExecutor"/>
         <property name="identityProcessor" ref="identityVatCheckProcessor"/>
-        <property name="userRepository" ref="cloudantUserRepository"/>
+        <property name="userService" ref="identityUserService"/>
         <property name="limit" value="${identity.jobs.pagesize}"/>
         <property name="maxThreadPoolSize" value="${identity.jobs.identity.processor.poolsize}"/>
     </bean>
 
     <bean id="identityVatCheckProcessor" class="com.junbo.identity.job.IdentityVatCheckProcessor">
-        <property name="userRepository" ref="cloudantUserRepository"/>
+        <property name="userService" ref="identityUserService"/>
         <property name="vatResource" ref="identityVatResource"/>
     </bean>
 

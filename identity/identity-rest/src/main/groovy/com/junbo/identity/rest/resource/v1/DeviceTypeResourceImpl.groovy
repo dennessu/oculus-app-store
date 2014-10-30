@@ -5,7 +5,7 @@ import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.DeviceTypeFilter
 import com.junbo.identity.core.service.validator.DeviceTypeValidator
-import com.junbo.identity.data.repository.DeviceTypeRepository
+import com.junbo.identity.service.DeviceTypeService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.DeviceType
 import com.junbo.identity.spec.v1.option.list.DeviceTypeListOptions
@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response
 @CompileStatic
 class DeviceTypeResourceImpl implements DeviceTypeResource {
     @Autowired
-    private DeviceTypeRepository deviceTypeRepository
+    private DeviceTypeService deviceTypeService
 
     @Autowired
     private DeviceTypeFilter deviceTypeFilter
@@ -40,7 +40,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         deviceType = deviceTypeFilter.filterForCreate(deviceType)
 
         return deviceTypeValidator.validateForCreate(deviceType).then {
-            return deviceTypeRepository.create(deviceType).then { DeviceType newDeviceType ->
+            return deviceTypeService.create(deviceType).then { DeviceType newDeviceType ->
                 Created201Marker.mark(newDeviceType.id)
 
                 newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
@@ -59,7 +59,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
             throw new IllegalArgumentException('country is null')
         }
 
-        return deviceTypeRepository.get(deviceTypeId).then { DeviceType oldDeviceType ->
+        return deviceTypeService.get(deviceTypeId).then { DeviceType oldDeviceType ->
             if (oldDeviceType == null) {
                 throw AppErrors.INSTANCE.deviceTypeNotFound(deviceTypeId).exception()
             }
@@ -67,7 +67,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
             deviceType = deviceTypeFilter.filterForPut(deviceType, oldDeviceType)
 
             return deviceTypeValidator.validateForUpdate(deviceTypeId, deviceType, oldDeviceType).then {
-                return deviceTypeRepository.update(deviceType, oldDeviceType).then { DeviceType newDeviceType ->
+                return deviceTypeService.update(deviceType, oldDeviceType).then { DeviceType newDeviceType ->
                     newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
                     return Promise.pure(newDeviceType)
                 }
@@ -85,7 +85,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
             throw new IllegalArgumentException('deviceType is null')
         }
 
-        return deviceTypeRepository.get(deviceTypeId).then { DeviceType oldDeviceType ->
+        return deviceTypeService.get(deviceTypeId).then { DeviceType oldDeviceType ->
             if (oldDeviceType == null) {
                 throw AppErrors.INSTANCE.deviceTypeNotFound(deviceTypeId).exception()
             }
@@ -94,7 +94,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
 
             return deviceTypeValidator.validateForUpdate(
                     deviceTypeId, deviceType, oldDeviceType).then {
-                return deviceTypeRepository.update(deviceType, oldDeviceType).then { DeviceType newDeviceType ->
+                return deviceTypeService.update(deviceType, oldDeviceType).then { DeviceType newDeviceType ->
                     newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
                     return Promise.pure(newDeviceType)
                 }
@@ -109,7 +109,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         return deviceTypeValidator.validateForGet(deviceTypeId).then {
-            return deviceTypeRepository.get(deviceTypeId).then { DeviceType newDeviceType ->
+            return deviceTypeService.get(deviceTypeId).then { DeviceType newDeviceType ->
                 if (newDeviceType == null) {
                     throw AppErrors.INSTANCE.deviceTypeNotFound(deviceTypeId).exception()
                 }
@@ -150,13 +150,13 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         return deviceTypeValidator.validateForGet(deviceTypeId).then {
-            return deviceTypeRepository.delete(deviceTypeId).then {
+            return deviceTypeService.delete(deviceTypeId).then {
                 return Promise.pure(Response.status(204).build())
             }
         }
     }
 
     private Promise<List<DeviceType>> search(DeviceTypeListOptions listOptions) {
-        return deviceTypeRepository.searchAll(listOptions.limit, listOptions.offset)
+        return deviceTypeService.searchAll(listOptions.limit, listOptions.offset)
     }
 }

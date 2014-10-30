@@ -1,12 +1,10 @@
-// CHECKSTYLE:OFF
-
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.test.identity;
-
+// CHECKSTYLE:OFF
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.*;
 import com.junbo.common.id.OrganizationId;
@@ -306,7 +304,8 @@ public class IdentityModel {
         return DefaultUserCredential(userId, null, password);
     }
 
-    public static UserCredential DefaultUserCredential(UserId userId, String oldPassword, String password) throws Exception {
+    public static UserCredential DefaultUserCredential(UserId userId, String oldPassword, String password)
+            throws Exception {
         UserCredential userCredential = new UserCredential();
         userCredential.setUserId(userId);
         userCredential.setCurrentPassword(oldPassword);
@@ -332,7 +331,8 @@ public class IdentityModel {
         return DefaultTos(RandomHelper.randomAlphabetic(15), "TOS", "APPROVED", supportedCountries);
     }
 
-    public static Tos DefaultTos(String title, String type, String state, List<String> supportedCountries) throws Exception {
+    public static Tos DefaultTos(String title, String type, String state, List<String> supportedCountries)
+            throws Exception {
         Tos tos = new Tos();
         tos.setContent(RandomHelper.randomAlphabetic(1000));
         tos.setType(type);
@@ -340,7 +340,7 @@ public class IdentityModel {
         tos.setTitle(title);
         tos.setState(state);
         List<CountryId> supportedCountryIds = new ArrayList<>();
-        for(String supportedCountry : supportedCountries) {
+        for (String supportedCountry : supportedCountries) {
             supportedCountryIds.add(new CountryId(supportedCountry));
         }
         tos.setCountries(supportedCountryIds);
@@ -374,8 +374,8 @@ public class IdentityModel {
         return usq;
     }
 
-    public static UserSecurityQuestionVerifyAttempt DefaultUserSecurityQuestionVerifyAttempt(UserId userId,
-                                                                                             UserSecurityQuestionId securityQuestionId, String value) throws Exception {
+    public static UserSecurityQuestionVerifyAttempt DefaultUserSecurityQuestionVerifyAttempt(
+            UserId userId, UserSecurityQuestionId securityQuestionId, String value) throws Exception {
         UserSecurityQuestionVerifyAttempt attempt = new UserSecurityQuestionVerifyAttempt();
         attempt.setUserId(userId);
         attempt.setUserSecurityQuestionId(securityQuestionId);

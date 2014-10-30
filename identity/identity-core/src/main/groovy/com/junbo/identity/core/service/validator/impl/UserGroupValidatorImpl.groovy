@@ -9,9 +9,9 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserGroupId
 import com.junbo.identity.core.service.validator.UserGroupValidator
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.GroupRepository
-import com.junbo.identity.data.repository.UserGroupRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.GroupService
+import com.junbo.identity.service.UserGroupService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.User
@@ -30,11 +30,11 @@ import org.springframework.util.CollectionUtils
 @CompileStatic
 class UserGroupValidatorImpl implements UserGroupValidator {
 
-    private UserGroupRepository userGroupRepository
+    private UserGroupService userGroupService
 
-    private UserRepository userRepository
+    private UserService userService
 
-    private GroupRepository groupRepository
+    private GroupService groupService
     // Any data that will use this data should be data issue, we may need to fix this.
     private Integer maximumFetchSize
 
@@ -44,7 +44,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
             throw AppCommonErrors.INSTANCE.parameterRequired('userGroupId').exception()
         }
 
-        return userGroupRepository.get(userGroupId).then { UserGroup userGroup ->
+        return userGroupService.get(userGroupId).then { UserGroup userGroup ->
             if (userGroup == null) {
                 throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
             }
@@ -74,7 +74,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
 
-            return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId, 1, 0).then { List<UserGroup> existing ->
+            return userGroupService.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId, 1, 0).then { List<UserGroup> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('groupId').exception()
                 }
@@ -123,7 +123,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
-        return userRepository.get(userGroup.userId).then { User existingUser ->
+        return userService.getNonDeletedUser(userGroup.userId).then { User existingUser ->
             if (existingUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userGroup.userId).exception()
             }
@@ -136,12 +136,12 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userGroup.userId).exception()
             }
 
-            return groupRepository.get(userGroup.groupId).then { Group existingGroup ->
-                if (existingGroup == null || !existingGroup.active) {
+            return groupService.getActiveGroup(userGroup.groupId).then { Group existingGroup ->
+                if (existingGroup == null) {
                     throw AppErrors.INSTANCE.groupNotFound(userGroup.groupId).exception()
                 }
 
-                return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
+                return userGroupService.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
                         maximumFetchSize, 0).then { List<UserGroup> existingUserGroupList ->
                     if (CollectionUtils.isEmpty(existingUserGroupList)) {
                         return Promise.pure(null)
@@ -161,20 +161,19 @@ class UserGroupValidatorImpl implements UserGroupValidator {
         }
     }
 
-
     @Required
-    void setUserGroupRepository(UserGroupRepository userGroupRepository) {
-        this.userGroupRepository = userGroupRepository
+    void setUserGroupService(UserGroupService userGroupService) {
+        this.userGroupService = userGroupService
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setGroupRepository(GroupRepository groupRepository) {
-        this.groupRepository = groupRepository
+    void setGroupService(GroupService groupService) {
+        this.groupService = groupService
     }
 
     @Required

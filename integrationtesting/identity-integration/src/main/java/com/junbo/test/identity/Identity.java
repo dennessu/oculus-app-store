@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.test.identity;
-
+// CHECKSTYLE:OFF
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.*;
 import com.junbo.common.json.ObjectMapperProvider;
@@ -844,14 +844,6 @@ public class Identity {
 
     public static String GetHexLongId(Long userId) throws Exception {
         return IdConverter.idToUrlString(UserId.class, userId);
-    }
-
-    // ****** start API sample logging ******
-    public static final String MessageDefaultPostUser = "[Include In Sample][1] Description: Post_User_Default";
-    public static final String MessageGetUserByUserId = "[Include In Sample][1] Description: Get_User_By_UserId";
-
-    public static void StartLoggingAPISample(String message) {
-        System.out.println(message);
     }
 
     public static String buildIdentityCount(Integer count) {

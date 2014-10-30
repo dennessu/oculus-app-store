@@ -10,8 +10,8 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.GroupAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserGroupFilter
 import com.junbo.identity.core.service.validator.UserGroupValidator
-import com.junbo.identity.data.repository.GroupRepository
-import com.junbo.identity.data.repository.UserGroupRepository
+import com.junbo.identity.service.GroupService
+import com.junbo.identity.service.UserGroupService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.UserGroup
@@ -33,10 +33,10 @@ import javax.ws.rs.core.Response
 class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
     @Autowired
-    private UserGroupRepository userGroupRepository
+    private UserGroupService userGroupService
 
     @Autowired
-    private GroupRepository groupRepository
+    private GroupService groupService
 
     @Autowired
     private UserGroupFilter userGroupFilter
@@ -65,7 +65,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
+                return userGroupService.create(userGroup).then { UserGroup newUserGroup ->
                     Created201Marker.mark(newUserGroup.getId())
 
                     newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
@@ -106,7 +106,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
             throw new IllegalArgumentException('userGroup is null')
         }
 
-        return userGroupRepository.get(userGroupId).then { UserGroup oldUserGroup ->
+        return userGroupService.get(userGroupId).then { UserGroup oldUserGroup ->
             if (oldUserGroup == null) {
                 throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
             }
@@ -120,7 +120,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
                 userGroup = userGroupFilter.filterForPatch(userGroup, oldUserGroup)
 
                 return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
-                    return userGroupRepository.update(userGroup, oldUserGroup).then { UserGroup newUserGroup ->
+                    return userGroupService.update(userGroup, oldUserGroup).then { UserGroup newUserGroup ->
                         newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                         return Promise.pure(newUserGroup)
                     }
@@ -139,7 +139,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
             throw new IllegalArgumentException('userGroup is null')
         }
 
-        return userGroupRepository.get(userGroupId).then { UserGroup oldUserGroup ->
+        return userGroupService.get(userGroupId).then { UserGroup oldUserGroup ->
             if (oldUserGroup == null) {
                 throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
             }
@@ -153,7 +153,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
                 userGroup = userGroupFilter.filterForPut(userGroup, oldUserGroup)
 
                 return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
-                    return userGroupRepository.update(userGroup, oldUserGroup).then { UserGroup newUserGroup ->
+                    return userGroupService.update(userGroup, oldUserGroup).then { UserGroup newUserGroup ->
                         newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                         return Promise.pure(newUserGroup)
                     }
@@ -170,7 +170,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
                 if (!AuthorizeContext.hasRights('delete') && AuthorizeContext.currentUserId != userGroup.userId) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
-                return userGroupRepository.delete(userGroupId).then {
+                return userGroupService.delete(userGroupId).then {
                     return Promise.pure(Response.status(204).build())
                 }
             }
@@ -190,7 +190,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
                 return Promise.each(userGroupList) { UserGroup newUserGroup ->
                     if (newUserGroup != null) {
-                        return groupRepository.get(newUserGroup.groupId).then { Group group ->
+                        return groupService.get(newUserGroup.groupId).then { Group group ->
                             if (group == null) {
                                 return Promise.pure(null)
                             }
@@ -220,12 +220,12 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
     private Promise<List<UserGroup>> search(UserGroupListOptions listOptions) {
         if (listOptions.userId != null && listOptions.groupId != null) {
-            return userGroupRepository.searchByUserIdAndGroupId(listOptions.userId, listOptions.groupId,
+            return userGroupService.searchByUserIdAndGroupId(listOptions.userId, listOptions.groupId,
                     listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
-            return userGroupRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+            return userGroupService.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else if (listOptions.groupId != null) {
-            return userGroupRepository.searchByGroupId(listOptions.groupId, listOptions.limit, listOptions.offset)
+            return userGroupService.searchByGroupId(listOptions.groupId, listOptions.limit, listOptions.offset)
         } else {
             throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()
         }

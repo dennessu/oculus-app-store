@@ -7,7 +7,6 @@
 package com.junbo.catalog.core.validators;
 
 import com.google.common.base.Joiner;
-import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.db.repo.PriceTierRepository;
 import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.enums.Status;
@@ -55,7 +54,7 @@ public abstract class ValidationSupport {
 
     private static List<String> genAllCountryCodes() {
         List<String> result = new ArrayList<>(Arrays.asList(Locale.getISOCountries()));
-        result.add(Constants.DEFAULT_COUNTRY);
+        //result.add(Constants.DEFAULT_COUNTRY);
         return result;
     }
 

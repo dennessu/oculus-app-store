@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -11,7 +12,7 @@ import com.junbo.identity.core.service.filter.UserPersonalInfoFilter
 import com.junbo.identity.core.service.filter.pii.PIIAdvanceFilter
 import com.junbo.identity.core.service.filter.pii.PIIAdvanceFilterFactory
 import com.junbo.identity.core.service.validator.UserPersonalInfoValidator
-import com.junbo.identity.data.repository.UserPersonalInfoRepository
+import com.junbo.identity.service.UserPersonalInfoService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
@@ -32,7 +33,7 @@ import javax.ws.rs.core.Response
 class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
     @Autowired
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private UserPersonalInfoService userPersonalInfoService
 
     @Autowired
     private UserPersonalInfoValidator userPersonalInfoValidator
@@ -63,7 +64,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             userPii = userPersonalInfoFilter.filterForCreate(userPii)
 
             return userPersonalInfoValidator.validateForCreate(userPii).then {
-                return userPersonalInfoRepository.create(userPii).then { UserPersonalInfo newUserPii ->
+                return userPersonalInfoService.create(userPii).then { UserPersonalInfo newUserPii ->
                     newUserPii.isValidated = newUserPii.lastValidateTime != null
                     Created201Marker.mark(newUserPii.getId())
 
@@ -111,7 +112,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
         userPersonalInfo = filterUserPersonalInfo(userPersonalInfo)
 
-        return userPersonalInfoRepository.get(userPiiId).then { UserPersonalInfo oldUserPersonalInfo ->
+        return userPersonalInfoService.get(userPiiId).then { UserPersonalInfo oldUserPersonalInfo ->
             if (oldUserPersonalInfo == null) {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
             }
@@ -124,7 +125,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 userPersonalInfo = userPersonalInfoFilter.filterForPatch(userPersonalInfo, oldUserPersonalInfo)
 
                 return userPersonalInfoValidator.validateForUpdate(userPersonalInfo, oldUserPersonalInfo).then {
-                    return userPersonalInfoRepository.update(userPersonalInfo, oldUserPersonalInfo).then { UserPersonalInfo newUserPii ->
+                    return userPersonalInfoService.update(userPersonalInfo, oldUserPersonalInfo).then { UserPersonalInfo newUserPii ->
                         newUserPii.isValidated = newUserPii.lastValidateTime != null
                         newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
                         newUserPii = piiAdvanceFilter.getFilter(newUserPii)
@@ -147,7 +148,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
         userPii = filterUserPersonalInfo(userPii)
 
-        return userPersonalInfoRepository.get(userPiiId).then { UserPersonalInfo oldUserPersonalInfo ->
+        return userPersonalInfoService.get(userPiiId).then { UserPersonalInfo oldUserPersonalInfo ->
             if (oldUserPersonalInfo == null) {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
             }
@@ -160,7 +161,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 userPii = userPersonalInfoFilter.filterForPut(userPii, oldUserPersonalInfo)
 
                 return userPersonalInfoValidator.validateForUpdate(userPii, oldUserPersonalInfo).then {
-                    return userPersonalInfoRepository.update(userPii, oldUserPersonalInfo).then { UserPersonalInfo newUserPersonalInfo ->
+                    return userPersonalInfoService.update(userPii, oldUserPersonalInfo).then { UserPersonalInfo newUserPersonalInfo ->
                         newUserPersonalInfo.isValidated = newUserPersonalInfo.lastValidateTime != null
                         newUserPersonalInfo = userPersonalInfoFilter.filterForGet(newUserPersonalInfo, null)
                         newUserPersonalInfo = piiAdvanceFilter.getFilter(newUserPersonalInfo)
@@ -173,21 +174,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
     @Override
     Promise<Response> delete(UserPersonalInfoId userPiiId) {
-        if (userPiiId == null) {
-            throw new IllegalArgumentException('userPiiId is null')
-        }
-
-        return userPersonalInfoValidator.validateForGet(userPiiId).then { UserPersonalInfo userPii ->
-            def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
-            PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPii)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                piiAdvanceFilter.checkDeletePermission()
-
-                return userPersonalInfoRepository.delete(userPiiId).then {
-                    return Promise.pure(Response.status(204).build())
-                }
-            }
-        }
+        throw AppCommonErrors.INSTANCE.invalidOperation('pii operation is not supported').exception()
     }
 
     @Override
@@ -222,22 +209,22 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
         return userPersonalInfoValidator.validateForSearch(listOptions).then {
             if (listOptions.userId != null && listOptions.isValidated != null) {
-                return userPersonalInfoRepository.searchByUserIdAndValidateStatus(listOptions.userId, listOptions.type,
+                return userPersonalInfoService.searchByUserIdAndValidateStatus(listOptions.userId, listOptions.type,
                         listOptions.isValidated, listOptions.limit, listOptions.offset).then(filterUserPersonalInfos)
             } else if  (listOptions.userId != null && listOptions.type != null) {
-                return userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type,
+                return userPersonalInfoService.searchByUserIdAndType(listOptions.userId, listOptions.type,
                         listOptions.limit, listOptions.offset).then(filterUserPersonalInfos)
             } else if (listOptions.email != null) {
-                return userPersonalInfoRepository.searchByEmail(listOptions.email, listOptions.isValidated, listOptions.limit,
+                return userPersonalInfoService.searchByEmail(listOptions.email, listOptions.isValidated, listOptions.limit,
                         listOptions.offset).then(filterUserPersonalInfos)
             } else if (listOptions.phoneNumber != null) {
-                return userPersonalInfoRepository.searchByPhoneNumber(listOptions.phoneNumber, listOptions.isValidated, listOptions.limit,
+                return userPersonalInfoService.searchByPhoneNumber(listOptions.phoneNumber, listOptions.isValidated, listOptions.limit,
                         listOptions.offset).then(filterUserPersonalInfos)
             } else if (listOptions.name != null) {
-                return userPersonalInfoRepository.searchByName(listOptions.name, listOptions.limit,
+                return userPersonalInfoService.searchByName(listOptions.name, listOptions.limit,
                         listOptions.offset).then(filterUserPersonalInfos)
             } else {
-                return userPersonalInfoRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                return userPersonalInfoService.searchByUserId(listOptions.userId, listOptions.limit,
                         listOptions.offset).then(filterUserPersonalInfos)
             }
         }
@@ -261,7 +248,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         }
 
         if (filter == null) {
-            throw new IllegalStateException('can\'t find filter for type ' + userPersonalInfo.type)
+            throw AppCommonErrors.INSTANCE.fieldInvalid('type').exception()
         }
 
         return filter

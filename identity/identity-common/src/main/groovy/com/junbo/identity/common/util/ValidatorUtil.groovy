@@ -12,12 +12,6 @@ class ValidatorUtil {
             throw new IllegalArgumentException('countryCode is null')
         }
 
-        // Due to Oculus's requirement, this will need to hack WORLD as one new countryCode
-        // https://oculus.atlassian.net/browse/SER-667
-        if (countryCode == "ZZ") {
-            return true
-        }
-
         CountryCode cc = CountryCode.getByCode(countryCode)
         if (cc == null) {
             return false

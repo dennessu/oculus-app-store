@@ -12,9 +12,9 @@ import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
-import com.junbo.identity.data.repository.UserSecurityQuestionRepository
+import com.junbo.identity.service.UserSecurityQuestionAttemptService
+import com.junbo.identity.service.UserSecurityQuestionService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
@@ -34,9 +34,9 @@ import java.util.regex.Pattern
 @SuppressWarnings('UnnecessaryGetter')
 class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAttemptValidator {
 
-    private UserRepository userRepository
-    private UserSecurityQuestionAttemptRepository attemptRepository
-    private UserSecurityQuestionRepository userSecurityQuestionRepository
+    private UserService userService
+    private UserSecurityQuestionAttemptService userSecurityQuestionAttemptService
+    private UserSecurityQuestionService userSecurityQuestionService
 
     private CredentialHashFactory credentialHashFactory
 
@@ -63,7 +63,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             throw new IllegalArgumentException('userId is null')
         }
 
-        return attemptRepository.get(attemptId).then { UserSecurityQuestionVerifyAttempt attempt ->
+        return userSecurityQuestionAttemptService.get(attemptId).then { UserSecurityQuestionVerifyAttempt attempt ->
             if (attempt == null) {
                 throw AppErrors.INSTANCE.userSecurityQuestionAttemptNotFound(attemptId).exception()
             }
@@ -100,7 +100,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
         }
 
         return checkBasicUserSecurityQuestionAttemptInfo(attempt).then {
-            return userRepository.get(userId).then { User user ->
+            return userService.getNonDeletedUser(userId).then { User user ->
 
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userId).exception()
@@ -119,7 +119,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                 }
                 attempt.setUserId((UserId)user.id)
 
-                return userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).
+                return userSecurityQuestionService.get(attempt.userSecurityQuestionId).
                         then { UserSecurityQuestion userSecurityQuestion ->
                             if (userSecurityQuestion == null) {
                                 throw AppErrors.INSTANCE.userSecurityQuestionNotFound(attempt.userSecurityQuestionId).exception()
@@ -139,7 +139,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     }
 
     private Promise<Void> checkMaximumRetryCount(UserSecurityQuestionVerifyAttempt attempt) {
-        return attemptRepository.searchByUserIdAndSecurityQuestionId(attempt.userId, attempt.userSecurityQuestionId,
+        return userSecurityQuestionAttemptService.searchByUserIdAndSecurityQuestionId(attempt.userId, attempt.userSecurityQuestionId,
                 maxRetryCount, 0).then { List<UserSecurityQuestionVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                 return Promise.pure(null)
@@ -198,7 +198,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             throw AppCommonErrors.INSTANCE.fieldRequired('userSecurityQuestionId').exception()
         }
 
-        return userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).then {
+        return userSecurityQuestionService.get(attempt.userSecurityQuestionId).then {
             UserSecurityQuestion userSecurityQuestion ->
                 if (userSecurityQuestion == null) {
                     throw AppErrors.INSTANCE.userSecurityQuestionNotFound(attempt.userSecurityQuestionId).exception()
@@ -212,18 +212,18 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setAttemptRepository(UserSecurityQuestionAttemptRepository attemptRepository) {
-        this.attemptRepository = attemptRepository
+    void setUserSecurityQuestionAttemptService(UserSecurityQuestionAttemptService userSecurityQuestionAttemptService) {
+        this.userSecurityQuestionAttemptService = userSecurityQuestionAttemptService
     }
 
     @Required
-    void setUserSecurityQuestionRepository(UserSecurityQuestionRepository userSecurityQuestionRepository) {
-        this.userSecurityQuestionRepository = userSecurityQuestionRepository
+    void setUserSecurityQuestionService(UserSecurityQuestionService userSecurityQuestionService) {
+        this.userSecurityQuestionService = userSecurityQuestionService
     }
 
     @Required

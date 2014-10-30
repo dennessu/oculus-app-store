@@ -51,8 +51,8 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     }
 
     @Override
-    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
-        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope, List<String> headersToRemove) {
+        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope, headersToRemove);
         headers.add(Header.USER_IP, RandomFactory.getRandomIp());
         return headers;
     }

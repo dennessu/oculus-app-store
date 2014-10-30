@@ -26,11 +26,13 @@ public interface IAPResource {
 
     @GET
     @Path("/library")
+    @Consumes()
     // This requires email verification
     Promise<LibraryResponse> getLibrary();
 
     @GET
     @Path("/items")
+    @Consumes()
     // This requires email verification
     Promise<IAPItemsResponse> getItems();
 

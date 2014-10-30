@@ -26,11 +26,13 @@ import javax.ws.rs.core.MediaType;
 public interface LoginResource {
     @GET
     @Path("/check-email")
+    @Consumes()
     // This doesn't require email verification
     Promise<EmailCheckResponse> checkEmail(@BeanParam EmailCheckRequest emailCheckRequest);
 
     @GET
     @Path("/check-username")
+    @Consumes()
     // This doesn't require email verification
     Promise<UserNameCheckResponse> checkUsernameAvailable(@BeanParam UserNameCheckRequest userNameCheckRequest);
 
@@ -61,6 +63,7 @@ public interface LoginResource {
 
     @GET
     @Path("/tos")
+    @Consumes()
     // This doesn't require email verification
     Promise<Tos> getRegisterTos();
 }

@@ -6,6 +6,13 @@
     <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
     <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
 
+    <bean id="teleSign" class="com.junbo.identity.data.telesign.impl.TeleSignImpl">
+        <constructor-arg><value>${identity.conf.teleSign.customerId}</value></constructor-arg>
+        <constructor-arg><value>${identity.conf.teleSign.secretKey}</value></constructor-arg>
+        <constructor-arg ref="userPersonalInfoRepository"></constructor-arg>
+        <constructor-arg ref="localeRepository"></constructor-arg>
+    </bean>
+
     <bean id="modelMapper" class="com.junbo.identity.data.mapper.ModelMapperImpl">
         <property name="__builtinMapper" ref="__builtinMapper" />
         <property name="__commonMapper" ref="__commonMapper" />

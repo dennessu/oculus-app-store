@@ -27,6 +27,9 @@ import com.junbo.store.rest.utils.InitialItemPurchaseUtils
 import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
+import com.junbo.store.spec.model.external.sentry.SentryCategory
+import com.junbo.store.spec.model.external.sentry.SentryFieldConstant
+import com.junbo.store.spec.model.external.sentry.SentryResponse
 import com.junbo.store.spec.model.identity.StoreUserEmail
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
@@ -197,8 +200,20 @@ class LoginResourceImpl implements LoginResource {
         }.then {
             requestValidator.validateTosExists(request.tosAgreed)
         }.then {
-            // todo:    Here we need to define the parameters here
-            sentryFacade.doSentryCheck(null, null, null, null, null, null)
+            def textMap = [:];
+            textMap[SentryFieldConstant.EMAIL.value] = request.email
+            textMap[SentryFieldConstant.USERNAME.value] = request.username
+            textMap[SentryFieldConstant.REAL_NAME.value] = request.firstName + " " + request.lastName
+            sentryFacade.doSentryCheck(sentryFacade.createSentryRequest(SentryCategory.OCULUS_REGISTRATION_CREATE.value,
+                textMap))
+        }.recover { Throwable throwable ->
+            LOGGER.error("CreateUser:  Call sentry error, Ignore")
+            return Promise.pure()
+        }.then { SentryResponse sentryResponse ->
+            if (sentryResponse != null && sentryResponse.isBlockAccess()) {
+                throw AppErrors.INSTANCE.sentryBlockRegisterAccess().exception()
+            }
+            return Promise.pure()
         }.then {
             createUserBasic(request, apiContext, errorContext).then {
                 createUserPersonalInfo(request, apiContext, errorContext).then {
@@ -216,7 +231,8 @@ class LoginResourceImpl implements LoginResource {
                 appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
                 if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
                         ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
-                        ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction)) {
+                        ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction,
+                        ErrorCodes.Sentry.BlockAccess)) {
                     throw ex
                 }
                 appErrorUtils.throwUnknownError('createUser', ex)
@@ -257,6 +273,19 @@ class LoginResourceImpl implements LoginResource {
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
             apc = apiContext
             return Promise.pure(null)
+        }.then {
+            def textMap = [:];
+            textMap[SentryFieldConstant.EMAIL.value] = userSignInRequest.email
+            sentryFacade.doSentryCheck(sentryFacade.createSentryRequest(SentryCategory.OCULUS_LOGIN_MOBILE.value,
+                    textMap))
+        }.recover { Throwable throwable ->
+            LOGGER.error("SignIn: Call sentry error, Ignore")
+            return Promise.pure()
+        }.then { SentryResponse sentryResponse ->
+            if (sentryResponse != null && sentryResponse.isBlockAccess()) {
+                throw AppErrors.INSTANCE.sentryBlockLoginAccess().exception()
+            }
+            return Promise.pure()
         }.then {
             innerSignIn(userSignInRequest.email, userSignInRequest.userCredential.value).recover { Throwable ex ->
                 if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {

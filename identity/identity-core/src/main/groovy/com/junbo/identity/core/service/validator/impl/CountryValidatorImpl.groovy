@@ -6,9 +6,9 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.common.util.CountryCode
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.CountryValidator
-import com.junbo.identity.data.repository.CountryRepository
-import com.junbo.identity.data.repository.CurrencyRepository
-import com.junbo.identity.data.repository.LocaleRepository
+import com.junbo.identity.service.CountryService
+import com.junbo.identity.service.CurrencyService
+import com.junbo.identity.service.LocaleService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.CountryLocaleKey
@@ -35,9 +35,9 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class CountryValidatorImpl implements CountryValidator {
 
-    private CountryRepository countryRepository
-    private LocaleRepository localeRepository
-    private CurrencyRepository currencyRepository
+    private CountryService countryService
+    private LocaleService localeService
+    private CurrencyService currencyService
 
     private Integer minSubCountryShortNameLength
     private Integer maxSubCountryShortNameLength
@@ -52,18 +52,18 @@ class CountryValidatorImpl implements CountryValidator {
     private Integer maxCountryLongNameLength
 
     @Required
-    void setCountryRepository(CountryRepository countryRepository) {
-        this.countryRepository = countryRepository
+    void setCountryService(CountryService countryService) {
+        this.countryService = countryService
     }
 
     @Required
-    void setLocaleRepository(LocaleRepository localeRepository) {
-        this.localeRepository = localeRepository
+    void setLocaleService(LocaleService localeService) {
+        this.localeService = localeService
     }
 
     @Required
-    void setCurrencyRepository(CurrencyRepository currencyRepository) {
-        this.currencyRepository = currencyRepository
+    void setCurrencyService(CurrencyService currencyService) {
+        this.currencyService = currencyService
     }
 
     @Required
@@ -112,7 +112,7 @@ class CountryValidatorImpl implements CountryValidator {
             throw new IllegalArgumentException('countryId is null')
         }
 
-        return countryRepository.get(countryId).then { Country country ->
+        return countryService.get(countryId).then { Country country ->
             if (country == null) {
                 throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
             }
@@ -149,7 +149,7 @@ class CountryValidatorImpl implements CountryValidator {
         }
 
         return checkBasicCountryInfo(country).then {
-            return countryRepository.get(new CountryId(country.countryCode)).then { Country existing ->
+            return countryService.get(new CountryId(country.countryCode)).then { Country existing ->
                 if (existing != null) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('countryCode').exception()
                 }
@@ -215,7 +215,7 @@ class CountryValidatorImpl implements CountryValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('defaultLocale').exception()
         }
 
-        return localeRepository.get(country.defaultLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
+        return localeService.get(country.defaultLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
             if (locale == null) {
                 throw AppErrors.INSTANCE.localeNotFound(country.defaultLocale).exception()
             }
@@ -229,7 +229,7 @@ class CountryValidatorImpl implements CountryValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('defaultCurrency').exception()
         }
 
-        return currencyRepository.get(country.defaultCurrency).then {
+        return currencyService.get(country.defaultCurrency).then {
             com.junbo.identity.spec.v1.model.Currency currency ->
                 if (currency == null) {
                     throw AppErrors.INSTANCE.currencyNotFound(country.defaultCurrency).exception()
@@ -278,7 +278,7 @@ class CountryValidatorImpl implements CountryValidator {
         }
 
         return Promise.each(country.supportedLocales) { LocaleId localeId ->
-            return localeRepository.get(localeId).then { com.junbo.identity.spec.v1.model.Locale locale ->
+            return localeService.get(localeId).then { com.junbo.identity.spec.v1.model.Locale locale ->
                 if (locale == null) {
                     throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
                 }

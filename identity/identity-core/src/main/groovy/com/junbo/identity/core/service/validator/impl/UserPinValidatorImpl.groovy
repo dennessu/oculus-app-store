@@ -6,8 +6,9 @@ import com.junbo.common.id.UserPinId
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.validator.UserPinValidator
-import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.UserPinService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.User
@@ -26,9 +27,9 @@ import java.util.regex.Pattern
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
 class UserPinValidatorImpl implements UserPinValidator {
-    private UserRepository userRepository
+    private UserService userService
 
-    private UserPinRepository userPinRepository
+    private UserPinService userPinService
 
     private CredentialHashFactory credentialHashFactory
 
@@ -48,12 +49,12 @@ class UserPinValidatorImpl implements UserPinValidator {
             throw AppCommonErrors.INSTANCE.parameterRequired('userPinId').exception()
         }
 
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            return userPinRepository.get(userPinId).then { UserPin userPin ->
+            return userPinService.get(userPinId).then { UserPin userPin ->
                 if (userPin == null) {
                     throw AppErrors.INSTANCE.userPinNotFound(userPinId).exception()
                 }
@@ -123,7 +124,7 @@ class UserPinValidatorImpl implements UserPinValidator {
             return Promise.pure(null)
         }
 
-        return userPinRepository.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then { List<UserPin> userPinList ->
+        return userPinService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then { List<UserPin> userPinList ->
             if (userPinList == null || userPinList.size() == 0 || userPinList.size() > 1) {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
@@ -161,13 +162,13 @@ class UserPinValidatorImpl implements UserPinValidator {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserPinRepository(UserPinRepository userPinRepository) {
-        this.userPinRepository = userPinRepository
+    void setUserPinService(UserPinService userPinService) {
+        this.userPinService = userPinService
     }
 
     @Required

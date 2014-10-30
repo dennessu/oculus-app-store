@@ -6,10 +6,10 @@ import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.common.id.UserTFAId
 import com.junbo.identity.core.service.validator.UserTFAAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTFAAttemptRepository
-import com.junbo.identity.data.repository.UserTFAMailRepository
-import com.junbo.identity.data.repository.UserTFAPhoneRepository
+import com.junbo.identity.service.UserService
+import com.junbo.identity.service.UserTFAAttemptService
+import com.junbo.identity.service.UserTFAMailService
+import com.junbo.identity.service.UserTFAPhoneService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserTFA
@@ -27,11 +27,10 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
-    private UserRepository userRepository
-    private UserTFAPhoneRepository userTFAPhoneRepository
-    private UserTFAAttemptRepository userTFAAttemptRepository
-
-    private UserTFAMailRepository userTFAMailRepository
+    private UserService userService
+    private UserTFAPhoneService userTFAPhoneService
+    private UserTFAAttemptService userTFAAttemptService
+    private UserTFAMailService userTFAMailService
 
     private Integer minVerifyCodeLength
     private Integer maxVerifyCodeLength
@@ -56,7 +55,7 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
             throw new IllegalArgumentException('userTeleAttemptId is null')
         }
 
-        return userRepository.get(userId).then { User existingUser ->
+        return userService.getNonDeletedUser(userId).then { User existingUser ->
             if (existingUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -69,7 +68,7 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTFAAttemptRepository.get(attemptId).then { UserTFAAttempt userTeleAttempt ->
+            return userTFAAttemptService.get(attemptId).then { UserTFAAttempt userTeleAttempt ->
                 if (userTeleAttempt == null) {
                     throw AppErrors.INSTANCE.userTFAAttemptNotFound(attemptId).exception()
                 }
@@ -145,7 +144,7 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
             }
         }
 
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -183,9 +182,9 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
     }
 
     private Promise<UserTFA> getUserTFA(UserTFAId userTFAId) {
-        return userTFAPhoneRepository.get(userTFAId).then { UserTFA userTFA ->
+        return userTFAPhoneService.get(userTFAId).then { UserTFA userTFA ->
             if (userTFA == null) {
-                return userTFAMailRepository.get(userTFAId)
+                return userTFAMailService.get(userTFAId)
             } else {
                 return Promise.pure(userTFA)
             }
@@ -193,7 +192,7 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserTFAAttempt attempt) {
-         return userTFAAttemptRepository.searchByUserIdAndUserTFAId((UserId)user.id, attempt.userTFAId, maxTeleCodeAttemptNumber, 0).then { List<UserTFAAttempt> userTeleAttemptList ->
+         return userTFAAttemptService.searchByUserIdAndUserTFAId((UserId)user.id, attempt.userTFAId, maxTeleCodeAttemptNumber, 0).then { List<UserTFAAttempt> userTeleAttemptList ->
             if (CollectionUtils.isEmpty(userTeleAttemptList) || userTeleAttemptList.size() < maxTeleCodeAttemptNumber) {
                 return Promise.pure(null)
             }
@@ -211,23 +210,23 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserTFAPhoneRepository(UserTFAPhoneRepository userTFAPhoneRepository) {
-        this.userTFAPhoneRepository = userTFAPhoneRepository
+    void setUserTFAPhoneService(UserTFAPhoneService userTFAPhoneService) {
+        this.userTFAPhoneService = userTFAPhoneService
     }
 
     @Required
-    void setUserTFAAttemptRepository(UserTFAAttemptRepository userTFAAttemptRepository) {
-        this.userTFAAttemptRepository = userTFAAttemptRepository
+    void setUserTFAAttemptService(UserTFAAttemptService userTFAAttemptService) {
+        this.userTFAAttemptService = userTFAAttemptService
     }
 
     @Required
-    void setUserTFAMailRepository(UserTFAMailRepository userTFAMailRepository) {
-        this.userTFAMailRepository = userTFAMailRepository
+    void setUserTFAMailService(UserTFAMailService userTFAMailService) {
+        this.userTFAMailService = userTFAMailService
     }
 
     @Required

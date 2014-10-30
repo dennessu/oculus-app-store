@@ -1,4 +1,5 @@
 package com.junbo.common.cloudant.client
+
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.cloudant.CloudantEntity
@@ -29,6 +30,7 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
+
 /**
  * CloudantClientImpl.
  */
@@ -185,6 +187,34 @@ class CloudantClientImpl implements CloudantClientInternal {
                 return Promise.pure(result)
             }
         }
+    }
+
+    @Override
+    def <T extends CloudantEntity> Promise<Integer> queryViewCount(CloudantDbUri dbUri, Class<T> entityClass, Object[] startKey,
+                                    Object[] endKey, String viewName, boolean withHighKey, boolean descending, Integer limit, Integer skip) {
+        def query = [:]
+        if ((startKey != null && !descending) || (endKey != null && descending)) {
+            query.put('startkey', descending ? buildEndKey(endKey, withHighKey) : buildStartKey(startKey))
+        }
+        if ((endKey != null && !descending) || (startKey != null && descending)) {
+            query.put('endkey', descending ? buildStartKey(startKey) : buildEndKey(endKey, withHighKey))
+        }
+        if (descending) {
+            query.put('descending', 'true')
+        }
+        if (limit != null) {
+            query.put('limit', limit.toString())
+        }
+        if (skip != null) {
+            query.put('skip', skip.toString())
+        }
+        query.put('include_docs', 'false')
+
+        return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
+            checkViewErrors("query view", dbUri, viewName, response)
+            CloudantQueryResult cloudantQueryResult = marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass)
+            return Promise.pure(cloudantQueryResult?.rows?.size() == null ? 0 : cloudantQueryResult.rows.size())
+        })
     }
 
     @Override

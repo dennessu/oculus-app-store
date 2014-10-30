@@ -10,8 +10,8 @@ import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.filter.CommunicationFilter
 import com.junbo.identity.core.service.validator.CommunicationValidator
 import com.junbo.identity.data.identifiable.LocaleAccuracy
-import com.junbo.identity.data.repository.CommunicationRepository
-import com.junbo.identity.data.repository.LocaleRepository
+import com.junbo.identity.service.CommunicationService
+import com.junbo.identity.service.LocaleService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Communication
 import com.junbo.identity.spec.v1.model.CommunicationLocale
@@ -36,7 +36,7 @@ class CommunicationResourceImpl implements CommunicationResource {
     private static Map<String, Field> fieldMap = new HashMap<String, Field>()
 
     @Autowired
-    private CommunicationRepository communicationRepository
+    private CommunicationService communicationService
 
     @Autowired
     private CommunicationFilter communicationFilter
@@ -45,7 +45,7 @@ class CommunicationResourceImpl implements CommunicationResource {
     private CommunicationValidator communicationValidator
 
     @Autowired
-    private LocaleRepository localeRepository
+    private LocaleService localeService
 
     @Override
     Promise<Communication> create(Communication communication) {
@@ -56,7 +56,7 @@ class CommunicationResourceImpl implements CommunicationResource {
         communication = communicationFilter.filterForCreate(communication)
 
         return communicationValidator.validateForCreate(communication).then {
-            return communicationRepository.create(communication).then { Communication newCommunication ->
+            return communicationService.create(communication).then { Communication newCommunication ->
                 Created201Marker.mark(newCommunication.id)
 
                 newCommunication = communicationFilter.filterForGet(newCommunication, null)
@@ -75,7 +75,7 @@ class CommunicationResourceImpl implements CommunicationResource {
             throw new IllegalArgumentException('communication is null')
         }
 
-        return communicationRepository.get(communicationId).then { Communication oldCommunication ->
+        return communicationService.get(communicationId).then { Communication oldCommunication ->
             if (oldCommunication == null) {
                 throw AppErrors.INSTANCE.communicationNotFound(communicationId).exception()
             }
@@ -83,7 +83,7 @@ class CommunicationResourceImpl implements CommunicationResource {
             communication = communicationFilter.filterForPut(communication, oldCommunication)
 
             return communicationValidator.validateForUpdate(communicationId, communication, oldCommunication).then {
-                return communicationRepository.update(communication, oldCommunication).then { Communication newCommunication ->
+                return communicationService.update(communication, oldCommunication).then { Communication newCommunication ->
                     newCommunication = communicationFilter.filterForGet(newCommunication, null)
                     return Promise.pure(newCommunication)
                 }
@@ -101,7 +101,7 @@ class CommunicationResourceImpl implements CommunicationResource {
             throw new IllegalArgumentException('communication is null')
         }
 
-        return communicationRepository.get(communicationId).then { Communication oldCommunication ->
+        return communicationService.get(communicationId).then { Communication oldCommunication ->
             if (oldCommunication == null) {
                 throw AppErrors.INSTANCE.communicationNotFound(communicationId).exception()
             }
@@ -109,7 +109,7 @@ class CommunicationResourceImpl implements CommunicationResource {
             communication = communicationFilter.filterForPatch(communication, oldCommunication)
 
             return communicationValidator.validateForUpdate(communicationId, communication, oldCommunication).then {
-                return communicationRepository.update(communication, oldCommunication).then { Communication newCommunication ->
+                return communicationService.update(communication, oldCommunication).then { Communication newCommunication ->
                     newCommunication = communicationFilter.filterForGet(newCommunication, null)
                     return Promise.pure(newCommunication)
                 }
@@ -161,7 +161,7 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
 
         return communicationValidator.validateForGet(communicationId).then { Communication communication ->
-            return communicationRepository.delete(communicationId).then {
+            return communicationService.delete(communicationId).then {
                 return Promise.pure(Response.status(204).build())
             }
         }
@@ -169,14 +169,14 @@ class CommunicationResourceImpl implements CommunicationResource {
 
     private Promise<List<Communication>> search(CommunicationListOptions listOptions) {
         if (listOptions.region != null && listOptions.translation != null) {
-            return communicationRepository.searchByRegionAndTranslation(listOptions.region, listOptions.translation,
+            return communicationService.searchByRegionAndTranslation(listOptions.region, listOptions.translation,
                     listOptions.limit, listOptions.offset)
         } else if (listOptions.region != null) {
-            return communicationRepository.searchByRegion(listOptions.region, listOptions.limit, listOptions.offset)
+            return communicationService.searchByRegion(listOptions.region, listOptions.limit, listOptions.offset)
         } else if (listOptions.translation != null) {
-            return communicationRepository.searchByTranslation(listOptions.translation, listOptions.limit, listOptions.offset)
+            return communicationService.searchByTranslation(listOptions.translation, listOptions.limit, listOptions.offset)
         } else {
-            return communicationRepository.searchAll(listOptions.limit, listOptions.offset)
+            return communicationService.searchAll(listOptions.limit, listOptions.offset)
         }
     }
 
@@ -236,7 +236,7 @@ class CommunicationResourceImpl implements CommunicationResource {
             }
         }
 
-        return localeRepository.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
+        return localeService.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
             if (locale1 == null || locale1.fallbackLocale == null) {
                 return Promise.pure(null)
             }

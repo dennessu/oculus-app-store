@@ -62,6 +62,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     private String successRedirectUri
     private String failedRedirectUri
     private LoginStateRepository loginStateRepository
+    private Boolean verifyEmailAutoLogin
 
     @Required
     void setEmailVerifyCodeRepository(EmailVerifyCodeRepository emailVerifyCodeRepository) {
@@ -101,6 +102,11 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     @Required
     void setUserService(UserService userService) {
         this.userService = userService
+    }
+
+    @Required
+    void setVerifyEmailAutoLogin(Boolean verifyEmailAutoLogin) {
+        this.verifyEmailAutoLogin = verifyEmailAutoLogin
     }
 
     @Override
@@ -156,18 +162,19 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
                 userResource.put(user.getId(), existing).get()
             }
-            
-            LoginState loginState = new LoginState(
-                    userId: emailVerifyCode.userId,
-                    lastAuthDate: new Date()
-            )
 
-            loginStateRepository.save(loginState)
             def responseBuilder = response(successUri, true, locale, email, null)
-            CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.loginStateId, -1)
-            CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
-                    loginState.sessionId, -1, false)
+            if (verifyEmailAutoLogin) {
+                LoginState loginState = new LoginState(
+                        userId: emailVerifyCode.userId,
+                        lastAuthDate: new Date()
+                )
 
+                loginStateRepository.save(loginState)
+                CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.loginStateId, -1)
+                CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
+                        loginState.sessionId, -1, false)
+            }
             return Promise.pure(responseBuilder.build())
         } catch (Exception e) {
             LOGGER.error('Error calling the identity service', e)

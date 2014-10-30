@@ -411,10 +411,12 @@ public class LoginResourceTesting extends BaseTestClass {
             }
     )
     @Test
-    public void testCreateUserWithCommunication() throws Exception {
-        AuthTokenResponse createUserResponse = null;
+    public void testCreateUserWithInvalidLocale() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
-
+        TestContext.getData().putHeader("Accept-Language", "es-US");
+        AuthTokenResponse response = testDataProvider.CreateUser(createUserRequest, true);
+        assert response != null;
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
     }
 
     @Property(

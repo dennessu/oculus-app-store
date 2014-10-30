@@ -41,6 +41,28 @@ public class SentryQueryParam {
     @QueryParam("target_id")
     private String targetId;
 
+    @QueryParam("user_agent")
+    private String userAgent;
+
+    @QueryParam("locale")
+    private String locale;
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
     public String getTextJson() {
         return textJson;
     }

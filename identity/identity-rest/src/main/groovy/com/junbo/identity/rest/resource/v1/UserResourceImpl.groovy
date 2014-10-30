@@ -23,7 +23,7 @@ import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.*
+import com.junbo.identity.service.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
@@ -60,19 +60,19 @@ class UserResourceImpl implements UserResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserResource)
 
     @Autowired
-    private UserRepository userRepository
+    private UserService userService
 
     @Autowired
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private UserPersonalInfoService userPersonalInfoService
 
     @Autowired
-    private UserGroupRepository userGroupRepository
+    private UserGroupService userGroupService
 
     @Autowired
-    private UserPasswordRepository userPasswordRepository
+    private UserPasswordService userPasswordService
 
     @Autowired
-    private UserPinRepository userPinRepository
+    private UserPinService userPinService
 
     @Autowired
     private UserValidator userValidator
@@ -128,7 +128,7 @@ class UserResourceImpl implements UserResource {
             user = userFilter.filterForCreate(user)
 
             return userValidator.validateForCreate(user).then {
-                return userRepository.create(user).then { User newUser ->
+                return userService.create(user).then { User newUser ->
                     Created201Marker.mark(newUser.getId())
 
                     newUser = userFilter.filterForGet(newUser, null)
@@ -148,7 +148,7 @@ class UserResourceImpl implements UserResource {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return userRepository.get(userId).then { User oldUser ->
+        return userService.get(userId).then { User oldUser ->
             return silentPut(userId, user).then { User newUser ->
                 return isMailSentRequired(oldUser, newUser).then { Boolean aBoolean ->
                     //todo: Need to discuss with Hao to move all those mail trigger to service layer.
@@ -176,7 +176,7 @@ class UserResourceImpl implements UserResource {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return userRepository.get(userId).then { User oldUser ->
+        return userService.get(userId).then { User oldUser ->
             if (oldUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -192,7 +192,7 @@ class UserResourceImpl implements UserResource {
                 auditCSR(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
-                    return userRepository.update(user, oldUser).then { User newUser ->
+                    return userService.update(user, oldUser).then { User newUser ->
                         return updateCredential(user.getId(), oldUser.username, newUser.username).then {
                             newUser = userFilter.filterForGet(newUser, null)
                             return Promise.pure(newUser)
@@ -213,7 +213,7 @@ class UserResourceImpl implements UserResource {
             throw new IllegalArgumentException('user is null')
         }
 
-        return userRepository.get(userId).then { User oldUser ->
+        return userService.get(userId).then { User oldUser ->
             if (oldUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -229,7 +229,7 @@ class UserResourceImpl implements UserResource {
                 auditCSR(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
-                    return userRepository.update(user, oldUser).then { User newUser ->
+                    return userService.update(user, oldUser).then { User newUser ->
                         return updateCredential(user.getId(), oldUser.username, newUser.username).then {
                             newUser = userFilter.filterForGet(newUser, null)
 
@@ -314,17 +314,25 @@ class UserResourceImpl implements UserResource {
 
             if (listOptions.username != null) {
                 String canonicalUsername = normalizeService.normalize(listOptions.username)
-                return userPersonalInfoRepository.searchByCanonicalUsername(canonicalUsername, maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                return userPersonalInfoService.searchByCanonicalUsername(canonicalUsername, maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
                     User user = null
                     return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
-                        return userRepository.get(userPersonalInfo.userId).then { User existing ->
-                            if (existing.username == userPersonalInfo.getId()
-                             && (existing.status != UserStatus.DELETED.toString() || AuthorizeContext.hasScopes('csr'))) {
-                                user = existing
-                                return Promise.pure(Promise.BREAK)
+                        if (AuthorizeContext.hasScopes('csr')) {
+                            return userService.get(userPersonalInfo.userId).then { User existing ->
+                                if (existing.username == userPersonalInfo.getId()) {
+                                    user = existing
+                                    return Promise.pure(Promise.BREAK)
+                                }
+                                return Promise.pure(null)
                             }
-
-                            return Promise.pure(null)
+                        } else {
+                            return userService.getNonDeletedUser(userPersonalInfo.userId).then { User existing ->
+                                if (existing.username == userPersonalInfo.getId()) {
+                                    user = existing
+                                    return Promise.pure(Promise.BREAK)
+                                }
+                                return Promise.pure(null)
+                            }
                         }
                     }.then {
                         if (user == null) {
@@ -337,7 +345,7 @@ class UserResourceImpl implements UserResource {
                     }
                 }
             } else {
-                return userGroupRepository.searchByGroupId(listOptions.groupId, listOptions.limit,
+                return userGroupService.searchByGroupId(listOptions.groupId, listOptions.limit,
                         listOptions.offset).then { List<UserGroup> userGroupList ->
                     return Promise.each(userGroupList) { UserGroup userGroup ->
                         return userValidator.validateForGet(userGroup.userId).then(filterUser)
@@ -363,7 +371,7 @@ class UserResourceImpl implements UserResource {
                 }
 
                 user.setStatus(UserStatus.DELETED.toString())
-                return userRepository.update(user, user).then {
+                return userService.update(user, user).then {
                     return sendAccountDeleteEmail(user).recover {
                         LOGGER.error("Send delete account mail failure")
                         return Promise.pure(Response.status(204).build())
@@ -416,7 +424,7 @@ class UserResourceImpl implements UserResource {
             return Promise.pure(null)
         } else {
             // if username changes, will disable all passwords and pins. User needs to reset this.
-            return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
+            return userPasswordService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
                 List<UserPassword> userPasswordList ->
                     if (CollectionUtils.isEmpty(userPasswordList)) {
                         return Promise.pure(null)
@@ -424,12 +432,12 @@ class UserResourceImpl implements UserResource {
 
                     return Promise.each(userPasswordList.iterator()) { UserPassword userPassword ->
                         userPassword.active = false
-                        return userPasswordRepository.update(userPassword, userPassword)
+                        return userPasswordService.update(userPassword, userPassword)
                     }.then {
                         return Promise.pure(null)
                     }
             }.then {
-                return userPinRepository.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
+                return userPinService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
                     List<UserPin> userPinList ->
                         if (CollectionUtils.isEmpty(userPinList)) {
                             return Promise.pure(null)
@@ -437,7 +445,7 @@ class UserResourceImpl implements UserResource {
 
                         return Promise.each(userPinList.iterator()) { UserPin userPin ->
                             userPin.active = false
-                            return userPinRepository.update(userPin, userPin)
+                            return userPinService.update(userPin, userPin)
                         }.then {
                             return Promise.pure(null)
                         }
@@ -450,7 +458,7 @@ class UserResourceImpl implements UserResource {
         if (user.name == null) {
             return Promise.pure('')
         } else {
-            return userPersonalInfoRepository.get(user.name).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(user.name).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
                     return Promise.pure('')
                 }
@@ -471,7 +479,7 @@ class UserResourceImpl implements UserResource {
         if (user.username == null) {
             return Promise.pure('')
         } else {
-            return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(user.username).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
                     return Promise.pure('')
                 }
@@ -492,7 +500,7 @@ class UserResourceImpl implements UserResource {
         }
 
         link = link == null ? user.emails.get(0) : link;
-        return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(link.value).then { UserPersonalInfo userPersonalInfo ->
             Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
             return Promise.pure(email.info)
         }
@@ -714,7 +722,7 @@ class UserResourceImpl implements UserResource {
         }
 
         link = link == null ? user.emails.get(0) : link;
-        return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(link.value).then { UserPersonalInfo userPersonalInfo ->
             if (userPersonalInfo.lastValidateTime != null) {
                 return Promise.pure(true)
             }

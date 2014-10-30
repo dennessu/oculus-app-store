@@ -54,6 +54,7 @@
             </wf:on-render>
             <wf:transition on="next" to="PRE_LOGIN_SUCCESS">
                 <wf:action ref="validateCaptcha"/>
+                <wf:action ref="sentryLoginValidate"/>
                 <wf:action ref="authenticateUserAuthorize"/>
             </wf:transition>
             <wf:transition on="register" to="REGISTER_VIEW"/>
@@ -125,6 +126,7 @@
             <wf:transition on="next" to="PAYMENT_METHOD_VIEW">
                 <wf:action ref="validateRegister"/>
                 <wf:action ref="validateCaptcha"/>
+                <wf:action ref="sentryRegisterValidate" />
                 <wf:action ref="createUser"/>
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
@@ -135,6 +137,7 @@
             <wf:transition on="next2" to="EMAIL_VERIFY_REQUIRED_VIEW">
                 <wf:action ref="validateRegister"/>
                 <wf:action ref="validateCaptcha"/>
+                <wf:action ref="sentryRegisterValidate" />
                 <wf:action ref="createUser"/>
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
@@ -406,6 +409,14 @@
         <property name="recaptchaPrivateKey" value="${oauth.core.recaptcha.private.key}"/>
         <property name="recaptchaVerifyEndpoint" value="${oauth.core.recaptcha.verify.endpoint}"/>
         <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
+    </bean>
+
+    <bean id="sentryRegisterValidate" class="com.junbo.oauth.core.action.SentryRegisterValidate">
+        <property name="sentryFacade" ref="oauth_sentryFacade" />
+    </bean>
+
+    <bean id="sentryLoginValidate" class="com.junbo.oauth.core.action.SentryLoginValidate">
+        <property name="sentryFacade" ref="oauth_sentryFacade" />
     </bean>
 
     <bean id="sendAccountVerifyEmail" class="com.junbo.oauth.core.action.SendAccountVerifyEmail">

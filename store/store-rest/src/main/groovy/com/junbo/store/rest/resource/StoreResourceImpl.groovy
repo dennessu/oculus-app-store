@@ -133,7 +133,7 @@ class StoreResourceImpl implements StoreResource {
     private IAPValidator iapValidator
 
     @Override
-    Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request) {
+    Promise<VerifyEmailResponse> verifyEmail() {
         requestValidator.validateRequiredApiHeaders()
         return identityUtils.getActiveUserFromToken().then { User user->
             return facadeContainer.oAuthFacade.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), null).then {

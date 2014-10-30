@@ -4,8 +4,8 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.identity.core.service.validator.UserAuthenticatorValidator
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.UserAuthenticatorRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.UserAuthenticatorService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserAuthenticator
@@ -24,9 +24,9 @@ import org.springframework.util.CollectionUtils
 @CompileStatic
 class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
-    private UserRepository userRepository
+    private UserService userService
 
-    private UserAuthenticatorRepository userAuthenticatorRepository
+    private UserAuthenticatorService userAuthenticatorService
 
     private List<String> allowedTypes
 
@@ -34,13 +34,13 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
     private Integer maxExternalIdLength
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserAuthenticatorRepository(UserAuthenticatorRepository userAuthenticatorRepository) {
-        this.userAuthenticatorRepository = userAuthenticatorRepository
+    void setUserAuthenticatorService(UserAuthenticatorService userAuthenticatorService) {
+        this.userAuthenticatorService = userAuthenticatorService
     }
 
     @Required
@@ -64,27 +64,27 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             throw AppCommonErrors.INSTANCE.parameterRequired('userAuthenticatorId').exception()
         }
 
-        return userAuthenticatorRepository.get(userAuthenticatorId).then { UserAuthenticator userAuthenticator ->
-                if (userAuthenticator == null) {
-                    throw AppErrors.INSTANCE.userAuthenticatorNotFound(userAuthenticatorId).exception()
-                }
-
-                if (userAuthenticator.userId == null) {
-                    throw new IllegalAccessException('userId is not found')
-                }
-
-                return userRepository.get(userAuthenticator.userId).then { User user ->
-                    if (user == null) {
-                        throw AppErrors.INSTANCE.userNotFound(userAuthenticator.userId).exception()
-                    }
-
-                    if (user.status != UserStatus.ACTIVE.toString()) {
-                        throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
-                    }
-
-                    return Promise.pure(userAuthenticator)
-                }
+        return userAuthenticatorService.get(userAuthenticatorId).then { UserAuthenticator userAuthenticator ->
+            if (userAuthenticator == null) {
+                throw AppErrors.INSTANCE.userAuthenticatorNotFound(userAuthenticatorId).exception()
             }
+
+            if (userAuthenticator.userId == null) {
+                throw new IllegalAccessException('userId is not found')
+            }
+
+            return userService.getNonDeletedUser(userAuthenticator.userId).then { User user ->
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFound(userAuthenticator.userId).exception()
+                }
+
+                if (user.status != UserStatus.ACTIVE.toString()) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userAuthenticator.userId).exception()
+                }
+
+                return Promise.pure(userAuthenticator)
+            }
+        }
     }
 
     @Override
@@ -107,7 +107,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                 throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
 
-            return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(userAuthenticator.userId,
+            return userAuthenticatorService.searchByUserIdAndTypeAndExternalId(userAuthenticator.userId,
                     userAuthenticator.type, userAuthenticator.externalId, 1, 0).then {
                 List<UserAuthenticator> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
@@ -143,7 +143,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
 
             if (authenticator.externalId != oldAuthenticator.externalId
              || authenticator.type != oldAuthenticator.type) {
-                return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(authenticator.userId,
+                return userAuthenticatorService.searchByUserIdAndTypeAndExternalId(authenticator.userId,
                         authenticator.type, authenticator.externalId, 1, 0).then {
                     List<UserAuthenticator> existing ->
                         if (!CollectionUtils.isEmpty(existing)) {
@@ -167,7 +167,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
-        return userRepository.get(userAuthenticator.userId).then { User user ->
+        return userService.getNonDeletedUser(userAuthenticator.userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userAuthenticator.userId).exception()
             }

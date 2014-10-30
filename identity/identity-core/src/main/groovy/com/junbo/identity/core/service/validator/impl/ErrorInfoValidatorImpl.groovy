@@ -6,7 +6,7 @@ import com.junbo.common.id.ErrorIdentifier
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.ErrorInfoValidator
-import com.junbo.identity.data.repository.ErrorInfoRepository
+import com.junbo.identity.service.ErrorInfoService
 import com.junbo.identity.spec.v1.model.ErrorDetail
 import com.junbo.identity.spec.v1.model.ErrorInfo
 import com.junbo.identity.spec.v1.option.list.ErrorInfoListOptions
@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class ErrorInfoValidatorImpl implements ErrorInfoValidator {
-    private ErrorInfoRepository errorInfoRepository
+    private ErrorInfoService errorInfoService
 
     @Override
     Promise<ErrorInfo> validateForGet(ErrorIdentifier identifier) {
@@ -35,7 +35,7 @@ class ErrorInfoValidatorImpl implements ErrorInfoValidator {
 
         errorInfo.id = new ErrorIdentifier(errorInfo.errorIdentifier)
 
-        return errorInfoRepository.get(new ErrorIdentifier(errorInfo.errorIdentifier)).then { ErrorInfo existing ->
+        return errorInfoService.get(new ErrorIdentifier(errorInfo.errorIdentifier)).then { ErrorInfo existing ->
             if (existing != null) {
                 throw AppCommonErrors.INSTANCE.fieldDuplicate('errorIdentifier').exception()
             }
@@ -104,7 +104,7 @@ class ErrorInfoValidatorImpl implements ErrorInfoValidator {
     }
 
     @Required
-    void setErrorInfoRepository(ErrorInfoRepository errorInfoRepository) {
-        this.errorInfoRepository = errorInfoRepository
+    void setErrorInfoService(ErrorInfoService errorInfoService) {
+        this.errorInfoService = errorInfoService
     }
 }

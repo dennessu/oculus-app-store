@@ -24,5 +24,5 @@ public interface OrganizationRepository extends BaseRepository<Organization, Org
     public Promise<Organization> searchByMigrateCompanyId(Long migratedCompanyId)
 
     @ReadMethod
-    Promise<Results<Country>> searchAll(Integer limit, Integer offset)
+    Promise<Results<Organization>> searchAll(Integer limit, Integer offset)
 }

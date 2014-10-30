@@ -28,7 +28,7 @@ dependencies {
     compile junboProject(':identity-core')
     compile junboProject(':identity-spec')
     compile junboProject(':identity-common')
-    compile junboProject(':identity-data')
     compile junboProject(':identity-auth')
     compile junboProject(':identity-clientproxy')
+    compile junboProject(':identity-service')
 }

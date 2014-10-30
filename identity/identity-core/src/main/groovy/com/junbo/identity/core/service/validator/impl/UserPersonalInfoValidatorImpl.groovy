@@ -7,9 +7,9 @@ import com.junbo.identity.core.service.validator.PiiValidatorFactory
 import com.junbo.identity.core.service.validator.UserPersonalInfoValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.OrganizationRepository
-import com.junbo.identity.data.repository.UserPersonalInfoRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.OrganizationService
+import com.junbo.identity.service.UserPersonalInfoService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
@@ -30,9 +30,9 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
     * The userPersonalInfo validation: https://oculus.atlassian.net/wiki/display/SER/Resource%3A+userPersonalInfo
     * */
 
-    private UserPersonalInfoRepository userPersonalInfoRepository
-    private UserRepository userRepository
-    private OrganizationRepository organizationRepository
+    private UserPersonalInfoService userPersonalInfoService
+    private UserService userService
+    private OrganizationService organizationService
 
     private PiiValidatorFactory piiValidatorFactory
 
@@ -42,7 +42,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             throw new IllegalArgumentException('userPersonalInfoId is null')
         }
 
-        return userPersonalInfoRepository.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
             if (userPersonalInfo == null) {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoId).exception()
             }
@@ -192,7 +192,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
 
     Promise<Void> checkPiiOwnerShipExists(UserPersonalInfo userPersonalInfo) {
         if (userPersonalInfo.userId != null) {
-            return userRepository.get(userPersonalInfo.userId).then { User user ->
+            return userService.getNonDeletedUser(userPersonalInfo.userId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userPersonalInfo.userId).exception()
                 }
@@ -204,7 +204,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
                 return Promise.pure(null)
             }
         } else if (userPersonalInfo.organizationId) {
-            return organizationRepository.get(userPersonalInfo.organizationId).then { Organization organization ->
+            return organizationService.get(userPersonalInfo.organizationId).then { Organization organization ->
                 if (organization == null) {
                     throw AppErrors.INSTANCE.organizationNotFound(userPersonalInfo.organizationId).exception()
                 }
@@ -224,18 +224,18 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
     }
 
     @Required
-    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
-        this.userPersonalInfoRepository = userPersonalInfoRepository
+    void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
+        this.userPersonalInfoService = userPersonalInfoService
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setOrganizationRepository(OrganizationRepository organizationRepository) {
-        this.organizationRepository = organizationRepository
+    void setOrganizationService(OrganizationService organizationService) {
+        this.organizationService = organizationService
     }
 
     @Required
