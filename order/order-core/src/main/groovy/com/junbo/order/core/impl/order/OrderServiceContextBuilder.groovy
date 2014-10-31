@@ -183,7 +183,7 @@ class OrderServiceContextBuilder {
     }
 
     Promise<List<Offer>> getOffers(OrderServiceContext context) {
-        LOGGER.error("name=OrderServiceContextBuilder_getOffers")
+        LOGGER.info("name=OrderServiceContextBuilder_getOffers")
 
         assert (context != null && context.order != null)
 
@@ -208,7 +208,7 @@ class OrderServiceContextBuilder {
             }
             context.offersMap = offerMap
             context.offers = offers
-            LOGGER.error("name=OrderServiceContextBuilder_getOffers_Completed")
+            LOGGER.info("name=OrderServiceContextBuilder_getOffers_Completed")
             return offers
         }
     }
