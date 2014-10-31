@@ -23,13 +23,16 @@
     "communication": {
       "views": {
         "by_region": {
-          "map": "function(doc) {if (doc.regions) {for (var i in doc.regions) {emit(doc.regions[i], doc._id)}}}"
+          "map": "function(doc) {if (doc.regions) {for (var i in doc.regions) {emit(doc.regions[i], doc._id)}}}",
+            "reduce": "_count"
         }, 
         "by_region_and_translation": {
-          "map": "function(doc) {if (doc.translations && doc.regions) {for (var i in doc.regions) {for (var j in doc.translations) {emit([doc.regions[i], doc.translations[j]], doc._id)}}}}"
+          "map": "function(doc) {if (doc.translations && doc.regions) {for (var i in doc.regions) {for (var j in doc.translations) {emit([doc.regions[i], doc.translations[j]], doc._id)}}}}",
+            "reduce": "_count"
         }, 
         "by_translation": {
-          "map": "function(doc) {if (doc.translations) {for (var i in doc.translations) {emit(doc.translations[i], doc._id)}}}"
+          "map": "function(doc) {if (doc.translations) {for (var i in doc.translations) {emit(doc.translations[i], doc._id)}}}",
+            "reduce": "_count"
         }
       }
     }, 

@@ -73,7 +73,7 @@ public class postCommunication {
 
         Communication gotten = Identity.CommunicationGet(posted.getId().toString(), null);
         gotten = Identity.CommunicationPut(gotten);
-        Results<Communication> results = Identity.CommunicationSearch(null, null);
+        Results<Communication> results = Identity.CommunicationSearch(null, null, null);
         assert results.getItems().size() != 0;
     }
 
@@ -199,10 +199,11 @@ public class postCommunication {
         Communication communication = IdentityModel.DefaultCommunication();
         Communication posted = Identity.CommunicationDefault(communication);
 
-        Results<Communication> communications = Identity.CommunicationSearch(null, null);
+        Results<Communication> communications = Identity.CommunicationSearch(null, null, null);
+        assert communications.getTotal() > 0;
         assert communications.getItems().size() != 0;
 
-        communications = Identity.CommunicationSearch("US", null);
+        communications = Identity.CommunicationSearch("US", null, null);
         assert communications.getItems().size() != 0;
         for (int index = 0; index < communications.getItems().size(); index++) {
             Communication gotten = communications.getItems().get(index);
@@ -217,7 +218,8 @@ public class postCommunication {
             assert regionIndex != gotten.getRegions().size();
         }
 
-        communications = Identity.CommunicationSearch("US", "en_US");
+        communications = Identity.CommunicationSearch("US", "en_US", null);
+        assert communications.getTotal() != 0;
         assert communications.getItems().size() != 0;
         for (int index = 0; index < communications.getItems().size(); index++) {
             Communication gotten = communications.getItems().get(index);
@@ -237,7 +239,11 @@ public class postCommunication {
             assert regionIndex != gotten.getTranslations().size();
         }
 
-        communications = Identity.CommunicationSearch("US", "ja_JP");
+        communications = Identity.CommunicationSearch("US", "ja_JP", null);
+        assert communications.getItems().size() == 0;
+
+        communications = Identity.CommunicationSearch("US", "en_US", 0);
+        assert communications.getTotal() != 0;
         assert communications.getItems().size() == 0;
     }
 

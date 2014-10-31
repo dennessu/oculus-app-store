@@ -5,6 +5,7 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CommunicationId
+import com.junbo.common.model.Results
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.CommunicationValidator
@@ -116,12 +117,12 @@ class CommunicationValidatorImpl implements CommunicationValidator {
             CommunicationLocale inputLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(inputJsonNode, CommunicationLocale)
 
             return Promise.each(communication.regions) { CountryId region ->
-                return communicationService.searchByRegion(region, Integer.MAX_VALUE, 0).then { List<Communication> communicationList ->
-                    if (CollectionUtils.isEmpty(communicationList)) {
+                return communicationService.searchByRegion(region, Integer.MAX_VALUE, 0).then { Results<Communication> communicationList ->
+                    if (communicationList == null || CollectionUtils.isEmpty(communicationList.items)) {
                         return Promise.pure(null)
                     }
 
-                    for (Communication existing : communicationList) {
+                    for (Communication existing : communicationList.items) {
                         String name = getDefaultLocaleName(existing)
                         if (name.equalsIgnoreCase(inputLocale.name)) {
                             throw AppCommonErrors.INSTANCE.fieldInvalid('regions', 'communication have overlap region support for same title').exception()
@@ -162,12 +163,12 @@ class CommunicationValidatorImpl implements CommunicationValidator {
 
             CommunicationLocale inputCommunicationLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(updateJsonNode, CommunicationLocale)
             return Promise.each(communication.regions) { CountryId region ->
-                return communicationService.searchByRegion(region, Integer.MAX_VALUE, 0).then { List<Communication> communicationList ->
-                    if (CollectionUtils.isEmpty(communicationList)) {
+                return communicationService.searchByRegion(region, Integer.MAX_VALUE, 0).then { Results<Communication> communicationList ->
+                    if (communicationList == null || CollectionUtils.isEmpty(communicationList.items)) {
                         return Promise.pure(null)
                     }
 
-                    for (Communication existing : communicationList) {
+                    for (Communication existing : communicationList.items) {
                         if (existing.getId() == communication.getId()) {
                             continue
                         }

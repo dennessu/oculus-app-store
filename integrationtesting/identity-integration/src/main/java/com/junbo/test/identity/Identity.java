@@ -734,10 +734,10 @@ public class Identity {
         return IdentityGet(IdentityV1CommunicationURI + "/" + communicationId + buildCommunicationLocale(locale), Communication.class);
     }
 
-    public static Results<Communication> CommunicationSearch(String region, String translation) throws Exception {
+    public static Results<Communication> CommunicationSearch(String region, String translation, Integer limit) throws Exception {
         Results<Communication> results = new Results<>();
         results.setItems(new ArrayList<Communication>());
-        Results res = IdentityGet(IdentityV1CommunicationURI + buildCommunicationQueryUrl(region, translation), Results.class);
+        Results res = IdentityGet(IdentityV1CommunicationURI + buildCommunicationQueryUrl(region, translation, limit), Results.class);
         for (Object obj : res.getItems()) {
             results.getItems().add((Communication) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
                     Communication.class));
@@ -757,16 +757,23 @@ public class Identity {
         }
     }
 
-    public static String buildCommunicationQueryUrl(String region, String translation) {
+    public static String buildCommunicationQueryUrl(String region, String translation, Integer limit) {
+        String url = "";
         if (StringUtils.isEmpty(region) && StringUtils.isEmpty(translation)) {
-            return "";
+            url = "";
         } else if (!StringUtils.isEmpty(region) && !StringUtils.isEmpty(translation)) {
-            return "?region=" + region + "&translation=" + translation;
+            url = "?region=" + region + "&translation=" + translation;
         } else if (!StringUtils.isEmpty(region)) {
-            return "?region=" + region;
+            url = "?region=" + region;
         } else {
-            return "?translation=" + translation;
+            url = "?translation=" + translation;
         }
+
+        if (limit != null) {
+           url = !StringUtils.isEmpty(url)? (url + "&count=" + limit) : ("count=" + limit);
+        }
+
+        return url;
     }
 
     public static List<UserCredentialVerifyAttempt> UserCredentialAttemptList(UserId userId, String credentialType) throws Exception {
