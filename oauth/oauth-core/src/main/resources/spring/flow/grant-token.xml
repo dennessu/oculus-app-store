@@ -26,6 +26,7 @@
 
         <wf:action-state id="passwordBranch">
             <wf:action ref="validateScope"/>
+            <wf:action ref="sentryPostTokenValidate"/>
             <wf:action ref="authenticateUserToken"/>
             <wf:action ref="validateScopeAfterLoginToken"/>
             <wf:action ref="validateClientAfterLoginToken"/>
@@ -84,5 +85,9 @@
     <bean id="validateClientAfterLoginToken" class="com.junbo.oauth.core.action.ValidateClientAfterLogin">
         <property name="groupUtil" ref="groupUtil"/>
         <property name="isAuthorizeFlow" value="false"/>
+    </bean>
+
+    <bean id="sentryPostTokenValidate" class="com.junbo.oauth.core.action.SentryPostTokenValidate">
+        <property name="sentryFacade" ref="oauth_sentryFacade" />
     </bean>
 </beans>

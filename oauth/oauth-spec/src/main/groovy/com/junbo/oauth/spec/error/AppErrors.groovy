@@ -199,4 +199,7 @@ interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = '144', message = 'Sentry block login access')
     AppError sentryBlockLoginAccess()
+
+    @ErrorDef(httpStatusCode = 412, code = '145', message = 'Sentry block email check: {0}')
+    AppError sentryBlockEmailCheck(String reason)
 }

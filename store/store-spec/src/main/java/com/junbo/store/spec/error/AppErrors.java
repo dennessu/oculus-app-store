@@ -100,4 +100,10 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "124", message = "Error occurs, please retry again.")
     AppError retryableError();
+
+    @ErrorDef(httpStatusCode = 412, code = "125", message = "Sentry block check email.")
+    AppError sentryBlockCheckEmail();
+
+    @ErrorDef(httpStatusCode = 412, code = "126", message = "Sentry block check username.")
+    AppError sentryBlockCheckUsername();
 }

@@ -431,6 +431,7 @@
 
     <bean id="sendAccountVerifyEmail" class="com.junbo.oauth.core.action.SendAccountVerifyEmail">
         <property name="userService" ref="userService" />
+        <property name="sentryFacade" ref="oauth_sentryFacade"/>
     </bean>
 
     <bean id="sendWelcomeEmail" class="com.junbo.oauth.core.action.SendWelcomeEmail">
