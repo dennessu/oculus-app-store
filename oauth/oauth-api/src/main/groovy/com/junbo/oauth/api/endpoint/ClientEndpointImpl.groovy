@@ -44,7 +44,7 @@ class ClientEndpointImpl implements ClientEndpoint {
         List<Client> clients = clientService.getAllClients(options)
         Results<Client> results = new Results<>()
         results.items = clients
-        results.total = clients.size()
+        results.total = options.total
         results.next = new Link(href: buildNextUrl(options))
 
         return Promise.pure(results)
