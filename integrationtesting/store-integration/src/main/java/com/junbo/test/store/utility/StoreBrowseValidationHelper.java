@@ -451,7 +451,7 @@ public class StoreBrowseValidationHelper {
                                  com.junbo.catalog.spec.model.offer.Offer catalogOffer, OfferRevision offerRevision, boolean isFree) {
         Assert.assertEquals(offer.getSelf(), new OfferId(catalogOffer.getId()));
         OfferRevisionLocaleProperties offerRevisionLocaleProperties = offerRevision.getLocales() == null ? null : offerRevision.getLocales().get(locale);
-        Assert.assertEquals(offer.getFormattedDescription(), offerRevisionLocaleProperties == null ? null : offerRevisionLocaleProperties.getShortDescription());
+        Assert.assertEquals(offer.getFormattedDescription(), defaultIfNull(offerRevisionLocaleProperties == null ? null : offerRevisionLocaleProperties.getShortDescription()));
         Assert.assertEquals(offer.getIsFree().booleanValue(), isFree);
         if (isFree) {
             Assert.assertEquals(offer.getPrice().doubleValue(), BigDecimal.ZERO.doubleValue(), 0.00001);

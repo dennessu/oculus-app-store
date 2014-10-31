@@ -415,6 +415,9 @@ class ItemBuilder {
         if (item.appDetails != null) {
             fillNullValueWithDefault(item.appDetails, offerAvailable)
         }
+        if (offerAvailable && item.offer != null) {
+            fillNullValueWithDefault(item.offer)
+        }
     }
 
     private void fillNullValueWithDefault(AppDetails appDetails, boolean offerAvailable) {
@@ -444,5 +447,9 @@ class ItemBuilder {
         revisionNote.title = CommonUtils.toDefaultIfNull(revisionNote.title)
         revisionNote.versionCode = CommonUtils.toDefaultIfNull(revisionNote.versionCode)
         revisionNote.versionString = CommonUtils.toDefaultIfNull(revisionNote.versionString)
+    }
+
+    private void fillNullValueWithDefault(Offer offer) {
+        offer.formattedDescription = CommonUtils.toDefaultIfNull(offer.formattedDescription)
     }
 }
