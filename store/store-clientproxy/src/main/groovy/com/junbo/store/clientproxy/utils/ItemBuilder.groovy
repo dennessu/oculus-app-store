@@ -23,7 +23,6 @@ import com.junbo.store.spec.model.external.sewer.casey.search.CaseyItem
 import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer
 import com.junbo.store.spec.model.external.sewer.casey.search.CatalogAttribute
 import com.junbo.store.spec.model.external.sewer.catalog.SewerItem
-import com.junbo.store.spec.model.external.sewer.entitlement.SewerEntitlement
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
@@ -98,7 +97,7 @@ class ItemBuilder {
         }
     }
 
-    public Item buildItem(CaseyOffer caseyOffer, Map<String, AggregatedRatings> aggregatedRatings, Organization publisher, Organization developer, Images.BuildType type, ApiContext apiContext) {
+    public Item buildItem(CaseyOffer caseyOffer, Map<String, AggregatedRatings> aggregatedRatings, String publisher, String developer, Images.BuildType type, ApiContext apiContext) {
         Item result = new Item()
         CaseyItem caseyItem = CollectionUtils.isEmpty(caseyOffer?.items) ? null : caseyOffer.items[0]
         result.currentRevision = caseyItem?.currentRevision
@@ -106,7 +105,7 @@ class ItemBuilder {
         result.descriptionHtml = caseyOffer?.longDescription
         result.itemType = caseyItem?.type
         result.supportedLocales = caseyItem?.supportedLocales
-        result.creator = developer?.name
+        result.creator = developer
         result.self = caseyItem?.self
         result.images = buildImages(caseyOffer?.images, type)
         result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext)
@@ -214,7 +213,6 @@ class ItemBuilder {
         result.packageName = itemRevision?.packageName
 
         Binary binary = itemRevision?.binaries?.get(Platform.ANDROID.value)
-        result.contentRating = null
         result.installationSize = binary?.size
         result.versionCode = getVersionCode(binary)
         result.permissions = getPermissions(binary)
@@ -288,7 +286,7 @@ class ItemBuilder {
         result.put(imageSizeGroup, buildImage(image))
     }
 
-    private AppDetails buildAppDetails(CaseyOffer caseyOffer, CaseyItem caseyItem, Organization publisher, Organization developer, ApiContext apiContext) {
+    private AppDetails buildAppDetails(CaseyOffer caseyOffer, CaseyItem caseyItem, String publisher, String developer, ApiContext apiContext) {
         String country = apiContext.country.getId().value
         AppDetails appDetails = new AppDetails()
         appDetails.packageName = caseyItem?.packageName
@@ -315,8 +313,8 @@ class ItemBuilder {
                     name: attribute.name
             )
         }
-        appDetails.publisherName = publisher?.name
-        appDetails.developerName = developer?.name
+        appDetails.publisherName = publisher
+        appDetails.developerName = developer
         return appDetails;
     }
 
@@ -417,6 +415,9 @@ class ItemBuilder {
         if (item.appDetails != null) {
             fillNullValueWithDefault(item.appDetails, offerAvailable)
         }
+        if (offerAvailable && item.offer != null) {
+            fillNullValueWithDefault(item.offer)
+        }
     }
 
     private void fillNullValueWithDefault(AppDetails appDetails, boolean offerAvailable) {
@@ -446,5 +447,9 @@ class ItemBuilder {
         revisionNote.title = CommonUtils.toDefaultIfNull(revisionNote.title)
         revisionNote.versionCode = CommonUtils.toDefaultIfNull(revisionNote.versionCode)
         revisionNote.versionString = CommonUtils.toDefaultIfNull(revisionNote.versionString)
+    }
+
+    private void fillNullValueWithDefault(Offer offer) {
+        offer.formattedDescription = CommonUtils.toDefaultIfNull(offer.formattedDescription)
     }
 }

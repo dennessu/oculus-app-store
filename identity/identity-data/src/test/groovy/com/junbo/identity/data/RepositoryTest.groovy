@@ -4,6 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
@@ -30,6 +31,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional
 import org.testng.Assert
 import org.testng.annotations.Test
+
 /**
  * Unittest.
  */
@@ -316,9 +318,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         AuthenticatorListOptions getOption = new AuthenticatorListOptions()
         getOption.setExternalId(newValue)
-        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
+        Results<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
                 null).get()
-        assert userAuthenticators.size() != 0
+        assert userAuthenticators != null
+        assert userAuthenticators.items.size() != 0
     }
 
     @Test
@@ -336,10 +339,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroupListOptions getOption = new UserGroupListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setGroupId(new GroupId("1493188608L"))
-        List<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
+        Results<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
                 new GroupId("1493188608L"), Integer.MAX_VALUE, 0).get()
-
-        assert userGroups.size() != 0
+        assert userGroups != null
+        assert userGroups.items.size() != 0
     }
 
     @Test
@@ -647,7 +650,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         email.setInfo(email2)
         newUserPersonalInfo.setValue(ObjectMapperProvider.instance().valueToTree(email))
-        newUserPersonalInfo = userPersonalInfoRepository.update(newUserPersonalInfo, newUserPersonalInfo)
+        newUserPersonalInfo = userPersonalInfoRepository.update(newUserPersonalInfo, newUserPersonalInfo).get()
         gotEmail = ObjectMapperProvider.instance().treeToValue(newUserPersonalInfo.getValue(), Email)
         assert gotEmail.info == email2
     }

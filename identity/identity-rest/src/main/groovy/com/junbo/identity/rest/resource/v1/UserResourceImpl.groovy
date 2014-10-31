@@ -346,8 +346,11 @@ class UserResourceImpl implements UserResource {
                 }
             } else {
                 return userGroupService.searchByGroupId(listOptions.groupId, listOptions.limit,
-                        listOptions.offset).then { List<UserGroup> userGroupList ->
-                    return Promise.each(userGroupList) { UserGroup userGroup ->
+                        listOptions.offset).then { Results<UserGroup> userGroupList ->
+                    if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
+                        return Promise.pure(resultList)
+                    }
+                    return Promise.each(userGroupList.items) { UserGroup userGroup ->
                         return userValidator.validateForGet(userGroup.userId).then(filterUser)
                     }.then {
                         return Promise.pure(resultList)

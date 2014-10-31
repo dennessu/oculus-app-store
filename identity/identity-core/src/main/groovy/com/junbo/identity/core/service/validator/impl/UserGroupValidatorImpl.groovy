@@ -7,6 +7,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserGroupId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.validator.UserGroupValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.service.GroupService
@@ -74,8 +75,8 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
 
-            return userGroupService.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId, 1, 0).then { List<UserGroup> existing ->
-                if (!CollectionUtils.isEmpty(existing)) {
+            return userGroupService.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId, 1, 0).then { Results<UserGroup> existing ->
+                if (existing != null && !CollectionUtils.isEmpty(existing.items)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('groupId').exception()
                 }
 
@@ -142,16 +143,16 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 }
 
                 return userGroupService.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
-                        maximumFetchSize, 0).then { List<UserGroup> existingUserGroupList ->
-                    if (CollectionUtils.isEmpty(existingUserGroupList)) {
+                        maximumFetchSize, 0).then { Results<UserGroup> existingUserGroupList ->
+                    if (existingUserGroupList == null || CollectionUtils.isEmpty(existingUserGroupList.items)) {
                         return Promise.pure(null)
                     }
 
-                    existingUserGroupList.removeAll { UserGroup existing ->
+                    existingUserGroupList.items.removeAll { UserGroup existing ->
                         return existing.id == userGroup.id
                     }
 
-                    if (!CollectionUtils.isEmpty(existingUserGroupList)) {
+                    if (!CollectionUtils.isEmpty(existingUserGroupList.items)) {
                         throw AppCommonErrors.INSTANCE.fieldInvalid('groupId').exception()
                     }
 

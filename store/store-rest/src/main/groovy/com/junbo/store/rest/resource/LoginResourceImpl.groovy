@@ -111,6 +111,17 @@ class LoginResourceImpl implements LoginResource {
         ErrorContext errorContext = new ErrorContext()
 
         Promise.pure().then {
+            def textMap = [:]
+            sentryFacade.doSentryCheck(sentryFacade.createSentryRequest(SentryCategory.OCULUS_EMAIL_LOOKUP.value, textMap))
+        }.recover { Throwable throwable ->
+            LOGGER.error('checkEmail:  Call sentry error, Ignore', throwable)
+            return Promise.pure()
+        }.then { SentryResponse sentryResponse ->
+            if (sentryResponse != null && sentryResponse.isBlockAccess()) {
+                throw AppErrors.INSTANCE.sentryBlockCheckEmail().exception()
+            }
+            return Promise.pure()
+        }.then {
             errorContext.fieldName = 'email'
             return resourceContainer.userResource.checkEmail(emailCheckRequest.email)
         }.recover { Throwable ex ->
@@ -135,6 +146,17 @@ class LoginResourceImpl implements LoginResource {
         ErrorContext errorContext = new ErrorContext()
 
         Promise.pure().then {
+            def textMap = [:]
+            sentryFacade.doSentryCheck(sentryFacade.createSentryRequest(SentryCategory.OCULUS_EMAIL_LOOKUP.value, textMap))
+        }.recover { Throwable throwable ->
+            LOGGER.error('checkUsername:  Call sentry error, Ignore', throwable)
+            return Promise.pure()
+        }.then { SentryResponse sentryResponse ->
+            if (sentryResponse != null && sentryResponse.isBlockAccess()) {
+                throw AppErrors.INSTANCE.sentryBlockCheckUsername().exception()
+            }
+            return Promise.pure()
+        }.then {
             errorContext.fieldName = 'email'
             return resourceContainer.userResource.checkEmail(userNameCheckRequest.email)
         }.recover { Throwable ex ->

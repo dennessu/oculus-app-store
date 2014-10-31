@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserAuthenticatorId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.validator.UserAuthenticatorValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.service.UserAuthenticatorService
@@ -108,9 +109,8 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             }
 
             return userAuthenticatorService.searchByUserIdAndTypeAndExternalId(userAuthenticator.userId,
-                    userAuthenticator.type, userAuthenticator.externalId, 1, 0).then {
-                List<UserAuthenticator> existing ->
-                if (!CollectionUtils.isEmpty(existing)) {
+                    userAuthenticator.type, userAuthenticator.externalId, 1, 0).then { Results<UserAuthenticator> existing ->
+                if (existing != null && !CollectionUtils.isEmpty(existing.items)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('externalId').exception()
                 }
 
@@ -144,9 +144,8 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             if (authenticator.externalId != oldAuthenticator.externalId
              || authenticator.type != oldAuthenticator.type) {
                 return userAuthenticatorService.searchByUserIdAndTypeAndExternalId(authenticator.userId,
-                        authenticator.type, authenticator.externalId, 1, 0).then {
-                    List<UserAuthenticator> existing ->
-                        if (!CollectionUtils.isEmpty(existing)) {
+                        authenticator.type, authenticator.externalId, 1, 0).then { Results<UserAuthenticator> existing ->
+                        if (existing != null && !CollectionUtils.isEmpty(existing.items)) {
                             throw AppCommonErrors.INSTANCE.fieldDuplicate('type or externalId').exception()
                         }
 

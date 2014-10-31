@@ -53,6 +53,7 @@ public class Identity {
     public static final String IdentityV1UserPersonalInfoURI = IdentityEndPointV1 + "/personal-info";
     public static final String IdentityV1UsernameMailBlockerURI = IdentityEndPointV1 + "/imports/username-email-block";
     public static final String IdentityV1TosURI = IdentityEndPointV1 + "/tos";
+    public static final String IdentityV1UserAuthenticatorURI = IdentityEndPointV1 + "/authenticators";
 
     public static String httpAuthorizationHeader = "";
 
@@ -510,42 +511,47 @@ public class Identity {
         return (UserCredential) JsonHelper.JsonNodeToObject(jsonNode, UserCredential.class);
     }
 
-    public static Group SearchOrganizationGroup(OrganizationId organizationId, String groupName) throws Exception {
-        String requestURI = IdentityV1GroupURI + "?organizationId=" + IdFormatter.encodeId(organizationId)
-                + "&name=" + groupName;
-        JsonNode jsonNode = JsonHelper.ObjectToJsonNode(
-                (IdentityGet(requestURI, (Results.class)).getItems().get(0)));
-        return ((Group) JsonHelper.JsonNodeToObject(jsonNode, Group.class));
-    }
-
-    public static UserGroup SearchUserGroupByGroupId(GroupId groupId, Boolean emptyResult) throws Exception {
-        String requestURI = IdentityV1UserGroupMemberURI + "?groupId=" + groupId;
-        if (emptyResult) {
-            Validator.Validate("validate result is empty", true,
-                    IdentityGet(requestURI, (Results.class)).getItems().isEmpty());
-            return null;
-        } else {
-            JsonNode jsonNode = JsonHelper.ObjectToJsonNode(
-                    (IdentityGet(requestURI, (Results.class)).getItems().get(0)));
-            return ((UserGroup) JsonHelper.JsonNodeToObject(jsonNode, UserGroup.class));
-        }
-    }
-
-    public static List<UserGroup> UserGroupSearch(GroupId groupId, UserId userId) throws Exception {
+    public static Results<UserGroup> UserGroupSearch(GroupId groupId, UserId userId, Integer limit) throws Exception {
         String url = "";
-        if (groupId != null) {
+        if (userId != null && groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId) + "&groupId=" + IdConverter.idToHexString(groupId);
+        } else if (groupId != null) {
             url = IdentityV1UserGroupMemberURI + "?groupId=" + IdConverter.idToHexString(groupId);
-        } else {
+        } else if (userId != null) {
             url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId);
         }
 
-        List<UserGroup> userGroups = IdentityGet(url, Results.class).getItems();
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+        Results<UserGroup> userGroups = IdentityGet(url, Results.class);
         List<UserGroup> userGroupList = new ArrayList<>();
-        for (Object obj : userGroups) {
+        for (Object obj : userGroups.getItems()) {
             userGroupList.add((UserGroup)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
         }
 
-        return userGroupList;
+        userGroups.setItems(userGroupList);
+        return userGroups;
+    }
+
+    public static Results<UserGroup> UserGroupSearch(GroupId groupId, UserId userId) throws Exception {
+        String url = "";
+        if (userId != null && groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId) + "&groupId=" + IdConverter.idToHexString(groupId);
+        }else if (groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?groupId=" + IdConverter.idToHexString(groupId);
+        } else if (userId != null) {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId);
+        }
+
+        Results<UserGroup> userGroups = IdentityGet(url, Results.class);
+        List<UserGroup> userGroupList = new ArrayList<>();
+        for (Object obj : userGroups.getItems()) {
+            userGroupList.add((UserGroup)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
+        }
+
+        userGroups.setItems(userGroupList);
+        return userGroups;
     }
 
     public static UserGroup UserGroupPost(UserId userId, GroupId groupId) throws Exception {
@@ -558,6 +564,58 @@ public class Identity {
     public static UserGroup UserGroupPut(UserGroup userGroup) throws Exception {
         return IdentityPut(IdentityV1UserGroupMemberURI + "/" + userGroup.getId().getValue(),
                 JsonHelper.JsonSerializer(userGroup), UserGroup.class);
+    }
+
+    public static UserAuthenticator UserAuthenticatorPost(UserId userId, String externalRefId) throws Exception {
+        UserAuthenticator userAuthenticator = new UserAuthenticator();
+        userAuthenticator.setUserId(userId);
+        userAuthenticator.setType("GOOGLE");
+        userAuthenticator.setExternalId(externalRefId);
+        return IdentityPost(IdentityV1UserAuthenticatorURI, JsonHelper.JsonSerializer(userAuthenticator), UserAuthenticator.class);
+    }
+
+    public static UserAuthenticator UserAuthenticatorPost(UserId userId) throws Exception {
+        return UserAuthenticatorPost(userId, RandomHelper.randomAlphabetic(15));
+    }
+
+    public static UserAuthenticator UserAuthenticatorGet(UserAuthenticatorId userAuthenticatorId) throws Exception {
+        return IdentityGet(IdentityV1UserAuthenticatorURI + "/" + userAuthenticatorId.toString(), UserAuthenticator.class);
+    }
+
+    public static UserAuthenticator UserAuthenticatorPut(UserAuthenticator userAuthenticator) throws Exception {
+        return IdentityPut(IdentityV1UserAuthenticatorURI + "/" + userAuthenticator.getId().getValue(), JsonHelper.JsonSerializer(userAuthenticator), UserAuthenticator.class);
+    }
+
+    public static Results<UserAuthenticator> UserAuthenticatorSearch(UserId userId, String type, String externalId, Integer limit) throws Exception {
+        String url = IdentityV1UserAuthenticatorURI;
+        if (userId != null && type != null && externalId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId) + "&type=" + type + "&externalId=" + externalId;
+        } else if (userId != null && type != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId) + "&type=" + type;
+        } else if (userId != null && externalId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId) + "&externalId=" + externalId;
+        } else if (type != null && externalId != null) {
+            url = url + "?type=" + type + "&externalId=" + externalId;
+        } else if (userId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId);
+        } else if (type != null) {
+            url = url + "?type=" + type;
+        } else if (externalId != null) {
+            url = url + "?externalId=" + externalId;
+        }
+
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+
+        Results<UserAuthenticator> userAuthenticatorResults = IdentityGet(url, Results.class);
+        List<UserAuthenticator> userAuthenticators = new ArrayList<>();
+        for (Object obj : userAuthenticatorResults.getItems()) {
+            userAuthenticators.add((UserAuthenticator)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserAuthenticator.class));
+        }
+
+        userAuthenticatorResults.setItems(userAuthenticators);
+        return userAuthenticatorResults;
     }
 
     public static Organization OrganizationPostDefault(Organization organization) throws Exception {
@@ -676,10 +734,10 @@ public class Identity {
         return IdentityGet(IdentityV1CommunicationURI + "/" + communicationId + buildCommunicationLocale(locale), Communication.class);
     }
 
-    public static Results<Communication> CommunicationSearch(String region, String translation) throws Exception {
+    public static Results<Communication> CommunicationSearch(String region, String translation, Integer limit) throws Exception {
         Results<Communication> results = new Results<>();
         results.setItems(new ArrayList<Communication>());
-        Results res = IdentityGet(IdentityV1CommunicationURI + buildCommunicationQueryUrl(region, translation), Results.class);
+        Results res = IdentityGet(IdentityV1CommunicationURI + buildCommunicationQueryUrl(region, translation, limit), Results.class);
         for (Object obj : res.getItems()) {
             results.getItems().add((Communication) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
                     Communication.class));
@@ -699,16 +757,23 @@ public class Identity {
         }
     }
 
-    public static String buildCommunicationQueryUrl(String region, String translation) {
+    public static String buildCommunicationQueryUrl(String region, String translation, Integer limit) {
+        String url = "";
         if (StringUtils.isEmpty(region) && StringUtils.isEmpty(translation)) {
-            return "";
+            url = "";
         } else if (!StringUtils.isEmpty(region) && !StringUtils.isEmpty(translation)) {
-            return "?region=" + region + "&translation=" + translation;
+            url = "?region=" + region + "&translation=" + translation;
         } else if (!StringUtils.isEmpty(region)) {
-            return "?region=" + region;
+            url = "?region=" + region;
         } else {
-            return "?translation=" + translation;
+            url = "?translation=" + translation;
         }
+
+        if (limit != null) {
+           url = !StringUtils.isEmpty(url)? (url + "&count=" + limit) : ("count=" + limit);
+        }
+
+        return url;
     }
 
     public static List<UserCredentialVerifyAttempt> UserCredentialAttemptList(UserId userId, String credentialType) throws Exception {

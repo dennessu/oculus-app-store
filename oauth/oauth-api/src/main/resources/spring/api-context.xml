@@ -84,6 +84,7 @@
         <property name="userService" ref="userService"/>
         <property name="csrLogResource" ref="oauth_csrLogResource" />
         <property name="debugEnabled" value="${common.conf.debugMode}"/>
+        <property name="sentryFacade" ref="oauth_sentryFacade" />
     </bean>
 
     <bean id="defaultResetPasswordEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ResetPasswordEndpointClientProxyFactory"/>

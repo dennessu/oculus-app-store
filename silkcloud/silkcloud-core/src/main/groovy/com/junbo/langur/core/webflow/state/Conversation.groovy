@@ -11,6 +11,8 @@ class Conversation {
 
     String ipAddress
 
+    String conversationVerifyCode
+
     Map<String, Object> scope
 
     List<FlowState> flowStack

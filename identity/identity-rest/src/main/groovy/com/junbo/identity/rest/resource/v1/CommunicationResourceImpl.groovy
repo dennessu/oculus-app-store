@@ -138,10 +138,11 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
 
         return communicationValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<Communication> communicationList ->
+            return search(listOptions).then { Results<Communication> communicationList ->
                 def result = new Results<Communication>(items: [])
+                result.total = communicationList.total
 
-                communicationList.each { Communication newCommunication ->
+                communicationList.items.each { Communication newCommunication ->
                     newCommunication = communicationFilter.filterForGet(newCommunication, null)
 
                     if (newCommunication != null) {
@@ -167,7 +168,7 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
     }
 
-    private Promise<List<Communication>> search(CommunicationListOptions listOptions) {
+    private Promise<Results<Communication>> search(CommunicationListOptions listOptions) {
         if (listOptions.region != null && listOptions.translation != null) {
             return communicationService.searchByRegionAndTranslation(listOptions.region, listOptions.translation,
                     listOptions.limit, listOptions.offset)

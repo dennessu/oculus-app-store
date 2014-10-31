@@ -17,6 +17,7 @@ import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.rest.challenge.ChallengeHelper
+import com.junbo.store.rest.validator.ResponseValidator
 import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.exception.casey.CaseyException
@@ -72,6 +73,9 @@ class BrowseServiceImpl implements BrowseService {
     @Resource(name = 'storeItemBuilder')
     private ItemBuilder itemBuilder
 
+    @Resource(name = 'storeResponseValidator')
+    private ResponseValidator responseValidator
+
     private Set<String> libraryItemTypes = [
             ItemType.APP.name()
     ] as Set
@@ -82,7 +86,7 @@ class BrowseServiceImpl implements BrowseService {
     ] as Set
 
     @Override
-    Promise<Item> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext) {
+    Promise<DetailsResponse> getItem(ItemId itemId, boolean includeDetails, ApiContext apiContext) {
         Promise.pure().then {
             facadeContainer.caseyFacade.search(itemId, Images.BuildType.Item_Details, true, apiContext).then { CaseyResults<Item> results ->
                 if (CollectionUtils.isEmpty(results?.items)) {
@@ -91,7 +95,11 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.pure(results.items[0])
             }
         }.then { Item item ->
-            decorateItem(true, includeDetails, apiContext, item)
+            decorateItem(true, includeDetails, apiContext, item).then {
+                DetailsResponse response = new DetailsResponse(item: item)
+                responseValidator.validateItemDetailsResponse(response)
+                return Promise.pure(response)
+            }
         }
     }
 
@@ -105,6 +113,7 @@ class BrowseServiceImpl implements BrowseService {
 
             sectionService.getTopLevelSectionInfoNode(apiContext).then { List<SectionInfoNode> sections ->
                 result.sections = sections
+                responseValidator.validateTocResponse(result)
                 return Promise.pure(result)
             }
         }
@@ -124,6 +133,8 @@ class BrowseServiceImpl implements BrowseService {
             response.ordered = false
             response.category = request.category
             response.criteria = request.criteria
+
+            responseValidator.validateSectionLayoutResponse(response)
             return Promise.pure(response)
         }
     }
@@ -134,7 +145,10 @@ class BrowseServiceImpl implements BrowseService {
             if (sectionInfoNode == null) {
                 throw AppErrors.INSTANCE.sectionNotFound().exception()
             }
-            innerGetList(request, sectionInfoNode, apiContext)
+            innerGetList(request, sectionInfoNode, apiContext).then { ListResponse listResponse ->
+                responseValidator.validateListResponse(listResponse)
+                return Promise.pure(listResponse)
+            }
         }
     }
 
@@ -153,6 +167,7 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.pure(result)
             }
         }.then {
+            responseValidator.validateLibraryResponse(result)
             return Promise.pure(result)
         }
     }

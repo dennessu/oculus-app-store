@@ -20,6 +20,7 @@ class CloudantClientRepositoryImpl extends CloudantClient<Client> implements Cli
     @Override
     List<Client> getAllClients(PageableGetOptions options) {
         assert options != null : 'options is null'
+        options.total = cloudantGetAllSync(Integer.MAX_VALUE, 0, false).size()
         return cloudantGetAllSync(options.validCount, options.validCursor, false)
     }
 

@@ -3,6 +3,7 @@ package com.junbo.identity.service.impl
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.CommunicationId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.CommunicationRepository
 import com.junbo.identity.service.CommunicationService
 import com.junbo.identity.spec.v1.model.Communication
@@ -38,22 +39,22 @@ class CommunicationServiceImpl implements CommunicationService {
     }
 
     @Override
-    Promise<List<Communication>> searchByTranslation(LocaleId translation, Integer limit, Integer offset) {
+    Promise<Results<Communication>> searchByTranslation(LocaleId translation, Integer limit, Integer offset) {
         return communicationRepository.searchByTranslation(translation, limit, offset)
     }
 
     @Override
-    Promise<List<Communication>> searchByRegion(CountryId region, Integer limit, Integer offset) {
+    Promise<Results<Communication>> searchByRegion(CountryId region, Integer limit, Integer offset) {
         return communicationRepository.searchByRegion(region, limit, offset)
     }
 
     @Override
-    Promise<List<Communication>> searchByRegionAndTranslation(CountryId region, LocaleId translation, Integer limit, Integer offset) {
+    Promise<Results<Communication>> searchByRegionAndTranslation(CountryId region, LocaleId translation, Integer limit, Integer offset) {
         return communicationRepository.searchByRegionAndTranslation(region, translation, limit, offset)
     }
 
     @Override
-    Promise<List<Communication>> searchAll(Integer limit, Integer offset) {
+    Promise<Results<Communication>> searchAll(Integer limit, Integer offset) {
         return communicationRepository.searchAll(limit, offset)
     }
 

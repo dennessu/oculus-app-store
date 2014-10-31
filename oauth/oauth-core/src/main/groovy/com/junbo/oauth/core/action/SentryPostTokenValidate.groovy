@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.oauth.core.action
 
 import com.junbo.langur.core.promise.Promise
@@ -17,11 +22,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 
 /**
- * Created by liangfu on 10/23/14.
+ * SentryPostTokenValidate.
  */
 @CompileStatic
-class SentryLoginValidate implements Action {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SentryLoginValidate)
+class SentryPostTokenValidate implements Action {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SentryPostTokenValidate)
     private SentryFacade sentryFacade
 
     @Override
@@ -30,18 +35,16 @@ class SentryLoginValidate implements Action {
         def parameterMap = contextWrapper.parameterMap
 
         def textMap = [:]
-        textMap[SentryFieldConstant.EMAIL.value] = parameterMap.getFirst(OAuthParameters.LOGIN)?.toString()
+        textMap[SentryFieldConstant.EMAIL.value] = parameterMap.getFirst(OAuthParameters.USERNAME)?.toString()
 
         return sentryFacade.doSentryCheck(sentryFacade.createSentryRequest(SentryCategory.OCULUS_LOGIN_WEB.value,
                 textMap)
         ).recover { Throwable throwable ->
-            LOGGER.error('LoginUser_Web:  Call sentry error, Ignore', throwable)
+            LOGGER.error('PostToken:  Call sentry error, Ignore', throwable)
             return Promise.pure()
         }.then { SentryResponse sentryResponse ->
             if (sentryResponse != null && sentryResponse.isBlockAccess()) {
-                contextWrapper.errors.add(AppErrors.INSTANCE.sentryBlockLoginAccess().error())
-                contextWrapper.sentrySucceed = false
-                return Promise.pure(new ActionResult('error'))
+                throw AppErrors.INSTANCE.sentryBlockLoginAccess().exception()
             }
 
             contextWrapper.sentrySucceed = true

@@ -4,7 +4,7 @@ import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.ConversationNotfFoundException
 import com.junbo.langur.core.webflow.FlowException
-import com.junbo.langur.core.webflow.IpViolationException
+import com.junbo.langur.core.webflow.WebFlowErrors
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionList
 import com.junbo.langur.core.webflow.definition.FlowDefLoader
@@ -12,6 +12,7 @@ import com.junbo.langur.core.webflow.state.FlowState
 import com.junbo.langur.core.webflow.state.StateRepository
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * Created by kg on 2/26/14.
@@ -61,6 +62,11 @@ class FlowExecutorImpl implements FlowExecutor {
 
     @Override
     Promise<ActionContext> resume(String conversationId, String event, Map<String, Object> requestScope) {
+        return resume(conversationId, event, requestScope, null)
+    }
+
+    @Override
+    Promise<ActionContext> resume(String conversationId, String event, Map<String, Object> requestScope, String conversationVerifyCode) {
         if (conversationId == null) {
             throw new IllegalArgumentException('conversationId is null')
         }
@@ -80,7 +86,13 @@ class FlowExecutorImpl implements FlowExecutor {
         }
 
         if (conversation.ipAddress != JunboHttpContext.requestIpAddress) {
-            throw new IpViolationException()
+            throw WebFlowErrors.INSTANCE.ipViolation().exception()
+        }
+
+        if (StringUtils.hasText(conversation.conversationVerifyCode)) {
+            if (conversation.conversationVerifyCode != conversationVerifyCode) {
+                throw WebFlowErrors.INSTANCE.conversationVerifyFailed().exception()
+            }
         }
 
         def executionContext = new ExecutionContext(
@@ -90,7 +102,6 @@ class FlowExecutorImpl implements FlowExecutor {
 
         return runEventLoop(executionContext, new ResumeStateEvent(event))
     }
-
 
     private Promise<ActionContext> runEventLoop(ExecutionContext context, FlowEvent event) {
         if (event instanceof VoidEvent) {

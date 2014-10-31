@@ -23,13 +23,16 @@
     "communication": {
       "views": {
         "by_region": {
-          "map": "function(doc) {if (doc.regions) {for (var i in doc.regions) {emit(doc.regions[i], doc._id)}}}"
+          "map": "function(doc) {if (doc.regions) {for (var i in doc.regions) {emit(doc.regions[i], doc._id)}}}",
+            "reduce": "_count"
         }, 
         "by_region_and_translation": {
-          "map": "function(doc) {if (doc.translations && doc.regions) {for (var i in doc.regions) {for (var j in doc.translations) {emit([doc.regions[i], doc.translations[j]], doc._id)}}}}"
+          "map": "function(doc) {if (doc.translations && doc.regions) {for (var i in doc.regions) {for (var j in doc.translations) {emit([doc.regions[i], doc.translations[j]], doc._id)}}}}",
+            "reduce": "_count"
         }, 
         "by_translation": {
-          "map": "function(doc) {if (doc.translations) {for (var i in doc.translations) {emit(doc.translations[i], doc._id)}}}"
+          "map": "function(doc) {if (doc.translations) {for (var i in doc.translations) {emit(doc.translations[i], doc._id)}}}",
+            "reduce": "_count"
         }
       }
     }, 
@@ -337,22 +340,28 @@
     "user_authenticator": {
       "views": {
         "by_authenticator_externalId": {
-          "map": "function(doc) {  emit(doc.externalId, doc._id)}"
+          "map": "function(doc) {  emit(doc.externalId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_authenticator_externalId_auth_type": {
-          "map": "function(doc) { emit([doc.externalId, doc.type], doc._id)}"
+          "map": "function(doc) { emit([doc.externalId, doc.type], doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_auth_type": {
-          "map": "function(doc) {  emit([doc.userId, doc.type], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.type], doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_auth_type_externalId": {
-          "map": "function(doc) {  emit([doc.userId, doc.type, doc.externalId], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.type, doc.externalId], doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_externalId": {
-          "map": "function(doc) {  emit([doc.userId, doc.externalId], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.externalId], doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 
@@ -392,13 +401,16 @@
     "user_group": {
       "views": {
         "by_group_id": {
-          "map": "function(doc) {  emit(doc.groupId, doc._id)}"
+          "map": "function(doc) {  emit(doc.groupId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_group_id": {
-          "map": "function(doc) {  emit([doc.userId, doc.groupId], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.groupId], doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 

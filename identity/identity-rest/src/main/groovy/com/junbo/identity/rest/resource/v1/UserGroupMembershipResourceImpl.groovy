@@ -185,13 +185,16 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
         }
 
         return userGroupValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<UserGroup> userGroupList ->
+            return search(listOptions).then { Results<UserGroup> userGroupList ->
                 def result = new Results<UserGroup>(items: [])
+                result.total = userGroupList.total
 
-                return Promise.each(userGroupList) { UserGroup newUserGroup ->
+                return Promise.each(userGroupList.items) { UserGroup newUserGroup ->
                     if (newUserGroup != null) {
                         return groupService.get(newUserGroup.groupId).then { Group group ->
                             if (group == null) {
+                                // In case the group is deleted, we won't return this
+                                result.total = result.total - 1
                                 return Promise.pure(null)
                             }
 
@@ -204,6 +207,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
                                     result.items.add(newUserGroup)
                                     return Promise.pure(newUserGroup)
                                 } else {
+                                    // In case user doesn't have the permission to read this content, we won't return this
                                     return Promise.pure(null)
                                 }
                             }
@@ -218,7 +222,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
         }
     }
 
-    private Promise<List<UserGroup>> search(UserGroupListOptions listOptions) {
+    private Promise<Results<UserGroup>> search(UserGroupListOptions listOptions) {
         if (listOptions.userId != null && listOptions.groupId != null) {
             return userGroupService.searchByUserIdAndGroupId(listOptions.userId, listOptions.groupId,
                     listOptions.limit, listOptions.offset)

@@ -201,6 +201,10 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return getEffective().queryViewTotal(getDbUri(null), key, viewName)
     }
 
+    public Promise<Integer> queryViewTotal(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, boolean descending) {
+        return getEffective().queryViewTotal(getDbUri(null), viewName, startKey, endKey, withHighKey, descending)
+    }
+
     public Promise<Integer> queryViewCount(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, boolean descending,
                                            Integer limit, Integer skip) {
         return getEffective().queryViewCount(getDbUri(null), entityClass, startKey, endKey, viewName, withHighKey, descending, limit, skip)

@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.id.UserId
+import com.junbo.common.memcached.JunboMemcachedClient
 import com.junbo.common.model.Results
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.email.spec.model.Email
@@ -40,6 +41,7 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import java.util.Locale
+import java.util.concurrent.ExecutionException
 import java.util.regex.Pattern
 
 /**
@@ -56,6 +58,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private static final String MAIL_IDENTIFIER = "@"
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCredentialVerifyAttemptValidatorImpl)
+    private JunboMemcachedClient memcachedClient = JunboMemcachedClient.instance()
 
     private UserCredentialVerifyAttemptService userCredentialVerifyAttemptService
     private UserService userService
@@ -490,16 +493,32 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (!maxSameUserAttemptsEnable) {
             return Promise.pure(null)
         }
-        return Promise.each(this.maxSameUserAttemptIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
-            Integer maxSameUserAttemptCount = entry.key
-            Integer sameUserAttemptRetryInterval = entry.value
-            Long timeInterval = System.currentTimeMillis() - sameUserAttemptRetryInterval * 1000
-            return userCredentialVerifyAttemptService.searchByUserIdAndCredentialTypeAndIntervalCount(user.getId(), userLoginAttempt.type, timeInterval,
-                    maxSameUserAttemptCount + 1, 0).then { Integer attemptListCount ->
-                if (attemptListCount == null || attemptListCount <= maxSameUserAttemptCount) {
-                    return Promise.pure(null)
+        // Update memcached value
+        List<Integer> list = this.maxSameUserAttemptIntervalMap.values().asList()
+        list.each { Integer interval ->
+            increaseCurrentMemcachedValue(buildUserThrottlingKey(user.getId(), userLoginAttempt.type, interval), interval)
+        }
+        return Promise.pure().then {
+            return Promise.each(this.maxSameUserAttemptIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
+                Integer maxSameUserAttemptCount = entry.key
+                Integer sameUserAttemptRetryInterval = entry.value
+
+                Long currentValue = getCurrentMemcachedValue(buildUserThrottlingKey(user.getId(), userLoginAttempt.type, sameUserAttemptRetryInterval))
+
+                if (currentValue == null) {
+                    Long timeInterval = System.currentTimeMillis() - sameUserAttemptRetryInterval * 1000
+                    return userCredentialVerifyAttemptService.searchByUserIdAndCredentialTypeAndIntervalCount(user.getId(), userLoginAttempt.type, timeInterval,
+                            maxSameUserAttemptCount + 1, 0).then { Integer attemptListCount ->
+                        if (attemptListCount == null || attemptListCount <= maxSameUserAttemptCount) {
+                            return Promise.pure(null)
+                        }
+                        throw AppErrors.INSTANCE.maximumSameUserAttempt().exception()
+                    }
+                } else if (currentValue > maxSameUserAttemptCount) {
+                    throw AppErrors.INSTANCE.maximumSameUserAttempt().exception()
                 }
-                throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+
+                return Promise.pure(null)
             }
         }.then {
             return Promise.pure(null)
@@ -514,20 +533,33 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             return Promise.pure(null)
         }
 
-        return Promise.each(this.maxSameIPIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
-            Integer maxSameIPRetryCount = entry.getKey()
-            Integer maxSameIPRetryInterval = entry.getValue()
+        List<Integer> list = this.maxSameIPIntervalMap.values().asList()
+        list.each { Integer interval ->
+            increaseCurrentMemcachedValue(buildIPThrottlingKey(userLoginAttempt.ipAddress, userLoginAttempt.type, interval), interval)
+        }
+        return Promise.pure().then {
+            return Promise.each(this.maxSameIPIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
+                Integer maxSameIPRetryCount = entry.getKey()
+                Integer maxSameIPRetryInterval = entry.getValue()
 
-            Long fromTimeStamp = System.currentTimeMillis() - maxSameIPRetryInterval * 1000
-
-            return userCredentialVerifyAttemptService.searchByIPAddressAndCredentialTypeAndIntervalCount(userLoginAttempt.ipAddress, userLoginAttempt.type,
-                    fromTimeStamp, maxSameIPRetryCount + 1, 0).then { Integer count ->
-                if (count == null || count <= maxSameIPRetryCount) {
-                    return Promise.pure(null)
+                Long currentValue = getCurrentMemcachedValue(buildIPThrottlingKey(userLoginAttempt.ipAddress, userLoginAttempt.type, maxSameIPRetryInterval))
+                if (currentValue == null) {
+                    Long fromTimeStamp = System.currentTimeMillis() - maxSameIPRetryInterval * 1000
+                    return userCredentialVerifyAttemptService.searchByIPAddressAndCredentialTypeAndIntervalCount(userLoginAttempt.ipAddress, userLoginAttempt.type,
+                            fromTimeStamp, maxSameIPRetryCount + 1, 0).then { Integer count ->
+                        if (count == null || count <= maxSameIPRetryCount) {
+                            return Promise.pure(null)
+                        }
+                        throw AppErrors.INSTANCE.maximumSameIPAttempt().exception()
+                    }
+                } else if (currentValue > maxSameIPRetryCount) {
+                    throw AppErrors.INSTANCE.maximumSameIPAttempt().exception()
                 }
 
-                throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+                return Promise.pure(null)
             }
+        }.then {
+            return Promise.pure(null)
         }
     }
 
@@ -622,6 +654,59 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             return true
         }
         return false
+    }
+
+    static String buildUserThrottlingKey(UserId userId, String type, Integer lockdownTime) {
+        return userId.toString() + ':' + type + ':' + String.valueOf(lockdownTime)
+    }
+
+    static String buildIPThrottlingKey(String ipAddress, String type, Integer lockdownTime) {
+        return ipAddress + ':' + type + ':' + String.valueOf(lockdownTime)
+    }
+
+    // It will return null or value
+    // If it returns null, mean memcache isnot enabled or no record or the server is restarted
+    //                  In this case, we need to query DB
+    // If it returns value, will check this value comparing with the limit
+    //                  if it exceeds limit, don't record any value and directly return
+    //                  if it doesn't exceeds limit, just record the value
+    private Long increaseCurrentMemcachedValue(String key, Integer lockdownTime) {
+        if (memcachedClient == null) {
+            return null
+        }
+
+        // Try to increase the current api count for this api + request ip
+        long currentValue = memcachedClient.incr(key, 1L);
+        // return value = -1 means the key does not exist
+        if (currentValue == -1) {
+            try {
+                // Try to add key with value 1
+                // There is a bug in spymemcached client(spymemcached bug 41),
+                // we need to add a string value of "1" at the first time for further increment operation
+                Boolean result = memcachedClient.add(key, lockdownTime, "1").get();
+
+                // If the add result is false, means the add operation fails, this key has already been added by other
+                // thread, just increase the current api count again.
+                if (!result) {
+                    currentValue = memcachedClient.incr(key, 1L);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                LOGGER.error("Error calling memcached client", e);
+            }
+
+            return null
+        }
+
+        return currentValue
+    }
+
+    private Long getCurrentMemcachedValue(String key) {
+        if (memcachedClient == null) {
+            return null
+        }
+
+        long currentValue = Long.decode((String)memcachedClient.get(key))
+        return currentValue == -1 ? null : currentValue
     }
 
     @Required

@@ -13,7 +13,6 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.identity.spec.v1.model.UserVAT;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
-import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
@@ -25,6 +24,7 @@ import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -143,10 +143,13 @@ public class authorizeUser {
         String email = RandomHelper.randomEmail();
         Oauth.PostRegisterUser(cid, userName, email);
 
+        /* todo: talk with zhanxin for ls removed.
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginStateByCidAfterRegisterUser);
         String loginState = Oauth.GetLoginStateAfterRegisterUser(cid);
         Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByLoginState);
         String authCode = Oauth.SSO2GetAuthCode(loginState);
+        */
+        String authCode = Oauth.GetAuthCodeAfterRegisterUser(cid);
         String accessToken = Oauth.GetAccessToken(authCode);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
@@ -338,7 +341,7 @@ public class authorizeUser {
         Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         String resetPasswordLink = Oauth.PostResetPassword(
-                Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+                email, null);
         List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, false);
         resetPasswordLink = resetPasswordLink.contains("reset") ? resetPasswordLink : resetPwdLinks.get(0);
         LogHelper logHelper = new LogHelper(authorizeUser.class);
@@ -383,8 +386,7 @@ public class authorizeUser {
         // set identity authorization header
         Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
-        String resetPasswordLink = Oauth.PostResetPassword(
-                Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        String resetPasswordLink = Oauth.PostResetPassword(email, null);
         String resetPasswordCid = Oauth.GetResetPasswordCid(resetPasswordLink);
         Oauth.GetResetPasswordView(resetPasswordCid);
         Oauth.PostResetPasswordWithNewPassword(resetPasswordCid, newPassword);
@@ -396,6 +398,92 @@ public class authorizeUser {
         String loginResponseLink = Oauth.UserLogin(cid, email, newPassword);
         String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
+    }
+
+    @Test(groups = "dailies")
+    public void resetPasswordWithoutUserEmail() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        Oauth.PostRegisterUser(cid, userName, email);
+
+        HttpclientHelper.ResetHttpClient();
+        String newPassword = "ASDFqwer1234";
+        // set identity authorization header
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
+        UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNUserName, userName));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNLocale, "en_US"));
+
+        CloseableHttpResponse response = Oauth.OauthPost(Oauth.DefaultResetPasswordURI, nvps);
+        try {
+            Validator.Validate("validate response code", 400, response.getStatusLine().getStatusCode());
+            Error error = JsonHelper.JsonDeserializer(new InputStreamReader(response.getEntity().getContent()),
+                    Error.class);
+            Validator.Validate("validate error message", "Input Error", error.getMessage());
+            Validator.Validate("valdiate details field", "user_email", error.getDetails().get(0).getField());
+            Validator.Validate("valdiate details reason", "Field is required", error.getDetails().get(0).getReason());
+        } finally {
+            response.close();
+        }
+    }
+
+    @Test(groups = "dailies")
+    public void resetPasswordWithNonExistUserEmail() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        Oauth.PostRegisterUser(cid, userName, email);
+
+        HttpclientHelper.ResetHttpClient();
+        String newPassword = "ASDFqwer1234";
+        // set identity authorization header
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
+        UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        String fakeEmail = RandomHelper.randomEmail();
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNUserEmail, fakeEmail));
+        nvps.add(new BasicNameValuePair(Oauth.DefaultFNLocale, "en_US"));
+
+        CloseableHttpResponse response = Oauth.OauthPost(Oauth.DefaultResetPasswordURI, nvps);
+        try {
+            Validator.Validate("validate response code", 200, response.getStatusLine().getStatusCode());
+            String[] fakeEmails = fakeEmail.split("@");
+            String expectedResponse = fakeEmails[0].substring(0, 3) + "******" + "@" + fakeEmails[1];
+            String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
+            Validator.Validate("validate response content", expectedResponse, responseString);
+        } finally {
+            response.close();
+        }
     }
 
     @Test(groups = "dailies")
@@ -421,10 +509,10 @@ public class authorizeUser {
 
         HttpclientHelper.ResetHttpClient();
         // set identity authorization header
-        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid), Oauth.DefaultTokenURI);
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
-        Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
-        Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        Oauth.PostResetPassword(email, null);
+        Oauth.PostResetPassword(email, null);
         Oauth.PostAccessToken("smoketest", "smoketest");
         List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, false);
         String resetPasswordCid = Oauth.GetResetPasswordCid(resetPwdLinks.get(1));
@@ -481,13 +569,13 @@ public class authorizeUser {
         HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
         // set identity authorization header
-        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid), Oauth.DefaultTokenURI, "client");
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
-        Oauth.PostResetPassword(Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
+        Oauth.PostResetPassword(email, null);
         List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, true);
     }
 
-    @Test(groups = "dailies")
+    @Test(groups = "dailies", enabled = false)
     public void oculusInternalHeaderFunction() throws Exception {
         CloseableHttpResponse response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
                 + "?client_id="

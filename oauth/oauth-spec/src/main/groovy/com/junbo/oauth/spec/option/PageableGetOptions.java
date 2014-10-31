@@ -20,6 +20,8 @@ public class PageableGetOptions {
     @QueryParam("count")
     private Integer count;
 
+    private Long total;
+
     public Integer getCursor() {
         return cursor;
     }
@@ -34,6 +36,14 @@ public class PageableGetOptions {
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public Long getTotal() {
+        return total;
+    }
+
+    public void setTotal(Long total) {
+        this.total = total;
     }
 
     public Integer getValidCount() {
