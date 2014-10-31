@@ -90,8 +90,7 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Override
-    Promise<Response> resetPassword(String conversationId, String event, String locale, String country,
-                                    String username, String userEmail, MultivaluedMap<String, String> formParams) {
+    Promise<Response> resetPassword(String conversationId, String event, String locale, String country, String userEmail, MultivaluedMap<String, String> formParams) {
         try {
             def textMap = [:]
             SentryResponse sentryResponse = sentryFacade.doSentryCheck(sentryFacade.
@@ -104,23 +103,7 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
         }
 
         if (conversationId == null) {
-            if (username != null) {
-                return userService.getUserIdByUsername(username).then { UserId id ->
-                    return userService.sendResetPassword(id, locale, country).then { String uri ->
-                        csrActionAudit(id)
-                        if (debugEnabled || AuthorizeContext.debugEnabled) {
-                            return Promise.pure(Response.ok().entity(uri).build())
-                        }
-
-                        return userService.getUserEmailByUserId(id).then { String email ->
-                            Promise.pure(Response.ok().entity(Utils.maskEmail(email)).build())
-                        }
-                    }
-                    .recover {
-                        Promise.pure(Response.ok().entity(Utils.maskEmail(username)).build())
-                    }
-                }
-            } else if (userEmail != null) {
+            if (userEmail != null) {
                 return userService.getUserIdByUserEmail(userEmail).then { UserId id ->
                     return userService.sendResetPassword(id, locale, country).then { String uri ->
                         csrActionAudit(id)
@@ -136,7 +119,7 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                 }
             }
             else {
-                throw AppCommonErrors.INSTANCE.fieldRequired('username or user_email').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('user_email').exception()
             }
         }
 
