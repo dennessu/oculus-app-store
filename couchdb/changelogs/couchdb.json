@@ -392,13 +392,16 @@
     "user_group": {
       "views": {
         "by_group_id": {
-          "map": "function(doc) {  emit(doc.groupId, doc._id)}"
+          "map": "function(doc) {  emit(doc.groupId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_group_id": {
-          "map": "function(doc) {  emit([doc.userId, doc.groupId], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.groupId], doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 

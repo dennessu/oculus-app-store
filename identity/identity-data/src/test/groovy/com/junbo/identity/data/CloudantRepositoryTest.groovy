@@ -9,6 +9,7 @@ import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
+import com.junbo.common.model.Results
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.UserPassword
@@ -343,18 +344,21 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroupListOptions getOption = new UserGroupListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setGroupId(new GroupId("1493188608L"))
-        List<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
+        Results<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
                 new GroupId("1493188608L"), Integer.MAX_VALUE, 0).get()
-        assert userGroups.size() != 0
+        assert userGroups != null
+        assert userGroups.items.size() != 0
 
         getOption.setGroupId(newUserGroup.groupId)
         userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId), newUserGroup.groupId,
                 Integer.MAX_VALUE, 0).get()
-        assert userGroups.size() != 0
+        assert userGroups != null
+        assert userGroups.items.size() != 0
 
         getOption.setUserId(null)
         userGroups = userGroupRepository.searchByGroupId(newUserGroup.groupId, Integer.MAX_VALUE, 0).get()
-        assert userGroups.size() != 0
+        assert userGroups != null
+        assert userGroups.items.size() != 0
     }
 
     @Test

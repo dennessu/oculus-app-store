@@ -48,7 +48,7 @@ public class postCredentialAttempts {
     }
 
     @Test(groups = "bvt")
-    public void postUserCredentitalAttempts() throws Exception {
+    public void postUserCredentialAttempts() throws Exception {
         String email = RandomHelper.randomEmail();
         User user = Identity.UserPostDefaultWithMail(15, email);
         String password = IdentityModel.DefaultPassword();
@@ -60,7 +60,7 @@ public class postCredentialAttempts {
     }
 
     @Test(groups = "dailies")
-    public void postUserCredentitalAttemptsMaxRetrySameUser() throws Exception {
+    public void postUserCredentialAttemptsMaxRetrySameUser() throws Exception {
         String email = RandomHelper.randomEmail();
         User user = Identity.UserPostDefaultWithMail(15, email);
         String password = IdentityModel.DefaultPassword();
@@ -101,7 +101,7 @@ public class postCredentialAttempts {
     }
 
     @Test(groups = "dailies")
-    public void postUserCredentitalAttemptsMaxRetrySameIP() throws Exception {
+    public void postUserCredentialAttemptsMaxRetrySameIP() throws Exception {
         String ip = RandomHelper.randomIP();
         for (int i = 0; i < 101; i++) {
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
@@ -138,7 +138,7 @@ public class postCredentialAttempts {
     }
 
     @Test(groups = "dailies")
-    public void postUserCredentialAttempsExistingUserMaxRetrySameIP() throws Exception {
+    public void postUserCredentialAttemptsExistingUserMaxRetrySameIP() throws Exception {
         String ip = RandomHelper.randomIP();
         String email = RandomHelper.randomEmail();
         User user = Identity.UserPostDefaultWithMail(15, email);
@@ -151,7 +151,7 @@ public class postCredentialAttempts {
             user = Identity.UserPostDefaultWithMail(15, email);
             response = Identity.UserCredentialPostDefault(user.getId(), null, password);
             response.close();
-            boolean flag = (i < 100);
+            boolean flag = (i < 99);
             response = Identity.UserCredentialAttemptesPostDefault(email, password, ip, flag);
             response.close();
         }

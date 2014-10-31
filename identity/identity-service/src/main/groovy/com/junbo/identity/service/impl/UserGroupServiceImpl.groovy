@@ -3,6 +3,7 @@ package com.junbo.identity.service.impl
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.UserGroupId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.service.UserGroupService
 import com.junbo.identity.spec.v1.model.UserGroup
@@ -38,17 +39,17 @@ class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    Promise<List<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<Results<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         return userGroupRepository.searchByUserId(userId, limit, offset)
     }
 
     @Override
-    Promise<List<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset) {
+    Promise<Results<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset) {
         return userGroupRepository.searchByGroupId(groupId, limit, offset)
     }
 
     @Override
-    Promise<List<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset) {
+    Promise<Results<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset) {
         return userGroupRepository.searchByUserIdAndGroupId(userId, groupId, limit, offset)
     }
 

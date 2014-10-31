@@ -4,6 +4,8 @@ import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppError
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.model.ResourceMetaBase
 import com.junbo.common.model.Results
@@ -34,6 +36,9 @@ import org.springframework.transaction.support.TransactionCallback
 @Transactional
 @CompileStatic
 class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAttemptResource {
+    private static final String MAXIMUM_SAME_IP_RETRY_COUNT = "131.142"
+    private static final String MAXIMUM_SAME_USER_RETRY_COUNT = "131.141"
+
     @Autowired
     private UserCredentialVerifyAttemptService userCredentialVerifyAttemptService
 
@@ -61,6 +66,9 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
         userCredentialAttempt = userCredentialVerifyAttemptFilter.filterForCreate(userCredentialAttempt)
 
         return credentialVerifyAttemptValidator.validateForCreate(userCredentialAttempt).recover { Throwable e ->
+            if (isAppError(e, MAXIMUM_SAME_IP_RETRY_COUNT, MAXIMUM_SAME_USER_RETRY_COUNT)) {
+                throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+            }
             userCredentialAttempt.succeeded = false
             return createInNewTran(userCredentialAttempt).then {
                 throw e
@@ -171,5 +179,16 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
         } else {
             throw new IllegalArgumentException('Unsupported search operation')
         }
+    }
+
+    public boolean isAppError(Throwable ex, String... codes) {
+        if (!(ex instanceof AppErrorException)) {
+            return false
+        }
+        String code = ((AppErrorException)ex).error?.error()?.code
+        if (code == null) {
+            return false
+        }
+        return codes.any {String c -> c == code}
     }
 }

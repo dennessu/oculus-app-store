@@ -240,6 +240,8 @@ class CloudantClientImpl implements CloudantClientInternal {
             query.put('include_docs', includeDocs.toString())
         }
 
+        query.put('reduce', 'false')
+
         return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
             checkViewErrors("query view", dbUri, viewName, response)
             return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
@@ -279,6 +281,30 @@ class CloudantClientImpl implements CloudantClientInternal {
         def query = [:]
         if (key != null) {
             query.put('key', "\"$key\"")
+        }
+        query.put('include_docs', 'false')
+        query.put('reduce', 'true')
+
+        return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then { Response response ->
+            checkViewErrors("query view total", dbUri, viewName, response)
+
+            CloudantReduceQueryResult result = marshaller.unmarshall(response.responseBody, CloudantReduceQueryResult)
+            if (CollectionUtils.isEmpty(result.rows) || result.rows.size() != 1) {
+                return Promise.pure(0)
+            }
+
+            return Promise.pure(result.rows.get(0).value)
+        }
+    }
+
+    @Override
+    public Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, boolean descending) {
+        def query = [:]
+        if ((startKey != null && !descending) || (endKey != null && descending)) {
+            query.put('startkey', descending ? buildEndKey(endKey, withHighKey) : buildStartKey(startKey))
+        }
+        if ((endKey != null && !descending) || (startKey != null && descending)) {
+            query.put('endkey', descending ? buildStartKey(startKey) : buildEndKey(endKey, withHighKey))
         }
         query.put('include_docs', 'false')
         query.put('reduce', 'true')

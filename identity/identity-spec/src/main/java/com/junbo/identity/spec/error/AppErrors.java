@@ -180,4 +180,10 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "140", message = "Age restriction error",
             field = "dob", reason = "Age restriction error")
     AppError ageRestrictionError();
+
+    @ErrorDef(httpStatusCode = 412, code = "141", message = "User reaches maximum same user attempt retry count")
+    AppError maximumSameUserAttempt();
+
+    @ErrorDef(httpStatusCode = 412, code = "142", message = "User reaches maximum same IP attempt retry count")
+    AppError maximumSameIPAttempt();
 }

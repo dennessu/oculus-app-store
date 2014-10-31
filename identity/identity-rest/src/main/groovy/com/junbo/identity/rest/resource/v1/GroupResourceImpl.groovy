@@ -186,12 +186,12 @@ class GroupResourceImpl implements GroupResource {
                     }
                 }
             } else {
-                return userGroupService.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset).then { List<UserGroup> userGroupList ->
-                    if (CollectionUtils.isEmpty(userGroupList)) {
+                return userGroupService.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset).then { Results<UserGroup> userGroupList ->
+                    if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
                         return Promise.pure(resultList)
                     }
 
-                    return Promise.each(userGroupList) { UserGroup userGroup ->
+                    return Promise.each(userGroupList.items) { UserGroup userGroup ->
                         return groupValidator.validateForGet(userGroup.groupId).then { Group existing ->
                             def callback = authorizeCallbackFactory.create(existing)
                             return RightsScope.with(authorizeService.authorize(callback)) {

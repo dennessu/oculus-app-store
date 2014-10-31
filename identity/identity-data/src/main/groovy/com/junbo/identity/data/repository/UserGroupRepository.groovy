@@ -8,6 +8,7 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.UserGroupId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
@@ -20,11 +21,11 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserGroupRepository extends BaseRepository<UserGroup, UserGroupId> {
     @ReadMethod
-    Promise<List<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset)
+    Promise<Results<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset)
+    Promise<Results<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset)
+    Promise<Results<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset)
 }

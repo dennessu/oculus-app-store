@@ -999,12 +999,12 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Promise<Void> deleteAllUserGroup(User createdUser) {
-        return userGroupService.searchByUserId(createdUser.getId(), Integer.MAX_VALUE, 0).then { List<UserGroup> userGroupList ->
-            if (CollectionUtils.isEmpty(userGroupList)) {
+        return userGroupService.searchByUserId(createdUser.getId(), Integer.MAX_VALUE, 0).then { Results<UserGroup> userGroupList ->
+            if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
                 return Promise.pure(null)
             }
 
-            return Promise.each(userGroupList) { UserGroup userGroup ->
+            return Promise.each(userGroupList.items) { UserGroup userGroup ->
                 return userGroupService.delete(userGroup.getId()).then {
                     return Promise.pure(null)
                 }
@@ -1125,12 +1125,12 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(null)
             }
 
-            return userGroupService.searchByUserIdAndGroupId(createdUser.getId(), group.getId(), Integer.MAX_VALUE, null).then { List<UserGroup> userGroupList ->
-                if (CollectionUtils.isEmpty(userGroupList)) {
+            return userGroupService.searchByUserIdAndGroupId(createdUser.getId(), group.getId(), Integer.MAX_VALUE, null).then { Results<UserGroup> userGroupList ->
+                if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
                     return Promise.pure(null)
                 }
 
-                return Promise.each(userGroupList) { UserGroup userGroup ->
+                return Promise.each(userGroupList.items) { UserGroup userGroup ->
                     return userGroupService.delete(userGroup.getId()).then {
                         return Promise.pure(null)
                     }
@@ -1287,8 +1287,8 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Promise<UserGroup> saveOrReturnUserGroup(User user, Group group) {
-        return userGroupService.searchByUserIdAndGroupId(user.getId(), group.getId(), Integer.MAX_VALUE, 0).then { List<UserGroup> userGroupList ->
-            if (CollectionUtils.isEmpty(userGroupList)) {
+        return userGroupService.searchByUserIdAndGroupId(user.getId(), group.getId(), Integer.MAX_VALUE, 0).then { Results<UserGroup> userGroupList ->
+            if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
                 UserGroup userGroup = new UserGroup(
                         userId: user.getId(),
                         groupId: group.getId()
@@ -1297,7 +1297,7 @@ class MigrationResourceImpl implements MigrationResource {
                 return userGroupService.create(userGroup)
             }
 
-            return Promise.pure(userGroupList.get(0))
+            return Promise.pure(userGroupList.items.get(0))
         }
     }
 

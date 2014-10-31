@@ -531,21 +531,47 @@ public class Identity {
         }
     }
 
-    public static List<UserGroup> UserGroupSearch(GroupId groupId, UserId userId) throws Exception {
+    public static Results<UserGroup> UserGroupSearch(GroupId groupId, UserId userId, Integer limit) throws Exception {
         String url = "";
-        if (groupId != null) {
+        if (userId != null && groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId) + "&groupId=" + IdConverter.idToHexString(groupId);
+        } else if (groupId != null) {
             url = IdentityV1UserGroupMemberURI + "?groupId=" + IdConverter.idToHexString(groupId);
-        } else {
+        } else if (userId != null) {
             url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId);
         }
 
-        List<UserGroup> userGroups = IdentityGet(url, Results.class).getItems();
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+        Results<UserGroup> userGroups = IdentityGet(url, Results.class);
         List<UserGroup> userGroupList = new ArrayList<>();
-        for (Object obj : userGroups) {
+        for (Object obj : userGroups.getItems()) {
             userGroupList.add((UserGroup)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
         }
 
-        return userGroupList;
+        userGroups.setItems(userGroupList);
+        return userGroups;
+    }
+
+    public static Results<UserGroup> UserGroupSearch(GroupId groupId, UserId userId) throws Exception {
+        String url = "";
+        if (userId != null && groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId) + "&groupId=" + IdConverter.idToHexString(groupId);
+        }else if (groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?groupId=" + IdConverter.idToHexString(groupId);
+        } else if (userId != null) {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId);
+        }
+
+        Results<UserGroup> userGroups = IdentityGet(url, Results.class);
+        List<UserGroup> userGroupList = new ArrayList<>();
+        for (Object obj : userGroups.getItems()) {
+            userGroupList.add((UserGroup)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
+        }
+
+        userGroups.setItems(userGroupList);
+        return userGroups;
     }
 
     public static UserGroup UserGroupPost(UserId userId, GroupId groupId) throws Exception {

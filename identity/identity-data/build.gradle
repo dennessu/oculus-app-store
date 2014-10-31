@@ -32,6 +32,7 @@ dependencies {
     compile (libraries.querydsl_collections)
     compile (libraries.ehcache)
     compile (libraries.spring_context_support)
+    testCompile (libraries.gson)
 
     processor (libraries.querydsl_apt)
     processor (libraries.persistence_api)
