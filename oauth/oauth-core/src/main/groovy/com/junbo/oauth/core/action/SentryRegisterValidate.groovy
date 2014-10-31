@@ -38,7 +38,7 @@ class SentryRegisterValidate implements Action {
         return sentryFacade.doSentryCheck(sentryFacade.createSentryRequest(SentryCategory.OCULUS_REGISTRATION_CREATE.value,
                 textMap)
         ).recover { Throwable throwable ->
-            LOGGER.error("CreateUser_Web:  Call sentry error, Ignore")
+            LOGGER.error('CreateUser_Web:  Call sentry error, Ignore', throwable)
             return Promise.pure()
         }.then { SentryResponse sentryResponse ->
             if (sentryResponse != null && sentryResponse.isBlockAccess()) {

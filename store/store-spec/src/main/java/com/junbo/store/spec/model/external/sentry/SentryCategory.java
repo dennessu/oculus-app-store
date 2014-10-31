@@ -9,6 +9,8 @@ package com.junbo.store.spec.model.external.sentry;
  * Created by liangfu on 10/23/14.
  */
 public enum SentryCategory {
+    OCULUS_EMAIL_LOOKUP("oculus_email_lookup"),
+
     OCULUS_REGISTRATION_CREATE("oculus_registration_create"),
 
     OCULUS_LOGIN_MOBILE("oculus_login_mobile"),
