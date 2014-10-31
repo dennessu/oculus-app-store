@@ -514,7 +514,7 @@ class OAuthTests(ut.TestBase):
         resetUrl = curlFormRaw('POST', ut.test_uri, '/v1/oauth2/reset-password', headers = {
             'Authorization': 'Bearer ' + user.access_token
         }, data = {
-            'username': user.username,
+            'user_email': user.email,
             'locale': 'en_US'
         })
         location = curlRedirect('GET', resetUrl)
