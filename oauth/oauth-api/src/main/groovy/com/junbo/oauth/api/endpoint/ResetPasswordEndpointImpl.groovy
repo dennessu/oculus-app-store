@@ -116,6 +116,9 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                             Promise.pure(Response.ok().entity(Utils.maskEmail(email)).build())
                         }
                     }
+                    .recover {
+                        Promise.pure(Response.ok().entity(Utils.maskEmail(username)).build())
+                    }
                 }
             } else if (userEmail != null) {
                 return userService.getUserIdByUserEmail(userEmail).then { UserId id ->
@@ -128,7 +131,11 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                         Promise.pure(Response.ok().entity(Utils.maskEmail(userEmail)).build())
                     }
                 }
-            } else {
+                .recover {
+                    Promise.pure(Response.ok().entity(Utils.maskEmail(userEmail)).build())
+                }
+            }
+            else {
                 throw AppCommonErrors.INSTANCE.fieldRequired('username or user_email').exception()
             }
         }
