@@ -487,7 +487,7 @@ public class authorizeUser {
         List<String> resetPwdLinks = Oauth.GetResetPasswordLinks(userName, email, null, true);
     }
 
-    @Test(groups = "dailies")
+    @Test(groups = "dailies", enabled = false)
     public void oculusInternalHeaderFunction() throws Exception {
         CloseableHttpResponse response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI
                 + "?client_id="
