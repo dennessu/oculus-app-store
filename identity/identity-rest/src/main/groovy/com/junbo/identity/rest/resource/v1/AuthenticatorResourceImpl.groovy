@@ -58,7 +58,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
         def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
-            if (AuthorizeContext.hasRights('create')) {
+            if (!AuthorizeContext.hasRights('create')) {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
@@ -93,7 +93,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
             def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
-                if (AuthorizeContext.hasRights('update')) {
+                if (!AuthorizeContext.hasRights('update')) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
@@ -129,7 +129,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
             def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
-                if (AuthorizeContext.hasRights('update')) {
+                if (!AuthorizeContext.hasRights('update')) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
@@ -177,23 +177,29 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
         }
 
         return userAuthenticatorValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<UserAuthenticator> authenticatorList ->
+            return search(listOptions).then { Results<UserAuthenticator> authenticatorList ->
                 def result = new Results<UserAuthenticator>(items: [])
+                result.total = authenticatorList.total
 
-                authenticatorList.each { UserAuthenticator newUserAuthenticator ->
+                authenticatorList.items.each { UserAuthenticator newUserAuthenticator ->
                     def callback = authorizeCallbackFactory.create(newUserAuthenticator.userId)
                     return RightsScope.with(authorizeService.authorize(callback)) {
                         if (newUserAuthenticator != null) {
                             newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator,
                                     listOptions.properties?.split(',') as List<String>)
+
+                            if (AuthorizeContext.hasRights('read')) {
+                                result.items.add(newUserAuthenticator)
+                            } else {
+                                // In case the user has no rights to read
+                                result.total = result.total - 1
+                            }
                         }
 
-                        if (newUserAuthenticator != null && AuthorizeContext.hasRights('read')) {
-                            result.items.add(newUserAuthenticator)
-                        }
+                        return Promise.pure()
                     }
-                }
 
+                }
                 return Promise.pure(result)
             }
         }
@@ -219,7 +225,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
         }
     }
 
-    private Promise<List<UserAuthenticator>> search(AuthenticatorListOptions listOptions) {
+    private Promise<Results<UserAuthenticator>> search(AuthenticatorListOptions listOptions) {
         if (listOptions.userId != null && listOptions.type != null && listOptions.externalId != null) {
             return userAuthenticatorService.searchByUserIdAndTypeAndExternalId(listOptions.userId, listOptions.type,
                     listOptions.externalId, listOptions.limit, listOptions.offset)

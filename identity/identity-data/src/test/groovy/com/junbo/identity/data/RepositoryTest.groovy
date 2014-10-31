@@ -318,9 +318,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         AuthenticatorListOptions getOption = new AuthenticatorListOptions()
         getOption.setExternalId(newValue)
-        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
+        Results<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
                 null).get()
-        assert userAuthenticators.size() != 0
+        assert userAuthenticators != null
+        assert userAuthenticators.items.size() != 0
     }
 
     @Test

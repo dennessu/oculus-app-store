@@ -2,6 +2,7 @@ package com.junbo.identity.service
 
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.UserAuthenticator
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
@@ -20,18 +21,18 @@ public interface UserAuthenticatorService {
 
     Promise<Void> delete(UserAuthenticatorId id)
 
-    Promise<List<UserAuthenticator>> searchByUserId(UserId userId, Integer limit, Integer offset)
+    Promise<Results<UserAuthenticator>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
-    Promise<List<UserAuthenticator>> searchByUserIdAndType(UserId userId, String type, Integer limit, Integer offset)
+    Promise<Results<UserAuthenticator>> searchByUserIdAndType(UserId userId, String type, Integer limit, Integer offset)
 
-    Promise<List<UserAuthenticator>> searchByExternalId(String externalId, Integer limit, Integer offset)
+    Promise<Results<UserAuthenticator>> searchByExternalId(String externalId, Integer limit, Integer offset)
 
-    Promise<List<UserAuthenticator>> searchByUserIdAndTypeAndExternalId(UserId userId, String type, String externalId,
+    Promise<Results<UserAuthenticator>> searchByUserIdAndTypeAndExternalId(UserId userId, String type, String externalId,
                                                                         Integer limit, Integer offset)
 
-    Promise<List<UserAuthenticator>> searchByUserIdAndExternalId(UserId userId, String externalId, Integer limit,
+    Promise<Results<UserAuthenticator>> searchByUserIdAndExternalId(UserId userId, String externalId, Integer limit,
                                                                  Integer offset)
 
-    Promise<List<UserAuthenticator>> searchByExternalIdAndType(String externalId, String type, Integer limit,
+    Promise<Results<UserAuthenticator>> searchByExternalIdAndType(String externalId, String type, Integer limit,
                                                                Integer offset)
 }

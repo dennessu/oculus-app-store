@@ -337,22 +337,28 @@
     "user_authenticator": {
       "views": {
         "by_authenticator_externalId": {
-          "map": "function(doc) {  emit(doc.externalId, doc._id)}"
+          "map": "function(doc) {  emit(doc.externalId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_authenticator_externalId_auth_type": {
-          "map": "function(doc) { emit([doc.externalId, doc.type], doc._id)}"
+          "map": "function(doc) { emit([doc.externalId, doc.type], doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_auth_type": {
-          "map": "function(doc) {  emit([doc.userId, doc.type], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.type], doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_auth_type_externalId": {
-          "map": "function(doc) {  emit([doc.userId, doc.type, doc.externalId], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.type, doc.externalId], doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_externalId": {
-          "map": "function(doc) {  emit([doc.userId, doc.externalId], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.externalId], doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 
