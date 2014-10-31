@@ -237,10 +237,12 @@
 
     <bean id="merchantAccountRepository" class="com.junbo.payment.db.repository.MerchantAccountRepository" parent="paymentDomainDataRepository">
         <property name="dao" ref="merchantAccountDao"/>
+        <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
     </bean>
 
     <bean id="paymentProviderRepository" class="com.junbo.payment.db.repository.PaymentProviderRepository" parent="paymentDomainDataRepository">
         <property name="dao" ref="paymentProviderDao"/>
+        <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
     </bean>
 
     <bean id="paymentPiTypeRepository" class="com.junbo.payment.db.repository.PITypeRepository" parent="paymentDomainDataRepository">

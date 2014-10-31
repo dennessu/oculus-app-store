@@ -21,4 +21,5 @@ dependencies {
     compile junboProject(':catalog-rest')
     compile junboProject(':csr-rest')
     compile junboProject(':billing-rest')
+    compile junboProject(':payment-db')
 }

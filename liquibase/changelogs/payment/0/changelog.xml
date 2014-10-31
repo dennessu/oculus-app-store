@@ -643,4 +643,13 @@
         </sql>
     </changeSet>
 
+    <changeSet id="6" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                        delete from payment_provider;
+                        delete from merchant_account;
+                    ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

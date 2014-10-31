@@ -39,9 +39,9 @@ public class FacebookCreditCard {
 
     @JsonProperty("payment_account")
     private String paymentAccountId;
-    @JsonProperty
+    @JsonProperty("creditCardNumber_last4")
     private String last4;
-    @JsonProperty
+    @JsonProperty("creditCardNumber_first6")
     private String first6;
     @JsonProperty("created_time")
     private String createdTime;

@@ -362,7 +362,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
 
     @Override
     public Promise<PaymentTransaction> getByTransactionToken(PaymentTransaction paymentRequest) {
-        return null;
+        return Promise.pure(null);
     }
     private void validateFacebookCC(PaymentInstrument request){
         if(request.getTypeSpecificDetails() == null){

@@ -1,0 +1,10 @@
+{
+    "merchantAccountId":"0",
+    "merchantAccountRef":"dummyreference",
+    "tenantId":"0",
+    "paymentProviderId":"0",
+    "piType":"",
+    "currency":"USD",
+    "countryCode":"",
+    "createdBy":"wenhongzhu"
+}

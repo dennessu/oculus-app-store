@@ -16,6 +16,8 @@ import com.junbo.payment.db.entity.paymentinstrument.FacebookPaymentAccountMappi
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentTypeEntity;
 import com.junbo.payment.spec.internal.FacebookPaymentAccountMapping;
+import com.junbo.payment.spec.internal.MerchantAccount;
+import com.junbo.payment.spec.internal.PaymentProviderModel;
 import com.junbo.payment.spec.internal.SettlementDetail;
 import com.junbo.payment.spec.model.*;
 
@@ -97,4 +99,10 @@ public interface PaymentMapper {
 
     FacebookPaymentAccountMappingEntity toFacebookPaymentAccountEntity(FacebookPaymentAccountMapping model, MappingContext context);
     FacebookPaymentAccountMapping toFacebookPaymentAccount(FacebookPaymentAccountMappingEntity entity, MappingContext context);
+
+    PaymentProviderModel toProviderModel(PaymentProviderEntity entity, MappingContext context);
+    PaymentProviderEntity toProviderEntity(PaymentProviderModel model, MappingContext context);
+
+    MerchantAccount toMerchantAccount(MerchantAccountEntity entity, MappingContext context);
+    MerchantAccountEntity toMerchantAccountEntity(MerchantAccount model, MappingContext context);
 }
