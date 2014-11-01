@@ -12,7 +12,6 @@ import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.common.cache.Cache
-import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
 import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer
@@ -33,12 +32,13 @@ import javax.annotation.Resource
 @Component('storeInitialItemPurchaseUtils')
 class InitialItemPurchaseUtils {
 
-    private static final int Page_Size = 10
-
     private static final Logger LOGGER = LoggerFactory.getLogger(InitialItemPurchaseUtils)
 
     @Value('${store.initialOffer.cmsPage}')
     private String initialOfferSearchPage
+
+    @Value('${store.initialOffer.limit}')
+    private int initialOfferLimit
 
     @Value('${store.initialOffer.cmsSlot}')
     private String initialOfferSearchSlot
@@ -141,24 +141,19 @@ class InitialItemPurchaseUtils {
         }
 
         offerIds = [] as Set
-        String cursor = null
-        CommonUtils.loop {
-            facadeContainer.caseyFacade.searchRaw(initialOfferSearchPage, initialOfferSearchSlot,
-                    cursor, Page_Size, apiContext).then { CaseyResults<CaseyOffer> caseyResults ->
-                if (!CollectionUtils.isEmpty(caseyResults?.items)) {
-                    caseyResults.items.each { CaseyOffer caseyOffer ->
-                        if (caseyOffer?.self != null) {
-                            offerIds << caseyOffer.self
-                        }
+        facadeContainer.caseyFacade.searchRaw(initialOfferSearchPage, initialOfferSearchSlot,
+                null, initialOfferLimit + 1, apiContext).then { CaseyResults<CaseyOffer> caseyResults ->
+            if (caseyResults?.items != null && caseyResults.items.size() > initialOfferLimit) {
+                LOGGER.warn('name=Too_Many_Initial_Offers')
+                caseyResults.items = caseyResults.items.subList(0, initialOfferLimit)
+            }
+            if (!CollectionUtils.isEmpty(caseyResults?.items)) {
+                caseyResults.items.each { CaseyOffer caseyOffer ->
+                    if (caseyOffer?.self != null) {
+                        offerIds << caseyOffer.self
                     }
                 }
-                cursor = caseyResults?.cursorString
-                if (StringUtils.isEmpty(cursor) || CollectionUtils.isEmpty(caseyResults?.items)) {
-                    return Promise.pure(Promise.BREAK)
-                }
-                return Promise.pure()
             }
-        }.then {
             initialOfferCache.put(apiContext.country.getId().value, offerIds)
             return Promise.pure(offerIds)
         }
