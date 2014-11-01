@@ -66,4 +66,10 @@ public interface LoginResource {
     @Consumes()
     // This doesn't require email verification
     Promise<Tos> getRegisterTos();
+
+    @GET
+    @Path("/countries")
+    @Consumes()
+    // This doesn't require email verification
+    Promise<GetSupportedCountriesResponse> getSupportedCountries();
 }

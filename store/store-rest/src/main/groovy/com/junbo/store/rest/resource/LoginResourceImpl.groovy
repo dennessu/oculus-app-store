@@ -8,6 +8,7 @@ import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
+import com.junbo.identity.spec.v1.option.list.CountryListOptions
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -34,6 +35,7 @@ import com.junbo.store.spec.model.identity.StoreUserEmail
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -396,6 +398,28 @@ class LoginResourceImpl implements LoginResource {
                 throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
             }
             return Promise.pure(dataConverter.toStoreTos(tos, null))
+        }
+    }
+
+    @Override
+    Promise<GetSupportedCountriesResponse> getSupportedCountries() {
+         requestValidator.validateRequiredApiHeaders()
+
+        List<String> supportedCountries = new ArrayList();
+        return resourceContainer.countryResource.list(new CountryListOptions(
+                properties: 'countryCode'
+        )).then { Results<Country> countryResults ->
+            GetSupportedCountriesResponse response = new GetSupportedCountriesResponse(
+                    supportedCountries: []
+            )
+            countryResults.items.each { Country country ->
+                if (!StringUtils.isEmpty(country.countryCode)) {
+                    response.supportedCountries.add(country.countryCode)
+                }
+            }
+
+            response.supportedCountries = response.supportedCountries.unique().sort()
+            return Promise.pure(response)
         }
     }
 

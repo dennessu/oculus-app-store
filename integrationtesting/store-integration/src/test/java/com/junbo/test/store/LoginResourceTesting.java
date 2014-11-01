@@ -7,12 +7,16 @@ package com.junbo.test.store;
 
 import com.junbo.common.error.Error;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.model.Results;
+import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
+import com.junbo.test.common.apihelper.identity.CountryService;
+import com.junbo.test.common.apihelper.identity.impl.CountryServiceImpl;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
@@ -42,6 +46,7 @@ public class LoginResourceTesting extends BaseTestClass {
     public static Integer CREDENTIAL_ATTEMPT_COUNT = 3;
 
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
+    CountryService countryService = CountryServiceImpl.instance();
 
     @Property(
             priority = Priority.Dailies,
@@ -97,6 +102,35 @@ public class LoginResourceTesting extends BaseTestClass {
 
         error = testDataProvider.CheckUserNameWithError(RandomHelper.randomAlphabetic(10) + "...", RandomHelper.randomEmail(), 400, "130.001");
         Validator.Validate("Validate consecutive period response", true, error != null);
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check username"
+            }
+    )
+    @Test
+    public void testGetSupportCountries() throws Exception {
+        GetSupportedCountriesResponse response = testDataProvider.GetSupportedCountries();
+        Results<Country> countryResults = countryService.getAllCountries();
+
+        assert response.getSupportedCountries().size() == countryResults.getItems().size();
+        for(String countryCode : response.getSupportedCountries()) {
+            boolean found = false;
+            for (Country country : countryResults.getItems()) {
+                if (country.getCountryCode().equals(countryCode)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            Validator.Validate("validate countryCode " + countryCode, true, found);
+        }
     }
 
     @Property(

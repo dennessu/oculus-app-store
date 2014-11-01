@@ -120,6 +120,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return createUserRequest;
     }
 
+    public GetSupportedCountriesResponse GetSupportedCountries() throws Exception{
+        return loginClient.getSupportedCountryCodes();
+    }
+
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail,
                                         int expectedResponseCode) throws Exception {
         AuthTokenResponse response = loginClient.CreateUser(createUserRequest, expectedResponseCode);
