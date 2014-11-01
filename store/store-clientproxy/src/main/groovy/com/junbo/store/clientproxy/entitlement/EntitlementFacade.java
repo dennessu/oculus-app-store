@@ -25,8 +25,8 @@ public interface EntitlementFacade {
 
     Promise<List<Entitlement>> getEntitlementsByIds(Set<EntitlementId> entitlementIdList, boolean includeItemDetails, ApiContext apiContext);
 
-    Promise<Boolean> checkEntitlements(UserId userId, ItemId itemId);
+    Promise<Boolean> checkEntitlements(UserId userId, ItemId itemId, EntitlementType entitlementType);
 
-    Promise<Set<ItemId>> checkEntitlements(UserId userId, Set<ItemId> itemIds);
+    Promise<Set<ItemId>> checkEntitlements(UserId userId, Set<ItemId> itemIds, EntitlementType entitlementType);
 
 }

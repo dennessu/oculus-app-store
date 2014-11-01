@@ -170,6 +170,7 @@
                 <value>locale</value>
                 <value>offer-attribute</value>
                 <value>item-attribute</value>
+                <value>catalog</value>
             </set>
         </property>
     </bean>

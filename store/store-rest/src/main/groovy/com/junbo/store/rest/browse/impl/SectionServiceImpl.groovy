@@ -32,8 +32,6 @@ class SectionServiceImpl implements SectionService {
 
     private static final String Cms_Criteria = 'cms'
 
-    private static final String SectionInfo_Cache_Key = 'section_info'
-
     @Resource(name = 'storeFacadeContainer')
     private FacadeContainer facadeContainer
 
@@ -56,7 +54,8 @@ class SectionServiceImpl implements SectionService {
     }
 
     private Promise<List<SectionInfoNode>> buildSectionInfoNode(ApiContext apiContext) {
-        List<SectionInfoNode> cached = sectionCache.get(SectionInfo_Cache_Key)
+        String cacheKey = "${apiContext.country.getId().value}.${apiContext.locale.getId().value}"
+        List<SectionInfoNode> cached = sectionCache.get(cacheKey)
         if (cached != null) {
             return Promise.pure(cached)
         }
@@ -79,7 +78,7 @@ class SectionServiceImpl implements SectionService {
                     return Promise.pure()
                 }
             }.then {
-                sectionCache.put(SectionInfo_Cache_Key, results)
+                sectionCache.put(cacheKey, results)
                 return Promise.pure(results)
             }
         }

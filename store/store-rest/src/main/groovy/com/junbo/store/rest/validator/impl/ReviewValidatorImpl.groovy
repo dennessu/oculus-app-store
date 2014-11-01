@@ -47,7 +47,7 @@ class ReviewValidatorImpl implements ReviewValidator {
             }
         }
 
-        facadeContainer.entitlementFacade.checkEntitlements(apiContext.user, request.itemId).then { Boolean owned ->
+        facadeContainer.entitlementFacade.checkEntitlements(apiContext.user, request.itemId, null).then { Boolean owned ->
             if (!owned) {
                 throw AppErrors.INSTANCE.itemNotPurchased().exception()
             }

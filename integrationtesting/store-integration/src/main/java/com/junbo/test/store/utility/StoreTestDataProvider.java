@@ -65,9 +65,12 @@ import com.junbo.test.store.apihelper.StoreService;
 import com.junbo.test.store.apihelper.impl.CaseyEmulatorServiceImpl;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -507,6 +510,51 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             itemRevision = itemRevisionClient.getItemRevision(itemRevisionId);
         }
         return itemRevision;
+    }
+
+
+    public List<ItemRevision> getItemRevisions(ItemId itemId) throws Exception {
+        if (Master.getInstance().getItemRevisions(itemId.getValue()) != null) {
+            return Master.getInstance().getItemRevisions(itemId.getValue());
+        }
+
+        List<ItemRevision> revisionList = new ArrayList<>();
+        HashMap<String, List<String>> params = new HashMap<>();
+        params.put("itemId", Collections.singletonList(itemId.getValue()));
+        params.put("status", Collections.singletonList("APPROVED"));
+        params.put("count", Collections.singletonList(String.valueOf(100)));
+        params.put("locale", Collections.singletonList("en_US"));
+
+        while (true) {
+            Results<ItemRevision> revisionResults = itemRevisionClient.getItemRevisions(params);
+            revisionList.addAll(revisionResults.getItems());
+            String cursor = null;
+            if (revisionResults.getNext() != null && revisionResults.getNext().getHref() != null) {
+                for (NameValuePair nameValuePair : URLEncodedUtils.parse(new URI(revisionResults.getNext().getHref()), "UTF-8")) {
+                    if (nameValuePair.getName().equalsIgnoreCase("cursor")) {
+                        cursor = nameValuePair.getValue();
+                        break;
+                    }
+                }
+            }
+            if (StringUtils.isEmpty(cursor) || revisionResults.getItems().isEmpty()) {
+                break;
+            }
+            params.put("cursor", Collections.singletonList(cursor));
+        }
+
+        Master.getInstance().addItemIdToItemRevisions(itemId.getValue(), revisionList);
+        return revisionList;
+    }
+
+    public ItemRevision postItemRevision(ItemRevision itemRevision) throws Exception {
+        itemRevision.setId(null);
+        itemRevision.setRev(null);
+        itemRevision.setCreatedTime(null);
+        itemRevision.setUpdatedTime(null);
+        itemRevision.setLocaleAccuracy(null);
+        itemRevision.setStatus("DRAFT");
+        return itemRevisionClient.postItemRevision(itemRevision, 200, true);
     }
 
     public ItemAttribute getItemAttribute(String itemAttributeId) throws Exception {
