@@ -705,8 +705,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             return null
         }
 
-        long currentValue = memcachedClient.get(key) == null ? -1 : Long.decode((String)memcachedClient.get(key))
-        return currentValue == -1 ? null : currentValue
+        Object obj = memcachedClient.get(key)
+        return obj == null ? null : Long.decode((String)obj)
     }
 
     @Required
