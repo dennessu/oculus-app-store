@@ -173,7 +173,9 @@ public class StoreBrowseValidationHelper {
     }
 
     public void verifyItem(com.junbo.store.spec.model.browse.document.Item item, boolean serviceClientEnabled, boolean verifyAttributes,
-                           boolean isList, boolean offerAvailable) throws Exception {
+                           ApiEndPoint apiEndPoint) throws Exception {
+        boolean isList = apiEndPoint == ApiEndPoint.List;
+        boolean offerAvailable = apiEndPoint != ApiEndPoint.Library && apiEndPoint != ApiEndPoint.Purchase;
         com.junbo.catalog.spec.model.offer.Offer catalogOffer = null;
         if (offerAvailable) {
             catalogOffer = storeTestDataProvider.getOfferByOfferId(item.getOffer().getSelf().getValue(), true);
@@ -199,6 +201,9 @@ public class StoreBrowseValidationHelper {
         List<OfferAttribute> offerAttributes = new ArrayList<>();
         List<ItemAttribute> itemAttributes = new ArrayList<>();
         List<ItemRevision> itemRevisions = Arrays.asList(currentItemRevision);//getItemRevisions(catalogItem); // todo may return all the item revisions
+        if (ApiEndPoint.Details == apiEndPoint) {
+            itemRevisions = getItemRevisionForRevisionNote(item.getSelf());
+        }
 
         if (offerAvailable) {
             if (!org.springframework.util.CollectionUtils.isEmpty(catalogOffer.getCategories())) {
@@ -430,13 +435,14 @@ public class StoreBrowseValidationHelper {
                 return o2.getUpdatedTime().compareTo(o1.getUpdatedTime());
             }
         });
-        Assert.assertEquals(revisions.size(), revisionNotes.size());
+        Assert.assertEquals(revisionNotes.size(), revisions.size());
         for (int i = 0; i < revisionNotes.size(); ++i) {
             RevisionNote revisionNote = revisionNotes.get(i);
             ItemRevision historyItemRevision = revisions.get(i);
             ItemRevisionLocaleProperties historyLocalProperties = historyItemRevision.getLocales().get(locale);
             Binary historyBinary = historyItemRevision.getBinaries() == null ? null : historyItemRevision.getBinaries().get(Platform);
 
+            Assert.assertEquals(revisionNote.getReleaseDate(), itemRevisions.get(i).getUpdatedTime());
             Assert.assertEquals(revisionNote.getTitle(),
                     defaultIfNull(historyLocalProperties == null ? null : historyLocalProperties.getReleaseNotes().getShortNotes()));
             Assert.assertEquals(revisionNote.getDescription(),
@@ -540,13 +546,6 @@ public class StoreBrowseValidationHelper {
         }
     }
 
-    private List<ItemRevision> getItemRevisions(Item item) throws Exception {
-        HashMap<String, List<String>> params = new HashMap<>();
-        params.put("itemId", Collections.singletonList(item.getId()));
-        params.put("status", Collections.singletonList("APPROVED"));
-        Results<ItemRevision> revisionResults = storeTestDataProvider.itemRevisionClient.getItemRevisions(params);
-        return revisionResults.getItems();
-    }
 
     private List<OfferRevision> getOfferRevisions(com.junbo.catalog.spec.model.offer.Offer offer) throws Exception {
         HashMap<String, List<String>> params = new HashMap<>();
@@ -595,6 +594,36 @@ public class StoreBrowseValidationHelper {
                 }
             }
         });
+    }
+
+    private List<ItemRevision> getItemRevisionForRevisionNote(ItemId itemId) throws Exception {
+        String platform = "ANDROID";
+        int revisionNum = 10;
+        List<ItemRevision> itemRevisions = storeTestDataProvider.getItemRevisions(itemId);
+        TreeMap<Integer, ItemRevision> revisionTreeMap = new TreeMap<>();
+        for (ItemRevision itemRevision : itemRevisions) {
+            if (itemRevision.getBinaries() != null && itemRevision.getBinaries().get(platform) != null &&
+                    itemRevision.getBinaries().get(platform).getMetadata() != null &&
+                    itemRevision.getBinaries().get(platform).getMetadata().get("versionCode") != null) {
+                Integer versionCode = itemRevision.getBinaries().get(platform).getMetadata().get("versionCode").asInt();
+                if (revisionTreeMap.get(versionCode) == null ||
+                        revisionTreeMap.get(versionCode).getUpdatedTime().before(itemRevision.getUpdatedTime())) {
+                    revisionTreeMap.put(versionCode, itemRevision);
+                    if (revisionTreeMap.size() > revisionNum) {
+                        revisionTreeMap.pollFirstEntry();
+                    }
+                }
+            }
+        }
+
+
+        List<ItemRevision> result = new ArrayList<>();
+        for (Map.Entry<Integer, ItemRevision> entry : revisionTreeMap.entrySet()) {
+            result.add(entry.getValue());
+        }
+
+        Collections.reverse(result);
+        return result;
     }
 
     private Organization getOrganization(OrganizationId organizationId, boolean serviceClientEnabled) {

@@ -201,6 +201,16 @@ class ItemBuilder {
         return result
     }
 
+    public RevisionNote buildRevisionNote(RevisionNotes revisionNotes, Binary binary, Date releaseDate) {
+        return new RevisionNote(
+                versionCode: getVersionCode(binary),
+                releaseDate: releaseDate,
+                versionString: binary?.version,
+                title: revisionNotes?.shortNotes,
+                description: revisionNotes?.longNotes
+        )
+    }
+
     private IAPDetails buildIAPDetails(String sku) {
         return new IAPDetails(
                 sku: sku
@@ -218,7 +228,7 @@ class ItemBuilder {
         result.permissions = getPermissions(binary)
         result.versionString = binary?.version
         result.revisionNotes = [buildRevisionNote(itemRevisionLocaleProperties?.releaseNotes,
-                itemRevision?.binaries?.get(apiContext.platform.value), null)]
+                itemRevision?.binaries?.get(apiContext.platform.value), itemRevision.updatedTime)]
 
         // item revision attribute
         result.website = itemRevisionLocaleProperties?.website
@@ -297,7 +307,7 @@ class ItemBuilder {
 
         appDetails.versionString = binary?.version
         appDetails.releaseDate = caseyOffer?.regions?.get(country)?.releaseDate
-        appDetails.revisionNotes = [buildRevisionNote(caseyItem?.releaseNotes, binary, appDetails.releaseDate)]
+        appDetails.revisionNotes = [buildRevisionNote(caseyItem?.releaseNotes, binary, caseyItem?.updatedTime)]
         appDetails.website = caseyItem?.website
         appDetails.forumUrl = caseyItem?.communityForumLink
         appDetails.developerEmail = caseyItem?.supportEmail
@@ -316,16 +326,6 @@ class ItemBuilder {
         appDetails.publisherName = publisher
         appDetails.developerName = developer
         return appDetails;
-    }
-
-    private RevisionNote buildRevisionNote(RevisionNotes revisionNotes, Binary binary, Date releaseDate) {
-        return new RevisionNote(
-                versionCode: getVersionCode(binary),
-                releaseDate: releaseDate,
-                versionString: binary?.version,
-                title: revisionNotes?.shortNotes,
-                description: revisionNotes?.longNotes
-        )
     }
 
     private Offer buildOffer(CaseyOffer caseyOffer, ApiContext apiContext) {

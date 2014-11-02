@@ -33,4 +33,10 @@
         <property name="cacheManager" ref="storeCacheManager"/>
         <property name="cacheName" value="store.initial.offer"/>
     </bean>
+
+    <bean id="storeItemLatestRevisionIdsCache" class="com.junbo.store.common.cache.impl.SimpleCache">
+        <property name="cacheEnabled" value="${store.cache.enabled}"/>
+        <property name="cacheManager" ref="storeCacheManager"/>
+        <property name="cacheName" value="store.item.latestRevisionIds"/>
+    </bean>
 </beans>

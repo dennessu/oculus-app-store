@@ -421,13 +421,20 @@ public class LoginResourceTesting extends BaseTestClass {
         // config two free apps and 1 paid app, the paid app will be ignored
         testDataProvider.setupCmsOffers(initialAppsCmsPage, Collections.singletonList(initialAppsCmsSlot),
                 Collections.singletonList(Arrays.asList(new OfferId(testDataProvider.getOfferIdByName(offer_digital_free)),
+                        new OfferId(testDataProvider.getOfferIdByName(offer_digital_free)),
                         new OfferId(testDataProvider.getOfferIdByName(offer_digital_oculus_free1)),
+                        new OfferId(testDataProvider.getOfferIdByName(offer_digital_oculus_free1)),
+                        new OfferId(testDataProvider.getOfferIdByName(offer_digital_free_same_item_offer1)),
+                        new OfferId(testDataProvider.getOfferIdByName(offer_digital_free_same_item_offer1)),
+                        new OfferId(testDataProvider.getOfferIdByName(offer_digital_free_same_item_offer2)),
+                        new OfferId(testDataProvider.getOfferIdByName(offer_digital_free_same_item_offer2)),
                         new OfferId(testDataProvider.getOfferIdByName(offer_digital_normal1)))));
 
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         testDataProvider.CreateUser(createUserRequest, true);
         try {
-            validationHelper.verifyItemsInLibrary(testDataProvider.getLibrary(), Arrays.asList(item_digital_free, item_digital_oculus_free1));
+            validationHelper.verifyItemsInLibrary(testDataProvider.getLibrary(), Arrays.asList(item_digital_free, item_digital_oculus_free1,
+                    item_digital_free_same_item));
         } finally {
             testDataProvider.resetEmulatorData();
         }
@@ -1230,12 +1237,18 @@ public class LoginResourceTesting extends BaseTestClass {
             testDataProvider.setupCmsOffers(initialAppsCmsPage, Collections.singletonList(initialAppsCmsSlot),
                     Collections.singletonList(Arrays.asList(new OfferId(testDataProvider.getOfferIdByName(offer_digital_free)),
                             new OfferId(testDataProvider.getOfferIdByName(offer_digital_oculus_free2)),
+                            new OfferId(testDataProvider.getOfferIdByName(offer_digital_oculus_free2)),
+                            new OfferId(testDataProvider.getOfferIdByName(offer_digital_free_same_item_offer1)),
+                            new OfferId(testDataProvider.getOfferIdByName(offer_digital_free_same_item_offer1)),
+                            new OfferId(testDataProvider.getOfferIdByName(offer_digital_free_same_item_offer2)),
+                            new OfferId(testDataProvider.getOfferIdByName(offer_digital_free_same_item_offer2)),
                             new OfferId(testDataProvider.getOfferIdByName(offer_digital_normal1)))));
 
             response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
             assert response != null;
             assert response.getChallenge() == null;
-            validationHelper.verifyItemsInLibrary(testDataProvider.getLibrary(), Arrays.asList(item_digital_free, item_digital_oculus_free1, item_digital_oculus_free2));
+            validationHelper.verifyItemsInLibrary(testDataProvider.getLibrary(), Arrays.asList(item_digital_free,
+                    item_digital_oculus_free1, item_digital_oculus_free2, item_digital_free_same_item));
 
             TestContext.getData().putHeader("X_QA_CASEY_ERROR", "search");
             response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
