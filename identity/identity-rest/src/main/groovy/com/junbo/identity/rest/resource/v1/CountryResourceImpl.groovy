@@ -145,10 +145,11 @@ class CountryResourceImpl implements CountryResource {
         }
 
         return countryValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<Country> countryList ->
+            return search(listOptions).then { Results<Country> countryList ->
                 def result = new Results<Country>(items: [])
+                result.total = countryList.total
 
-                return Promise.each(countryList) { Country newCountry ->
+                return Promise.each(countryList.items) { Country newCountry ->
                     return filterCountry(newCountry, listOptions.returnLocale?.toString()).then { Country filterCountry ->
                         if (filterCountry != null) {
                             filterCountry = countryFilter.filterForGet(filterCountry, listOptions.properties?.split(',') as List<String>)
@@ -188,7 +189,7 @@ class CountryResourceImpl implements CountryResource {
         }
     }
 
-    private Promise<List<Country>> search(CountryListOptions countryListOptions) {
+    private Promise<Results<Country>> search(CountryListOptions countryListOptions) {
         if (countryListOptions.currencyId != null && countryListOptions.localeId != null) {
             return countryService.searchByDefaultCurrencyIdAndLocaleId(countryListOptions.currencyId,
                     countryListOptions.localeId, countryListOptions.limit, countryListOptions.offset)

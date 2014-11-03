@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Validator;
@@ -21,6 +22,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import scala.reflect.internal.Trees;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -147,7 +149,7 @@ public class postCountry {
         String invalidSortByURL = Identity.IdentityV1CountryURI + "?locale=en_US&sortBy=locale";
         String missingLocaleByURL = Identity.IdentityV1CountryURI + "?sortBy=shortName";
 
-        List<Country> countries = Identity.CountriesSearch("ab_CD", "shortName");
+        List<Country> countries = Identity.CountriesSearchSort("ab_CD", "shortName");
         assert countries != null;
         for (Country country : countries) {
             Validator.Validate("Validate " + country.getCountryCode(), country.getSubCountries() != null, true);
@@ -173,7 +175,7 @@ public class postCountry {
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
 
-        countries = Identity.CountriesSearch("en_US", "shortName");
+        countries = Identity.CountriesSearchSort("en_US", "shortName");
         assert countries != null;
         int chinaIndex = 0, usIndex = 0;
         for (int index = 0; index < countries.size(); index ++) {
@@ -187,7 +189,7 @@ public class postCountry {
         assert chinaIndex < usIndex;
 
         chinaIndex = usIndex = 0;
-        countries = Identity.CountriesSearch("zh_CN", "shortName");
+        countries = Identity.CountriesSearchSort("zh_CN", "shortName");
         assert countries != null;
         for (int index = 0; index < countries.size(); index ++) {
             Country country = countries.get(index);
@@ -201,12 +203,11 @@ public class postCountry {
     }
 
     @Test(groups = "dailies")
-    // todo:    Need jason fix this.
     public void searchCountriesWithValidLocale() throws Exception {
         List<Locale> locales = Identity.LocaleGetAll().getItems();
 
         for (Locale locale : locales) {
-            List<Country> countries = Identity.CountriesSearch(locale.getLocaleCode(), "shortName");
+            List<Country> countries = Identity.CountriesSearchSort(locale.getLocaleCode(), "shortName");
             for (Country country : countries) {
                 Validator.Validate("Validate " + country.getCountryCode(), country.getSubCountries() != null, true);
                 CountryLocaleKey countryLocaleKey = country.getLocales().get(locale.getLocaleCode());
@@ -214,6 +215,71 @@ public class postCountry {
                 Validator.Validate("Validate LongName ", countryLocaleKey.getShortName() != null, true);
             }
         }
+    }
+
+    @Test(groups = "dailies")
+    public void searchCountriesTest() throws Exception {
+        Long oldTotal, newTotal;
+        Results<Country> results = Identity.CountriesSearch("en_US", null, null);
+        assert results != null;
+        assert results.getTotal() > 1;
+        oldTotal = results.getTotal();
+        assert results.getItems().size() > 1;
+
+        results = Identity.CountriesSearch("en_US", null, 1);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal == newTotal;
+        assert results.getItems().size() == 1;
+
+        results = Identity.CountriesSearch("en_US", null, 10);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal == newTotal;
+        assert results.getItems().size() == 10;
+
+        results = Identity.CountriesSearch(null, "USD", null);
+        assert results != null;
+        assert results.getTotal() > 1;
+        oldTotal = results.getTotal();
+        assert results.getItems().size() > 1;
+
+        results = Identity.CountriesSearch(null, "USD", 1);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal == newTotal;
+        assert results.getItems().size() == 1;
+
+        results = Identity.CountriesSearch(null, "USD", 10);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal == newTotal;
+        assert results.getItems().size() == 10;
+
+        results = Identity.CountriesSearch("en_US", "USD", null);
+        assert results != null;
+        assert results.getTotal() > 1;
+        oldTotal = results.getTotal();
+        assert results.getItems().size() > 1;
+
+        results = Identity.CountriesSearch("en_US", "USD", 1);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal == newTotal;
+        assert results.getItems().size() == 1;
+
+        results = Identity.CountriesSearch("en_US", "USD", 6);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal == newTotal;
+        assert results.getItems().size() == 6;
+        assert results.getNext() == null;
     }
 
     private void checkCountryLocale(Country country, List<String> expectedLocales, List<String> unexpectedLocales) throws Exception {

@@ -169,7 +169,7 @@ public class Identity {
         return countries;
     }
 
-    public static List<Country> CountriesSearch(String locale, String sortBy) throws Exception {
+    public static List<Country> CountriesSearchSort(String locale, String sortBy) throws Exception {
         String url = "";
         if (StringUtils.isEmpty(locale) && StringUtils.isEmpty(sortBy)) {
             url = IdentityV1CountryURI;
@@ -186,6 +186,35 @@ public class Identity {
             countries.add((Country)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Country.class));
         }
         return countries;
+    }
+
+    public static Results<Country> CountriesSearch(String defaultLocale, String defaultCurrency, Integer limit) throws Exception {
+        String url = "";
+        if (StringUtils.isEmpty(defaultCurrency) && StringUtils.isEmpty(defaultLocale)) {
+            url = IdentityV1CountryURI;
+        } else if (StringUtils.isEmpty(defaultLocale)) {
+            url = IdentityV1CountryURI + "?defaultCurrencyId=" + defaultCurrency;
+        } else if (StringUtils.isEmpty(defaultCurrency)) {
+            url = IdentityV1CountryURI + "?defaultLocaleId=" + defaultLocale;
+        } else {
+            url = IdentityV1CountryURI + "?defaultCurrencyId=" + defaultCurrency + "&defaultLocaleId=" + defaultLocale;
+        }
+
+        if (limit != null) {
+            if (url.contains("?")) {
+                url = url + "&count=" + limit;
+            } else {
+                url = url + "?count=" + limit;
+            }
+        }
+
+        Results<Country> results = IdentityGet(url, Results.class);
+        List<Country> countries = new ArrayList<>();
+        for (Object obj : results.getItems()) {
+            countries.add((Country)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Country.class));
+        }
+        results.setItems(countries);
+        return results;
     }
 
     public static void CountryDeleteByCountryId(String countryId) throws Exception {

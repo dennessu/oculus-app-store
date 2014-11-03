@@ -3,6 +3,7 @@ package com.junbo.identity.service.impl
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.CountryRepository
 import com.junbo.identity.service.CountryService
 import com.junbo.identity.spec.v1.model.Country
@@ -38,22 +39,22 @@ class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    Promise<List<Country>> searchByDefaultCurrencyIdAndLocaleId(CurrencyId currencyId, LocaleId localeId, Integer limit, Integer offset) {
+    Promise<Results<Country>> searchByDefaultCurrencyIdAndLocaleId(CurrencyId currencyId, LocaleId localeId, Integer limit, Integer offset) {
         return countryRepository.searchByDefaultCurrencyIdAndLocaleId(currencyId, localeId, limit, offset)
     }
 
     @Override
-    Promise<List<Country>> searchByDefaultCurrencyId(CurrencyId currencyId, Integer limit, Integer offset) {
+    Promise<Results<Country>> searchByDefaultCurrencyId(CurrencyId currencyId, Integer limit, Integer offset) {
         return countryRepository.searchByDefaultCurrencyId(currencyId, limit, offset)
     }
 
     @Override
-    Promise<List<Country>> searchByDefaultLocaleId(LocaleId localeId, Integer limit, Integer offset) {
+    Promise<Results<Country>> searchByDefaultLocaleId(LocaleId localeId, Integer limit, Integer offset) {
         return countryRepository.searchByDefaultLocaleId(localeId, limit, offset)
     }
 
     @Override
-    Promise<List<Country>> searchAll(Integer limit, Integer offset) {
+    Promise<Results<Country>> searchAll(Integer limit, Integer offset) {
         return countryRepository.searchAll(limit, offset)
     }
 

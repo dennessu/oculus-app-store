@@ -40,13 +40,16 @@
     "country": {
       "views": {
         "by_default_currency": {
-          "map": "function(doc) {emit(doc.defaultCurrency, doc._id)}"
+          "map": "function(doc) {emit(doc.defaultCurrency, doc._id)}",
+          "reduce": "_count"
         }, 
         "by_default_locale": {
-          "map": "function(doc) {emit(doc.defaultLocale, doc._id)}"
+          "map": "function(doc) {emit(doc.defaultLocale, doc._id)}",
+          "reduce": "_count"
         }, 
         "by_default_locale_currency": {
-          "map": "function(doc) {emit([doc.defaultCurrency, doc.defaultLocale], doc._id)}"
+          "map": "function(doc) {emit([doc.defaultCurrency, doc.defaultLocale], doc._id)}",
+          "reduce": "_count"
         }
       }
     }, 
