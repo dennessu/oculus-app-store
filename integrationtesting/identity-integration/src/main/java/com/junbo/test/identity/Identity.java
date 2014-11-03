@@ -230,7 +230,11 @@ public class Identity {
 
         Results<Currency> results = IdentityGet(url, Results.class);
         List<Currency> currencies = new ArrayList<>();
-        for (Object obj : results.)
+        for (Object obj : results.getItems()) {
+            currencies.add((Currency)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Currency.class));
+        }
+        results.setItems(currencies);
+        return results;
     }
 
     public static Currency CurrencyPostDefault(Currency currency) throws Exception {

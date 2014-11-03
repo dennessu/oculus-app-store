@@ -146,7 +146,7 @@ class CurrencyResourceImpl implements CurrencyResource {
             return search(listOptions).then { Results<Currency> currencyList ->
                 def result = new Results<Currency>(items: [])
                 result.total = currencyList.total
-                currencyList.each { Currency newCurrency ->
+                currencyList.items.each { Currency newCurrency ->
                     newCurrency = currencyFilter.filterForGet(newCurrency, null)
 
                     if (newCurrency != null) {

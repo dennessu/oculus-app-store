@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.CurrencyLocaleKey;
 import com.junbo.test.common.HttpclientHelper;
@@ -111,7 +112,26 @@ public class postCurrency {
 
     @Test(groups = "dailies")
     public void testCurrencySearch() throws Exception {
+        Long oldTotal, newTotal;
+        Results<Currency> results = Identity.CurrencySearch(null);
+        assert results != null;
+        assert results.getTotal() > 1;
+        oldTotal = results.getTotal();
+        assert results.getItems().size() > 1;
 
+        results = Identity.CurrencySearch(1);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert results.getItems().size() == 1;
+
+        results = Identity.CurrencySearch(10);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert results.getItems().size() == 10;
     }
 
     private void checkCurrencyLocale(Currency currency, List<String> expectedLocales, List<String> unexpectedLocales) throws Exception {
