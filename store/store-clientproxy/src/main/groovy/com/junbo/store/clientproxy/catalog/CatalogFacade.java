@@ -11,7 +11,10 @@ import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.ItemId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
+import com.junbo.store.spec.model.browse.document.RevisionNote;
 import com.junbo.store.spec.model.catalog.Offer;
+
+import java.util.List;
 
 /**
  * The CatalogFacade class.
@@ -27,4 +30,6 @@ public interface CatalogFacade {
     Promise<OfferAttribute> getOfferAttribute(String attributeId, ApiContext apiContext);
 
     Promise<com.junbo.catalog.spec.model.item.Item> getCatalogItemByPackageName(String packageName, Integer versionCode, String signatureHash);
+
+    Promise<List<RevisionNote>> getRevisionNotes(ItemId itemId, ApiContext apiContext);
 }

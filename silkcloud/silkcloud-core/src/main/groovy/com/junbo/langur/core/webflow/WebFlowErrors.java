@@ -15,9 +15,9 @@ import com.junbo.common.error.ErrorProxy;
 public interface WebFlowErrors {
     WebFlowErrors INSTANCE = ErrorProxy.newProxyInstance(WebFlowErrors.class);
 
-    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Conversation Verify Failed")
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "cid", reason = "Conversation Verify Failed")
     AppError conversationVerifyFailed();
 
-    @ErrorDef(httpStatusCode = 400, code = "002", message = "Input Error", field = "{0}", reason = "Conversation Ip Violation")
+    @ErrorDef(httpStatusCode = 400, code = "002", message = "Input Error", field = "cid", reason = "Conversation Ip Violation")
     AppError ipViolation();
 }

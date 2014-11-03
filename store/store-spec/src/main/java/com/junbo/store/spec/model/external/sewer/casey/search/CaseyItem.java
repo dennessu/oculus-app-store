@@ -12,6 +12,7 @@ import com.junbo.catalog.spec.model.item.SupportedLocale;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.ItemRevisionId;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ public class CaseyItem {
     private Images images;
     private String sku;
     private ItemRevisionId currentRevision;
+    private Date updatedTime;
 
     public ItemId getSelf() {
         return self;
@@ -181,5 +183,13 @@ public class CaseyItem {
 
     public void setCurrentRevision(ItemRevisionId currentRevision) {
         this.currentRevision = currentRevision;
+    }
+
+    public Date getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(Date updatedTime) {
+        this.updatedTime = updatedTime;
     }
 }

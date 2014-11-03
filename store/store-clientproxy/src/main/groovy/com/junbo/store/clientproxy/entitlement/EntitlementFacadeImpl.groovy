@@ -101,27 +101,29 @@ class EntitlementFacadeImpl implements EntitlementFacade {
     }
 
     @Override
-    Promise<Boolean> checkEntitlements(UserId userId, ItemId itemId) {
-        return checkEntitlements(userId, Collections.singleton(itemId)).then { Set<ItemId> ownedItemIds ->
+    Promise<Boolean> checkEntitlements(UserId userId, ItemId itemId, EntitlementType entitlementType) {
+        return checkEntitlements(userId, Collections.singleton(itemId), entitlementType).then { Set<ItemId> ownedItemIds ->
             return Promise.pure(!ownedItemIds.isEmpty())
         }
     }
 
     @Override
-    Promise<Set<ItemId>> checkEntitlements(UserId userId, Set<ItemId> itemIds) {
+    Promise<Set<ItemId>> checkEntitlements(UserId userId, Set<ItemId> itemIds, EntitlementType entitlementType) {
         String bookmark = null
         Set<ItemId> ownedItemIds = [] as Set
         CommonUtils.loop {
             return resourceContainer.entitlementResource.searchEntitlements(new EntitlementSearchParam(
                     userId: userId,
                     itemIds: itemIds,
-                    isActive: true
+                    isActive: true,
+                    type: entitlementType?.name()
             ), new PageMetadata(bookmark: bookmark, count: itemIds.size())).then { Results<com.junbo.entitlement.spec.model.Entitlement> results ->
                 bookmark = CommonUtils.getQueryParam(results?.next?.href, 'bookmark')
                 results.items.each { com.junbo.entitlement.spec.model.Entitlement entitlement ->
                     ownedItemIds << new ItemId(entitlement.itemId)
                 }
-                if (org.apache.commons.lang3.StringUtils.isBlank(bookmark) || CollectionUtils.isEmpty(results?.items)) {
+                if (org.apache.commons.lang3.StringUtils.isBlank(bookmark) || CollectionUtils.isEmpty(results?.items)
+                    || ownedItemIds.size() == itemIds.size()) {
                     return Promise.pure(Promise.BREAK)
                 }
                 return Promise.pure()

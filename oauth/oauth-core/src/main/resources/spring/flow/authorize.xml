@@ -557,7 +557,9 @@
         <property name="isAuthorizeFlow" value="true"/>
     </bean>
 
-    <bean id="generateConversationVerifyCode" class="com.junbo.oauth.core.action.GenerateConversationVerifyCode"/>
+    <bean id="generateConversationVerifyCode" class="com.junbo.oauth.core.action.GenerateConversationVerifyCode">
+        <property name="expiration" value="${oauth.conversation.verify.code.expiration}"/>
+    </bean>
 
     <bean id="clearConversationVerifyCode" class="com.junbo.oauth.core.action.ClearConversationVerifyCode"/>
 </beans>

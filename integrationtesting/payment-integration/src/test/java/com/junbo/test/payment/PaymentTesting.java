@@ -8,11 +8,13 @@ package com.junbo.test.payment;
 
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.Entities.enums.PaymentType;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
@@ -90,7 +92,8 @@ public class PaymentTesting extends BaseTestClass {
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Disable,
+            status = Status.BugOnIt,
+            bugNum = "https://oculus.atlassian.net/browse/SER-765",
             description = "post credit card",
             steps = {
                     "1. Create an user",
@@ -98,15 +101,16 @@ public class PaymentTesting extends BaseTestClass {
                     "3. Validation: response error code and message",
             }
     )
-      @Test
-      public void testPostPIWithInvalidType() throws Exception {
+    @Test
+    public void testPostPIWithInvalidType() throws Exception {
         String randomUid = testDataProvider.CreateUser();
 
         logHelper.LogSample("Create a payment instrument");
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        creditCardInfo.setType(PaymentType.FAKE);
         testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
 
-        validationHelper.validatePaymentInstrument(creditCardInfo);
+        //validate error response
     }
 
     @Property(
@@ -114,7 +118,8 @@ public class PaymentTesting extends BaseTestClass {
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Disable,
+            status = Status.BugOnIt,
+            bugNum = "https://oculus.atlassian.net/browse/SER-766",
             description = "post credit card",
             steps = {
                     "1. Create an user",
@@ -123,11 +128,13 @@ public class PaymentTesting extends BaseTestClass {
             }
     )
     @Test
-    public void testPostPIWithInvalidAccountName() throws Exception {
+    public void testPostPIWithIllegalAccountName() throws Exception {
         String randomUid = testDataProvider.CreateUser();
 
         logHelper.LogSample("Create a payment instrument");
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        creditCardInfo.setAccountName("#_/");
+        //creditCardInfo.setAccountName("#$%^&*");
         testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
 
         validationHelper.validatePaymentInstrument(creditCardInfo);
@@ -138,7 +145,33 @@ public class PaymentTesting extends BaseTestClass {
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Disable,
+            status = Status.BugOnIt,
+            bugNum = "https://oculus.atlassian.net/browse/SER-767",
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with invalid account name",
+                    "3. Validation: response error code and message",
+            }
+    )
+    @Test
+    public void testPostPIWithOverLengthAccountName() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        logHelper.LogSample("Create a payment instrument");
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+        creditCardInfo.setAccountName(RandomFactory.getRandomStringOfAlphabet(101));
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+
+        validationHelper.validatePaymentInstrument(creditCardInfo);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
             description = "post credit card",
             steps = {
                     "1. Create an user",
@@ -152,57 +185,10 @@ public class PaymentTesting extends BaseTestClass {
 
         logHelper.LogSample("Create a payment instrument");
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
-        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+        creditCardInfo.setEncryptedCVMCode("abc");
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo, 500);
 
-        validationHelper.validatePaymentInstrument(creditCardInfo);
-    }
-
-    @Property(
-            priority = Priority.Comprehensive,
-            features = "POST /users/{userId}/payment-instruments",
-            component = Component.Payment,
-            owner = "Yunlongzhao",
-            status = Status.Disable,
-            description = "post credit card",
-            steps = {
-                    "1. Create an user",
-                    "2. Post a credit card with invalid phone num",
-                    "3. Validation: response error code and message",
-            }
-    )
-    @Test
-    public void testPostPIWithInvalidPhoneNumber() throws Exception {
-        String randomUid = testDataProvider.CreateUser();
-
-        logHelper.LogSample("Create a payment instrument");
-        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
-        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
-
-        validationHelper.validatePaymentInstrument(creditCardInfo);
-    }
-
-    @Property(
-            priority = Priority.Comprehensive,
-            features = "POST /users/{userId}/payment-instruments",
-            component = Component.Payment,
-            owner = "Yunlongzhao",
-            status = Status.Disable,
-            description = "post credit card",
-            steps = {
-                    "1. Create an user",
-                    "2. Post a credit card with invalid email",
-                    "3. Validation: response error code and message",
-            }
-    )
-    @Test
-    public void testPostPIWithInvalidEmail() throws Exception {
-        String randomUid = testDataProvider.CreateUser();
-
-        logHelper.LogSample("Create a payment instrument");
-        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
-        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
-
-        validationHelper.validatePaymentInstrument(creditCardInfo);
+        assert Master.getInstance().getApiErrorMsg().contains("The provider AdyenCC process with error code");
     }
 
     @Property(
@@ -219,46 +205,24 @@ public class PaymentTesting extends BaseTestClass {
             }
     )
     @Test
-    public void testPostPIWithInvalidUser() throws Exception {
+    public void testPostPIWithAnotherUser() throws Exception {
         String randomUid = testDataProvider.CreateUser();
+        testDataProvider.CreateUser();
 
         logHelper.LogSample("Create a payment instrument");
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
-        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo, 403);
 
-        validationHelper.validatePaymentInstrument(creditCardInfo);
+        assert Master.getInstance().getApiErrorMsg().contains("Forbidden");
     }
+
 
     @Property(
             priority = Priority.Comprehensive,
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Disable,
-            description = "post credit card",
-            steps = {
-                    "1. Create an user",
-                    "2. Post a credit card with invalid phone",
-                    "3, Validation: response",
-            }
-    )
-    @Test
-    public void testPostPIWithInvalidPhone() throws Exception {
-        String randomUid = testDataProvider.CreateUser();
-
-        logHelper.LogSample("Create a payment instrument");
-        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
-        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo);
-
-        validationHelper.validatePaymentInstrument(creditCardInfo);
-    }
-
-    @Property(
-            priority = Priority.Comprehensive,
-            features = "POST /users/{userId}/payment-instruments",
-            component = Component.Payment,
-            owner = "Yunlongzhao",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "post credit card",
             steps = {
                     "1. Create an user",
@@ -272,6 +236,8 @@ public class PaymentTesting extends BaseTestClass {
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getExpiredCreditCardInfo(country);
         testDataProvider.postPaymentInstrument(randomUid, creditCardInfo, 500);
+
+        assert Master.getInstance().getApiErrorMsg().contains("The provider AdyenCC process with error code");
 
     }
 

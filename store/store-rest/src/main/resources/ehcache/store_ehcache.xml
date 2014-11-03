@@ -22,4 +22,13 @@
            eternal="false"
            timeToLiveSeconds="300"
            timeToIdleSeconds="60"/>
+
+    <cache name="store.item.latestRevisionIds"
+           maxElementsInMemory="5000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="300"
+           timeToIdleSeconds="60"/>
 </ehcache>

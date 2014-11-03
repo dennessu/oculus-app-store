@@ -409,8 +409,11 @@
             "reduce": "_count"
         }, 
         "by_user_id_group_id": {
+          "map": "function(doc) {  emit([doc.userId, doc.groupId], doc._id)}"
+        },
+        "by_user_id_group_id_with_reduce": {
           "map": "function(doc) {  emit([doc.userId, doc.groupId], doc._id)}",
-            "reduce": "_count"
+          "reduce": "_count"
         }
       }
     }, 

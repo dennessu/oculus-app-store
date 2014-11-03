@@ -9,12 +9,15 @@ package com.junbo.payment.core.util;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.langur.core.client.ClientResponseException;
 import com.junbo.payment.common.CommonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * proxy exception response.
  */
 public class ProxyExceptionResponse {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProxyExceptionResponse.class);
     private static final String ERROR_CODE = "{\"result\": \"%s\"}";
     private int status;
     private String body;
@@ -31,6 +34,7 @@ public class ProxyExceptionResponse {
     }
 
     public ProxyExceptionResponse(Throwable throwable){
+        LOGGER.error("proxy exception", throwable);
         if(throwable instanceof AppErrorException){
             AppErrorException appException = ((AppErrorException)throwable);
             try {

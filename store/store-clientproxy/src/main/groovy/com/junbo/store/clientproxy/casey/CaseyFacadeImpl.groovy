@@ -104,11 +104,20 @@ class CaseyFacadeImpl implements CaseyFacade {
         OfferSearchParams searchParams = buildOfferSearchParams(cmsPage, cmsSlot, cursor, count, apiContext)
         return doSearch(searchParams, imageBuildType, includeOrganization, apiContext)
     }
-    
+
     @Override
     Promise<CaseyResults<Item>> search(ItemId itemId, Images.BuildType imageBuildType, boolean includeOrganization,  ApiContext apiContext) {
         OfferSearchParams searchParams = buildOfferSearchParams(itemId, apiContext)
         return doSearch(searchParams, imageBuildType, includeOrganization, apiContext)
+    }
+
+    @Override
+    Promise<CaseyResults<CaseyOffer>> searchRaw(String cmsPage, String cmsSlot, String cursor, Integer count, ApiContext apiContext) {
+        Assert.notNull(cmsPage)
+        Assert.notNull(cmsSlot)
+        Assert.notNull(apiContext)
+        OfferSearchParams searchParams = buildOfferSearchParams(cmsPage, cmsSlot, cursor, count, apiContext)
+        return doRawSearch(searchParams)
     }
 
     @Override
@@ -245,6 +254,15 @@ class CaseyFacadeImpl implements CaseyFacade {
                     return Promise.pure(reviewBuilder.buildItemReview(newReview, author))
                 }
             }
+        }
+    }
+
+    private Promise<CaseyResults<CaseyOffer>> doRawSearch(OfferSearchParams searchParams) {
+        resourceContainer.caseyResource.searchOffers(searchParams).recover { Throwable ex ->
+            wrapAndThrow(ex)
+        }.then { CaseyResults<CaseyOffer> results ->
+            processCaseyResultsCursor(results)
+            return Promise.pure(results)
         }
     }
 

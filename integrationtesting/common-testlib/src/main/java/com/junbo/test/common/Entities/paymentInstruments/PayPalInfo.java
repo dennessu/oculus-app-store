@@ -25,7 +25,7 @@ public class PayPalInfo extends PaymentInstrumentBase {
         payPalInfo.setAccountName(RandomFactory.getRandomStringOfAlphabet(10));
         //"zwh@123.com" is a test account on https://www.sandbox.paypal.com/
         payPalInfo.setAccountNum("zwh@123.com");
-        payPalInfo.setPhone(Phone.getRandomPhone());
+        //payPalInfo.setPhone(Phone.getRandomPhone());
         payPalInfo.setAddress(Address.getRandomAddress(country));
         payPalInfo.setValidated(false);
         payPalInfo.setDefault(true);

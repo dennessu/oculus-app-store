@@ -13,7 +13,8 @@ public enum PaymentType {
     DIRECTDEBIT("DIRECTDEBIT", 0L),
     PAYPAL("PAYPAL", 3L),
     EWALLET("WALLET", 2L),
-    OTHERS("OTHERS", 4L);
+    OTHERS("OTHERS", 4L),
+    FAKE("FAKE", 5L);
 
     private String name;
     private Long type;

@@ -19,6 +19,8 @@ class ConversationEntity extends ResourceMeta<String> {
 
     String ipAddress
 
+    String conversationVerifyCode
+
     Map<String, Object> scope
 
     List<FlowState> flowStack

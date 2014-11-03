@@ -65,6 +65,15 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     }
 
     @Override
+    public GetSupportedCountriesResponse getSupportedCountryCodes() throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/countries");
+        GetSupportedCountriesResponse supportedCountries = new JsonMessageTranscoder().decode(new TypeReference<GetSupportedCountriesResponse>() {
+        }, responseBody);
+
+        return supportedCountries;
+    }
+
+    @Override
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/register", createUserRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {

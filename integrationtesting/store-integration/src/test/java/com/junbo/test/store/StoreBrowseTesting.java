@@ -5,9 +5,12 @@
  */
 package com.junbo.test.store;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.browse.document.*;
@@ -23,13 +26,16 @@ import com.junbo.store.spec.model.login.CreateUserRequest;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import com.junbo.test.store.apihelper.TestContext;
+import com.junbo.test.store.utility.ApiEndPoint;
 import com.junbo.test.store.utility.DataGenerator;
 import com.junbo.test.store.utility.StoreBrowseValidationHelper;
 import org.apache.commons.collections.Predicate;
@@ -60,13 +66,6 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private String caseyCmsPageLabel;
 
-    public enum GetItemMethod {
-        List,
-        Library,
-        Purchase,
-        Details
-    }
-
     private StoreBrowseValidationHelper storeBrowseValidationHelper;
 
     @BeforeClass(alwaysRun = true)
@@ -87,6 +86,10 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         if (ConfigHelper.getSetting("casey.emulator.cmspage.label") != null) {
             caseyCmsPageLabel = ConfigHelper.getSetting("casey.emulator.cmspage.label");
+        }
+
+        if (serviceClientEnabled && useCaseyEmulator) {
+            updateItemRevision();
         }
 
     }
@@ -168,7 +171,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
         assert libraryResponse.getItems().size() == 1;
         for (Item item : libraryResponse.getItems()) {
-            verifyItem(item, GetItemMethod.Library, null);
+            verifyItem(item, ApiEndPoint.Library, null);
             storeBrowseValidationHelper.verifyDefaultAggregateRatings(item.getAggregatedRatings());
         }
     }
@@ -229,7 +232,7 @@ public class StoreBrowseTesting extends BaseTestClass {
             response = testDataProvider.makeFreePurchase(offerId, response.getChallenge().getTos().getTosId());
         }
         Assert.assertNotNull(response.getEntitlements().get(0).getItemDetails(), "itemDetails in entitlement should not be null");
-        verifyItem(response.getEntitlements().get(0).getItemDetails(), GetItemMethod.Purchase, null);
+        verifyItem(response.getEntitlements().get(0).getItemDetails(), ApiEndPoint.Purchase, null);
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
         assert libraryResponse.getItems().size() == 1;
@@ -237,7 +240,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertNull(libraryResponse.getItems().get(0).getOffer());
 
         DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId.getValue());
-        verifyItem(response.getEntitlements().get(0).getItemDetails(), GetItemMethod.Purchase, true);
+        verifyItem(response.getEntitlements().get(0).getItemDetails(), ApiEndPoint.Purchase, true);
         Assert.assertTrue(detailsResponse.getItem().getOwnedByCurrentUser());
         Assert.assertTrue(detailsResponse.getItem().getOffer().getIsFree());
 
@@ -263,7 +266,7 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         // get the item details
         DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId);
-        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+        verifyItem(detailsResponse.getItem(), ApiEndPoint.Details, false);
     }
 
     @Test
@@ -278,7 +281,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         // get the item details
         TestContext.getData().putHeader("Accept-Language", "zh-CN");
         DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId);
-        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+        verifyItem(detailsResponse.getItem(), ApiEndPoint.Details, false);
     }
 
     @Test
@@ -713,22 +716,22 @@ public class StoreBrowseTesting extends BaseTestClass {
         // locale not found, fall back to en_US
         TestContext.getData().putHeader("Accept-Language", "en");
         DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId);
-        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+        verifyItem(detailsResponse.getItem(), ApiEndPoint.Details, false);
 
         // wildcard locale
         TestContext.getData().putHeader("Accept-Language", "*");
         detailsResponse = testDataProvider.getItemDetails(itemId);
-        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+        verifyItem(detailsResponse.getItem(), ApiEndPoint.Details, false);
 
         // invalid Accept-Language format, fall back to en_US
         TestContext.getData().putHeader("Accept-Language", "en_US");
         detailsResponse = testDataProvider.getItemDetails(itemId);
-        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+        verifyItem(detailsResponse.getItem(), ApiEndPoint.Details, false);
 
         // invalid Accept-Language format, fall back to en_US
         TestContext.getData().putHeader("Accept-Language", "es-US");
         detailsResponse = testDataProvider.getItemDetails(itemId);
-        verifyItem(detailsResponse.getItem(), GetItemMethod.Details, false);
+        verifyItem(detailsResponse.getItem(), ApiEndPoint.Details, false);
     }
 
     @Test
@@ -916,21 +919,47 @@ public class StoreBrowseTesting extends BaseTestClass {
         storeBrowseValidationHelper.verifyImage(item.getImages(), main, gallery);*/
     }
 
-    private void verifyItem(Item item, GetItemMethod method, Boolean ownedByUser) throws Exception {
-        storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled, useCaseyEmulator, method == GetItemMethod.List,
-                method != GetItemMethod.Library && method != GetItemMethod.Purchase);
-        if (method == GetItemMethod.Library || method == GetItemMethod.Purchase) {
+    private void updateItemRevision() throws Exception {
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+
+        String itemId = testDataProvider.getItemByName(item_digital_free).getCurrentRevisionId();
+        ItemRevision itemRevision = testDataProvider.getItemRevision(itemId);
+
+        // increase item's versionCode
+        int versionCode = itemRevision.getBinaries().get("ANDROID").getMetadata().get("versionCode").asInt();
+        Map<String, Object> valueMap = ObjectMapperProvider.instance().readValue(itemRevision.getBinaries().get("ANDROID").getMetadata().traverse(),
+                new TypeReference<Map<String, Object>>() {});
+        valueMap.put("versionCode", versionCode + 1);
+        itemRevision.getBinaries().get("ANDROID").setMetadata(ObjectMapperProvider.instance().valueToTree(valueMap));
+        itemRevision = testDataProvider.postItemRevision(itemRevision);
+        itemRevision.setStatus("APPROVED");
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+        Thread.sleep(3000);
+
+        // update again
+        itemRevision = testDataProvider.postItemRevision(itemRevision);
+        itemRevision.setStatus("APPROVED");
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+        testDataProvider.resetEmulatorData();
+    }
+
+    private void verifyItem(Item item, ApiEndPoint apiEndPoint, Boolean ownedByUser) throws Exception {
+        storeBrowseValidationHelper.verifyItem(item, serviceClientEnabled, useCaseyEmulator, apiEndPoint);
+        if (apiEndPoint == ApiEndPoint.Library || apiEndPoint == ApiEndPoint.Purchase) {
             Assert.assertNull(item.getOffer());
         }
         if (offer_digital_free.equals(item.getTitle())) {
             verifyItemImage(item);
         }
-        if (method == GetItemMethod.Details) {
+        if (apiEndPoint == ApiEndPoint.Details) {
             Assert.assertEquals(item.getOwnedByCurrentUser().booleanValue(), ownedByUser.booleanValue());
-        } else if (method == GetItemMethod.Library || method == GetItemMethod.Purchase) {
+        } else if (apiEndPoint == ApiEndPoint.Library || apiEndPoint == ApiEndPoint.Purchase) {
             Assert.assertNull(item.getReviews());
             Assert.assertTrue(item.getOwnedByCurrentUser());
-        } else if (method == GetItemMethod.List) {
+        } else if (apiEndPoint == ApiEndPoint.List) {
             Assert.assertNull(item.getReviews());
             Assert.assertNull(item.getCurrentUserReview());
             Assert.assertNull(item.getOwnedByCurrentUser());
@@ -952,9 +981,9 @@ public class StoreBrowseTesting extends BaseTestClass {
             if (verifyAllItemDetailsInExplore || i == selected) {
                 Item item = items.get(i);
                 LOGGER.info("name=Verify_Item_InExplore, item={}", item.getSelf().getValue());
-                verifyItem(item, GetItemMethod.List, null);
+                verifyItem(item, ApiEndPoint.List, null);
                 LOGGER.info("name=Get_And_Verify_ItemDetail_InExplore, item={}", item.getSelf().getValue());
-                verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), GetItemMethod.Details, initialItems.contains(item.getSelf().getValue()));
+                verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), ApiEndPoint.Details, initialItems.contains(item.getSelf().getValue()));
             }
         }
     }

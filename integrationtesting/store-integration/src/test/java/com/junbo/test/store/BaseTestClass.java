@@ -24,6 +24,8 @@ import static com.junbo.test.catalog.impl.ItemAttributeServiceImpl.instance;
  * Created by weiyu_000 on 8/6/14.
  */
 public abstract class BaseTestClass {
+    protected String offer_digital_free_same_item_offer1;
+    protected String offer_digital_free_same_item_offer2;
     protected String offer_digital_oculus_free1;
     protected String offer_digital_oculus_free2;
     protected String offer_digital_normal1;
@@ -44,6 +46,7 @@ public abstract class BaseTestClass {
     protected String item_digital_free;
     protected String item_digital_oculus_free1;
     protected String item_digital_oculus_free2;
+    protected String item_digital_free_same_item;
     protected String cmsPageName;
 
     protected String cmsSlot1 = "slot1";
@@ -107,6 +110,9 @@ public abstract class BaseTestClass {
         item_digital_free = ConfigHelper.getSetting("testdata.item.digital.free");
         item_digital_oculus_free1 = ConfigHelper.getSetting("testdata.item.digital.oculus.free1");
         item_digital_oculus_free2 = ConfigHelper.getSetting("testdata.item.digital.oculus.free2");
+        offer_digital_free_same_item_offer1 = ConfigHelper.getSetting("testdata.offer.digital.free.sameItem.offer1");
+        offer_digital_free_same_item_offer2 = ConfigHelper.getSetting("testdata.offer.digital.free.sameItem.offer2");
+        item_digital_free_same_item = ConfigHelper.getSetting("testdata.offer.digital.free.sameItem");
 
         if (ConfigHelper.getSetting("test.tos.verify.disabled") != null) {
             tosDisabled = Boolean.valueOf(ConfigHelper.getSetting("test.tos.verify.disabled"));

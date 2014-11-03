@@ -23,8 +23,11 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.RandomFactory;
+import com.ning.http.client.cookie.Cookie;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,6 +67,7 @@ public class Master {
 
     private Map<String, String> userAccessTokens;
     private Map<ComponentType, String> serviceAccessTokens;
+    private Map<String, List<ItemRevision>> itemIdToItemRevisions;
 
     public String getUserPassword() {
         return userPassword;
@@ -84,6 +88,8 @@ public class Master {
 
     private EndPointType endPointType;
 
+    private List<Cookie> cookies =  new ArrayList<>();
+
     public void initializeMaster() {
         this.initializeUsers();
         this.initializeCarts();
@@ -101,6 +107,7 @@ public class Master {
         this.initializeUserAccessTokens();
         this.initializeServiceAccessTokens();
         this.initializeOrgnizations();
+        this.initializeItemIdToItemRevisions();
         this.currentUid = new String();
         this.endPointType = EndPointType.Primary;
     }
@@ -228,6 +235,13 @@ public class Master {
         this.fulfilments.clear();
     }
 
+    public void initializeItemIdToItemRevisions() {
+        if (this.itemIdToItemRevisions == null) {
+            this.itemIdToItemRevisions = new HashMap<>();
+        }
+        this.itemIdToItemRevisions.clear();
+    }
+
     public void addUser(String userId, User user) {
         if (this.users.containsKey(userId)) {
             this.users.remove(userId);
@@ -298,6 +312,10 @@ public class Master {
         }
 
         this.paymentInstruments.put(paymentInstrumentId, paymentInstrument);
+    }
+
+    public void addItemIdToItemRevisions(String itemId, List<ItemRevision> revisionList) {
+        this.itemIdToItemRevisions.put(itemId, revisionList);
     }
 
     public void addEntitlement(String entitlementId, Entitlement entitlement) {
@@ -407,6 +425,10 @@ public class Master {
         return paymentInstruments;
     }
 
+    public List<ItemRevision> getItemRevisions(String itemId) {
+        return itemIdToItemRevisions.get(itemId);
+    }
+
     public void removePaymentInstrument(String paymentInstrumentId) {
         if (this.paymentInstruments.containsKey(paymentInstrumentId)) {
             this.paymentInstruments.remove(paymentInstrumentId);
@@ -453,6 +475,10 @@ public class Master {
         if (this.offerRevisions.containsKey(offerRevisionId)) {
             this.offerRevisions.remove(offerRevisionId);
         }
+    }
+
+    public void removeItemIdToItemRevisions(String itemId) {
+        this.itemIdToItemRevisions.remove(itemId);
     }
 
     public String getCurrentUid() {
@@ -551,5 +577,14 @@ public class Master {
     public void setEndPointType(EndPointType endPointType) {
         this.endPointType = endPointType;
     }
+
+    public void addCookie(Cookie cookie) {
+        cookies.add(cookie);
+    }
+
+    public List<Cookie> getCookies() {
+        return cookies;
+    }
+
 
 }

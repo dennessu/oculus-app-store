@@ -89,6 +89,7 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
         return new Conversation(
                 id: entity.id,
                 ipAddress: entity.ipAddress,
+                conversationVerifyCode: entity.conversationVerifyCode,
                 scope: entity.scope,
                 flowStack: entity.flowStack
         )
@@ -102,6 +103,7 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
         return new ConversationEntity(
                 id: entity.id,
                 ipAddress: entity.ipAddress,
+                conversationVerifyCode: entity.conversationVerifyCode,
                 scope: entity.scope,
                 flowStack: entity.flowStack
         )

@@ -26,6 +26,7 @@ import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
 import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.browse.document.Review
+import com.junbo.store.spec.model.browse.document.RevisionNote
 import com.junbo.store.spec.model.browse.document.SectionInfo
 import com.junbo.store.spec.model.browse.document.SectionInfoNode
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
@@ -176,7 +177,7 @@ class BrowseServiceImpl implements BrowseService {
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request, ApiContext apiContext) {
         ItemRevision itemRevision
         DeliveryResponse result = new DeliveryResponse()
-        facadeContainer.entitlementFacade.checkEntitlements(apiContext.user, request.itemId).then { Boolean owned ->
+        facadeContainer.entitlementFacade.checkEntitlements(apiContext.user, request.itemId, null).then { Boolean owned ->
             if (!owned) {
                 throw AppErrors.INSTANCE.itemNotPurchased().exception()
             }
@@ -278,7 +279,7 @@ class BrowseServiceImpl implements BrowseService {
     }
 
     private Promise fillItemDetails(Item item, ApiContext apiContext) {
-        facadeContainer.entitlementFacade.checkEntitlements(apiContext.user, item.getSelf()).then { Boolean owned ->
+        facadeContainer.entitlementFacade.checkEntitlements(apiContext.user, item.getSelf(), null).then { Boolean owned ->
             item.ownedByCurrentUser = owned
             return Promise.pure()
         }.then { // get current user review
@@ -307,6 +308,16 @@ class BrowseServiceImpl implements BrowseService {
                 item.reviews = reviewsResponse
                 return Promise.pure()
             }
+        }.then { // fill revision notes
+            if (item?.itemType == ItemType.APP.name()) {
+                if (item.appDetails != null) {
+                    return facadeContainer.catalogFacade.getRevisionNotes(item.self, apiContext).then { List<RevisionNote> revisionNotes ->
+                        item.appDetails.revisionNotes = revisionNotes
+                        return Promise.pure()
+                    }
+                }
+            }
+            return Promise.pure()
         }
     }
 

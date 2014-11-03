@@ -6,16 +6,24 @@
 
 package com.junbo.payment.db.repository;
 
+import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.IPredicate;
 import com.junbo.payment.db.dao.payment.MerchantAccountDao;
 import com.junbo.payment.db.entity.payment.MerchantAccountEntity;
+import com.junbo.payment.db.mapper.PaymentMapper;
+import com.junbo.payment.spec.internal.MerchantAccount;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 import java.util.List;
 
 /**
  * merchant Repository.
  */
 public class MerchantAccountRepository extends DomainDataRepository<MerchantAccountEntity, MerchantAccountDao> {
+    private PaymentMapper paymentMapper;
     @Override
     public void setDao(MerchantAccountDao dao) {
         this.dao = dao;
@@ -71,4 +79,46 @@ public class MerchantAccountRepository extends DomainDataRepository<MerchantAcco
         }
         return null;
     }
+
+    @Transactional
+    public MerchantAccount get(Integer id){
+        MerchantAccountEntity entity = this.dao.get(id);
+        if (entity != null) {
+            return paymentMapper.toMerchantAccount(entity, new MappingContext());
+        }
+
+        return null;
+    }
+
+    @Transactional
+    public MerchantAccount save(MerchantAccount provider){
+        if(provider.getCreatedTime() == null){
+            provider.setCreatedTime(new Date());
+        }
+        MerchantAccountEntity entity = paymentMapper.toMerchantAccountEntity(provider, new MappingContext());
+        Integer savedId = this.dao.save(entity);
+        return get(savedId);
+    }
+
+    @Transactional
+    public MerchantAccount update(MerchantAccount model, MerchantAccount oldModel){
+        if(model.getCreatedTime() == null){
+            model.setCreatedTime(new Date());
+        }
+        MerchantAccountEntity entity = paymentMapper.toMerchantAccountEntity(model, new MappingContext());
+        MerchantAccountEntity updated = this.dao.update(entity);
+        return get(updated.getMerchantAccountId());
+    }
+
+    @Transactional
+    void deleteClient(MerchantAccount model){
+        MerchantAccountEntity entity = paymentMapper.toMerchantAccountEntity(model, new MappingContext());
+        this.dao.delete(entity);
+    }
+
+    @Required
+    public void setPaymentMapper(PaymentMapper paymentMapper) {
+        this.paymentMapper = paymentMapper;
+    }
+
 }
