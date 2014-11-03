@@ -183,12 +183,14 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     @Override
     public String PostUser(UserInfo userInfo, int expectedResponseCode) throws Exception {
-       String cid  = RegisterUser(userInfo, expectedResponseCode);
+        String cid = RegisterUser(userInfo, expectedResponseCode);
         String emailVerifyLink = GetEmailVerificationLinks(cid);
-        if(emailVerifyLink != null && !emailVerifyLink.isEmpty()){
+        if (emailVerifyLink != null && !emailVerifyLink.isEmpty()) {
             oAuthClient.accessEmailVerifyLink(emailVerifyLink);
         }
+        Master.getInstance().getCookies().clear();
         return BindUserPersonalInfos(userInfo);
+
     }
 
     @Override
@@ -638,8 +640,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         }, tosResponse);
 
         List<Tos> tosList = new ArrayList<>();
-        for(Object obj : tosResults.getItems()) {
-            Tos tos = (Tos)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class);
+        for (Object obj : tosResults.getItems()) {
+            Tos tos = (Tos) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class);
             tosList.add(tos);
         }
 
