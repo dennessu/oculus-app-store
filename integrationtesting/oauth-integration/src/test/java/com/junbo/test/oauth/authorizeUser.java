@@ -335,7 +335,7 @@ public class authorizeUser {
         String email = RandomHelper.randomEmail();
         Oauth.PostRegisterUser(cid, userName, email);
 
-        HttpclientHelper.ResetHttpClient();
+        //HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
         // set identity authorization header
         Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
@@ -381,7 +381,7 @@ public class authorizeUser {
         String email = RandomHelper.randomEmail();
         Oauth.PostRegisterUser(cid, userName, email);
 
-        HttpclientHelper.ResetHttpClient();
+        //HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
         // set identity authorization header
         Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
@@ -421,7 +421,7 @@ public class authorizeUser {
         String email = RandomHelper.randomEmail();
         Oauth.PostRegisterUser(cid, userName, email);
 
-        HttpclientHelper.ResetHttpClient();
+        //HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
         // set identity authorization header
         Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
@@ -464,7 +464,7 @@ public class authorizeUser {
         String email = RandomHelper.randomEmail();
         Oauth.PostRegisterUser(cid, userName, email);
 
-        HttpclientHelper.ResetHttpClient();
+        //HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
         // set identity authorization header
         Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
@@ -507,7 +507,7 @@ public class authorizeUser {
         String email = RandomHelper.randomEmail();
         Oauth.PostRegisterUser(cid, userName, email);
 
-        HttpclientHelper.ResetHttpClient();
+        //HttpclientHelper.ResetHttpClient();
         // set identity authorization header
         Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
@@ -566,7 +566,7 @@ public class authorizeUser {
         String email = RandomHelper.randomEmail();
         Oauth.PostRegisterUser(cid, userName, email);
 
-        HttpclientHelper.ResetHttpClient();
+        //HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
         // set identity authorization header
         Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
