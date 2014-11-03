@@ -62,11 +62,14 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
         Results<UserGroup> results = new Results<>()
         def startKey = [userId.toString(), groupId.toString()]
         def endKey = [userId.toString(), groupId.toString()]
-        return queryView('by_user_id_group_id', startKey.toArray(new String()), endKey.toArray(new String()),
+        // todo:    The reason why we add one new view here is because the query view doesn't have reduce=false
+        // To not break any code, we will add one new view
+        // After the deploy, we will remove the reduce one
+        return queryView('by_user_id_group_id_with_reduce', startKey.toArray(new String()), endKey.toArray(new String()),
                 false, limit, offset, false).then { List<UserGroup> userGroupList ->
             results.items = userGroupList
 
-            return queryViewTotal('by_user_id_group_id', startKey.toArray(new String()), endKey.toArray(new String()), false, false).then { Integer total ->
+            return queryViewTotal('by_user_id_group_id_with_reduce', startKey.toArray(new String()), endKey.toArray(new String()), false, false).then { Integer total ->
                 results.total = total
 
                 return Promise.pure(results)
