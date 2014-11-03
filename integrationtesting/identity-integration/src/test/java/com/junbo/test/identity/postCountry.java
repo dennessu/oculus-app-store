@@ -230,14 +230,14 @@ public class postCountry {
         assert results != null;
         assert results.getTotal() > 1;
         newTotal = results.getTotal();
-        assert oldTotal == newTotal;
+        assert oldTotal.equals(newTotal);
         assert results.getItems().size() == 1;
 
         results = Identity.CountriesSearch("en_US", null, 10);
         assert results != null;
         assert results.getTotal() > 1;
         newTotal = results.getTotal();
-        assert oldTotal == newTotal;
+        assert oldTotal.equals(newTotal);
         assert results.getItems().size() == 10;
 
         results = Identity.CountriesSearch(null, "USD", null);
@@ -250,14 +250,14 @@ public class postCountry {
         assert results != null;
         assert results.getTotal() > 1;
         newTotal = results.getTotal();
-        assert oldTotal == newTotal;
+        assert oldTotal.equals(newTotal);
         assert results.getItems().size() == 1;
 
         results = Identity.CountriesSearch(null, "USD", 10);
         assert results != null;
         assert results.getTotal() > 1;
         newTotal = results.getTotal();
-        assert oldTotal == newTotal;
+        assert oldTotal.equals(newTotal);
         assert results.getItems().size() == 10;
 
         results = Identity.CountriesSearch("en_US", "USD", null);
@@ -270,16 +270,36 @@ public class postCountry {
         assert results != null;
         assert results.getTotal() > 1;
         newTotal = results.getTotal();
-        assert oldTotal == newTotal;
+        assert oldTotal.equals(newTotal);
         assert results.getItems().size() == 1;
 
         results = Identity.CountriesSearch("en_US", "USD", 6);
         assert results != null;
         assert results.getTotal() > 1;
         newTotal = results.getTotal();
-        assert oldTotal == newTotal;
+        assert oldTotal.equals(newTotal);
         assert results.getItems().size() == 6;
         assert results.getNext() == null;
+
+        results = Identity.CountriesSearch(null, null, null);
+        assert results != null;
+        assert results.getTotal() > 1;
+        oldTotal = results.getTotal();
+        assert results.getItems().size() > 1;
+
+        results = Identity.CountriesSearch(null, null, 1);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert results.getItems().size() == 1;
+
+        results = Identity.CountriesSearch(null, null, 10);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert results.getItems().size() == 10;
     }
 
     private void checkCountryLocale(Country country, List<String> expectedLocales, List<String> unexpectedLocales) throws Exception {

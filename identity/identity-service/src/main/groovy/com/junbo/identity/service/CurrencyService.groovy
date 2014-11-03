@@ -1,6 +1,7 @@
 package com.junbo.identity.service
 
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -19,5 +20,5 @@ public interface CurrencyService {
 
     Promise<Void> delete(CurrencyId id);
 
-    Promise<List<com.junbo.identity.spec.v1.model.Currency>> searchAll(Integer limit, Integer offset)
+    Promise<Results<com.junbo.identity.spec.v1.model.Currency>> searchAll(Integer limit, Integer offset)
 }

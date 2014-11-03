@@ -109,6 +109,11 @@ public class postCurrency {
         Validator.Validate("Validate currency accuracy valid", currency.getLocaleAccuracy(), "LOW");
     }
 
+    @Test(groups = "dailies")
+    public void testCurrencySearch() throws Exception {
+
+    }
+
     private void checkCurrencyLocale(Currency currency, List<String> expectedLocales, List<String> unexpectedLocales) throws Exception {
         for (String expectedLocale : expectedLocales) {
             CurrencyLocaleKey currencyLocaleKey = currency.getLocales().get(expectedLocale);

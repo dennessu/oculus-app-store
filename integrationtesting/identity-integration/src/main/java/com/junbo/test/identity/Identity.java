@@ -221,8 +221,16 @@ public class Identity {
         IdentityDelete(IdentityV1CountryURI + "/" + countryId);
     }
 
-    public static Currency CurrencyPostDefault() throws Exception {
-        return CurrencyPostDefault(IdentityModel.DefaultCurrency());
+    public static Results<Currency> CurrencySearch(Integer limit) throws Exception {
+        String url = IdentityV1CurrencyURI;
+
+        if (limit != null) {
+            url = url + "?count=" + limit;
+        }
+
+        Results<Currency> results = IdentityGet(url, Results.class);
+        List<Currency> currencies = new ArrayList<>();
+        for (Object obj : results.)
     }
 
     public static Currency CurrencyPostDefault(Currency currency) throws Exception {
