@@ -169,7 +169,7 @@ public class authorizeUser {
         Identity.GetHttpAuthorizationHeaderForMigration();
         OculusOutput output = Identity.ImportMigrationData(input);
 
-        HttpclientHelper.ResetHttpClient();
+        //HttpclientHelper.ResetHttpClient();
         String cid = Oauth.GetLoginCid();
         CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
         Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
