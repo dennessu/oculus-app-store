@@ -13,4 +13,6 @@ interface FlowExecutor {
     Promise<ActionContext> start(String flowId, Map<String, Object> requestScope)
 
     Promise<ActionContext> resume(String conversationId, String event, Map<String, Object> requestScope)
+
+    Promise<ActionContext> resume(String conversationId, String event, Map<String, Object> requestScope, String conversationVerifyCode)
 }
