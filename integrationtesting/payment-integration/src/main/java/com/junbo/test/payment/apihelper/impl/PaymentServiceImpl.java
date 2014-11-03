@@ -121,16 +121,23 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
         String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl()
                 + "/payment-instruments", paymentInstrument, expectedResponseCode);
 
-        PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
-                new TypeReference<PaymentInstrument>() {
-                }, responseBody
-        );
+        if (expectedResponseCode == 200) {
 
-        String paymentInstrumentId = IdConverter.idToUrlString(
-                PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
-        Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+            PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
+                    new TypeReference<PaymentInstrument>() {
+                    }, responseBody
+            );
 
-        return paymentInstrumentId;
+            String paymentInstrumentId = IdConverter.idToUrlString(
+                    PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
+            Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+
+            return paymentInstrumentId;
+        } else {
+            Master.getInstance().setApiErrorMsg(responseBody);
+        }
+
+        return null;
     }
 
 

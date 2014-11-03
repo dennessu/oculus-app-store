@@ -109,7 +109,9 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                paymentInstrument.setPhoneNumber(creditCardInfo.getPhone());
+                paymentInstrument.setEmail(creditCardInfo.getEmail());
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
                 return paymentInfo.getPid();
 
             case EWALLET:
@@ -122,7 +124,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setBillingAddressId(billingAddressId);
                 paymentInstrument.setBillingAddressId(ewalletInfo.getBillingAddressId());
 
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
                 return paymentInfo.getPid();
 
             case PAYPAL:
@@ -133,7 +135,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setType(payPalInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(payPalInfo.getBillingAddressId());
 
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
                 return paymentInfo.getPid();
 
             case OTHERS:
@@ -144,6 +146,16 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setType(adyenInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(adyenInfo.getBillingAddressId());
 
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
+                return paymentInfo.getPid();
+
+            case FAKE:
+                CreditCardInfo creditCardInfo2 = (CreditCardInfo) paymentInfo;
+                paymentInstrument.setAccountName(creditCardInfo2.getAccountName());
+                paymentInstrument.setAccountNumber(encryptCreditCardInfo(creditCardInfo2));
+                paymentInstrument.setIsValidated(creditCardInfo2.isValidated());
+                paymentInstrument.setType(creditCardInfo2.getType().getValue());
+                paymentInstrument.setBillingAddressId(creditCardInfo2.getBillingAddressId());
                 paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
                 return paymentInfo.getPid();
 
@@ -246,8 +258,8 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         Card card = new Card.Builder(new Date())
                 .number(creditCardInfo.getAccountNum())
                 .cvc(creditCardInfo.getEncryptedCVMCode())
-                .expiryMonth("06")
-                .expiryYear("2020")
+                .expiryMonth(creditCardInfo.getExpireDate().substring(5,7))
+                .expiryYear(creditCardInfo.getExpireDate().substring(0,4))
                 .holderName(creditCardInfo.getAccountNum())
                 .build();
 

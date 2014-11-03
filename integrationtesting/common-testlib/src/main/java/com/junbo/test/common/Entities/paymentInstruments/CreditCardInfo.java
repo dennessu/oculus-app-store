@@ -48,8 +48,8 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         randomCreditCard.setAccountNum(creditCardArray[RandomFactory.getRandomInteger(1)]);
         //randomCreditCard.setAccountNum(CreditCardGenerator.VISA.getRandomNumber());
         randomCreditCard.setEncryptedCVMCode(getCVMCode(CreditCardGenerator.VISA.toString(), true));
-        randomCreditCard.setExpireDate(getFormattedExpireDate());
-        randomCreditCard.setPhone(Phone.getRandomPhone());
+        randomCreditCard.setExpireDate("2016-06-01");
+        //randomCreditCard.setPhone(Phone.getRandomPhone());
         randomCreditCard.setAddress(Address.getRandomAddress(country));
         randomCreditCard.setValidated(false);
         randomCreditCard.setDefault(true);
@@ -65,7 +65,7 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         //randomCreditCard.setAccountNum(CreditCardGenerator.VISA.getRandomNumber());
         randomCreditCard.setEncryptedCVMCode(getCVMCode(CreditCardGenerator.VISA.toString(), true));
         randomCreditCard.setExpireDate(getFormattedExpireDate());
-        randomCreditCard.setPhone(Phone.getRandomPhone());
+        //randomCreditCard.setPhone(Phone.getRandomPhone());
         randomCreditCard.setAddress(address);
         randomCreditCard.setValidated(false);
         randomCreditCard.setDefault(true);
@@ -81,7 +81,7 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         //randomCreditCard.setAccountNum(CreditCardGenerator.VISA.getRandomNumber());
         randomCreditCard.setEncryptedCVMCode(getCVMCode(CreditCardGenerator.VISA.toString(), true));
         randomCreditCard.setExpireDate(getFormattedExpiredDate());
-        randomCreditCard.setPhone(Phone.getRandomPhone());
+        //randomCreditCard.setPhone(Phone.getRandomPhone());
         randomCreditCard.setAddress(Address.getRandomAddress(country));
         randomCreditCard.setValidated(false);
         randomCreditCard.setDefault(true);
