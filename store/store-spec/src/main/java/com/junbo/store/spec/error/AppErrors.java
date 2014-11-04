@@ -18,7 +18,7 @@ public interface AppErrors {
 
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 412, code = "101", message = "Unknown Error.")
+    @ErrorDef(httpStatusCode = 500, code = "101", message = "Unknown Error.")
     AppError unknownError();
 
     @ErrorDef(httpStatusCode = 412, code = "102", message = "Entitlement Not Consumable.",
