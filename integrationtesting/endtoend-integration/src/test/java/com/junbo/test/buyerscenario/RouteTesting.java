@@ -58,10 +58,10 @@ public class RouteTesting extends BaseTestClass {
 
         User user = Master.getInstance().getUser(uid);
         user.setPreferredLocale(new LocaleId("en_CA"));
-        Thread.sleep(3000);
+        Thread.sleep(1000);
         testDataProvider.putUser(uid, user);
 
-        Thread.sleep(3000);
+        Thread.sleep(1000);
         Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
         testDataProvider.getUserByUid(uid);
 
