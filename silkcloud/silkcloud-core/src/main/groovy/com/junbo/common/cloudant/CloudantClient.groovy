@@ -1,10 +1,11 @@
 package com.junbo.common.cloudant
 
 import com.junbo.common.cloudant.client.CloudantDbUri
+import com.junbo.common.cloudant.client.CloudantGlobalUri
 import com.junbo.common.cloudant.client.CloudantUri
 import com.junbo.configuration.topo.DataCenters
-import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.track.TrackContextManager
 import groovy.transform.CompileStatic
 
 /**
@@ -38,6 +39,10 @@ abstract class CloudantClient<T extends CloudantEntity> extends CloudantClientBa
     }
 
     protected CloudantDbUri getDbUriByDc(int dc) {
+        return getDbUriByDc(this.cloudantGlobalUri, dc);
+    }
+
+    protected CloudantDbUri getDbUriByDc(CloudantGlobalUri cloudantGlobalUri, int dc) {
         CloudantUri uri
         if (!DataCenters.instance().hasDataCenter(dc)) {
             return null
