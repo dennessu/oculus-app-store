@@ -192,9 +192,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         newGroup = groupRepository.get(group.getId()).get()
         Assert.assertEquals(newValue, newGroup.getName())
 
-        Group groupSearched = groupRepository.searchByOrganizationIdAndName(new OrganizationId(456L), newValue, Integer.MAX_VALUE, null).get()
+        Results<Group> groupSearched = groupRepository.searchByOrganizationIdAndName(new OrganizationId(456L), newValue, Integer.MAX_VALUE, null).get()
 
         Assert.assertNotNull(groupSearched)
+        assert groupSearched.total == 1
     }
 
     @Test

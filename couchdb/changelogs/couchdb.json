@@ -139,10 +139,12 @@
     "group": {
       "views": {
         "by_organization_id_and_name": {
-          "map": "function(doc) {  emit([doc.organizationId, doc.name], doc._id)}"
+          "map": "function(doc) {  emit([doc.organizationId, doc.name], doc._id)}",
+          "reduce": "_count"
         },
         "by_organization_id": {
-          "map": "function(doc) {  emit(doc.organizationId, doc._id)}"
+          "map": "function(doc) {  emit(doc.organizationId, doc._id)}",
+          "reduce": "_count"
         }
       }
     }, 

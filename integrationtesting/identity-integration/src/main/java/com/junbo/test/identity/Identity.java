@@ -700,6 +700,29 @@ public class Identity {
         IdentityDelete(IdentityV1GroupURI + "/" + group.getId());
     }
 
+    public static Results<Group> GroupSearch(String name, OrganizationId organizationId, UserId userId, Integer limit) throws Exception {
+        String url = IdentityV1GroupURI;
+        if (userId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId);
+        } else if (!StringUtils.isEmpty(organizationId) && !StringUtils.isEmpty(name)) {
+            url = url + "?organizationId=" + IdConverter.idToHexString(organizationId) + "&name=" + name;
+        } else if (!StringUtils.isEmpty(organizationId)) {
+            url = url + "?organizationId=" + IdConverter.idToHexString(organizationId);
+        }
+
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+
+        Results<Group> groupResults = IdentityGet(url, Results.class);
+        List<Group> groups = new ArrayList<>();
+        for (Object obj : groupResults.getItems()) {
+            groups.add((Group)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Group.class));
+        }
+        groupResults.setItems(groups);
+        return groupResults;
+    }
+
     public static DeviceType DeviceTypeDefault(DeviceType deviceType) throws Exception {
         DeviceType type = deviceType == null ? IdentityModel.DefaultDeviceType(null) : deviceType;
         return IdentityPost(IdentityV1DeviceTypeURI, JsonHelper.JsonSerializer(type), DeviceType.class);

@@ -2,6 +2,7 @@ package com.junbo.identity.service.impl
 
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.OrganizationId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.GroupRepository
 import com.junbo.identity.service.GroupService
 import com.junbo.identity.spec.v1.model.Group
@@ -48,12 +49,12 @@ class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    Promise<Group> searchByOrganizationIdAndName(OrganizationId id, String name, Integer limit, Integer offset) {
+    Promise<Results<Group>> searchByOrganizationIdAndName(OrganizationId id, String name, Integer limit, Integer offset) {
         return groupRepository.searchByOrganizationIdAndName(id, name, limit, offset)
     }
 
     @Override
-    Promise<List<Group>> searchByOrganizationId(OrganizationId id, Integer limit, Integer offset) {
+    Promise<Results<Group>> searchByOrganizationId(OrganizationId id, Integer limit, Integer offset) {
         return groupRepository.searchByOrganizationId(id, limit, offset)
     }
 

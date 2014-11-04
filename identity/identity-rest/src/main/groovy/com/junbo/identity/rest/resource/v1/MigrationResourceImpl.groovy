@@ -1084,15 +1084,15 @@ class MigrationResourceImpl implements MigrationResource {
         if (oculusInput.company.isAdmin) {
             // Add to ADMIN group
             return removeUserGroupMemberShip(oculusInput, createdUser, existingOrganization, DEVELOPER_ROLE).then {
-                return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), ADMIN_ROLE, Integer.MAX_VALUE, null).then { Group group ->
-                    if (group == null) {
+                return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), ADMIN_ROLE, Integer.MAX_VALUE, null).then { Results<Group> group ->
+                    if (group == null || CollectionUtils.isEmpty(group.items)) {
                         return saveOrReturnGroup(existingOrganization, ADMIN_ROLE).then { Group newGroup ->
                             return saveOrReturnUserGroup(createdUser, newGroup).then {
                                 return Promise.pure(existingOrganization)
                             }
                         }
                     }
-                    return saveOrReturnUserGroup(createdUser, group).then {
+                    return saveOrReturnUserGroup(createdUser, group.items.get(0)).then {
                         return Promise.pure(existingOrganization)
                     }
                 }
@@ -1100,8 +1100,8 @@ class MigrationResourceImpl implements MigrationResource {
         } else {
             // Add to DEVELOPER group
             return removeUserGroupMemberShip(oculusInput, createdUser, existingOrganization, ADMIN_ROLE).then {
-                return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), DEVELOPER_ROLE, Integer.MAX_VALUE, null).then { Group group ->
-                    if (group == null) {
+                return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), DEVELOPER_ROLE, Integer.MAX_VALUE, null).then { Results<Group> group ->
+                    if (group == null || CollectionUtils.isEmpty(group.items)) {
                         return saveOrReturnGroup(existingOrganization, DEVELOPER_ROLE).then { Group newGroup ->
                             return saveOrReturnUserGroup(createdUser, newGroup).then {
                                 return Promise.pure(existingOrganization)
@@ -1109,7 +1109,7 @@ class MigrationResourceImpl implements MigrationResource {
                         }
                     }
 
-                    return saveOrReturnUserGroup(createdUser, group).then {
+                    return saveOrReturnUserGroup(createdUser, group.items.get(0)).then {
                         return Promise.pure(existingOrganization)
                     }
                 }
@@ -1120,12 +1120,12 @@ class MigrationResourceImpl implements MigrationResource {
 
     private Promise<Void> removeUserGroupMemberShip(OculusInput oculusInput, User createdUser, Organization existingOrganization, String roleName) {
         // remove from developer group
-        return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), roleName, Integer.MAX_VALUE, null).then { Group group ->
-            if (group == null) {
+        return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), roleName, Integer.MAX_VALUE, null).then { Results<Group> group ->
+            if (group == null || CollectionUtils.isEmpty(group.items)) {
                 return Promise.pure(null)
             }
 
-            return userGroupService.searchByUserIdAndGroupId(createdUser.getId(), group.getId(), Integer.MAX_VALUE, null).then { Results<UserGroup> userGroupList ->
+            return userGroupService.searchByUserIdAndGroupId(createdUser.getId(), group.items.get(0).getId(), Integer.MAX_VALUE, null).then { Results<UserGroup> userGroupList ->
                 if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
                     return Promise.pure(null)
                 }
@@ -1259,8 +1259,8 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Promise<Group> saveOrReturnGroup(Organization org, String roleName) {
-        return groupService.searchByOrganizationId(org.getId(), Integer.MAX_VALUE, 0).then { List<Group> groupList ->
-            if (CollectionUtils.isEmpty(groupList)) {
+        return groupService.searchByOrganizationId(org.getId(), Integer.MAX_VALUE, 0).then { Results<Group> groupList ->
+            if (groupList == null || CollectionUtils.isEmpty(groupList.items)) {
                 Group newGroup = new Group(
                         name: roleName,
                         active: true,
@@ -1269,8 +1269,8 @@ class MigrationResourceImpl implements MigrationResource {
 
                 return groupService.create(newGroup)
             } else {
-                return groupService.searchByOrganizationIdAndName(org.getId(), roleName, Integer.MAX_VALUE, 0).then { Group existingGroup ->
-                    if (existingGroup == null) {
+                return groupService.searchByOrganizationIdAndName(org.getId(), roleName, Integer.MAX_VALUE, 0).then { Results<Group> existingGroup ->
+                    if (existingGroup == null || CollectionUtils.isEmpty(existingGroup.items)) {
                         Group newGroup = new Group(
                             name: roleName,
                             active: true,

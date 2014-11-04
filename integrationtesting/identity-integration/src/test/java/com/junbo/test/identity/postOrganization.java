@@ -5,9 +5,11 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.id.GroupId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Group;
 import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.common.*;
 import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
@@ -124,6 +126,73 @@ public class postOrganization {
         group = Identity.GroupPostDefault(group);
 
         Identity.GroupDelete(group);
+    }
+
+    @Test(groups = "dailies")
+    public void testGroupSearch() throws Exception {
+        Organization org = IdentityModel.DefaultOrganization();
+        org = Identity.OrganizationPostDefault(org);
+
+        List<String> groupNames = new ArrayList<>();
+        List<GroupId> groupIds = new ArrayList<>();
+        for (int i=0; i < 10; i++) {
+            Group group = IdentityModel.DefaultGroup(org.getId());
+            group = Identity.GroupPostDefault(group);
+            groupNames.add(group.getName());
+            groupIds.add(group.getId());
+        }
+
+        // validate search by organizationId
+        Results<Group> groups = Identity.GroupSearch(null, org.getId(), null, null);
+        assert groups.getTotal() == 10;
+        assert groups.getItems().size() == 10;
+        assert groups.getNext() == null;
+
+        groups = Identity.GroupSearch(null, org.getId(), null, 5);
+        assert groups.getTotal() == 10;
+        assert groups.getItems().size() == 5;
+        assert groups.getNext() != null;
+
+        groups = Identity.GroupSearch(null, org.getId(), null, 0);
+        assert groups.getTotal() == 10;
+        assert groups.getItems().size() == 0;
+        assert groups.getNext() == null;
+
+        for (String groupName : groupNames) {
+            groups = Identity.GroupSearch(groupName, org.getId(), null, null);
+            assert groups.getTotal() == 1;
+            assert groups.getItems().size() == 1;
+
+            groups = Identity.GroupSearch(groupName, org.getId(), null, 10);
+            assert groups.getTotal() == 1;
+            assert groups.getItems().size() == 1;
+
+            groups = Identity.GroupSearch(groupName, org.getId(), null, 0);
+            assert groups.getTotal() == 1;
+            assert groups.getItems().size() == 0;
+        }
+
+        User user = Identity.UserPostDefault();
+        for (GroupId groupId : groupIds) {
+            Identity.UserGroupPost(user.getId(), groupId);
+        }
+
+        groups = Identity.GroupSearch(null, null, user.getId(), null);
+        assert groups != null;
+        assert groups.getTotal() == 10;
+        assert groups.getItems().size() == 10;
+        assert groups.getNext() == null;
+
+        groups = Identity.GroupSearch(null, null, user.getId(), 5);
+        assert groups != null;
+        assert groups.getTotal() == 10;
+        assert groups.getItems().size() == 5;
+        assert groups.getNext() != null;
+
+        groups = Identity.GroupSearch(null, null, user.getId(), 0);
+        assert groups != null;
+        assert groups.getTotal() == 10;
+        assert groups.getItems().size() == 0;
     }
 
     @Test(groups = "dailies")
