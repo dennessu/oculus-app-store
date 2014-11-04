@@ -227,10 +227,10 @@ public class authorizeUser {
         Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        //String userName = "allEnvLoginUser";
-        //String email = "silkcloudtest+allEnvLoginUser@gmail.com";
-        String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomHelper.randomEmail();
+        String userName = "allEnvLoginUser";
+        String email = "silkcloudtest+allEnvLoginUser@gmail.com";
+        //String userName = RandomHelper.randomAlphabetic(15);
+        //String email = RandomHelper.randomEmail();
         Oauth.PostRegisterUser(cid, userName, email);
 
         HttpclientHelper.ResetHttpClient();
