@@ -6,6 +6,7 @@
 package com.junbo.test.payment;
 
 
+import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.enums.PaymentType;
@@ -92,7 +93,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.BugOnIt,
+            status = Status.Enable,
             bugNum = "https://oculus.atlassian.net/browse/SER-765",
             description = "post credit card",
             steps = {
@@ -118,7 +119,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.BugOnIt,
+            status = Status.Enable,
             bugNum = "https://oculus.atlassian.net/browse/SER-766",
             description = "post credit card",
             steps = {
@@ -145,7 +146,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.BugOnIt,
+            status = Status.Enable,
             bugNum = "https://oculus.atlassian.net/browse/SER-767",
             description = "post credit card",
             steps = {
@@ -185,7 +186,7 @@ public class PaymentTesting extends BaseTestClass {
 
         logHelper.LogSample("Create a payment instrument");
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
-        creditCardInfo.setEncryptedCVMCode("abc");
+        creditCardInfo.setAccountNum("1234567890");
         testDataProvider.postPaymentInstrument(randomUid, creditCardInfo, 500);
 
         assert Master.getInstance().getApiErrorMsg().contains("The provider AdyenCC process with error code");
@@ -196,7 +197,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "post credit card",
             steps = {
                     "1. Create an user",
@@ -321,7 +322,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "PUT /users/{userId}/payment-instruments/{paymentInstrumentId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "put payment instruments",
             steps = {
                     "1. Create an user",
@@ -339,10 +340,12 @@ public class PaymentTesting extends BaseTestClass {
         testDataProvider.getPaymentInstrument(creditCardId);
 
         logHelper.LogSample("Put a payment instrument");
-        CreditCardInfo creditCardInfoForUpdate = CreditCardInfo.getRandomCreditCardInfo(country);
-        testDataProvider.updatePaymentInstrument(randomUid, creditCardId, creditCardInfoForUpdate);
+        Master.getInstance().getPaymentInstrument(creditCardId).setType(4l);
 
-        validationHelper.validatePaymentInstrument(creditCardInfo);
+        testDataProvider.updatePaymentInstrument(randomUid, creditCardId,creditCardInfo,412);
+
+        assert Master.getInstance().getApiErrorMsg().contains("invalid field to update");
+        assert Master.getInstance().getApiErrorMsg().contains("type is not allow to be updated");
     }
 
 
@@ -351,7 +354,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "DELETE /users/{userId}/payment-instruments/{paymentInstrumentId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.BugOnIt,
+            status = Status.Enable,
             bugNum = "https://oculus.atlassian.net/browse/SER-181",
             description = "delete payment instruments",
             steps = {
