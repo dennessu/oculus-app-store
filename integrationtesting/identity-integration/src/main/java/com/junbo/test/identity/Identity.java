@@ -714,10 +714,11 @@ public class Identity {
         return IdentityGet(IdentityV1DeviceTypeURI + "/" + deviceTypeCode, DeviceType.class);
     }
 
-    public static Results<DeviceType> DeviceTypeGetAll() throws Exception {
+    public static Results<DeviceType> DeviceTypeGetAll(Integer limit) throws Exception {
         Results<DeviceType> results = new Results<>();
         results.setItems(new ArrayList<DeviceType>());
-        Results res = IdentityGet(IdentityV1DeviceTypeURI, Results.class);
+        String url = limit == null ? IdentityV1DeviceTypeURI : IdentityV1DeviceTypeURI + "?count=" + limit;
+        Results res = IdentityGet(url, Results.class);
         for (Object obj : res.getItems()) {
             results.getItems().add((DeviceType) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
                             DeviceType.class)

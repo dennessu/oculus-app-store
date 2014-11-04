@@ -1,6 +1,7 @@
 package com.junbo.identity.service
 
 import com.junbo.common.enumid.DeviceTypeId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.DeviceType
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -19,7 +20,7 @@ public interface DeviceTypeService {
 
     Promise<Void> delete(DeviceTypeId id)
 
-    Promise<List<DeviceType>> searchAll(Integer limit, Integer offset)
+    Promise<Results<DeviceType>> searchAll(Integer limit, Integer offset)
 
-    Promise<List<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset)
+    Promise<Results<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset)
 }

@@ -176,8 +176,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 userLoginAttempt.setUserId((UserId)user.id)
 
                 if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-                    return userPasswordService.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
-                            0).then { List<UserPassword> userPasswordList ->
+                    // Check whether there are multiple userpasswords exists
+                    return userPasswordService.searchByUserIdAndActiveStatus((UserId)user.id, true, 2, 0).then { List<UserPassword> userPasswordList ->
                         if (CollectionUtils.isEmpty(userPasswordList) || userPasswordList.size() > 1) {
                             throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                         }
@@ -193,8 +193,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
                 }
                 else if (userLoginAttempt.type == CredentialType.PIN.toString()) {
-                    return userPinService.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
-                            0).then { List<UserPin> userPinList ->
+                    return userPinService.searchByUserIdAndActiveStatus((UserId)user.id, true, 2, 0).then { List<UserPin> userPinList ->
                         if (CollectionUtils.isEmpty(userPinList) || userPinList.size() > 1) {
                             throw AppErrors.INSTANCE.userPinIncorrect().exception()
                         }

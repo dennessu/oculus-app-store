@@ -1,6 +1,7 @@
 package com.junbo.identity.service.impl
 
 import com.junbo.common.enumid.DeviceTypeId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.service.DeviceTypeService
 import com.junbo.identity.spec.v1.model.DeviceType
@@ -37,12 +38,12 @@ class DeviceTypeServiceImpl implements DeviceTypeService {
     }
 
     @Override
-    Promise<List<DeviceType>> searchAll(Integer limit, Integer offset) {
+    Promise<Results<DeviceType>> searchAll(Integer limit, Integer offset) {
         return deviceTypeRepository.searchAll(limit, offset)
     }
 
     @Override
-    Promise<List<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset) {
+    Promise<Results<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset) {
         return deviceTypeRepository.searchByDeviceTypeCode(typeCode, limit, offset)
     }
 
