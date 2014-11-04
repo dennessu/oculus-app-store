@@ -383,6 +383,44 @@ public class StoreCommerceTesting extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test free purchase with offer not purchasable in country",
+            steps = {
+                    "1. Create user",
+                    "2. Make free purchase with invalid offer id",
+                    "3. Verify error response"
+            }
+    )
+    @Test
+    public void testFreePurchaseNotPurchasableInCountry() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        String offerId;
+        if (offer_digital_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+
+        // isPurchasable is false for PL in offer
+        TestContext.getData().putHeader("oculus-geoip-country-code", "PL");
+        testDataProvider.makeFreePurchase(offerId, null, 412);
+        assert Master.getInstance().getApiErrorMsg().contains("Offer Not Purchasable");
+        assert Master.getInstance().getApiErrorMsg().contains("133.151");
+
+        // isPurchasable is missing for IN in offer
+        TestContext.getData().putHeader("oculus-geoip-country-code", "IN");
+        testDataProvider.makeFreePurchase(offerId, null, 412);
+        assert Master.getInstance().getApiErrorMsg().contains("Offer Not Purchasable");
+        assert Master.getInstance().getApiErrorMsg().contains("133.151");
+
+    }
 
     @Property(
             priority = Priority.Dailies,

@@ -716,7 +716,8 @@
                   "map": "function(doc) {  emit(doc.userId + ':' + doc.email, doc._id)}"
               }
           }
-      }
+      },
+      "encrypt_user_personal_info": { }
   }, 
   "cloudant": {
     "user_log": {

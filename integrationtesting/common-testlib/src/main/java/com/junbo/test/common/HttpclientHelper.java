@@ -17,7 +17,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
 
-import java.io.Console;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,11 +45,11 @@ public class HttpclientHelper {
         CookieStore cookieStore = new BasicCookieStore();
         BasicClientCookie cookie = new BasicClientCookie(name, value);
         Calendar ca = Calendar.getInstance();
+        String domain = ConfigHelper.getSetting("defaultOauthEndpoint");
         cookie.setVersion(1);
         cookie.setSecure(false);
         cookie.setExpiryDate(new Date(ca.getTime().getYear(), ca.getTime().getMonth(), ca.getTime().getDay() + 10));
-        cookie.setDomain(ConfigHelper.getSetting("defaultOauthEndpoint")
-                .replace("http://", "").replace("/v1", "").split(":")[0]);
+        cookie.setDomain(domain.replace("http://", "").replace("/v1", "").split(":")[0]);
         cookie.setPath("/v1/oauth2");
         cookieStore.addCookie(cookie);
         httpclient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
@@ -63,7 +62,8 @@ public class HttpclientHelper {
     public static CloseableHttpResponse Execute(HttpRequestBase method) throws Exception {
         CloseableHttpResponse response = httpclient.execute(method);
 
-        if (method.getURI().getPath().contains("oauth2")) {
+        if (method.getURI().getPath().contains("oauth2") &&
+                ConfigHelper.getSetting("defaultOauthEndpoint").startsWith("http://")) {
             Header[] headers = response.getAllHeaders();
             for (Header header : headers) {
                 if (header.getName().equals("Set-Cookie")) {

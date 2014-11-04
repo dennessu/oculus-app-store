@@ -174,6 +174,11 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
     public String updatePaymentInstrument(String uid, String paymentId,
                                           PaymentInstrumentBase paymentInfo) throws Exception {
+        return updatePaymentInstrument(uid, paymentId, paymentInfo, 200);
+    }
+
+    public String updatePaymentInstrument(String uid, String paymentId,
+                                          PaymentInstrumentBase paymentInfo, int expectedResponseCode) throws Exception {
         PaymentInstrument paymentInstrument = Master.getInstance().getPaymentInstrument(paymentId);
         switch (paymentInfo.getType()) {
             case CREDITCARD:
@@ -182,7 +187,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
                 */
-                return paymentClient.updatePaymentInstrument(uid, paymentId, paymentInstrument);
+                return paymentClient.updatePaymentInstrument(uid, paymentId, paymentInstrument, expectedResponseCode);
             default:
                 throw new TestException(String.format("%s is not supported", paymentInfo.getType().toString()));
         }

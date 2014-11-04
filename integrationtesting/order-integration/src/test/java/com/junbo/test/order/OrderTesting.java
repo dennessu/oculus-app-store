@@ -60,6 +60,34 @@ public class OrderTesting extends BaseOrderTestClass {
             component = Component.Order,
             owner = "ZhaoYunlong",
             status = Status.Enable,
+            description = "Test Post Order with rating error",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new credit card to user",
+                    "3. Post order with XXX currency code and non-free offer",
+                    "4. Verify the rating error returns and its details are included"
+            }
+    )
+    @Test
+    public void testPostOrderRatingError() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        Map<String, Integer> offerList = new HashedMap();
+        offerList.put(offer_digital_normal1, 1);
+
+        testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.FREE, null, false, offerList, 412);
+
+        assert Master.getInstance().getApiErrorMsg().contains("price is not configured in offer.");
+        assert Master.getInstance().getApiErrorMsg().contains("133.147");
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Post /orders",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
             description = "Test post order with invalid offer id",
             steps = {
                     "1. Post a new user",

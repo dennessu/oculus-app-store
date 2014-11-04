@@ -40,14 +40,14 @@
     <appender name="MAIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logDir}/main.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Roll the log every hour and compress it in GZIP -->
-            <fileNamePattern>${logDir}/main.%d{yyyy-MM-dd-HH}.%i.log.gz</fileNamePattern>
-            <!-- Keep max 30 * 24 hours logs (30 days) -->
-            <maxHistory>720</maxHistory>
+            <!-- Roll the log every day and compress it in GZIP -->
+            <fileNamePattern>${logDir}/main.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- Keep max 30 days logs -->
+            <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- or whenever the file size reaches 100MB -->
-                <maxFileSize>100MB</maxFileSize>
+                <!-- or whenever the file size reaches 500MB -->
+                <maxFileSize>500MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
@@ -66,14 +66,14 @@
             <level>WARN</level>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Roll the log every hour and compress it in GZIP -->
-            <fileNamePattern>${logDir}/alert.%d{yyyy-MM-dd-HH}.%i.log.gz</fileNamePattern>
-            <!-- Keep max 5 * 24 hours logs (5 days) -->
-            <maxHistory>120</maxHistory>
+            <!-- Roll the log every day and compress it in GZIP -->
+            <fileNamePattern>${logDir}/alert.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- Keep max 5 days logs -->
+            <maxHistory>5</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- or whenever the file size reaches 100MB -->
-                <maxFileSize>100MB</maxFileSize>
+                <!-- or whenever the file size reaches 500MB -->
+                <maxFileSize>500MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
@@ -111,14 +111,14 @@
     <appender name="FILE_ACCESS_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logDir}/httpd.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Roll the log every hour and compress it in GZIP -->
-            <fileNamePattern>${logDir}/httpd.%d{yyyy-MM-dd-HH}.%i.log.gz</fileNamePattern>
-            <!-- Keep max 10 * 24 hours logs (10 days) -->
-            <maxHistory>240</maxHistory>
+            <!-- Roll the log every day and compress it in GZIP -->
+            <fileNamePattern>${logDir}/httpd.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- Keep max 10 days logs -->
+            <maxHistory>10</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- or whenever the file size reaches 100MB -->
-                <maxFileSize>100MB</maxFileSize>
+                <!-- or whenever the file size reaches 500MB -->
+                <maxFileSize>500MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
@@ -147,14 +147,14 @@
     <appender name="FILE_EXTERNAL_CALL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logDir}/external_call.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Roll the log every hour and compress it in GZIP -->
-            <fileNamePattern>${logDir}/external_call.%d{yyyy-MM-dd-HH}.%i.log.gz</fileNamePattern>
-            <!-- Keep max 10 * 24 hours logs (10 days) -->
-            <maxHistory>240</maxHistory>
+            <!-- Roll the log every day and compress it in GZIP -->
+            <fileNamePattern>${logDir}/external_call.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- Keep max 10 days logs -->
+            <maxHistory>10</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- or whenever the file size reaches 100MB -->
-                <maxFileSize>100MB</maxFileSize>
+                <!-- or whenever the file size reaches 500MB -->
+                <maxFileSize>500MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
