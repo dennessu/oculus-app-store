@@ -78,10 +78,3 @@ $DEPLOYMENT_PATH/pgbouncer/pgbouncer_replica.sh
 
 echo "[SETUP][REPLICA] create readonly user"
 $DEPLOYMENT_PATH/util/create_user.sh $READONLY_PGUSER $REPLICA_HOST $REPLICA_DB_PORT
-
-echo "[SETUP][REPLICA] create readonly user"
-$DEPLOYMENT_PATH/util/create_user.sh $NEWRELIC_PGUSER $REPLICA_HOST $REPLICA_DB_PORT
-
-echo "[SETUP][REPLICA] create readonly user"
-$DEPLOYMENT_PATH/util/create_user.sh $ZABBIX_PGUSER $REPLICA_HOST $REPLICA_DB_PORT
-
