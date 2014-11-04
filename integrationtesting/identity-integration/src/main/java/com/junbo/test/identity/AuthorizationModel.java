@@ -9,8 +9,12 @@ import com.junbo.authorization.spec.model.Role;
 import com.junbo.authorization.spec.model.RoleTarget;
 import com.junbo.common.id.RoleId;
 import com.junbo.common.model.Link;
+import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.common.RandomHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author dw
@@ -25,12 +29,12 @@ public class AuthorizationModel {
         RoleId id = new RoleId();
         id.setValue(String.valueOf(RandomHelper.randomLong()));
         RoleTarget target = new RoleTarget();
-        target.setTargetType("default-target-type");
-        target.setFilterType("default-filter-type");
+        target.setTargetType(RandomRoleTargetType());
+        target.setFilterType(RandomRoleFilterType());
         Link link = new Link();
-        User user = Identity.UserPostDefault();
-        link.setId(Identity.GetHexLongId(user.getId().getValue()));
-        link.setHref("/v1/users/" + Identity.GetHexLongId(user.getId().getValue()));
+        Organization organization = Identity.OrganizationPostDefault(null);
+        link.setId(Identity.GetHexLongId(organization.getId().getValue()));
+        link.setHref("/v1/organizations/" + Identity.GetHexLongId(organization.getId().getValue()));
         target.setFilterLink(link);
         return DefaultRole(id, target);
     }
@@ -38,8 +42,46 @@ public class AuthorizationModel {
     public static Role DefaultRole(RoleId roleId, RoleTarget target) throws Exception {
         Role role = new Role();
         role.setId(roleId);
-        role.setName(RandomHelper.randomName());
+        role.setName(RandomRoleName());
         role.setTarget(target);
         return role;
+    }
+
+    public static String RandomRoleName() {
+        List<Object> names = new ArrayList<>();
+        for (Object obj : AllowedRoleName.values()) {
+            names.add(obj.toString());
+        }
+        return RandomHelper.randomValueFromList(names).toString();
+    }
+
+    public static String RandomRoleTargetType() {
+        List<Object> targetTypes = new ArrayList<>();
+        for (Object obj : AllowedRoleTargetType.values()) {
+            targetTypes.add(obj.toString());
+        }
+        return RandomHelper.randomValueFromList(targetTypes).toString();
+    }
+
+    public static String RandomRoleFilterType() {
+        List<Object> filterTypes = new ArrayList<>();
+        for (Object obj : AllowedRoleFilterType.values()) {
+            filterTypes.add(obj.toString());
+        }
+        return RandomHelper.randomValueFromList(filterTypes).toString();
+    }
+
+    public enum AllowedRoleName {
+        Admin,
+        Developer,
+        Publisher
+    }
+
+    public enum AllowedRoleTargetType {
+        organizations
+    }
+
+    public enum AllowedRoleFilterType {
+        SINGLEINSTANCEFILTER
     }
 }
