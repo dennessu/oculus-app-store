@@ -25,7 +25,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         useBulk.set(value)
     }
 
-    protected CloudantClientInternal getEffective() {
+    public CloudantClientInternal getEffective() {
         // There are two layer of overriding:
         // 1. Use per instance setting to specify whether cache is used or not.
         // 2. Use the thread static setUseBulk to specify whether bulk is used or not.

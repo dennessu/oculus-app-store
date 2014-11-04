@@ -20,6 +20,13 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
         implements EncryptUserPersonalInfoRepository {
     private static Logger logger = LoggerFactory.getLogger(EncryptUserPersonalInfoRepositoryImpl.class)
 
+    // force lookup in two home DC URL to ensure code coverage
+    private boolean forceRoute
+
+    void setForceRoute(boolean forceRoute) {
+        this.forceRoute = forceRoute
+    }
+
     @Override
     Promise<EncryptUserPersonalInfo> create(EncryptUserPersonalInfo model) {
         if (model.id == null) {
@@ -71,12 +78,12 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
     private Promise<EncryptUserPersonalInfo> cloudantGetForUserPersonalInfo(String id) {
         // search local data center first, then try the home data center.
         return getEffective().cloudantGet(cloudantDbUri, entityClass, id).then { EncryptUserPersonalInfo result ->
-            if (result == null) {
+            if (result == null || forceRoute) {
                 // not found in local DC, try the home DC
                 Long value = Long.parseLong(id);
                 if (value != null) {
                     int dc = getDcById(value.longValue())
-                    if (DataCenters.instance().isLocalDataCenter(dc)) {
+                    if (DataCenters.instance().isLocalDataCenter(dc) && !forceRoute) {
                         // already in the home dc of the token, no need to retry
                         return Promise.pure();
                     }
@@ -92,7 +99,7 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
         }
     }
 
-    private static int getDcById(long id) {
+    public static int getDcById(long id) {
         return (int) ((id >> 2) & 0xF);
     }
 }

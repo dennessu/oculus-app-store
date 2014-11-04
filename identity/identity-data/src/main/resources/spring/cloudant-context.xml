@@ -139,6 +139,7 @@
 
     <bean id="cloudantEncryptUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.EncryptUserPersonalInfoRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="encrypt_user_personal_info" />
+        <property name="forceRoute" value="${common.routing.forceRoute}" />
     </bean>
 
     <bean id="cloudantHashUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.HashUserPersonalInfoRepositoryImpl" parent="cloudantClient">

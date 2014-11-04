@@ -38,11 +38,11 @@ abstract class CloudantClient<T extends CloudantEntity> extends CloudantClientBa
         return super.cloudantPut(entity, oldEntity)
     }
 
-    protected CloudantDbUri getDbUriByDc(int dc) {
+    public CloudantDbUri getDbUriByDc(int dc) {
         return getDbUriByDc(this.cloudantGlobalUri, dc);
     }
 
-    protected CloudantDbUri getDbUriByDc(CloudantGlobalUri cloudantGlobalUri, int dc) {
+    public CloudantDbUri getDbUriByDc(CloudantGlobalUri cloudantGlobalUri, int dc) {
         CloudantUri uri
         if (!DataCenters.instance().hasDataCenter(dc)) {
             return null
