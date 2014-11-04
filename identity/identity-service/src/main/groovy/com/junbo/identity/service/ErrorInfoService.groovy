@@ -1,6 +1,7 @@
 package com.junbo.identity.service
 
 import com.junbo.common.id.ErrorIdentifier
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.ErrorInfo
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -18,5 +19,5 @@ public interface ErrorInfoService {
 
     Promise<Void> delete(ErrorIdentifier id)
 
-    Promise<List<ErrorInfo>> searchAll(Integer limit, Integer offset)
+    Promise<Results<ErrorInfo>> searchAll(Integer limit, Integer offset)
 }

@@ -1,6 +1,7 @@
 package com.junbo.identity.service.impl
 
 import com.junbo.common.id.ErrorIdentifier
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.ErrorInfoRepository
 import com.junbo.identity.service.ErrorInfoService
 import com.junbo.identity.spec.v1.model.ErrorInfo
@@ -36,7 +37,7 @@ class ErrorInfoServiceImpl implements ErrorInfoService {
     }
 
     @Override
-    Promise<List<ErrorInfo>> searchAll(Integer limit, Integer offset) {
+    Promise<Results<ErrorInfo>> searchAll(Integer limit, Integer offset) {
         return errorInfoRepository.searchAll(limit, offset)
     }
 

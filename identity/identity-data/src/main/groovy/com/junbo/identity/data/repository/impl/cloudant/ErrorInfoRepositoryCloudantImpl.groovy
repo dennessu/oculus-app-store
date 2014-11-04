@@ -2,6 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.ErrorIdentifier
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.ErrorInfoRepository
 import com.junbo.identity.spec.v1.model.ErrorInfo
 import com.junbo.langur.core.promise.Promise
@@ -29,8 +30,8 @@ class ErrorInfoRepositoryCloudantImpl  extends CloudantClient<ErrorInfo> impleme
     }
 
     @Override
-    Promise<List<ErrorInfo>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false)
+    Promise<Results<ErrorInfo>> searchAll(Integer limit, Integer offset) {
+        return cloudantGetAll(limit, offset, false, true)
     }
 
     @Override

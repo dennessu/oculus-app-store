@@ -748,15 +748,17 @@ public class Identity {
         return IdentityGet(IdentityV1ErrorInfoURI + "/" + errorIdentifier, ErrorInfo.class);
     }
 
-    public static Results<ErrorInfo> ErrorInfoGetAll() throws Exception {
+    public static Results<ErrorInfo> ErrorInfoGetAll(Integer limit) throws Exception {
         Results<ErrorInfo> results = new Results<>();
         results.setItems(new ArrayList<ErrorInfo>());
-        Results res = IdentityGet(IdentityV1ErrorInfoURI, Results.class);
+        String url = limit == null ? IdentityV1ErrorInfoURI : IdentityV1ErrorInfoURI + "?count=" + limit;
+        Results res = IdentityGet(url, Results.class);
+        List<ErrorInfo> errorInfos = new ArrayList<>();
         for (Object obj : res.getItems()) {
-            results.getItems().add((ErrorInfo) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+            errorInfos.add((ErrorInfo) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
                     ErrorInfo.class));
         }
-
+        results.setItems(errorInfos);
         results.setTotal(res.getTotal());
         results.setNext(res.getNext());
         results.setSelf(res.getSelf());

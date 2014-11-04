@@ -83,9 +83,29 @@ public class postErrorCodeDetail {
         Validator.Validate("Validate get supportLink", errorDetail.getSupportLink(), errorDetailGotten.getSupportLink());
         Validator.Validate("Validate get errorTitle", errorDetail.getErrorTitle(), errorDetailGotten.getErrorTitle());
 
-        Results<ErrorInfo> results = Identity.ErrorInfoGetAll();
+        Long oldTotal, newTotal;
+        Results<ErrorInfo> results = Identity.ErrorInfoGetAll(null);
         assert results != null;
+        assert results.getTotal() > 0;
+        oldTotal = results.getTotal();
         assert results.getItems() != null;
         assert results.getItems().size() > 0;
+
+        Integer count = (Math.abs(RandomHelper.randomInt()) + 1) % 10;
+        results = Identity.ErrorInfoGetAll(count);
+        assert results != null;
+        assert results.getTotal() > 0;
+        newTotal = results.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert results.getItems() != null;
+        assert results.getItems().size() == count;
+
+        results = Identity.ErrorInfoGetAll(0);
+        assert results != null;
+        assert results.getTotal() > 0;
+        newTotal = results.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert results.getItems() != null;
+        assert results.getItems().size() == 0;
     }
 }
