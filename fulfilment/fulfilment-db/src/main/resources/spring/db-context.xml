@@ -8,9 +8,10 @@
     <bean id="fulfilmentDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${fulfilment.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/fulfilment"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${fulfilment.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${fulfilment.db.maxConnectionsPerPartition}"/>
+        <property name="className" value="${fulfilment.db.driverClassName}"/>
+        <property name="minPoolSize" value="${fulfilment.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${fulfilment.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${fulfilment.db.username}</prop>

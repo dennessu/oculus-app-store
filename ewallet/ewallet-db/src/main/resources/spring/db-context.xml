@@ -12,9 +12,10 @@
     <bean id="ewalletDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${ewallet.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/ewallet"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${ewallet.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${ewallet.db.maxConnectionsPerPartition}"/>
+        <property name="className" value="${ewallet.db.driverClassName}"/>
+        <property name="minPoolSize" value="${ewallet.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${ewallet.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${ewallet.db.username}</prop>
