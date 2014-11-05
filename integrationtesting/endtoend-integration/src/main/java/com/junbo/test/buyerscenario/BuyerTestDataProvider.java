@@ -187,6 +187,11 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return paymentProvider.postPaymentInstrument(uid, paymentInfo, billAddressId);
     }
 
+    public void deletePaymentInstrument(String uid, String paymentId) throws Exception
+    {
+        paymentProvider.deletePaymentInstruments(uid, paymentId);
+    }
+
     public void creditWallet(String uid) throws Exception {
         paymentProvider.creditWallet(uid);
     }

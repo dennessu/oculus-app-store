@@ -507,6 +507,45 @@ public class CartCheckout extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test digital good checkout with deleted pi",
+            steps = {
+                    "1. Post a new user",
+                    "2. Add digital offer to user's primary cart",
+                    "3. Post credit cards to new user.",
+                    "5. Delete the credit card",
+                    "5. Post order to checkout",
+                    "6. Verify the order response info",
+            }
+    )
+    @Test
+    public void testCheckoutByDeletedCreditCard() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
+
+        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        testDataProvider.deletePaymentInstrument(uid, creditCardId);
+
+        String orderId = testDataProvider.postOrderByCartId(
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, null);
+
+        orderId = testDataProvider.updateOrderTentative(orderId, false, 412);
+
+    }
+
+
 
     @Property(
             priority = Priority.BVT,

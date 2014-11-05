@@ -22,6 +22,8 @@ public class JunboShardMultiTenantConnectionProviderFactoryBean extends ShardMul
         // Hikari Pool is using minIdle as min pool size...
         dataSource.setMinimumIdle(minPoolSize);
 
+        dataSource.setConnectionTimeout(connectionTimeout);
+
         dataSource.setUsername(driverProperties.getProperty("user"));
         dataSource.setPassword(driverProperties.getProperty("password"));
 

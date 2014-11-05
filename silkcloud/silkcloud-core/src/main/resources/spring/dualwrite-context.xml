@@ -40,7 +40,7 @@
         <property name="className" value="${dualwrite.db.driverClassName}"/>
         <property name="minPoolSize" value="${dualwrite.db.minPoolSize}"/>
         <property name="maxPoolSize" value="${dualwrite.db.maxPoolSize}"/>
-
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${dualwrite.db.username}</prop>

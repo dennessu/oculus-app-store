@@ -32,6 +32,8 @@ class ShardMultiTenantConnectionProviderFactoryBean
 
     protected int maxPoolSize
 
+    protected int connectionTimeout
+
     protected Properties driverProperties
 
     void setUniqueName(String uniqueName) {
@@ -56,6 +58,11 @@ class ShardMultiTenantConnectionProviderFactoryBean
     @Required
     void setMaxPoolSize(int maxPoolSize) {
         this.maxPoolSize = maxPoolSize
+    }
+
+    @Required
+    void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout
     }
 
     @Required
@@ -179,6 +186,8 @@ class ShardMultiTenantConnectionProviderFactoryBean
         dataSource.setMaximumPoolSize(maxPoolSize)
         // Hikari Pool is using minIdle as min pool size...
         dataSource.setMinimumIdle(minPoolSize)
+
+        dataSource.setConnectionTimeout(connectionTimeout)
 
         dataSource.setUsername(driverProperties.getProperty('user'))
         dataSource.setPassword(driverProperties.getProperty('password'))

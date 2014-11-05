@@ -12,9 +12,10 @@
     <bean id="paymentDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${payment.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/payment"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${payment.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${payment.db.maxConnectionsPerPartition}"/>
+        <property name="className" value="${payment.db.driverClassName}"/>
+        <property name="minPoolSize" value="${payment.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${payment.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${payment.db.username}</prop>

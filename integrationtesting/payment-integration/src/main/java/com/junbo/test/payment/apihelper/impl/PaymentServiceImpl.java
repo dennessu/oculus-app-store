@@ -89,21 +89,57 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
         String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() +
                 "/payment-instruments?userId=" + uid, expectedResponseCode);
 
-        Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
-                new TypeReference<Results<PaymentInstrument>>() {
-                }, responseBody
-        );
+        if (expectedResponseCode == 200) {
+            Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
+                    new TypeReference<Results<PaymentInstrument>>() {
+                    }, responseBody
+            );
 
-        List<String> paymentInstrumentList = new ArrayList<>();
+            List<String> paymentInstrumentList = new ArrayList<>();
 
-        for (PaymentInstrument paymentInstrumentResult : paymentInstrumentResults.getItems()) {
-            String paymentInstrumentId = IdConverter.idToUrlString(
-                    PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
-            paymentInstrumentList.add(paymentInstrumentId);
-            Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+            for (PaymentInstrument paymentInstrumentResult : paymentInstrumentResults.getItems()) {
+                String paymentInstrumentId = IdConverter.idToUrlString(
+                        PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
+                paymentInstrumentList.add(paymentInstrumentId);
+                Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+            }
+
+            return paymentInstrumentList;
+        } else {
+            return null;
         }
+    }
 
-        return paymentInstrumentList;
+    @Override
+    public List<String> getPaymentInstrumentsByUserId(String uid, String piType) throws Exception {
+        return getPaymentInstrumentsByUserId(uid, piType);
+    }
+
+    @Override
+    public List<String> getPaymentInstrumentsByUserId(String uid, String piType, int expectedResponseCode) throws
+            Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() +
+                "/payment-instruments?userId=" + uid + "&type=" + piType, expectedResponseCode);
+
+        if (expectedResponseCode == 200) {
+            Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
+                    new TypeReference<Results<PaymentInstrument>>() {
+                    }, responseBody
+            );
+
+            List<String> paymentInstrumentList = new ArrayList<>();
+
+            for (PaymentInstrument paymentInstrumentResult : paymentInstrumentResults.getItems()) {
+                String paymentInstrumentId = IdConverter.idToUrlString(
+                        PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
+                paymentInstrumentList.add(paymentInstrumentId);
+                Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+            }
+
+            return paymentInstrumentList;
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -79,7 +79,7 @@
                 <entry key="UserGroupMembershipResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserLogResource" value="identity.service csr"/>
                 <entry key="UserPersonalInfoResource" value="identity identity.service identity.pii csr organization.group.admin"/>
-                <entry key="UserResource" value="identity identity.service identity.pii csr organization.group.admin"/>
+                <entry key="UserResource" value="identity identity.service identity.pii csr organization.group.admin identity.search"/>
                 <entry key="UserResource.checkUsername" value="*" />
                 <entry key="UserResource.checkEmail" value="*" />
                 <!-- This checkUsernameEmailBlocker API will be used only by oauth -->
