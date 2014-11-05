@@ -2,6 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.spec.v1.model.Locale
 import com.junbo.langur.core.promise.Promise
@@ -52,7 +53,7 @@ class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements Loc
     }
 
     @Override
-    Promise<List<Locale>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false)
+    Promise<Results<Locale>> searchAll(Integer limit, Integer offset) {
+        return cloudantGetAll(limit, offset, false, true)
     }
 }

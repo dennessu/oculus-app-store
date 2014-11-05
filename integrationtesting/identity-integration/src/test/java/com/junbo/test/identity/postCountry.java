@@ -204,7 +204,7 @@ public class postCountry {
 
     @Test(groups = "dailies")
     public void searchCountriesWithValidLocale() throws Exception {
-        List<Locale> locales = Identity.LocaleGetAll().getItems();
+        List<Locale> locales = Identity.LocaleGetAll(null).getItems();
 
         for (Locale locale : locales) {
             List<Country> countries = Identity.CountriesSearchSort(locale.getLocaleCode(), "shortName");
@@ -284,6 +284,7 @@ public class postCountry {
         results = Identity.CountriesSearch(null, null, null);
         assert results != null;
         assert results.getTotal() > 1;
+        assert results.getTotal() == (results.getItems().size());
         oldTotal = results.getTotal();
         assert results.getItems().size() > 1;
 

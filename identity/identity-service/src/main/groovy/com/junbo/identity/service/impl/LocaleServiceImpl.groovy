@@ -1,6 +1,7 @@
 package com.junbo.identity.service.impl
 
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.service.LocaleService
 import com.junbo.langur.core.promise.Promise
@@ -35,7 +36,7 @@ class LocaleServiceImpl implements LocaleService {
     }
 
     @Override
-    Promise<List<com.junbo.identity.spec.v1.model.Locale>> searchAll(Integer limit, Integer offset) {
+    Promise<Results<com.junbo.identity.spec.v1.model.Locale>> searchAll(Integer limit, Integer offset) {
         return localeRepository.searchAll(limit, offset)
     }
 

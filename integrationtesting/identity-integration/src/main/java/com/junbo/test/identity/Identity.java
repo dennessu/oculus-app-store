@@ -269,15 +269,18 @@ public class Identity {
         return (Locale) IdentityGet(IdentityV1LocaleURI + "/" + localeId, Locale.class);
     }
 
-    public static Results<Locale> LocaleGetAll() throws Exception {
+    public static Results<Locale> LocaleGetAll(Integer limit) throws Exception {
         Results<Locale> results = new Results<>();
         results.setItems(new ArrayList<Locale>());
-        Results res = IdentityGet(IdentityV1LocaleURI, Results.class);
+        String url = limit == null ? IdentityV1LocaleURI : IdentityV1LocaleURI + "?count=" + limit;
+        Results res = IdentityGet(url, Results.class);
+        List<Locale> locales = new ArrayList<>();
         for (Object obj : res.getItems()) {
-            results.getItems().add((Locale) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+            locales.add((Locale) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
                             Locale.class)
             );
         }
+        results.setItems(locales);
         results.setTotal(res.getTotal());
         results.setNext(res.getNext());
         results.setSelf(res.getSelf());
@@ -388,15 +391,15 @@ public class Identity {
 
     private static String buildTosSearchURI(String title, String state, String type, String country) {
         if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
-            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type + "&country" + country;
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type + "&country=" + country;
         } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(type)) {
             return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type;
         } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(country)) {
-            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&country" + country;
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&country=" + country;
         } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
-            return IdentityV1TosURI + "?title=" + title + "&type=" + type + "&country" + country;
+            return IdentityV1TosURI + "?title=" + title + "&type=" + type + "&country=" + country;
         } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
-            return IdentityV1TosURI + "?state=" + state + "&type=" + type + "&country" + country;
+            return IdentityV1TosURI + "?state=" + state + "&type=" + type + "&country=" + country;
         } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state)) {
             return IdentityV1TosURI + "?title=" + title + "&state=" + state;
         } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(type)) {

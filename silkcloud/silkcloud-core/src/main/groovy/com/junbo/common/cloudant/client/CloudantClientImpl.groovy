@@ -14,6 +14,7 @@ import com.junbo.common.cloudant.model.CloudantResponse
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CloudantId
 import com.junbo.common.util.Utils
+import com.junbo.configuration.ConfigServiceManager
 import com.junbo.configuration.reloadable.IntegerConfig
 import com.junbo.configuration.reloadable.impl.ReloadableConfigFactory
 import com.junbo.langur.core.async.JunboAsyncHttpClient
@@ -42,8 +43,11 @@ class CloudantClientImpl implements CloudantClientInternal {
     private static final String SEARCH_PATH = '/_design/views/_search/'
     private static final String DEFAULT_DESIGN_ID_PREFIX = '_design/'
     private static final String HIGH_KEY_POSTFIX = '\ufff0'
+    private static final String DESIGN_VIEW = '_design/views'
 
     private static CloudantClientImpl singleton = new CloudantClientImpl()
+
+    private static Map<String, Boolean> hasViewMap = new HashMap<>()
 
     public static CloudantClientImpl instance() {
         return singleton
@@ -55,6 +59,7 @@ class CloudantClientImpl implements CloudantClientInternal {
     private static IntegerConfig writeCount = ReloadableConfigFactory.create("[common.cloudant.writes]", IntegerConfig.class)
     private static IntegerConfig acceptedRetryCount = ReloadableConfigFactory.create("[common.cloudant.retries]", IntegerConfig.class)
     private static IntegerConfig acceptedRetryInterval = ReloadableConfigFactory.create("[common.cloudant.retriesInterval]", IntegerConfig.class)
+    protected static String dbNamePrefix = ConfigServiceManager.instance().getConfigValue("common.cloudant.dbNamePrefix")
 
     private static Map<String, String> getWriteParam(Map<String, String> initial = null) {
         Integer writeCount = writeCount.get()
@@ -180,13 +185,22 @@ class CloudantClientImpl implements CloudantClientInternal {
                 return Promise.pure(null)
             }.then {
                 result.rows = list
-                if (result.totalRows != null) {
+                def designViewExists = hasViewMap.get(buildGetAllKey(dbUri))
+                if (designViewExists == null) {
+                    designViewExists = queryDesignView(dbUri).get()
+                    hasViewMap.put(buildGetAllKey(dbUri), designViewExists)
+                }
+                if (result.totalRows != null && designViewExists) {
                     // exclude the _design row
                     result.totalRows = result.totalRows - 1
                 }
                 return Promise.pure(result)
             }
         }
+    }
+
+    private String buildGetAllKey(CloudantDbUri dbUri) {
+        return dbUri.toString() + ':' + DESIGN_VIEW
     }
 
     @Override
@@ -246,6 +260,22 @@ class CloudantClientImpl implements CloudantClientInternal {
             checkViewErrors("query view", dbUri, viewName, response)
             return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
         })
+    }
+
+    def Promise<Boolean> queryDesignView(CloudantDbUri dbUri) {
+        def query = [:]
+        query.put('include_docs', 'false')
+        query.put('key', "\"$DESIGN_VIEW\"")
+        return executeRequest(dbUri, HttpMethod.GET, '_all_docs', query, null).then { Response response ->
+            checkViewErrors("query design view", dbUri, "_all_docs", response)
+
+            def result = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, JsonNode)
+            if (CollectionUtils.isEmpty(result.rows)) {
+                return Promise.pure(false)
+            } else {
+                return Promise.pure(true)
+            }
+        }
     }
 
     @Override

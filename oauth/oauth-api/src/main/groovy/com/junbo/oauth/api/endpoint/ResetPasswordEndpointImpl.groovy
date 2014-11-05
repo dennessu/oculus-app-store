@@ -2,6 +2,7 @@ package com.junbo.oauth.api.endpoint
 
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.csr.spec.model.CsrLog
 import com.junbo.csr.spec.resource.CsrLogResource
@@ -112,9 +113,13 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                         }
 
                         Promise.pure(Response.ok().entity(Utils.maskEmail(userEmail)).build())
+                    }.recover { Throwable ex ->
+                        if (isAppError(ex, "132.135")) {    // If this is email not default user email error
+                            return Promise.pure(Response.ok().entity(Utils.maskEmail(userEmail)).build())
+                        }
+                        throw ex
                     }
-                }
-                .recover {
+                }.recover {
                     Promise.pure(Response.ok().entity(Utils.maskEmail(userEmail)).build())
                 }
             }
@@ -139,5 +144,16 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
             String email = userService.getUserEmailByUserId(userId).get()
             csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: com.junbo.csr.spec.def.CsrLogActionType.ResetPasswordEmailSent, property: email)).get()
         }
+    }
+
+    public boolean isAppError(Throwable ex, String... codes) {
+        if (!(ex instanceof AppErrorException)) {
+            return false
+        }
+        String code = ((AppErrorException)ex).error?.error()?.code
+        if (code == null) {
+            return false
+        }
+        return codes.any {String c -> c == code}
     }
 }

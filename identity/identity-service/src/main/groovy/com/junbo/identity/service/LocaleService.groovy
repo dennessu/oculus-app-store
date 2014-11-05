@@ -1,6 +1,7 @@
 package com.junbo.identity.service
 
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -18,5 +19,5 @@ interface LocaleService {
 
     Promise<Void> delete(LocaleId id)
 
-    Promise<List<com.junbo.identity.spec.v1.model.Locale>> searchAll(Integer limit, Integer offset)
+    Promise<Results<com.junbo.identity.spec.v1.model.Locale>> searchAll(Integer limit, Integer offset)
 }
