@@ -312,7 +312,7 @@ class UserResourceImpl implements UserResource {
                 }
             }
 
-            if (listOptions.username != null) {
+            if (!StringUtils.isEmpty(listOptions.username)) {
                 String canonicalUsername = normalizeService.normalize(listOptions.username)
                 return userPersonalInfoService.searchByCanonicalUsername(canonicalUsername, maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
                     User user = null
@@ -327,7 +327,7 @@ class UserResourceImpl implements UserResource {
                             }
                         } else {
                             return userService.getNonDeletedUser(userPersonalInfo.userId).then { User existing ->
-                                if (existing.username == userPersonalInfo.getId()) {
+                                if (existing != null && existing.username == userPersonalInfo.getId()) {
                                     user = existing
                                     return Promise.pure(Promise.BREAK)
                                 }
@@ -344,7 +344,7 @@ class UserResourceImpl implements UserResource {
                         }
                     }
                 }
-            } else {
+            } else if (listOptions.groupId != null) {
                 return userGroupService.searchByGroupId(listOptions.groupId, listOptions.limit,
                         listOptions.offset).then { Results<UserGroup> userGroupList ->
                     if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
@@ -354,6 +354,33 @@ class UserResourceImpl implements UserResource {
                         return userValidator.validateForGet(userGroup.userId).then(filterUser)
                     }.then {
                         return Promise.pure(resultList)
+                    }
+                }
+            } else if (listOptions.email != null) {
+                return userPersonalInfoService.searchByEmail(listOptions.email.toLowerCase(java.util.Locale.ENGLISH), null, maximumFetchSize,
+                        0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                    User user = null
+                    return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
+                        return userService.getNonDeletedUser(userPersonalInfo.userId).then { User existing ->
+                            UserPersonalInfoLink link = existing?.emails?.find { UserPersonalInfoLink userPersonalInfoLink ->
+                                    return userPersonalInfoLink.isDefault && userPersonalInfoLink.value == userPersonalInfo.getId()
+                            }
+
+                            if (link != null) {
+                                user = existing
+                                return Promise.pure(Promise.BREAK)
+                            }
+
+                            return Promise.pure(null)
+                        }
+                    }.then {
+                        if (user == null) {
+                            return Promise.pure(resultList)
+                        } else {
+                            filterUser(user).then {
+                                return Promise.pure(resultList)
+                            }
+                        }
                     }
                 }
             }
@@ -369,10 +396,10 @@ class UserResourceImpl implements UserResource {
         return userValidator.validateForGet(userId).then { User user ->
             def callback = userAuthorizeCallbackFactory.create(user)
             return RightsScope.with(authorizeService.authorize(callback)) {
+
                 if (!AuthorizeContext.hasRights('delete') || !AuthorizeContext.hasScopes('csr')) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
-
                 user.setStatus(UserStatus.DELETED.toString())
                 return userService.update(user, user).then {
                     return sendAccountDeleteEmail(user).recover {

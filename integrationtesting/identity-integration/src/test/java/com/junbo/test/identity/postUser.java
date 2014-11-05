@@ -194,6 +194,60 @@ public class postUser {
         assert userList.size() == 1;
     }
 
+    @Test(groups = "dailies", enabled = false)
+    public void testSearchUser() throws Exception {
+        String username = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        User user = Identity.UserPostDefaultWithMail(username, email);
+        assert user != null;
+        assert user.getNickName().equalsIgnoreCase(username);
+
+        // validate existing scenario
+        List<User> users = Identity.UserSearchByUsername(username);
+        assert users != null;
+        assert users.size() == 1;
+        assert users.get(0).getId().equals(user.getId());
+
+        users = Identity.UserSearchByEmail(email);
+        assert users != null;
+        assert users.size() == 1;
+        assert users.get(0).getId().equals(user.getId());
+
+        // validate random string
+        users = Identity.UserSearchByUsername(RandomHelper.randomAlphabetic(15));
+        assert users != null;
+        assert users.size() == 0;
+
+        users = Identity.UserSearchByEmail(RandomHelper.randomEmail());
+        assert users != null;
+        assert users.size() == 0;
+
+        // validate user delete
+        Identity.UserDelete(user);
+        users = Identity.UserSearchByUsername(username);
+        assert users != null;
+        assert users.size() == 0;
+
+        users = Identity.UserSearchByEmail(email);
+        assert users != null;
+        assert users.size() == 0;
+
+        // recreate user again
+        User newUser = Identity.UserPostDefaultWithMail(username, email);
+        assert newUser != null;
+        assert !user.getId().equals(newUser.getId());
+
+        users = Identity.UserSearchByUsername(username);
+        assert users != null;
+        assert users.size() == 1;
+        assert !users.get(0).getId().equals(user.getId());
+
+        users = Identity.UserSearchByEmail(email);
+        assert users != null;
+        assert users.size() == 1;
+        assert !users.get(0).getId().equals(user.getId());
+    }
+
     @Test(groups = "dailies")
     //https://oculus.atlassian.net/browse/SER-436
     //https://oculus.atlassian.net/browse/SER-639

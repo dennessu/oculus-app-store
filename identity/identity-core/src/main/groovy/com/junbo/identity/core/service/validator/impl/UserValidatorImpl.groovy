@@ -184,16 +184,22 @@ class UserValidatorImpl implements UserValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.username == null && options.groupId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('username or groupId').exception()
-        }
+        if (StringUtils.isEmpty(options.email)) {
+            if (options.username == null && options.groupId == null) {
+                throw AppCommonErrors.INSTANCE.parameterRequired('username or groupId').exception()
+            }
 
-        if (options.username != null && options.groupId != null) {
-            throw AppCommonErrors.INSTANCE.parameterInvalid('username and groupId', 'username and groupId can\'t search together.').exception()
-        }
+            if (options.username != null && options.groupId != null) {
+                throw AppCommonErrors.INSTANCE.parameterInvalid('username and groupId', 'username and groupId can\'t search together.').exception()
+            }
 
-        if (options.username != null && StringUtils.isEmpty(normalizeService.normalize(options.username))) {
-            throw AppCommonErrors.INSTANCE.parameterInvalid('username', 'username can\'t be empty').exception()
+            if (options.username != null && StringUtils.isEmpty(normalizeService.normalize(options.username))) {
+                throw AppCommonErrors.INSTANCE.parameterInvalid('username', 'username can\'t be empty').exception()
+            }
+        } else {
+            if (!StringUtils.isEmpty(options.username) || options.groupId != null) {
+                throw AppCommonErrors.INSTANCE.parameterInvalid('primaryEmail', 'primaryEmail can not search together with username and groupId').exception()
+            }
         }
 
         return Promise.pure(null)
