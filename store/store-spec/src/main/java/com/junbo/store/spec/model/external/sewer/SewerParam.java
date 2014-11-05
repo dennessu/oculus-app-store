@@ -18,6 +18,9 @@ public class SewerParam {
     @QueryParam("locale")
     private String locale;
 
+    @QueryParam("properties")
+    private String resultProperties;
+
     @QueryParam("expand")
     private String expand;
 
@@ -35,6 +38,14 @@ public class SewerParam {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public String getResultProperties() {
+        return resultProperties;
+    }
+
+    public void setResultProperties(String resultProperties) {
+        this.resultProperties = resultProperties;
     }
 
     public String getExpand() {

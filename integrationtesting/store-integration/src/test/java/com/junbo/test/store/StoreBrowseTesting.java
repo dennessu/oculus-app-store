@@ -6,7 +6,7 @@
 package com.junbo.test.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
@@ -14,6 +14,7 @@ import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.browse.document.*;
+import com.junbo.store.spec.model.browse.document.Item;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
 import com.junbo.store.spec.model.external.sewer.casey.cms.CmsCampaign;
@@ -67,6 +68,8 @@ public class StoreBrowseTesting extends BaseTestClass {
     private String caseyCmsPageLabel;
 
     private StoreBrowseValidationHelper storeBrowseValidationHelper;
+
+    private Set<String> initialItemIds = null;
 
     @BeforeClass(alwaysRun = true)
     public void setUp() throws Exception {
@@ -141,6 +144,41 @@ public class StoreBrowseTesting extends BaseTestClass {
         } finally {
             testDataProvider.resetEmulatorData();
         }
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store browse",
+            component = Component.STORE,
+            owner = "fzhang",
+            status = Status.Enable,
+            environment = "release",
+            description = "Test for the api initial-download-items"
+    )
+    @Test
+    public void testGetInitialDownloadItems() throws Exception {
+        testDataProvider.resetEmulatorData();
+        List<String> expectedItemIds = testDataProvider.getExpectedInitialDownloadItemIds(initialDownloadItemCmsPage, initialDownloadItemSlot,
+                initialDownloadItemContentName);
+        gotoToc();
+        InitialDownloadItemsResponse response = testDataProvider.getInitialDownloadItems();
+        Assert.assertEquals(response.getItems().size(), expectedItemIds.size());
+        for (int i = 0;i < response.getItems().size(); ++i) {
+            InitialDownloadItemsResponse.InitialDownloadItemEntry entry = response.getItems().get(i);
+            Assert.assertEquals(entry.getItem(), new ItemId(expectedItemIds.get(i)));
+            com.junbo.catalog.spec.model.item.Item item = testDataProvider.getItemByItemId(entry.getItem().getValue());
+            ItemRevision itemRevision = testDataProvider.getItemRevision(item.getCurrentRevisionId());
+            Assert.assertEquals(entry.getPackageName(), itemRevision.getPackageName());
+            Assert.assertEquals(entry.getName(), itemRevision.getLocales().get("en_US").getName());
+        }
+    }
+
+    @Test
+    public void testGetInitialDownloadItemsCmsPageError() throws Exception {
+        gotoToc();
+        TestContext.getData().putHeader("X_QA_CASEY_ERROR", "getCmsPages");
+        InitialDownloadItemsResponse response = testDataProvider.getInitialDownloadItems();
+        Assert.assertEquals(response.getItems().size(), 0);
     }
 
     @Test
@@ -983,7 +1021,8 @@ public class StoreBrowseTesting extends BaseTestClass {
                 LOGGER.info("name=Verify_Item_InExplore, item={}", item.getSelf().getValue());
                 verifyItem(item, ApiEndPoint.List, null);
                 LOGGER.info("name=Get_And_Verify_ItemDetail_InExplore, item={}", item.getSelf().getValue());
-                verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), ApiEndPoint.Details, initialItems.contains(item.getSelf().getValue()));
+                verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), ApiEndPoint.Details,
+                        getInitialItems().contains(item.getSelf().getValue()));
             }
         }
     }
@@ -1010,6 +1049,13 @@ public class StoreBrowseTesting extends BaseTestClass {
             }
         }
         return null;
+    }
+
+    private Set<String> getInitialItems() throws Exception {
+        if (initialItemIds != null) {
+            return initialItemIds;
+        }
+        return testDataProvider.getInitialItems(initialAppsCmsPage, initialAppsCmsSlot);
     }
 }
 
