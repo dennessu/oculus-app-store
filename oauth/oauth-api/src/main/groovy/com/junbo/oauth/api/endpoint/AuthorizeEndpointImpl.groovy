@@ -74,7 +74,6 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
         // Parse the conversation id and event.
         String conversationId = uriInfo.queryParameters.getFirst(OAuthParameters.CONVERSATION_ID)
         String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT)?:''
-        String conversationVerifyCode = httpHeaders.cookies.get(OAuthParameters.CONVERSATION_VERIFY_CODE)?.value
 
         // GET method is not allowed if sensitive data is provided. (no query parameter except cid or event is allowed)
         if (StringUtils.hasText(event) && StringUtils.hasText(conversationId) && uriInfo.queryParameters.size() > 2) {
@@ -87,7 +86,7 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
         }
 
         // else try to resume the conversation with the given conversation id and event in the flowExecutor.
-        return flowExecutor.resume(conversationId, event, requestScope, conversationVerifyCode).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
+        return flowExecutor.resume(conversationId, event, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
     }
 
     /**
@@ -111,7 +110,6 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
         // Parse the conversation id and event.
         String conversationId = formParams.getFirst(OAuthParameters.CONVERSATION_ID)
         String event = formParams.getFirst(OAuthParameters.EVENT) ?: ''
-        String conversationVerifyCode = httpHeaders.cookies.get(OAuthParameters.CONVERSATION_VERIFY_CODE)?.value
 
         // The post authorize flow will always be in one on-going conversation, conversation id should not be empty.
         if (StringUtils.isEmpty(conversationId)) {
@@ -119,6 +117,6 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
         }
 
         // try to resume the conversation with the given conversation id and event in the flowExecutor
-        return flowExecutor.resume(conversationId, event, requestScope, conversationVerifyCode).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
+        return flowExecutor.resume(conversationId, event, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
     }
 }

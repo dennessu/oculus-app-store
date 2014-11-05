@@ -114,14 +114,6 @@ class ActionContext {
         requestScope[RESPONSE_VIEW] = view
     }
 
-    String getConversationVerifyCode() {
-        return conversation.conversationVerifyCode
-    }
-
-    void setConversationVerifyCode(String cvc) {
-        conversation.conversationVerifyCode = cvc
-    }
-
 
     private FlowState getCurrentFlowState() {
         if (conversation.flowStack == null || conversation.flowStack.empty) {
