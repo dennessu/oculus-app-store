@@ -64,12 +64,12 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
                 action.setStatus(FulfilmentStatus.SUCCEED);
 
                 LOGGER.info("Finish processing action [" + action.getActionId() + "].");
+
+                updateAction(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
             } catch (Exception e) {
                 LOGGER.error("Error occurred during processing action.", e);
                 action.setStatus(FulfilmentStatus.FAILED);
             }
-
-            updateAction(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
 
             /*executeInNewTransaction(new Callback() {
                 public void apply() {
