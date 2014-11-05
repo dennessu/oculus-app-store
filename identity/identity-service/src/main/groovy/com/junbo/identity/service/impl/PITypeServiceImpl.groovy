@@ -1,6 +1,7 @@
 package com.junbo.identity.service.impl
 
 import com.junbo.common.id.PITypeId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.PITypeRepository
 import com.junbo.identity.service.PITypeService
 import com.junbo.identity.spec.v1.model.PIType
@@ -36,12 +37,12 @@ class PITypeServiceImpl implements PITypeService {
     }
 
     @Override
-    Promise<List<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset) {
+    Promise<Results<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset) {
         return piTypeRepository.searchByTypeCode(typeCode, limit, offset)
     }
 
     @Override
-    Promise<List<PIType>> searchAll(Integer limit, Integer offset) {
+    Promise<Results<PIType>> searchAll(Integer limit, Integer offset) {
         return piTypeRepository.searchAll(limit, offset)
     }
 

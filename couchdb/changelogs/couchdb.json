@@ -235,7 +235,8 @@
     "pitype": {
       "views": {
         "by_typeCode": {
-          "map": "function(doc) {  emit(doc.typeCode, doc._id)}"
+          "map": "function(doc) {  emit(doc.typeCode, doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 

@@ -2,6 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.PITypeId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.PITypeRepository
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.langur.core.promise.Promise
@@ -45,12 +46,21 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
     }
 
     @Override
-    Promise<List<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset) {
-        return queryView('by_typeCode', typeCode, limit, offset, false)
+    Promise<Results<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset) {
+        Results<PIType> piTypeResults = new Results<>()
+        return queryView('by_typeCode', typeCode, limit, offset, false).then { List<PIType> piTypeList ->
+            piTypeResults.items = piTypeList
+
+            return queryViewTotal('by_typeCode', typeCode).then { Integer total ->
+                piTypeResults.total = total
+
+                return Promise.pure(piTypeResults)
+            }
+        }
     }
 
     @Override
-    Promise<List<PIType>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false)
+    Promise<Results<PIType>> searchAll(Integer limit, Integer offset) {
+        return cloudantGetAll(limit, offset, false, true)
     }
 }

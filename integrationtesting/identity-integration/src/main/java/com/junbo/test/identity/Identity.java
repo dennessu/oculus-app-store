@@ -11,6 +11,9 @@ import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
+import com.junbo.identity.spec.v1.model.Currency;
+import com.junbo.identity.spec.v1.model.Locale;
+import com.junbo.identity.spec.v1.model.PIType;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
@@ -28,9 +31,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author dw
@@ -54,6 +55,7 @@ public class Identity {
     public static final String IdentityV1UsernameMailBlockerURI = IdentityEndPointV1 + "/imports/username-email-block";
     public static final String IdentityV1TosURI = IdentityEndPointV1 + "/tos";
     public static final String IdentityV1UserAuthenticatorURI = IdentityEndPointV1 + "/authenticators";
+    public static final String IdentityV1PITypeURI = IdentityEndPointV1 + "/payment-instrument-types";
 
     public static String httpAuthorizationHeader = "";
 
@@ -968,6 +970,52 @@ public class Identity {
         return (UserSecurityQuestion) IdentityGet(
                 IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) +
                         "/security-questions/" + usqId.getValue(), UserSecurityQuestion.class);
+    }
+
+    public static PIType PITypePostDefault(String typeCode) throws Exception {
+        PIType piType = new PIType();
+        piType.setTypeCode(typeCode);
+        piType.setCapableOfRecurring(true);
+        piType.setIsRefundable(true);
+        LocaleName localeName = new LocaleName();
+        localeName.setDescription(RandomHelper.randomAlphabetic(15));
+        Map<String, JsonNode> locales = new HashMap<>();
+        locales.put("en_US", JsonHelper.ObjectToJsonNode(localeName));
+        piType.setLocales(locales);
+
+        return IdentityPost(IdentityV1PITypeURI, JsonHelper.JsonSerializer(piType), PIType.class);
+    }
+
+    public static PIType PITypeGet(PITypeId piTypeId) throws Exception {
+        return IdentityGet(IdentityV1PITypeURI + "/" + piTypeId.toString(), PIType.class);
+    }
+
+    public static PIType PITypePutDefault(PIType piType) throws Exception {
+        return IdentityPut(IdentityV1PITypeURI + "/" + piType.getId().toString(), JsonHelper.JsonSerializer(piType), PIType.class);
+    }
+
+    public static Results<PIType> PITypeSearch(String piTypeCode, Integer limit) throws Exception {
+        String url = IdentityV1PITypeURI;
+        if (piTypeCode != null) {
+            url = url + "?typeCode=" + piTypeCode;
+        }
+
+        if (limit != null) {
+            if (piTypeCode != null) {
+                url = url + "&count=" + limit;
+            } else {
+                url = url + "?count=" + limit;
+            }
+        }
+
+        Results<PIType> results = IdentityGet(url, Results.class);
+        List<PIType> piTypes = new ArrayList<>();
+        for(Object obj : results.getItems()) {
+            piTypes.add((PIType) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    PIType.class));
+        }
+        results.setItems(piTypes);
+        return results;
     }
 
     public static UserSecurityQuestionVerifyAttempt UserSecurityQuestionVerifyAttemptPost(UserId userId, UserSecurityQuestionVerifyAttempt attempt)
