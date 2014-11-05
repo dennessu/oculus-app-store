@@ -69,11 +69,13 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
                 action.setStatus(FulfilmentStatus.FAILED);
             }
 
-            executeInNewTransaction(new Callback() {
+            updateAction(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
+
+            /*executeInNewTransaction(new Callback() {
                 public void apply() {
                     updateAction(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
                 }
-            });
+            });*/
         }
     }
 
