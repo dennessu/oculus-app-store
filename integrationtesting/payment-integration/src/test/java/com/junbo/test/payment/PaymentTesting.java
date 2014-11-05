@@ -377,6 +377,8 @@ public class PaymentTesting extends BaseTestClass {
         logHelper.LogSample("Delete a payment instrument");
         testDataProvider.deletePaymentInstruments(randomUid, creditCardInfo1.getPid());
 
+        testDataProvider.getPaymentInstruments(randomUid);
+
         List<PaymentInstrumentBase> paymentList = new ArrayList<>();
         paymentList.add(creditCardInfo2);
 
