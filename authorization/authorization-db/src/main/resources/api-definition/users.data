@@ -15,7 +15,7 @@
             "precondition": "true",
             "rights": ["read", "search"],
             "scriptType": "SPEL"
-        }]
+        }],
         "csr": [{
             "precondition": "true",
             "rights": ["read", "update", "search", "delete"],
