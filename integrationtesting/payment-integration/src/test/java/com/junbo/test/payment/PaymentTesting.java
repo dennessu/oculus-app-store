@@ -12,6 +12,7 @@ import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.enums.PaymentType;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
+import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.LogHelper;
@@ -293,7 +294,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "PUT /users/{userId}/payment-instruments/{paymentInstrumentId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "put payment instruments",
             steps = {
                     "1. Create an user",
@@ -311,10 +312,11 @@ public class PaymentTesting extends BaseTestClass {
         testDataProvider.getPaymentInstrument(creditCardId);
 
         logHelper.LogSample("Put a payment instrument");
-        CreditCardInfo creditCardInfoForUpdate = CreditCardInfo.getRandomCreditCardInfo(country);
-        testDataProvider.updatePaymentInstrument(randomUid, creditCardId, creditCardInfoForUpdate);
+        CreditCardInfo creditCardInfoForUpdate = creditCardInfo;
+        String creditCreditId2 = testDataProvider.updatePaymentInstrument(randomUid, creditCardId, creditCardInfoForUpdate);
 
-        validationHelper.validatePaymentInstrument(creditCardInfo);
+        assert creditCardId.equals(creditCreditId2);
+        validationHelper.validatePaymentInstrument(creditCardInfoForUpdate);
     }
 
     @Property(
@@ -423,17 +425,16 @@ public class PaymentTesting extends BaseTestClass {
 
     @Property(
             priority = Priority.BVT,
-            features = "GET /payment-instruments?userId={userId}",
+            features = "GET /payment-instruments?userId={userId}&type=CREDITCARD",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Disable,
-            description = "search payment instruments",
+            status = Status.Enable,
+            description = "search payment instruments by type",
             steps = {
                     "1. Create an user",
-                    "2. Post two credit cards to user",
-                    "3. Post ewallet to user",
-                    "4. Post paypal to user",
-                    "3. Search all payment instruments by type",
+                    "2. Post credit card to user",
+                    "3. Post paypal to user",
+                    "3. Search payment instruments by type : CREDITCARD",
                     "4. Validation: response "
             }
     )
@@ -445,17 +446,44 @@ public class PaymentTesting extends BaseTestClass {
         CreditCardInfo creditCardInfo1 = CreditCardInfo.getRandomCreditCardInfo(country);
         testDataProvider.postPaymentInstrument(randomUid, creditCardInfo1);
 
-        CreditCardInfo creditCardInfo2 = CreditCardInfo.getRandomCreditCardInfo(country);
-        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo2);
+        PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, payPalInfo);
+
+        Master.getInstance().initializePayments();
 
         logHelper.LogSample("Get payment instruments");
-        testDataProvider.getPaymentInstruments(randomUid);
+        testDataProvider.getPaymentInstruments(randomUid, PaymentType.CREDITCARD.toString(), 200);
 
         List<PaymentInstrumentBase> paymentList = new ArrayList<>();
         paymentList.add(creditCardInfo1);
-        paymentList.add(creditCardInfo2);
 
         validationHelper.validatePaymentInstruments(paymentList);
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "GET /payment-instruments?userId={userId}",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "search payment instruments by invalid type",
+            steps = {
+                    "1. Create an user",
+                    "2. Post two credit cards to user",
+                    "3. Search all payment instruments",
+                    "4. Validation: response "
+            }
+    )
+    @Test
+    public void testSearchPaymentInstrumentByInvalidType() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+        Master.getInstance().getPaymentInstruments().clear();
+
+        logHelper.LogSample("Get payment instruments");
+        testDataProvider.getPaymentInstruments(randomUid, "credit", 412);
+
+        assert Master.getInstance().getApiErrorMsg().contains("Invalid PI Type");
+        assert Master.getInstance().getApiErrorMsg().contains("The payment instrument type credit is invalid or not allowed");
     }
 
     @Property(
@@ -488,7 +516,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "post ewallet",
             steps = {
                     "1. Create an user",
@@ -500,12 +528,9 @@ public class PaymentTesting extends BaseTestClass {
     public void testPostEwalletWithInvalidCurrency() throws Exception {
         String randomUid = testDataProvider.CreateUser();
 
-        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
-        testDataProvider.postPaymentInstrument(randomUid, ewalletInfo);
+        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.FREE);
+        testDataProvider.postPaymentInstrument(randomUid, ewalletInfo, 412);
 
-        logHelper.LogSample("Post ewallet");
-
-        validationHelper.validatePaymentInstrument(ewalletInfo);
     }
 
     @Property(

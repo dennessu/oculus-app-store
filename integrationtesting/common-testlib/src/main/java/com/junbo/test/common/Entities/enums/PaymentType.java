@@ -12,7 +12,7 @@ public enum PaymentType {
     CREDITCARD("CREDITCARD", 0L),
     DIRECTDEBIT("DIRECTDEBIT", 0L),
     PAYPAL("PAYPAL", 3L),
-    EWALLET("WALLET", 2L),
+    EWALLET("STOREDVALUE", 2L),
     OTHERS("OTHERS", 4L),
     FAKE("FAKE", 5L);
 

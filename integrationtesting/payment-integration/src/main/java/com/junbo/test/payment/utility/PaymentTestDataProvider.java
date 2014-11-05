@@ -182,12 +182,10 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         PaymentInstrument paymentInstrument = Master.getInstance().getPaymentInstrument(paymentId);
         switch (paymentInfo.getType()) {
             case CREDITCARD:
-                /*
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-                */
-                return paymentClient.updatePaymentInstrument(uid, paymentId, paymentInstrument, expectedResponseCode);
+                paymentInfo.setPid(paymentClient.updatePaymentInstrument(uid, paymentId, paymentInstrument, expectedResponseCode));
+                return paymentInfo.getPid();
             default:
                 throw new TestException(String.format("%s is not supported", paymentInfo.getType().toString()));
         }
@@ -204,6 +202,14 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
     public List<String> getPaymentInstruments(String uid) throws Exception {
         return paymentClient.getPaymentInstrumentsByUserId(uid);
+    }
+
+    public List<String> getPaymentInstruments(String uid, int expectedResponseCode) throws Exception {
+        return paymentClient.getPaymentInstrumentsByUserId(uid, expectedResponseCode);
+    }
+
+    public List<String> getPaymentInstruments(String uid, String paymentType, int expectedResponseCode) throws Exception {
+        return paymentClient.getPaymentInstrumentsByUserId(uid, paymentType, expectedResponseCode);
     }
 
     public void deletePaymentInstruments(String uid, String paymentId) throws Exception {
