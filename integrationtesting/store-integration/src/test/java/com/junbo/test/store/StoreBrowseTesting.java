@@ -152,7 +152,7 @@ public class StoreBrowseTesting extends BaseTestClass {
             component = Component.STORE,
             owner = "fzhang",
             status = Status.Enable,
-            environment = "release",
+            // environment = "release",
             description = "Test for the api initial-download-items"
     )
     @Test
