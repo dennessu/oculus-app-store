@@ -566,9 +566,9 @@ class UserResourceImpl implements UserResource {
     }
 
     private Promise<Void> triggerCsrUserUpdateEmail(User user, User oldUser) {
-        // check x-send-email header
-        if (JunboHttpContext.getRequestHeaders() == null
-                || CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_TRIGGER_EMAIL))) {
+        // check x-disable-email header
+        if (JunboHttpContext.getRequestHeaders() != null
+                && !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_DISABLE_EMAIL))) {
             return Promise.pure(null)
         }
 
