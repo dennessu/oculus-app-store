@@ -37,4 +37,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "105", message = "Duplicate Package Name",
             field = "packageName", reason = "Package name {0} already exists")
     AppError duplicatePackageName(String packageName);
+
+    @ErrorDef(httpStatusCode = 412, code = "106", message = "Genre Referenced By Other Resources",
+            field = "{0}", reason = "Genre with ID {1} is referenced by {2} {3}.")
+    AppError genreReferenced(String field, String genreId, Long refCount, String refResource);
 }
