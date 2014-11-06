@@ -265,7 +265,9 @@ public abstract class HttpClientBase {
                         String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
                         if (redirectUrl.contains("cid")) {
                             List<Cookie> cookies = nettyResponse.getCookies();
-                            Master.getInstance().addCookie(cookies.get(0));
+                            if (cookies != null && cookies.size() > 0) {
+                                Master.getInstance().addCookie(cookies.get(0));
+                            }
                             return redirectUrl;
                         }
 
