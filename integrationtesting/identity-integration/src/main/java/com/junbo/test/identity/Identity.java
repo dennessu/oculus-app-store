@@ -382,13 +382,14 @@ public class Identity {
         return IdentityGet(IdentityV1TosURI + "/" + tosId.getValue(), Tos.class);
     }
 
-    public static List<Tos> TosSearch(String title, String type, String state, String country) throws Exception {
+    public static Results<Tos> TosSearch(String title, String type, String state, String country) throws Exception {
         List<Tos> tosList = new ArrayList<Tos>();
-        List<Tos> tosResults = IdentityGet(buildTosSearchURI(title, state, type, country), Results.class).getItems();
-        for (Object obj : tosResults) {
+        Results<Tos> tosResults = IdentityGet(buildTosSearchURI(title, state, type, country), Results.class);
+        for (Object obj : tosResults.getItems()) {
             tosList.add((Tos) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class));
         }
-        return tosList;
+        tosResults.setItems(tosList);
+        return tosResults;
     }
 
     private static String buildTosSearchURI(String title, String state, String type, String country) {

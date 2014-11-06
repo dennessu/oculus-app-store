@@ -85,11 +85,12 @@ class TosResourceImpl implements TosResource {
     Promise<Results<Tos>> list(TosListOptions listOptions) {
         return tosValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Tos>(items: [])
-            return search(listOptions).then { List<Tos> newToses ->
-                if (newToses == null) {
+            return search(listOptions).then { Results<Tos> newToses ->
+                resultList.total = newToses.total
+                if (CollectionUtils.isEmpty(newToses.items)) {
                     return Promise.pure(resultList)
                 }
-                newToses.each { Tos newTos ->
+                newToses.items.each { Tos newTos ->
                     if (newTos != null) {
                         newTos = tosFilter.filterForGet(newTos, listOptions.properties?.split(',') as List<String>)
                     }
@@ -165,7 +166,7 @@ class TosResourceImpl implements TosResource {
         }
     }
 
-    private Promise<List<Tos>> search(TosListOptions listOptions) {
+    private Promise<Results<Tos>> search(TosListOptions listOptions) {
         Promise.pure().then {
             if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state) && !StringUtils.isEmpty(listOptions.type) && listOptions.countryId != null) {
                 return tosService.searchByTitleAndTypeAndStateAndCountry(listOptions.title, listOptions.type, listOptions.state,
@@ -201,8 +202,9 @@ class TosResourceImpl implements TosResource {
             } else {
                 return tosService.searchAll(listOptions.limit, listOptions.offset)
             }
-        }.then { List<Tos> tosList ->
-            if (listOptions.countryId != null && !listOptions.countryId.getValue().equalsIgnoreCase(defaultCountryCode) && CollectionUtils.isEmpty(tosList)) {
+        }.then { Results<Tos> tosList ->
+            if (listOptions.countryId != null && !listOptions.countryId.getValue().equalsIgnoreCase(defaultCountryCode)
+                    && (tosList == null || CollectionUtils.isEmpty(tosList.items))) {
                 listOptions.setCountryId(new CountryId(defaultCountryCode))
                 return search(listOptions)
             }

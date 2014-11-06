@@ -53,47 +53,20 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
 
     @Override
     Promise<Results<Country>> searchByDefaultCurrencyId(CurrencyId currencyId, Integer limit, Integer offset) {
-        Results<Country> results = new Results<>()
-        return queryView('by_default_currency', currencyId.toString(), limit, offset, false).then { List<Country> countries ->
-            results.items = countries
-
-            return queryViewTotal('by_default_currency', currencyId.toString()).then { Integer count ->
-                results.total = count
-
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_default_currency', currencyId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<Results<Country>> searchByDefaultLocaleId(LocaleId localeId, Integer limit, Integer offset) {
-        Results<Country> results = new Results<>()
-        return queryView('by_default_locale', localeId.toString(), limit, offset, false).then { List<Country> countries ->
-            results.items = countries
-
-            return queryViewTotal('by_default_locale', localeId.toString()).then { Integer total ->
-                results.total = total
-
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_default_locale', localeId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<Results<Country>> searchByDefaultCurrencyIdAndLocaleId(CurrencyId currencyId, LocaleId localeId, Integer limit, Integer offset) {
         def startKey = [currencyId.toString(), localeId.toString()]
         def endKey = [currencyId.toString(), localeId.toString()]
-        Results<Country> results = new Results<>()
-        return queryView('by_default_locale_currency', startKey.toArray(new String()), endKey.toArray(new String()),
-                false, limit, offset, false).then { List<Country> countries ->
-            results.items = countries
-
-            return queryViewTotal('by_default_locale_currency', startKey.toArray(new String()), endKey.toArray(new String()), false, false).then { Integer total ->
-                results.total = total
-
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_default_locale_currency', startKey.toArray(new String()), endKey.toArray(new String()),
+                false, limit, offset, false)
     }
 
     @Override

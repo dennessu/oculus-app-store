@@ -19,15 +19,7 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
 
     @Override
     Promise<Results<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset) {
-        Results<DeviceType> results = new Results<>()
-        return queryView('by_type_code', typeCode, limit, offset, false).then { List<DeviceType> deviceTypeList ->
-            results.items = deviceTypeList
-
-            return queryViewTotal('by_type_code', typeCode).then { Integer total ->
-                results.total = total
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_type_code', typeCode, limit, offset, false)
     }
 
     @Override

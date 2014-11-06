@@ -47,16 +47,7 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
 
     @Override
     Promise<Results<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset) {
-        Results<PIType> piTypeResults = new Results<>()
-        return queryView('by_typeCode', typeCode, limit, offset, false).then { List<PIType> piTypeList ->
-            piTypeResults.items = piTypeList
-
-            return queryViewTotal('by_typeCode', typeCode).then { Integer total ->
-                piTypeResults.total = total
-
-                return Promise.pure(piTypeResults)
-            }
-        }
+        return queryViewResults('by_typeCode', typeCode, limit, offset, false)
     }
 
     @Override

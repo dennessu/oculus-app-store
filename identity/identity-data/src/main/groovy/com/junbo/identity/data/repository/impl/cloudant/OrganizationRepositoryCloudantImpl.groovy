@@ -26,30 +26,12 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
 
     @Override
     Promise<Results<Organization>> searchByOwner(UserId ownerId, Integer limit, Integer offset) {
-        Results<Organization> results = new Results<>();
-        return queryView('by_owner_id', ownerId.toString(), limit, offset, false).then { List<Organization> organizationList ->
-            results.items = organizationList
-
-            return queryViewTotal('by_owner_id', ownerId.toString()).then { Integer total ->
-                results.total = total
-
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_owner_id', ownerId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<Results<Organization>> searchByCanonicalName(String name, Integer limit, Integer offset) {
-        Results<Organization> results = new Results<>();
-        return queryView('by_canonical_name', name, limit, offset, false).then { List<Organization> organizationList ->
-            results.items = organizationList
-
-            return queryViewTotal('by_canonical_name', name).then { Integer total ->
-                results.total = total
-
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_canonical_name', name, limit, offset, false)
     }
 
     @Override

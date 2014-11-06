@@ -235,8 +235,25 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         }
     }
 
+    public Promise<Results<T>> queryViewResults(String viewName, String key, Integer limit, Integer skip, boolean descending) {
+        Results<T> results = new Results<>()
+        return queryView(viewName, key, limit, skip, descending).then { List<T> list ->
+            results.items = list
+
+            return queryViewTotal(viewName, key).then { Integer total ->
+                results.total = total
+
+                return Promise.pure(results)
+            }
+        }
+    }
+
     public Promise<List<T>> queryView(String viewName, String key) {
         return queryView(viewName, key, null, null, false)
+    }
+
+    public Promise<Results<T>> queryViewResults(String viewName, String key) {
+        return queryViewResults(viewName, key, null, null, false)
     }
 
     public Promise<CloudantQueryResult> queryView(String viewName, String key, boolean includeDocs) {
@@ -254,6 +271,20 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             }
 
             return []
+        }
+    }
+
+    public Promise<Results<T>> queryViewResults(String viewName, Object[] startKey, Object[] endKey,
+                                                boolean withHighKey, Integer limit, Integer skip, boolean descending) {
+        Results<T> results = new Results<>()
+        return queryView(viewName, startKey, endKey, withHighKey, limit, skip, descending).then { List<T> list ->
+            results.items = list
+
+            return queryViewTotal(viewName, startKey, endKey, withHighKey, descending).then { Integer total ->
+                results.total = total
+
+                return Promise.pure(results)
+            }
         }
     }
 
