@@ -44,8 +44,9 @@ export PROMOTE_TRIGGER_FILE=$PGHA_BASE/bring_me_up
 export PGUSER='silkcloud'
 export READONLY_PGUSER='scro'
 export NEWRELIC_PGUSER='newrelic'
+export ZABBIX_PGUSER='zabbix'
 export DB_PORT=5432
-export MAX_CONNECTIONS=500
+export MAX_CONNECTIONS=1200
 
 #master info
 export MASTER_DB_PORT=$DB_PORT

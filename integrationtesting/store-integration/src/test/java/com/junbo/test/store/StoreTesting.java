@@ -378,6 +378,7 @@ public class StoreTesting extends BaseTestClass {
     public void testMakeFreePurchaseWithMultiEndpoint() throws Exception {
         try {
             if (ConfigHelper.getSetting("secondaryDcEndpoint") == null) return;
+            Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
             CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
             AuthTokenResponse authTokenResponse = testDataProvider.RegisterUser(createUserRequest, 200);
             testDataProvider.verifyEmailLinks(createUserRequest,authTokenResponse);

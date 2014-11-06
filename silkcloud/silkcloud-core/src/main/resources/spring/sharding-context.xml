@@ -12,6 +12,7 @@
         <property name="className" value="${sharding.db.driverClassName}"/>
         <property name="minPoolSize" value="${sharding.db.minPoolSize}"/>
         <property name="maxPoolSize" value="${sharding.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
 
         <property name="driverProperties">
             <props>
@@ -160,6 +161,7 @@
         <property name="className" value="${index.db.driverClassName}"/>
         <property name="minPoolSize" value="${index.db.minPoolSize}"/>
         <property name="maxPoolSize" value="${index.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${index.db.username}</prop>

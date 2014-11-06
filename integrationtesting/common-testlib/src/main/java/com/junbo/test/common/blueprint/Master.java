@@ -23,7 +23,9 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.RandomFactory;
+import com.ning.http.client.cookie.Cookie;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +87,8 @@ public class Master {
     private String secondaryCommerceEndPointUrl;
 
     private EndPointType endPointType;
+
+    private List<Cookie> cookies =  new ArrayList<>();
 
     public void initializeMaster() {
         this.initializeUsers();
@@ -573,5 +577,14 @@ public class Master {
     public void setEndPointType(EndPointType endPointType) {
         this.endPointType = endPointType;
     }
+
+    public void addCookie(Cookie cookie) {
+        cookies.add(cookie);
+    }
+
+    public List<Cookie> getCookies() {
+        return cookies;
+    }
+
 
 }

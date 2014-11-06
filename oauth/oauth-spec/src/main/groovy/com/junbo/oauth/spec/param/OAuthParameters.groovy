@@ -81,5 +81,7 @@ class OAuthParameters {
     public static final String COOKIE_REMEMBER_ME = 'me'
     public static final String FACEBOOK_AUTH = 'facebookAuth'
     public static final String GOOGLE_AUTH = 'googleAuth'
+
+    public static final String CONVERSATION_VERIFY_CODE = 'cvc'
 }
 

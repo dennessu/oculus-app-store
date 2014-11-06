@@ -15,6 +15,7 @@
         <property name="className" value="${order.db.driverClassName}"/>
         <property name="minPoolSize" value="${order.db.minPoolSize}"/>
         <property name="maxPoolSize" value="${order.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${order.db.username}</prop>

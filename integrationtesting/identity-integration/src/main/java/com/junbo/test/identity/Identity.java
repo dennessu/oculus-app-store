@@ -451,6 +451,17 @@ public class Identity {
         return userList;
     }
 
+    public static List<User> UserSearchByEmail(String email) throws Exception {
+        List<User> userList = new ArrayList<User>();
+        for (Object obj : IdentityGet(
+                IdentityV1UserURI + "?primaryMail=" + URLEncoder.encode(email, "UTF-8"),
+                (Results.class)).getItems()) {
+            userList.add((User) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), User.class)
+            );
+        }
+        return userList;
+    }
+
     public static User UserGetByUserId(UserId userId) throws Exception {
         return (User) IdentityGet(IdentityV1UserURI + "/" + IdFormatter.encodeId(userId), User.class);
     }

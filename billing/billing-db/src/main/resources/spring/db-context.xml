@@ -16,8 +16,9 @@
         <property name="jdbcUrls" value="${billing.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/billing"/>
         <property name="className" value="${billing.db.driverClassName}"/>
-        <property name="minPoolSize" value="${billing.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${billing.db.maxConnectionsPerPartition}"/>
+        <property name="minPoolSize" value="${billing.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${billing.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${billing.db.username}</prop>

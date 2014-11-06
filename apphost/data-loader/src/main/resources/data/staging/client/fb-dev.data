@@ -1,0 +1,11 @@
+{
+  "scopes" : [ "identity.search" ],
+  "client_id" : "fb-dev",
+  "client_secret" : "664396C81EF530C0C2203ACFF04B6329#F0BFE8940FB3746FEE03217272784A2040DFB6AB5CAA6C3B1C11D6A0CCAECB79861F9FED95CFB6C0789A7251CB685BA0",
+  "client_name" : "fb-dev-search",
+  "default_scopes" : [ "identity.search" ],
+  "response_types" : ["TOKEN"],
+  "grant_types" : ["PASSWORD"],
+  "id_token_issuer" : "www.junbo.com",
+  "need_consent" : false
+}

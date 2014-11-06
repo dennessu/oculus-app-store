@@ -36,6 +36,7 @@
 
         <wf:view-state id="REDIRECT_TO_LOGIN">
             <wf:on-render>
+                <wf:action ref="generateConversationVerifyCode"/>
                 <wf:action ref="redirectToLogin"/>
             </wf:on-render>
             <wf:transition on="*" to="LOGIN_VIEW"/>
@@ -43,6 +44,7 @@
 
         <wf:view-state id="REDIRECT_TO_REGISTER">
             <wf:on-render>
+                <wf:action ref="generateConversationVerifyCode"/>
                 <wf:action ref="redirectToRegister"/>
             </wf:on-render>
             <wf:transition on="*" to="REGISTER_VIEW"/>
@@ -78,10 +80,10 @@
 
         <wf:view-state id="LOGIN_SUCCESS">
             <wf:on-render>
+                <wf:action ref="saveLoginState"/>
                 <wf:action ref="redirectToAuth"/>
             </wf:on-render>
             <wf:transition on="*" to="CHECK_SCOPE_AFTER_LOGIN">
-                <wf:action ref="saveLoginState"/>
                 <wf:action ref="grantRememberMeToken"/>
             </wf:transition>
         </wf:view-state>
@@ -96,6 +98,7 @@
 
         <wf:view-state id="REDIRECT_TO_TFA_REQUIRED_VIEW">
             <wf:on-render>
+                <wf:action ref="generateConversationVerifyCode"/>
                 <wf:action ref="redirectToTFARequired"/>
             </wf:on-render>
             <wf:transition on="*" to="TFA_REQUIRED_VIEW"/>
@@ -157,6 +160,7 @@
 
         <wf:view-state id="REDIRECT_TO_THIRD_PARTY_UPGRADE">
             <wf:on-render>
+                <wf:action ref="generateConversationVerifyCode"/>
                 <wf:action ref="redirectToThirdPartyUpgrade"/>
             </wf:on-render>
             <wf:transition on="*" to="THIRD_PARTY_UPGRADE_VIEW"/>
@@ -184,6 +188,7 @@
 
         <wf:view-state id="REDIRECT_TO_CONSENT">
             <wf:on-render>
+                <wf:action ref="generateConversationVerifyCode"/>
                 <wf:action ref="redirectToConsent"/>
             </wf:on-render>
             <wf:transition on="*" to="CONSENT_VIEW"/>
@@ -254,12 +259,14 @@
                 <wf:action ref="grantAuthorizationCode"/>
                 <wf:action ref="grantImplicitAccessToken"/>
                 <wf:action ref="grantIdToken"/>
+                <wf:action ref="clearConversationVerifyCode"/>
                 <wf:action ref="redirectToClient"/>
             </wf:on-entry>
         </wf:end-state>
 
         <wf:view-state id="CANCEL_VIEW">
             <wf:on-render>
+                <wf:action ref="clearConversationVerifyCode"/>
                 <wf:action ref="redirectToAuth"/>
             </wf:on-render>
             <wf:transition on="*" to="ACCESS_DENIED"/>
@@ -267,18 +274,21 @@
 
         <wf:end-state id="ACCESS_DENIED">
             <wf:on-entry>
+                <wf:action ref="clearConversationVerifyCode"/>
                 <wf:action ref="accessDenied"/>
             </wf:on-entry>
         </wf:end-state>
 
         <wf:end-state id="LOGIN_REQUIRED">
             <wf:on-entry>
+                <wf:action ref="clearConversationVerifyCode"/>
                 <wf:action ref="loginRequired"/>
             </wf:on-entry>
         </wf:end-state>
 
         <wf:end-state id="CONSENT_REQUIRED">
             <wf:on-entry>
+                <wf:action ref="clearConversationVerifyCode"/>
                 <wf:action ref="consentRequired"/>
             </wf:on-entry>
         </wf:end-state>
@@ -546,4 +556,10 @@
         <property name="groupUtil" ref="groupUtil"/>
         <property name="isAuthorizeFlow" value="true"/>
     </bean>
+
+    <bean id="generateConversationVerifyCode" class="com.junbo.oauth.core.action.GenerateConversationVerifyCode">
+        <property name="expiration" value="${oauth.conversation.verify.code.expiration}"/>
+    </bean>
+
+    <bean id="clearConversationVerifyCode" class="com.junbo.oauth.core.action.ClearConversationVerifyCode"/>
 </beans>

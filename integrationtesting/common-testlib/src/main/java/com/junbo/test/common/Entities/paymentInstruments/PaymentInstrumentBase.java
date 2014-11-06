@@ -19,8 +19,8 @@ public abstract class PaymentInstrumentBase {
     private String accountName;
     private String accountNum;
     private Address address;
-    private Phone phone;
-    private String email;
+    private long phone;
+    private long email;
     private String status;
     private String relationToHolder;
     private String phoneNumber;
@@ -70,11 +70,11 @@ public abstract class PaymentInstrumentBase {
         return address;
     }
 
-    public Phone getPhone() {
+    public long getPhone() {
         return phone;
     }
 
-    public String getEmail() {
+    public long getEmail() {
         return email;
     }
 
@@ -122,11 +122,11 @@ public abstract class PaymentInstrumentBase {
         this.address = address;
     }
 
-    public void setPhone(Phone phone) {
+    public void setPhone(long phone) {
         this.phone = phone;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(long email) {
         this.email = email;
     }
 

@@ -1,0 +1,6 @@
+{
+    "name": "identity.search",
+    "description": "Scope for the identity search and read only.",
+    "tfaRequired": false,
+    "validationCondition": "hasGroups(\"Oculus.FBDevGroup\")"
+}

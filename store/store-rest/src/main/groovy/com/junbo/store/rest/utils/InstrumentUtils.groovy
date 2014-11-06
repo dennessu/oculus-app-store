@@ -228,7 +228,7 @@ class InstrumentUtils {
         Promise promise = Promise.pure(null)
 
         promise = promise.then {
-            if (paymentInstrument.billingAddressId != null) {
+            if (paymentInstrument.billingAddressId != null && paymentInstrument.billingAddressId != 0) {
                 return resourceContainer.userUserPersonalInfoResource.get(new UserPersonalInfoId(paymentInstrument.billingAddressId), new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
                     instrument.billingAddress = new com.junbo.store.spec.model.Address()
                     dataConvertor.toAddress(ObjectMapperProvider.instance().treeToValue(info.value, Address), instrument.billingAddress)
@@ -238,7 +238,7 @@ class InstrumentUtils {
         }
 
         return promise.then {
-            if (paymentInstrument.phoneNumber != null) {
+            if (paymentInstrument.phoneNumber != null && paymentInstrument.phoneNumber != 0) {
                 return resourceContainer.userUserPersonalInfoResource.get(new UserPersonalInfoId(paymentInstrument.phoneNumber), new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
                     instrument.phoneNumber = ObjectMapperProvider.instance().treeToValue(info.value, PhoneNumber).info
                 }

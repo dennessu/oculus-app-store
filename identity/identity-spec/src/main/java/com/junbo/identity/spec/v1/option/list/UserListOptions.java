@@ -18,6 +18,9 @@ public class UserListOptions extends PagingGetOptions {
     @QueryParam("username")
     private String username;
 
+    @QueryParam("primaryMail")
+    private String email;
+
     @QueryParam("groupId")
     private GroupId groupId;
 
@@ -30,6 +33,14 @@ public class UserListOptions extends PagingGetOptions {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public GroupId getGroupId() {

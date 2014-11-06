@@ -7,6 +7,7 @@ package com.junbo.order.spec.error;
 
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
+import com.junbo.common.error.ErrorDetail;
 
 /**
  * Created by fzhang on 4/30/2014.
@@ -24,6 +25,13 @@ public class ErrorUtils {
     public static AppError toAppError(Throwable throwable) {
         if (throwable instanceof AppErrorException) {
             return ((AppErrorException) throwable).getError();
+        }
+        return null;
+    }
+
+    public static ErrorDetail[] getErrorDetails(AppError appError) {
+        if (appError.error() != null && appError.error().getDetails() != null) {
+            return appError.error().getDetails().toArray(new ErrorDetail[0]);
         }
         return null;
     }

@@ -14,6 +14,7 @@ import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.ning.http.client.*;
+import com.ning.http.client.cookie.Cookie;
 import com.ning.http.client.providers.netty.NettyAsyncHttpProviderConfig;
 import com.ning.http.client.providers.netty.NettyResponse;
 import org.apache.http.client.HttpResponseException;
@@ -189,13 +190,23 @@ public abstract class HttpClientBase {
             case PUT:
             case POST: {
                 try {
-                    asyncClient = new AsyncHttpClient();
-                    Request req = new RequestBuilder(httpMethod.getHttpMethod())
-                            .setUrl(restUrl)
-                            .setHeaders(getHeader(isServiceScope, headersToRemove))
-                            .setBodyEncoding("UTF-8")
-                            .setBody(requestBody)
-                            .build();
+                    Request req;
+                    if (Master.getInstance().getCookies().size() > 0) {
+                        req = new RequestBuilder(httpMethod.getHttpMethod())
+                                .setUrl(restUrl)
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
+                                .setBodyEncoding("UTF-8")
+                                .setBody(requestBody)
+                                .addCookie(Master.getInstance().getCookies().get(0))
+                                .build();
+                    } else {
+                        req = new RequestBuilder(httpMethod.getHttpMethod())
+                                .setUrl(restUrl)
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
+                                .setBodyEncoding("UTF-8")
+                                .setBody(requestBody)
+                                .build();
+                    }
 
                     logger.LogRequest(req);
 
@@ -213,13 +224,10 @@ public abstract class HttpClientBase {
                     return nettyResponse.getResponseBody("UTF-8");
                 } catch (HttpResponseException ex) {
                     throw new TestException(ex.getMessage().toString());
-                } finally {
-                    asyncClient.close();
                 }
             }
             case GET: {
                 try {
-                    asyncClient = new AsyncHttpClient();
                     if (httpParameters != null && !httpParameters.isEmpty()) {
                         restUrl = restUrl.concat("?");
                         for (String key : httpParameters.keySet()) {
@@ -232,11 +240,19 @@ public abstract class HttpClientBase {
                         //Remove the last "&" character
                         restUrl = restUrl.substring(0, restUrl.length() - 1);
                     }
-
-                    Request req = new RequestBuilder("GET")
-                            .setUrl(restUrl)
-                            .setHeaders(getHeader(isServiceScope, headersToRemove))
-                            .build();
+                    Request req;
+                    if (Master.getInstance().getCookies().size() > 0) {
+                        req = new RequestBuilder("GET")
+                                .setUrl(restUrl)
+                                .addCookie(Master.getInstance().getCookies().get(0))
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
+                                .build();
+                    } else {
+                        req = new RequestBuilder("GET")
+                                .setUrl(restUrl)
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
+                                .build();
+                    }
 
                     logger.LogRequest(req);
 
@@ -247,7 +263,13 @@ public abstract class HttpClientBase {
                         logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
 
                         String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
-                        if (redirectUrl.contains("cid") || redirectUrl.contains("email-verify")) {
+                        if (redirectUrl.contains("cid")) {
+                            List<Cookie> cookies = nettyResponse.getCookies();
+                            Master.getInstance().addCookie(cookies.get(0));
+                            return redirectUrl;
+                        }
+
+                        if (redirectUrl.contains("email-verify")) {
                             return redirectUrl;
                         }
                         req = new RequestBuilder("GET")
@@ -274,14 +296,11 @@ public abstract class HttpClientBase {
                     return nettyResponse.getResponseBody("UTF-8");
                 } catch (HttpResponseException ex) {
                     throw new TestException(ex.getMessage().toString());
-                } finally {
-                    asyncClient.close();
                 }
 
             }
             case DELETE: {
                 try {
-                    asyncClient = new AsyncHttpClient();
                     Request req = new RequestBuilder(httpMethod.getHttpMethod())
                             .setUrl(restUrl)
                             .setHeaders(getHeader(isServiceScope, headersToRemove))
@@ -304,8 +323,6 @@ public abstract class HttpClientBase {
                     return nettyResponse.getResponseBody("UTF-8");
                 } catch (HttpResponseException ex) {
                     throw new TestException(ex.getMessage().toString());
-                } finally {
-                    asyncClient.close();
                 }
             }
             case OPTIONS:
@@ -313,9 +330,7 @@ public abstract class HttpClientBase {
             default:
                 throw new TestException(String.format("Unsupported http method found: %s", httpMethod.getHttpMethod()));
         }
-
     }
-
 
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
                                  int expectedResponseCode, HashMap<String, List<String>> httpParameters)

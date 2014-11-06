@@ -82,4 +82,9 @@ public class BaseTestClass extends TestClass {
     }
     */
 
+    protected void waitCrossDCLatency() throws Exception
+    {
+        Thread.sleep(3000);
+    }
+
 }

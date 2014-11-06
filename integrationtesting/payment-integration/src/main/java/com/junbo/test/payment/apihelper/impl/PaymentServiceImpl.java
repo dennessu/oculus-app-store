@@ -89,21 +89,57 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
         String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() +
                 "/payment-instruments?userId=" + uid, expectedResponseCode);
 
-        Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
-                new TypeReference<Results<PaymentInstrument>>() {
-                }, responseBody
-        );
+        if (expectedResponseCode == 200) {
+            Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
+                    new TypeReference<Results<PaymentInstrument>>() {
+                    }, responseBody
+            );
 
-        List<String> paymentInstrumentList = new ArrayList<>();
+            List<String> paymentInstrumentList = new ArrayList<>();
 
-        for (PaymentInstrument paymentInstrumentResult : paymentInstrumentResults.getItems()) {
-            String paymentInstrumentId = IdConverter.idToUrlString(
-                    PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
-            paymentInstrumentList.add(paymentInstrumentId);
-            Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+            for (PaymentInstrument paymentInstrumentResult : paymentInstrumentResults.getItems()) {
+                String paymentInstrumentId = IdConverter.idToUrlString(
+                        PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
+                paymentInstrumentList.add(paymentInstrumentId);
+                Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+            }
+
+            return paymentInstrumentList;
+        } else {
+            return null;
         }
+    }
 
-        return paymentInstrumentList;
+    @Override
+    public List<String> getPaymentInstrumentsByUserId(String uid, String piType) throws Exception {
+        return getPaymentInstrumentsByUserId(uid, piType);
+    }
+
+    @Override
+    public List<String> getPaymentInstrumentsByUserId(String uid, String piType, int expectedResponseCode) throws
+            Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() +
+                "/payment-instruments?userId=" + uid + "&type=" + piType, expectedResponseCode);
+
+        if (expectedResponseCode == 200) {
+            Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
+                    new TypeReference<Results<PaymentInstrument>>() {
+                    }, responseBody
+            );
+
+            List<String> paymentInstrumentList = new ArrayList<>();
+
+            for (PaymentInstrument paymentInstrumentResult : paymentInstrumentResults.getItems()) {
+                String paymentInstrumentId = IdConverter.idToUrlString(
+                        PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
+                paymentInstrumentList.add(paymentInstrumentId);
+                Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+            }
+
+            return paymentInstrumentList;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -121,16 +157,23 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
         String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl()
                 + "/payment-instruments", paymentInstrument, expectedResponseCode);
 
-        PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
-                new TypeReference<PaymentInstrument>() {
-                }, responseBody
-        );
+        if (expectedResponseCode == 200) {
 
-        String paymentInstrumentId = IdConverter.idToUrlString(
-                PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
-        Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+            PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
+                    new TypeReference<PaymentInstrument>() {
+                    }, responseBody
+            );
 
-        return paymentInstrumentId;
+            String paymentInstrumentId = IdConverter.idToUrlString(
+                    PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
+            Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+
+            return paymentInstrumentId;
+        } else {
+            Master.getInstance().setApiErrorMsg(responseBody);
+        }
+
+        return null;
     }
 
 
@@ -146,16 +189,21 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
         String responseBody = restApiCall(HTTPMethod.PUT, getEndPointUrl()
                 + "/payment-instruments/" + paymentId, paymentInstrument, expectedResponseCode);
 
-        PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
-                new TypeReference<PaymentInstrument>() {
-                }, responseBody
-        );
+        if (expectedResponseCode == 200) {
+            PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
+                    new TypeReference<PaymentInstrument>() {
+                    }, responseBody
+            );
 
-        String paymentInstrumentId = IdConverter.idToUrlString(
-                PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
-        Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+            String paymentInstrumentId = IdConverter.idToUrlString(
+                    PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
+            Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
 
-        return paymentInstrumentId;
+            return paymentInstrumentId;
+        } else {
+            Master.getInstance().setApiErrorMsg(responseBody);
+            return null;
+        }
     }
 
     @Override
