@@ -22,7 +22,12 @@ public final class PaymentUtil {
 
     public static PIType getPIType(Long piType){
         try{
-            return PIType.get(piType);
+            PIType enumType = PIType.get(piType);
+            if(enumType == null){
+                throw AppClientExceptions.INSTANCE.invalidPIType(piType.toString()).exception();
+            }else{
+                return enumType;
+            }
         }catch (Exception ex){
             throw AppClientExceptions.INSTANCE.invalidPIType(piType.toString()).exception();
         }
@@ -30,7 +35,12 @@ public final class PaymentUtil {
 
     public static PIType getPIType(String piType){
         try{
-            return PIType.valueOf(piType);
+            PIType enumType =  PIType.valueOf(piType);
+            if(enumType == null){
+                throw AppClientExceptions.INSTANCE.invalidPIType(piType.toString()).exception();
+            }else{
+                return enumType;
+            }
         }catch (Exception ex){
             throw AppClientExceptions.INSTANCE.invalidPIType(piType.toString()).exception();
         }
@@ -38,7 +48,12 @@ public final class PaymentUtil {
 
     public static PaymentStatus getPaymentStatus(String status){
         try{
-            return PaymentStatus.valueOf(status.toUpperCase());
+            PaymentStatus enumStatus = PaymentStatus.valueOf(status.toUpperCase());
+            if(enumStatus == null){
+                throw AppServerExceptions.INSTANCE.invalidPaymentStatus(status).exception();
+            }else{
+                return enumStatus;
+            }
         }catch (Exception ex){
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(status).exception();
         }

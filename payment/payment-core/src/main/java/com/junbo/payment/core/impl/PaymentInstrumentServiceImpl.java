@@ -260,6 +260,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppCommonErrors.INSTANCE.fieldRequired("payment_instrument_type").exception();
         }
         PaymentUtil.getPIType(request.getType());
+        if(request.getAccountName() != null && request.getAccountName().length() > 64){
+            throw AppCommonErrors.INSTANCE.fieldInvalid("account name too long").exception();
+        }
         validateCreditCard(request);
     }
 

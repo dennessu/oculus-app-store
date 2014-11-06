@@ -66,6 +66,9 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
             @Override
             public PaymentInstrument call() throws Exception {
+                if(request.getBillingAddressId() == null){
+                    throw AppClientExceptions.INSTANCE.billingAddressNotFound("billing address required").exception();
+                }
                 Address addressDetail = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
                 if(addressDetail == null){
                     throw AppClientExceptions.INSTANCE.billingAddressNotFound(request.getBillingAddressId().toString()).exception();
