@@ -526,6 +526,14 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
+    Promise<InitialDownloadItemsResponse> getInitialDownloadItems() {
+        requestValidator.validateRequiredApiHeaders()
+        prepareBrowse().then { ApiContext apiContext ->
+            return browseService.getInitialDownloadItems(apiContext)
+        }
+    }
+
+    @Override
     Promise<SectionLayoutResponse> getSectionLayout(@BeanParam SectionLayoutRequest request) {
         requestValidator.validateRequiredApiHeaders()
         prepareBrowse().then { ApiContext apiContext ->

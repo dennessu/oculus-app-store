@@ -1,7 +1,10 @@
 package com.junbo.emulator.casey.rest.resource
 import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.model.item.Item
+import com.junbo.catalog.spec.model.item.ItemRevision
+import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.model.item.ItemsGetOptions
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
@@ -18,6 +21,7 @@ import com.junbo.emulator.casey.rest.*
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData
 import com.junbo.emulator.casey.spec.resource.CaseyEmulatorResource
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.external.sewer.SewerParam
@@ -45,6 +49,15 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
 
     @Resource(name = 'caseyEmulatorUtils')
     EmulatorUtils emulatorUtils
+
+    @Value('${store.browse.cmsPage.initialItems.path}')
+    private String initialItemsCmsPagePath
+
+    @Value('${store.browse.cmsPage.initialItems.slot}')
+    private String initialItemsCmsPageSlot
+
+    @Value('${store.browse.cmsPage.initialItems.contentName}')
+    private String initialItemsCmsPageContentName
 
     @Resource(name = 'caseyEmulatorDataRepository')
     CaseyEmulatorDataRepository caseyEmulatorDataRepository
@@ -194,18 +207,36 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     }
 
     @Override
-    Promise<CaseyResults<CmsPage>> getCmsPages(
+    Promise<CaseyResults<JsonNode>> getCmsPages(
             @BeanParam CmsPageGetParams pageGetParams, @BeanParam SewerParam sewerParam) {
-        Assert.isTrue("(results(schedule))".equals(sewerParam.expand))
+        Assert.notNull(sewerParam.country)
+        Assert.notNull(sewerParam.locale)
+        boolean calledByTest = JunboHttpContext.getData().getRequestHeaders().getFirst(EmulatorHeaders.X_QA_CALLED_BY_TEST.name()) != null
+        boolean initialItemCmsPage = false
+        // check the expand & properties query parameters are given correctly
+        if (!calledByTest) {
+            if (pageGetParams.path == initialItemsCmsPagePath || pageGetParams.path == "\"${initialItemsCmsPagePath}\"") {
+                String expectedExpand = "(results(schedule(slots(${initialItemsCmsPageSlot}(content(contents(${initialItemsCmsPageContentName}(links(currentRevision)))))))))"
+                String expectedProperties = "(results(schedule(slots(${initialItemsCmsPageSlot}(content(contents(${initialItemsCmsPageContentName}(" +
+                        "links(currentRevision(item,packageName,locales(${sewerParam.locale}(name))))))))))))"
+                Assert.isTrue(expectedExpand == sewerParam.expand)
+                Assert.isTrue(expectedProperties == sewerParam.resultProperties)
+                initialItemCmsPage = true
+            } else {
+                Assert.isTrue("(results(schedule))".equals(sewerParam.expand))
+            }
+        }
+
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('getCmsPages')
         List<CmsPage> pages = caseyEmulatorDataRepository.get().cmsPages
+        List<JsonNode> pageNodes = [] as List
         if (pages == null) {
-            return Promise.pure(new CaseyResults<CmsPage>(items: []))
+            return Promise.pure(new CaseyResults<JsonNode>(items: []))
         }
         List<CmsPage> cmsPages = pages.findAll() { CmsPage cmsPage ->
             if (pageGetParams.path != null) {
-                if ("\"${cmsPage.path}\"" != pageGetParams.path) {
+                if ("\"${cmsPage.path}\"" != pageGetParams.path && cmsPage.path != pageGetParams.path) {
                     return false
                 }
             }
@@ -218,12 +249,19 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         }.asList()
         cmsPages.each { CmsPage cmsPage ->
             fillSchedule(cmsPage, sewerParam.country, sewerParam.locale)
+            if (!initialItemCmsPage) {
+                pageNodes << ObjectMapperProvider.instance().valueToTree(cmsPage)
+            } else {
+                pageNodes << handleInitialItemCmsPage(cmsPage, sewerParam.locale)
+            }
         }
-        return Promise.pure(new CaseyResults<CmsPage>(items: cmsPages))
+        return Promise.pure(new CaseyResults<JsonNode>(items: pageNodes))
     }
 
     @Override
-    Promise<CmsPage> getCmsPages(String pageId, SewerParam sewerParam) {
+    Promise<JsonNode> getCmsPages(String pageId, SewerParam sewerParam) {
+        Assert.notNull(sewerParam.country)
+        Assert.notNull(sewerParam.locale)
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('getCmsPagesDirect')
         List<CmsPage> pages = caseyEmulatorDataRepository.get().cmsPages
@@ -237,7 +275,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
             throw AppCommonErrors.INSTANCE.resourceNotFound('cmsPage', pageId).exception()
         }
         fillSchedule(page, sewerParam.country, sewerParam.locale)
-        return Promise.pure(page)
+        return Promise.pure(ObjectMapperProvider.instance().valueToTree(page))
     }
 
     @Override
@@ -425,6 +463,29 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
             }
         }
         return result
+    }
+
+    private JsonNode handleInitialItemCmsPage(CmsPage cmsPage, String locale) {
+        List<CaseyLink> links = cmsPage?.schedule?.slots?.get(initialItemsCmsPageSlot)?.content?.contents?.get(initialItemsCmsPageContentName)?.links
+        if (links == null) {
+            return ObjectMapperProvider.instance().valueToTree(cmsPage)
+        }
+        List<Map<String, Object>> expandedLinks = []
+
+        links.each { CaseyLink link ->
+            Item item = resourceContainer.itemResource.getItem(link.getId()).get()
+            ItemRevision itemRevision = resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId,
+                    new ItemRevisionGetOptions(locale: locale)).get()
+            Map<String, Object> expanded = ObjectMapperProvider.instance().readValue(
+                    ObjectMapperProvider.instance().valueToTree(item).traverse(), Map)
+            expanded['currentRevision'] = itemRevision
+            expandedLinks << expanded
+        }
+
+        Map<String, Object> expanded = ObjectMapperProvider.instance().readValue(
+                ObjectMapperProvider.instance().valueToTree(cmsPage).traverse(), Map)
+        expanded['schedule']['slots'][initialItemsCmsPageSlot]['content']['contents'][initialItemsCmsPageContentName]['links'] = expandedLinks
+        return ObjectMapperProvider.instance().valueToTree(expanded)
     }
 }
 

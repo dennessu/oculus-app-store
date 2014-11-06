@@ -14,10 +14,7 @@ import com.junbo.payment.db.dao.payment.PaymentProviderDao;
 import com.junbo.payment.db.entity.payment.PaymentProviderEntity;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.internal.ProviderCriteria;
-import com.junbo.payment.spec.model.ChargeInfo;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.payment.spec.model.TypeSpecificDetails;
+import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -27,6 +24,7 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class PaymentServiceTest extends BaseTest {
@@ -52,6 +50,8 @@ public class PaymentServiceTest extends BaseTest {
         PaymentInstrument request = buildPIRequest();
         PaymentInstrument result = piService.add(request).get();
         piService.delete(result.getId());
+        List<PaymentInstrument> results = piService.searchPi(result.getUserId(), new PaymentInstrumentSearchParam()).get();
+        Assert.assertEquals(results.size(), 0);
     }
 
     @Test

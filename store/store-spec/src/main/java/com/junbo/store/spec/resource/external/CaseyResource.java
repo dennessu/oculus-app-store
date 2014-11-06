@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.resource.external;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.external.sewer.SewerParam;
@@ -38,11 +39,11 @@ public interface CaseyResource {
 
     @GET
     @Path("cms-pages")
-    Promise<CaseyResults<CmsPage>> getCmsPages(@BeanParam CmsPageGetParams pageGetParams, @BeanParam SewerParam sewerParam);
+    Promise<CaseyResults<JsonNode>> getCmsPages(@BeanParam CmsPageGetParams pageGetParams, @BeanParam SewerParam sewerParam);
 
     @GET
     @Path("cms-pages/{pageId}")
-    Promise<CmsPage> getCmsPages(@PathParam("pageId") String pageId, @BeanParam SewerParam sewerParam);
+    Promise<JsonNode> getCmsPages(@PathParam("pageId") String pageId, @BeanParam SewerParam sewerParam);
 
     @GET
     @Path("cms-pages/{pageId}/cms-schedule")

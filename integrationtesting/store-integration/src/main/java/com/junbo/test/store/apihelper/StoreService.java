@@ -107,4 +107,6 @@ public interface StoreService {
 
     DeliveryResponse getDelivery(DeliveryRequest request, int expectedResponseCode) throws Exception;
 
+    InitialDownloadItemsResponse getInitialDownloadItemsResponse() throws Exception;
+
 }

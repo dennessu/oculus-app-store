@@ -28,6 +28,10 @@ public class JsonMessageCaseyTranscoder implements MessageTranscoder {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
     @Override
     public <T> T decode(TypeReference typeRef, String body) {
         if (body == null || body.isEmpty()) {

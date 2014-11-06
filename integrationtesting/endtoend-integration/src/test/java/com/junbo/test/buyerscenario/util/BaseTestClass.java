@@ -10,8 +10,10 @@ import com.junbo.test.buyerscenario.BuyerValidationHelper;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.blueprint.Master;
-import org.testng.annotations.AfterMethod;
+import com.junbo.test.common.libs.LogHelper;
 import org.testng.annotations.BeforeMethod;
+
+import java.util.logging.Logger;
 
 /**
  * @author Jason
@@ -21,6 +23,7 @@ import org.testng.annotations.BeforeMethod;
 public class BaseTestClass extends TestClass {
     protected BuyerTestDataProvider testDataProvider = new BuyerTestDataProvider();
     protected BuyerValidationHelper validationHelper = new BuyerValidationHelper();
+    LogHelper logger =  new LogHelper(TestClass.class);
 
     protected String offer_digital_normal1;
     protected String offer_digital_normal2;
@@ -81,5 +84,11 @@ public class BaseTestClass extends TestClass {
         Master.getInstance().setEndPointType(Master.EndPointType.Primary);
     }
     */
+
+    protected void waitCrossDCLatency() throws Exception
+    {
+        logger.logInfo("sleep 3 seconds for cross dc latency");
+        Thread.sleep(3000);
+    }
 
 }
