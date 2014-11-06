@@ -8,6 +8,7 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.UserCommunicationId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
@@ -20,13 +21,13 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserCommunicationRepository extends BaseRepository<UserCommunication, UserCommunicationId> {
     @ReadMethod
-    Promise<List<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset)
+    Promise<Results<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit,
+    Promise<Results<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit,
                                                              Integer offset)
 
     @ReadMethod
-    Promise<List<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId,
+    Promise<Results<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId,
                                                                       Integer limit, Integer offset)
 }

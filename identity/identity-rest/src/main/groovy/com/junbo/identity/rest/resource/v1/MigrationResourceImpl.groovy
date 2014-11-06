@@ -583,18 +583,18 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(null)
                 }
                 return userCommunicationService.searchByUserIdAndCommunicationId(user.getId(), new CommunicationId(entry.key),
-                        Integer.MAX_VALUE, 0).then { List<UserCommunication> userCommunicationList ->
-                    if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && entry.value) {
+                        Integer.MAX_VALUE, 0).then { Results<UserCommunication> userCommunicationList ->
+                    if (userCommunicationList == null || (CollectionUtils.isEmpty(userCommunicationList.items)) && entry.value) {
                         // create
                         return userCommunicationService.create(new UserCommunication(
                                 userId: user.getId(),
                                 communicationId: new CommunicationId(entry.key)
                         ))
-                    } else if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && !entry.value) {
+                    } else if (userCommunicationList == null || (CollectionUtils.isEmpty(userCommunicationList.items)) && !entry.value) {
                         // do nothing
                         return Promise.pure(null)
                     } else {
-                        UserCommunication userCommunication = userCommunicationList.get(0)
+                        UserCommunication userCommunication = userCommunicationList.items.get(0)
                         if (entry.value) {
                             // update
                             if (userCommunication.userId != user.getId() || userCommunication.communicationId != new CommunicationId(entry.key)) {

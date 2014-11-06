@@ -3,6 +3,7 @@ import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.UserCommunicationId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserCommunicationRepository
 import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.langur.core.promise.Promise
@@ -29,22 +30,22 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
     }
 
     @Override
-    Promise<List<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return queryView('by_user_id', userId.toString(), limit, offset, false)
+    Promise<Results<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return queryViewResults('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
-    Promise<List<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit,
+    Promise<Results<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit,
                                                              Integer offset) {
-        return queryView('by_communication_id', communicationId.toString(), limit, offset, false)
+        return queryViewResults('by_communication_id', communicationId.toString(), limit, offset, false)
     }
 
     @Override
-    Promise<List<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId,
+    Promise<Results<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId,
                                                                       Integer limit, Integer offset) {
         def startKey = [userId.toString(), communicationId.toString()]
         def endKey = [userId.toString(), communicationId.toString()]
-        return queryView('by_user_id_communication_id', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
+        return queryViewResults('by_user_id_communication_id', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

@@ -107,6 +107,10 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                 throw AppCommonErrors.INSTANCE.fieldNotWritable('groupId', userGroup.groupId, oldUserGroup.groupId).exception()
             }
 
+            if (userGroup.userId != oldUserGroup.userId) {
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userGroup.userId, oldUserGroup.userId).exception()
+            }
+
             return Promise.pure(null)
         }
     }

@@ -3,6 +3,7 @@ package com.junbo.identity.service.impl
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.UserCommunicationId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserCommunicationRepository
 import com.junbo.identity.service.UserCommunicationService
 import com.junbo.identity.spec.v1.model.UserCommunication
@@ -38,17 +39,17 @@ class UserCommunicationServiceImpl implements UserCommunicationService {
     }
 
     @Override
-    Promise<List<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<Results<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         return userCommunicationRepository.searchByUserId(userId, limit, offset)
     }
 
     @Override
-    Promise<List<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit, Integer offset) {
+    Promise<Results<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit, Integer offset) {
         return userCommunicationRepository.searchByCommunicationId(communicationId, limit, offset)
     }
 
     @Override
-    Promise<List<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId, Integer limit, Integer offset) {
+    Promise<Results<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId, Integer limit, Integer offset) {
         return userCommunicationRepository.searchByUserIdAndCommunicationId(userId, communicationId, limit, offset)
     }
 

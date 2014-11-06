@@ -442,13 +442,16 @@
     "user_optin": {
       "views": {
         "by_communication_id": {
-          "map": "function(doc) {  emit(doc.communicationId, doc._id)}"
+          "map": "function(doc) {  emit(doc.communicationId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_communication_id": {
-          "map": "function(doc) {  emit([doc.userId, doc.communicationId], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.communicationId], doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 

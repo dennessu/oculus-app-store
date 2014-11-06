@@ -175,10 +175,11 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     @Override
     Promise<Results<UserCommunication>> list(UserOptinListOptions listOptions) {
         return userCommunicationValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<UserCommunication> userCommunications ->
+            return search(listOptions).then { Results<UserCommunication> userCommunications ->
                 def result = new Results<UserCommunication>(items: [])
+                result.total = userCommunications.total
 
-                return Promise.each(userCommunications) { UserCommunication newUserCommunication ->
+                return Promise.each(userCommunications.items) { UserCommunication newUserCommunication ->
                     def callback = authorizeCallbackFactory.create(newUserCommunication.userId)
                     return RightsScope.with(authorizeService.authorize(callback)) {
                         if (newUserCommunication != null) {
@@ -190,6 +191,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
                             result.items.add(newUserCommunication)
                             return Promise.pure(newUserCommunication)
                         } else {
+                            result.total = result.total - 1
                             return Promise.pure(null)
                         }
                     }
@@ -200,7 +202,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
         }
     }
 
-    private Promise<List<UserCommunication>> search(UserOptinListOptions listOptions) {
+    private Promise<Results<UserCommunication>> search(UserOptinListOptions listOptions) {
         if (listOptions.userId != null && listOptions.communicationId != null) {
             return userCommunicationService.searchByUserIdAndCommunicationId(listOptions.userId,
                     listOptions.communicationId, listOptions.limit, listOptions.offset)

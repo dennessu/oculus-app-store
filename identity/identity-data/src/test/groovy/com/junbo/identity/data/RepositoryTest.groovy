@@ -397,7 +397,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserCommunication> userOptins = userCommunicationRepository.searchByUserId(new UserId(userId), null,
-                null).get()
+                null).get().getItems()
         assert userOptins.size() != 0
     }
 
