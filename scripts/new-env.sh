@@ -259,8 +259,6 @@ common.cloudant.dbNamePrefix=
 common.cloudant.url.encrypted=`encrypt $CLOUDANT_URIS_WITH_API_KEY`
 common.cloudantWithSearch.url.encrypted=`encrypt $CLOUDANT_URIS_WITH_API_KEY`
 
-encrypt.user.personalinfo.cloudant.url.encrypted=`encrypt $CLOUDANT_PII_URIS_WITH_API_KEY`
-
 crypto.userkey.cloudant.url.encrypted=`encrypt $CLOUDANT_URIS_WITH_API_KEY`
 crypto.itemCryptoKey.cloudant.url.encrypted=`encrypt $CLOUDANT_URIS_WITH_API_KEY`
 

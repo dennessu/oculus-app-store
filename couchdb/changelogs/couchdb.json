@@ -839,9 +839,6 @@
         }
       }
     }
-  },
-  "pii": {
-    "encrypt_user_personal_info": { }
   }
 }
 

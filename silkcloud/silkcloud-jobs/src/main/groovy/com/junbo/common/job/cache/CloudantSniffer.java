@@ -51,7 +51,6 @@ public class CloudantSniffer {
     private static final String[] CLOUDANT_URI_KEYS = new String[]{
             "common.cloudant.url",
             "common.cloudantWithSearch.url",
-            "encrypt.user.personalinfo.cloudant.url",
             "crypto.userkey.cloudant.url",
             "crypto.itemCryptoKey.cloudant.url"
     };
