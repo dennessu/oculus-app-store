@@ -125,7 +125,7 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(review.getTitle(), caseyReview.getReviewTitle());
         Assert.assertEquals(review.getStarRatings().size(), caseyReview.getRatings().size());
         for (CaseyReview.Rating rating : caseyReview.getRatings()) {
-            Assert.assertEquals(review.getStarRatings().get(rating.getType()).intValue(), rating.getScore() / 20, "rating result not correct");
+            Assert.assertEquals(review.getStarRatings().get(rating.getType()).intValue(), rating.getScore().intValue(), "rating result not correct");
         }
     }
 
@@ -137,10 +137,6 @@ public class StoreBrowseValidationHelper {
             Assert.assertNull(ratings.getCommentsCount());
             Assert.assertTrue(ratings.getAverageRating() >= 0.0);
             Assert.assertTrue(ratings.getRatingsCount() >= 0);
-            Assert.assertEquals(ratings.getRatingsHistogram().size(), 5);
-            for (Long val : ratings.getRatingsHistogram().values()) {
-                Assert.assertTrue(val >= 0L);
-            }
         }
     }
 
@@ -161,14 +157,10 @@ public class StoreBrowseValidationHelper {
                 }
             });
             AggregatedRatings rating = entry.getValue();
-            Assert.assertEquals(rating.getAverageRating(), caseyAggregateRating.getAverage() / 20, 0.00001, "average rating not correct");
+            Assert.assertEquals(rating.getAverageRating(), caseyAggregateRating.getAverage(), 0.00001, "average rating not correct");
             Assert.assertEquals(rating.getRatingsCount(), caseyAggregateRating.getCount(), "rating count not correct");
             Assert.assertNull(rating.getCommentsCount(), "comments count should be null");
 
-            for (int i = 0; i < caseyAggregateRating.getHistogram().length; i += 2) {
-                Assert.assertEquals(rating.getRatingsHistogram().get(i / 2).longValue(),
-                        (caseyAggregateRating.getHistogram()[i] + caseyAggregateRating.getHistogram()[i + 1]), "rating histogram not correct");
-            }
         }
     }
 
@@ -284,11 +276,6 @@ public class StoreBrowseValidationHelper {
         Assert.assertNull(aggregatedRating.getCommentsCount());
         Assert.assertEquals(aggregatedRating.getAverageRating(), 0.0, 0.00001);
         Assert.assertEquals(aggregatedRating.getRatingsCount(), new Long(0));
-        Map<Integer, Long> ratingsHistogram = new HashMap<>();
-        for (int i = 0; i < 5; ++i) {
-            ratingsHistogram.put(i, 0L);
-        }
-        Assert.assertEquals(aggregatedRating.getRatingsHistogram(), ratingsHistogram);
     }
 
     public void validateAddReview(AddReviewRequest addReviewRequest, Review review, String nickName) {

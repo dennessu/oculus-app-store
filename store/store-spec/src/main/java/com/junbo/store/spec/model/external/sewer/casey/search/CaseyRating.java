@@ -11,13 +11,8 @@ package com.junbo.store.spec.model.external.sewer.casey.search;
 public class CaseyRating {
 
     private String type;
-    private Double stars;
+    private Double averagePercent;
     private Long count;
-    private Long numOnes;
-    private Long numTwos;
-    private Long numThrees;
-    private Long numFours;
-    private Long numFives;
 
     public String getType() {
         return type;
@@ -35,51 +30,12 @@ public class CaseyRating {
         this.count = count;
     }
 
-    public Double getStars() {
-        return stars;
+    public Double getAveragePercent() {
+        return averagePercent;
     }
 
-    public void setStars(Double stars) {
-        this.stars = stars;
+    public void setAveragePercent(Double averagePercent) {
+        this.averagePercent = averagePercent;
     }
 
-    public Long getNumOnes() {
-        return numOnes;
-    }
-
-    public void setNumOnes(Long numOnes) {
-        this.numOnes = numOnes;
-    }
-
-    public Long getNumTwos() {
-        return numTwos;
-    }
-
-    public void setNumTwos(Long numTwos) {
-        this.numTwos = numTwos;
-    }
-
-    public Long getNumThrees() {
-        return numThrees;
-    }
-
-    public void setNumThrees(Long numThrees) {
-        this.numThrees = numThrees;
-    }
-
-    public Long getNumFours() {
-        return numFours;
-    }
-
-    public void setNumFours(Long numFours) {
-        this.numFours = numFours;
-    }
-
-    public Long getNumFives() {
-        return numFives;
-    }
-
-    public void setNumFives(Long numFives) {
-        this.numFives = numFives;
-    }
 }
