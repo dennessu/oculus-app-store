@@ -10,6 +10,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.oauth.common.JsonMarshaller
+import com.junbo.oauth.core.util.CloneUtils
 import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.AuthorizationHeaderUtil
@@ -48,6 +49,7 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
     private Long defaultAccessTokenExpiration
     private Long defaultRefreshTokenExpiration
     private Long defaultIdTokenExpiration
+    private Long refreshTokenGracePeriod
 
     private AccessTokenRepository accessTokenRepository
     private RefreshTokenRepository refreshTokenRepository
@@ -68,6 +70,11 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
     @Required
     void setDefaultIdTokenExpiration(Long defaultIdTokenExpiration) {
         this.defaultIdTokenExpiration = defaultIdTokenExpiration
+    }
+
+    @Required
+    void setRefreshTokenGracePeriod(Long refreshTokenGracePeriod) {
+        this.refreshTokenGracePeriod = refreshTokenGracePeriod
     }
 
     @Required
@@ -188,22 +195,39 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
         Assert.notNull(accessToken, 'accessToken is null')
         Assert.notNull(accessToken.tokenValue, 'accessToken.tokenValue is null')
 
-        RefreshToken refreshToken = new RefreshToken(
-                tokenValue: oldRefreshToken.tokenValue,
-                clientId: client.clientId,
-                userId: accessToken.userId,
-                accessToken: accessToken,
-                salt: oldRefreshToken.salt
-        )
+        RefreshToken old = CloneUtils.clone(oldRefreshToken)
 
-        if (defaultRefreshTokenExpiration == -1) {
-            refreshToken.expiredBy = FOREVER
-        } else {
-            refreshToken.expiredBy = new Date(System.currentTimeMillis() +
-                    defaultRefreshTokenExpiration * MILLISECONDS_PER_SECOND)
+        RefreshToken refreshToken
+        if (oldRefreshToken.newTokenValue != null) {
+            refreshToken = refreshTokenRepository.get(oldRefreshToken.newTokenValue)
         }
 
-        return refreshTokenRepository.save(refreshToken)
+        // if no refresh token has generated base on the old refresh token, generate a new one, and update the old
+        // refresh token to expire after a grace period.
+        if (refreshToken == null) {
+            refreshToken = new RefreshToken(
+                    tokenValue: oldRefreshToken.tokenValue,
+                    clientId: client.clientId,
+                    userId: accessToken.userId,
+                    accessToken: accessToken,
+                    salt: oldRefreshToken.salt
+            )
+
+            if (defaultRefreshTokenExpiration == -1) {
+                refreshToken.expiredBy = FOREVER
+            } else {
+                refreshToken.expiredBy = new Date(System.currentTimeMillis() +
+                        defaultRefreshTokenExpiration * MILLISECONDS_PER_SECOND)
+            }
+
+            oldRefreshToken.expiredBy = new Date(System.currentTimeMillis() + refreshTokenGracePeriod * MILLISECONDS_PER_SECOND)
+            refreshToken = refreshTokenRepository.save(refreshToken)
+            oldRefreshToken.newTokenValue = refreshToken.tokenValue
+            oldRefreshToken.accessToken = accessToken
+            refreshTokenRepository.update(oldRefreshToken, old)
+        }
+
+        return refreshToken
     }
 
     @Override

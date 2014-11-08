@@ -8,6 +8,7 @@
         <property name="defaultAccessTokenExpiration" value="${oauth.core.accessToken.default.expiration}"/>
         <property name="defaultRefreshTokenExpiration" value="${oauth.core.refreshToken.default.expiration}"/>
         <property name="defaultIdTokenExpiration" value="${oauth.core.idToken.default.expiration}"/>
+        <property name="refreshTokenGracePeriod" value="${oauth.core.refreshToken.grace.period}"/>
         <property name="refreshTokenRepository" ref="refreshTokenRepository"/>
         <property name="clientRepository" ref="encryptedClientRepository"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
