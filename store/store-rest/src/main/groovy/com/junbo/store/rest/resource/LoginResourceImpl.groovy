@@ -28,6 +28,7 @@ import com.junbo.store.rest.utils.InitialItemPurchaseUtils
 import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
+import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.external.sentry.SentryCategory
 import com.junbo.store.spec.model.external.sentry.SentryFieldConstant
 import com.junbo.store.spec.model.external.sentry.SentryResponse
@@ -99,6 +100,9 @@ class LoginResourceImpl implements LoginResource {
 
     @Value('${store.communication.createuser}')
     private String registerUserCommunication
+
+    @Value('${store.tos.freepurchase.enable}')
+    private Boolean tosFreepurchaseEnable
 
     private class CreateUserContext {
         User user
@@ -626,17 +630,8 @@ class LoginResourceImpl implements LoginResource {
     private Promise<AuthTokenResponse> processAfterSignIn(UserSignInRequest userSignInRequest, AuthTokenResponse authTokenResponse, com.junbo.store.spec.model.ApiContext apiContext) {
         CommonUtils.pushAuthHeader(authTokenResponse.accessToken)
         Promise.pure().then {
-            return challengeHelper.checkTosChallenge(authTokenResponse.getUserId(), tosCreateUser, apiContext.country.getId(), userSignInRequest.challengeAnswer).then { Challenge challenge ->
-                if (challenge == null) {
-                    return Promise.pure(authTokenResponse)
-                }
-
-                AuthTokenResponse tosChallengeAuthToken = new AuthTokenResponse(
-                        challenge: challenge
-                )
-
-                return Promise.pure(tosChallengeAuthToken)
-            }.then { AuthTokenResponse response ->
+            return checkTosChallengeForLogin(authTokenResponse.getUserId(), apiContext.country.getId(), userSignInRequest.challengeAnswer, authTokenResponse)
+                    .then { AuthTokenResponse response ->
                 if (response.challenge != null) {
                     return Promise.pure(response)
                 }
@@ -651,6 +646,24 @@ class LoginResourceImpl implements LoginResource {
         }.then { AuthTokenResponse response ->
             CommonUtils.popAuthHeader()
             return Promise.pure(response)
+        }
+    }
+
+    private Promise<AuthTokenResponse> checkTosChallengeForLogin(UserId userId, CountryId country, ChallengeAnswer challengeAnswer, AuthTokenResponse authTokenResponse) {
+        if (tosFreepurchaseEnable) {
+            return challengeHelper.checkTosChallenge(userId, tosCreateUser, country, challengeAnswer).then { Challenge challenge ->
+                if (challenge == null) {
+                    return Promise.pure(authTokenResponse)
+                }
+
+                AuthTokenResponse tosChallengeAuthToken = new AuthTokenResponse(
+                        challenge: challenge
+                )
+
+                return Promise.pure(tosChallengeAuthToken)
+            }
+        } else {
+            return Promise.pure(authTokenResponse)
         }
     }
 
