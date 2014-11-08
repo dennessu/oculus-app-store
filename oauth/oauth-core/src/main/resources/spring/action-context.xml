@@ -15,6 +15,7 @@
         <property name="flowDefLoader" ref="flowDefLoader"/>
         <property name="stateExecutorFactory" ref="stateExecutorFactory"/>
         <property name="stateRepository" ref="oauthStateRepository"/>
+        <property name="verifyEnabled" value="${oauth.flow.verify.enabled}"/>
     </bean>
 
     <bean id="generateResponse" class="com.junbo.oauth.core.action.GenerateAccessTokenResponse"/>

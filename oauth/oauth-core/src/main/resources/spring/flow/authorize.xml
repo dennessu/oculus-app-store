@@ -80,10 +80,10 @@
 
         <wf:view-state id="LOGIN_SUCCESS">
             <wf:on-render>
-                <wf:action ref="saveLoginState"/>
                 <wf:action ref="redirectToAuth"/>
             </wf:on-render>
             <wf:transition on="*" to="CHECK_SCOPE_AFTER_LOGIN">
+                <wf:action ref="saveLoginState"/>
                 <wf:action ref="grantRememberMeToken"/>
             </wf:transition>
         </wf:view-state>
