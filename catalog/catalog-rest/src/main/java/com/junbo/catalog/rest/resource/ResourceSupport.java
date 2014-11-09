@@ -6,10 +6,8 @@
 
 package com.junbo.catalog.rest.resource;
 
-import com.junbo.catalog.clientproxy.LocaleFacade;
 import com.junbo.catalog.spec.enums.LocaleAccuracy;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -19,9 +17,6 @@ import java.util.Map;
  * Common utils.
  */
 public abstract class ResourceSupport {
-    @Autowired
-    private LocaleFacade localeFacade;
-
     protected String calLocaleAccuracy(SimpleLocaleProperties properties) {
         if (properties == null || properties.getName() == null && properties.getDescription() == null) {
             return LocaleAccuracy.LOW.name();
@@ -32,7 +27,7 @@ public abstract class ResourceSupport {
         return LocaleAccuracy.MEDIUM.name();
     }
 
-    protected SimpleLocaleProperties getLocaleProperties(Map<String, SimpleLocaleProperties> localePropertiesMap, String locale) {
+    protected SimpleLocaleProperties getLocaleProperties(Map<String, SimpleLocaleProperties> localePropertiesMap, String locale, Map<String, String> localeRelations) {
         if (CollectionUtils.isEmpty(localePropertiesMap) || StringUtils.isEmpty(locale)) {
             return new SimpleLocaleProperties();
         }
@@ -42,7 +37,6 @@ public abstract class ResourceSupport {
             result = new SimpleLocaleProperties();
         }
 
-        Map<String, String> localeRelations = localeFacade.getLocaleRelations();
         String fallbackLocale = locale;
         while (result.getName() == null || result.getDescription() == null) {
             if (localeRelations.get(fallbackLocale) == null) {
