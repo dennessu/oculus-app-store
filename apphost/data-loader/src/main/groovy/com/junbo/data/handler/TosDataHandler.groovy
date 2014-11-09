@@ -49,27 +49,31 @@ class TosDataHandler extends BaseDataHandler {
 
         // Don't create two files with the same title and type, or it will be override
         if (existing != null && !CollectionUtils.isEmpty(existing.items)) {
-            existing.items.each{ Tos tos ->
-                if (tos.state != 'APPROVED') {
-                    tos.state = 'APPROVED'
-                    try {
-                        return tosResource.put(tos.getId(), tos).get()
-                    }catch (Exception e) {
-                        logger.error("Error updating tos $tos.title", e)
-                    }
-                } else {
-                    tos.title = tosData.title
-                    tos.type = tosData.type
-                    tos.version = tosData.version
-                    tos.state = 'APPROVED'
-                    if(!CollectionUtils.isEmpty(tosData.countries)) {
-                        List<CountryId> countryIdList = new ArrayList<>()
-                        tosData.countries.each { String countryId ->
-                            countryIdList.add(new CountryId(countryId))
+            if (!alwaysOverwrite) {
+                return;
+            } else {
+                existing.items.each { Tos tos ->
+                    if (tos.state != 'APPROVED') {
+                        tos.state = 'APPROVED'
+                        try {
+                            return tosResource.put(tos.getId(), tos).get()
+                        } catch (Exception e) {
+                            logger.error("Error updating tos $tos.title", e)
                         }
-                        tos.countries = countryIdList
+                    } else {
+                        tos.title = tosData.title
+                        tos.type = tosData.type
+                        tos.version = tosData.version
+                        tos.state = 'APPROVED'
+                        if (!CollectionUtils.isEmpty(tosData.countries)) {
+                            List<CountryId> countryIdList = new ArrayList<>()
+                            tosData.countries.each { String countryId ->
+                                countryIdList.add(new CountryId(countryId))
+                            }
+                            tos.countries = countryIdList
+                        }
+                        return tosResource.put(tos.getId(), tos).get()
                     }
-                    return tosResource.put(tos.getId(), tos).get()
                 }
             }
         } else {
