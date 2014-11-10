@@ -9,6 +9,7 @@ package com.junbo.langur.core.promise;
 
 import com.google.common.util.concurrent.*;
 import groovy.lang.Closure;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -111,6 +112,25 @@ public class Promise<T> {
             try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
                 futures.add(closure.call(item).wrapped());
             }
+        }
+        return wrap(Futures.allAsList(futures));
+    }
+
+    public static <T> Promise<List<T>> parallel(final Iterable<?> iterable, final Closure<Promise<? extends T>> closure) {
+        final Iterator<?> iterator = iterable.iterator();
+        List<ListenableFuture<? extends T>> futures = new ArrayList<>();
+        while (iterator.hasNext()) {
+            Object item = iterator.next();
+            futures.add(closure.call(item).wrapped());
+        }
+        return wrap(Futures.allAsList(futures));
+    }
+
+    public static <T> Promise<List<T>> parallel(final Closure<Promise<? extends T>>... closures) {
+        Assert.notNull(closures);
+        List<ListenableFuture<? extends T>> futures = new ArrayList<>();
+        for (Closure<Promise<? extends T>> closure : closures) {
+            futures.add(closure.call().wrapped());
         }
         return wrap(Futures.allAsList(futures));
     }

@@ -6,30 +6,46 @@
 package com.junbo.langur.core.promise;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Shenhua on 7/16/2014.
  */
 public class RunnableWrapper implements Runnable {
 
+    private static ThreadLocal<Lock> lockThreadLocal = new ThreadLocal<Lock>() {
+        @Override
+        protected Lock initialValue() {
+            return new ReentrantLock();
+        }
+    };
+
     private final Snapshot snapshot;
 
     private final RunnableOnce runnable;
 
+    private final Lock lock;
+
     public RunnableWrapper(Runnable runnable) {
         this.runnable = new RunnableOnce(runnable);
         snapshot = new Snapshot();
+
+        lock = lockThreadLocal.get(); // make sure the lock is created
     }
 
     public Object begin() {
+        lock.lock();
+
         Snapshot oldSnapshot = new Snapshot();
         snapshot.resume();
-
         return oldSnapshot;
     }
 
     public void end(Object oldSnapshot) {
         ((Snapshot) oldSnapshot).resume();
+
+        lock.unlock();
     }
 
     public Runnable getRunnable() {
@@ -43,6 +59,7 @@ public class RunnableWrapper implements Runnable {
     @Override
     public void run() {
         Object handle = begin();
+
         try {
             runnable.run();
         } finally {

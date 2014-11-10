@@ -8,6 +8,7 @@ package com.junbo.langur.core.promise;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 
+import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
@@ -34,7 +35,7 @@ public class Looper {
 
     private volatile int nestedLevel;
 
-    private volatile RunnableWrapper runnableWrapper;
+    private LinkedList<RunnableWrapper> runnableWrapperQueue = new LinkedList<>();
 
     public Looper() {
         lock = new ReentrantLock();
@@ -66,11 +67,14 @@ public class Looper {
     public boolean offerRunnable(RunnableWrapper runnableWrapper) {
         lock.lock();
         try {
-            if (this.runnableWrapper != null && !this.runnableWrapper.hasRun()) {
-                throw new IllegalStateException("this.runnable != null && !this.runnableWrapper.hasRun()");
+            while (true) {
+                RunnableWrapper wrapper = runnableWrapperQueue.peek();
+                if (wrapper == null || !wrapper.hasRun()) {
+                    break;
+                }
+                runnableWrapperQueue.poll();
             }
-
-            this.runnableWrapper = runnableWrapper;
+            runnableWrapperQueue.add(runnableWrapper);
             notEmpty.signal();
 
             if (nestedLevel <= 0) {
@@ -90,7 +94,7 @@ public class Looper {
 
         lock.lock();
         try {
-            while (!stopHolder.get() && this.runnableWrapper == null) {
+            while (!stopHolder.get() && runnableWrapperQueue.peek() == null) {
                 try {
                     if (!notEmpty.await(30, TimeUnit.SECONDS)) {
                         throw new RuntimeException("Timeout during pollRunnable");
@@ -100,9 +104,9 @@ public class Looper {
                 }
             }
 
-            if (this.runnableWrapper != null) {
-                runnable = this.runnableWrapper.getRunnable();
-                this.runnableWrapper = null;
+            RunnableWrapper runnableWrapper = runnableWrapperQueue.poll();
+            if (runnableWrapper != null) {
+                runnable = runnableWrapper.getRunnable();
             }
         } finally {
             lock.unlock();
