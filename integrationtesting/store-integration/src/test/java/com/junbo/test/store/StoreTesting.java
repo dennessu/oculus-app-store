@@ -9,6 +9,7 @@ package com.junbo.test.store;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.browse.DeliveryResponse;
@@ -40,7 +41,9 @@ import com.junbo.test.common.property.Status;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -168,7 +171,7 @@ public class StoreTesting extends BaseTestClass {
             assert preparePurchaseResponse.getChallenge().getTos() != null;
 
             preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
+                    preparePurchaseResponse.getChallenge().getTos().getTosId());
         }
         //verify formatted price
         //validationHelper.verifyPreparePurchase(preparePurchaseResponse);
@@ -319,6 +322,15 @@ public class StoreTesting extends BaseTestClass {
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
         validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
+        List<String> initialItems = new ArrayList<>(testDataProvider.getInitialItems("android-initial-app", "offers"));
+
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
+
+        if (initialItems.size() > 0) {
+            for (String item : initialItems) {
+                validationHelper.verifyLibraryResponse(libraryResponse, new ItemId(item));
+            }
+        }
         UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
 
         validationHelper.verifyUserProfile(userProfileResponse, authTokenResponse);
@@ -342,7 +354,7 @@ public class StoreTesting extends BaseTestClass {
             freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
         }
 
-        LibraryResponse libraryResponse = testDataProvider.getLibrary();
+        libraryResponse = testDataProvider.getLibrary();
         validationHelper.verifyLibraryResponse(libraryResponse, freePurchaseResponse.getEntitlements().get(0).getItem());
 
         Master.getInstance().setCurrentUid(null);
@@ -381,7 +393,7 @@ public class StoreTesting extends BaseTestClass {
             Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
             CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
             AuthTokenResponse authTokenResponse = testDataProvider.RegisterUser(createUserRequest, 200);
-            testDataProvider.verifyEmailLinks(createUserRequest,authTokenResponse);
+            testDataProvider.verifyEmailLinks(createUserRequest, authTokenResponse);
             validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
             String userName = authTokenResponse.getUsername();
             Master.getInstance().setEndPointType(Master.EndPointType.Primary);
@@ -475,7 +487,7 @@ public class StoreTesting extends BaseTestClass {
             assert preparePurchaseResponse.getChallenge().getTos() != null;
 
             preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId(), true, 200);
+                    preparePurchaseResponse.getChallenge().getTos().getTosId(), true, 200);
         }
 
         //verify formatted price
