@@ -94,6 +94,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         addPaymentEvent(request, createEvent);
         //commit the transaction with trackingUuid
         saveAndCommitPayment(request);
+        LOGGER.info("start to call provider authorize");
         return provider.authorize(pi, request).recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Throwable throwable) {
@@ -103,6 +104,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+                LOGGER.info("call provider authorize successfully");
                 provider.cloneTransactionResult(paymentTransaction, request);
                 PaymentStatus authStatus = PaymentStatus.valueOf(request.getStatus());
                 PaymentEvent authEvent = createPaymentEvent(request,
@@ -136,6 +138,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
                 api, createStatus, false);
         final PaymentProviderService provider = getProviderByName(existedTransaction.getPaymentProvider());
+        LOGGER.info("start to call provider capture");
         return provider.capture(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
@@ -146,6 +149,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+                LOGGER.info("call provider capture successfully");
                 provider.cloneTransactionResult(paymentTransaction, existedTransaction);
                 PaymentStatus settleStatus = PaymentStatus.valueOf(existedTransaction.getStatus());
                 PaymentEvent submitEvent = createPaymentEvent(request, PaymentEventType.SUBMIT_SETTLE,
@@ -184,6 +188,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         final PaymentProviderService provider = getProviderByName(existedTransaction.getPaymentProvider());
         CallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
         request.setCallbackParams(properties);
+        LOGGER.info("start to call provider confirm");
         return provider.confirm(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
                     @Override
@@ -194,6 +199,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                 }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+                LOGGER.info("call provider confirm successfully");
                 if(paymentTransaction == null){
                     return Promise.pure(existedTransaction);
                 }
@@ -228,7 +234,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         addPaymentEvent(request, event);
         //commit the transaction
         saveAndCommitPayment(request);
-        //call brain tree
+        LOGGER.info("start to call provider charge");
         return provider.charge(pi, request).recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Throwable throwable) {
@@ -238,6 +244,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+                LOGGER.info("call provider charge successfully");
                 provider.cloneTransactionResult(paymentTransaction, request);
                 PaymentStatus submitStatus = PaymentStatus.valueOf(request.getStatus());
                 PaymentEvent submitEvent = createPaymentEvent(request,
@@ -274,6 +281,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         addPaymentEvent(existedTransaction, reverseCreateEvent);
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(reverseCreateEvent), api, createStatus, false);
         final PaymentProviderService provider = getProviderByName(existedTransaction.getPaymentProvider());
+        LOGGER.info("start to call provider reverse");
         return provider.reverse(existedTransaction.getExternalToken(), request)
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
@@ -284,6 +292,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(PaymentTransaction aVoid) {
+                LOGGER.info("call provider reverse successfully");
                 PaymentStatus reverseStatus = PaymentStatus.REVERSED;
                 existedTransaction.setStatus(reverseStatus.toString());
                 PaymentEvent reverseEvent = createPaymentEvent(
@@ -409,6 +418,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         payment.setPaymentEvents(Arrays.asList(event));
         if(paymentCallbackParams != null){
             final PaymentProviderService provider = getProviderByName(payment.getPaymentProvider());
+            LOGGER.info("start to call provider confirmNotify");
             return provider.confirmNotify(payment, paymentCallbackParams);
         }
         return Promise.pure(payment);
@@ -417,10 +427,12 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     @Override
     public Promise<PaymentTransaction> processNotification(PaymentProvider provider, String request) {
         PaymentProviderService providerService = providerRoutingService.getProviderByName(provider.name());
+        LOGGER.info("start to call provider processNotification");
         return providerService.processNotify(request)
                 .then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(PaymentTransaction payment) {
+                LOGGER.info("call provider processNotification successfully");
                 if(payment == null){
                     return Promise.pure(null);
                 }
@@ -445,7 +457,6 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     public Promise<PaymentTransaction> refund(Long paymentId, final PaymentTransaction request) {
         validateRequest(request, false, true);
         final PaymentAPI api = PaymentAPI.Refund;
-        LOGGER.info("capture for payment:" + paymentId);
         PaymentTransaction trackingResult = getResultByTrackingUuid(request, api);
         if(trackingResult != null){
             return Promise.pure(trackingResult);
@@ -462,6 +473,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         //commit the payment event
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
                 api, createStatus, false);
+        LOGGER.info("start to call provider refund");
         final PaymentProviderService provider = getProviderByName(existedTransaction.getPaymentProvider());
         return provider.refund(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
@@ -473,6 +485,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                 }).then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+                LOGGER.info("call provider refund successfully");
                 provider.cloneTransactionResult(paymentTransaction, existedTransaction);
                 PaymentStatus settleStatus = PaymentStatus.valueOf(existedTransaction.getStatus());
                 PaymentEvent submitEvent = createPaymentEvent(request, PaymentEventType.REFUND,

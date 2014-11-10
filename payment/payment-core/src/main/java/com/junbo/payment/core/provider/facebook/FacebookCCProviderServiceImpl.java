@@ -201,8 +201,6 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
                 fbPayment.setItemType(FacebookItemType.open_graph_product);
                 FacebookItemDescription description = new FacebookItemDescription();
-                description.setId("https://someog.com");
-                description.setQuantity(1);
                 description.setTitle(paymentRequest.getChargeInfo().getBusinessDescriptor());
                 fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
@@ -276,8 +274,6 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
                 fbPayment.setItemType(FacebookItemType.open_graph_product);
                 FacebookItemDescription description = new FacebookItemDescription();
-                description.setId("https://someog.com");
-                description.setQuantity(1);
                 description.setTitle(paymentRequest.getChargeInfo().getBusinessDescriptor());
                 fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());

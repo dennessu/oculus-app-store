@@ -1,6 +1,5 @@
 package com.junbo.payment.core.provider;
 
-import com.junbo.common.id.PaymentId;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentInstrumentService;
@@ -19,7 +18,6 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import scala.tools.nsc.Global;
 
 import java.math.BigDecimal;
 import java.util.concurrent.ExecutionException;
@@ -85,7 +83,7 @@ public class FacebookPaymentServiceTest extends BaseTest {
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testAuthCapturePartialFB() throws ExecutionException, InterruptedException {
         final PaymentInstrument request = buildPIRequest();
         //hard code user to avoid create too many test users
