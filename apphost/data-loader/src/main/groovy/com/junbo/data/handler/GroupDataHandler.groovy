@@ -84,6 +84,8 @@ class GroupDataHandler extends BaseDataHandler {
             } catch (Exception e) {
                 logger.error("Error creating group $groupName.", e)
             }
+        } else {
+            logger.debug("group $existing.name exists, skip")
         }
     }
 

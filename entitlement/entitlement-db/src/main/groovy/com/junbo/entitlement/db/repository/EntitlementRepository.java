@@ -7,7 +7,6 @@
 package com.junbo.entitlement.db.repository;
 
 import com.junbo.common.model.Results;
-import com.junbo.common.util.Context;
 import com.junbo.entitlement.db.dao.EntitlementDao;
 import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
@@ -16,7 +15,6 @@ import com.junbo.entitlement.db.mapper.EntitlementMapper;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
-import com.junbo.langur.core.promise.Promise;
 
 import java.util.UUID;
 
@@ -50,26 +48,14 @@ public class EntitlementRepository {
 
     public Entitlement insert(Entitlement entitlement) {
         final EntitlementEntity result = entitlementDao.insert(entitlementMapper.toEntitlementEntity(entitlement));
-        Context.get().registerPendingTask(new Promise.Func0<Promise>() {
-            @Override
-            public Promise apply() {
-                entitlementHistoryDao.insert(new EntitlementHistoryEntity(CREATE, result));
-                return Promise.pure();
-            }
-        });
+        entitlementHistoryDao.insertAsync(new EntitlementHistoryEntity(CREATE, result));
         return entitlementMapper.toEntitlement(result);
     }
 
     public Entitlement update(Entitlement entitlement, Entitlement oldEntitlement) {
         final EntitlementEntity result = entitlementDao.update(entitlementMapper.toEntitlementEntity(entitlement),
                 entitlementMapper.toEntitlementEntity(oldEntitlement));
-        Context.get().registerPendingTask(new Promise.Func0<Promise>() {
-            @Override
-            public Promise apply() {
-                entitlementHistoryDao.insert(new EntitlementHistoryEntity(UPDATE, result));
-                return Promise.pure();
-            }
-        });
+        entitlementHistoryDao.insertAsync(new EntitlementHistoryEntity(UPDATE, result));
         return entitlementMapper.toEntitlement(result);
     }
 
@@ -82,14 +68,7 @@ public class EntitlementRepository {
     public void delete(String entitlementId) {
         final EntitlementEntity entitlementEntity = entitlementDao.get(entitlementId);
         entitlementEntity.setIsDeleted(true);
-        Context.get().registerPendingTask(new Promise.Func0<Promise>() {
-            @Override
-            public Promise apply() {
-                entitlementHistoryDao.insert(new EntitlementHistoryEntity(DELETE, entitlementEntity));
-                return Promise.pure();
-            }
-        });
-
+        entitlementHistoryDao.insertAsync(new EntitlementHistoryEntity(DELETE, entitlementEntity));
         entitlementDao.update(entitlementEntity, entitlementEntity);
     }
 

@@ -113,10 +113,12 @@
 
     <bean id="cloudantCurrencyRepository" class="com.junbo.identity.data.repository.impl.cloudant.CurrencyRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="currency"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="cloudantLocaleRepository" class="com.junbo.identity.data.repository.impl.cloudant.LocaleRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="locale"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="cloudantPITypeRepository" class="com.junbo.identity.data.repository.impl.cloudant.PITypeRepositoryCloudantImpl" parent="cloudantClient">
@@ -140,6 +142,7 @@
     <bean id="cloudantEncryptUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.EncryptUserPersonalInfoRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="encrypt_user_personal_info" />
         <property name="forceRoute" value="${common.routing.forceRoute}" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="cloudantHashUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.HashUserPersonalInfoRepositoryImpl" parent="cloudantClient">
@@ -152,5 +155,6 @@
 
     <bean id="cloudantErrorInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.ErrorInfoRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="error_info" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 </beans>

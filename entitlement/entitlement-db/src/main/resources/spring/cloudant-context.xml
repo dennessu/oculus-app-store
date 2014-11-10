@@ -10,5 +10,6 @@
     </bean>
     <bean id="entitlementHistoryCloudantDao" class="com.junbo.entitlement.db.dao.cloudant.EntitlementHistoryDaoImpl" parent="cloudantClientWithSearch">
         <property name="dbName" value="entitlement_history"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 </beans>

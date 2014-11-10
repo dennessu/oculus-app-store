@@ -77,6 +77,11 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     }
 
     @Override
+    RefreshToken update(RefreshToken refreshToken, RefreshToken oldRefreshToken) {
+        return null
+    }
+
+    @Override
     boolean isValidRefreshToken(String tokenValue) {
         return tokenGenerator.isValidRefreshToken(tokenValue)
     }

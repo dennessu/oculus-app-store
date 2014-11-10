@@ -56,7 +56,7 @@ class CloudantClientImpl implements CloudantClientInternal {
     private static IntegerConfig acceptedRetryCount = ReloadableConfigFactory.create("[common.cloudant.retries]", IntegerConfig.class)
     private static IntegerConfig acceptedRetryInterval = ReloadableConfigFactory.create("[common.cloudant.retriesInterval]", IntegerConfig.class)
 
-    private static Map<String, String> getWriteParam(Map<String, String> initial = null) {
+    private static Map<String, String> getWriteParam(Map<String, String> initial = null, boolean noOverrideWrites) {
         Integer writeCount = writeCount.get()
         if (initial == null && writeCount == null) {
             return Collections.emptyMap()
@@ -65,20 +65,20 @@ class CloudantClientImpl implements CloudantClientInternal {
         if (initial == null) {
             initial = [:]
         }
-        if (writeCount != null) {
+        if (writeCount != null && !noOverrideWrites) {
             initial.put("w", writeCount.intValue().toString())
         }
         return initial
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         if (entity.getId() != null) {
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
         }
 
-        return executeRequest(dbUri, HttpMethod.POST, '', getWriteParam(), entity).then({ Response response ->
+        return executeRequest(dbUri, HttpMethod.POST, '', getWriteParam(noOverrideWrites), entity).then({ Response response ->
             return checkWriteErrors("create", dbUri, entity, response).then {
                 def cloudantResponse = marshaller.unmarshall(response.responseBody, CloudantResponse)
 
@@ -114,11 +114,11 @@ class CloudantClientImpl implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
-        return executeRequest(dbUri, HttpMethod.PUT, urlEncode(entity.cloudantId), getWriteParam(), entity).then({ Response response ->
+        return executeRequest(dbUri, HttpMethod.PUT, urlEncode(entity.cloudantId), getWriteParam(noOverrideWrites), entity).then({ Response response ->
             return checkWriteErrors("update", dbUri, entity, response).then {
                 def cloudantResponse = marshaller.unmarshall(response.responseBody, CloudantResponse)
 
@@ -133,12 +133,12 @@ class CloudantClientImpl implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         if (entity != null) {
             // force update cloudantId
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
-            return executeRequest(dbUri, HttpMethod.DELETE, urlEncode(entity.cloudantId), getWriteParam(['rev': entity.cloudantRev]), null).then({ Response response ->
+            return executeRequest(dbUri, HttpMethod.DELETE, urlEncode(entity.cloudantId), getWriteParam(['rev': entity.cloudantRev], noOverrideWrites), null).then({ Response response ->
                 return checkWriteErrors("delete", dbUri, entity, response)
             })
         }

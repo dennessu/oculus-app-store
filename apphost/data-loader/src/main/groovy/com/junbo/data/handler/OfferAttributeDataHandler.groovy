@@ -31,11 +31,7 @@ class OfferAttributeDataHandler extends BaseAttributeDataHandler {
         String name = attributeData.locales.get(nameLocale).name
         OfferAttribute existing = catalogUtils.getOfferAttributeByName(name)
         if (existing != null) {
-            logger.debug("update existing offer attribute, id={}", existing.getId())
-            existing.type = attributeData.type
-            existing.parentId = parentId
-            existing.locales = attributeData.locales
-            offerAttributeResource.update(existing.getId(), existing).get()
+            logger.debug("offer attribute exists, id={}, name={}, skip", existing.getId(), name)
         } else {
             logger.debug("create offer attribute, name={}", name)
             offerAttributeResource.createAttribute(new OfferAttribute(

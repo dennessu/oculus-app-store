@@ -45,18 +45,7 @@ class CountryDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            if (alwaysOverwrite) {
-                logger.debug("Overwrite Country $country.countryCode with this content.")
-                country.id = (CountryId) existing.id
-                country.rev = existing.rev
-                try {
-                    countryResource.patch(new CountryId(country.countryCode), country).get()
-                } catch (Exception e) {
-                    logger.error("Error updating country $country.countryCode.", e)
-                }
-            } else {
-                logger.debug("$country.countryCode already exists, skipped!")
-            }
+            logger.debug("$country.countryCode already exists, skipped!")
         } else {
             logger.debug('Create new country with this content')
             try {

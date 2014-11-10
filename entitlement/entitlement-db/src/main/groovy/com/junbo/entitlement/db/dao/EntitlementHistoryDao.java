@@ -12,5 +12,5 @@ import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
  * Interface of EntitlementHistory Dao.
  */
 public interface EntitlementHistoryDao {
-    EntitlementHistoryEntity insert(EntitlementHistoryEntity entitlementHistory);
+    void insertAsync(EntitlementHistoryEntity entitlementHistory);
 }

@@ -31,6 +31,7 @@
         <property name="hardDelete" value="true" />
         <property name="mapper" ref="pendingActionMapper" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="dualwriteDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">

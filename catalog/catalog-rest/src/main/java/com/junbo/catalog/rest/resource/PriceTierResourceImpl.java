@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.rest.resource;
 
+import com.junbo.catalog.clientproxy.LocaleFacade;
 import com.junbo.catalog.core.PriceTierService;
 import com.junbo.catalog.spec.enums.LocaleAccuracy;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Price tier resource implementation.
@@ -32,19 +34,31 @@ import java.util.List;
 public class PriceTierResourceImpl extends ResourceSupport implements PriceTierResource {
     @Autowired
     private PriceTierService priceTierService;
+    @Autowired
+    private LocaleFacade localeFacade;
 
     @Override
     public Promise<PriceTier> getPriceTier(String tierId, final PriceTierGetOptions options) {
         final PriceTier tier = priceTierService.getPriceTier(tierId);
-        filterLocale(tier, options.getLocale());
+        tier.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+        if (!StringUtils.isEmpty(options.getLocale())) {
+            Map<String, String> localeRelations = localeFacade.getLocaleRelations();
+            filterLocale(tier, options.getLocale(), localeRelations);
+        }
         return Promise.pure(tier);
     }
 
     @Override
     public Promise<Results<PriceTier>> getPriceTiers(final PriceTiersGetOptions options) {
         List<PriceTier> tiers = priceTierService.getPriceTiers(options);
-        for (final PriceTier tier : tiers) {
-            filterLocale(tier, options.getLocale());
+        for (PriceTier tier : tiers) {
+            tier.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+        }
+        if (!StringUtils.isEmpty(options.getLocale())) {
+            Map<String, String> localeRelations = localeFacade.getLocaleRelations();
+            for (final PriceTier tier : tiers) {
+                filterLocale(tier, options.getLocale(), localeRelations);
+            }
         }
         Results<PriceTier> results = new Results<>();
         results.setItems(tiers);
@@ -54,12 +68,11 @@ public class PriceTierResourceImpl extends ResourceSupport implements PriceTierR
         return Promise.pure(results);
     }
 
-    private void filterLocale(final PriceTier tier, final String locale) {
-        tier.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+    private void filterLocale(final PriceTier tier, final String locale, final Map<String, String> localeRelations) {
         if (!StringUtils.isEmpty(locale)) {
             tier.setLocaleAccuracy(calLocaleAccuracy(tier.getLocales().get(locale)));
             tier.setLocales(new HashMap<String, SimpleLocaleProperties>() {{
-                put(locale, getLocaleProperties(tier.getLocales(), locale));
+                put(locale, getLocaleProperties(tier.getLocales(), locale, localeRelations));
             }});
         }
     }

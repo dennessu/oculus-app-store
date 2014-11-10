@@ -8,6 +8,11 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class CloudantClientForDualWrite<T extends CloudantEntity> extends CloudantClientBase<T> {
 
+    public CloudantClientForDualWrite() {
+        // no need to force view reads for dualwrite entities
+        setNoOverrideWrites(true);
+    }
+
     @Override
     Promise<T> cloudantPost(T entity) {
         return cloudantSave(entity);

@@ -50,14 +50,14 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         if (entity.id != null) {
             // force update cloudantId
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
         }
 
-        return impl.cloudantPost(dbUri, entityClass, entity).then { T result ->
+        return impl.cloudantPost(dbUri, entityClass, entity, noOverrideWrites).then { T result ->
             updateCache(dbUri, entityClass, null, result)
             return Promise.pure(result)
         }
@@ -77,13 +77,13 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
 
         def casValue = getCache(dbUri, entityClass, entity.cloudantId)
-        return impl.cloudantPut(dbUri, entityClass, entity).recover { Throwable ex ->
+        return impl.cloudantPut(dbUri, entityClass, entity, noOverrideWrites).recover { Throwable ex ->
             deleteCacheOnError(dbUri, entity.cloudantId)
             throw ex
         }.then { T result ->
@@ -93,7 +93,7 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         if (entity == null) {
             return Promise.pure(null)
         }
@@ -101,7 +101,7 @@ class CloudantClientCached implements CloudantClientInternal {
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
 
-        return impl.cloudantDelete(dbUri, entityClass, entity).recover { Throwable ex ->
+        return impl.cloudantDelete(dbUri, entityClass, entity, noOverrideWrites).recover { Throwable ex ->
             deleteCacheOnError(dbUri, entity.cloudantId)
             throw ex
         }.then {

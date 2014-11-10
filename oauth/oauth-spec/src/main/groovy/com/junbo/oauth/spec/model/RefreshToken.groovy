@@ -27,6 +27,12 @@ class RefreshToken extends ExpirableToken {
 
     Boolean stolen
 
+    @CloudantIgnore
+    String newTokenValue
+
+    @JsonIgnore
+    String encryptedNewTokenValue
+
     @Override
     String getId() {
         return hashedTokenValue

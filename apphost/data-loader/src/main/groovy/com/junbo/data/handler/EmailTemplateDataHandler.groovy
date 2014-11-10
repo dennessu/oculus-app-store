@@ -47,17 +47,7 @@ class EmailTemplateDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            if (alwaysOverwrite) {
-                logger.debug("Overwrite EmailTemplate ${existing.action} with this content.")
-                template.rev = existing.rev
-                try {
-                    templateResource.putEmailTemplate(existing.getId(), template).get()
-                } catch (Exception e) {
-                    logger.error("Error updating emailTemplate $template.action", e)
-                }
-            } else {
-                logger.debug("EmailTemplate ${existing.action} already exists, skipped!")
-            }
+            logger.debug("EmailTemplate ${existing.action} already exists, skipped!")
         } else {
             logger.debug('Create new EmailTemplate with this content.')
             try {

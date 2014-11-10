@@ -58,12 +58,13 @@ class GrantTokenByRefreshToken implements Action {
             throw AppCommonErrors.INSTANCE.parameterRequired('refresh_token').exception()
         }
 
-        RefreshToken refreshToken = tokenService.getAndRemoveRefreshToken(token)
+        RefreshToken refreshToken = tokenService.getRefreshToken(token)
         if (refreshToken == null) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('refresh_token', token).exception()
         }
 
         if (refreshToken.isExpired()) {
+            tokenService.getAndRemoveRefreshToken(token)
             throw AppErrors.INSTANCE.expiredRefreshToken(token).exception()
         }
 

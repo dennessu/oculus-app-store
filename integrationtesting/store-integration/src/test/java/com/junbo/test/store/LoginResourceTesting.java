@@ -668,10 +668,9 @@ public class LoginResourceTesting extends BaseTestClass {
         assert error.getDetails().get(0).getField().contains("refreshToken");
         assert error.getDetails().get(0).getReason().contains("Field is required");
 
-        error = testDataProvider.getTokenWithError(authTokenResponse.getRefreshToken(), 400, "132.001");
-        assert error != null;
-        assert error.getDetails().get(0).getField().contains("refresh_token");
-        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
+        // within 5 minutes the refresh token will still be valid
+        AuthTokenResponse response1 = testDataProvider.getToken(authTokenResponse.getRefreshToken());
+        assert response1.getRefreshToken().equals(response.getRefreshToken());
     }
 
     @Property(

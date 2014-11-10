@@ -21,7 +21,8 @@ public class PaymentProviderDataHandler extends BaseDataHandler {
     public void handle(String content) {
         PaymentProviderModel paymentProvider = null;
         try {
-            paymentProvider = transcoder.decode(new TypeReference<PaymentProviderModel>() {}, content);
+            paymentProvider = transcoder.decode(new TypeReference<PaymentProviderModel>() {
+            }, content);
         } catch (Exception e) {
             logger.error("Error parsing payment provider:" + content, e);
             exit();
@@ -30,15 +31,11 @@ public class PaymentProviderDataHandler extends BaseDataHandler {
         PaymentProviderModel existing = paymentProvideRepository.get(paymentProvider.getId());
 
         if (existing != null) {
-            if (alwaysOverwrite) {
-                logger.debug("Overwrite Payment Provider:" + paymentProvider.getId());
-                try {
-                    paymentProvideRepository.update(paymentProvider, existing);
-                } catch (Exception e) {
-                    logger.error("Error updating Payment Provider" + paymentProvider.getId(), e);
-                }
-            } else {
-                logger.debug("The Payment Provider:" + paymentProvider.getId());
+            logger.debug("Overwrite Payment Provider:" + paymentProvider.getId());
+            try {
+                paymentProvideRepository.update(paymentProvider, existing);
+            } catch (Exception e) {
+                logger.error("Error updating Payment Provider" + paymentProvider.getId(), e);
             }
         } else {
             logger.debug("Create new Payment Provider:" + paymentProvider.getId());
