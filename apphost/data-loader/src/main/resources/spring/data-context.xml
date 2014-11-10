@@ -21,7 +21,6 @@
 
     <bean id="baseDataHandler" class="com.junbo.data.handler.BaseDataHandler" abstract="true">
         <property name="transcoder" ref="commonTranscoder"/>
-        <property name="alwaysOverwrite" value="${data.loader.alwaysOverwrite}"/>
     </bean>
 
     <bean id="clientDataHandler" class="com.junbo.data.handler.ClientDataHandler" parent="baseDataHandler">

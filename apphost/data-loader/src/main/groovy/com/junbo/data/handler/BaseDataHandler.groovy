@@ -16,17 +16,11 @@ import org.springframework.beans.factory.annotation.Required
 abstract class BaseDataHandler implements DataHandler {
     protected final Logger logger = LoggerFactory.getLogger(getClass())
     protected MessageTranscoder transcoder
-    protected boolean alwaysOverwrite
 
 
     @Required
     void setTranscoder(MessageTranscoder transcoder) {
         this.transcoder = transcoder
-    }
-
-    @Required
-    void setAlwaysOverwrite(boolean alwaysOverwrite) {
-        this.alwaysOverwrite = alwaysOverwrite
     }
 
     void exit() {
