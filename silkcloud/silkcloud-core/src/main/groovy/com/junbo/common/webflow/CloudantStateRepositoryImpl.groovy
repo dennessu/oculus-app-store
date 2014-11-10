@@ -66,17 +66,17 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
 
         if (conversation.flowStack == null || conversation.flowStack.empty) {
             effective.cloudantGet(dbUri, entityClass, conversation.id).then { ConversationEntity entity ->
-                return effective.cloudantDelete(dbUri, entityClass, entity)
+                return effective.cloudantDelete(dbUri, entityClass, entity, noOverrideWrites)
             }.get()
         } else {
             ConversationEntity existing = (ConversationEntity)effective.cloudantGet(dbUri, entityClass, conversation.id).get()
 
             if (existing == null) {
-                effective.cloudantPost(dbUri, entityClass, unwrap(conversation)).get()
+                effective.cloudantPost(dbUri, entityClass, unwrap(conversation), noOverrideWrites).get()
             } else {
                 ConversationEntity entity = unwrap(conversation)
                 entity.rev = existing.rev
-                effective.cloudantPut(dbUri, entityClass, entity).get()
+                effective.cloudantPut(dbUri, entityClass, entity, noOverrideWrites).get()
             }
         }
     }

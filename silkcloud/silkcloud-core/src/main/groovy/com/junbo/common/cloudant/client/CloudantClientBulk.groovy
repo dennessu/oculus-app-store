@@ -85,7 +85,7 @@ class CloudantClientBulk implements CloudantClientInternal {
     private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
 
     @Override
-    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         if (entity.id == null) {
             // must be cloudant based id, assign a string is okay
             return CloudantIdGenerator.nextId().then { String id ->
@@ -119,7 +119,7 @@ class CloudantClientBulk implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
@@ -128,7 +128,7 @@ class CloudantClientBulk implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         if (entity == null) {
             return Promise.pure(null)
         }
@@ -137,7 +137,7 @@ class CloudantClientBulk implements CloudantClientInternal {
         CloudantId.validate(entity.cloudantId)
 
         delete(dbUri, entity.cloudantId)
-        return impl.cloudantDelete(dbUri, entityClass, entity)
+        return impl.cloudantDelete(dbUri, entityClass, entity, noOverrideWrites)
     }
 
     @Override

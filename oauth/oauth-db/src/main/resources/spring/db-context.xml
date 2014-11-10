@@ -20,6 +20,7 @@
     <bean id="clientRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantClientRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="client"/>
         <property name="localIgnoreBulk" value="true" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="oauthCipherService" class="com.junbo.configuration.crypto.impl.AESCipherServiceImpl">
@@ -36,12 +37,14 @@
         <property name="tokenGenerator" ref="tokenGenerator"/>
         <property name="defaultLoginStateExpiration" value="${oauth.db.loginState.default.expiration}"/>
         <property name="localIgnoreBulk" value="true" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="authorizationCodeRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantAuthorizationCodeRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="authorization_code"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
         <property name="localIgnoreBulk" value="true" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="accessTokenRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantAccessTokenRepositoryImpl" parent="cloudantClient">
@@ -61,6 +64,7 @@
         <property name="dbName" value="remember_me_token"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
         <property name="localIgnoreBulk" value="true" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="scopeRepository" class="com.junbo.oauth.db.repo.file.ScopeFileRepositoryImpl">
@@ -70,6 +74,7 @@
     <bean id="consentRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantConsentRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="consent"/>
         <property name="localIgnoreBulk" value="true" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="emailVerifyCodeRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantEmailVerifyCodeRepositoryImpl" parent="cloudantClient">

@@ -86,6 +86,7 @@
 
     <bean id="userLogRepository" class="com.junbo.common.userlog.UserLogRepositoryCloudantImpl" parent="cloudantClientWithSearch">
         <property name="dbName" value="user_log"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="userLogProcessor" class="com.junbo.common.userlog.UserLogProcessorImpl">

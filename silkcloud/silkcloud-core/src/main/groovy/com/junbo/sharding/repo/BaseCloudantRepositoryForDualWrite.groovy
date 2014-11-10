@@ -11,6 +11,10 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 abstract class BaseCloudantRepositoryForDualWrite<T extends CloudantEntity, K> extends CloudantClient<T> {
+    public BaseCloudantRepositoryForDualWrite() {
+        setNoOverrideWrites(true)
+    }
+
     @Override
     Promise<T> create(T entity) {
         return cloudantPost(entity)

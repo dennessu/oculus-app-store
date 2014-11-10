@@ -18,6 +18,7 @@
 
     <bean id="cloudantTokenOrderRepository" class="com.junbo.token.db.repo.cloudant.TokenOrderRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="token_order"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="cloudantTokenSetOfferRepository" class="com.junbo.token.db.repo.cloudant.TokenSetOfferRepositoryCloudantImpl" parent="cloudantClient">
@@ -26,6 +27,7 @@
 
     <bean id="cloudantTokenSetRepository" class="com.junbo.token.db.repo.cloudant.TokenSetRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="token_set"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <!-- repositories -->

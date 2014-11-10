@@ -14,16 +14,16 @@ import com.junbo.langur.core.promise.Promise;
  */
 public interface CloudantClientInternal {
     <T extends CloudantEntity>
-    Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity);
+    Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites);
 
     <T extends CloudantEntity>
     Promise<T> cloudantGet(CloudantDbUri dbUri, Class<T> entityClass, String id);
 
     <T extends CloudantEntity>
-    Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity);
+    Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites);
 
     <T extends CloudantEntity>
-    Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity);
+    Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites);
 
     <T extends CloudantEntity>
     Promise<CloudantQueryResult> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, Integer limit, Integer skip, boolean descending, boolean includeDocs);
