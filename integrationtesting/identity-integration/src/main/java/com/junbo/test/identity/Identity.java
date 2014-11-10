@@ -56,6 +56,7 @@ public class Identity {
     public static final String IdentityV1TosURI = IdentityEndPointV1 + "/tos";
     public static final String IdentityV1UserAuthenticatorURI = IdentityEndPointV1 + "/authenticators";
     public static final String IdentityV1PITypeURI = IdentityEndPointV1 + "/payment-instrument-types";
+    public static final String IdentityV1UserCommunicationURI = IdentityEndPointV1 + "/opt-ins";
 
     public static String httpAuthorizationHeader = "";
 
@@ -622,6 +623,49 @@ public class Identity {
     public static UserGroup UserGroupPut(UserGroup userGroup) throws Exception {
         return IdentityPut(IdentityV1UserGroupMemberURI + "/" + userGroup.getId().getValue(),
                 JsonHelper.JsonSerializer(userGroup), UserGroup.class);
+    }
+
+    public static UserCommunication UserCommunicationPost(UserId userId, CommunicationId communicationId) throws Exception {
+        UserCommunication userCommunication = new UserCommunication();
+        userCommunication.setUserId(userId);
+        userCommunication.setCommunicationId(communicationId);
+        return IdentityPost(IdentityV1UserCommunicationURI, JsonHelper.JsonSerializer(userCommunication), UserCommunication.class);
+    }
+
+    public static UserCommunication UserCommunicationPut(UserCommunication userCommunication) throws Exception {
+        return IdentityPut(IdentityV1UserCommunicationURI + "/" + userCommunication.getId().toString(), JsonHelper.JsonSerializer(userCommunication),
+                UserCommunication.class);
+    }
+
+    public static UserCommunication UserCommunicationGet(UserCommunicationId userCommunicationId) throws Exception {
+        return IdentityGet(IdentityV1UserCommunicationURI + "/" + userCommunicationId.toString(), UserCommunication.class);
+    }
+
+    public static void UserCommunicationDelete(UserCommunicationId userCommunicationId) throws Exception {
+        IdentityDelete(IdentityV1UserCommunicationURI + "/" + userCommunicationId.toString());
+    }
+
+    public static Results<UserCommunication> UserCommunicationSearch(UserId userId, CommunicationId communicationId, Integer limit) throws Exception {
+        String url = IdentityV1UserCommunicationURI;
+
+        if (userId != null && communicationId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId) + "&communicationId=" + communicationId.toString();
+        } else if (userId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId);
+        } else if (communicationId != null) {
+            url = url + "?communicationId=" + communicationId.toString();
+        }
+
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+        Results results = IdentityGet(url, Results.class);
+        List<UserCommunication> userCommunications = new ArrayList<>();
+        for (Object obj : results.getItems()) {
+            userCommunications.add((UserCommunication)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserCommunication.class));
+        }
+        results.setItems(userCommunications);
+        return results;
     }
 
     public static UserAuthenticator UserAuthenticatorPost(UserId userId, String externalRefId) throws Exception {
