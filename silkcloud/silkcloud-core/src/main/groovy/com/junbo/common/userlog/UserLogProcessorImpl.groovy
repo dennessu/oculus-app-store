@@ -13,6 +13,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.util.Context
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.context.JunboHttpContext
+import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.langur.core.track.UserLogProcessor
 import groovy.transform.CompileStatic
@@ -44,7 +45,7 @@ class UserLogProcessorImpl implements UserLogProcessor {
                     requestPath.contains("crypto") ||
                     (
                             requestPath.contains("horizon-api/id") &&
-                            !requestPath.contains("horizon-api/id/register")) ||
+                                    !requestPath.contains("horizon-api/id/register")) ||
                     TrackContextManager.isRouted()) {
                 return
             }
@@ -78,7 +79,13 @@ class UserLogProcessorImpl implements UserLogProcessor {
                     error: error
             )
 
-            getUserLogRepo().create(userLog).get()
+            Context.get().registerPendingTask(new Promise.Func0<Promise>() {
+                @Override
+                Promise apply() {
+                    getUserLogRepo().create(userLog).get()
+                    return Promise.pure()
+                }
+            })
         } catch (Exception e) {
             LOGGER.error("Error occurred while logging user action of [$JunboHttpContext.requestUri.path].", e)
         }
