@@ -71,6 +71,8 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private Set<String> initialItemIds = null;
 
+    private String featuredSectionName = "Featured";
+
     @BeforeClass(alwaysRun = true)
     public void setUp() throws Exception {
         if (serviceClientEnabled) {
@@ -89,6 +91,10 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         if (ConfigHelper.getSetting("casey.emulator.cmspage.label") != null) {
             caseyCmsPageLabel = ConfigHelper.getSetting("casey.emulator.cmspage.label");
+        }
+
+        if (ConfigHelper.getSetting("testdata.section.featured.name") != null) {
+            featuredSectionName = ConfigHelper.getSetting("testdata.section.featured.name");
         }
 
         if (serviceClientEnabled && useCaseyEmulator) {
@@ -516,7 +522,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(featuredSectionInfo.getCategory(), featuredSectionInfo.getCriteria(), pageSize);
         Assert.assertTrue(sectionLayoutResponse.getBreadcrumbs().isEmpty(), "top level section's breadcrumbs should be empty");
         Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0);
-        Assert.assertEquals(sectionLayoutResponse.getName(), "Featured");
+        Assert.assertEquals(sectionLayoutResponse.getName(), featuredSectionName);
         storeBrowseValidationHelper.getAndValidateItemList(sectionLayoutResponse.getCategory(), sectionLayoutResponse.getCriteria(), null, pageSize, 0, false);
         Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0, "Child under feature section is empty");
 
@@ -660,15 +666,22 @@ public class StoreBrowseTesting extends BaseTestClass {
         com.junbo.catalog.spec.model.offer.Offer offer = testDataProvider.getOfferByOfferId(offerId);
         OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
         itemId = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId()).getItemId();
+        boolean isInitialItem = getInitialItems().contains(itemId);
 
-        // add review not purchased
-        AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
-        testDataProvider.addReview(addReviewRequest, 412);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.120"));
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("item not purchased."));
+        AddReviewRequest addReviewRequest = null;
+        if (!isInitialItem) {
+            // add review not purchased
+            addReviewRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
+            testDataProvider.addReview(addReviewRequest, 412);
+            Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.120"));
+            Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("item not purchased."));
 
-        // purchase & add again
-        testDataProvider.makeFreePurchase(offerId, null, 200);
+            // purchase & add again
+            testDataProvider.makeFreePurchase(offerId, null, 200);
+        } else {
+            LOGGER.info("name=Skip_AddReview_NotPurchased_Test");
+        }
+
         AddReviewResponse reviewResponse = testDataProvider.addReview(addReviewRequest, 200);
         storeBrowseValidationHelper.validateAddReview(addReviewRequest, reviewResponse.getReview(), userProfile.getNickName());
 
