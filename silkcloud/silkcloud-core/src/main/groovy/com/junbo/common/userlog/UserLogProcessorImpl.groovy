@@ -45,7 +45,7 @@ class UserLogProcessorImpl implements UserLogProcessor {
                     requestPath.contains("crypto") ||
                     (
                             requestPath.contains("horizon-api/id") &&
-                                    !requestPath.contains("horizon-api/id/register")) ||
+                            !requestPath.contains("horizon-api/id/register")) ||
                     TrackContextManager.isRouted()) {
                 return
             }
@@ -79,11 +79,14 @@ class UserLogProcessorImpl implements UserLogProcessor {
                     error: error
             )
 
+            if (JunboHttpContext.getRequestMethod().equalsIgnoreCase(HttpMethod.POST.toString())) {
+                LOGGER.info("Output Entity ID: $entityId");
+            }
+
             Context.get().registerPendingTask(new Promise.Func0<Promise>() {
                 @Override
                 Promise apply() {
-                    getUserLogRepo().create(userLog).get()
-                    return Promise.pure()
+                    return getUserLogRepo().create(userLog)
                 }
             })
         } catch (Exception e) {

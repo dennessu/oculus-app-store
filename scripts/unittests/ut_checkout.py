@@ -285,6 +285,8 @@ class CheckoutTests(ut.TestBase):
         }, headers={
             "Authorization": "Bearer " + serviceAccessToken
         })
+        assert userLogs['total'] == 2
+
         return order
 
     def testCatalogGetAll(self):
