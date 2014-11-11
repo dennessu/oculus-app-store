@@ -150,7 +150,7 @@ public class Looper {
 
             Object handle = wrapper.begin();
             try {
-                return Looper.current().offerRunnable(wrapper);
+                return wrapper.getLooper().offerRunnable(wrapper);
             } finally {
                 wrapper.end(handle);
             }

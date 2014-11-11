@@ -27,16 +27,16 @@ public class RunnableWrapper implements Runnable {
 
     private final Lock lock;
 
+    private final Looper looper;
+
     public RunnableWrapper(Runnable runnable) {
         this.runnable = new RunnableOnce(runnable);
         snapshot = new Snapshot();
-
-        lock = lockThreadLocal.get(); // make sure the lock is created
+        lock = lockThreadLocal.get();
+        looper = Looper.current();
     }
 
     public Object begin() {
-        lock.lock();
-
         Snapshot oldSnapshot = new Snapshot();
         snapshot.resume();
         return oldSnapshot;
@@ -44,8 +44,10 @@ public class RunnableWrapper implements Runnable {
 
     public void end(Object oldSnapshot) {
         ((Snapshot) oldSnapshot).resume();
+    }
 
-        lock.unlock();
+    public Looper getLooper() {
+        return looper;
     }
 
     public Runnable getRunnable() {
@@ -61,7 +63,12 @@ public class RunnableWrapper implements Runnable {
         Object handle = begin();
 
         try {
-            runnable.run();
+            try {
+                lock.lock();
+                runnable.run();
+            } finally {
+                lock.unlock();
+            }
         } finally {
             end(handle);
         }
