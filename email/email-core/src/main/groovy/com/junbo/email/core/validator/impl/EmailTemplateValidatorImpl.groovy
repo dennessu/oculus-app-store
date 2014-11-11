@@ -57,9 +57,6 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
         if (template == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-        if (template.id != null) {
-            throw AppCommonErrors.INSTANCE.fieldMustBeNull('self').exception()
-        }
         if (StringUtils.isEmpty(template.source)) {
             throw AppCommonErrors.INSTANCE.fieldRequired('source').exception()
         }
