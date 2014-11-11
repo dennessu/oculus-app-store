@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,13 +30,21 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     private EntitlementResource entitlementResource;
 
     @Override
-    public String grant(com.junbo.fulfilment.spec.fusion.Entitlement input) {
+    public List<String> grant(List<com.junbo.fulfilment.spec.fusion.Entitlement> input) {
         try {
-            Entitlement entitlement = Utils.map(input, Entitlement.class);
-            entitlement.setTrackingUuid(UUID.randomUUID());
+            List<Entitlement> entitlements = new ArrayList<>(input.size());
+            for (com.junbo.fulfilment.spec.fusion.Entitlement e : input) {
+                Entitlement mapped = Utils.map(e, Entitlement.class);
+                mapped.setTrackingUuid(UUID.randomUUID());
+                entitlements.add(mapped);
+            }
+            entitlements = entitlementResource.postEntitlements(entitlements).get();
 
-            Entitlement result = entitlementResource.postEntitlement(entitlement).get();
-            return result.getId();
+            List<String> result = new ArrayList<>(entitlements.size());
+            for (Entitlement e : entitlements) {
+                result.add(e.getId());
+            }
+            return result;
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Entitlement] component.", e);
             throw AppErrors.INSTANCE.gatewayFailure("Entitlement").exception();

@@ -7,9 +7,11 @@ package com.junbo.fulfilment.clientproxy;
 
 import com.junbo.fulfilment.spec.fusion.Entitlement;
 
+import java.util.List;
+
 /**
  * EntitlementGateway.
  */
 public interface EntitlementGateway {
-    String grant(Entitlement entitlement);
+    List<String> grant(List<Entitlement> entitlements);
 }

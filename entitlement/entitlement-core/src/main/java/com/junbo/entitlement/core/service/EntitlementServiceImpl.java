@@ -18,6 +18,8 @@ import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.spec.enums.EntitlementType;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.common.cloudant.CloudantClientBase;
+import com.junbo.common.cloudant.client.CloudantClientBulk;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.util.IdUtil;
@@ -111,12 +113,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public Entitlement addEntitlement(final Entitlement entitlement) {
         /**  remove byTrackingUuid to save time
-        if (entitlement.getTrackingUuid() != null) {
-            Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "create");
-            if (existing != null) {
-                return existing;
-            }
-        }
+         if (entitlement.getTrackingUuid() != null) {
+         Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "create");
+         if (existing != null) {
+         return existing;
+         }
+         }
          **/
 
         fillCreate(entitlement);
@@ -134,6 +136,43 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 return merge(entitlement);
             }
         });
+    }
+
+    @Override
+    public List<Entitlement> addEntitlements(List<Entitlement> entitlements) {
+        if (CollectionUtils.isEmpty(entitlements)) {
+            return new LinkedList<Entitlement>();
+        }
+
+        boolean hasConsumable = false;
+        for (Entitlement entitlement : entitlements) {
+            if (isConsumable(entitlement)) {
+                hasConsumable = true;
+                break;
+            }
+        }
+
+        List<Entitlement> result;
+        if (hasConsumable) {
+            result = addEntitlementsInternal(entitlements);
+        } else {
+            try {
+                CloudantClientBase.setUseBulk(true);
+                result = addEntitlementsInternal(entitlements);
+            } finally {
+                CloudantClientBulk.commit().get();
+                CloudantClientBase.setUseBulk(false);
+            }
+        }
+        return result;
+    }
+
+    private List<Entitlement> addEntitlementsInternal(List<Entitlement> entitlements) {
+        List<Entitlement> result = new ArrayList<>(entitlements.size());
+        for (Entitlement entitlement : entitlements) {
+            result.add(addEntitlement(entitlement));
+        }
+        return result;
     }
 
     private Entitlement merge(Entitlement entitlement) {
@@ -158,12 +197,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public Entitlement updateEntitlement(final String entitlementId, final Entitlement entitlement) {
         validateUpdateId(entitlementId, entitlement);
         /**  remove byTrackingUuid to save time
-        if (entitlement.getTrackingUuid() != null) {
-            Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "update");
-            if (existing != null) {
-                return existing;
-            }
-        }
+         if (entitlement.getTrackingUuid() != null) {
+         Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "update");
+         if (existing != null) {
+         return existing;
+         }
+         }
          **/
 
         final Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
@@ -376,7 +415,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 return generateS3Url(bucketName, objectKey,
                         generateFilename(objectKey, filename, version, platform), generateExpirationDate());
             }
-        } else if (isCloudFront(urlString)){
+        } else if (isCloudFront(urlString)) {
             //TODO: work around for cloudfront
             URL url = new URL(urlString);
             bucketName = bucketMap.get(url.getHost());
