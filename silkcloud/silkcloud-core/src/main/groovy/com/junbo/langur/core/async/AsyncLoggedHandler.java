@@ -23,6 +23,7 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
     protected static final Logger HTTPD_LOGGER = LoggerFactory.getLogger(AsyncLoggedHandler.class);
     private static final SimpleDateFormatThreadLocal DATE_FORMAT =
             new SimpleDateFormatThreadLocal("[yyyy-MM-dd HH:mm:ss.SSS Z]");
+    private static final String COUCH_REQUEST_ID = "X-Couch-Request-ID";
 
     private String method;
     private URI uri;
@@ -101,9 +102,11 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
     private String accessLog(Response response) {
         Long latency = System.currentTimeMillis() - startTime;
         String responseTimestamp = DATE_FORMAT.get().format(new Date(System.currentTimeMillis()));
-        return String.format("- %d - %s \"%s %s %s\" %d - \"-\" \"Ning Async Http Client\" \"[]\" [%s]",
+        String couchRequestId = response.getHeader(COUCH_REQUEST_ID);
+        return String.format("- %d - %s \"%s %s %s\" %d - \"-\" \"Ning Async Http Client\" \"[]\" [%s][%s]",
                 latency, responseTimestamp, method, uri.toString(), uri.getScheme(), response.getStatusCode(),
-                requestId == null ? "" : requestId);
+                requestId == null ? "" : requestId,
+                couchRequestId == null ? "" : couchRequestId);
     }
 
     static class SimpleDateFormatThreadLocal extends ThreadLocal<SimpleDateFormat> {

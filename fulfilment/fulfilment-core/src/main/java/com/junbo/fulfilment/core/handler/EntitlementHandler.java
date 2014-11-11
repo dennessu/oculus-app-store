@@ -23,10 +23,11 @@ import java.util.List;
 public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
     @Override
     protected FulfilmentResult handle(EntitlementContext context, FulfilmentAction action) {
-        List<String> entitlementIds = new ArrayList<>();
+        List<String> entitlementIds;
 
         Item item = catalogGateway.getItem(action.getItemId(), action.getTimestamp());
 
+        List<Entitlement> entitlements = new ArrayList<>();
         for (int i = 0; i < action.getCopyCount(); i++) {
             for (EntitlementMeta meta : item.getEntitlementMetas()) {
                 Entitlement entitlement = new Entitlement();
@@ -41,12 +42,11 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
                         ? (Integer) action.getProperties().get(Constant.USE_COUNT) : null);
 
                 entitlement.setGrantTime(Utils.now());
-
-                String rawEntitlementid = entitlementGateway.grant(entitlement);
-
-                entitlementIds.add(rawEntitlementid);
+                entitlements.add(entitlement);
             }
         }
+
+        entitlementIds = entitlementGateway.grant(entitlements);
 
         FulfilmentResult result = new FulfilmentResult();
         result.setEntitlementIds(entitlementIds);
