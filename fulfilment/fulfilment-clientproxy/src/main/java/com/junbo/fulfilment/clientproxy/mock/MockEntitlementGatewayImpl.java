@@ -10,13 +10,14 @@ import com.junbo.fulfilment.spec.fusion.Entitlement;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * MockEntitlementGatewayImpl.
  */
 public class MockEntitlementGatewayImpl implements EntitlementGateway {
     @Override
-    public List<String> grant(List<Entitlement> entitlement) {
-        return Collections.singletonList("12345L");
+    public Map<Long, List<String>> grant(Map<Long, List<Entitlement>> entitlement) {
+        return null;
     }
 }

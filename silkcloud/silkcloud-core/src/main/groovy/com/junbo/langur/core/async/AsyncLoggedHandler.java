@@ -24,6 +24,7 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
     private static final SimpleDateFormatThreadLocal DATE_FORMAT =
             new SimpleDateFormatThreadLocal("[yyyy-MM-dd HH:mm:ss.SSS Z]");
     private static final String COUCH_REQUEST_ID = "X-Couch-Request-ID";
+    private static final String COUCH_LOCATION = "Location";
 
     private String method;
     private URI uri;
@@ -103,10 +104,26 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
         Long latency = System.currentTimeMillis() - startTime;
         String responseTimestamp = DATE_FORMAT.get().format(new Date(System.currentTimeMillis()));
         String couchRequestId = response.getHeader(COUCH_REQUEST_ID);
-        return String.format("- %d - %s \"%s %s %s\" %d - \"-\" \"Ning Async Http Client\" \"[]\" [%s][%s]",
+
+        String couchLocation = "";
+        if ("POST".equalsIgnoreCase(method)) {
+            // extract the response ID for POST calls to cloudant
+            couchLocation = response.getHeader(COUCH_LOCATION);
+            if (couchLocation == null) {
+                couchLocation = "";
+            }
+            // when found and / is the last charactor,
+            //      couchLocation.lastIndexOf('/') + 1 == couchLocation.size(), it will not out of bound.
+            // when not found, lastIndexOf return -1 substring(0) is also good.
+            // so it will never out of bound
+            couchLocation = couchLocation.substring(couchLocation.lastIndexOf('/') + 1);
+        }
+
+        return String.format("- %d - %s \"%s %s %s\" %d - \"-\" \"Ning Async Http Client\" \"[]\" [%s][%s][%s]",
                 latency, responseTimestamp, method, uri.toString(), uri.getScheme(), response.getStatusCode(),
                 requestId == null ? "" : requestId,
-                couchRequestId == null ? "" : couchRequestId);
+                couchRequestId == null ? "" : couchRequestId,
+                couchLocation);
     }
 
     static class SimpleDateFormatThreadLocal extends ThreadLocal<SimpleDateFormat> {

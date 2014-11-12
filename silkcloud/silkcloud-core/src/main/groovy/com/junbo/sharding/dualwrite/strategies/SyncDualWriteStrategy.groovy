@@ -7,6 +7,8 @@ package com.junbo.sharding.dualwrite.strategies
 
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.util.Context
+import com.junbo.common.util.Identifiable
+import com.junbo.common.util.Utils
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.DataAccessStrategy
 import com.junbo.sharding.dualwrite.DualWriteQueue
@@ -88,7 +90,7 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
 
         def synchronization = setupTransactionSynchronization();
         return ((Promise<Void>)method.invoke(repositoryImpl, args)).then {
-            return synchronization.delete(args[0]);
+            return synchronization.delete(args[0], replayer.getEntityType());
         }
     }
 
@@ -106,11 +108,11 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
     }
 
     private class DualWriteTransactionSynchronization extends TransactionSynchronizationAdapter {
-        private List<PendingAction> pendingActions;
+        private Map<String, PendingAction> pendingActionMap;
         private Transaction transaction;
 
         public DualWriteTransactionSynchronization() {
-            pendingActions = new ArrayList<>();
+            pendingActionMap = new HashMap<>();
             transaction = transactionManager.transaction;
 
             if (transaction == null) {
@@ -119,15 +121,35 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
         }
 
         public Promise<Void> save(CloudantEntity entity) {
-            return dualWriteQueue.save(entity).then { PendingAction pendingAction ->
-                pendingActions.add(pendingAction);
+            String entityId = keyToLong(entity) + ":" + entity.getClass().getName();
+            PendingAction oldPendingAction = pendingActionMap.get(entityId);
+
+            Promise<PendingAction> savePendingActionFuture;
+            if (oldPendingAction == null) {
+                savePendingActionFuture = dualWriteQueue.save(entity)
+            } else {
+                savePendingActionFuture = dualWriteQueue.save(oldPendingAction, entity)
+            }
+
+            return savePendingActionFuture.then { PendingAction pendingAction ->
+                pendingActionMap.put(entityId, pendingAction);
                 return Promise.pure(null);
             }
         }
 
-        public Promise<Void> delete(Object key) {
-            return dualWriteQueue.delete(key).then { PendingAction pendingAction ->
-                pendingActions.add(pendingAction);
+        public Promise<Void> delete(Object key, Class entityType) {
+            String entityId = Utils.keyToLong(key) + ":" + entityType.getName();
+            PendingAction oldPendingAction = pendingActionMap.get(entityId);
+
+            Promise<PendingAction> savePendingActionFuture;
+            if (oldPendingAction == null) {
+                savePendingActionFuture = dualWriteQueue.delete(key, entityType)
+            } else {
+                savePendingActionFuture = dualWriteQueue.delete(oldPendingAction, key)
+            }
+
+            return savePendingActionFuture.then { PendingAction pendingAction ->
+                pendingActionMap.put(entityId, pendingAction);
                 return Promise.pure(null);
             }
         }
@@ -138,13 +160,17 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
 
         @Override
         public void afterCommit() {
-            for (final PendingAction pendingAction in pendingActions) {
+            // in groovy, the for loop variable changes even when you add final to it
+            // so don NOT use it in the closure!
+            for (PendingAction pendingAction in pendingActionMap.values()) {
+                // use a local variable to avoid the trap.
+                final PendingAction localPendingAction = pendingAction;
                 Context.get().registerPendingTask {
                     // Note: The code in this brackets are run with a new ThreadLocal
-                    def future = replayer.replay(pendingAction);
+                    def future = replayer.replay(localPendingAction);
                     if (ignoreDualWriteErrors) {
                         future = future.recover { Throwable ex ->
-                            logger.error("Failed to dualwrite to cloudant. PendingAction ID: " + pendingAction.id);
+                            logger.error("Failed to dualwrite to cloudant. PendingAction ID: " + localPendingAction.id);
                         }
                     }
                     return future
@@ -154,8 +180,12 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
 
         @Override
         public void afterCompletion(int status) {
-            pendingActions.clear();
+            pendingActionMap.clear();
             transactionStack.get().pop();
+        }
+
+        private Long keyToLong(CloudantEntity entity) {
+            return Utils.keyToLong(((Identifiable)entity).id)
         }
     }
 }

@@ -123,15 +123,10 @@ class CurrencyResourceImpl implements CurrencyResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return currencyValidator.validateForGet(currencyId).then {
-            return currencyService.get(currencyId).then { Currency newCurrency ->
-                if (newCurrency == null) {
-                    throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
-                }
-                return filterCurrency(newCurrency, getOptions).then { Currency filterCurrency ->
-                    filterCurrency = currencyFilter.filterForGet(filterCurrency, getOptions.properties?.split(',') as List<String>)
-                    return Promise.pure(filterCurrency)
-                }
+        return currencyValidator.validateForGet(currencyId).then { Currency newCurrency ->
+            return filterCurrency(newCurrency, getOptions).then { Currency filterCurrency ->
+                filterCurrency = currencyFilter.filterForGet(filterCurrency, getOptions.properties?.split(',') as List<String>)
+                return Promise.pure(filterCurrency)
             }
         }
     }

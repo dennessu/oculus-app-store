@@ -127,15 +127,9 @@ class LocaleResourceImpl implements LocaleResource {
                 return Promise.pure(null)
             }
         } else {
-            return localeValidator.validateForGet(localeId).then {
-                return localeService.get(localeId).then { Locale newLocale ->
-                    if (newLocale == null) {
-                        throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
-                    }
-
-                    newLocale = localeFilter.filterForGet(newLocale, getOptions.properties?.split(',') as List<String>)
-                    return Promise.pure(newLocale)
-                }
+            return localeValidator.validateForGet(localeId).then { Locale newLocale ->
+                newLocale = localeFilter.filterForGet(newLocale, getOptions.properties?.split(',') as List<String>)
+                return Promise.pure(newLocale)
             }
         }
     }

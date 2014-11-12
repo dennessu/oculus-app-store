@@ -594,11 +594,11 @@
     },
     "payment_instrument": {
         "views": {
-            "by_user_id": {
-                "map": "function(doc) {  emit(doc.userId, doc._id)}"
+            "by_user_id_deleted": {
+                "map": "function(doc) {  emit(doc.userId + ':' + doc.isDeleted, doc._id)}"
             },
-            "by_user_id_type": {
-                "map": "function(doc) {  emit(doc.userId  + ':' + doc.type, doc._id)}"
+            "by_user_id_deleted_type": {
+                "map": "function(doc) {  emit(doc.userId + ':' + doc.isDeleted + ':' + doc.type, doc._id)}"
             }
         }
     },

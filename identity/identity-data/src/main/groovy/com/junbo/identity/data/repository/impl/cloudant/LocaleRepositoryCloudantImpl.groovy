@@ -35,13 +35,7 @@ class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements Loc
 
     @Override
     Promise<Locale> get(LocaleId id) {
-        return cloudantGet(id.toString()).then { Locale locale ->
-            if (locale == null) {
-                return Promise.pure(null)
-            }
-
-            return Promise.pure(locale)
-        }
+        return cloudantGet(id.toString())
     }
 
     @Override

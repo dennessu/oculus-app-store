@@ -68,7 +68,7 @@ public class Promise<T> {
         return new Promise<T>(future);
     }
 
-    public static <Void> Promise<Void> pure() {
+    public static Promise pure() {
         return pure(null);
     }
 

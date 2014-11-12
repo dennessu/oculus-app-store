@@ -106,7 +106,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
         session.merge(entity)
         session.flush()
 
-        return get(entity.getId())
+        return get(model.getId())
     }
 
     @Override

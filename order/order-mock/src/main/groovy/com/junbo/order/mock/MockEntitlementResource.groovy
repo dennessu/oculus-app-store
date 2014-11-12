@@ -29,7 +29,7 @@ class MockEntitlementResource extends BaseMock implements EntitlementResource {
     }
 
     @Override
-    Promise<List<Entitlement>> postEntitlements(List<Entitlement> entitlements) {
+    Promise<Map<Long, List<Entitlement>>> postEntitlements(Map<Long, List<Entitlement>> entitlements) {
         return null
     }
 

@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class HandlerSupport<T extends FulfilmentContext>
         extends TransactionSupport
         implements FulfilmentHandler<T> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FulfilmentHandler.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(FulfilmentHandler.class);
 
     @Autowired
     protected CatalogGateway catalogGateway;

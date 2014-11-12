@@ -174,11 +174,11 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.isActive = isActive;
     }
 
-    public Boolean isDeleted() {
-        return isDeleted == null ? false : isDeleted;
+    public Boolean getIsDeleted() {
+        return isDeleted;
     }
 
-    public void setDeleted(Boolean isDeleted) {
+    public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 
