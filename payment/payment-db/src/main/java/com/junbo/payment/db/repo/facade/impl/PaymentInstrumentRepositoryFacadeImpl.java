@@ -108,7 +108,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
 
     public PaymentInstrument getByPIId(Long piId){
         PaymentInstrument pi = paymentInstrumentRepository.get(piId).get();
-        if (pi == null) {
+        if (pi == null || (pi.getIsDeleted() != null && pi.getIsDeleted()) ) {
             return null;
         }
 

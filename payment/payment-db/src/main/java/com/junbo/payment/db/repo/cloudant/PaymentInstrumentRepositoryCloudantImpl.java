@@ -25,9 +25,9 @@ public class PaymentInstrumentRepositoryCloudantImpl extends BaseCloudantReposit
     @Override
     public Promise<List<PaymentInstrument>> getByUserAndType(Long userId, PIType piType) {
         if(piType == null){
-            return super.queryView("by_user_id", userId + ":" + "false");
+            return super.queryView("by_user_id_deleted", userId + ":" + "false");
         }else{
-            return super.queryView("by_user_id_type", userId + ":" + "false" + ":" + piType.getId());
+            return super.queryView("by_user_id_deleted_type", userId + ":" + "false" + ":" + piType.getId());
         }
     }
     @Override

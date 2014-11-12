@@ -42,14 +42,14 @@ public class PaymentInstrumentDao extends CommonDataDAOImpl<PaymentInstrumentEnt
 
     @Override
     public Long save(PaymentInstrumentEntity entity) {
-        entity.setDeleted(false);
+        entity.setIsDeleted(false);
         return super.save(entity);
     }
 
     @Override
     public void delete(Long id) {
         PaymentInstrumentEntity entity = get(id);
-        entity.setDeleted(true);
+        entity.setIsDeleted(true);
         update(entity);
     }
 }
