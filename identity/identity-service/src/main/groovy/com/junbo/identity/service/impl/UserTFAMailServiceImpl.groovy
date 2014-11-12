@@ -3,6 +3,7 @@ package com.junbo.identity.service.impl
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTFAId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserTFAMailRepository
 import com.junbo.identity.service.UserTFAMailService
 import com.junbo.identity.spec.v1.model.UserTFA
@@ -38,12 +39,12 @@ class UserTFAMailServiceImpl implements UserTFAMailService {
     }
 
     @Override
-    Promise<List<UserTFA>> searchTFACodeByUserIdAndPersonalInfoId(UserId userId, UserPersonalInfoId personalInfoId, Integer limit, Integer offset) {
+    Promise<Results<UserTFA>> searchTFACodeByUserIdAndPersonalInfoId(UserId userId, UserPersonalInfoId personalInfoId, Integer limit, Integer offset) {
         return userTFAMailRepository.searchTFACodeByUserIdAndPersonalInfoId(userId, personalInfoId, limit, offset)
     }
 
     @Override
-    Promise<List<UserTFA>> searchTFACodeByUserIdAndPIIAfterTime(UserId userId, UserPersonalInfoId personalInfoId, Integer limit, Integer offset, Long startTimeOffset) {
+    Promise<Results<UserTFA>> searchTFACodeByUserIdAndPIIAfterTime(UserId userId, UserPersonalInfoId personalInfoId, Integer limit, Integer offset, Long startTimeOffset) {
         return userTFAMailRepository.searchTFACodeByUserIdAndPIIAfterTime(userId, personalInfoId, limit, offset, startTimeOffset)
     }
 

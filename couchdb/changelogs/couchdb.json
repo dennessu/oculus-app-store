@@ -512,14 +512,16 @@
     "user_tfa_phone": {
       "views": {
         "by_user_id_personal_info": {
-          "map": "function(doc) {  emit([doc.userId, doc.personalInfo, Date.parse(doc.createdTime)], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.personalInfo, Date.parse(doc.createdTime)], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
     "user_tfa_mail": {
       "views": {
         "by_user_id_personal_info": {
-          "map": "function(doc) {  emit([doc.userId, doc.personalInfo, Date.parse(doc.createdTime)], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.personalInfo, Date.parse(doc.createdTime)], doc._id)}",
+            "reduce": "_count"
         }
       }
     },
