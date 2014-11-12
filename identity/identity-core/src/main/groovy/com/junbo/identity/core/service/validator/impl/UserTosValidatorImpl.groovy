@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserTosAgreementId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.validator.UserTosValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.service.TosService
@@ -16,6 +17,8 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
+
+import javax.xml.transform.Result
 
 /**
  * Created by liangfu on 3/28/14.
@@ -62,9 +65,8 @@ class UserTosValidatorImpl implements UserTosValidator {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
         return checkBasicUserTosInfo(userTos).then {
-            return userTosService.searchByUserIdAndTosId(userTos.userId, userTos.tosId, 1, 0).then {
-                List<UserTosAgreement> existing ->
-                if (!CollectionUtils.isEmpty(existing)) {
+            return userTosService.searchByUserIdAndTosId(userTos.userId, userTos.tosId, 1, 0).then { Results<UserTosAgreement> existing ->
+                if (existing != null && !CollectionUtils.isEmpty(existing.items)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('tosId').exception()
                 }
 
@@ -91,9 +93,8 @@ class UserTosValidatorImpl implements UserTosValidator {
             }
 
             if (userTos.tosId != oldUserTos.tosId) {
-                return userTosService.searchByUserIdAndTosId(userTos.userId, userTos.tosId, 1, 0).then {
-                    List<UserTosAgreement> existing ->
-                    if (!CollectionUtils.isEmpty(existing)) {
+                return userTosService.searchByUserIdAndTosId(userTos.userId, userTos.tosId, 1, 0).then { Results<UserTosAgreement> existing ->
+                    if (existing != null && !CollectionUtils.isEmpty(existing.items)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('tosId').exception()
                     }
 

@@ -447,9 +447,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserTosAgreementListOptions userTosGetOption = new UserTosAgreementListOptions()
         userTosGetOption.setUserId(new UserId(userId))
         userTosGetOption.setTosId(new TosId("456L"))
-        List<UserTosAgreement> userToses = userTosRepository.searchByUserIdAndTosId(new UserId(userId), new TosId("456L"),
+        Results<UserTosAgreement> userToses = userTosRepository.searchByUserIdAndTosId(new UserId(userId), new TosId("456L"),
                 Integer.MAX_VALUE, 0).get()
-        assert userToses.size() != 0
+        assert userToses.items.size() != 0
     }
 
     @Test

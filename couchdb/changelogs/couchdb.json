@@ -560,13 +560,16 @@
     "user_tos": {
       "views": {
         "by_tos_id": {
-          "map": "function(doc) {  emit(doc.tosId, doc._id)}"
+          "map": "function(doc) {  emit(doc.tosId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_tos_id": {
-          "map": "function(doc) { emit([doc.userId, doc.tosId], doc._id)}"
+          "map": "function(doc) { emit([doc.userId, doc.tosId], doc._id)}",
+            "reduce": "_count"
         }
       }
     },

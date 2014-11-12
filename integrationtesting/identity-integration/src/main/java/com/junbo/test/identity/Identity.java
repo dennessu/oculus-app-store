@@ -58,6 +58,7 @@ public class Identity {
     public static final String IdentityV1UserAuthenticatorURI = IdentityEndPointV1 + "/authenticators";
     public static final String IdentityV1PITypeURI = IdentityEndPointV1 + "/payment-instrument-types";
     public static final String IdentityV1UserCommunicationURI = IdentityEndPointV1 + "/opt-ins";
+    public static final String IdentityV1UserTosURI = IdentityEndPointV1 + "/tos-agreements";
 
     public static String httpAuthorizationHeader = "";
 
@@ -428,6 +429,41 @@ public class Identity {
         } else {
             return IdentityV1TosURI;
         }
+    }
+
+    public static UserTosAgreement UserTosAgreementPost(UserId userId, TosId tosId) throws Exception {
+        UserTosAgreement userTosAgreement = new UserTosAgreement();
+        userTosAgreement.setUserId(userId);
+        userTosAgreement.setTosId(tosId);
+        userTosAgreement.setAgreementTime(new Date());
+        return IdentityPost(IdentityV1UserTosURI, JsonHelper.JsonSerializer(userTosAgreement), UserTosAgreement.class);
+    }
+
+    public static UserTosAgreement UserTosAgreementGet(UserTosAgreement userTosAgreement) throws Exception {
+        return IdentityGet(IdentityV1UserTosURI + "/" + userTosAgreement.getId().toString(), UserTosAgreement.class);
+    }
+
+    public static Results<UserTosAgreement> UserTosAgreementSearch(UserId userId, TosId tosId, Integer limit) throws Exception {
+        String url = IdentityV1UserTosURI;
+        if (userId != null && tosId != null) {
+            url = url + "?tosId=" + tosId.toString() + "&userId=" + GetHexLongId(userId.getValue());
+        } else if (userId != null) {
+            url = url + "?userId=" + GetHexLongId(userId.getValue());
+        } else if (tosId != null) {
+            url = url + "?tosId=" + tosId.toString();
+        }
+
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+
+        Results results = IdentityGet(url, Results.class);
+        List<UserTosAgreement> userTosAgreements = new ArrayList<>();
+        for (Object obj : results.getItems()) {
+            userTosAgreements.add((UserTosAgreement)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserTosAgreement.class));
+        }
+        results.setItems(userTosAgreements);
+        return results;
     }
 
     public static User UserPut(User user) throws Exception {
