@@ -107,10 +107,11 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
 
             listOptions.setUserId(userId)
             return userSecurityQuestionAttemptValidator.validateForSearch(listOptions).then {
-                return search(listOptions).then { List<UserSecurityQuestionVerifyAttempt> userSecurityQuestionAttemptList ->
+                return search(listOptions).then { Results<UserSecurityQuestionVerifyAttempt> userSecurityQuestionAttemptList ->
                     def result = new Results<UserSecurityQuestionVerifyAttempt>(items: [])
+                    result.total = userSecurityQuestionAttemptList.total
 
-                    userSecurityQuestionAttemptList.each { UserSecurityQuestionVerifyAttempt attempt ->
+                    userSecurityQuestionAttemptList.items.each { UserSecurityQuestionVerifyAttempt attempt ->
                             attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt,
                                     listOptions.properties?.split(',') as List<String>)
                         if (attempt != null) {
@@ -162,7 +163,7 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
         )
     }
 
-    private Promise<List<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions listOptions) {
+    private Promise<Results<UserSecurityQuestionVerifyAttempt>> search(UserSecurityQuestionAttemptListOptions listOptions) {
         if (listOptions.userId != null && listOptions.userSecurityQuestionId != null) {
             return userSecurityQuestionAttemptService.searchByUserIdAndSecurityQuestionId(listOptions.userId,
                     listOptions.userSecurityQuestionId, listOptions.limit, listOptions.offset)

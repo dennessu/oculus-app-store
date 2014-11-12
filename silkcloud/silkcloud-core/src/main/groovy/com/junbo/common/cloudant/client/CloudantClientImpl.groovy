@@ -336,6 +336,9 @@ class CloudantClientImpl implements CloudantClientInternal {
         if ((endKey != null && !descending) || (startKey != null && descending)) {
             query.put('endkey', descending ? buildStartKey(startKey) : buildEndKey(endKey, withHighKey))
         }
+        if (descending) {
+            query.put('descending', 'true')
+        }
         query.put('include_docs', 'false')
         query.put('reduce', 'true')
 

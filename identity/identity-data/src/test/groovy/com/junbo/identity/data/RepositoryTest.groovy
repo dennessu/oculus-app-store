@@ -472,10 +472,11 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserSecurityQuestionAttemptListOptions option = new UserSecurityQuestionAttemptListOptions()
         option.setUserId(new UserId(userId))
         option.setUserSecurityQuestionId(new UserSecurityQuestionId("123L"))
-        List<UserSecurityQuestionVerifyAttempt> attempts =
+        Results<UserSecurityQuestionVerifyAttempt> attempts =
                 userSecurityQuestionAttemptRepository.searchByUserIdAndSecurityQuestionId(new UserId(userId),
                         new UserSecurityQuestionId("123L"), Integer.MAX_VALUE, 0).get()
-        assert attempts.size() != 0
+        assert attempts != null;
+        assert attempts.items.size() != 0
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.junbo.identity.service.impl
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.service.UserSecurityQuestionAttemptService
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
@@ -38,12 +39,12 @@ class UserSecurityQuestionAttemptServiceImpl implements UserSecurityQuestionAtte
     }
 
     @Override
-    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<Results<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         return userSecurityQuestionAttemptRepository.searchByUserId(userId, limit, offset)
     }
 
     @Override
-    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
+    Promise<Results<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
                                                                  UserSecurityQuestionId userSecurityQuestionId, Integer limit, Integer offset) {
         return userSecurityQuestionAttemptRepository.searchByUserIdAndSecurityQuestionId(userId, userSecurityQuestionId, limit, offset)
     }

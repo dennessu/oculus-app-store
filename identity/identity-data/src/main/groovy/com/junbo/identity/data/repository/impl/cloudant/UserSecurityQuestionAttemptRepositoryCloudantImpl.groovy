@@ -3,6 +3,7 @@ import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.langur.core.promise.Promise
@@ -37,15 +38,15 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
     }
 
     @Override
-    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return queryView('by_user_id', userId.toString(), limit, offset, false)
+    Promise<Results<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return queryViewResults('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
-    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
+    Promise<Results<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
                                      UserSecurityQuestionId userSecurityQuestionId, Integer limit, Integer offset) {
         def startKey = [userId.toString(), userSecurityQuestionId.toString()]
         def endKey = [userId.toString(), userSecurityQuestionId.toString()]
-        return queryView('by_user_id_security_question_id_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
+        return queryViewResults('by_user_id_security_question_id_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
     }
 }

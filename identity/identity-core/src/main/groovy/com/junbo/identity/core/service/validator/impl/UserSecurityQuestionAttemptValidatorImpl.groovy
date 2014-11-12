@@ -8,6 +8,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
@@ -140,14 +141,14 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
 
     private Promise<Void> checkMaximumRetryCount(UserSecurityQuestionVerifyAttempt attempt) {
         return userSecurityQuestionAttemptService.searchByUserIdAndSecurityQuestionId(attempt.userId, attempt.userSecurityQuestionId,
-                maxRetryCount, 0).then { List<UserSecurityQuestionVerifyAttempt> attemptList ->
-            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
+                maxRetryCount, 0).then { Results<UserSecurityQuestionVerifyAttempt> attemptList ->
+            if (attemptList == null || CollectionUtils.isEmpty(attemptList.items) || attemptList.items.size() < maxRetryCount) {
                 return Promise.pure(null)
             }
 
             int index = 0
             for (; index < maxRetryCount; index++) {
-                if (attemptList.get(index).succeeded) {
+                if (attemptList.items.get(index).succeeded) {
                     break
                 }
             }
