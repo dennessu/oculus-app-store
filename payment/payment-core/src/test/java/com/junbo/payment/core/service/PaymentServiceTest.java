@@ -48,7 +48,7 @@ public class PaymentServiceTest extends BaseTest {
     @Test
     public void testRemovePI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
-        PaymentInstrument result = piService.add(request).get();
+        PaymentInstrument result = addPI(request);
         piService.delete(result.getId());
         List<PaymentInstrument> results = piService.searchPi(result.getUserId(), new PaymentInstrumentSearchParam()).get();
         Assert.assertEquals(results.size(), 0);
