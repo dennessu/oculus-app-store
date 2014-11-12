@@ -34,13 +34,7 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
 
     @Override
     Promise<Country> get(CountryId id) {
-        return cloudantGet(id.toString()).then { Country country ->
-            if (country == null) {
-                return Promise.pure(null)
-            }
-
-            return Promise.pure(country)
-        }
+        return cloudantGet(id.toString())
     }
 
     @Override

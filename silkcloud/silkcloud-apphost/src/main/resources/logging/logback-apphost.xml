@@ -159,19 +159,7 @@
     </appender>
 
     <!-- HIBERNATE CALL LOG -->
-    <property name="CONSOLE_HIBERNATE_CALL_PATTERN" value="%clr(%d{[yyyy-MM-dd HH:mm:ss.SSS Z]}){bold} %clr(%5p) %clr(${PID:- }){magenta} %clr([%.20t]){bold} %clr([%.36X{oculus-request-id:- }]){bold} %clr(---){bold} %clr(%.40logger{39}){cyan} %clr(:){bold} %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
     <property name="FILE_HIBERNATE_CALL_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %5p ${PID:- } [%.20t] [%.36X{oculus-request-id:- }] --- %.40logger{39} : %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
-
-    <appender name="CONSOLE_HIBERNATE_CALL_LOG" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${CONSOLE_HIBERNATE_CALL_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="CONSOLE_ASYNC_HIBERNATE_CALL_LOG" class="com.junbo.apphost.core.logging.RealAsyncAppender">
-        <appender-ref ref="CONSOLE_HIBERNATE_CALL_LOG"/>
-    </appender>
-
     <appender name="FILE_HIBERNATE_CALL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logDir}/hibernate_call.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -194,25 +182,45 @@
         <appender-ref ref="FILE_HIBERNATE_CALL_LOG"/>
     </appender>
 
+    <!-- SNIFFER CALL LOG -->
+    <property name="FILE_SNIFFER_CALL_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %5p ${PID:- } [%.20t] [%.36X{oculus-request-id:- }] --- %.40logger{39} : %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
+    <appender name="FILE_SNIFFER_CALL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/sniffer.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Roll the log every day and compress it in GZIP -->
+            <fileNamePattern>${logDir}/sniffer.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- Keep max 10 days logs -->
+            <maxHistory>10</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 500MB -->
+                <maxFileSize>500MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_SNIFFER_CALL_PATTERN}</pattern>
+        </encoder>
+    </appender>
 
+    <appender name="FILE_ASYNC_SNIFFER_CALL_LOG" class="com.junbo.apphost.core.logging.RealAsyncAppender">
+        <appender-ref ref="FILE_SNIFFER_CALL_LOG"/>
+    </appender>
+
+    <!-- loggers -->
     <logger name="com.junbo.apphost.core.logging.AccessLogProbe" level="INFO" additivity="false">
-        <appender-ref ref="CONSOLE_ASYNC_ACCESS_LOG"/>
         <appender-ref ref="FILE_ASYNC_ACCESS_LOG"/>
     </logger>
 
     <logger name="com.junbo.langur.core.async.AsyncLoggedHandler" level="INFO" additivity="false">
-        <appender-ref ref="CONSOLE_ASYNC_EXTERNAL_CALL_LOG"/>
         <appender-ref ref="FILE_ASYNC_EXTERNAL_CALL_LOG"/>
     </logger>
 
     <logger name="com.junbo.sharding.hibernate.SqlEventListeners" level="DEBUG" additivity="false">
-        <appender-ref ref="CONSOLE_ASYNC_HIBERNATE_CALL_LOG"/>
-        <appender-ref ref="FILE_ASYNC_HIBERNATE_CALL_LOG"/>
-    </logger>
-    <logger name="com.junbo.sharding.hibernate.SqlEventListeners" level="DEBUG" additivity="false">
-        <appender-ref ref="CONSOLE_ASYNC_HIBERNATE_CALL_LOG"/>
         <appender-ref ref="FILE_ASYNC_HIBERNATE_CALL_LOG"/>
     </logger>
 
+    <logger name="com.junbo.common.job.cache.CacheSnifferJob" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE_ASYNC_SNIFFER_CALL_LOG"/>
+    </logger>
 
 </configuration>

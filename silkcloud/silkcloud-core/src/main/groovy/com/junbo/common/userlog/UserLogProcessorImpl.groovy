@@ -17,7 +17,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.langur.core.track.UserLogProcessor
 import groovy.transform.CompileStatic
-import org.apache.log4j.MDC
+import org.slf4j.MDC
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod

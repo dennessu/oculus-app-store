@@ -30,17 +30,22 @@ public class PendingActionMapper {
         PendingActionEntity result = new PendingActionEntity();
         result.setId(pendingAction.getId());
 
-        CloudantEntity savedEntity = pendingAction.getSavedEntity();
-        if (savedEntity != null) {
-            result.setSavedEntityType(savedEntity.getClass().getName());
-            try {
-                result.setSavedEntity(marshaller.marshall(savedEntity));
-            } catch (JsonProcessingException ex) {
-                throw new RuntimeException("Failed to marshall " + savedEntity.getClass().getName(), ex);
+        if (pendingAction.isDeleteAction()) {
+            result.setDeletedKey(pendingAction.getDeletedKey());
+            result.setSavedEntityType(pendingAction.getDeletedEntityType());
+        } else {
+            CloudantEntity savedEntity = pendingAction.getSavedEntity();
+            if (savedEntity != null) {
+                result.setSavedEntityType(savedEntity.getClass().getName());
+                try {
+                    result.setSavedEntity(marshaller.marshall(savedEntity));
+                } catch (JsonProcessingException ex) {
+                    throw new RuntimeException("Failed to marshall " + savedEntity.getClass().getName(), ex);
+                }
+            } else {
+                throw new RuntimeException("Save action must have non-null saved entity.");
             }
         }
-
-        result.setDeletedKey(pendingAction.getDeletedKey());
         result.setChangedEntityId(pendingAction.getChangedEntityId());
         result.setRetryCount(pendingAction.getRetryCount());
         result.setResourceAge(pendingAction.getResourceAge());
@@ -66,7 +71,8 @@ public class PendingActionMapper {
         String savedEntityType = pendingAction.getSavedEntityType();
         String savedEntityJson = pendingAction.getSavedEntity();
 
-        if (savedEntityType != null) {
+        if (savedEntityJson != null) {
+            // save action
             try {
                 Class cls = Class.forName(savedEntityType);
                 result.setSavedEntity((CloudantEntity)marshaller.unmarshall(savedEntityJson, cls));
@@ -75,9 +81,12 @@ public class PendingActionMapper {
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to unmarshall " + savedEntityType + " with json: " + savedEntityJson, ex);
             }
+        } else {
+            // delete action
+            result.setDeletedEntityType(savedEntityType);
+            result.setDeletedKey(pendingAction.getDeletedKey());
         }
 
-        result.setDeletedKey(pendingAction.getDeletedKey());
         result.setChangedEntityId(pendingAction.getChangedEntityId());
         result.setRetryCount(pendingAction.getRetryCount());
         result.setResourceAge(pendingAction.getResourceAge());

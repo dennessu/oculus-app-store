@@ -124,16 +124,10 @@ class CountryResourceImpl implements CountryResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return countryValidator.validateForGet(countryId).then {
-            return countryService.get(countryId).then { Country newCountry ->
-                if (newCountry == null) {
-                    throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
-                }
-
-                return filterCountry(newCountry, getOptions.locale).then { Country filterCountry ->
-                    filterCountry = countryFilter.filterForGet(filterCountry, getOptions.properties?.split(',') as List<String>)
-                    return Promise.pure(filterCountry)
-                }
+        return countryValidator.validateForGet(countryId).then { Country country ->
+            return filterCountry(country, getOptions.locale).then { Country filterCountry ->
+                filterCountry = countryFilter.filterForGet(filterCountry, getOptions.properties?.split(',') as List<String>)
+                return Promise.pure(filterCountry)
             }
         }
     }

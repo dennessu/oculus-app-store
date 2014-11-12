@@ -9,10 +9,11 @@ import com.junbo.common.filter.SequenceIdFilter;
 import com.junbo.common.routing.model.DataAccessPolicy;
 import com.junbo.configuration.topo.Topology;
 import com.junbo.langur.core.profiling.ProfilingHelper;
+import com.junbo.langur.core.promise.ExecutorContext;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.promise.ThreadLocalRequireNew;
 import groovy.lang.Closure;
-import org.apache.log4j.MDC;
+import org.slf4j.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,14 +131,17 @@ public class Context {
          * The tasks will be drained automatically before returning from RestAdapter.
          * @param closure The closure which generates the promise.
          */
-        public void registerPendingTask(Closure<Promise> closure) {
+        public void registerPendingTask(final Closure<Promise> closure) {
             ProfilingHelper.appendRow(logger, "(PT) BEGIN registering pending task");
-            final String requestId = (String)MDC.get(SequenceIdFilter.X_REQUEST_ID);
+            final String requestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
             try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
-                MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
-                Promise promise = closure.call();
-                this.pendingTasks.add(promise);
-                MDC.remove(SequenceIdFilter.X_REQUEST_ID);
+                Promise.pure().then(new Promise.Func<Void, Promise<Void>>() {
+                    @Override
+                    public Promise<Void> apply(Void aVoid) {
+                        MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
+                        return closure.call();
+                    }
+                }, ExecutorContext.getAsyncExecutor());
             }
             ProfilingHelper.appendRow(logger, "(PT) END registering pending task");
         }
@@ -150,15 +154,18 @@ public class Context {
          * The tasks will be drained automatically before returning from RestAdapter.
          * @param func The function which generates the promise.
          */
-        public void registerPendingTask(Promise.Func0<Promise> func) {
+        public void registerPendingTask(final Promise.Func0<Promise> func) {
             ProfilingHelper.appendRow(logger, "(PT) BEGIN registering pending task");
-            final String requestId = (String)MDC.get(SequenceIdFilter.X_REQUEST_ID);
+            final String requestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
 
             try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
-                MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
-                Promise promise = func.apply();
-                this.pendingTasks.add(promise);
-                MDC.remove(SequenceIdFilter.X_REQUEST_ID);
+                Promise.pure().then(new Promise.Func<Void, Promise<Void>>() {
+                    @Override
+                    public Promise<Void> apply(Void aVoid) {
+                        MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
+                        return func.apply();
+                    }
+                }, ExecutorContext.getAsyncExecutor());
             }
             ProfilingHelper.appendRow(logger, "(PT) END registering pending task");
         }

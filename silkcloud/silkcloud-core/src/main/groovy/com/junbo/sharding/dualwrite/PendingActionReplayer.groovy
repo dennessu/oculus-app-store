@@ -28,15 +28,22 @@ public class PendingActionReplayer {
     private BaseRepository repository;
     private PendingActionRepository pendingActionRepository;
     private AsyncTransactionTemplate transactionTemplate;
+    private Class entityType;
 
-    public PendingActionReplayer(BaseRepository repository, PendingActionRepository pendingActionRepository, PlatformTransactionManager transactionManager) {
+    public PendingActionReplayer(BaseRepository repository, PendingActionRepository pendingActionRepository, PlatformTransactionManager transactionManager, Class entityType) {
         this.repository = repository;
         this.pendingActionRepository = pendingActionRepository;
         this.transactionTemplate = new AsyncTransactionTemplate(transactionManager);
         this.transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        this.entityType = entityType;
+    }
+
+    public Class getEntityType() {
+        return entityType
     }
 
     public Promise<Void> replay(PendingAction action) {
+        logger.info("Replaying action {} changed entity id is {}", action.id, action.changedEntityId)
         return transactionTemplate.execute {
             Promise<Boolean> future;
             if (action.isSaveAction()) {
@@ -59,7 +66,7 @@ public class PendingActionReplayer {
     private Promise<Boolean> replaySave(CloudantEntity entity) {
         assert entity instanceof Identifiable
 
-        Object key = ((Identifiable)entity).id
+        Object key = ((Identifiable)entity).id ?: entity.cloudantId
         return repository.get(key).then { CloudantEntity savedEntity ->
             if (savedEntity == null) {
                 return repository.create(entity);
