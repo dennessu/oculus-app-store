@@ -4,6 +4,7 @@ import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.model.FBPayoutStatusChangeRequest
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerParam
@@ -50,5 +51,11 @@ class SubledgerResourceImpl implements SubledgerResource {
         Results<Subledger> results = new Results<>()
         results.setItems(subledgers)
         return Promise.pure(results)
+    }
+
+    @Override
+    Promise<Void> updateStatusOnFacebookPayoutStatusChange(FBPayoutStatusChangeRequest request) {
+        subledgerService.updateStatusOnFacebookPayoutStatusChange(request);
+        return Promise.pure()
     }
 }

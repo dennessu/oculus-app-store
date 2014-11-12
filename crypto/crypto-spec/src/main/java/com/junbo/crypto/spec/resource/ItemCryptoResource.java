@@ -25,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 public interface ItemCryptoResource {
     @POST
     @Path("crypto/{itemId}/sign")
-    Promise<ItemCryptoMessage> sign(@PathParam("itemId") String itemId, ItemCryptoMessage rawMessage);
+    Promise<ItemCryptoMessage> sign(@PathParam("itemId") String itemId, ItemCryptoMessage rawMessage, @QueryParam("digested") Boolean digested);
 
     @POST
     @Path("crypto/{itemId}/refresh-token")

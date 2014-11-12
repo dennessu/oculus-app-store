@@ -261,6 +261,22 @@ public class CommonMapper {
         return new OrderEventId(orderEventId);
     }
 
+    public Long fromSubledgerEventIdToLong(SubledgerEventId subledgerEventId) {
+        if (subledgerEventId == null) {
+            return null;
+        }
+
+        return subledgerEventId.getValue();
+    }
+
+    public SubledgerEventId fromLongToSubledgerEventId(Long subledgerEventId) {
+        if (subledgerEventId == null) {
+            return null;
+        }
+
+        return new SubledgerEventId(subledgerEventId);
+    }
+
     public ItemType fromStringToItemType(String itemType) {
         if (itemType == null) {
             return null;
@@ -571,6 +587,25 @@ public class CommonMapper {
         }
     }
 
+    public String fromSubledgerActionTypeToString(SubledgerActionType subledgerActionType) {
+        if (subledgerActionType == null) {
+            return null;
+        }
+        return subledgerActionType.toString();
+    }
+
+    public SubledgerActionType fromStringToSubledgerActionType(String subledgerActionType) {
+        if (subledgerActionType == null) {
+            return null;
+        }
+
+        try {
+            return SubledgerActionType.valueOf(subledgerActionType);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(subledgerActionType, "subledgerActionType").exception();
+        }
+    }
+
     public String fromSubledgerItemActionToString(SubledgerItemAction subledgerItemAction) {
         if (subledgerItemAction == null) {
             return null;
@@ -613,5 +648,21 @@ public class CommonMapper {
         catch (Exception ex) {
             return null;
         }
+    }
+
+    public PayoutId fromLongTPayoutId(Long payoutId) {
+        if (payoutId == null) {
+            return null;
+        }
+
+        return new PayoutId(payoutId);
+    }
+
+    public Long fromPayoutIdToLong(PayoutId payoutId) {
+        if (payoutId == null) {
+            return null;
+        }
+
+        return payoutId.getValue();
     }
 }

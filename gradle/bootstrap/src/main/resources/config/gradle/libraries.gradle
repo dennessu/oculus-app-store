@@ -52,6 +52,7 @@ ext {
             spring_context_support: "org.springframework:spring-context-support:4.0.2.RELEASE",
 
             common_beanutils: 'commons-beanutils:commons-beanutils:1.8.3',
+            common_vf2: 'org.apache.commons:commons-vfs2:2.0',
 
             // quartz
             quartz_scheduler: 'org.quartz-scheduler:quartz:2.2.1',
@@ -131,6 +132,9 @@ ext {
             // kryo lib
             kryo: 'com.esotericsoftware.kryo:kryo:2.24.0',
 
+            // jsch
+            jsch: 'com.jcraft:jsch:0.1.50',
+
             //aspectj
             aspectjrt: 'org.aspectj:aspectjrt:1.7.4',
             aspectjweaver: 'org.aspectj:aspectjweaver:1.7.4',
@@ -168,6 +172,8 @@ ext {
             javax_jta:  'javax.transaction:jta:1.1',
 
             jsoup: 'org.jsoup:jsoup:1.7.3',
+
+            ostermiller_utils: 'org.ostermiller:utils:1.07.00',
 
             metrics: 'io.dropwizard.metrics:metrics-core:3.1.0',
 

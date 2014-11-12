@@ -15,7 +15,10 @@
             <list>
                 <!-- <ref bean="orderJobTrigger"/>  no functions needs order job, disable for now-->
                 <ref bean="subledgerJobTrigger"/>
+                <ref bean="payoutExportJobTrigger"/>
+                <ref bean="payoutUpdateJobTrigger"/>
                 <ref bean="orderAuditTaxJobTrigger"/>
+                <ref bean="payoutUpdateJobTrigger"/>
             </list>
         </property>
         <property name="quartzProperties">
@@ -79,6 +82,43 @@
         <property name="concurrent" value="false"/>
     </bean>
 
+    <!-- Payout export Job & Trigger-->
+    <bean id="payoutExportJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="payoutExportJobDetails" />
+        <property name="cronExpression" value="${order.jobs.payout.export.cronexpression}" />
+        <property name="timeZone" value="GMT" />
+    </bean>
+
+    <bean id="payoutExportJobDetails" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="order.payoutExportJob"/>
+                </property>
+            </bean>
+        </property>
+        <property name="targetMethod" value="exportAndUploadDaily" />
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- Payout update Job & Trigger-->
+    <bean id="payoutUpdateJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="payoutUpdateJobDetails" />
+        <property name="cronExpression" value="${order.jobs.payout.update.cronexpression}" />
+    </bean>
+
+    <bean id="payoutUpdateJobDetails" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="order.payoutUpdateJob"/>
+                </property>
+            </bean>
+        </property>
+        <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false"/>
+    </bean>
+
     <bean id="orderJob" class="com.junbo.order.jobs.OrderJob" >
         <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
         <property name="orderProcessor" ref="orderChargeProcessor"/>
@@ -117,6 +157,18 @@
         </property>
     </bean>
 
+    <bean id="payoutExportJobAsyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="${order.jobs.order.process.poolsize}" />
+        <property name="maxPoolSize" value="${order.jobs.order.process.poolsize}" />
+        <property name="queueCapacity" value="0" />
+    </bean>
+
+    <bean id="payoutUpdateJobAsyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="${order.jobs.order.process.poolsize}" />
+        <property name="maxPoolSize" value="${order.jobs.order.process.poolsize}" />
+        <property name="queueCapacity" value="0" />
+    </bean>
+
     <!-- Exporter -->
     <bean id="orderMbeanExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
         <property name="beans">
@@ -124,8 +176,21 @@
                 <entry key="quartz:type=QuartzJob,name=orderAuditTaxJob">
                     <idref bean="orderAuditTaxJob"/>
                 </entry>
+                <entry key="quartz:type=QuartzJob,name=payoutExportJob">
+                    <idref bean="order.payoutExportJob"/>
+                </entry>
+                <entry key="quartz:type=QuartzJob,name=payoutUpdateJob">
+                    <idref bean="order.payoutUpdateJob"/>
+                </entry>
             </map>
         </property>
+    </bean>
+
+    <bean id="subledgerPayoutFTPUtils" class="com.junbo.order.jobs.utils.ftp.FTPUtils">
+        <property name="host" value="${order.jobs.subledger.ftp.host}"/>
+        <property name="port" value="${order.jobs.subledger.ftp.port}"/>
+        <property name="user" value="${order.jobs.subledger.ftp.user}"/>
+        <property name="password" value="${order.jobs.subledger.ftp.password}"/>
     </bean>
 
 </beans>

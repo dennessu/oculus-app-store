@@ -2,6 +2,7 @@ package com.junbo.order.jobs
 import com.junbo.common.id.OrderId
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.jobs.utils.ftp.FTPUtils
 import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.Order
@@ -89,4 +90,15 @@ class TestOrderJob extends AbstractTestNGSpringContextTests {
         }
         return list
     }
+/*
+    @Test
+    public void test() {
+        FTPUtils ftpUtils = new FTPUtils()
+        ftpUtils.host = '54.183.161.185'
+        ftpUtils.port = '9222'
+        ftpUtils.user = 'silkcloudtest1'
+        ftpUtils.password = 'ssalesholfer'
+      //  ftpUtils.downloadFile(new File('OculusTransaction-2014-11-10.csv'), '/fb_payout/OculusTransaction-2014-11-10.csv')
+        ftpUtils.uploadFile(new File('OculusTransaction-2014-11-10.csv'), '/fb_payout/OculusTransaction-2014-11-10.csv')
+    }*/
 }

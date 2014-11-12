@@ -21,7 +21,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.cache.ehcache.EhCacheCacheManager
 import org.springframework.transaction.annotation.Transactional
+import sun.security.rsa.RSASignature
+import sun.security.x509.AlgorithmId
 
+import javax.crypto.Cipher
 import java.security.*
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
@@ -41,6 +44,7 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
     private static final String KEY_GENERATOR_ALGORITHM = 'RSA'
     private static final Integer KEY_GENERATOR_ALGORITHM_LENGTH = 2048
     private static final String SIGNATURE_ALGORITHM = 'SHA1withRSA'
+    private static final String ENCRYPT_ALGORITHM = 'RSA'
 
     private ItemCryptoValidator validator
 
@@ -71,7 +75,7 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
     }
 
     @Override
-    Promise<ItemCryptoMessage> sign(String itemId, ItemCryptoMessage rawMessage) {
+    Promise<ItemCryptoMessage> sign(String itemId, ItemCryptoMessage rawMessage, Boolean digested) {
         validator.validateForSign(itemId, rawMessage)
 
         Element element = getCache(PRIVATE_KEY_CACHE_NAME).get(itemId)
@@ -79,11 +83,11 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
         if (element == null) {
             return saveOrGetPrivateKey(itemId, true).then { PrivateKey privateKey ->
                 getCache(PRIVATE_KEY_CACHE_NAME).put(new Element(itemId, privateKey))
-                return signMessageByKey(privateKey, rawMessage.message)
+                return signMessageByKey(privateKey, rawMessage.message, digested)
             }
         }
 
-        return signMessageByKey((PrivateKey)element.objectValue, rawMessage.message)
+        return signMessageByKey((PrivateKey)element.objectValue, rawMessage.message, digested)
     }
 
     @Override
@@ -264,15 +268,25 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
         }
     }
 
-    private Promise<ItemCryptoMessage> signMessageByKey(PrivateKey key, String message) {
-        Signature instance = Signature.getInstance(SIGNATURE_ALGORITHM)
-        instance.initSign(key)
-        instance.update(message.getBytes("UTF-8"))
-        String signed = new String(Base64.encodeBase64(instance.sign()))
-        ItemCryptoMessage itemCryptoMessage = new ItemCryptoMessage(
-                message: signed
-        )
-
+    private Promise<ItemCryptoMessage> signMessageByKey(PrivateKey key, String message, boolean digested) {
+        ItemCryptoMessage itemCryptoMessage
+        if (!digested) {
+            Signature instance = Signature.getInstance(SIGNATURE_ALGORITHM)
+            instance.initSign(key)
+            instance.update(Base64.decodeBase64(message))
+            String signed = new String(Base64.encodeBase64(instance.sign()))
+            itemCryptoMessage = new ItemCryptoMessage(
+                    message: signed
+            )
+        } else { // already digested, only encrypt the digest
+            byte[] encode = RSASignature.encodeSignature(AlgorithmId.SHA_oid, Base64.decodeBase64(message))
+            Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM)
+            cipher.init(Cipher.ENCRYPT_MODE, key)
+            String encrypted = new String(Base64.encodeBase64(cipher.doFinal(encode)))
+            itemCryptoMessage = new ItemCryptoMessage(
+                    message: encrypted
+            )
+        }
         return Promise.pure(itemCryptoMessage)
     }
 

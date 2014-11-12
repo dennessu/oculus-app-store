@@ -11,6 +11,7 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrganizationId;
+import com.junbo.common.id.PayoutId;
 import com.junbo.common.id.SubledgerId;
 import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.ResourceMetaForDualWrite;
@@ -23,7 +24,7 @@ import java.util.Date;
  */
 @JsonPropertyOrder(value = {
         "id", "seller", "offer", "country", "currency",
-        "payoutStatus", "totalAmount", "totalPayoutAmount" , "totalQuantity", "startTime", "endTime", "resourceAge"
+        "payoutStatus", "payoutId", "totalAmount", "totalPayoutAmount" , "totalQuantity", "startTime", "endTime", "resourceAge"
 })
 public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
     @JsonProperty("self")
@@ -39,6 +40,7 @@ public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
     private BigDecimal totalAmount;
     private BigDecimal totalPayoutAmount;
     private Long totalQuantity;
+    private PayoutId payoutId;
 
     public SubledgerId getId() {
         return id;
@@ -126,5 +128,13 @@ public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
 
     public void setTotalQuantity(Long totalQuantity) {
         this.totalQuantity = totalQuantity;
+    }
+
+    public PayoutId getPayoutId() {
+        return payoutId;
+    }
+
+    public void setPayoutId(PayoutId payoutId) {
+        this.payoutId = payoutId;
     }
 }

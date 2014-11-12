@@ -5,6 +5,10 @@ dependencies {
     compile junboProject(":order-core")
     compile junboProject(":silkcloud-core")
     compile (libraries.quartz_scheduler)
+    compile (libraries.common_io)
+    compile (libraries.ostermiller_utils)
+    compile (libraries.common_vf2)
+    compile (libraries.jsch)
 
     testCompile (libraries.spring_test)
     testCompile (libraries.common_lang)

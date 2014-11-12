@@ -9,6 +9,7 @@ import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorDetail;
 import com.junbo.common.error.ErrorProxy;
+import com.junbo.common.id.PayoutId;
 
 /**
  * Interface for AppError.
@@ -188,4 +189,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "151", message = "Offer Not Purchasable", reason = "Order contains offers that not purchasable.")
     AppError offerNotPurchasable();
+
+    @ErrorDef(httpStatusCode = 412, code = "300", message = "Subledgers not found by payout Id.", reason = "Subledgers not found by payout Id:{0}")
+    AppError subledgerNotFoundByPayoutId(PayoutId payoutId);
 }

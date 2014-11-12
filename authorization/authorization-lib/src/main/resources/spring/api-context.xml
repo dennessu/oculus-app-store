@@ -109,6 +109,7 @@
                 <entry key="OrderResource" value="commerce order.service csr"/>
                 <entry key="SubledgerItemResource" value="subledger.service"/>
                 <entry key="SubledgerResource.createSubledger" value="subledger.service"/>
+                <entry key="SubledgerResource.updateStatusOnFacebookPayoutStatusChange" value="subledger.service"/>
                 <entry key="SubledgerResource" value="subledger subledger.service"/>
                 <!-- payment -->
                 <entry key="PaymentInstrumentResource" value="commerce payment.service csr"/>

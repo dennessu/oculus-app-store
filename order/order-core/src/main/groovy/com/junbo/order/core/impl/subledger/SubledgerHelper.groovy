@@ -1,6 +1,5 @@
 package com.junbo.order.core.impl.subledger
 
-import com.google.common.math.IntMath
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.order.clientproxy.model.Offer
@@ -13,9 +12,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-import java.math.RoundingMode
 import java.text.SimpleDateFormat
-
 /**
  * Created by fzhang on 4/10/2014.
  */
@@ -23,7 +20,7 @@ import java.text.SimpleDateFormat
 @Component('orderSubledgerHelper')
 class SubledgerHelper {
 
-    private static final int MONTH_A_YEAR = 12
+    private static final long MS_A_DAY = 24L * 3600 * 1000
 
     @Resource(name = 'subledgerRepositoryFacade')
     SubledgerRepositoryFacade subledgerRepository
@@ -34,41 +31,13 @@ class SubledgerHelper {
     @Resource(name = 'subledgerItemContextBuilder')
     SubledgerItemContextBuilder subledgerItemContextBuilder
 
-    private Date startTime
-
-    private int durationInMonth
-
-    @Value('${order.subledger.starttime}')
-    void setStartTime(String originTime) {
-        this.startTime = new SimpleDateFormat('yyyy-MM-dd', Locale.US).parse(originTime)
-    }
-
-    @Value('${order.subledger.duration}')
-    void setDurationInMonth(int durationInMonth) {
-        this.durationInMonth = durationInMonth
-    }
-
     Date getSubledgerStartTime(Date sampleTime) {
-        def result = Calendar.instance
-        def monthDiff = diffMonth(sampleTime, startTime)
-
-        def deltaMonth = IntMath.divide(monthDiff, durationInMonth, RoundingMode.FLOOR) * durationInMonth
-        result.setTime(startTime)
-        result.add(Calendar.MONTH, deltaMonth)
-
-        if (sampleTime.before(result.time)) {
-            result.add(Calendar.MONTH, -durationInMonth)
-        }
-
-        assert result.time <= sampleTime
-        return result.time
+        return new Date(sampleTime.year, sampleTime.month, sampleTime.date)
     }
 
     Date getNextSubledgerStartTime(Date sampleTime) {
-        def result = Calendar.instance
-        result.time = getSubledgerStartTime(sampleTime)
-        result.add(Calendar.MONTH, durationInMonth)
-        return result.time
+        Date start = getSubledgerStartTime(sampleTime)
+        return new Date(start.time + MS_A_DAY)
     }
 
     Subledger getMatchingSubledger(SubledgerItemContext subledgerItemContext) {
@@ -95,9 +64,5 @@ class SubledgerHelper {
                 currency: context.currency
         )
         return subledger
-    }
-
-    private static int diffMonth(Date left, Date right) {
-        (left.year * MONTH_A_YEAR + left.month) - (right.year * MONTH_A_YEAR + right.month)
     }
 }

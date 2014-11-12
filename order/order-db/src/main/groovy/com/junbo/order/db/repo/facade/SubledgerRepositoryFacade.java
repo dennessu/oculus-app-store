@@ -8,10 +8,7 @@ package com.junbo.order.db.repo.facade;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.*;
-import com.junbo.order.spec.model.PageParam;
-import com.junbo.order.spec.model.Subledger;
-import com.junbo.order.spec.model.SubledgerItem;
-import com.junbo.order.spec.model.SubledgerParam;
+import com.junbo.order.spec.model.*;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +27,11 @@ public interface SubledgerRepositoryFacade {
     List<Subledger> getSubledgers(SubledgerParam subledgerParam,
                                   PageParam pageParam);
 
+    List<Subledger> getSubledgersOrderBySeller(int dataCenterId, int shardId, String payOutStatus, Date startDate, Date endDate,
+                                  PageParam pageParam);
+
+    List<Subledger> getSubledgersByPayouId(PayoutId payoutId, PageParam pageParam);
+
     Subledger findSubledger(OrganizationId sellerId, String payoutStatus,
                                           OfferId offerId, Date startTime,  CurrencyId currency,
                                           CountryId country);
@@ -43,6 +45,10 @@ public interface SubledgerRepositoryFacade {
     List<SubledgerItem> getSubledgerItemByOrderItemId(OrderItemId orderItemId);
 
     SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem, SubledgerItem oldSubledgerItem);
+
+    SubledgerEvent createSubledgerEvent(SubledgerEvent subledgerEvent);
+
+    List<SubledgerEvent> getSubledgerEvents(SubledgerId subledgerId);
 }
 
 
