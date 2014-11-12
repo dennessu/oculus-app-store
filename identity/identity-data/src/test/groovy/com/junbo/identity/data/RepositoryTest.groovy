@@ -583,8 +583,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         assert userTeleBackupCode.verifyCode == newVerifyCode
 
-        List<UserTFABackupCode> results = userTFABackupCodeRepository.searchByUserId(userId, 100, 0).get()
-        assert results.size() != 0
+        Results<UserTFABackupCode> results = userTFABackupCodeRepository.searchByUserId(userId, 100, 0).get()
+        assert results.items.size() != 0
     }
 
     @Test
@@ -609,8 +609,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         assert attempt.verifyCode == newVerifyCode
 
-        List<UserTFABackupCodeAttempt> results = userTFABackupCodeAttemptRepository.searchByUserId(userId, 100, 0).get()
-        assert results.size() != 0
+        Results<UserTFABackupCodeAttempt> results = userTFABackupCodeAttemptRepository.searchByUserId(userId, 100, 0).get()
+        assert results.items.size() != 0
     }
 
     @Test(enabled = false)

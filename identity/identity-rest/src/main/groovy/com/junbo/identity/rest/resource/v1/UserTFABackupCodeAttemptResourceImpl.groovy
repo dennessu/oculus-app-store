@@ -133,9 +133,9 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
             }
 
             return userTFABackupCodeAttemptValidator.validateForSearch(userId, listOptions).then {
-                return search(listOptions).then { List<UserTFABackupCodeAttempt> attemptList ->
+                return search(listOptions).then { Results<UserTFABackupCodeAttempt> attemptList ->
                     def result = new Results<UserTFABackupCodeAttempt>(items: [])
-
+                    result.total = attemptList.total
                     attemptList.each { UserTFABackupCodeAttempt attempt ->
                         attempt = userTFABackupCodeAttemptFilter.filterForGet(attempt,
                                 listOptions.properties?.split(',') as List<String>)
@@ -159,7 +159,7 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
         )
     }
 
-    private Promise<List<UserTFABackupCodeAttempt>> search(UserTFABackupCodeAttemptListOptions listOptions) {
+    private Promise<Results<UserTFABackupCodeAttempt>> search(UserTFABackupCodeAttemptListOptions listOptions) {
         if (listOptions.userId != null) {
             return userTFAPhoneBackupCodeAttemptService.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)

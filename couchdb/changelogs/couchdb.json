@@ -528,17 +528,20 @@
     "user_tfa_phone_back_up_code": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_active": {
-          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 
     "user_tfa_phone_back_up_code_attempt": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit([doc.userId, Date.parse(doc.createdTime)], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, Date.parse(doc.createdTime)], doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 

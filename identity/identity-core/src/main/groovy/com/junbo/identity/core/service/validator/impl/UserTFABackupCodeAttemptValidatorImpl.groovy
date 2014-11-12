@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeAttemptId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.validator.UserTFABackupCodeAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.service.UserService
@@ -151,12 +152,12 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
             attempt.userId = userId
 
             return userTFAPhoneBackupCodeService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize,
-                    0).then { List<UserTFABackupCode> userTFABackupCodeList ->
-                if (CollectionUtils.isEmpty(userTFABackupCodeList)) {
+                    0).then { Results<UserTFABackupCode> userTFABackupCodeList ->
+                if (userTFABackupCodeList == null || CollectionUtils.isEmpty(userTFABackupCodeList.items)) {
                     throw AppErrors.INSTANCE.userTFABackupCodeIncorrect().exception()
                 }
 
-                if (userTFABackupCodeList.any { UserTFABackupCode userTFABackupCode ->
+                if (userTFABackupCodeList.items.any { UserTFABackupCode userTFABackupCode ->
                     return (userTFABackupCode.active && userTFABackupCode.expiresBy.after(new Date())
                         && userTFABackupCode.verifyCode == attempt.verifyCode)
                 }) {
@@ -175,12 +176,12 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
             return Promise.pure(null)
         }
 
-        return userTFAPhoneBackupCodeAttemptService.searchByUserId((UserId)user.id, maxRetryCount, 0).then { List<UserTFABackupCodeAttempt> attemptList ->
-            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
+        return userTFAPhoneBackupCodeAttemptService.searchByUserId((UserId)user.id, maxRetryCount, 0).then { Results<UserTFABackupCodeAttempt> attemptList ->
+            if (attemptList == null || CollectionUtils.isEmpty(attemptList.items) || attemptList.items.size() < maxRetryCount) {
                 return Promise.pure(null)
             }
 
-            UserTFABackupCodeAttempt userTFABackupCodeAttempt = attemptList.find { UserTFABackupCodeAttempt backupCodeAttempt ->
+            UserTFABackupCodeAttempt userTFABackupCodeAttempt = attemptList.items.find { UserTFABackupCodeAttempt backupCodeAttempt ->
                 return backupCodeAttempt.succeeded
             }
 
