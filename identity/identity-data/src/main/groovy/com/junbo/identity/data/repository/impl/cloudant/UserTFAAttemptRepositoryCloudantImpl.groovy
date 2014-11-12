@@ -3,6 +3,7 @@ import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.common.id.UserTFAId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserTFAAttemptRepository
 import com.junbo.identity.spec.v1.model.UserTFAAttempt
 import com.junbo.langur.core.promise.Promise
@@ -15,16 +16,16 @@ class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt
         implements UserTFAAttemptRepository {
 
     @Override
-    Promise<List<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return queryView('by_user_id', userId.toString(), limit, offset, false)
+    Promise<Results<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return queryViewResults('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
-    Promise<List<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId,
+    Promise<Results<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId,
                                                                Integer limit, Integer offset) {
         def startKey = [userId.toString(), userTFAId.toString()]
         def endKey = [userId.toString(), userTFAId.toString()]
-        return queryView('by_user_id_tfa_id_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
+        return queryViewResults('by_user_id_tfa_id_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
     }
 
     @Override

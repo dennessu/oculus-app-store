@@ -3,6 +3,7 @@ package com.junbo.identity.service
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.common.id.UserTFAId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.UserTFAAttempt
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -20,8 +21,8 @@ public interface UserTFAAttemptService {
 
     Promise<Void> delete(UserTFAAttemptId id)
 
-    Promise<List<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset)
+    Promise<Results<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
-    Promise<List<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId,
+    Promise<Results<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId,
                                                              Integer limit, Integer offset)
 }

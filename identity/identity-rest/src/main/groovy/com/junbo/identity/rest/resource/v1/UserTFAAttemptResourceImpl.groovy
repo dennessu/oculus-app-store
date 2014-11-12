@@ -130,10 +130,10 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
             }
 
             return userTFAAttemptValidator.validateForSearch(userId, listOptions).then {
-                return search(listOptions).then { List<UserTFAAttempt> attemptList ->
+                return search(listOptions).then { Results<UserTFAAttempt> attemptList ->
                     def result = new Results<UserTFAAttempt>(items: [])
-
-                    attemptList.each { UserTFAAttempt attempt ->
+                    result.total = attemptList.total
+                    attemptList.items.each { UserTFAAttempt attempt ->
                         attempt = userTFAAttemptFilter.filterForGet(attempt,
                                 listOptions.properties?.split(',') as List<String>)
                         attempt.verifyCode = null
@@ -157,7 +157,7 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
         )
     }
 
-    private Promise<List<UserTFAAttempt>> search(UserTFAAttemptListOptions listOptions) {
+    private Promise<Results<UserTFAAttempt>> search(UserTFAAttemptListOptions listOptions) {
         if (listOptions.userId != null && listOptions.userTFAId != null) {
             return userTFAAttemptService.searchByUserIdAndUserTFAId(listOptions.userId, listOptions.userTFAId,
                     listOptions.limit, listOptions.offset)
