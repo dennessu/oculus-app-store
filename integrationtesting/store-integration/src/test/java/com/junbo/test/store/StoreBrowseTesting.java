@@ -668,10 +668,9 @@ public class StoreBrowseTesting extends BaseTestClass {
         itemId = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId()).getItemId();
         boolean isInitialItem = getInitialItems().contains(itemId);
 
-        AddReviewRequest addReviewRequest = null;
+        AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
         if (!isInitialItem) {
             // add review not purchased
-            addReviewRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
             testDataProvider.addReview(addReviewRequest, 412);
             Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.120"));
             Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("item not purchased."));
@@ -722,6 +721,33 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     @Test
+    public void testAddReviewMaxMinScore() throws Exception {
+        gotoToc();
+        StoreUserProfile userProfile = testDataProvider.getUserProfile().getUserProfile();
+
+        // get item
+        String offerId;
+        String itemId;
+        if (offer_digital_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+        com.junbo.catalog.spec.model.offer.Offer offer = testDataProvider.getOfferByOfferId(offerId);
+        OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
+        itemId = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId()).getItemId();
+
+        AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
+        addReviewRequest.getStarRatings().put("quality", 0);
+        addReviewRequest.getStarRatings().put("comfort", 100);
+
+        // purchase & add again
+        testDataProvider.makeFreePurchase(offerId, null, 200);
+        AddReviewResponse reviewResponse = testDataProvider.addReview(addReviewRequest, 200);
+        storeBrowseValidationHelper.validateAddReview(addReviewRequest, reviewResponse.getReview(), userProfile.getNickName());
+    }
+
+    @Test
     public void testAddReviewInvalidRequest() throws Exception {
         // ratings missing
         SectionInfoNode sectionInfoNode = gotoToc().getSections().get(GAME_SECTION_INDEX);
@@ -747,12 +773,17 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.001"));
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("invalid rating type: test"));
 
-        // sore invalid
+        // score invalid
         addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
-        addReviewRequest.setStarRatings(Collections.singletonMap("quality", 6));
+        addReviewRequest.setStarRatings(Collections.singletonMap("quality", 101));
         testDataProvider.addReview(addReviewRequest, 400);
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.001"));
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("value must in range [1,5]"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("value must in range [0,100]"));
+
+        addReviewRequest.setStarRatings(Collections.singletonMap("quality", -1));
+        testDataProvider.addReview(addReviewRequest, 400);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.001"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("value must in range [0,100]"));
     }
 
     @Test
