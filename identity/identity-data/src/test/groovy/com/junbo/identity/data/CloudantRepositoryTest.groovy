@@ -241,14 +241,14 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserPasswordListOptions getOption = new UserPasswordListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPassword> userPasswordList = userPasswordRepository.searchByUserId(new UserId(userId),
+        Results<UserPassword> userPasswordList = userPasswordRepository.searchByUserId(new UserId(userId),
                 Integer.MAX_VALUE, 0).get()
-        assert userPasswordList.size() != 0
+        assert userPasswordList.items.size() != 0
 
         getOption.active = newUserPassword.active
         userPasswordList = userPasswordRepository.searchByUserIdAndActiveStatus(new UserId(userId),
                 newUserPassword.active, Integer.MAX_VALUE, 0).get()
-        assert userPasswordList.size() != 0
+        assert userPasswordList.items.size() != 0
     }
 
     @Test
@@ -276,8 +276,8 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserPinListOptions getOption = new UserPinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPin> userPins = userPinRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
-        assert userPins.size() != 0
+        Results<UserPin> userPins = userPinRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
+        assert userPins.getItems().size() != 0
     }
 
     @Test

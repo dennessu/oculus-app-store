@@ -458,10 +458,12 @@
     "user_password": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_active_status": {
-          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 
@@ -478,10 +480,12 @@
     "user_pin": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }, 
         "by_user_id_active_status": {
-          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 

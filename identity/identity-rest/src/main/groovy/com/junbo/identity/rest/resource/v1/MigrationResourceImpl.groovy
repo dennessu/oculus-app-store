@@ -541,8 +541,8 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     Promise<UserPassword> saveOrUpdatePassword(OculusInput oculusInput, User user) {
-        return userPasswordService.searchByUserId(user.getId(), Integer.MAX_VALUE, 0).then { List<UserPassword> userPasswordList ->
-            if (CollectionUtils.isEmpty(userPasswordList)) {
+        return userPasswordService.searchByUserId(user.getId(), Integer.MAX_VALUE, 0).then { Results<UserPassword> userPasswordList ->
+            if (userPasswordList == null || CollectionUtils.isEmpty(userPasswordList.items)) {
                 UserPassword userPassword = new UserPassword(
                         changeAtNextLogin: oculusInput.forceResetPassword,
                         userId: user.getId(),
@@ -552,7 +552,7 @@ class MigrationResourceImpl implements MigrationResource {
                 // create password
                 return userPasswordService.create(userPassword)
             } else {
-                UserPassword activePassword = userPasswordList.find { UserPassword userPassword ->
+                UserPassword activePassword = userPasswordList.items.find { UserPassword userPassword ->
                     return userPassword.active
                 }
 

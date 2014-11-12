@@ -2,6 +2,7 @@ package com.junbo.identity.service
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPasswordId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -19,7 +20,7 @@ public interface UserPasswordService {
 
     Promise<Void> delete(UserPasswordId id)
 
-    Promise<List<UserPassword>> searchByUserId(UserId userId, Integer limit, Integer offset)
+    Promise<Results<UserPassword>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
-    Promise<List<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset)
+    Promise<Results<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset)
 }

@@ -2,6 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPasswordId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.langur.core.promise.Promise
@@ -30,16 +31,16 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
     }
 
     @Override
-    Promise<List<UserPassword>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return queryView('by_user_id', userId.toString(), limit, offset, false)
+    Promise<Results<UserPassword>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return queryViewResults('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
-    Promise<List<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
+    Promise<Results<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
                                                               Integer offset) {
         def startKey = [userId.toString(), active]
         def endKey = [userId.toString(), active]
-        return queryView('by_user_id_active_status', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
+        return queryViewResults('by_user_id_active_status', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

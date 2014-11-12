@@ -98,7 +98,7 @@ public class postErrorCodeDetail {
         newTotal = results.getTotal();
         assert oldTotal.equals(newTotal);
         assert results.getItems() != null;
-        assert results.getItems().size() == count;
+        assert results.getItems().size() == (count > results.getTotal() ? results.getTotal() : count);
 
         results = Identity.ErrorInfoGetAll(0);
         assert results != null;

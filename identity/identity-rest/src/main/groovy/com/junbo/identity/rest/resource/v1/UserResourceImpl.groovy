@@ -455,12 +455,12 @@ class UserResourceImpl implements UserResource {
         } else {
             // if username changes, will disable all passwords and pins. User needs to reset this.
             return userPasswordService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
-                List<UserPassword> userPasswordList ->
-                    if (CollectionUtils.isEmpty(userPasswordList)) {
+                Results<UserPassword> userPasswordList ->
+                    if (userPasswordList == null || CollectionUtils.isEmpty(userPasswordList.items)) {
                         return Promise.pure(null)
                     }
 
-                    return Promise.each(userPasswordList.iterator()) { UserPassword userPassword ->
+                    return Promise.each(userPasswordList.items.iterator()) { UserPassword userPassword ->
                         userPassword.active = false
                         return userPasswordService.update(userPassword, userPassword)
                     }.then {
@@ -468,12 +468,12 @@ class UserResourceImpl implements UserResource {
                     }
             }.then {
                 return userPinService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
-                    List<UserPin> userPinList ->
-                        if (CollectionUtils.isEmpty(userPinList)) {
+                    Results<UserPin> userPinList ->
+                        if (userPinList == null || CollectionUtils.isEmpty(userPinList.items)) {
                             return Promise.pure(null)
                         }
 
-                        return Promise.each(userPinList.iterator()) { UserPin userPin ->
+                        return Promise.each(userPinList.items.iterator()) { UserPin userPin ->
                             userPin.active = false
                             return userPinService.update(userPin, userPin)
                         }.then {

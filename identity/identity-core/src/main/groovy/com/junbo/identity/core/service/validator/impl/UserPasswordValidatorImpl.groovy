@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPasswordId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.util.CipherHelper
@@ -15,6 +16,7 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.list.UserPasswordListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
@@ -124,14 +126,14 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
         }
 
         return userPasswordService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
-            List<UserPassword> userPasswordList ->
-            if (userPasswordList == null || userPasswordList.size() == 0 || userPasswordList.size() > 1) {
+            Results<UserPassword> userPasswordList ->
+            if (userPasswordList == null || CollectionUtils.isEmpty(userPasswordList.items) || userPasswordList.items.size() > 1) {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
 
             List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
             CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                return hash.matches(oldPassword, userPasswordList.get(0).passwordHash)
+                return hash.matches(oldPassword, userPasswordList.items.get(0).passwordHash)
             }
 
             if (matched == null) {

@@ -26,6 +26,7 @@ import com.junbo.identity.spec.v1.resource.UserCredentialResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -86,8 +87,11 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                 }
                 if (obj instanceof UserPassword) {
                     return userPasswordService.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
-                        List<UserPassword> passwordList ->
-                            return Promise.each(passwordList) { UserPassword userPassword ->
+                        Results<UserPassword> passwordList ->
+                            if (passwordList == null || passwordList.items == null) {
+                                return Promise.pure(null)
+                            }
+                            return Promise.each(passwordList.items) { UserPassword userPassword ->
                                 userPassword.active = false
                                 return userPasswordService.update(userPassword, userPassword)
                             }
@@ -108,8 +112,11 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     }
                 } else if (obj instanceof UserPin) {
                     return userPinService.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
-                        List<UserPin> pinList ->
-                            return Promise.each(pinList) { UserPin userPin ->
+                        Results<UserPin> pinList ->
+                            if (pinList == null || CollectionUtils.isEmpty(pinList.items)) {
+                                return Promise.pure(null)
+                            }
+                            return Promise.each(pinList.items) { UserPin userPin ->
                                 userPin.active = false
                                 return userPinService.update(userPin, userPin)
                             }
@@ -142,20 +149,21 @@ class UserCredentialResourceImpl implements UserCredentialResource {
             if (listOptions.type == CredentialType.PASSWORD.toString()) {
                 if (listOptions.active != null) {
                     return userPasswordService.searchByUserIdAndActiveStatus(listOptions.userId, listOptions.active,
-                            listOptions.limit, listOptions.offset).then { List<UserPassword> userPasswordList ->
+                            listOptions.limit, listOptions.offset).then { Results<UserPassword> userPasswordList ->
                         return wrappUserCredential(userPasswordList, resultList, listOptions)
                     }
                 }
                 else {
                     return userPasswordService.searchByUserId(listOptions.userId, listOptions.limit,
-                            listOptions.offset).then { List<UserPassword> userPasswordList ->
+                            listOptions.offset).then { Results<UserPassword> userPasswordList ->
                         return wrappUserCredential(userPasswordList, resultList, listOptions)
                     }
                 }
             } else if (listOptions.type == CredentialType.PIN.toString()) {
                 return userPinService.searchByUserId(listOptions.userId, listOptions.limit,
-                        listOptions.offset).then { List<UserPin> userPinList ->
-                    if (userPinList == null) {
+                        listOptions.offset).then { Results<UserPin> userPinList ->
+                    resultList.total = userPinList.total
+                    if (userPinList == null || userPinList.items == null) {
                         return Promise.pure(userPinList)
                     }
 
@@ -177,12 +185,13 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         }
     }
 
-    private Promise<Results<UserCredential>> wrappUserCredential(List<UserPassword> userPasswordList, Results<UserCredential> resultList, UserCredentialListOptions listOptions) {
-        if (userPasswordList == null) {
+    private Promise<Results<UserCredential>> wrappUserCredential(Results<UserPassword> userPasswordList, Results<UserCredential> resultList, UserCredentialListOptions listOptions) {
+        resultList.total = userPasswordList.total
+        if (userPasswordList == null || userPasswordList.items == null) {
             return Promise.pure(resultList)
         }
 
-        return Promise.each(userPasswordList) { UserPassword userPassword ->
+        return Promise.each(userPasswordList.items) { UserPassword userPassword ->
             def callback = authorizeCallbackFactory.create(userPassword.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 UserCredential newUserCredential =
@@ -195,6 +204,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     resultList.items.add(newUserCredential)
                     return Promise.pure(newUserCredential)
                 } else {
+                    resultList.total = resultList.total - 1
                     return Promise.pure(null)
                 }
             }
