@@ -421,9 +421,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserSecurityQuestion = userSecurityQuestionRepository.update(newUserSecurityQuestion, userSecurityQuestion).get()
         Assert.assertEquals(newUserSecurityQuestion.getAnswerHash(), value)
 
-        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
+        Results<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
                 searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
-        assert securityQuestions.size() != 0
+        assert securityQuestions.items.size() != 0
     }
 
     @Test

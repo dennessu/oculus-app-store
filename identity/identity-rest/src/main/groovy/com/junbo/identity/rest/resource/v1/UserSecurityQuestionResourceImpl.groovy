@@ -224,18 +224,17 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             listOptions.setUserId(userId)
 
             return userSecurityQuestionValidator.validateForSearch(listOptions).then {
-                return search(listOptions).then { List<UserSecurityQuestion> userSecurityQuestionList ->
-
-
-                    return Promise.each(userSecurityQuestionList) { UserSecurityQuestion newUserSecurityQuestion ->
+                return search(listOptions).then { Results<UserSecurityQuestion> userSecurityQuestionList ->
+                    result.total = userSecurityQuestionList.total
+                    return Promise.each(userSecurityQuestionList.items) { UserSecurityQuestion newUserSecurityQuestion ->
 
                         if (newUserSecurityQuestion != null) {
                             newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion,
                                     listOptions.properties?.split(',') as List<String>)
-                        }
 
-                        if (newUserSecurityQuestion != null) {
                             result.items.add(newUserSecurityQuestion)
+                        } else {
+                            result.total = result.total - 1
                         }
 
                         return Promise.pure(null)
@@ -247,7 +246,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
         }
     }
 
-    private Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions listOptions) {
+    private Promise<Results<UserSecurityQuestion>> search(UserSecurityQuestionListOptions listOptions) {
         if (listOptions.userId != null) {
             return userSecurityQuestionService.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)

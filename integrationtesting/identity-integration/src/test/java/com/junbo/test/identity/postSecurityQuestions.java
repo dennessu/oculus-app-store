@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion;
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt;
@@ -95,5 +96,33 @@ public class postSecurityQuestions {
         Validator.Validate("Validate error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void UserSecurityQuestionSearch() throws Exception {
+        User user = Identity.UserPostDefault();
+
+        UserSecurityQuestion userSecurityQuestion1 = IdentityModel.DefaultUserSecurityQuestion();
+        UserSecurityQuestion userSecurityQuestion2 = IdentityModel.DefaultUserSecurityQuestion();
+
+        Identity.UserSecurityQuestionPost(user.getId(), userSecurityQuestion1);
+        Identity.UserSecurityQuestionPost(user.getId(), userSecurityQuestion2);
+
+        Results results = Identity.UserSecurityQuestionSearch(user.getId(), null);
+        assert results.getTotal() == 2;
+        assert results.getItems().size() == 2;
+
+        results = Identity.UserSecurityQuestionSearch(user.getId(), 1);
+        assert results.getTotal() == 2;
+        assert results.getItems().size() == 1;
+
+        results = Identity.UserSecurityQuestionSearch(user.getId(), 0);
+        assert results.getTotal() == 2;
+        assert results.getItems().size() == 0;
+
+        user = Identity.UserPostDefault();
+        results = Identity.UserSecurityQuestionSearch(user.getId(), null);
+        assert results.getTotal() == 0;
+        assert results.getItems().size() == 0;
     }
 }

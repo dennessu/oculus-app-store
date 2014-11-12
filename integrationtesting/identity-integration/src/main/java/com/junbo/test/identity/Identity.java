@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 // CHECKSTYLE:OFF
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.*;
 import com.junbo.common.json.ObjectMapperProvider;
@@ -1026,6 +1027,21 @@ public class Identity {
         return (UserSecurityQuestion) IdentityGet(
                 IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) +
                         "/security-questions/" + usqId.getValue(), UserSecurityQuestion.class);
+    }
+
+    public static Results<UserSecurityQuestion> UserSecurityQuestionSearch(UserId userId, Integer limit) throws Exception {
+        String url = IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) + "/security-questions";
+        if (limit != null) {
+            url = url + "?count=" + limit;
+        }
+        Results results = IdentityGet(url, Results.class);
+        List<UserSecurityQuestion> userSecurityQuestions = new ArrayList<>();
+        for (Object obj : results.getItems()) {
+            userSecurityQuestions.add((UserSecurityQuestion)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserSecurityQuestion.class));
+        }
+        results.setItems(userSecurityQuestions);
+
+        return results;
     }
 
     public static PIType PITypePostDefault(String typeCode) throws Exception {

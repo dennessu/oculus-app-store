@@ -2,6 +2,7 @@ package com.junbo.identity.service.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
 import com.junbo.identity.service.UserSecurityQuestionService
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
@@ -37,7 +38,7 @@ class UserSecurityQuestionServiceImpl implements UserSecurityQuestionService {
     }
 
     @Override
-    Promise<List<UserSecurityQuestion>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<Results<UserSecurityQuestion>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         return userSecurityQuestionRepository.searchByUserId(userId, limit, offset)
     }
 

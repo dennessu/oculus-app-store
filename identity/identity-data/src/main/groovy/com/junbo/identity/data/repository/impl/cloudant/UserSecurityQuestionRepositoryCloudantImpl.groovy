@@ -2,6 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.langur.core.promise.Promise
@@ -31,8 +32,8 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
     }
 
     @Override
-    Promise<List<UserSecurityQuestion>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return queryView('by_user_id', userId.toString(), limit, offset, false)
+    Promise<Results<UserSecurityQuestion>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        return queryViewResults('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override

@@ -492,7 +492,8 @@
     "user_security_question": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {    emit(doc.userId, doc._id)}"
+          "map": "function(doc) {    emit(doc.userId, doc._id)}",
+            "reduce": "_count"
         }
       }
     }, 
