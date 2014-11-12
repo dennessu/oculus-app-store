@@ -18,8 +18,6 @@ import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.spec.enums.EntitlementType;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.common.cloudant.CloudantClientBase;
-import com.junbo.common.cloudant.client.CloudantClientBulk;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.util.IdUtil;
@@ -139,40 +137,55 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     }
 
     @Override
-    public List<Entitlement> addEntitlements(List<Entitlement> entitlements) {
+    public Map<Long, List<Entitlement>> addEntitlements(final Map<Long, List<Entitlement>> entitlements) {
         if (CollectionUtils.isEmpty(entitlements)) {
-            return new LinkedList<Entitlement>();
+            return entitlements;
         }
-
-        boolean hasConsumable = false;
-        for (Entitlement entitlement : entitlements) {
-            if (isConsumable(entitlement)) {
-                hasConsumable = true;
+        boolean empty = true;
+        Entitlement authorizeSample = null;
+        for (List<Entitlement> es : entitlements.values()) {
+            if (!CollectionUtils.isEmpty(es)) {
+                empty = false;
+                authorizeSample = es.get(0);
                 break;
             }
         }
+        if (empty) {
+            return entitlements;
+        }
 
-        List<Entitlement> result;
-        if (hasConsumable) {
-            result = addEntitlementsInternal(entitlements);
-        } else {
-            try {
-                CloudantClientBase.setUseBulk(true);
-                result = addEntitlementsInternal(entitlements);
-            } finally {
-                CloudantClientBulk.commit().get();
-                CloudantClientBase.setUseBulk(false);
+        boolean hasConsumable = false;
+        for (List<Entitlement> actionEntitlements : entitlements.values()) {
+            for (Entitlement entitlement : actionEntitlements) {
+                if (isConsumable(entitlement)) {
+                    hasConsumable = true;
+                }
+                fillCreate(entitlement);
+                validateCreate(entitlement);
             }
         }
-        return result;
-    }
 
-    private List<Entitlement> addEntitlementsInternal(List<Entitlement> entitlements) {
-        List<Entitlement> result = new ArrayList<>(entitlements.size());
-        for (Entitlement entitlement : entitlements) {
-            result.add(addEntitlement(entitlement));
+        if (hasConsumable) {
+            for (Long actionId : entitlements.keySet()) {
+                List<Entitlement> result = new ArrayList<>(entitlements.size());
+                for (Entitlement entitlement : entitlements.get(actionId)) {
+                    result.add(addEntitlement(entitlement));
+                }
+                entitlements.put(actionId, result);
+            }
+            return entitlements;
+        } else {
+            AuthorizeCallback callback = authorizeCallbackFactory.create(authorizeSample);
+            return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Map<Long, List<Entitlement>>>() {
+                @Override
+                public Map<Long, List<Entitlement>> apply() {
+                    if (!AuthorizeContext.hasRights("create")) {
+                        throw AppCommonErrors.INSTANCE.forbidden().exception();
+                    }
+                    return entitlementRepository.bulkInsert(entitlements);
+                }
+            });
         }
-        return result;
     }
 
     private Entitlement merge(Entitlement entitlement) {

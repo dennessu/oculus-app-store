@@ -31,8 +31,6 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     @Override
     public EntitlementEntity insert(EntitlementEntity entitlement) {
         entitlement.setIsDeleted(false);
-        entitlement.setUpdatedBy(123L);
-        entitlement.setUpdatedTime(new Date());
         return cloudantPostSync(entitlement);
     }
 

@@ -46,10 +46,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,9 +82,11 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         for (int i = 0; i < 10; i++) {
             entitlements.add(entitlement);
         }
-        List<Entitlement> addedEntitlements = entitlementService.addEntitlements(entitlements);
-        Assert.assertEquals(addedEntitlements.size(), 10);
-        for (Entitlement e : addedEntitlements) {
+        Map<Long, List<Entitlement>> en = new HashMap<>();
+        en.put(1L, entitlements);
+        Map<Long, List<Entitlement>> addedEntitlements = entitlementService.addEntitlements(en);
+        Assert.assertEquals(addedEntitlements.get(1L).size(), 10);
+        for (Entitlement e : addedEntitlements.get(1L)) {
             Assert.assertNotNull(e.getId());
         }
     }

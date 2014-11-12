@@ -6,7 +6,10 @@
 
 package com.junbo.entitlement.db.repository;
 
+import com.junbo.common.cloudant.CloudantClientBase;
+import com.junbo.common.cloudant.client.CloudantClientBulk;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.Context;
 import com.junbo.entitlement.db.dao.EntitlementDao;
 import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
@@ -15,8 +18,9 @@ import com.junbo.entitlement.db.mapper.EntitlementMapper;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
+import com.junbo.langur.core.promise.Promise;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Repository of Entitlement.
@@ -50,6 +54,44 @@ public class EntitlementRepository {
         final EntitlementEntity result = entitlementDao.insert(entitlementMapper.toEntitlementEntity(entitlement));
         entitlementHistoryDao.insertAsync(new EntitlementHistoryEntity(CREATE, result));
         return entitlementMapper.toEntitlement(result);
+    }
+
+    public Map<Long, List<Entitlement>> bulkInsert(final Map<Long, List<Entitlement>> entitlements) {
+        final Map<Long, List<Entitlement>> resultEntitlements = new HashMap<>();
+        try {
+            CloudantClientBase.setUseBulk(true);
+            for (Long actionId : entitlements.keySet()) {
+                List<Entitlement> result = new ArrayList<>();
+                for (Entitlement e : entitlements.get(actionId)) {
+                    result.add(entitlementMapper.toEntitlement(
+                            entitlementDao.insert(entitlementMapper.toEntitlementEntity(e))));
+                }
+                resultEntitlements.put(actionId, result);
+            }
+        }
+        finally {
+            CloudantClientBulk.commit().get();
+            CloudantClientBase.setUseBulk(false);
+        }
+        Context.get().registerPendingTask(new Promise.Func0<Promise>() {
+            @Override
+            public Promise apply() {
+                Promise result;
+                try {
+                    CloudantClientBase.setUseBulk(true);
+                    for (List<Entitlement> es : resultEntitlements.values()) {
+                        for (Entitlement e : es) {
+                            entitlementHistoryDao.insertSync(new EntitlementHistoryEntity(CREATE, entitlementMapper.toEntitlementEntity(e))).get();
+                        }
+                    }
+                } finally {
+                    result = CloudantClientBulk.commit();
+                    CloudantClientBase.setUseBulk(false);
+                }
+                return result;
+            }
+        });
+        return resultEntitlements;
     }
 
     public Entitlement update(Entitlement entitlement, Entitlement oldEntitlement) {

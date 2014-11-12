@@ -12,6 +12,7 @@ import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface of Entitlement Service.
@@ -21,7 +22,7 @@ public interface EntitlementService {
 
     Entitlement addEntitlement(Entitlement entitlement);
 
-    List<Entitlement> addEntitlements(List<Entitlement> entitlements);
+    Map<Long, List<Entitlement>> addEntitlements(Map<Long, List<Entitlement>> entitlements);
 
     Entitlement updateEntitlement(String entitlementId, Entitlement entitlement);
 
