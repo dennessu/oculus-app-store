@@ -65,4 +65,25 @@ cd /var/silkcloud/apphost/dbsetup/liquibase
 ./updatedb.sh -env:$ENV -key:$CRYPTO_KEY
 EOF
 
+./foreach-here.sh $ENV/masters.txt << EOF
+set -e
+cd /var/silkcloud/pgha
+./londiste/londiste_upgrade_root.sh
+./util/safe.sh
+EOF
+
+./foreach-here.sh $ENV/secondaries.txt << EOF
+set -e
+cd /var/silkcloud/pgha
+./util/safe.sh
+EOF
+
+./foreach-here.sh $ENV/replicas.txt << EOF
+set -e
+cd /var/silkcloud/pgha
+./londiste/londiste_upgrade_leaf.sh
+./util/safe.sh
+EOF
+
+
 popd
