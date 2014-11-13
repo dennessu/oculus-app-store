@@ -70,6 +70,8 @@ do
     psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA londiste CASCADE;"
     set -e
 
+    SCHEMA=`$PGBIN_PATH/psql ${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "\dn" -t | tr -d ' ' | cut -d '|' -f 1 | sed '/^$/d'`
+
     echo "[LONDISTE][REPLICA] drop leaf node if exist"
     londiste3 $config drop-node leaf_node_${db} > /dev/null 2>&1 || echo "node [leaf_node_${db}] does not exist"
 
@@ -88,8 +90,11 @@ ENDSSH
     londiste3 $config add-table --all --expect-sync
 
     echo "[LONDISTE][REPLICA] remove liquibase change log tables"
-    londiste3 $config remove-table databasechangelog || echo "table missing"
-    londiste3 $config remove-table databasechangeloglock || echo "table missing"
+    echo "$SCHEMA" | while read schema
+    do 
+       londiste3 $config remove-table ${schema}.databasechangelog ||  echo "WARN: table [${schema}.databasechangelog] missing"
+       londiste3 $config remove-table ${schema}.databasechangeloglock || echo "WARN: table [${schema}.databasechangelog] missing"
+    done
 done
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH

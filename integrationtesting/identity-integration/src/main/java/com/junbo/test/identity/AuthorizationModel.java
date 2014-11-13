@@ -10,7 +10,6 @@ import com.junbo.authorization.spec.model.RoleTarget;
 import com.junbo.common.id.RoleId;
 import com.junbo.common.model.Link;
 import com.junbo.identity.spec.v1.model.Organization;
-import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.common.RandomHelper;
 
 import java.util.ArrayList;
@@ -71,16 +70,25 @@ public class AuthorizationModel {
         return RandomHelper.randomValueFromList(filterTypes).toString();
     }
 
+    /**
+     * role name.
+     */
     public enum AllowedRoleName {
         Admin,
         Developer,
         Publisher
     }
 
+    /**
+     * target type.
+     */
     public enum AllowedRoleTargetType {
         organizations
     }
 
+    /**
+     * fields type.
+     */
     public enum AllowedRoleFilterType {
         SINGLEINSTANCEFILTER
     }
