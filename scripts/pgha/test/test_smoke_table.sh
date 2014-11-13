@@ -14,4 +14,7 @@ $PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE SCHEMA p
 $PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE public2.databasechangelog (id bigint, PRIMARY KEY(id));"
 $PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE public2.databasechangeloglock (id bigint, PRIMARY KEY(id));"
 $PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE public2.dummy_test (id bigint, PRIMARY KEY(id));"
+$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE public2.tly (id bigint, PRIMARY KEY(id));"
+$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE public2.msx (id bigint, PRIMARY KEY(id));"
+$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE public2.gyh (id bigint, PRIMARY KEY(id));"
 set -e
