@@ -71,8 +71,8 @@ public class DataGenerator {
         request.setTitle("Test review title.." + RandomStringUtils.randomAlphabetic(5));
         request.setContent("Test review content.........." + RandomStringUtils.randomAlphabetic(30));
         request.setStarRatings(new HashMap<String, Integer>());
-        request.getStarRatings().put("comfort", rand.nextInt(5) + 1);
-        request.getStarRatings().put("quality", rand.nextInt(5) + 1);
+        request.getStarRatings().put("comfort", rand.nextInt(101));
+        request.getStarRatings().put("quality", rand.nextInt(101));
         return request;
     }
 
