@@ -17,7 +17,7 @@ echo "upgrade table on master"
 $PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "ALTER TABLE gyh ADD COLUMN name varchar(16);"
 $PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "ALTER TABLE public2.gyh ADD COLUMN name varchar(16);"
 $PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE oyzh (id bigint, PRIMARY KEY(id));"
-$PGBIN_PATH/psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "CREATE TABLE public2.oyzh (id bigint, PRIMARY KEY(id));"
+$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE public2.oyzh (id bigint, PRIMARY KEY(id));"
 
 echo "upgrade londiste on master"
 $DEPLOYMENT_PATH/londiste/londiste_upgrade_root.sh
