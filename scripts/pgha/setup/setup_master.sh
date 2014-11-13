@@ -78,12 +78,7 @@ done
 echo "[SETUP][MASTER] master database started successfully!"
 
 echo "[SETUP][MASTER] create smoke test tables in postgres database"
-set +e
-$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE dummy_test (id bigint, PRIMARY KEY(id));"
-$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE tly (id bigint, PRIMARY KEY(id));"
-$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE msx (id bigint, PRIMARY KEY(id));"
-$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE gyh (id bigint, PRIMARY KEY(id));"
-set -e
+$DEPLOYMENT_PATH/test/test_smoke_table.sh
 
 echo "[SETUP][MASTER] start primary pgbouncer proxy and connect to master server"
 $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
