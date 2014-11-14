@@ -24,6 +24,11 @@
         <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 
+    <bean id="localeResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
     <bean id="groupResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxy"
           parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.identity.url}"/>

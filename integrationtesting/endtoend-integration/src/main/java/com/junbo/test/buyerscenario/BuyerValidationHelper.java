@@ -24,7 +24,7 @@ import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
-import com.junbo.test.common.Utility.BaseValidationHelper;
+import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.DBHelper;
@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * Created by Yunlong on 3/27/14.
  */
-public class BuyerValidationHelper extends BaseValidationHelper {
+public class BuyerValidationHelper extends ValidationHelper {
     DBHelper dbHelper = new DBHelper();
     BuyerTestDataProvider testDataProvider = new BuyerTestDataProvider();
 

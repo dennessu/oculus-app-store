@@ -13,8 +13,8 @@ import java.util.List;
 /**
  * Created by Yunlong on 4/4/14.
  */
-public abstract class BaseValidationHelper {
-    public BaseValidationHelper() {
+public abstract class ValidationHelper {
+    public ValidationHelper() {
     }
 
     public static void verifyEqual(BigDecimal actual, BigDecimal expect, String message) {

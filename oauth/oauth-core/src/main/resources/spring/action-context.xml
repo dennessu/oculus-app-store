@@ -99,10 +99,12 @@
 
     <bean id="validateLocale" class="com.junbo.oauth.core.action.ValidateLocale">
         <property name="defaultLocale" value="en_US"/>
-    </bean>
+        <property name="localeResource" ref="oauth_localeResource" />
+     </bean>
 
     <bean id="validateCountry" class="com.junbo.oauth.core.action.ValidateCountry">
         <property name="defaultCountry" value="US"/>
+        <property name="countryResource" ref="oauth_countryResource" />
     </bean>
 
     <bean id="validateEmailVerifyCode" class="com.junbo.oauth.core.action.ValidateEmailVerifyCode">
