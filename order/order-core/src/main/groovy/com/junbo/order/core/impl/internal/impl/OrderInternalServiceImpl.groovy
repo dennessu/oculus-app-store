@@ -422,9 +422,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             throw AppErrors.INSTANCE.billingAuditFailed('billing returns error: ' + throwable.message).exception()
         }.then { List<Balance> balances ->
             def balancesToBeAudited = balances.findAll { Balance balance ->
-                (BalanceStatus.COMPLETED.name() == balance.status ||
-                        BalanceStatus.AWAITING_PAYMENT.name() == balance.status) &&
-                        TaxStatus.TAXED.name() == balance.taxStatus
+                CoreUtils.isBalanceSettled(balance) && TaxStatus.TAXED.name() == balance.taxStatus
             }
             if (CollectionUtils.isEmpty(balancesToBeAudited)) {
                 LOGGER.error('name=No_Balance_Can_Be_Audit, orderId = {}', order.getId().value)
@@ -432,7 +430,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             }
             if (order.status == OrderStatus.REFUNDED.name()) {
                 def hasRefundedBalance = balancesToBeAudited.any { Balance b ->
-                    b.type == BalanceType.REFUND.name()
+                    BalanceType.REFUND.name() == b.type
                 }
                 if (!hasRefundedBalance) {
                     LOGGER.error('name=No_Refund_Balance_Can_Be_Audit, orderId={}', order.getId().value)

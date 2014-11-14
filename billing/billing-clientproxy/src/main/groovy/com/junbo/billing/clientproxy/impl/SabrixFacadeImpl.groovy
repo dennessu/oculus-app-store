@@ -134,7 +134,7 @@ class SabrixFacadeImpl implements TaxFacade {
     Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
         Batch batch = generateBatch(balance, shippingAddress, piAddress, false)
         //LOGGER.info('name=Tax_Calculation_Quote_Batch, batch={}', batch.toString())
-        return calculateTax(batch).then { TaxCalculationResponse result ->
+        return calculateTax(batch, false).then { TaxCalculationResponse result ->
             return Promise.pure(updateBalance(result, balance))
         }
     }
@@ -143,7 +143,7 @@ class SabrixFacadeImpl implements TaxFacade {
     Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress) {
         Batch batch = generateBatch(balance, shippingAddress, piAddress, true)
         //LOGGER.info('name=Tax_Calculation_Batch, batch={}', batch.toString())
-        return calculateTax(batch).then { TaxCalculationResponse result ->
+        return calculateTax(batch, true).then { TaxCalculationResponse result ->
             return Promise.pure(updateAuditedBalance(result, balance))
         }
     }
@@ -507,8 +507,14 @@ class SabrixFacadeImpl implements TaxFacade {
         return sabrixAddress
     }
 
-    Promise<TaxCalculationResponse> calculateTax(Batch batch) {
-        String taxCalculationUrl = configuration.baseUrl + 'sabrix/xmlinvoice'
+    Promise<TaxCalculationResponse> calculateTax(Batch batch, boolean isAudited) {
+        String taxCalculationUrl
+        if (isAudited) {
+            taxCalculationUrl = configuration.taxAuditUrl + 'sabrix/xmlinvoice'
+        }
+        else {
+            taxCalculationUrl = configuration.baseUrl + 'sabrix/xmlinvoice'
+        }
         String content = xmlConvertor.getXml(batch)
         def requestBuilder = buildRequest(taxCalculationUrl, content)
         return requestBuilder.execute().recover { Throwable throwable ->
