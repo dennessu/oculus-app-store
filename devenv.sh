@@ -68,8 +68,7 @@ killz(){
   exitifboot2dockernotstarted
   echo "Killing all dev-env docker containers:"
   $DOCKER_CMD ps
-  echo $CONTAINER_NAMES | xargs -n 1 $DOCKER_CMD kill
-  echo $CONTAINER_NAMES | xargs -n 1 $DOCKER_CMD rm
+  echo $CONTAINER_NAMES | xargs -n 1 $DOCKER_CMD rm -f
   echo "All the dev-env containers have been killed and removed"
 }
 
