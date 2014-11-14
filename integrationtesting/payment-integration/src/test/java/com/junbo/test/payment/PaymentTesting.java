@@ -152,7 +152,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "post credit card",
             steps = {
                     "1. Create an user",
