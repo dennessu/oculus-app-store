@@ -13,6 +13,7 @@ import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserLoginName
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.resource.CountryResource
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
@@ -34,6 +35,7 @@ import org.springframework.beans.factory.annotation.Required
 class CreateUser implements Action {
     private UserResource userResource
     private UserPersonalInfoResource userPersonalInfoResource
+    private CountryResource countryResource
 
     @Required
     void setUserResource(UserResource userResource) {
@@ -43,6 +45,11 @@ class CreateUser implements Action {
     @Required
     void setUserPersonalInfoResource(UserPersonalInfoResource userPersonalInfoResource) {
         this.userPersonalInfoResource = userPersonalInfoResource
+    }
+
+    @Required
+    void setCountryResource(CountryResource countryResource) {
+        this.countryResource = countryResource
     }
 
     @Override
@@ -62,7 +69,7 @@ class CreateUser implements Action {
             return Promise.pure(new ActionResult('success'))
         }
 
-        if (countryOfResidence != null && !ValidatorUtil.isValidCountryCode(countryOfResidence)) {
+        if (countryOfResidence != null && !ValidatorUtil.isValidCountryCode(countryOfResidence, countryResource)) {
             contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterInvalid('cor').error())
             return Promise.pure(null)
         }

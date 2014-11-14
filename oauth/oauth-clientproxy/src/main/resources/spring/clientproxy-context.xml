@@ -54,6 +54,11 @@
         <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
+    <bean id="oauth_localeResource" class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy"
+          parent="localeResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
     <bean id="oauth_tosResource" class="com.junbo.identity.spec.v1.resource.proxy.TosResourceClientProxy"
           parent="tosResourceClientProxy">
         <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>

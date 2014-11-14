@@ -1,6 +1,7 @@
 package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.identity.spec.v1.resource.CountryResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -18,10 +19,16 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class ValidateCountry implements Action {
     private String defaultCountry
+    private CountryResource countryResource
 
     @Required
     void setDefaultCountry(String defaultCountry) {
         this.defaultCountry = defaultCountry
+    }
+
+    @Required
+    void setCountryResource(CountryResource countryResource) {
+        this.countryResource = countryResource
     }
 
     @Override
@@ -38,7 +45,7 @@ class ValidateCountry implements Action {
         }
 
         if (StringUtils.hasText(country)) {
-            if (!ValidatorUtil.isValidCountryCode(country)) {
+            if (!ValidatorUtil.isValidCountryCode(country, countryResource)) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('country', 'Invalid CountryCode.').exception()
             }
         }
