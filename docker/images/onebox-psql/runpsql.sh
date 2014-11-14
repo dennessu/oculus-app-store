@@ -20,8 +20,12 @@ if [[ ! "$(ls -A $POSTGRESQL_DATA)" ]]; then
   cp -R $POSTGRESQL_DATA_ORIG/* $POSTGRESQL_DATA
 fi
 
+# workaround for boot2docker bug: https://github.com/boot2docker/boot2docker/issues/581
+usermod -u 1000 postgres
+
 chown -R postgres $POSTGRESQL_LOG_DIR
 chown -R postgres $POSTGRESQL_DATA
+# BUG: does not work in boot2docker+mac now(issue 581), need to chmod on mac as well
 chmod -R 700 $POSTGRESQL_DATA
 
 # workaround the snakeoil key issue
