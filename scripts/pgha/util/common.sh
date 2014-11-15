@@ -79,7 +79,6 @@ export PGBOUNCER_PORT=6543
 
 export PGBOUNCER_BIN=/usr/sbin
 export PGBOUNCER_BASE=$PGHA_BASE/pgbouncer
-export PGBOUNCER_CONF=$PGBOUNCER_BASE/pgbouncer.conf
 export PGBOUNCER_PID=$PGBOUNCER_BASE/pgbouncer.pid
 export PGBOUNCER_AUTH_FILE=~/.pgbouncer_auth
 export PGBOUNCER_SOCKET_PATH='/tmp'
