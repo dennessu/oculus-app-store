@@ -144,7 +144,10 @@ function getServerRole {
 # start database
 function startDB {
     echo "database data file path [$1]"
-    $PGBIN_PATH/pg_ctl -D $1 -l "$1/postgresql-$(date +%Y-%m-%d:%H:%M:%S.%N).log" start > /dev/null 2>&1 &
+    echo "database log file path [$2]"
+
+    rm -f $1/postmaster.pid
+    $PGBIN_PATH/pg_ctl -D $1 -l "$2/postgresql-$(date +%Y-%m-%d:%H:%M:%S.%N).log" start > /dev/null 2>&1 &
 }
 
 # shutdown database

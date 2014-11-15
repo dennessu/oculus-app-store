@@ -68,7 +68,7 @@ port = $MASTER_DB_PORT
 EOF
 
 echo "[SETUP][MASTER] start master database"
-startDB $MASTER_DATA_PATH
+startDB $MASTER_DATA_PATH $MASTER_LOG_PATH
 
 while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT;
 do 

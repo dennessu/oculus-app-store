@@ -79,7 +79,7 @@ trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
     echo "[FAILOVER][MASTER] start master database"
-    startDB $MASTER_DATA_PATH
+    startDB $MASTER_DATA_PATH $MASTER_LOG_PATH
 
     while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT;
     do

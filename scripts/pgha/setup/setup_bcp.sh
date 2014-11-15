@@ -42,7 +42,7 @@ port = $BCP_DB_PORT
 EOF
 
 echo "[SETUP][BCP] start BCP database"
-startDB $BCP_DATA_PATH
+startDB $BCP_DATA_PATH $BCP_LOG_PATH
 
 while ! echo exit | nc $BCP_HOST $BCP_DB_PORT;
 do

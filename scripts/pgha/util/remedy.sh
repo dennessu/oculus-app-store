@@ -20,7 +20,7 @@ echo "[REMEDY][$role] check whether postgresql instance running"
 
 if ! nc -z ${!host} ${!port} ; then
     echo "[REMEDY][$role] postgresql instance is not running"
-    startDB ${!data_path}
+    startDB ${!data_path} ${!log_path}
 
     while ! echo exit | nc ${!host} ${!port};
     do 

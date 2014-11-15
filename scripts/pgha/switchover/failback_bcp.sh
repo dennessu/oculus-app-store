@@ -80,7 +80,7 @@ trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
     echo "[FAILBACK][BCP] start bcp database"
-    startDB $BCP_DATA_PATH
+    startDB $BCP_DATA_PATH $BCP_LOG_PATH
 
     while ! echo exit | nc $BCP_HOST $BCP_DB_PORT;
     do

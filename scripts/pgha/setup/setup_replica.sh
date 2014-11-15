@@ -62,7 +62,7 @@ port = $REPLICA_DB_PORT
 EOF
 
 echo "[SETUP][REPLICA] start replica database"
-startDB $REPLICA_DATA_PATH
+startDB $REPLICA_DATA_PATH $REPLICA_LOG_PATH
 
 while ! echo exit | nc $REPLICA_HOST $REPLICA_DB_PORT;
 do
