@@ -36,8 +36,10 @@ xlog_location=`psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_curr
 echo "[FAILBACK][SLAVE] current xlog location is [$xlog_location]"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
     echo "[FAILBACK][SLAVE] gracefully shutdown slave database"
-    $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
+    stopDB $SLAVE_DATA_PATH
 ENDSSH
 
 echo "[FAILBACK][MASTER] copy unarchived log files"
@@ -66,6 +68,8 @@ done
 echo "[FAILBACK][MASTER] master can be written"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
     echo "[SLAVE] configure recovery.conf for slave"
     cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
@@ -76,7 +80,7 @@ trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
     echo "[FAILBACK][SLAVE] start slave database"
-    $PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH -l "${SLAVE_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
+    startDB $SLAVE_DATA_PATH
 
     while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT;
     do

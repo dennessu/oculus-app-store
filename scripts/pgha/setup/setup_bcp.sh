@@ -42,7 +42,7 @@ port = $BCP_DB_PORT
 EOF
 
 echo "[SETUP][BCP] start BCP database"
-$PGBIN_PATH/pg_ctl -D $BCP_DATA_PATH -l "${BCP_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
+startDB $BCP_DATA_PATH
 
 while ! echo exit | nc $BCP_HOST $BCP_DB_PORT;
 do

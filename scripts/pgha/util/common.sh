@@ -136,12 +136,19 @@ function createDir {
     chmod 700 $1
 }
 
-# get current date time
-function now {
-    return $(date +"%Y.%m.%d.%S.%N")
-}
-
 # get server role
 function getServerRole {
     echo `cat $PGHA_BASE/role.conf`
+}
+
+# start database
+function startDB {
+    echo "database data file path [$1]"
+    $PGBIN_PATH/pg_ctl -D $1 -l "$1/postgresql-$(date +%Y-%m-%d:%H:%M:%S.%N).log" start > /dev/null 2>&1 &
+}
+
+# shutdown database
+function stopDB {
+    echo "database data file path [$1]"
+    $PGBIN_PATH/pg_ctl stop -m fast -D $1
 }

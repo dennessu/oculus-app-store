@@ -62,7 +62,7 @@ port = $REPLICA_DB_PORT
 EOF
 
 echo "[SETUP][REPLICA] start replica database"
-$PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH -l "${REPLICA_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log"  start > /dev/null 2>&1 &
+startDB $REPLICA_DATA_PATH
 
 while ! echo exit | nc $REPLICA_HOST $REPLICA_DB_PORT;
 do

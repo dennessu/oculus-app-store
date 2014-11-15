@@ -68,7 +68,7 @@ port = $MASTER_DB_PORT
 EOF
 
 echo "[SETUP][MASTER] start master database"
-$PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH -l "${MASTER_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
+startDB $MASTER_DATA_PATH
 
 while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT;
 do 
