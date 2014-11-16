@@ -528,7 +528,7 @@ class StoreResourceImpl implements StoreResource {
     @Override
     Promise<InitialDownloadItemsResponse> getInitialDownloadItems() {
         requestValidator.validateRequiredApiHeaders()
-        prepareBrowse().then { ApiContext apiContext ->
+        prepareBrowse(false).then { ApiContext apiContext ->
             return browseService.getInitialDownloadItems(apiContext)
         }
     }
@@ -805,9 +805,19 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private Promise<ApiContext> prepareBrowse() {
+        return prepareBrowse(true)
+    }
+
+    private Promise<ApiContext> prepareBrowse(boolean needEmailVerify) {
         if (verifyUserInBrowse) {
-            return identityUtils.getVerifiedUserFromToken().then {
-                return apiContextBuilder.buildApiContext()
+            if (needEmailVerify) {
+                return identityUtils.getVerifiedUserFromToken().then {
+                    return apiContextBuilder.buildApiContext()
+                }
+            } else {
+                return identityUtils.getActiveUserFromToken().then {
+                    return apiContextBuilder.buildApiContext()
+                }
             }
         } else {
             return apiContextBuilder.buildApiContext()

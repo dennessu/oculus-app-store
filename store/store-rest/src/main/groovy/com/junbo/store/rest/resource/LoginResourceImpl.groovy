@@ -371,7 +371,7 @@ class LoginResourceImpl implements LoginResource {
         requestValidator.validateRequiredApiHeaders().validateConfirmEmailRequest(confirmEmailRequest);
 
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
-            return facadeContainer.oAuthFacade.verifyEmail(confirmEmailRequest.evc, apiContext.locale.toString())
+            return facadeContainer.oAuthFacade.verifyEmail(confirmEmailRequest.evc, apiContext.locale.getId().value)
         }.recover { Throwable ex ->
             appErrorUtils.throwUnknownError('confirmEmail', ex)
         }.then { ViewModel viewModel ->
