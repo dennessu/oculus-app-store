@@ -176,10 +176,10 @@ public class CacheSnifferJob implements InitializingBean {
     }
 
     private void handleChange(CloudantUri cloudantUri, String database, String change) {
-        LOGGER.trace("Receive change feed " + change);
+        LOGGER.trace("[received raw] " + change);
 
         if (FEED_SEPARATOR.equals(change) || StringUtils.isEmpty(change)) {
-            LOGGER.debug("Cloundant heartbeat payload received.");
+            LOGGER.debug("[heartbeat]");
             return;
         }
 
@@ -199,7 +199,7 @@ public class CacheSnifferJob implements InitializingBean {
             String entityIdStr = entityId.toString();
             if (entityIdStr.startsWith("_")) {
                 // system data updated, ignore
-                LOGGER.debug("Received entity change key {}, ignored", entityIdStr);
+                LOGGER.debug("[ignored] {}", entityIdStr);
                 return;
             }
 
@@ -221,17 +221,22 @@ public class CacheSnifferJob implements InitializingBean {
                                 // not in cache, so cache is valid
                                 cacheIsValid = true;
                                 revFound = true;
-                                LOGGER.debug("Received entity change {} rev {} but not found in cache", entityKey, rev);
+                                LOGGER.debug("[miss] {}@{}", entityKey, rev);
                             } else {
                                 Map<String, Object> entity = SnifferUtils.parse(existingValue, Map.class);
 
                                 if (entity != null && entity.containsKey("_rev")) {
                                     revFound = true;
-                                    if (rev.compareTo((String)entity.get("_rev")) <= 0) {
+                                    String entityRev = (String)entity.get("_rev");
+                                    int compareResult = rev.compareTo(entityRev);
+                                    if (compareResult == 0) {
                                         cacheIsValid = true;
-                                        LOGGER.debug("Valid cached rev {} for {} change rev {}", entity.get("_rev"), entityKey, rev);
+                                        LOGGER.debug("[valid] {}@{}", entityKey, entityRev);
+                                    } else if (compareResult < 0) {
+                                        cacheIsValid = true;
+                                        LOGGER.debug("[valid] {}@{} r@{}", entityKey, entityRev, rev);
                                     } else {
-                                        LOGGER.debug("Invalid cached rev {} for {} change rev {}", entity.get("_rev"), entityKey, rev);
+                                        LOGGER.debug("[invalid] {}@{} r@{}", entityKey, entityRev, rev);
                                     }
                                 }
                             }
@@ -266,7 +271,7 @@ public class CacheSnifferJob implements InitializingBean {
 
         try {
             memcachedClient.set(key, this.expiration, value).get();
-            LOGGER.trace("Memcached updated successfully. [key]" + key + " [value]" + value);
+            LOGGER.trace("[updated cache] [key]" + key + " [value]" + value);
         } catch (Exception e) {
             LOGGER.warn("Error writing to memcached.", e);
         }
@@ -285,7 +290,7 @@ public class CacheSnifferJob implements InitializingBean {
 
         try {
             memcachedClient.delete(key).get();
-            LOGGER.trace("Memcached deleted successfully. [key]" + key);
+            LOGGER.trace("[deleted cache] [key]" + key);
         } catch (Exception e) {
             LOGGER.warn("Error deleting from memcached.", e);
         }
