@@ -159,7 +159,7 @@
     </appender>
 
     <!-- HIBERNATE CALL LOG -->
-    <property name="FILE_HIBERNATE_CALL_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %5p ${PID:- } [%.20t] [%.36X{oculus-request-id:- }] --- %.40logger{39} : %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
+    <property name="FILE_HIBERNATE_CALL_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %5p ${PID:- } [%.20t] [%.36X{oculus-request-id:- }] : %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
     <appender name="FILE_HIBERNATE_CALL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logDir}/hibernate_call.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -183,7 +183,7 @@
     </appender>
 
     <!-- SNIFFER CALL LOG -->
-    <property name="FILE_SNIFFER_CALL_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %5p ${PID:- } [%.20t] [%.36X{oculus-request-id:- }] --- %.40logger{39} : %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
+    <property name="FILE_SNIFFER_CALL_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
     <appender name="FILE_SNIFFER_CALL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logDir}/sniffer.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">

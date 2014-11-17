@@ -12,17 +12,18 @@ TARGET_DB_HOST=$1
 TARGET_DB_PORT=$2
 
 echo "create pgbouncer home"
-createDir $PGBOUNCER_BASE
+mkdir -p $PGBOUNCER_BASE
 
 # primary pgbouncer proxy
 echo "[PGBOUNCER] generate primary pgbouncer configuration"
 
+PGBOUNCER_CONF=${PGBOUNCER_BASE}/pgbouncer-$(date +%Y-%m-%d:%H:%M:%S).conf
 cat > $PGBOUNCER_CONF <<EOF
 [databases]
 * = host=$TARGET_DB_HOST port=$TARGET_DB_PORT
 
 [pgbouncer]
-logfile = $PGBOUNCER_BASE/pgbouncer.log
+logfile = $PGBOUNCER_BASE/pgbouncer-$(date +%Y-%m-%d:%H:%M:%S).log
 pidfile = $PGBOUNCER_BASE/pgbouncer.pid
 listen_addr = *
 listen_port = $PGBOUNCER_PORT

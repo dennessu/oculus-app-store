@@ -36,8 +36,10 @@ xlog_location=`psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_cu
 echo "[FAILOVER][MASTER] current xlog location is [$xlog_location]"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
     echo "[FAILOVER][MASTER] gracefully shutdown master database"
-    $PGBIN_PATH/pg_ctl stop -m fast -D $MASTER_DATA_PATH
+    stopDB $MASTER_DATA_PATH
 ENDSSH
 
 echo "[FAILOVER][BCP] copy unarchived log files"
@@ -65,6 +67,8 @@ done
 echo "[FAILOVER][BCP] bcp can be written"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
     echo "[FAILOVER][MASTER] configure recovery.conf for master"
     cat > $MASTER_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
@@ -75,7 +79,7 @@ trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
     echo "[FAILOVER][MASTER] start master database"
-    $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH -l "${MASTER_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
+    startDB $MASTER_DATA_PATH $MASTER_LOG_PATH
 
     while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT;
     do

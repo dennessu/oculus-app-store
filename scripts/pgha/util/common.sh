@@ -79,7 +79,6 @@ export PGBOUNCER_PORT=6543
 
 export PGBOUNCER_BIN=/usr/sbin
 export PGBOUNCER_BASE=$PGHA_BASE/pgbouncer
-export PGBOUNCER_CONF=$PGBOUNCER_BASE/pgbouncer.conf
 export PGBOUNCER_PID=$PGBOUNCER_BASE/pgbouncer.pid
 export PGBOUNCER_AUTH_FILE=~/.pgbouncer_auth
 export PGBOUNCER_SOCKET_PATH='/tmp'
@@ -136,12 +135,22 @@ function createDir {
     chmod 700 $1
 }
 
-# get current date time
-function now {
-    return $(date +"%Y.%m.%d.%S.%N")
-}
-
 # get server role
 function getServerRole {
     echo `cat $PGHA_BASE/role.conf`
+}
+
+# start database
+function startDB {
+    echo "database data file path [$1]"
+    echo "database log file path [$2]"
+
+    rm -f $1/postmaster.pid
+    $PGBIN_PATH/pg_ctl -D $1 -l "$2/postgresql-$(date +%Y-%m-%d:%H:%M:%S.%N).log" start > /dev/null 2>&1 &
+}
+
+# shutdown database
+function stopDB {
+    echo "database data file path [$1]"
+    $PGBIN_PATH/pg_ctl stop -m fast -D $1
 }

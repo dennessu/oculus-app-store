@@ -166,7 +166,11 @@ public class StoreBrowseTesting extends BaseTestClass {
         testDataProvider.resetEmulatorData();
         List<String> expectedItemIds = testDataProvider.getExpectedInitialDownloadItemIds(initialDownloadItemCmsPage, initialDownloadItemSlot,
                 initialDownloadItemContentName);
-        gotoToc();
+
+        // create user and sign in
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+
         InitialDownloadItemsResponse response = testDataProvider.getInitialDownloadItems();
         Assert.assertEquals(response.getItems().size(), expectedItemIds.size());
         for (int i = 0;i < response.getItems().size(); ++i) {
@@ -181,7 +185,10 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     @Test
     public void testGetInitialDownloadItemsCmsPageError() throws Exception {
-        gotoToc();
+        // create user and sign in
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+
         TestContext.getData().putHeader("X_QA_CASEY_ERROR", "getCmsPages");
         InitialDownloadItemsResponse response = testDataProvider.getInitialDownloadItems();
         Assert.assertEquals(response.getItems().size(), 0);
