@@ -48,7 +48,7 @@ public class HttpclientHelper {
         String domain = ConfigHelper.getSetting("defaultOauthEndpoint");
         cookie.setVersion(1);
         cookie.setSecure(false);
-        cookie.setExpiryDate(new Date(ca.getTime().getYear(), ca.getTime().getMonth(), ca.getTime().getDay() + 10));
+        cookie.setExpiryDate(new Date(ca.getTime().getYear() + 50, ca.getTime().getMonth(), ca.getTime().getDay()));
         cookie.setDomain(domain.replace("http://", "").replace("/v1", "").split(":")[0]);
         cookie.setPath("/v1/oauth2");
         cookieStore.addCookie(cookie);
