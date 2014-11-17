@@ -98,10 +98,9 @@ if [[ ($master_active -eq 0) && ($slave_active -eq -1) ]] ; then
     echo "master standby & slave unknown (rare case)"
     #start master db
     #don't start londiste root
-    #pgbouncer->slave
+    #dont't start pgbouncer
 
     startMasterDatabase
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_slave.sh
     exit 0
 fi
 
@@ -120,10 +119,9 @@ if [[ ($master_active -eq 0) && ($slave_active -eq 0) ]] ; then
     echo "master standby & slave standby (rare case)"
     #start master db
     #don't start londiste root
-    #pgbouncer->master
+    #don't start pgbouncer
 
     startMasterDatabase
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
     exit 0
 fi
 
