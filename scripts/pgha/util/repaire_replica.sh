@@ -8,20 +8,8 @@ checkAccount $DEPLOYMENT_ACCOUNT
 echo "[REPAIRE-REPLICA][REPLICA] purge replica"
 $DEPLOYMENT_PATH/purge/purge_replica.sh
 
-# stop secondary pgbouncer
-ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-    source $DEPLOYMENT_PATH/util/common.sh
-
-    echo "[REPAIRE-REPLICA][SLAVE] stop secondary pgbouncer proxy"
-    forceKill $PGBOUNCER_PORT
-ENDSSH
-
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     source $DEPLOYMENT_PATH/util/common.sh
-
-    # stop primary pgbouncer
-    echo "[REPAIRE-REPLICA][MASTER] stop primary pgbouncer proxy"
-    forceKill $PGBOUNCER_PORT
 
     echo "[REPAIRE-REPLICA][MASTER] kill skytools instance"
     forceKillPid $SKYTOOL_PID_PATH
@@ -42,19 +30,6 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     # do base backup on master
     echo "[REPAIRE-REPLICA][MASTER] kill skytools instances"
     $DEPLOYMENT_PATH/util/base_backup.sh
-
-    echo "[REPAIRE-REPLICA][MASTER] config londiste root"
-    $DEPLOYMENT_PATH/londiste/londiste_root.sh
-
-    # start primary pgbouncer
-    echo "[REPAIRE-REPLICA][MASTER] start primary pgbouncer proxy"
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
-ENDSSH
-
-# start secondary pgbouncer
-ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-    echo "[REPAIRE-REPLICA][SLAVE] start secondary pgbouncer proxy"
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 ENDSSH
 
 echo "[REPAIRE-REPLICA][REPLICA] create pgha base $PGHA_BASE"
@@ -130,6 +105,20 @@ $DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
 echo "[REPAIRE-REPLICA][REPLICA] kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
+    echo "[REPAIRE-REPLICA][MASTER] stop primary pgbouncer proxy"
+    forceKill $PGBOUNCER_PORT
+ENDSSH
+
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
+    echo "[REPAIRE-REPLICA][SLAVE] stop secondary pgbouncer proxy"
+    forceKill $PGBOUNCER_PORT
+ENDSSH
+
 xlog_location=`psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
 echo "[REPAIRE-REPLICA][REPLICA] current xlog location is [$xlog_location]"
 
@@ -156,6 +145,11 @@ do
    sleep 1 && echo "[LONDISTE][REPLICA] replica is still in read-only status...";
 done
 echo "[REPAIRE-REPLICA][REPLICA] replica can be written"
+
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    echo "[REPAIRE-REPLICA][MASTER] stop primary pgbouncer proxy"
+    $DEPLOYMENT_PATH/londiste/londiste_root.sh
+ENDSSH
 
 for db in ${REPLICA_DATABASES[@]}
 do
@@ -201,6 +195,27 @@ $DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
 
 echo "[REPAIRE-REPLICA][REPLICA] start pgbouncer proxy and connect to replica server"
 $DEPLOYMENT_PATH/pgbouncer/pgbouncer_replica.sh
+
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    for db in ${REPLICA_DATABASES[@]}
+    do
+        config=$SKYTOOL_CONFIG_PATH/\${db}_root.ini
+
+        echo "[REPAIRE-REPLICA][MASTER] start worker for database [\$db]"
+        londiste3 -d \$config worker > /dev/null 2>&1 &
+    done
+
+    echo "[REPAIRE-REPLICA][MASTER] start pgqd deamon"
+    $DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
+
+    echo "[REPAIRE-REPLICA][MASTER] start primary pgbouncer proxy"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+ENDSSH
+
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    echo "[REPAIRE-REPLICA][SLAVE] start secondary pgbouncer proxy"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+ENDSSH
 
 echo "[REPAIRE-REPLICA][REPLICA] create readonly user"
 $DEPLOYMENT_PATH/util/create_user.sh $READONLY_PGUSER $REPLICA_HOST $REPLICA_DB_PORT
