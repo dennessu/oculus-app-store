@@ -391,6 +391,7 @@
     </bean>
 
     <bean id="registerView" class="com.junbo.oauth.core.view.RegisterView">
+        <property name="captchaEnabled" value="${oauth.core.recaptcha.enabled}"/>
         <property name="recaptchaPublicKey" value="${oauth.core.recaptcha.public.key}"/>
     </bean>
 
