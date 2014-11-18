@@ -161,6 +161,14 @@ for db in ${REPLICA_DATABASES[@]}
 do
     config=$SKYTOOL_CONFIG_PATH/${db}_leaf.ini
 
+    echo "[LONDISTE][REPLICA] drop root node"
+    set +e
+    psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq CASCADE;"
+    psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq_ext CASCADE;"
+    psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq_node CASCADE;"
+    psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA londiste CASCADE;"
+    set -e
+
     SCHEMA=`$PGBIN_PATH/psql ${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "\dn" -t | tr -d ' ' | cut -d '|' -f 1 | sed '/^$/d'`
 
     echo "[REPAIRE-REPLICA][REPLICA] drop leaf node if exist"
