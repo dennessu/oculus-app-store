@@ -5,25 +5,56 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+echo "[REPAIRE-REPLICA][REPLICA] purge replica"
+$DEPLOYMENT_PATH/purge/purge_replica.sh
+
+# stop secondary pgbouncer
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
+    echo "[REPAIRE-REPLICA][SLAVE] stop secondary pgbouncer proxy"
+    forceKill $PGBOUNCER_PORT
+ENDSSH
+
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     source $DEPLOYMENT_PATH/util/common.sh
 
-    # purge londdiste on master
+    # stop primary pgbouncer
+    echo "[REPAIRE-REPLICA][MASTER] stop primary pgbouncer proxy"
+    forceKill $PGBOUNCER_PORT
+
+    echo "[REPAIRE-REPLICA][MASTER] kill skytools instance"
+    forceKillPid $SKYTOOL_PID_PATH
+
+    # purge londiste on master
     echo "[REPAIRE-REPLICA][MASTER] prurge londiste"
     for db in ${REPLICA_DATABASES[@]}
     do
         echo "[REPAIRE-REPLICA][MASTER] drop root node"
         set +e
-        psql \${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq CASCADE;"
-        psql \${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq_ext CASCADE;"
-        psql \${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq_node CASCADE;"
-        psql \${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA londiste CASCADE;"
+        psql \${db} -h $MASTER_HOST -p $MASTER_DB_PORT -c "DROP SCHEMA pgq CASCADE;"
+        psql \${db} -h $MASTER_HOST -p $MASTER_DB_PORT -c "DROP SCHEMA pgq_ext CASCADE;"
+        psql \${db} -h $MASTER_HOST -p $MASTER_DB_PORT -c "DROP SCHEMA pgq_node CASCADE;"
+        psql \${db} -h $MASTER_HOST -p $MASTER_DB_PORT -c "DROP SCHEMA londiste CASCADE;"
         set -e
     done
 
     # do base backup on master
     echo "[REPAIRE-REPLICA][MASTER] kill skytools instances"
     $DEPLOYMENT_PATH/util/base_backup.sh
+
+    echo "[REPAIRE-REPLICA][MASTER] config londiste root"
+    $DEPLOYMENT_PATH/londiste/londiste_root.sh
+
+    # start primary pgbouncer
+    echo "[REPAIRE-REPLICA][MASTER] start primary pgbouncer proxy"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+ENDSSH
+
+# start secondary pgbouncer
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    echo "[REPAIRE-REPLICA][SLAVE] start secondary pgbouncer proxy"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 ENDSSH
 
 echo "[REPAIRE-REPLICA][REPLICA] create pgha base $PGHA_BASE"
@@ -96,23 +127,6 @@ echo "[REPAIRE-REPLICA][REPLICA] setup and start londiste leaf"
 echo "[REPAIRE-REPLICA][REPLICA] generate leaf configuration"
 $DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
 
-ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
-    source $DEPLOYMENT_PATH/util/common.sh
-
-    echo "[REPAIRE-REPLICA][MASTER] stop primary pgbouncer proxy"
-    forceKill $PGBOUNCER_PORT
-
-    echo "[REPAIRE-REPLICA][MASTER] kill skytools instance"
-    forceKillPid $SKYTOOL_PID_PATH
-ENDSSH
-
-ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-    source $DEPLOYMENT_PATH/util/common.sh
-
-    echo "[REPAIRE-REPLICA][SLAVE] stop secondary pgbouncer proxy"
-    forceKill $PGBOUNCER_PORT
-ENDSSH
-
 echo "[REPAIRE-REPLICA][REPLICA] kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
@@ -174,20 +188,7 @@ ENDSSH
     done
 done
 
-ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
-    echo "[REPAIRE-REPLICA][MASTER] config londiste root"
-    $DEPLOYMENT_PATH/londiste/londiste_root.sh
-
-    echo "[REPAIRE-REPLICA][MASTER] start primary pgbouncer proxy"
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
-ENDSSH
-
-ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-    echo "[REPAIRE-REPLICA][SLAVE] start secondary pgbouncer proxy"
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
-ENDSSH
-
-echo "[LONDISTE][REPLICA] start pgqd deamon"
+echo "[REPAIRE-REPLICA][REPLICA] start pgqd deamon"
 $DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
 
 echo "[REPAIRE-REPLICA][REPLICA] start pgbouncer proxy and connect to replica server"
