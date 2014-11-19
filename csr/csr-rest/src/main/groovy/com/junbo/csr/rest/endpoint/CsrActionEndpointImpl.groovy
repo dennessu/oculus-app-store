@@ -32,26 +32,32 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
         }
 
         def results = new Results<User>(items: [])
-        User user = null
         switch (searchForm.type) {
             case SearchType.USERNAME:
-                user = identityService.getUserByUsername(searchForm.value).get()
+                def user = identityService.getUserByUsername(searchForm.value).get()
+                results.items.add(user)
                 break
             case SearchType.USERID:
                 Long userId = IdFormatter.decodeId(UserId, searchForm.value)
-                user = identityService.getUserById(new UserId(userId)).get()
+                def user = identityService.getUserById(new UserId(userId)).get()
+                results.items.add(user)
                 break
             case SearchType.FULLNAME:
-                return identityService.getUserByUserFullName(searchForm.value)
+                results = identityService.getUserByUserFullName(searchForm.value).get()
+                break
             case SearchType.EMAIL:
-                return identityService.getUserByUserEmail(searchForm.value)
+                results = identityService.getUserByUserEmail(searchForm.value).get()
+                break
             case SearchType.PHONENUMBER:
-                return identityService.getUserByPhoneNumber(searchForm.value)
+                results = identityService.getUserByPhoneNumber(searchForm.value).get()
+                break
         }
 
-        if (user != null) {
-            results.items.add(user)
+        // unique results by user id
+        results.items.unique { User user ->
+            return user.getId()
         }
+
         return Promise.pure(results)
     }
 }
