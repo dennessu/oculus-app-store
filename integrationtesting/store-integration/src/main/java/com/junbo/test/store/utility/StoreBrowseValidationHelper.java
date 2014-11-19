@@ -415,17 +415,10 @@ public class StoreBrowseValidationHelper {
 
     private void verifyRevisionNote(List<RevisionNote> revisionNotes, List<ItemRevision> itemRevisions, boolean offerAvailable) {
         // verify release notes
-        List<ItemRevision> revisions = new ArrayList<>(itemRevisions);
-        Collections.sort(revisions, new Comparator<ItemRevision>() {
-            @Override
-            public int compare(ItemRevision o1, ItemRevision o2) {
-                return o2.getUpdatedTime().compareTo(o1.getUpdatedTime());
-            }
-        });
-        Assert.assertEquals(revisionNotes.size(), revisions.size());
+        Assert.assertEquals(revisionNotes.size(), itemRevisions.size());
         for (int i = 0; i < revisionNotes.size(); ++i) {
             RevisionNote revisionNote = revisionNotes.get(i);
-            ItemRevision historyItemRevision = revisions.get(i);
+            ItemRevision historyItemRevision = itemRevisions.get(i);
             ItemRevisionLocaleProperties historyLocalProperties = historyItemRevision.getLocales().get(locale);
             Binary historyBinary = historyItemRevision.getBinaries() == null ? null : historyItemRevision.getBinaries().get(Platform);
 
