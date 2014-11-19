@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 // CHECKSTYLE:OFF
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.*;
 import com.junbo.common.json.ObjectMapperProvider;
@@ -173,9 +174,9 @@ public class Identity {
         String url = "";
         if (StringUtils.isEmpty(locale) && StringUtils.isEmpty(sortBy)) {
             url = IdentityV1CountryURI;
-        } else if (StringUtils.isEmpty(locale)) {
+        } else if (!StringUtils.isEmpty(locale)) {
             url = IdentityV1CountryURI + "?locale=" + locale;
-        } else if (StringUtils.isEmpty(sortBy)) {
+        } else if (!StringUtils.isEmpty(sortBy)) {
             url = IdentityV1CountryURI + "?sortBy=" + sortBy;
         } else {
             url = IdentityV1CountryURI + "?locale=" + locale + "&sortBy=" + sortBy;
@@ -183,7 +184,7 @@ public class Identity {
 
         List<Country> countries = new ArrayList<>();
         for (Object obj : IdentityGet(url, (Results.class)).getItems()) {
-            countries.add((Country)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Country.class));
+            countries.add((Country) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Country.class));
         }
         return countries;
     }
@@ -538,7 +539,7 @@ public class Identity {
         Results<UserGroup> userGroups = IdentityGet(url, Results.class);
         List<UserGroup> userGroupList = new ArrayList<>();
         for (Object obj : userGroups.getItems()) {
-            userGroupList.add((UserGroup)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
+            userGroupList.add((UserGroup) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
         }
 
         userGroups.setItems(userGroupList);
@@ -549,7 +550,7 @@ public class Identity {
         String url = "";
         if (userId != null && groupId != null) {
             url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId) + "&groupId=" + IdConverter.idToHexString(groupId);
-        }else if (groupId != null) {
+        } else if (groupId != null) {
             url = IdentityV1UserGroupMemberURI + "?groupId=" + IdConverter.idToHexString(groupId);
         } else if (userId != null) {
             url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId);
@@ -558,7 +559,7 @@ public class Identity {
         Results<UserGroup> userGroups = IdentityGet(url, Results.class);
         List<UserGroup> userGroupList = new ArrayList<>();
         for (Object obj : userGroups.getItems()) {
-            userGroupList.add((UserGroup)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
+            userGroupList.add((UserGroup) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
         }
 
         userGroups.setItems(userGroupList);
@@ -622,7 +623,7 @@ public class Identity {
         Results<UserAuthenticator> userAuthenticatorResults = IdentityGet(url, Results.class);
         List<UserAuthenticator> userAuthenticators = new ArrayList<>();
         for (Object obj : userAuthenticatorResults.getItems()) {
-            userAuthenticators.add((UserAuthenticator)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserAuthenticator.class));
+            userAuthenticators.add((UserAuthenticator) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserAuthenticator.class));
         }
 
         userAuthenticatorResults.setItems(userAuthenticators);
@@ -781,7 +782,7 @@ public class Identity {
         }
 
         if (limit != null) {
-           url = !StringUtils.isEmpty(url)? (url + "&count=" + limit) : ("count=" + limit);
+            url = !StringUtils.isEmpty(url) ? (url + "&count=" + limit) : ("count=" + limit);
         }
 
         return url;

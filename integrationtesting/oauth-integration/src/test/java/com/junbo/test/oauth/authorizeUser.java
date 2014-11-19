@@ -864,8 +864,8 @@ public class authorizeUser {
         Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
 
         Error error = new Error();
-        error.setMessage("Input Validation Failure");
-        error.setCode("131.002");
+        error.setMessage("Input Error");
+        error.setCode("132.001");
         List<ErrorDetail> details = new ArrayList<>();
         ErrorDetail detail = new ErrorDetail();
         detail.setField("username");
