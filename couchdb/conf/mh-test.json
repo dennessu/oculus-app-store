@@ -1,10 +1,6 @@
 {
     "dbs": {
         "couchdb": "https://silkcloudtest-mh:#Bugsfor$@silkcloudtest-mh.cloudant.com",
-        "pii": [
-            "https://silkcloudtest-useast:#Bugsfor$@silkcloudtest-useast.cloudant.com",
-            "https://silkcloudtest-uswest:#Bugsfor$@silkcloudtest-uswest.cloudant.com"
-        ],
         "cloudant": "https://silkcloudtest-mh:#Bugsfor$@silkcloudtest-mh.cloudant.com"
     },
     "apikeys": [
