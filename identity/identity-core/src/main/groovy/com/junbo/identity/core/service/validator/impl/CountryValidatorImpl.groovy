@@ -131,10 +131,6 @@ class CountryValidatorImpl implements CountryValidator {
             throw AppCommonErrors.INSTANCE.parameterRequired('locale').exception()
         }
 
-        if (options.returnLocale != null && StringUtils.isEmpty(options.sortBy)) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('sortBy').exception()
-        }
-
         if (!StringUtils.isEmpty(options.sortBy) && !options.sortBy.equalsIgnoreCase('shortName')) {
             throw AppCommonErrors.INSTANCE.parameterInvalid('sortBy', 'sortBy only support shortName').exception()
         }

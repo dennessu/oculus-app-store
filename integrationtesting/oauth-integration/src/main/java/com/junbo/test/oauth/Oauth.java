@@ -272,17 +272,20 @@ public class Oauth {
     }
 
     // pass in userName and email for validation purpose only
-    public static void PostRegisterUser(String cid, String userName, String email, ViewModel emailVerifyRequiredViewModel) throws Exception {
+    public static void PostRegisterUser(
+            String cid, String userName, String email, ViewModel emailVerifyRequiredViewModel)
+            throws Exception {
         PostRegisterUser(cid, userName, email, null, true, false, emailVerifyRequiredViewModel);
     }
 
-    public static void PostRegisterUser(String cid, String userName, String email) throws Exception {
+    public static void PostRegisterUser(String cid, String userName, String email)
+            throws Exception {
         PostRegisterUser(cid, userName, email, null, true, false, null);
     }
 
-    public static void PostRegisterUser(String cid, String userName, String email, com.junbo.common.error.Error error)
+    public static void PostRegisterUser(String cid, String userName, String email, Error error)
             throws Exception {
-        PostRegisterUser(cid, userName, email, error, true, false, null);
+        PostRegisterUser(cid, userName, email, error, false, false, null);
     }
 
     // pass in userName and email for validation purpose only

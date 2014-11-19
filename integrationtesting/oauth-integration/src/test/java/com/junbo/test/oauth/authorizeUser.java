@@ -822,4 +822,57 @@ public class authorizeUser {
         response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);
         Oauth.validateViewModeResponse(response, "register", error);
     }
+
+    /*
+     * test case to cover https://oculus.atlassian.net/browse/SER-800
+     */
+    @Test(groups = "dailies")
+    public void registerWithDuplicateUserName() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        Oauth.PostRegisterUser(cid, userName, email);
+
+        HttpclientHelper.ResetHttpClient();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
+
+        Error error = new Error();
+        error.setMessage("Input Validation Failure");
+        error.setCode("131.002");
+        List<ErrorDetail> details = new ArrayList<>();
+        ErrorDetail detail = new ErrorDetail();
+        detail.setField("username");
+        detail.setReason("Field value is duplicate");
+        details.add(detail);
+        error.setDetails(details);
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        Oauth.PostRegisterUser(cid, userName, email, error);
+    }
 }
