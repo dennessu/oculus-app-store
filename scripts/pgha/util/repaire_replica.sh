@@ -8,9 +8,6 @@ checkAccount $DEPLOYMENT_ACCOUNT
 # check running on specified server
 checkServerRole "REPLICA"
 
-echo "[REPAIRE-REPLICA][REPLICA] purge replica"
-$DEPLOYMENT_PATH/purge/purge_replica.sh
-
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     source $DEPLOYMENT_PATH/util/common.sh
 
