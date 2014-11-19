@@ -19,10 +19,17 @@ import java.lang.reflect.ParameterizedType
 @CompileStatic
 abstract class CloudantClientBase<T extends CloudantEntity> implements InitializingBean {
     private static final ThreadLocal<Boolean> useBulk = new ThreadLocal<>()
+    private static final ThreadLocal<Boolean> ignoreLocalIgnoreBulk = new ThreadLocal<>()
 
     // Set whether use bulk cloudant to commit changes. The value is reset at the end of the request automatically.
     public static boolean setUseBulk(Boolean value) {
         useBulk.set(value)
+    }
+
+    // Set use bulk ignoring the localIgnoreBulk.
+    public static boolean setStrongUseBulk(Boolean value) {
+        useBulk.set(value)
+        ignoreLocalIgnoreBulk.set(value)
     }
 
     public CloudantClientInternal getEffective() {
@@ -31,7 +38,8 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         // 2. Use the thread static setUseBulk to specify whether bulk is used or not.
         // When bulk is used, it will ignore cache setting. Now bulk is only used in migration.
         Boolean flag = useBulk.get()
-        if (flag == null || flag == false || localIgnoreBulk) {
+        Boolean ignoreLocalIgnoreBulk = ignoreLocalIgnoreBulk.get() ?: false;
+        if (flag == null || flag == false || (localIgnoreBulk && !ignoreLocalIgnoreBulk)) {
             return internal
         }
         return bulk

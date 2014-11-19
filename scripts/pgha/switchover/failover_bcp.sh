@@ -2,13 +2,11 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/../util/common.sh
 
-role=`getServerRole`
-echo "The server is [$role]"
+#check running under specified account
+checkAccount $DEPLOYMENT_ACCOUNT
 
-if [[ $role != "BCP" ]] ; then
-    echo "[REMEDY][$role] bcp failover script should be executed on [BCP] server"
-    exit
-fi
+# check running on specified server
+checkServerRole "BCP"
 
 echo "[FAILOVER][BCP] stop traffic for failover"
 

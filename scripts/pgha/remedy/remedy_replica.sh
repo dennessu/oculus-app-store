@@ -5,14 +5,8 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-# check server
-role=`getServerRole`
-echo "the server is [$role]"
-
-if [[ $role != "REPLICA" ]]; then 
-    echo "the server is not [REPLICA], exit"; 
-    exit 1
-fi
+# check running on specified server
+checkServerRole "REPLICA"
 
 # start replica database
 echo "[REMEDY][REPLICA] check whether postgresql instance running"

@@ -73,7 +73,7 @@ public class EntitlementRepository {
             CloudantClientBulk.commit().get();
             CloudantClientBase.setUseBulk(false);
         }
-        Context.get().registerPendingTask(new Promise.Func0<Promise>() {
+        Context.get().registerAsyncTask(new Promise.Func0<Promise>() {
             @Override
             public Promise apply() {
                 Promise result;

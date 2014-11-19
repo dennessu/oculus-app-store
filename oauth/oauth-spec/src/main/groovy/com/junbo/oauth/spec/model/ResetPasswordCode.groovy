@@ -9,7 +9,7 @@ import groovy.transform.CompileStatic
  * Created by minhao on 5/1/14.
  */
 @CompileStatic
-class ResetPasswordCode extends ResourceMeta<String> {
+class ResetPasswordCode extends ExpirableToken {
     @CloudantIgnore
     String code
 

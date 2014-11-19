@@ -79,7 +79,8 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
         return new ResetPasswordCode(
             code: entity.id,
             userId: entity.userId,
-            email: entity.email
+            email: entity.email,
+            expiredBy: entity.expiredBy
         )
     }
 
@@ -91,7 +92,8 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
         return new ResetPasswordCodeEntity(
             id: entity.code,
             userId: entity.userId,
-            email: entity.email
+            email: entity.email,
+            expiredBy: entity.expiredBy
         )
     }
 }

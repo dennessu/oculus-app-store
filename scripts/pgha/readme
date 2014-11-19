@@ -152,11 +152,17 @@
 [MASTER is broken]
 #[slave] promote slave to take traffic
 
-#[bastion] switch master/slave configuration and refresh scripts
-    original slave -> master
-    original master -> slave
+#[master] repaire master
+    $DEPLOYMENT_PATH/util/repair_master.sh
 
-#repeat normal replciation setup process
+#[master] test slave -> master
+    $DEPLOYMENT_PATH/test/test_slave2master.sh
+
+#[master] do failback
+    $DEPLOYMENT_PATH/switchover/failback.sh
+
+#[master] test master -> slave
+    $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 =====Release Memo=====
 # Londiste doesn't support DDL replication, liquibase scripts should be first run against REPLICA then MASTER

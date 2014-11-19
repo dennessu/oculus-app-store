@@ -83,7 +83,7 @@ class UserLogProcessorImpl implements UserLogProcessor {
                 LOGGER.info("Output Entity ID: $entityId");
             }
 
-            Context.get().registerPendingTask(new Promise.Func0<Promise>() {
+            Context.get().registerAsyncTask(new Promise.Func0<Promise>() {
                 @Override
                 Promise apply() {
                     return getUserLogRepo().create(userLog)

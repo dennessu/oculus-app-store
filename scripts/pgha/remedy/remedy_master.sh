@@ -5,14 +5,8 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-# check server
-role=`getServerRole`
-echo "the server is [$role]"
-
-if [[ $role != "MASTER" ]]; then 
-    echo "the server is not [MASTER], exit"; 
-    exit 1
-fi
+# check running on specified server
+checkServerRole "MASTER"
 
 master_active=1 #master in active mode
 if test -e $MASTER_DATA_PATH/recovery.conf;

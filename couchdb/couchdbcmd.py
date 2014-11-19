@@ -387,8 +387,12 @@ def createviews(dbDef, url, fullDbName):
     needPut = False
     if "views" in dbDef:
         viewDiff = diffView("views", viewsRequest, dbDef)
-        if ("update" in viewDiff or "delete" in viewDiff) and not gIgnoreDiff:
-            raise Exception(("update or delete view in %s:\n" % fullDbName) + json.dumps(viewDiff, indent=2))
+        if "update" in viewDiff and not gIgnoreDiff:
+            raise Exception(("update view in %s:\n" % fullDbName) + json.dumps(viewDiff, indent=2))
+        if "delete" in viewDiff and not gIgnoreDiff:
+            info(("delete view in %s:\n" % fullDbName) + json.dumps(viewDiff, indent=2))
+            for key, value in viewDiff["delete"].items():
+                dbDef["views"][key] = value
         viewsRequest["views"] = dbDef["views"]
         needPut = True
     if "indexes" in dbDef:
