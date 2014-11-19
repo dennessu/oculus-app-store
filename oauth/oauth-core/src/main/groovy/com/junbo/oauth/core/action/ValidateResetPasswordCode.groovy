@@ -47,6 +47,11 @@ class ValidateResetPasswordCode implements Action {
             return Promise.pure(new ActionResult('error'))
         }
 
+        if (resetPasswordCode.isExpired()) {
+            contextWrapper.errors.add(AppErrors.INSTANCE.expiredResetPasswordCode(code).error())
+            return Promise.pure(new ActionResult('error'))
+        }
+
         contextWrapper.resetPasswordCode = resetPasswordCode
 
         return Promise.pure(new ActionResult('success'))

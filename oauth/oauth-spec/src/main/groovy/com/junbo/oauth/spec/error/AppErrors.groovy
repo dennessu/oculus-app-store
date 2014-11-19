@@ -202,4 +202,8 @@ interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = '145', message = 'Sentry block email check: {0}')
     AppError sentryBlockEmailCheck(String reason)
+
+    @ErrorDef(httpStatusCode = 412, code = '146', message='Expired Reset Password Code.', reason = 'The rpc {0} is already expired',
+            field = 'rpc')
+    AppError expiredResetPasswordCode(String rpc)
 }

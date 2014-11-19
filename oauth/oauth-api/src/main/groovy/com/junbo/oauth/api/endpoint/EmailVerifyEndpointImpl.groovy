@@ -141,6 +141,10 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             return Promise.pure(response(failedUri, false, locale, null, AppCommonErrors.INSTANCE.fieldInvalid('evc')).build())
         }
 
+        if (emailVerifyCode.isExpired()) {
+            return Promise.pure(response(failedUri, false, locale, null, AppCommonErrors.INSTANCE.fieldInvalid('evc')).build())
+        }
+
         emailVerifyCodeRepository.removeByUserIdEmail(emailVerifyCode.userId, emailVerifyCode.email)
 
         try {
