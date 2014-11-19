@@ -19,7 +19,7 @@ public class EntitlementHistoryDaoImpl extends CloudantClient<EntitlementHistory
 
     @Override
     public void insertAsync(final EntitlementHistoryEntity entitlementHistory) {
-        Context.get().registerPendingTask(new Promise.Func0<Promise>() {
+        Context.get().registerAsyncTask(new Promise.Func0<Promise>() {
             @Override
             public Promise apply() {
                 return cloudantPost(entitlementHistory);

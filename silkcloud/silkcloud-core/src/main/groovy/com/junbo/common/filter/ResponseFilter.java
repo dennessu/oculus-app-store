@@ -90,7 +90,7 @@ public class ResponseFilter implements ContainerResponseFilter {
             String data = ProfilingHelper.dumpProfileData();
 
             if (profilingLogger.isDebugEnabled()) {
-                profilingLogger.debug(ProfilingHelper.prettyPrint(data));
+                profilingLogger.debug("Profiling Request Output:\n" + ProfilingHelper.prettyPrint(data));
             }
 
             // keep header line small and make it smaller than 64k

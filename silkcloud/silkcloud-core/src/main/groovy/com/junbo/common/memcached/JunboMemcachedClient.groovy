@@ -143,8 +143,8 @@ class JunboMemcachedClient implements InitializingBean {
     //region profile
 
     private static <T> T withProfile(String method, String key, Closure<T> closure) {
-        ProfilingHelper.appendRow(logger, "(MC) BEGIN %s %s", method, key);
-        return FutureWrapper.finishProfile(method, key, closure);
+        ProfilingHelper.begin("MC", "%s %s", method, key);
+        return FutureWrapper.finishProfile(closure);
     }
 
     //endregion

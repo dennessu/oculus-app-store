@@ -14,6 +14,8 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * AsyncLoggedHandler is used to hook and do logging for responses.
@@ -25,6 +27,7 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
             new SimpleDateFormatThreadLocal("[yyyy-MM-dd HH:mm:ss.SSS Z]");
     private static final String COUCH_REQUEST_ID = "X-Couch-Request-ID";
     private static final String COUCH_LOCATION = "Location";
+    private static final Pattern ACCESS_TOKEN_PATTERN = Pattern.compile("access_token=[^&]+");
 
     private String method;
     private URI uri;
@@ -36,7 +39,7 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
 
     public AsyncLoggedHandler(String method, URI uri, String requestId) {
         this.method = method;
-        this.uri = uri;
+        this.uri = maskUri(uri);
         this.requestId = requestId;
     }
 
@@ -124,6 +127,28 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
                 requestId == null ? "" : requestId,
                 couchRequestId == null ? "" : couchRequestId,
                 couchLocation);
+    }
+
+    private static URI maskUri(URI uri) {
+        // mask all access tokens in the URI parameters
+        Matcher matcher = ACCESS_TOKEN_PATTERN.matcher(uri.toString());
+        boolean result = matcher.find();
+        if (result) {
+            StringBuffer sb = new StringBuffer();
+            do {
+                matcher.appendReplacement(sb, "access_token=******");
+                result = matcher.find();
+            } while (result);
+            matcher.appendTail(sb);
+
+            try {
+                return new URI(sb.toString());
+            } catch (Exception ex) {
+                logger.error("Invalid URI string: " + sb.toString(), ex);
+                return uri;
+            }
+        }
+        return uri;
     }
 
     static class SimpleDateFormatThreadLocal extends ThreadLocal<SimpleDateFormat> {

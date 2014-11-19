@@ -155,7 +155,7 @@ public class JunboAsyncHttpClient implements Closeable {
     }
 
     public Promise<Response> executeRequest(final Request request) throws IOException {
-        ProfilingHelper.appendRow(null, "(HTTP) BEGIN %s %s", request.getMethod(), request.getURI());
+        ProfilingHelper.begin("HTTP", "%s %s", request.getMethod(), request.getURI());
         try {
             Promise<Response> response = Promise.wrap(asGuavaFuture(
                     asyncHttpClient.executeRequest(request, new AsyncLoggedHandler(request.getMethod(),
@@ -167,18 +167,18 @@ public class JunboAsyncHttpClient implements Closeable {
                         if (ProfilingHelper.isProfileEnabled()) {
                             String profilingOutput = response.getHeaders().getJoinedValue(ProfilingHelper.PROFILE_OUTPUT_KEY, "");
                             if (!StringUtils.isEmpty(profilingOutput)) {
-                                ProfilingHelper.beginScope(null, null);
+                                ProfilingHelper.appendRaw("[|");
                                 ProfilingHelper.appendRaw(profilingOutput);
-                                ProfilingHelper.endScope(null, null);
+                                ProfilingHelper.appendRaw("]|");
                             }
                         }
-                        ProfilingHelper.appendRow(null, "(HTTP) END resp: %s %s %d %s", request.getMethod(), request.getUrl(), response.getStatusCode(), response.getStatusText());
+                        ProfilingHelper.end("(%s) %d", response.getStatusText(), response.getStatusCode());
                         return Promise.pure(response);
                     }
                 }).recover(new Promise.Func<Throwable, Promise<Response>>() {
                     @Override
                     public Promise<Response> apply(Throwable t) {
-                        ProfilingHelper.appendRow(null, "(HTTP) EXCEPT resp: %s %s %s %s", request.getMethod(), request.getUrl(), t.getClass().getSimpleName(), t.getMessage());
+                        ProfilingHelper.err(t);
                         if (t instanceof RuntimeException) {
                             throw (RuntimeException) t;
                         }
@@ -188,7 +188,7 @@ public class JunboAsyncHttpClient implements Closeable {
             }
             return response;
         } catch (Throwable ex) {
-            ProfilingHelper.appendRow(null, "(HTTP) EXCEPT resp: %s %s %s %s", request.getMethod(), request.getUrl(), ex.getClass().getSimpleName(), ex.getMessage());
+            ProfilingHelper.err(ex);
             throw ex;
         }
     }

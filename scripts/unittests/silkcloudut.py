@@ -43,6 +43,7 @@ def setUpModule():
     global test_logout_redirect_uri
     global test_wildcard_logout_redirect_uri
     global test_sleep
+    global test_profile_enabled
     global cookies
 
     if opts is not None:
@@ -55,6 +56,7 @@ def setUpModule():
         test_redirect_uri = opts.redirecturi
         test_logout_redirect_uri = opts.redirecturi
         test_wildcard_logout_redirect_uri = 'https://www.oculus.com/'
+        test_profile_enabled=opts.profile
         test_sleep = opts.sleep
     else:
         test_uri = 'http://localhost:8080/'
@@ -66,6 +68,7 @@ def setUpModule():
         test_redirect_uri = 'http://localhost'
         test_logout_redirect_uri = 'http://localhost'
         test_wildcard_logout_redirect_uri = 'https://www.oculus.com/'
+        test_profile_enabled='0'
         test_sleep = None
 
     cookies = CookieJar()
@@ -91,6 +94,7 @@ def silkcloud_utmain(suite = None):
     parser.add_argument("-sclient", nargs = '?', help = "The service client ID used in test cases.", default = 'service')
     parser.add_argument("-ssecret", nargs = '?', help = "The service client secret used in the test cases.", default = 'secret')
     parser.add_argument("-redirecturi", nargs = '?', help = "The redirect URI for the test cases.", default = 'http://localhost')
+    parser.add_argument("-profile", nargs = '?', help = "The profile setting.", default = '1')
     parser.add_argument("-sleep", nargs = '?', help = "The sleep between API calls.")
     parser.add_argument('tests', metavar='test', nargs='*', help='The test cases to run.')
 
@@ -193,7 +197,8 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
             headers['Authorization'] = authheader
 
         # enable profiling
-        headers['X-Enable-Profiling'] = 'true'
+        if test_profile_enabled != 'False':
+            headers['X-Enable-Profiling'] = test_profile_enabled
 
         # process cookies
         request = HttpRequest(protocol, host, port, path, headers)
