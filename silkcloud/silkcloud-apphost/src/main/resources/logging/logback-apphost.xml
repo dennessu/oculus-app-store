@@ -206,30 +206,6 @@
         <appender-ref ref="FILE_SNIFFER_CALL_LOG"/>
     </appender>
 
-    <!-- PROFILER LOG -->
-    <property name="FILE_PROFILER_PATTERN" value="%d{[yyyy-MM-dd HH:mm:ss.SSS Z]} %5p [%.36X{oculus-request-id:- }] : %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
-    <appender name="FILE_PROFILER_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logDir}/profiler.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Roll the log every day and compress it in GZIP -->
-            <fileNamePattern>${logDir}/profiler.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <!-- Keep max 10 days logs -->
-            <maxHistory>10</maxHistory>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- or whenever the file size reaches 500MB -->
-                <maxFileSize>500MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-        <encoder>
-            <pattern>${FILE_PROFILER_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="FILE_ASYNC_PROFILER_LOG" class="com.junbo.apphost.core.logging.RealAsyncAppender">
-        <appender-ref ref="FILE_PROFILER_LOG"/>
-    </appender>
-
     <!-- loggers -->
     <logger name="com.junbo.apphost.core.logging.AccessLogProbe" level="INFO" additivity="false">
         <appender-ref ref="FILE_ASYNC_ACCESS_LOG"/>
@@ -251,6 +227,6 @@
     </logger>
 
     <logger name="com.junbo.langur.core.profiling.ProfilingHelper" level="DEBUG" additivity="false">
-        <appender-ref ref="FILE_ASYNC_PROFILER_LOG"/>
+        <appender-ref ref="MAIN_ASYNC"/>
     </logger>
 </configuration>
