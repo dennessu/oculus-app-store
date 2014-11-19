@@ -10,8 +10,9 @@ checkServerRole "MASTER"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     # do base backup on slave
-    echo "[REPAIRE-REPLICA][SLAVE] kill skytools instances"
-    $DEPLOYMENT_PATH/util/base_backup.sh
+    rm -rf $BACKUP_PATH
+    mkdir $BACKUP_PATH
+    pg_basebackup -D $BACKUP_PATH -w -R --xlog-method=stream --dbname="host=$SLAVE_HOST port=$SLAVE_DB_PORT user=$PGUSER"
 ENDSSH
 
 echo "[REPAIR-MASTER][MASTER] create pgha base $PGHA_BASE"
