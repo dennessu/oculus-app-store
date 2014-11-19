@@ -5,14 +5,8 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-# check server
-role=`getServerRole`
-echo "the server is [$role]"
-
-if [[ $role != "BCP" ]]; then 
-    echo "the server is not [BCP], exit"; 
-    exit 1
-fi
+# check running on specified server
+checkServerRole "BCP"
 
 # start BCP database
 echo "[REMEDY][BCP] check whether postgresql instance running"

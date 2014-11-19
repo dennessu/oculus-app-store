@@ -5,14 +5,8 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-# check server
-role=`getServerRole`
-echo "the server is [$role]"
-
-if [[ $role != "SLAVE" ]]; then 
-    echo "the server is not [SLAVE], exit"; 
-    exit 1
-fi
+# check running on specified server
+checkServerRole "SLAVE"
 
 slave_active=1 #slave in active mode
 if test -e $SLAVE_DATA_PATH/recovery.conf;

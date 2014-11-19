@@ -140,6 +140,17 @@ function getServerRole {
     echo `cat $PGHA_BASE/role.conf`
 }
 
+# check server role
+function checkServerRole {
+    role=`getServerRole`
+    echo "The server is [$role]"
+
+    if [[ $role != "$1" ]] ; then
+        echo "the script should be executed on [$1] server"
+        exit 1
+    fi
+}
+
 # start database
 function startDB {
     echo "database data file path [$1]"

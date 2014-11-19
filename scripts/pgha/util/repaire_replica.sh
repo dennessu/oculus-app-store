@@ -5,6 +5,9 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+# check running on specified server
+checkServerRole "REPLICA"
+
 echo "[REPAIRE-REPLICA][REPLICA] purge replica"
 $DEPLOYMENT_PATH/purge/purge_replica.sh
 
