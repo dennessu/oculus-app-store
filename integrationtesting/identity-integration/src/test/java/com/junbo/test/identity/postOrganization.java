@@ -50,6 +50,7 @@ public class postOrganization {
         Organization posted = Identity.OrganizationPostDefault(org);
         Validator.Validate("validate organization name is correct", true,
                 org.getName().equals(posted.getName()));
+        Identity.OrganizationDelete(posted.getId());
     }
 
     @Test(groups = "dailies")

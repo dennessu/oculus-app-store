@@ -647,6 +647,10 @@ public class Identity {
                 IdentityV1OrganizationURI + "?name=" + name.toLowerCase() + buildIdentityCount(limit) + buildIdentityCursor(offset), Results.class);
     }
 
+    public static void OrganizationDelete(OrganizationId organizationId) throws Exception {
+        IdentityDelete(IdentityV1OrganizationURI + "/" + IdFormatter.encodeId(organizationId));
+    }
+
     public static Results<Organization> OrganizationGetAll(Integer limit, Integer offset) throws Exception {
         String queryStr = "";
         if (limit == null && offset == null) {

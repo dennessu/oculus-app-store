@@ -46,6 +46,10 @@ interface OAuthTokenService {
 
     void revokeAccessTokenByUserId(Long userId, Client client)
 
+    void revokeAccessToken(Long userId)
+
+    void revokeRefreshToken(Long userId)
+
     boolean isValidAccessToken(String tokenValue)
 
     boolean isValidRefreshToken(String tokenValue)

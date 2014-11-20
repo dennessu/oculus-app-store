@@ -45,7 +45,7 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
             throw new IllegalArgumentException("id is null");
         }
         return this.cloudantGet(id.toString()).then { PendingActionEntity entity ->
-            if (entity != null && entity.isDeleted()) {
+            if (entity != null && Boolean.TRUE.equals(entity.isDeleted())) {
                 return Promise.pure(null);
             }
 

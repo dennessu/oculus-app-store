@@ -35,23 +35,28 @@ class PropertyFactoryImpl implements PropertyFactory {
         def getter = getters[propertyName]
         def setter = setters[propertyName]
 
-        TypeModel returnType
-        if (getter != null) {
-            returnType = typeFactory.getType(PropertyUtil.getGetterType(owner, getter, processingEnv))
-        }
-        else if (setter != null) {
-            returnType = typeFactory.getType(PropertyUtil.getSetterType(owner, setter, processingEnv))
-        }
-        else {
-            throw new ProcessingException("Unknown property $propertyName in type $owner.")
+        try {
+            TypeModel returnType
+            if (getter != null) {
+                returnType = typeFactory.getType(PropertyUtil.getGetterType(owner, getter, processingEnv))
+            }
+            else if (setter != null) {
+                returnType = typeFactory.getType(PropertyUtil.getSetterType(owner, setter, processingEnv))
+            }
+            else {
+                throw new ProcessingException("Unknown property $propertyName in type $owner.")
+            }
+
+            return new PropertyModel(
+                    owner:owner,
+                    name:propertyName,
+                    type:returnType,
+                    getterString:getter?.simpleName?.toString(),
+                    setterString:setter?.simpleName?.toString()
+            )
+        } catch (ProcessingException e) {
+            throw new ProcessingException("Error processing property $propertyName for class $owner.name", e)
         }
 
-        return new PropertyModel(
-                owner:owner,
-                name:propertyName,
-                type:returnType,
-                getterString:getter?.simpleName?.toString(),
-                setterString:setter?.simpleName?.toString()
-        )
     }
 }

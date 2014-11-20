@@ -76,6 +76,11 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
         throw new NotSupportedException()
     }
 
+    @Override
+    void removeByUserId(Long userId) {
+
+    }
+
     private static LoginStateEntity unwrap(LoginState loginState) {
         if (loginState == null) {
             return null

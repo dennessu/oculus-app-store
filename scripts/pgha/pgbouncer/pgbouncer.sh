@@ -36,6 +36,10 @@ default_pool_size = $PGBOUNCER_DEFAULT_POOL_SIZE
 ignore_startup_parameters = extra_float_digits
 EOF
 
+cat > ${SILKCLOUD_OPS}/pgbouncer <<EOF
+$TARGET_DB_HOST
+EOF
+
 echo "[PGBOUNCER] kill pgbouncer process with port [$PGBOUNCER_PORT]"
 forceKill $PGBOUNCER_PORT
 

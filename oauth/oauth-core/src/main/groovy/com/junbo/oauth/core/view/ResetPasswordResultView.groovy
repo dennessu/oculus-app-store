@@ -33,15 +33,8 @@ class ResetPasswordResultView extends AbstractView {
         ]
 
         if (contextWrapper.errors.isEmpty()) {
-            ResetPasswordCode resetPasswordCode = contextWrapper.resetPasswordCode
-            LoginState loginState = new LoginState(
-                    userId: resetPasswordCode.userId,
-                    lastAuthDate: new Date()
-            )
-
-            loginStateRepository.save(loginState)
-            CookieUtil.setCookie(context, OAuthParameters.COOKIE_LOGIN_STATE, loginState.loginStateId, -1)
-            CookieUtil.setCookie(context, OAuthParameters.COOKIE_SESSION_STATE, loginState.sessionId, -1, false)
+            CookieUtil.clearCookie(context, OAuthParameters.COOKIE_LOGIN_STATE)
+            CookieUtil.clearCookie(context, OAuthParameters.COOKIE_SESSION_STATE)
         }
 
         def model = new ViewModel(

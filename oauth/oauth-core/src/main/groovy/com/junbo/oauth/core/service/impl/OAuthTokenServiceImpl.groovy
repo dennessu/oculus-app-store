@@ -373,6 +373,20 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
     }
 
     @Override
+    void revokeAccessToken(Long userId) {
+        Assert.notNull(userId, 'userId is null')
+        Assert.isTrue(userId != 0L, 'userId is 0')
+        accessTokenRepository.removeByUserId(userId)
+    }
+
+    @Override
+    void revokeRefreshToken(Long userId) {
+        Assert.notNull(userId, 'userId is null')
+        Assert.isTrue(userId != 0L, 'userId is 0')
+        refreshTokenRepository.removeByUserId(userId)
+    }
+
+    @Override
     boolean isValidAccessToken(String tokenValue) {
         return accessTokenRepository.isValidAccessToken(tokenValue)
     }

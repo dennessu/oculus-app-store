@@ -83,6 +83,11 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
     }
 
     @Override
+    void removeByUserId(Long userId) {
+
+    }
+
+    @Override
     boolean isValidAccessToken(String tokenValue) {
         return tokenGenerator.isValidAccessToken(tokenValue)
     }

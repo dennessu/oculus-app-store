@@ -1,6 +1,18 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.authorization.AuthorizeContext
+import com.junbo.catalog.spec.model.item.Item
+import com.junbo.catalog.spec.model.item.ItemRevision
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
+import com.junbo.catalog.spec.model.item.ItemsGetOptions
+import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions
+import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.catalog.spec.resource.ItemResource
+import com.junbo.catalog.spec.resource.ItemRevisionResource
+import com.junbo.catalog.spec.resource.OfferResource
+import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
@@ -38,6 +50,10 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     private UserService userService
     private UserPersonalInfoService userPersonalInfoService
     private NormalizeService normalizeService
+    private ItemResource itemResource
+    private ItemRevisionResource itemRevisionResource
+    private OfferResource offerResource
+    private OfferRevisionResource offerRevisionResource
 
     @Override
     Promise<Organization> validateForGet(OrganizationId organizationId) {
@@ -99,6 +115,58 @@ class OrganizationValidatorImpl implements OrganizationValidator {
         }
 
         return checkBasicOrganizationInfo(organization)
+    }
+
+    @Override
+    Promise<Void> validateForDelete(OrganizationId organizationId) {
+        Organization organization = null
+        return validateForGet(organizationId).then { Organization existing ->
+            organization = existing
+
+            return itemResource.getItems(new ItemsGetOptions(
+                    ownerId: existing.getId(),
+                    size: 1
+            )).then { Results<Item> itemResults ->
+                if(itemResults != null && !CollectionUtils.isEmpty(itemResults.items)) {
+                    throw AppCommonErrors.INSTANCE.forbiddenWithMessage('organization is used by item').exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return itemRevisionResource.getItemRevisions(new ItemRevisionsGetOptions(
+                    developerId: organization.getId(),
+                    size: 1
+            )).then { Results<ItemRevision> itemRevisionResults ->
+                if (itemRevisionResults != null && !CollectionUtils.isEmpty(itemRevisionResults.items)) {
+                    throw AppCommonErrors.INSTANCE.forbiddenWithMessage('organization is used by itemRevision').exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return offerResource.getOffers(new OffersGetOptions(
+                    ownerId: organization.getId(),
+                    size: 1
+            )).then { Results<Offer> offerResults ->
+                if (offerResults != null && !CollectionUtils.isEmpty(offerResults.items)) {
+                    throw AppCommonErrors.INSTANCE.forbiddenWithMessage('organization is used by offer').exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return offerRevisionResource.getOfferRevisions(new OfferRevisionsGetOptions(
+                    publisherId: organization.getId(),
+                    size: 1
+            )).then { Results<OfferRevision> offerRevisionResults ->
+                if (offerRevisionResults != null && !CollectionUtils.isEmpty(offerRevisionResults.items)) {
+                    throw AppCommonErrors.INSTANCE.forbiddenWithMessage('organization is used by offerRevision').exception()
+                }
+
+                return Promise.pure(organization)
+            }
+        }
     }
 
     Promise<Void> checkBasicOrganizationInfo(Organization organization) {
@@ -238,5 +306,25 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     @Required
     void setNormalizeService(NormalizeService normalizeService) {
         this.normalizeService = normalizeService
+    }
+
+    @Required
+    void setItemResource(ItemResource itemResource) {
+        this.itemResource = itemResource
+    }
+
+    @Required
+    void setItemRevisionResource(ItemRevisionResource itemRevisionResource) {
+        this.itemRevisionResource = itemRevisionResource
+    }
+
+    @Required
+    void setOfferResource(OfferResource offerResource) {
+        this.offerResource = offerResource
+    }
+
+    @Required
+    void setOfferRevisionResource(OfferRevisionResource offerRevisionResource) {
+        this.offerRevisionResource = offerRevisionResource
     }
 }

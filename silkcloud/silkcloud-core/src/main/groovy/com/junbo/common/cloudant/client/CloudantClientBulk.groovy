@@ -136,8 +136,8 @@ class CloudantClientBulk implements CloudantClientInternal {
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
 
-        delete(dbUri, entity.cloudantId)
-        return impl.cloudantDelete(dbUri, entityClass, entity, noOverrideWrites)
+        addDeleted(dbUri, entity, entityClass)
+        return Promise.pure()
     }
 
     @Override
@@ -327,6 +327,16 @@ class CloudantClientBulk implements CloudantClientInternal {
         addCachedRaw(entity.cloudantId, entityClass, value)
     }
 
+    private void addDeleted(CloudantDbUri dbUri, CloudantEntity entity, Class entityClass) {
+        entity.setCloudantId(entity.getId().toString());
+        entity.setDeleted(true)
+        def bulk = getOrCreateBulk(dbUri)
+
+        def value = marshaller.marshall(entity)
+        bulk.put(entity.cloudantId, new EntityWithType(entity: value, type: entityClass))
+        getCache().remove(entity.cloudantId)
+    }
+
     private void addCached(CloudantEntity entity) {
         if (entity == null) {
             return
@@ -341,11 +351,6 @@ class CloudantClientBulk implements CloudantClientInternal {
 
     private void addCachedRaw(String cloudantId, Class entityClass, String value) {
         getCache().put(cloudantId + ":" + entityClass.getName(), value)
-    }
-
-    private void delete(CloudantDbUri dbUri, String id) {
-        getOrCreateBulk(dbUri).remove(id)
-        getCache().remove(id)
     }
 
     private <T> T getCached(String id, Class<T> entityClass) {

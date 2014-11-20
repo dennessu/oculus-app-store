@@ -614,6 +614,10 @@
         <property name="userService" ref="identityUserService" />
         <property name="userPersonalInfoService" ref="userPersonalInfoService" />
         <property name="normalizeService" ref="normalizeService" />
+        <property name="itemResource" ref="identityItemResource" />
+        <property name="itemRevisionResource" ref="identityItemRevisionResource" />
+        <property name="offerResource" ref="identityOfferResource" />
+        <property name="offerRevisionResource" ref="identityOfferRevisionResource" />
     </bean>
 
     <bean id="errorInfoValidator" class="com.junbo.identity.core.service.validator.impl.ErrorInfoValidatorImpl">

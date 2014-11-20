@@ -216,11 +216,11 @@ class ActionContextWrapper {
     }
 
     Boolean getNeedRememberMe() {
-        return (Boolean) actionContext.requestScope[NEED_REMEMBER_ME]
+        return (Boolean) actionContext.flowScope[NEED_REMEMBER_ME]
     }
 
     void setNeedRememberMe(Boolean needRememberMe) {
-        actionContext.requestScope[NEED_REMEMBER_ME] = needRememberMe
+        actionContext.flowScope[NEED_REMEMBER_ME] = needRememberMe
     }
 
     RememberMeToken getRememberMeToken() {
