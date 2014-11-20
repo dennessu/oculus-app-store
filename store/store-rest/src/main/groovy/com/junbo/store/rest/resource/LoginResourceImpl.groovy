@@ -331,7 +331,7 @@ class LoginResourceImpl implements LoginResource {
             return Promise.pure()
         }.then {
             innerSignIn(userSignInRequest.email, userSignInRequest.userCredential.value).recover { Throwable ex ->
-                if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {
+                if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential, ErrorCodes.Identity.MaximumLoginAttempt)) {
                     throw ex
                 }
                 appErrorUtils.throwUnknownError('signIn', ex)

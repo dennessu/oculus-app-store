@@ -635,6 +635,27 @@ public class LoginResourceTesting extends BaseTestClass {
             owner = "ZhaoYunlong",
             status = Status.Enable,
             steps = {
+                    "Check login max login attempt"
+            }
+    )
+    @Test
+    public void testLoginReachMaxAttempt() throws Exception {
+        int allowMaxTime = 3;
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+        for (int i  = 0;i < allowMaxTime;++i) {
+            testDataProvider.SignInWithError(createUserRequest.getEmail(), "PASSWORD", RandomHelper.randomAlphabetic(10), 412, "132.103");
+        }
+        testDataProvider.SignInWithError(createUserRequest.getEmail(), "PASSWORD", RandomHelper.randomAlphabetic(10), 429, "131.139");
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
                     "Check refresh token works"
             }
     )
