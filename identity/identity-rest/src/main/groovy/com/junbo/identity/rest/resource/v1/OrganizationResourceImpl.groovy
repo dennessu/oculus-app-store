@@ -219,7 +219,7 @@ class OrganizationResourceImpl implements OrganizationResource {
 
     @Override
     Promise<Response> delete(OrganizationId organizationId) {
-        return organizationValidator.validateForGet(organizationId).then { Organization organization ->
+        return organizationValidator.validateForDelete(organizationId).then { Organization organization ->
             def callback = authorizeCallbackFactory.create(organization)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {

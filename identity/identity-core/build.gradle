@@ -15,6 +15,7 @@ dependencies {
     compile junboProject(':billing-spec')
     compile junboProject(':payment-spec')
     compile junboProject(':email-spec')
+    compile junboProject(':catalog-spec')
 }
 
 ext {
