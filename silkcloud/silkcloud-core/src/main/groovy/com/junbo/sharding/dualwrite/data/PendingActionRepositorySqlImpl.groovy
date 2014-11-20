@@ -5,6 +5,7 @@
  */
 package com.junbo.sharding.dualwrite.data
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.sharding.IdGenerator
 import com.junbo.sharding.ShardAlgorithm
 import com.junbo.sharding.hibernate.ShardScope
@@ -83,8 +84,10 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
         if (model.id == null) {
             model.id = idGenerator.nextId(model.getChangedEntityId());
         }
+
+        def trackContext = TrackContextManager.get();
         model.retryCount = 0
-        model.createdBy = 123L      // TODO
+        model.createdBy = trackContext.currentUserId ?: 0L
         model.createdTime = new Date()
 
         def entity = mapper.map(model)
@@ -100,6 +103,14 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
         if (model == null) {
             throw new IllegalArgumentException('model is null')
         }
+
+        def trackContext = TrackContextManager.get();
+        model.setId(oldModel.getId());
+        model.createdBy = oldModel.createdBy;
+        model.createdTime = oldModel.createdTime;
+        model.updatedBy =  trackContext.currentUserId ?: 0L
+        model.updatedTime = new Date()
+        model.setResourceAge(oldModel.getResourceAge())
 
         def entity = mapper.map(model)
         Session session = currentSession(entity.id)
