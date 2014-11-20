@@ -69,7 +69,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
             throw new IllegalArgumentException("id is null");
         }
         PendingActionEntity entity = (PendingActionEntity)currentSession(id).get(PendingActionEntity, id);
-        if (entity != null && entity.isDeleted()) {
+        if (entity != null && Boolean.TRUE.equals(entity.isDeleted())) {
             return Promise.pure(null);
         }
 

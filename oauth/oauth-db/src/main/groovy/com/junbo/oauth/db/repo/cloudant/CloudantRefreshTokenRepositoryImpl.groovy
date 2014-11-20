@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.db.repo.cloudant
 
+import com.junbo.common.cloudant.client.CloudantClientBulk
 import com.junbo.configuration.crypto.CipherService
 import com.junbo.oauth.db.repo.RefreshTokenRepository
 import com.junbo.oauth.spec.model.RefreshToken
@@ -93,6 +94,23 @@ class CloudantRefreshTokenRepositoryImpl
             refreshToken.encryptedNewTokenValue = cipherService.encrypt(refreshToken.newTokenValue)
         }
         return cloudantPutSync(refreshToken, oldRefreshToken)
+    }
+
+    @Override
+    void removeByUserId(Long userId) {
+        def startKey = [userId.toString(), System.currentTimeMillis()]
+        def endKey = [userId.toString()]
+        List<RefreshToken> tokens = queryViewSync('by_user_id_expired_by', startKey.toArray(new String()), endKey.toArray(new String()), true, null, null, true)
+
+        try {
+            setStrongUseBulk(true)
+            for (RefreshToken token : tokens) {
+                cloudantDeleteSync(token)
+            }
+            CloudantClientBulk.commit().get()
+        } finally {
+            setStrongUseBulk(false)
+        }
     }
 
     @Override

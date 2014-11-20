@@ -20,4 +20,6 @@ interface LoginStateRepository {
     void remove(String id)
 
     void removeByHash(String id)
+
+    void removeByUserId(Long userId)
 }

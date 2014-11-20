@@ -32,6 +32,10 @@ public abstract class ResourceMetaBase<K> implements CloudantEntity<K> {
     @CloudantProperty("_id")
     private String cloudantId;
 
+    @JsonIgnore
+    @CloudantProperty("_deleted")
+    private Boolean deleted;
+
     @ApiModelProperty(position = 2001, required = true,
             value = "[Client Immutable] The created datetime of the resource.")
     private Date createdTime;
@@ -59,6 +63,14 @@ public abstract class ResourceMetaBase<K> implements CloudantEntity<K> {
 
     @JsonIgnore
     private String updatedByClient;
+
+    public Boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public Date getCreatedTime() {
         return createdTime;

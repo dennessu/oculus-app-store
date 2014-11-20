@@ -17,6 +17,9 @@ class CloudantUniqueItem implements CloudantEntity<String> {
     @CloudantProperty("_rev")
     String rev
 
+    @CloudantProperty("_deleted")
+    Boolean deleted
+
     @Override
     String getId() {
         return id
@@ -25,6 +28,16 @@ class CloudantUniqueItem implements CloudantEntity<String> {
     @Override
     void setId(String id) {
         this.id = id
+    }
+
+    @Override
+    Boolean isDeleted() {
+        return deleted
+    }
+
+    @Override
+    void setDeleted(Boolean deleted) {
+        this.deleted = deleted
     }
 
     @Override

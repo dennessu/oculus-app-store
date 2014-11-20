@@ -23,5 +23,7 @@ interface RefreshTokenRepository {
 
     RefreshToken update(RefreshToken refreshToken, RefreshToken oldRefreshToken)
 
+    void removeByUserId(Long userId)
+
     boolean isValidRefreshToken(String tokenValue)
 }

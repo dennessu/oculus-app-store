@@ -17,6 +17,9 @@ public interface CloudantEntity<K> extends Identifiable<K> {
     K getId();
     void setId(K id);
 
+    Boolean isDeleted();
+    void setDeleted(Boolean deleted);
+
     String getCloudantId();
     void setCloudantId(String id);
 

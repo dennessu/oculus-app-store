@@ -511,6 +511,19 @@ class OAuthTests(ut.TestBase):
 
     def testResetPassword(self):
         user = self.testRegisterImplicitFlow()
+
+        # Get another access token
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState'
+        }, headers = {
+            'oculus-internal': 'true'
+        })
+        access_token = getqueryparam(location, 'access_token')
+
         resetUrl = curlFormRaw('POST', ut.test_uri, '/v1/oauth2/reset-password', headers = {
             'Authorization': 'Bearer ' + user.access_token
         }, data = {
@@ -531,6 +544,29 @@ class OAuthTests(ut.TestBase):
         })
         assert view["view"] == 'reset_password_result'
         assert view["model"]["reset_password_success"] == "true"
+
+        time.sleep(3)
+        # the access token should have been revoked
+        error = curlJson('GET', ut.test_uri, '/v1/oauth2/tokeninfo?access_token=' + user.access_token, raiseOnError=False)
+        assert error['message'] == 'Invalid Access Token'
+
+        # the another access token should have been revoked
+        error = curlJson('GET', ut.test_uri, '/v1/oauth2/tokeninfo?access_token=' + access_token, raiseOnError=False)
+        assert error['message'] == 'Invalid Access Token'
+
+        # the login state should have been deleted, the user need to login again
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token',
+            'scope': 'identity',
+            'redirect_uri': ut.test_redirect_uri,
+            'state': 'testState'
+        }, headers = {
+            'oculus-internal': 'true'
+        })
+
+        assert getqueryparam(location, 'access_token') is None
+        assert getqueryparam(location, 'cid') is not None
         pass
 
     def testClientGroup(self):
