@@ -23,6 +23,7 @@ export DEVOPS_ACCOUNT='devops'
 export DEPLOYMENT_ACCOUNT='silkcloud'
 
 export SILKCLOUD_BASE='/var/silkcloud'
+export SILKCLOUD_OPS='/var/ops'
 
 export DEPLOYMENT_PATH=$SILKCLOUD_BASE/pgha
 export PGHA_BASE=$SILKCLOUD_BASE/postgresql

@@ -15,6 +15,10 @@
     [devops] sudo mkdir -p /var/silkcloud
     [devops] sudo chown silkcloud:silkcloud /var/silkcloud
 
+#create ops base direcotry
+    [devops] sudo mkdir -p /var/ops
+    [devops] sudo chown silkcloud:silkcloud /var/ops
+
 [Postgres Installation]
 #install postgresql
     [devops] sudo apt-get update
