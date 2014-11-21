@@ -55,6 +55,13 @@
         </property>
     </bean>
 
+    <bean id="paymentPingSqlRepo" class="com.junbo.common.health.ping.PingSqlRepo">
+        <property name="sessionFactory" ref="paymentSessionFactory" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="payment" />
+    </bean>
+
     <!--mapper-->
     <bean id="paymentCommonMapper" class="com.junbo.payment.db.mapper.CommonMapper" />
     <bean id="paymentMapperExtension" class="com.junbo.payment.db.mapper.PaymentMapperExtension" />

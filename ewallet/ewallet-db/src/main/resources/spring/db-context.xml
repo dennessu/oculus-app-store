@@ -52,6 +52,12 @@
         </property>
     </bean>
 
+    <bean id="ewalletPingSqlRepo" class="com.junbo.common.health.ping.PingSqlRepo">
+        <property name="sessionFactory" ref="ewalletSessionFactory" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="ewallet" />
+    </bean>
 
     <tx:annotation-driven/>
 

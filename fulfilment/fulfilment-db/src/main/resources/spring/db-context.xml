@@ -47,6 +47,13 @@
         </property>
     </bean>
 
+    <bean id="fulfilmentPingSqlRepo" class="com.junbo.common.health.ping.PingSqlRepo">
+        <property name="sessionFactory" ref="fulfilmentSessionFactory" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="fulfilment" />
+    </bean>
+
     <!-- Transaction Manager -->
     <!--<bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">

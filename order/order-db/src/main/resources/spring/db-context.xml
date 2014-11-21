@@ -53,6 +53,13 @@
         <property name="postDeleteEventListeners" ref="orderEntityListener" />
     </bean>
 
+    <bean id="orderPingSqlRepo" class="com.junbo.common.health.ping.PingSqlRepo">
+        <property name="sessionFactory" ref="orderSessionFactory" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="order" />
+    </bean>
+
     <!-- Index View -->
     <bean id="orderEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
         <property name="entityViews">

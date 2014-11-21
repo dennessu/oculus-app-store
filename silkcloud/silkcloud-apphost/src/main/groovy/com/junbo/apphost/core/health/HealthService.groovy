@@ -11,6 +11,7 @@ import groovy.transform.CompileStatic
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionDefinition
@@ -35,7 +36,7 @@ class HealthService {
     private CryptoResource cryptoResource;
     private PlatformTransactionManager transactionManager
 
-    @Required
+    @Autowired(required = false)
     void setPingSqlRepos(List<PingSqlRepo> pingSqlRepos) {
         this.pingSqlRepos = pingSqlRepos
     }

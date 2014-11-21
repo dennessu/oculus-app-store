@@ -28,52 +28,6 @@
         <property name="cloudantGetRemoteTimeout" value="${apphost.server.health.clouantRemoteGetTimeout}" />
         <property name="cryptoResource" ref="identityCryptoResource" />
         <property name="pingCloudantRepo" ref="pingCloudantRepo" />
-        <property name="pingSqlRepos">
-            <list>
-                <bean class="com.junbo.common.health.ping.PingSqlRepo">
-                    <property name="sessionFactory" ref="billingSessionFactory" />
-                    <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-                    <property name="idGenerator" ref="oculus48IdGenerator" />
-                    <property name="dbName" value="billing" />
-                </bean>
-                <bean class="com.junbo.common.health.ping.PingSqlRepo">
-                    <property name="sessionFactory" ref="dualwriteSessionFactory" />
-                    <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-                    <property name="idGenerator" ref="oculus48IdGenerator" />
-                    <property name="dbName" value="dualwrite" />
-                </bean>
-                <bean class="com.junbo.common.health.ping.PingSqlRepo">
-                    <property name="sessionFactory" ref="ewalletSessionFactory" />
-                    <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-                    <property name="idGenerator" ref="oculus48IdGenerator" />
-                    <property name="dbName" value="ewallet" />
-                </bean>
-                <bean class="com.junbo.common.health.ping.PingSqlRepo">
-                    <property name="sessionFactory" ref="fulfilmentSessionFactory" />
-                    <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-                    <property name="idGenerator" ref="oculus48IdGenerator" />
-                    <property name="dbName" value="fulfilment" />
-                </bean>
-                <bean class="com.junbo.common.health.ping.PingSqlRepo">
-                    <property name="sessionFactory" ref="indexSessionFactory" />
-                    <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-                    <property name="idGenerator" ref="oculus48IdGenerator" />
-                    <property name="dbName" value="index" />
-                </bean>
-                <bean class="com.junbo.common.health.ping.PingSqlRepo">
-                    <property name="sessionFactory" ref="orderSessionFactory" />
-                    <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-                    <property name="idGenerator" ref="oculus48IdGenerator" />
-                    <property name="dbName" value="order" />
-                </bean>
-                <bean class="com.junbo.common.health.ping.PingSqlRepo">
-                    <property name="sessionFactory" ref="paymentSessionFactory" />
-                    <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-                    <property name="idGenerator" ref="oculus48IdGenerator" />
-                    <property name="dbName" value="payment" />
-                </bean>
-            </list>
-        </property>
     </bean>
 
     <bean id="pingCloudantRepo" class="com.junbo.common.health.ping.PingCloudantRepo" parent="cloudantClient">
