@@ -25,6 +25,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 /**
@@ -75,6 +76,9 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     @Qualifier('oculus48IdGenerator')
     private IdGenerator idGenerator
 
+    @Value('${order.store.offer.snapshot}')
+    Boolean storeSnapshot
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderRepositoryFacadeImpl)
 
 
@@ -83,7 +87,9 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
         LOGGER.info('name=repo.createOrder')
         return ((Promise<Order>) orderRepository.create(order).then { Order savedOrder ->
             return saveOrderItems(savedOrder.getId(), order.orderItems, false, null).then {
-                return saveDiscounts(savedOrder.getId(), order.discounts);
+                return saveDiscounts(savedOrder.getId(), order.discounts).then {
+                    return saveSnapshot(savedOrder.getId(), order.orderSnapshot)
+                }
             };
         }.then {
             LOGGER.info('name=repo.createOrder_done')
@@ -357,6 +363,17 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
         }
         Utils.updateListTypeField(discounts, getDiscounts(orderId.value), repositoryFuncSet, keyFunc, 'discounts')
         LOGGER.info('name=repo.saveDiscounts_done')
+        return Promise.pure(null)
+    }
+
+    Promise<Void> saveSnapshot(OrderId orderId, List<OfferSnapshot> snapshots) {
+        if (!storeSnapshot || CollectionUtils.isEmpty(snapshots)) {
+            return Promise.pure(null)
+        }
+        snapshots.each { OfferSnapshot snapshot ->
+            snapshot.orderId = orderId.value
+            createOfferSnapshot(snapshot)
+        }
         return Promise.pure(null)
     }
 
