@@ -64,6 +64,15 @@ public class Ping implements CloudantEntity<String>, EntityAdminInfo {
         this.cloudantRev = cloudantRev;
     }
 
+    @Override
+    public Boolean isDeleted() {
+        return false;
+    }
+
+    @Override
+    public void setDeleted(Boolean deleted) {
+    }
+
     public String getId() {
         return id;
     }
