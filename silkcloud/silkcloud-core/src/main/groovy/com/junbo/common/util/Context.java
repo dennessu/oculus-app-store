@@ -144,13 +144,14 @@ public class Context {
             try {
                 final String requestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
                 try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                    ExecutorContext.useAsyncExecutor();
                     pendingTasks.add(Promise.pure().then(new Promise.Func<Void, Promise<Void>>() {
                         @Override
                         public Promise<Void> apply(Void aVoid) {
                             MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
                             return closure.call();
                         }
-                    }, ExecutorContext.getAsyncExecutor()));
+                    }));
                 }
                 ProfilingHelper.end("(OK)");
             } catch (Throwable ex) {
@@ -173,13 +174,14 @@ public class Context {
                 final String requestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
 
                 try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                    ExecutorContext.useAsyncExecutor();
                     pendingTasks.add(Promise.pure().then(new Promise.Func<Void, Promise<Void>>() {
                         @Override
                         public Promise<Void> apply(Void aVoid) {
                             MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
                             return func.apply();
                         }
-                    }, ExecutorContext.getAsyncExecutor()));
+                    }));
                 }
                 ProfilingHelper.end("(OK)");
             } catch (Throwable ex) {
@@ -232,6 +234,7 @@ public class Context {
             try {
                 final String requestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
                 try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                    ExecutorContext.useAsyncExecutor();
                     Promise.pure().then(new Promise.Func<Void, Promise<Void>>() {
                         @Override
                         public Promise<Void> apply(Void aVoid) {
@@ -249,7 +252,7 @@ public class Context {
                                 return Promise.pure();
                             }
                         }
-                    }, ExecutorContext.getAsyncExecutor());
+                    });
                 }
                 ProfilingHelper.end("(OK)");
             } catch (Throwable ex) {
@@ -272,6 +275,7 @@ public class Context {
                 final String requestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
 
                 try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                    ExecutorContext.useAsyncExecutor();
                     Promise.pure().then(new Promise.Func<Void, Promise<Void>>() {
                         @Override
                         public Promise<Void> apply(Void aVoid) {
@@ -289,7 +293,7 @@ public class Context {
                                 return Promise.pure();
                             }
                         }
-                    }, ExecutorContext.getAsyncExecutor());
+                    });
                 }
                 ProfilingHelper.end("(OK)");
             } catch (Throwable ex) {

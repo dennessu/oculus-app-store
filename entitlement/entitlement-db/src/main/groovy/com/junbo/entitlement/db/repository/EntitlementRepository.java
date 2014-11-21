@@ -76,13 +76,22 @@ public class EntitlementRepository {
         Context.get().registerAsyncTask(new Promise.Func0<Promise>() {
             @Override
             public Promise apply() {
-                Promise result;
+                Promise result = Promise.pure();
                 try {
                     CloudantClientBase.setUseBulk(true);
                     for (List<Entitlement> es : resultEntitlements.values()) {
-                        for (Entitlement e : es) {
-                            entitlementHistoryDao.insertSync(new EntitlementHistoryEntity(CREATE, entitlementMapper.toEntitlementEntity(e))).get();
-                        }
+                        final List<Entitlement> localEs = es;
+                        result = result.then(new Promise.Func<Entitlement, Promise<Void>>() {
+                            @Override
+                            public Promise<Void> apply(Entitlement entitlement) {
+                                return Promise.each(localEs.iterator(), new Promise.Func<Entitlement, Promise>() {
+                                    @Override
+                                    public Promise apply(Entitlement entitlement) {
+                                        return entitlementHistoryDao.insertSync(new EntitlementHistoryEntity(CREATE, entitlementMapper.toEntitlementEntity(entitlement)));
+                                    }
+                                });
+                            }
+                        });
                     }
                 } finally {
                     result = CloudantClientBulk.commit();
