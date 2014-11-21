@@ -6,6 +6,7 @@
 package com.junbo.common.health.ping;
 
 import com.junbo.common.cloudant.CloudantClient;
+import com.junbo.common.cloudant.client.CloudantClientImpl;
 import com.junbo.common.cloudant.client.CloudantDbUri;
 import com.junbo.configuration.topo.DataCenters;
 import com.junbo.langur.core.promise.Promise;
@@ -17,6 +18,8 @@ import java.util.List;
  * The ping repo implemented by Cloudant.
  */
 public class PingCloudantRepo extends CloudantClient<Ping> implements InitializingBean {
+
+    private static CloudantClientImpl impl = CloudantClientImpl.instance();
 
     private int remoteDcId;
     private CloudantDbUri remoteDcUri;
@@ -72,6 +75,15 @@ public class PingCloudantRepo extends CloudantClient<Ping> implements Initializi
             throw new IllegalArgumentException("id is null");
         }
         return getEffective().cloudantGet(getRemoteDbUri(), entityClass, id);
+    }
+
+    public Promise<Void> deleteIgnoreCache(String id) {
+        return cloudantGet(id).then(new Promise.Func<Ping, Promise<Void>>() {
+            @Override
+            public Promise<Void> apply(Ping ping) {
+                return impl.cloudantDelete(cloudantDbUri, entityClass, ping, getNoOverrideWrites());
+            }
+        });
     }
 
     public CloudantDbUri getRemoteDbUri() {

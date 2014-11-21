@@ -33,6 +33,8 @@ class HealthService {
     private PingCloudantRepo pingCloudantRepo;
     private long cloudantGetRemoteTimeout;
     private long cloudantGetRemoteInterval;
+    private long cloudantSnifferTimeout;
+    private long cloudantSnifferInterval;
     private CryptoResource cryptoResource;
     private PlatformTransactionManager transactionManager
 
@@ -54,6 +56,16 @@ class HealthService {
     @Required
     void setCloudantGetRemoteInterval(long getRemoteInterval) {
         this.cloudantGetRemoteInterval = getRemoteInterval
+    }
+
+    @Required
+    void setCloudantSnifferTimeout(long cloudantSnifferTimeout) {
+        this.cloudantSnifferTimeout = cloudantSnifferTimeout
+    }
+
+    @Required
+    void setCloudantSnifferInterval(long cloudantSnifferInterval) {
+        this.cloudantSnifferInterval = cloudantSnifferInterval
     }
 
     @Required
@@ -98,6 +110,7 @@ class HealthService {
         }
     }
 
+    //#region test sql connections
     public Map testSqlConnections(Map context) {
         return measureStep { Map result ->
             for (PingSqlRepo sqlRepo : pingSqlRepos) {
@@ -168,6 +181,9 @@ class HealthService {
         }
     }
 
+    //#endregion
+
+    //#region test cloudant connections
     public Promise<Map> testCloudantConnections(Map context) {
         return measureStepAsync { Map result ->
             Ping ping = new Ping();
@@ -199,11 +215,17 @@ class HealthService {
                 return Promise.pure(false);
             }.then { Boolean success ->
                 if (success) {
-                    return testCloudantRemoteGet(context).syncThen { Map resultAction ->
+                    return testCloudantRemoteGet().syncThen { Map resultAction ->
                         return putResult("remoteGet", result, resultAction);
                     }
                 }
                 return Promise.pure(false);
+            }.then { Boolean success ->
+                if (success) {
+                    return testCloudantSniffer().syncThen { Map resultAction ->
+                        return putResult("sniffer", result, resultAction);
+                    }
+                }
             };
         }
     }
@@ -253,12 +275,14 @@ class HealthService {
         }
     }
 
-    private Promise<Map> testCloudantRemoteGet(Map context) {
+    private Promise<Map> testCloudantRemoteGet() {
         return measureStepAsync { Map result ->
             result.put("currentDc", DataCenters.instance().currentDataCenterId());
             result.put("remoteDc", pingCloudantRepo.getRemoteDcId());
             result.put("remoteUri", pingCloudantRepo.getRemoteDbUri().toString());
-            Ping ping = (Ping)context.get("ping");
+
+            Ping ping = new Ping();
+            ping.setMessage("ping " + System.currentTimeMillis());
 
             long now = System.currentTimeMillis();
             Closure tryRemoteGet;
@@ -268,15 +292,52 @@ class HealthService {
                         if (System.currentTimeMillis() - now > cloudantGetRemoteTimeout) {
                             result.put("result", "WARN");
                             result.put("message", "Failed to get entity from remote DC.");
+                            return Promise.pure();
                         }
-                        return Promise.delayed(cloudantGetRemoteInterval, TimeUnit.MILLISECONDS, tryRemoteGet)
+                        return Promise.delayed(cloudantGetRemoteInterval, TimeUnit.MILLISECONDS).then(tryRemoteGet)
                     }
                     return Promise.pure(ping2);
                 }
             }
-            return tryRemoteGet();
+            return pingCloudantRepo.create(ping).then { Ping created ->
+                ping.cloudantId = created.cloudantId;
+                ping.cloudantRev = created.cloudantRev;
+                return tryRemoteGet().then {
+                    pingCloudantRepo.delete(ping.getId());
+                };
+            };
         }
     }
+
+    private Promise<Map> testCloudantSniffer() {
+        return measureStepAsync { Map result ->
+            Ping ping = new Ping();
+            ping.setMessage("ping " + System.currentTimeMillis());
+
+            long now = System.currentTimeMillis();
+            Closure trySnifferGet;
+            trySnifferGet = {
+                return pingCloudantRepo.get(ping.getId()).then { Ping ping2 ->
+                    if (ping2 != null) {
+                        if (System.currentTimeMillis() - now > cloudantSnifferTimeout) {
+                            result.put("result", "WARN");
+                            result.put("message", "Sniffer failed to delete entity from cache.");
+                            return Promise.pure();
+                        }
+                        return Promise.delayed(cloudantSnifferInterval, TimeUnit.MILLISECONDS).then(trySnifferGet)
+                    }
+                    return Promise.pure();
+                }
+            }
+            return pingCloudantRepo.create(ping).then { Ping created ->
+                ping.cloudantId = created.cloudantId;
+                ping.cloudantRev = created.cloudantRev;
+                return pingCloudantRepo.deleteIgnoreCache(ping.getId()).then(trySnifferGet);
+            };
+        }
+    }
+
+    //#endregion
 
     public Promise<Map> testCryptoResource() {
         Map result = createResultMap();

@@ -26,6 +26,8 @@
         <property name="transactionManager" ref="transactionManager" />
         <property name="cloudantGetRemoteInterval" value="${apphost.server.health.clouantRemoteRetryInterval}" />
         <property name="cloudantGetRemoteTimeout" value="${apphost.server.health.clouantRemoteGetTimeout}" />
+        <property name="cloudantSnifferInterval" value="${apphost.server.health.clouantSnifferRetryInterval}" />
+        <property name="cloudantSnifferTimeout" value="${apphost.server.health.clouantSnifferTimeout}" />
         <property name="cryptoResource" ref="identityCryptoResource" />
         <property name="pingCloudantRepo" ref="pingCloudantRepo" />
     </bean>
