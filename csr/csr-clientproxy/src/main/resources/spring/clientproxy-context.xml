@@ -14,7 +14,6 @@
     </bean>
 
     <bean id="csr_userResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="userResourceClientProxy">
-        <property name="accessTokenProvider" ref="csrAccessTokenProvider"/>
     </bean>
 
     <bean id="csr_userPersonalInfoResource" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="userPersonalInfoResourceClientProxy">
