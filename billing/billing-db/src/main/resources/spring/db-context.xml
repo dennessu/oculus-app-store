@@ -46,7 +46,12 @@
             </map>
         </property>
 
-        <property name="packagesToScan" value="com.junbo.billing.db.*" />
+        <property name="packagesToScan">
+            <list>
+                <value>com.junbo.billing.db.*</value>
+                <value>com.junbo.common.health.ping</value>
+            </list>
+        </property>
         <property name="postInsertEventListeners" ref="billingEntityListener" />
         <property name="postUpdateEventListeners" ref="billingEntityListener" />
         <property name="postDeleteEventListeners" ref="billingEntityListener" />

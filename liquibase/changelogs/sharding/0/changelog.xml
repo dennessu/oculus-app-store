@@ -16,5 +16,4 @@
 			 ]]>
         </sql>
     </changeSet>
-
 </databaseChangeLog>

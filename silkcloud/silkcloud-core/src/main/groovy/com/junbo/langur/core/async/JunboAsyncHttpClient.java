@@ -81,7 +81,7 @@ public class JunboAsyncHttpClient implements Closeable {
             Request req = super.build();
             if (logger.isDebugEnabled()) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(String.format("\tHttpRequest: %s %s", req.getMethod(), req.getURI().toString()));
+                sb.append(String.format("\tHttpRequest: %s %s %s", req.getMethod(), req.getURI().toString(), MDC.get(SequenceIdFilter.X_REQUEST_ID)));
                 if (logger.isTraceEnabled()) {
                     sb.append("\n\theaders:");
                     for (String key : req.getHeaders().keySet()) {

@@ -4,6 +4,8 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.sharding.hibernate
+
+import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.model.EntityAdminInfo
 import com.junbo.common.model.EntityAdminInfoString
 import com.junbo.langur.core.profiling.ProfilingHelper

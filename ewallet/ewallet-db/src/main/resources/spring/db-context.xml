@@ -44,7 +44,12 @@
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
         </property>
-        <property name="packagesToScan" value="com.junbo.ewallet.db.entity"/>
+        <property name="packagesToScan">
+            <list>
+                <value>com.junbo.ewallet.db.entity</value>
+                <value>com.junbo.common.health.ping</value>
+            </list>
+        </property>
     </bean>
 
 

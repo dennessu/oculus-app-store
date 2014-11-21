@@ -50,6 +50,7 @@
                 <value>com.junbo.payment.db.entity.payment</value>
                 <value>com.junbo.payment.db.dao.paymentinstrument</value>
                 <value>com.junbo.payment.db.entity.paymentinstrument</value>
+                <value>com.junbo.common.health.ping</value>
             </list>
         </property>
     </bean>

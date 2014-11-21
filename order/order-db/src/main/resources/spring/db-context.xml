@@ -42,7 +42,12 @@
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
         </property>
-        <property name="packagesToScan" value="com.junbo.order.db.entity"/>
+        <property name="packagesToScan">
+            <list>
+                <value>com.junbo.order.db.entity</value>
+                <value>com.junbo.common.health.ping</value>
+            </list>
+        </property>
         <property name="postInsertEventListeners" ref="orderEntityListener" />
         <property name="postUpdateEventListeners" ref="orderEntityListener" />
         <property name="postDeleteEventListeners" ref="orderEntityListener" />

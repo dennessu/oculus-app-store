@@ -73,60 +73,59 @@ class ShardMultiTenantConnectionProviderFactoryBean
     ShardMultiTenantConnectionProviderFactoryBean() {
     }
 
-    private Map<String, HikariDataSource> dataSourceMap
-
-    private Map<String, SimpleDataSourceProxy> dataSourceProxyMap
+    private static Object lock = new Object();
+    private static Map<String, HikariDataSource> dataSourceMap = new HashMap<>()
+    private static Map<String, SimpleDataSourceProxy> dataSourceProxyMap = new HashMap<>()
 
     private ShardMultiTenantConnectionProvider connectionProvider
 
     @Override
     ShardMultiTenantConnectionProvider getObject() throws Exception {
-        if (connectionProvider == null) {
-            if (jdbcUrls == null) {
-                throw new IllegalArgumentException('jdbcUrls is null')
-            }
-
-            dataSourceMap = new HashMap<>()
-            dataSourceProxyMap = new HashMap<>()
-
-            Map<String, SimpleDataSourceProxy> dataSourceMap = [:]
-
-            for (String url : jdbcUrls.split(',')) {
-                url = url.trim()
-                if (url.length() == 0) {
-                    continue
+        synchronized (lock) {
+            if (connectionProvider == null) {
+                if (jdbcUrls == null) {
+                    throw new IllegalArgumentException('jdbcUrls is null')
                 }
 
-                def parts = url.split(';', 4)
-                if (parts.length != 4) {
-                    throw new IllegalArgumentException("jdbcUrl(url;schema;range;dc) is invalid. $url")
-                }
+                Map<String, SimpleDataSourceProxy> dataSourceMap = [:]
 
-                url = parts[0].trim().replace('|', ',')
-                def schema = parts[1].trim()
-                def range = parseRange(parts[2].trim())
-                def dc = parts[3].trim()
-                DataCenter dataCenter = DataCenters.instance().getDataCenter(dc)
-
-                // If not in locale DC, just do the same
-                def currentDCProxy = dataSourceMap.findAll { Map.Entry<String, SimpleDataSourceProxy> entry ->
-                    return entry != null && entry.getKey() != null && entry.getKey().startsWith(dataCenter.getId() + ":")
-                }
-                if (range[0] != currentDCProxy.size()) {
-                    throw new IllegalArgumentException("Range $range is not in a row")
-                }
-                for (int i = range[0]; i <= range[1]; i++) {
-                    if (dataCenter == null) {
-                        throw new IllegalArgumentException("DataCenter $dataCenter does not exist.")
+                for (String url : jdbcUrls.split(',')) {
+                    url = url.trim()
+                    if (url.length() == 0) {
+                        continue
                     }
-                    dataSourceMap.put(dataCenter.getId() + ':' + i, createDataSourceProxy(url, schema))
+
+                    def parts = url.split(';', 4)
+                    if (parts.length != 4) {
+                        throw new IllegalArgumentException("jdbcUrl(url;schema;range;dc) is invalid. $url")
+                    }
+
+                    url = parts[0].trim().replace('|', ',')
+                    def schema = parts[1].trim()
+                    def range = parseRange(parts[2].trim())
+                    def dc = parts[3].trim()
+                    DataCenter dataCenter = DataCenters.instance().getDataCenter(dc)
+
+                    // If not in locale DC, just do the same
+                    def currentDCProxy = dataSourceMap.findAll { Map.Entry<String, SimpleDataSourceProxy> entry ->
+                        return entry != null && entry.getKey() != null && entry.getKey().startsWith(dataCenter.getId() + ":")
+                    }
+                    if (range[0] != currentDCProxy.size()) {
+                        throw new IllegalArgumentException("Range $range is not in a row")
+                    }
+                    for (int i = range[0]; i <= range[1]; i++) {
+                        if (dataCenter == null) {
+                            throw new IllegalArgumentException("DataCenter $dataCenter does not exist.")
+                        }
+                        dataSourceMap.put(dataCenter.getId() + ':' + i, createDataSourceProxy(url, schema))
+                    }
                 }
+
+                connectionProvider = new ShardMultiTenantConnectionProvider(dataSourceMap)
             }
 
-            connectionProvider = new ShardMultiTenantConnectionProvider(dataSourceMap)
+            return connectionProvider
         }
-
-        return connectionProvider
     }
 
     @Override

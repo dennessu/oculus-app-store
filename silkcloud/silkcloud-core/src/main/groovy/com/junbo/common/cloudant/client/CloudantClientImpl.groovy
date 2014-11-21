@@ -402,9 +402,11 @@ class CloudantClientImpl implements CloudantClientInternal {
 
         try {
             return requestBuilder.execute().recover { Throwable e ->
+                logger.error("Cloudant call exception", e);
                 throw new CloudantConnectException('Exception happened while executing request to cloudant DB', e)
             }
         } catch (IOException e) {
+            logger.error("Cloudant call exception", e);
             throw new CloudantConnectException('Exception happened while executing request to cloudant DB', e)
         }
     }

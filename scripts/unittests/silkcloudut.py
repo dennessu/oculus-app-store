@@ -35,6 +35,7 @@ def setUpModule():
     global opts
     global test_uri
     global test_remote_uri
+    global test_health_uri
     global test_client_id
     global test_client_secret
     global test_service_client_id
@@ -49,6 +50,7 @@ def setUpModule():
     if opts is not None:
         test_uri = opts.uri
         test_remote_uri = opts.remoteuri
+        test_health_uri = opts.healthuri
         test_client_id = opts.client
         test_client_secret = opts.secret
         test_service_client_id = opts.sclient
@@ -61,6 +63,7 @@ def setUpModule():
     else:
         test_uri = 'http://localhost:8080/'
         test_remote_uri = 'http://localhost:8080/'
+        test_health_uri = 'http://localhost:8081/'
         test_client_id = 'smoketest'
         test_client_secret = 'secret'
         test_service_client_id = 'service'
@@ -89,6 +92,7 @@ def silkcloud_utmain(suite = None):
     parser = argparse.ArgumentParser()
     parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://localhost:8080/')
     parser.add_argument("-remoteuri", nargs = '?', help = "The URI to the silkcloud service in remote dc.", default = 'http://localhost:8080/')
+    parser.add_argument("-healthuri", nargs = '?', help = "The URI to the silkcloud health check port.", default = 'http://localhost:8081/')
     parser.add_argument("-client", nargs = '?', help = "The client ID used in test cases.", default = 'smoketest')
     parser.add_argument("-secret", nargs = '?', help = "The client secret used in the test cases.", default = 'secret')
     parser.add_argument("-sclient", nargs = '?', help = "The service client ID used in test cases.", default = 'service')

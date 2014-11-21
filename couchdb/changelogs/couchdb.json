@@ -729,7 +729,8 @@
               }
           }
       },
-      "encrypt_user_personal_info": { }
+      "encrypt_user_personal_info": { },
+      "ping": {}
   },
   "cloudant": {
     "user_log": {
@@ -850,8 +851,7 @@
           "map": "function(doc) {emit(doc._id, doc._id)}"
         }
       }
-    },
-    "ping": {}
+    }
   }
 }
 
