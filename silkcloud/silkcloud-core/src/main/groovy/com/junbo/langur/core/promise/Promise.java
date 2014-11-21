@@ -80,17 +80,13 @@ public class Promise<T> {
         return wrap(Futures.<T>immediateFailedFuture(throwable));
     }
 
-    public static <T> Promise<T> delayed(long delay, TimeUnit unit, final Func0<T> func) {
+    public static <T> Promise<T> delayed(long delay, TimeUnit unit) {
         final SettableFuture<T> future = SettableFuture.create();
 
         final Runnable runnable = new RunnableWrapper(new Runnable() {
             @Override
             public void run() {
-                try {
-                    future.set(func.apply());
-                } catch (Throwable ex) {
-                    future.setException(ex);
-                }
+                future.set(null);
             }
         });
 
@@ -243,17 +239,6 @@ public class Promise<T> {
                 action.invoke(t);
             }
         }, ExecutorContext.getExecutor());
-    }
-
-
-    public static <T> Promise<T> delayed(long delay, TimeUnit unit, final Closure closure) {
-        return delayed(delay, unit, new Func0<T>() {
-            @Override
-            @SuppressWarnings("unchecked")
-            public T apply() {
-                return (T) closure.call();
-            }
-        });
     }
 
     @SuppressWarnings("unchecked")

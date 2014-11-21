@@ -22,6 +22,21 @@
         <property name="keepAliveIdleTimeoutInSeconds" value="${apphost.server.keepAlive.idleTimeoutInSeconds}"/>
     </bean>
 
+    <bean id="healthService" class="com.junbo.apphost.core.health.HealthService">
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="cloudantGetRemoteInterval" value="${apphost.server.health.clouantRemoteRetryInterval}" />
+        <property name="cloudantGetRemoteTimeout" value="${apphost.server.health.clouantRemoteGetTimeout}" />
+        <property name="cloudantSnifferInterval" value="${apphost.server.health.clouantSnifferRetryInterval}" />
+        <property name="cloudantSnifferTimeout" value="${apphost.server.health.clouantSnifferTimeout}" />
+        <property name="cryptoResource" ref="identityCryptoResource" />
+        <property name="pingCloudantRepo" ref="pingCloudantRepo" />
+    </bean>
+
+    <bean id="pingCloudantRepo" class="com.junbo.common.health.ping.PingCloudantRepo" parent="cloudantClient">
+        <property name="dbName" value="ping"/>
+        <property name="noOverrideWrites" value="true" />
+    </bean>
+
     <bean id="docsHttpServer" class="com.junbo.apphost.core.DocsHttpServerBean">
         <property name="uri">
             <value type="java.net.URI">${apphost.server.docs.uri}</value>

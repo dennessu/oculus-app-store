@@ -46,10 +46,22 @@
             </map>
         </property>
 
-        <property name="packagesToScan" value="com.junbo.billing.db.*" />
+        <property name="packagesToScan">
+            <list>
+                <value>com.junbo.billing.db.*</value>
+                <value>com.junbo.common.health.ping</value>
+            </list>
+        </property>
         <property name="postInsertEventListeners" ref="billingEntityListener" />
         <property name="postUpdateEventListeners" ref="billingEntityListener" />
         <property name="postDeleteEventListeners" ref="billingEntityListener" />
+    </bean>
+
+    <bean id="billingPingSqlRepo" class="com.junbo.common.health.ping.PingSqlRepo">
+        <property name="sessionFactory" ref="billingSessionFactory" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="billing" />
     </bean>
 
     <!-- Dao -->

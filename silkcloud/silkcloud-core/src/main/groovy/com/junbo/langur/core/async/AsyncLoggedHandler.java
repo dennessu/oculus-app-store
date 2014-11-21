@@ -5,9 +5,11 @@
  */
 package com.junbo.langur.core.async;
 
+import com.junbo.common.filter.SequenceIdFilter;
 import com.ning.http.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
@@ -84,22 +86,27 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
         if (logger.isDebugEnabled() || is5xxResponse) {
             trace.append("\n\ttime elapsed: " + (System.currentTimeMillis() - startTime));
 
-            if (is5xxResponse) {
-                logger.warn(trace.toString());
-            } else {
-                logger.debug(trace.toString());
+            try (RequestIdScope scope = new RequestIdScope(requestId)) {
+                if (is5xxResponse) {
+                    logger.warn(trace.toString());
+                } else {
+                    logger.debug(trace.toString());
+                }
+                trace.setLength(0);
             }
-            trace.setLength(0);
         }
         HTTPD_LOGGER.info(accessLog(response));
         return super.onCompleted(response);
     }
 
     public void onThrowable(Throwable t) {
-        if (logger.isDebugEnabled()) {
-            trace.append(String.format("\n\tHttpResponse: %s\n\texception: %s", uri.toString(), t.getMessage()));
-            logger.debug(trace.toString(), t);
-            trace.setLength(0);
+        try (RequestIdScope scope = new RequestIdScope(requestId)) {
+            logger.error("Http Exception: %s", uri.toString(), t);
+            if (logger.isDebugEnabled()) {
+                trace.append(String.format("\n\tHttpResponse: %s\n\texception: %s", uri.toString(), t.getMessage()));
+                logger.debug(trace.toString(), t);
+                trace.setLength(0);
+            }
         }
     }
 
@@ -162,6 +169,24 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
         @Override
         protected SimpleDateFormat initialValue() {
             return (SimpleDateFormat) format.clone();
+        }
+    }
+
+    static class RequestIdScope implements AutoCloseable {
+        private String oldRequestId;
+
+        public RequestIdScope(String requestId) {
+            oldRequestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
+            MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
+        }
+
+        @Override
+        public void close() {
+            if (oldRequestId != null) {
+                MDC.put(SequenceIdFilter.X_REQUEST_ID, oldRequestId);
+            } else {
+                MDC.remove(SequenceIdFilter.X_REQUEST_ID);
+            }
         }
     }
 }

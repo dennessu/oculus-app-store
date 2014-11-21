@@ -5,6 +5,7 @@
  */
 package com.junbo.common.cloudant;
 
+import com.junbo.common.model.EntityAdminInfo;
 import com.junbo.common.util.Identifiable;
 
 import java.util.Date;

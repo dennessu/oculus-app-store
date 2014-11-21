@@ -2,6 +2,7 @@ package com.junbo.common.cloudant.client
 import com.junbo.common.cloudant.*
 import com.junbo.common.cloudant.exception.CloudantException
 import com.junbo.common.cloudant.model.CloudantBulkDocs
+import com.junbo.common.cloudant.model.CloudantBulkResult
 import com.junbo.common.cloudant.model.CloudantError
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.error.AppCommonErrors
@@ -25,6 +26,8 @@ class CloudantClientBulk implements CloudantClientInternal {
     public static CloudantClientBulk instance() {
         return singleton
     }
+
+    private static CloudantClientCached memcache = CloudantClientCached.instance();
 
     public static interface Callback {
         void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String key)
@@ -230,6 +233,7 @@ class CloudantClientBulk implements CloudantClientInternal {
         def cloudantBulk = getBulkDataReadonly().cloudantBulk
 
         Closure<Promise> commitToDb = { CloudantDbUri dbUri ->
+            Map<String, CloudantEntity> bulkDocsMap = new HashMap<>();
             CloudantBulkDocs bulkDocs = new CloudantBulkDocs()
             def entitiesWithType = cloudantBulk.get(dbUri).values().toArray(new EntityWithType[0])
             bulkDocs.docs = (CloudantEntity[])entitiesWithType.collect { EntityWithType entityWithType ->
@@ -245,7 +249,28 @@ class CloudantClientBulk implements CloudantClientInternal {
                         throw new CloudantException("Failed to bulk commit, error: $cloudantError.error," +
                                 " reason: $cloudantError.reason")
                     }
+
+                    String bulkFullResponse = response.getResponseBody();
+                    List<CloudantBulkResult> results = marshaller.unmarshall(bulkFullResponse, List, CloudantBulkResult);
+                    for (CloudantBulkResult result : results) {
+                        if (result.error != null) {
+                            logger.error("Partial update in bulk action. Bulk response: \n{}", bulkFullResponse)
+                            throw new CloudantException("Failed to bulk commit, response: \n $bulkFullResponse")
+                        }
+                    }
+
                     return Promise.pure(null)
+                }.then {
+                    for (CloudantEntity entity : bulkDocs.docs) {
+                        if (entity.getCloudantId() != null) {
+                            // invalidate cache on delete or update.
+                            // always delete cache because we don't know the new id/rev mapping to bulk docs.
+                            if (entity.isDeleted() || entity.getCloudantRev() != null) {
+                                memcache.deleteCache(dbUri, entity.cloudantId);
+                            }
+                        }
+                    }
+                    return Promise.pure()
                 }
             }
             return Promise.pure(null)

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from silkcloudut import *
+import ut_health
 import ut_oauth
 import ut_checkout
 import ut_checkout_consumable
@@ -7,6 +8,7 @@ import ut_identity
 
 if __name__ == '__main__':
     suite = unittest.TestSuite()
+    suite.addTest(ut_health.HealthTests('testHealth'))
     suite.addTest(ut_checkout.CheckoutTests('testCheckout'))
     suite.addTest(ut_checkout.CheckoutTests('testCatalogGetAll'))
     suite.addTest(ut_oauth.OAuthTests('testSilentLogin'))

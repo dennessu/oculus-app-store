@@ -5,13 +5,14 @@
  */
 package com.junbo.sharding.dualwrite.data
 import com.junbo.common.cloudant.CloudantEntity
+import com.junbo.common.model.EntityAdminInfo
 import com.junbo.common.model.ResourceMeta
 import groovy.transform.CompileStatic
 /**
  * The pending action.
  */
 @CompileStatic
-public class PendingAction extends ResourceMeta<Long> {
+public class PendingAction extends ResourceMeta<Long> implements EntityAdminInfo {
 
     private Long id;
     private CloudantEntity savedEntity;

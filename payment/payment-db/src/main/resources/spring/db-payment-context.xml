@@ -50,8 +50,16 @@
                 <value>com.junbo.payment.db.entity.payment</value>
                 <value>com.junbo.payment.db.dao.paymentinstrument</value>
                 <value>com.junbo.payment.db.entity.paymentinstrument</value>
+                <value>com.junbo.common.health.ping</value>
             </list>
         </property>
+    </bean>
+
+    <bean id="paymentPingSqlRepo" class="com.junbo.common.health.ping.PingSqlRepo">
+        <property name="sessionFactory" ref="paymentSessionFactory" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="payment" />
     </bean>
 
     <!--mapper-->
