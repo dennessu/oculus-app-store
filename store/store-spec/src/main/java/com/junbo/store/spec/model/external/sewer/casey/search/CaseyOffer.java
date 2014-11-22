@@ -25,6 +25,7 @@ public class CaseyOffer {
     private CaseyPrice price;
     private Map<String, CountryProperties> regions;
     private String name;
+    private Double rank;
     private String shortDescription;
     private String longDescription;
     private OfferRevisionId currentRevision;
@@ -76,6 +77,14 @@ public class CaseyOffer {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Double getRank() {
+        return rank;
+    }
+
+    public void setRank(Double rank) {
+        this.rank = rank;
     }
 
     public Map<String, CountryProperties> getRegions() {

@@ -30,7 +30,11 @@
         "supportedInputDevices": [
             "KEYBOARD", 
             "MOUSE"
-        ], 
+        ],
+        "requiredInputDevices": [
+                    "KEYBOARD",
+                    "MOUSE"
+                ],
         "locales": {
             "en_US": {
                 "minimumSystemRequirements": {
@@ -114,6 +118,7 @@
                 "href": "http://static.oculusvr.com/apk-tests/VRArcade.apk",
                 "version": "1.1",
                 "size": 1024,
+                "requiredSpace": "4096",
                 "metadata": {
                     "versionCode": 1,
                     "permissions": [
@@ -177,6 +182,7 @@
                     "quantity": 1
                 }
             ],
+            "rank": 9.0,
             "restrictions": {
                 "preconditionItems": [
                     {

@@ -314,7 +314,11 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(item.getDescriptionHtml(), defaultIfNull(offerAvailable ? offerLocaleProperties.getLongDescription() : itemLocaleProperties.getLongDescription()),
                 "description html not match");
         verifySupportedLocaleEquals(item.getSupportedLocales(), defaultIfNull(itemRevision.getSupportedLocales()));
-
+        if (offerAvailable) {
+            Assert.assertEquals(item.getRank(), offerRevision.getRank(), 0.00001);
+        } else {
+            Assert.assertNull(item.getRank());
+        }
         if (serviceClientEnabled) {
             Assert.assertEquals(item.getCreator(), defaultIfNull(developer == null ? null : developer.getName()));
         }
@@ -381,11 +385,13 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(appDetails.getForumUrl(), localeProperties.getCommunityForumLink());
         Assert.assertEquals(appDetails.getDeveloperEmail(), defaultIfNull(localeProperties.getSupportEmail()));
         Assert.assertEquals(appDetails.getPackageName(), defaultIfNull(itemRevision.getPackageName()));
+        Assert.assertEquals(appDetails.getRequiredInputDevices(), itemRevision.getRequiredInputDevices());
 
         if (itemRevision.getBinaries() != null && itemRevision.getBinaries().get(Platform) != null) {
             Binary binary = itemRevision.getBinaries().get(Platform);
             Assert.assertEquals(appDetails.getVersionString(), defaultIfNull(binary.getVersion()));
             Assert.assertEquals(appDetails.getInstallationSize(), defaultIfNull(binary.getSize()));
+            Assert.assertEquals(appDetails.getRequiredSpace(), defaultIfNull(binary.getRequiredSpace()));
             Assert.assertEquals(appDetails.getVersionCode(), defaultIfNull(binary.getMetadata() == null
                     || binary.getMetadata().get("versionCode") == null ? null : binary.getMetadata().get("versionCode").asInt()));
         }

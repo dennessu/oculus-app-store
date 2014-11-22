@@ -27,6 +27,7 @@ public class CaseyItem {
     private String packageName;
     private Map<String, Binary> binaries;
     private Map<String, SupportedLocale> supportedLocales;
+    private List<String> requiredInputDevices;
     private List<CatalogAttribute> genres;
     private RevisionNotes releaseNotes;
     private CaseyRating qualityRating;
@@ -87,6 +88,14 @@ public class CaseyItem {
 
     public void setSupportedLocales(Map<String, SupportedLocale> supportedLocales) {
         this.supportedLocales = supportedLocales;
+    }
+
+    public List<String> getRequiredInputDevices() {
+        return requiredInputDevices;
+    }
+
+    public void setRequiredInputDevices(List<String> requiredInputDevices) {
+        this.requiredInputDevices = requiredInputDevices;
     }
 
     public List<CatalogAttribute> getGenres() {
