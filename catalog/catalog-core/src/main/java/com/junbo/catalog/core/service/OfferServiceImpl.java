@@ -146,7 +146,16 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     @Override
+    public OfferRevision getRevision(String revisionId) {
+        OfferRevision revision = getRevisionRepo().get(revisionId);
+        checkEntityNotNull(revisionId, revision, getRevisionType());
+        setDefaultRankIfAbsent(revision);
+        return revision;
+    }
+
+    @Override
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
+        List<OfferRevision> revisions;
         if (options.getTimestamp()!=null) {
             if (CollectionUtils.isEmpty(options.getOfferIds())) {
                 AppErrorException exception = AppCommonErrors.INSTANCE.parameterInvalid("offerId", "offerId must be specified when timeInMillis is present.").exception();
@@ -158,15 +167,21 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             for (String offerId : options.getOfferIds()) {
                 offerIds.add(offerId);
             }
-            return offerRevisionRepo.getRevisions(offerIds, options.getTimestamp());
+            revisions = offerRevisionRepo.getRevisions(offerIds, options.getTimestamp());
         } else {
-            return offerRevisionRepo.getRevisions(options);
+            revisions = offerRevisionRepo.getRevisions(options);
         }
+
+        for (OfferRevision revision : revisions) {
+            setDefaultRankIfAbsent(revision);
+        }
+        return revisions;
     }
 
     @Override
     public OfferRevision createRevision(OfferRevision revision) {
         revisionValidator.validateCreationBasic(revision);
+        setDefaultRankIfAbsent(revision);
         return offerRevisionRepo.create(revision);
     }
 
@@ -212,6 +227,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             revisionValidator.validateUpdateBasic(revision, oldRevision);
         }
 
+        setDefaultRankIfAbsent(revision);
         return offerRevisionRepo.update(revision, oldRevision);
     }
 
@@ -512,6 +528,12 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                 action.setItemId(itemEntry.getItemId());
                 purchaseActions.add(action);
             }
+        }
+    }
+
+    private void setDefaultRankIfAbsent(OfferRevision revision) {
+        if (revision.getRank()==null) {
+            revision.setRank(0d);
         }
     }
 }

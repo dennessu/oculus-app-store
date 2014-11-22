@@ -71,6 +71,9 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 22, required = true, value = "Manufacturer's suggested retail price")
     private Price msrp;
 
+    @ApiModelProperty(position = 23, required = true, value = "supported input devices",
+            allowableValues = "KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD, HEAD_LOOK")
+    private List<String> requiredInputDevices;
     @XSSFreeString
     @ApiModelProperty(position = 24, required = true, value = "supported input devices",
             allowableValues = "KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD, HEAD_LOOK")
@@ -175,6 +178,14 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setMsrp(Price msrp) {
         this.msrp = msrp;
+    }
+
+    public List<String> getRequiredInputDevices() {
+        return requiredInputDevices;
+    }
+
+    public void setRequiredInputDevices(List<String> requiredInputDevices) {
+        this.requiredInputDevices = requiredInputDevices;
     }
 
     public List<String> getSupportedInputDevices() {
