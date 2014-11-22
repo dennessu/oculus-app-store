@@ -72,11 +72,11 @@ public class ItemRevision extends BaseRevisionModel {
     private Price msrp;
 
     @ApiModelProperty(position = 23, required = true, value = "supported input devices",
-            allowableValues = "KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD, HEAD_LOOK")
+            allowableValues = "KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD, GAMEPAD, HEAD_LOOK")
     private List<String> requiredInputDevices;
     @XSSFreeString
     @ApiModelProperty(position = 24, required = true, value = "supported input devices",
-            allowableValues = "KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD, HEAD_LOOK")
+            allowableValues = "KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD, GAMEPAD, HEAD_LOOK")
     private List<String> supportedInputDevices;
     @XSSFreeString
     @ApiModelProperty(position = 25, required = true, value = "User interaction modes",
