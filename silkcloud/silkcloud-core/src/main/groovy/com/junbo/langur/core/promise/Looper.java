@@ -141,6 +141,8 @@ public class Looper {
             }, MoreExecutors.sameThreadExecutor());
 
             looper.run(stopHolder);
+        } else if (ExecutorContext.isAsyncExecutor()) {
+            throw new IllegalStateException("Cannot call .get() in AsyncThreadPool");
         }
     }
 

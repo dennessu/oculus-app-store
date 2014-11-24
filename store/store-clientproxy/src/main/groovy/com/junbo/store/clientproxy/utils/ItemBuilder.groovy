@@ -104,6 +104,7 @@ class ItemBuilder {
         result.title = caseyOffer?.name
         result.descriptionHtml = caseyOffer?.longDescription
         result.itemType = caseyItem?.type
+        result.rank = caseyOffer?.rank
         result.supportedLocales = caseyItem?.supportedLocales
         result.creator = developer
         result.self = caseyItem?.self
@@ -224,6 +225,8 @@ class ItemBuilder {
 
         Binary binary = itemRevision?.binaries?.get(Platform.ANDROID.value)
         result.installationSize = binary?.size
+        result.requiredSpace = binary?.requiredSpace
+        result.requiredInputDevices = itemRevision?.requiredInputDevices
         result.versionCode = getVersionCode(binary)
         result.permissions = getPermissions(binary)
         result.versionString = binary?.version
@@ -301,7 +304,9 @@ class ItemBuilder {
         AppDetails appDetails = new AppDetails()
         appDetails.packageName = caseyItem?.packageName
         Binary binary = caseyItem?.binaries?.get(apiContext.platform.value)
+        appDetails.requiredInputDevices = caseyItem?.requiredInputDevices
         appDetails.installationSize = binary?.size
+        appDetails.requiredSpace = binary?.requiredSpace
         appDetails.versionCode = getVersionCode(binary)
         appDetails.permissions = getPermissions(binary)
 

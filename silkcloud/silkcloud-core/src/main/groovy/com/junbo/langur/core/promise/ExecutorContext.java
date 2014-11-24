@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class ExecutorContext {
     private static final Logger logger = LoggerFactory.getLogger(ExecutorContext.class);
     private static volatile LocatableExecutorService defaultExecutorService = JunboThreadPool.instance();
-    private static ThreadLocal<ExecutorService> overrideExecutorService = new ThreadLocal<>();
+    private static ThreadLocal<Executor> overrideExecutorService = new ThreadLocal<>();
     private static ExecutorService asyncExecutorService = createAsyncThreadPool();
 
     private static final Executor theExecutor = new Executor() {
@@ -42,17 +42,18 @@ public final class ExecutorContext {
     private static final Executor asyncExecutor = new Executor() {
         @Override
         public void execute(final Runnable command) {
-            asyncExecutorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        overrideExecutorService.set(asyncExecutorService);
+            String threadName = Thread.currentThread().getName();
+            boolean isAsyncThread = (threadName != null && threadName.startsWith("JunboAsyncExecutorPool-"));
+            if (isAsyncThread) {
+                command.run();
+            } else {
+                asyncExecutorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
                         command.run();
-                    } finally {
-                        overrideExecutorService.remove();
                     }
-                }
-            });
+                });
+            }
         }
     };
 
@@ -65,7 +66,7 @@ public final class ExecutorContext {
     }
 
     public static Executor getExecutor() {
-        ExecutorService overrideService = overrideExecutorService.get();
+        Executor overrideService = overrideExecutorService.get();
         if (overrideService != null) {
             return overrideService;
         } else {
@@ -77,8 +78,16 @@ public final class ExecutorContext {
         return asyncExecutor;
     }
 
+    public static void useAsyncExecutor() {
+        overrideExecutorService.set(asyncExecutor);
+    }
+
     public static boolean isExecutorThread() {
         return defaultExecutorService.isExecutorThread();
+    }
+
+    public static boolean isAsyncExecutor() {
+        return asyncExecutor == overrideExecutorService.get();
     }
 
     private static ExecutorService createAsyncThreadPool() {

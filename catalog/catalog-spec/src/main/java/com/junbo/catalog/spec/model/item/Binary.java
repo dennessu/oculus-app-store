@@ -23,6 +23,8 @@ public class Binary {
     private String md5;
     @ApiModelProperty(position = 5, required = true, value = "Metadata, no server validations on this property.")
     private JsonNode metadata;
+    @ApiModelProperty(position = 6, required = true, value = "Size in bytes, this is the size of free space required to install the binary")
+    private Long requiredSpace;
 
     public String getHref() {
         return href;
@@ -62,5 +64,13 @@ public class Binary {
 
     public void setMetadata(JsonNode metadata) {
         this.metadata = metadata;
+    }
+
+    public Long getRequiredSpace() {
+        return requiredSpace;
+    }
+
+    public void setRequiredSpace(Long requiredSpace) {
+        this.requiredSpace = requiredSpace;
     }
 }

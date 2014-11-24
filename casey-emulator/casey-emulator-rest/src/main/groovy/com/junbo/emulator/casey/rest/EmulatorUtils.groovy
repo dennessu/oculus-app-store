@@ -95,6 +95,7 @@ public class EmulatorUtils {
 
         if (offer.currentRevisionId != null) {
             OfferRevision offerRevision = resourceContainer.offerRevisionResource.getOfferRevision(offer.currentRevisionId, new OfferRevisionGetOptions(locale: localeId.value)).get();
+            caseyOffer.rank = offerRevision.rank
             caseyOffer.currentRevision = new OfferRevisionId(offer.currentRevisionId)
             caseyOffer.images = offerRevision.locales?.get(localeId.value)?.images
             caseyOffer.name = offerRevision.locales?.get(localeId.value)?.name
@@ -146,6 +147,7 @@ public class EmulatorUtils {
         if (item.currentRevisionId != null) {
             caseyItem.currentRevision = new ItemRevisionId(item.currentRevisionId)
             ItemRevision itemRevision = resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions(locale: localeId.value)).get()
+            caseyItem.requiredInputDevices = itemRevision.requiredInputDevices
             caseyItem.packageName = itemRevision.packageName
             caseyItem.supportedLocales = itemRevision.supportedLocales
             caseyItem.binaries = itemRevision.binaries
