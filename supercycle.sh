@@ -4,7 +4,7 @@ source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is n
 t0=`date +%s`
 ./fullcycle.sh "-x build $@"
 
-#./scripts/start-proxy.sh
+./scripts/start-proxy.sh
 ./test.sh
 
 t1=`date +%s`

@@ -382,7 +382,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         def requestBuilder = getRequestBuilder(method, uriBuilder.toTemplate())
 
         requestBuilder.setBodyEncoding("UTF-8");
-        if (proxyServer != null) {
+        if (proxyServer != null && !(dbUri.cloudantUri.value ==~ /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$).*/ )) {
             requestBuilder.setProxyServer(proxyServer);
         }
 
@@ -591,14 +591,7 @@ class CloudantClientImpl implements CloudantClientInternal {
     private static ProxyServer resolveProxyServer() {
         ConfigService configService = ConfigServiceManager.instance();
         String proxyServer = configService.getConfigValue("cloudant.proxy");
-        if (proxyServer != null) {
-            String[] splitted = proxyServer.split(":");
-            if (splitted.length != 2) {
-                throw new IllegalArgumentException("Invalid proxy server: " + proxyServer + " Expected: server:port");
-            }
-            return new ProxyServer(splitted[0], Integer.parseInt(splitted[1]));
-        }
-        return null;
+        return Utils.parseProxyServer(proxyServer);
     }
 
     public static ProxyServer getProxyServer() {

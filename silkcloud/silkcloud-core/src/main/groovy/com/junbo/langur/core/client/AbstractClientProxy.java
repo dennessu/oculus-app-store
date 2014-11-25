@@ -1,6 +1,7 @@
 // CHECKSTYLE:OFF
 package com.junbo.langur.core.client;
 
+import com.junbo.common.util.Utils;
 import com.junbo.langur.core.async.JunboAsyncHttpClient;
 import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.context.JunboHttpContextScopeListeners;
@@ -107,13 +108,7 @@ public abstract class AbstractClientProxy {
     }
 
     public void setProxyServer(String proxyServer) {
-        if (!StringUtils.isEmpty(proxyServer)) {
-            String[] splitted = proxyServer.split(":");
-            if (splitted.length != 2) {
-                throw new IllegalArgumentException("Invalid proxy server: " + proxyServer + " Expected: server:port");
-            }
-            this.__proxyServer = new ProxyServer(splitted[0], Integer.parseInt(splitted[1]));
-        }
+        this.__proxyServer = Utils.parseProxyServer(proxyServer);
     }
 
     public void setAttachUserToken(boolean __attachUserToken) {
