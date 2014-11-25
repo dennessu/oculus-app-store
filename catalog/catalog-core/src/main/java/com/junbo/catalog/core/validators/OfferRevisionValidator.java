@@ -89,7 +89,7 @@ public class OfferRevisionValidator extends ValidationSupport {
 
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
 
-        if (revision.getRank() < 0) {
+        if (revision.getRank() != null && revision.getRank() < 0) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid("rank", "Should not be negative."));
         }
 
