@@ -59,9 +59,6 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
         [/#list]
 
         __requestBuilder.setUrl(__uriBuilder.toTemplate());
-        if (__proxyServer != null) {
-            __requestBuilder.setProxyServer(__proxyServer);
-        }
         com.ning.http.client.Request __request = __requestBuilder.build();
 
         com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __httpContextData =
@@ -82,6 +79,9 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
     [/#list]
 
     __requestBuilder.setUrl(__uriBuilder.toTemplate());
+    if (__proxyServer != null) {
+        __requestBuilder.setProxyServer(__proxyServer);
+    }
     com.ning.http.client.Request __request = __requestBuilder.build();
 
     Promise<Response> __future;
