@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.buyerscenario;
+package com.junbo.test.endtoend;
 
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.UserTosAgreement;

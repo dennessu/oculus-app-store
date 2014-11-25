@@ -3,16 +3,15 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.buyerscenario;
+package com.junbo.test.endtoend;
 
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.identity.spec.v1.model.User;
-import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.endtoend.util.BaseTestClass;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
