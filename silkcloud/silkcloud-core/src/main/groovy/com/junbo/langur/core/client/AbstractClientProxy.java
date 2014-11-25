@@ -5,6 +5,7 @@ import com.junbo.langur.core.async.JunboAsyncHttpClient;
 import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.context.JunboHttpContextScopeListeners;
 import com.junbo.langur.core.routing.Router;
+import com.ning.http.client.ProxyServer;
 import groovy.transform.CompileStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,6 +45,8 @@ public abstract class AbstractClientProxy {
     protected boolean __attachUserToken = false;
 
     protected boolean __inProcessCallable;
+
+    protected ProxyServer __proxyServer;
 
     @Autowired(required = false)
     @Qualifier("junboHttpContextScopeListeners")
@@ -101,6 +104,16 @@ public abstract class AbstractClientProxy {
 
     public void setInProcessCallable(boolean inProcessCallable) {
         this.__inProcessCallable = inProcessCallable;
+    }
+
+    public void setProxyServer(String proxyServer) {
+        if (!StringUtils.isEmpty(proxyServer)) {
+            String[] splitted = proxyServer.split(":");
+            if (splitted.length != 2) {
+                throw new IllegalArgumentException("Invalid proxy server: " + proxyServer + " Expected: server:port");
+            }
+            this.__proxyServer = new ProxyServer(splitted[0], Integer.parseInt(splitted[1]));
+        }
     }
 
     public void setAttachUserToken(boolean __attachUserToken) {
