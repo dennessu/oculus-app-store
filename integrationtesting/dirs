@@ -14,4 +14,5 @@ integration-catalogscenario
 integration-csrscenario
 token-integration
 store-integration
+csr-integration
 ui-integration

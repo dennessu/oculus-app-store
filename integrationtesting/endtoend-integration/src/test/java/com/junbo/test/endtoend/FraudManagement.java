@@ -3,9 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.buyerscenario;
+package com.junbo.test.endtoend;
 
-import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.endtoend.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
@@ -16,7 +16,6 @@ import com.junbo.test.common.property.Status;
 import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**

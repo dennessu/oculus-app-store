@@ -1,4 +1,4 @@
-package com.junbo.test.buyerscenario;
+package com.junbo.test.endtoend;
 
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.order.model.enums.EventStatus;
@@ -6,7 +6,7 @@ import com.junbo.test.order.model.enums.OrderActionType;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Entities.paymentInstruments.AdyenInfo;
-import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.endtoend.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.common.Entities.enums.Country;
@@ -23,7 +23,6 @@ import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

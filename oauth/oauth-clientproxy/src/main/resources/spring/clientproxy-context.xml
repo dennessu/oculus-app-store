@@ -132,6 +132,7 @@
         <property name="target" value="${clientproxy.facebook.url}"/>
         <property name="transcoder" ref="commonIgnoreUnknownTranscoder"/>
         <property name="exceptionHandler" ref="facebookExceptionHandler"/>
+        <property name="proxyServer" value="${facebook.proxy:#{null}}" />
     </bean>
 
     <bean id="googleExceptionHandler" class="com.junbo.oauth.clientproxy.google.GoogleExceptionHandler">

@@ -1,31 +1,25 @@
-package com.junbo.test.buyerscenario;
+package com.junbo.test.endtoend;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.enumid.CountryId;
-import com.junbo.common.id.OrderId;
 import com.junbo.identity.spec.v1.model.Address;
-import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
-import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.endtoend.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.AdyenInfo;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import com.junbo.test.order.apihelper.OrderEventService;
-import com.junbo.test.order.apihelper.impl.OrderEventServiceImpl;
 import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -3,17 +3,15 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.buyerscenario.util;
+package com.junbo.test.endtoend.util;
 
-import com.junbo.test.buyerscenario.BuyerTestDataProvider;
-import com.junbo.test.buyerscenario.BuyerValidationHelper;
+import com.junbo.test.endtoend.BuyerTestDataProvider;
+import com.junbo.test.endtoend.BuyerValidationHelper;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.LogHelper;
 import org.testng.annotations.BeforeMethod;
-
-import java.util.logging.Logger;
 
 /**
  * @author Jason

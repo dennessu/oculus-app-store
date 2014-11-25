@@ -3,14 +3,14 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.buyerscenario;
+package com.junbo.test.endtoend;
 
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserLoginName;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
-import com.junbo.test.buyerscenario.util.BaseTestClass;
+import com.junbo.test.endtoend.util.BaseTestClass;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;

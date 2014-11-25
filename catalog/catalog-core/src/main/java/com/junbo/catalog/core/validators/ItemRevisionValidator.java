@@ -230,11 +230,11 @@ public class ItemRevisionValidator extends ValidationSupport {
                     if (!StringUtils.isEmpty(binary.getMd5()) && !Utils.isValidMd5(binary.getMd5())) {
                         errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "invalid md5 for " + key));
                     }
-                    if (binary.getRequiredSpace() < 0) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "requiredSpace should be a positive number."));
+                    if (binary.getRequiredSpace() != null && binary.getRequiredSpace() < 0) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "requiredSpace should not be negative."));
                     }
-                    if (binary.getSize() < 0) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "size should be a positive number."));
+                    if (binary.getSize() == null || binary.getSize() < 0) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "size is required and should not be negative."));
                     }
                 }
             }

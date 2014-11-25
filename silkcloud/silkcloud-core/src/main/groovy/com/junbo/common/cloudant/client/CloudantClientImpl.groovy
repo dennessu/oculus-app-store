@@ -14,10 +14,13 @@ import com.junbo.common.cloudant.model.CloudantResponse
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CloudantId
 import com.junbo.common.util.Utils
+import com.junbo.configuration.ConfigService
+import com.junbo.configuration.ConfigServiceManager
 import com.junbo.configuration.reloadable.IntegerConfig
 import com.junbo.configuration.reloadable.impl.ReloadableConfigFactory
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.promise.Promise
+import com.ning.http.client.ProxyServer
 import com.ning.http.client.Realm
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
@@ -70,6 +73,8 @@ class CloudantClientImpl implements CloudantClientInternal {
         }
         return initial
     }
+
+    private static ProxyServer proxyServer = resolveProxyServer();
 
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
@@ -377,6 +382,9 @@ class CloudantClientImpl implements CloudantClientInternal {
         def requestBuilder = getRequestBuilder(method, uriBuilder.toTemplate())
 
         requestBuilder.setBodyEncoding("UTF-8");
+        if (proxyServer != null && !(dbUri.cloudantUri.value ==~ /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$).*/ )) {
+            requestBuilder.setProxyServer(proxyServer);
+        }
 
         if (!StringUtils.isEmpty(dbUri.cloudantUri.username)) {
             Realm realm = new Realm.RealmBuilder().setPrincipal(dbUri.cloudantUri.username).setPassword(dbUri.cloudantUri.password)
@@ -578,5 +586,15 @@ class CloudantClientImpl implements CloudantClientInternal {
         Integer limit
         String bookmark
         Boolean include_docs
+    }
+
+    private static ProxyServer resolveProxyServer() {
+        ConfigService configService = ConfigServiceManager.instance();
+        String proxyServer = configService.getConfigValue("cloudant.proxy");
+        return Utils.parseProxyServer(proxyServer);
+    }
+
+    public static ProxyServer getProxyServer() {
+        return proxyServer;
     }
 }

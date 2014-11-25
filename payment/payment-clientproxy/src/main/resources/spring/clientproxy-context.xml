@@ -68,6 +68,7 @@
         <property name="target" value="${payment.clientproxy.facebook.payment.url}"/>
         <property name="transcoder" ref="commonIgnoreUnknownTranscoder"/>
         <property name="exceptionHandler" ref="facebookPaymentException"/>
+        <property name="proxyServer" value="${facebook.proxy:#{null}}" />
     </bean>
 
     <bean id="facebookOauthClient" class="com.junbo.payment.clientproxy.facebook.proxy.FacebookOauthApiClientProxy"
@@ -75,6 +76,7 @@
         <property name="target" value="${payment.clientproxy.facebook.payment.url}"/>
         <property name="transcoder" ref="rawDataTranscoder"/>
         <property name="exceptionHandler" ref="facebookPaymentException"/>
+        <property name="proxyServer" value="${facebook.proxy:#{null}}" />
     </bean>
 
     <bean id="mockFacebookPaymentClient" class="com.junbo.payment.clientproxy.impl.MockFacebookPaymentApiImpl">

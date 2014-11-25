@@ -1,0 +1,67 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+sourceCompatibility = '1.7'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = ''
+}
+
+test {
+    useTestNG() {
+        if (System.properties['env'] != null) {
+            String testEnvironment = System.properties['env']
+            if (System.properties['groups'] != null) {
+                String testGroups = System.properties['groups']
+                if (testGroups.contains(',')) {
+                    String[] splitGroups = testGroups.split(',')
+                    project.ext.set("finalGroups", "")
+                    for (int i=0; i<splitGroups.length; i++)
+                    {
+                        if (finalGroups == '') {
+                            project.ext.set("finalGroups", testEnvironment + splitGroups[i].trim())
+
+                        } else {
+                            project.ext.set("finalGroups",  project.finalGroups + ',' + testEnvironment + splitGroups[i].trim())
+                        }
+                    }
+                } else {
+                    project.ext.set("finalGroups", testEnvironment + testGroups)
+                }
+                includeGroups project.finalGroups
+            } else {
+                includeGroups System.properties['env']
+            }
+        } else if (System.properties['groups'] != null) {
+            includeGroups System.properties['groups']
+        }
+
+        if (System.properties['excludeEnv'] != null) {
+            excludeGroups System.properties['excludeEnv']
+        }
+
+    }
+    systemProperty 'profile', System.properties['profile']
+    options {
+        listeners << 'org.testng.reporters.XMLReporter'
+        listeners << 'com.junbo.test.common.property.PropertyTransformer'
+    }
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+}
+
+dependencies {
+    compile(libraries.asyncclient)
+
+    compile junboProject(':csr-spec')
+    compile junboProject(':common-testlib')
+
+    testCompile(libraries.asyncclient)
+    testCompile(libraries.slf4j_api)
+    testCompile(libraries.testng)
+}
