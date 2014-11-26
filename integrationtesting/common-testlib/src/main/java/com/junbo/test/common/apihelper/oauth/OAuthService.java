@@ -31,6 +31,11 @@ public interface OAuthService {
 
     String postUserAccessToken(String uid, String username, String pwd, int expectedResponseCode) throws Exception;
 
+    String postUserAccessToken(String uid, String username, String pwd, String clientId, String scope) throws Exception;
+
+    String postUserAccessToken(String uid, String username, String pwd, String clientId, String scope,
+                               int expectedResponseCode) throws Exception;
+
     String postEmailVerification(String uid, String country, String locale) throws Exception;
 
     String postEmailVerification(String uid, String country, String locale, int expectedResponseCode) throws Exception;

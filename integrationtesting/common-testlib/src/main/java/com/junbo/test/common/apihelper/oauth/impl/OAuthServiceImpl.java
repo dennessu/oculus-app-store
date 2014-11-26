@@ -107,7 +107,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
                 break;
             case CATALOG:
             case SMOKETEST:
-                formParams.put("scope","smoketest identity catalog");
+                formParams.put("scope", "smoketest identity catalog");
                 clientId = ConfigHelper.getSetting("client_id");
                 break;
             case IDENTITY_MIGRATION:
@@ -151,6 +151,35 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("client_secret", ConfigHelper.getSetting("secret"));
         formParams.put("grant_type", GrantType.PASSWORD.toString());
         formParams.put("scope", "identity commerce catalog identity.pii catalog.developer");
+        formParams.put("password", pwd);
+        formParams.put("username", username);
+
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/token",
+                convertFormatToRequestString(formParams), expectedResponseCode);
+
+        AccessTokenResponse accessTokenResponse = new JsonMessageTranscoder().decode(
+                new TypeReference<AccessTokenResponse>() {
+                }, responseBody
+        );
+
+        Master.getInstance().addUserAccessToken(uid, accessTokenResponse.getAccessToken());
+
+        return accessTokenResponse.getAccessToken();
+    }
+
+    @Override
+    public String postUserAccessToken(String uid, String username, String pwd, String clientId, String scope) throws Exception {
+        return postUserAccessToken(uid, username, pwd, clientId, scope, 200);
+    }
+
+    @Override
+    public String postUserAccessToken(String uid, String username, String pwd, String clientId, String scope, int expectedResponseCode) throws Exception {
+        needAuthHeader = false;
+        Map<String, String> formParams = new HashMap<>();
+        formParams.put("client_id", clientId);
+        formParams.put("client_secret", ConfigHelper.getSetting("client_secret"));
+        formParams.put("grant_type", GrantType.PASSWORD.toString());
+        formParams.put("scope", scope);
         formParams.put("password", pwd);
         formParams.put("username", username);
 
