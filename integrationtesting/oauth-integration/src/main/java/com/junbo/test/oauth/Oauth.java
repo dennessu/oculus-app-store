@@ -14,6 +14,7 @@ import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.identity.Identity;
+import com.sun.xml.internal.ws.developer.MemberSubmissionAddressing;
 import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
@@ -461,10 +462,15 @@ public class Oauth {
     }
 
     public static String UserLogin(String cid, String email, String password) throws Exception {
-        return UserLogin(cid, email, password, DefaultAuthorizeURI);
+        return UserLogin(cid, email, password, null);
     }
 
-    public static String UserLogin(String cid, String email, String password, String uri) throws Exception {
+    public static String UserLogin(String cid, String email, String password, Error error) throws Exception {
+        return UserLogin(cid, email, password, DefaultAuthorizeURI, error);
+    }
+
+    public static String UserLogin(String cid, String email, String password, String uri, Error error)
+            throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
@@ -475,8 +481,22 @@ public class Oauth {
         try {
             ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
-            Validator.Validate("validate no error", true, viewModelResponse.getErrors().isEmpty());
-            return viewModelResponse.getModel().get("location").toString();
+            if (error == null) {
+                Validator.Validate("validate no error", true, viewModelResponse.getErrors().isEmpty());
+                return viewModelResponse.getModel().get("location").toString();
+            } else {
+                Validator.Validate("validate error message",
+                        error.getMessage(), viewModelResponse.getErrors().get(0).getMessage());
+                Validator.Validate("validate error code",
+                        error.getCode(), viewModelResponse.getErrors().get(0).getCode());
+                Validator.Validate("validate error detail field",
+                        error.getDetails().get(0).getField(),
+                        viewModelResponse.getErrors().get(0).getDetails().get(0).getField());
+                Validator.Validate("validate error detail reason",
+                        error.getDetails().get(0).getReason(),
+                        viewModelResponse.getErrors().get(0).getDetails().get(0).getReason());
+                return null;
+            }
         } finally {
             response.close();
         }
