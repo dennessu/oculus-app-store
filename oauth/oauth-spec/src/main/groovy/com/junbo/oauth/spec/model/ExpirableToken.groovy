@@ -18,6 +18,7 @@ abstract class ExpirableToken extends ResourceMeta<String> {
 
     @JsonIgnore
     boolean isExpired() {
-        return expiredBy.before(new Date())
+        // treat it as forever token if expiredBy not set to support backward compatible
+        return expiredBy != null && expiredBy.before(new Date())
     }
 }
