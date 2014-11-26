@@ -19,7 +19,8 @@
             "JP": {"JPY": 1000}
         }
     },
-    "supportedInputDevices": ["KEYBOARD", "MOUSE"],
+    "supportedInputDevices": ["KEYBOARD", "MOUSE", "CONTROLLER", "TOUCHPAD", "GAMEPAD", "HEAD_LOOK"],
+    "requiredInputDevices": ["KEYBOARD", "MOUSE", "CONTROLLER", "TOUCHPAD", "GAMEPAD", "HEAD_LOOK"],
     "userInteractionModes": ["SINGLE_USER", "MULTI_USER"],
     "platforms": ["PC", "MAC"],
     "ageRatings": {

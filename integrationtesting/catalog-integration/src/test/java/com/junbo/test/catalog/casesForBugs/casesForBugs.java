@@ -8,6 +8,7 @@ package com.junbo.test.catalog.casesForBugs;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
+import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
@@ -35,12 +36,10 @@ import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
-import com.junbo.test.common.property.Component;
-import com.junbo.test.common.property.Priority;
-import com.junbo.test.common.property.Property;
-import com.junbo.test.common.property.Status;
-import org.testng.Assert;
+import com.junbo.test.common.property.*;
+
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -424,4 +423,217 @@ public class casesForBugs extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Bug SER-833",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Verify supportedInputDevices Enum values in [KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD, GAMEPAD, HEAD_LOOK]",
+            steps = {}
+    )
+    @Test
+    public void testRequiredInputDevices() throws Exception {
+        String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
+        List<String> validRequiredInputDevices = new ArrayList<>();
+        List<String> invalidRequiredInputDevices = new ArrayList<>();
+
+        prepareCatalogAdminToken();
+
+        Organization organization = organizationService.postDefaultOrganization();
+        OrganizationId organizationId = organization.getId();
+
+        Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
+        ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+
+        itemRevision.setItemId(item.getItemId());
+        itemRevision.setOwnerId(organizationId);
+
+        validRequiredInputDevices.add("KEYBOARD");
+        validRequiredInputDevices.add("MOUSE");
+        validRequiredInputDevices.add("CONTROLLER");
+        validRequiredInputDevices.add("TOUCHPAD");
+        validRequiredInputDevices.add("GAMEPAD");
+        validRequiredInputDevices.add("HEAD_LOOK");
+
+        invalidRequiredInputDevices.add("KEYBOARD");
+        invalidRequiredInputDevices.add("MOUSE");
+        invalidRequiredInputDevices.add(RandomFactory.getRandomStringOfAlphabet(10));
+        invalidRequiredInputDevices.add("TOUCHPAD");
+        invalidRequiredInputDevices.add(RandomFactory.getRandomStringOfAlphabet(10));
+        invalidRequiredInputDevices.add("HEAD_LOOK");
+
+        itemRevision.setRequiredInputDevices(invalidRequiredInputDevices);
+        try {
+            itemRevisionService.postItemRevision(itemRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
+
+        itemRevision.setRequiredInputDevices(validRequiredInputDevices);
+        itemRevision = itemRevisionService.postItemRevision(itemRevision);
+
+        itemRevision.setRequiredInputDevices(invalidRequiredInputDevices);
+        try {
+            itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
+
+        itemRevision.setRequiredInputDevices(validRequiredInputDevices);
+        itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+        itemRevision.setRequiredInputDevices(invalidRequiredInputDevices);
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.toString());
+        try {
+            itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
+
+        itemRevision.setRequiredInputDevices(validRequiredInputDevices);
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Bug SER-834",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Verify RequiredSpace",
+            steps = {}
+    )
+    @Test
+    public void testRequiredSpaceForItemRevision() throws Exception {
+        String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
+        Map<String, Binary> binaries = new HashMap<>();
+        Binary invalidBinary = new Binary();
+        Binary validBinary = new Binary();
+        Binary noRequiredSpaceBinary = new Binary();
+        Binary zeroRequiredSpaceBinary = new Binary();
+
+        prepareCatalogAdminToken();
+
+        Organization organization = organizationService.postDefaultOrganization();
+        OrganizationId organizationId = organization.getId();
+
+        Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
+        ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+
+        itemRevision.setItemId(item.getItemId());
+        itemRevision.setOwnerId(organizationId);
+
+        validBinary.setVersion("1");
+        validBinary.setSize(1024L);
+        validBinary.setMd5("abcdabcdabcdabcdabcdabcdabcdabcd");
+        validBinary.setHref("http://www.google.com/downlaod/angrybird1_0.exe");
+        validBinary.setRequiredSpace(102423232L);
+
+        invalidBinary.setVersion("1");
+        invalidBinary.setSize(1024L);
+        invalidBinary.setMd5("abcdabcdabcdabcdabcdabcdabcdabcd");
+        invalidBinary.setHref("http://www.google.com/downlaod/angrybird1_0.exe");
+        invalidBinary.setRequiredSpace(-102423232L);
+
+        noRequiredSpaceBinary.setVersion("1");
+        noRequiredSpaceBinary.setSize(1024L);
+        noRequiredSpaceBinary.setMd5("abcdabcdabcdabcdabcdabcdabcdabcd");
+        noRequiredSpaceBinary.setHref("http://www.google.com/downlaod/angrybird1_0.exe");
+
+        zeroRequiredSpaceBinary.setVersion("1");
+        zeroRequiredSpaceBinary.setSize(1024L);
+        zeroRequiredSpaceBinary.setMd5("abcdabcdabcdabcdabcdabcdabcdabcd");
+        zeroRequiredSpaceBinary.setHref("http://www.google.com/downlaod/angrybird1_0.exe");
+        zeroRequiredSpaceBinary.setRequiredSpace(0L);
+
+        binaries.put("PC", invalidBinary);
+        itemRevision.setBinaries(binaries);
+        itemRevisionService.postItemRevision(itemRevision);
+
+        binaries.put("PC", validBinary);
+        itemRevision.setBinaries(binaries);
+        itemRevisionService.postItemRevision(itemRevision);
+
+        itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        itemRevision.setItemId(item.getItemId());
+        itemRevision.setOwnerId(organizationId);
+
+        binaries.put("PC", noRequiredSpaceBinary);
+        itemRevision.setBinaries(binaries);
+        itemRevisionService.postItemRevision(itemRevision);
+
+        itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        itemRevision.setItemId(item.getItemId());
+        itemRevision.setOwnerId(organizationId);
+
+        binaries.put("PC", zeroRequiredSpaceBinary);
+        itemRevision.setBinaries(binaries);
+        itemRevision = itemRevisionService.postItemRevision(itemRevision);
+
+        binaries.put("PC", invalidBinary);
+        itemRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.getEntityStatus());
+        itemRevision.setBinaries(binaries);
+        try {
+            itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
+
+        binaries.put("PC", noRequiredSpaceBinary);
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevision.setBinaries(binaries);
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+        itemRevision = itemRevisionService.postDefaultItemRevision(item);
+        binaries.put("PC", zeroRequiredSpaceBinary);
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevision.setBinaries(binaries);
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+        itemRevision = itemRevisionService.postDefaultItemRevision(item);
+        binaries.put("PC", validBinary);
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        itemRevision.setBinaries(binaries);
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Bug SER-835",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Verify Rank in offer revision",
+            steps = {}
+    )
+    @Test
+    public void testRankForOfferRevision() throws Exception {
+        prepareCatalogAdminToken();
+
+        Organization organization = organizationService.postDefaultOrganization();
+        OrganizationId organizationId = organization.getId();
+
+        Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
+        item = releaseItem(item);
+
+        Offer offer = offerService.postDefaultOffer(organizationId);
+        OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer, item);
+        Assert.assertEquals(offerRevision.getRank(), 0.0);
+
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevision.setRank(-12D);
+        try {
+            offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
+
+        offerRevision.setRank(null);
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+        Assert.assertEquals(offerRevision.getRank(), 0.0);
+    }
+
 }
+
