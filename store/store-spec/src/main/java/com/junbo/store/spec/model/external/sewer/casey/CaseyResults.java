@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.model.Link;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -20,6 +21,7 @@ public class CaseyResults<T> {
     private Link self;
 
     @JsonProperty("results")
+    @Valid
     private List<T> items;
 
     @JsonProperty("cursor")

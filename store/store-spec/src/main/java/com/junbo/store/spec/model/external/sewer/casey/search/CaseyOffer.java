@@ -9,7 +9,9 @@ import com.junbo.catalog.spec.model.common.Images;
 import com.junbo.catalog.spec.model.offer.CountryProperties;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OfferRevisionId;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
@@ -18,12 +20,16 @@ import java.util.Map;
  */
 public class CaseyOffer {
 
+    @NotNull
     private OfferId self;
     private List<CatalogAttribute> categories;
+    @NotNull
     private OrganizationInfo publisher;
     private List<CaseyItem> items;
     private CaseyPrice price;
     private Map<String, CountryProperties> regions;
+    @NotNull
+    @NotEmpty
     private String name;
     private Double rank;
     private String shortDescription;

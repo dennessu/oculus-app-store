@@ -5,9 +5,13 @@
  */
 package com.junbo.test.store.apihelper.impl;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.junbo.common.json.JsonMessageCaseyTranscoder;
-import com.junbo.langur.core.client.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.store.spec.model.external.sewer.SewerParam;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
 import com.junbo.test.common.ConfigHelper;
@@ -26,7 +30,13 @@ public class CaseyServiceImpl  extends HttpClientBase implements CaseyService {
 
     private static CaseyService instance;
 
-    private static JsonMessageCaseyTranscoder jsonMessageCaseyTranscoder = new JsonMessageCaseyTranscoder();
+    private static ObjectMapper caseyObjectMapper;
+
+    static {
+        caseyObjectMapper = ObjectMapperProvider.createObjectMapper();
+        caseyObjectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        caseyObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
 
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope, List<String> headersToRemove) {
         FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope, headersToRemove);
@@ -56,9 +66,9 @@ public class CaseyServiceImpl  extends HttpClientBase implements CaseyService {
         params.put("country", Collections.singletonList(sewerParam.getCountry()));
         params.put("locale", Collections.singletonList(sewerParam.getLocale()));
 
-
         String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/cms-pages", null, 0, params, false);
-        return jsonMessageCaseyTranscoder.decode(new TypeReference<CaseyResults<JsonNode>>() {}, responseBody);
+        return caseyObjectMapper.readValue(responseBody, new TypeReference<CaseyResults<JsonNode>>() {});
+
     }
 
     @Override
@@ -71,7 +81,7 @@ public class CaseyServiceImpl  extends HttpClientBase implements CaseyService {
         params.put("country", Collections.singletonList(sewerParam.getCountry()));
 
         String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/search", null, 0, params, false);
-        return jsonMessageCaseyTranscoder.decode(new TypeReference<CaseyResults<JsonNode>>() {}, responseBody);
+        return caseyObjectMapper.readValue(responseBody, new TypeReference<CaseyResults<JsonNode>>() {});
     }
 
     @Override

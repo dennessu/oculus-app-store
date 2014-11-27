@@ -8,8 +8,11 @@ package com.junbo.test.store.utility;
 // CHECKSTYLE:OFF
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
@@ -18,7 +21,7 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
-import com.junbo.common.json.JsonMessageCaseyTranscoder;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
@@ -87,7 +90,7 @@ import java.util.*;
 
 public class StoreTestDataProvider extends BaseTestDataProvider {
 
-    private static JsonMessageCaseyTranscoder jsonMessageCaseyTranscoder = new JsonMessageCaseyTranscoder();
+    private static ObjectMapper caseyObjectMapper;
     LoginService loginClient = LoginServiceImpl.getInstance();
     StoreService storeClient = StoreServiceImpl.getInstance();
     OfferService offerClient = OfferServiceImpl.instance();
@@ -104,6 +107,12 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     CaseyService caseyClient = CaseyServiceImpl.getInstance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
+
+    static {
+        caseyObjectMapper = ObjectMapperProvider.createObjectMapper();
+        caseyObjectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        caseyObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
 
     public CreateUserRequest CreateUserRequest() throws Exception {
         return CreateUserRequest(RandomFactory.getRandomStringOfAlphabet(6));
@@ -928,7 +937,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         Set<String> added = new HashSet<>();
         List<String> itemIds = new ArrayList<>();
         for (JsonNode result : results.getItems()) {
-            CmsPage cmsPage = jsonMessageCaseyTranscoder.getObjectMapper().readValue(result.traverse(), new TypeReference<CmsPage>() {});
+            CmsPage cmsPage = caseyObjectMapper.readValue(result.traverse(), new TypeReference<CmsPage>() {});
             for (CaseyLink link : cmsPage.getSchedule().getSlots().get(slot).getContent().getContents().get(contentName).getLinks()) {
                 if (!added.contains(link.getId())) {
                     itemIds.add(link.getId());

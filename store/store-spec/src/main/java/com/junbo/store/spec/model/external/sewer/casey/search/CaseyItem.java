@@ -11,7 +11,9 @@ import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.SupportedLocale;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.ItemRevisionId;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +23,16 @@ import java.util.Map;
  */
 public class CaseyItem {
 
+    @NotNull
     private ItemId self;
+
+    @NotNull
+    @NotEmpty
     private String type;
+
+    @NotNull
     private OrganizationInfo developer;
+
     private String packageName;
     private Map<String, Binary> binaries;
     private Map<String, SupportedLocale> supportedLocales;
@@ -32,7 +41,11 @@ public class CaseyItem {
     private RevisionNotes releaseNotes;
     private CaseyRating qualityRating;
     private CaseyRating comfortRating;
+
+    @NotNull
+    @NotEmpty
     private String name;
+
     private String longDescription;
     private String supportEmail;
     private String website;
