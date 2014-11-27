@@ -12,7 +12,9 @@ import com.junbo.test.csr.utility.CsrValidationHelper;
  * Created by weiyu_000 on 11/26/14.
  */
 public abstract class CsrBaseTestClass {
-    CsrTestDataProvider testDataProvider =  new CsrTestDataProvider();
+    protected final static String csrAdminUid = "csrAdmin";
+
+    CsrTestDataProvider testDataProvider = new CsrTestDataProvider();
     CsrValidationHelper validationHelper = new CsrValidationHelper();
 
 }

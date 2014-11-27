@@ -41,7 +41,7 @@ public class CsrSearchTesting extends CsrBaseTestClass {
         String userName = userInfo.getUserName();
         String uid = testDataProvider.createUser(userInfo);
         testDataProvider.postCsrAdminAccessToken();
-        Master.getInstance().setCurrentUid("csrAdmin");
+        Master.getInstance().setCurrentUid(csrAdminUid);
 
         List<String> uids = testDataProvider.searchUsers(SearchType.USERNAME, userName);
 
@@ -69,7 +69,7 @@ public class CsrSearchTesting extends CsrBaseTestClass {
         String userName = userInfo.getUserName();
         String uid = testDataProvider.createUser(userInfo);
         testDataProvider.postCsrAdminAccessToken();
-        Master.getInstance().setCurrentUid("csrAdmin");
+        Master.getInstance().setCurrentUid(csrAdminUid);
 
         List<String> uids = testDataProvider.searchUsers(SearchType.USERID, uid);
 
@@ -96,7 +96,7 @@ public class CsrSearchTesting extends CsrBaseTestClass {
         String userName = userInfo.getUserName();
         String uid = testDataProvider.createUser(userInfo);
         testDataProvider.postCsrAdminAccessToken();
-        Master.getInstance().setCurrentUid("csrAdmin");
+        Master.getInstance().setCurrentUid(csrAdminUid);
 
         List<String> uids = testDataProvider.searchUsers(SearchType.EMAIL, userInfo.getEmails().get(0));
 
@@ -123,7 +123,7 @@ public class CsrSearchTesting extends CsrBaseTestClass {
         String userName = userInfo.getUserName();
         String uid = testDataProvider.createUser(userInfo);
         testDataProvider.postCsrAdminAccessToken();
-        Master.getInstance().setCurrentUid("csrAdmin");
+        Master.getInstance().setCurrentUid(csrAdminUid);
 
         List<String> uids = testDataProvider.searchUsers(SearchType.FULLNAME, userInfo.getFirstName() + " " + userInfo.getLastName());
 
