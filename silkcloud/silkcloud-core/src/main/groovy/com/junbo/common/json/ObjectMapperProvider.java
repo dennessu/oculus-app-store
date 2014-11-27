@@ -38,7 +38,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     private static ObjectMapper objectMapperNoIndent = createObjectMapper(false);
 
-    static ObjectMapper createObjectMapper() {
+    public static ObjectMapper createObjectMapper() {
         return createObjectMapper(true);
     }
 
