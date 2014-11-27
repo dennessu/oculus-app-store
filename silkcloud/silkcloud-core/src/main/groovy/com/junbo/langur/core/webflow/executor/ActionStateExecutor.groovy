@@ -2,6 +2,7 @@ package com.junbo.langur.core.webflow.executor
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.FlowException
+import com.junbo.langur.core.webflow.WebFlowErrors
 import com.junbo.langur.core.webflow.action.ActionList
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.langur.core.webflow.definition.ActionStateDef
@@ -88,7 +89,7 @@ class ActionStateExecutor implements StateExecutor {
         }
 
         if (transitionDef == null) {
-            throw new FlowException("no transition found for event $trigger")
+            throw WebFlowErrors.INSTANCE.invalidTransition(trigger).exception()
         }
 
         def actionContext = context.newActionContext()
