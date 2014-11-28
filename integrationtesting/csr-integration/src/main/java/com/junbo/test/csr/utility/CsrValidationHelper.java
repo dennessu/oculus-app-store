@@ -5,9 +5,12 @@
  */
 package com.junbo.test.csr.utility;
 
+import com.junbo.common.id.UserId;
 import com.junbo.csr.spec.model.CsrGroup;
+import com.junbo.csr.spec.model.CsrUpdate;
 import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.exception.TestException;
+import com.junbo.test.common.libs.IdConverter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +36,13 @@ public class CsrValidationHelper extends ValidationHelper {
                 throw new TestException(String.format("fail to find csr group name: %s", groupName));
             }
         }
+    }
+
+    public void validateCsrUpdate(String uid, String content, CsrUpdate update) {
+        verifyEqual(update.getContent(), content, "verify update content");
+        verifyEqual(update.getActive(), true, "verify update active");
+        verifyEqual(update.getPostedBy(), "Hao Min", "verify postedBy csr admin");
+        verifyEqual(update.getUserId().getValue(), IdConverter.hexStringToId(UserId.class, uid), "verify user id");
     }
 
 }

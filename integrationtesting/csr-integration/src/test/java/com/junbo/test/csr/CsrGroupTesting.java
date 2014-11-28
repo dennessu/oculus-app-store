@@ -5,10 +5,7 @@
  */
 package com.junbo.test.csr;
 
-import com.junbo.csr.spec.def.SearchType;
 import com.junbo.csr.spec.model.CsrGroup;
-import com.junbo.test.common.Entities.Identity.UserInfo;
-import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
