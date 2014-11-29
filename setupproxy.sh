@@ -1,11 +1,17 @@
 #!/bin/bash
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
-
 root
 
 personalConfigFile=`rootdir`/apphost/config-data/src/main/resources/junbo/conf/onebox/personal.properties
-pushd `rootdir`/scripts/whois >/dev/null
-if (python whois.py --apnic `curl ifconfig.me` | grep 'country:[ \t]*CN') >/dev/null 2>&1; then
+# append \n to eof if not exists.
+sed -i '' -e '$a\' "$personalConfigFile"
+
+# remove the file generated due to bug in this script.
+if [[ -f "${personalConfigFile}-e" ]]; then 
+    rm "${personalConfigFile}-e"
+fi
+
+if ! (curl -X HEAD --connect-timeout 3 www.facebook.com) >/dev/null 2>&1; then
     # set proxy
     if [[ -f "$personalConfigFile" ]]; then
         facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
@@ -29,9 +35,8 @@ else
         facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
     fi
     if [[ "$facebookProxy" == 'http://silkcloud:#Bugs4$1@127.0.0.1:13128' ]]; then
-        sed -i -e '/^facebook.proxy=/d' "$personalConfigFile"
+        sed -i '' -e '/^facebook.proxy=/d' "$personalConfigFile"
         echo "facebook proxy is removed"
     fi
 fi
-popd >/dev/null
 

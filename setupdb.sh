@@ -36,7 +36,6 @@ fi
 if [[ "$1" == "" || "$1" == "couch" ]]; then
     # setup cloudant db
     pushd couchdb
-    curl -X DELETE "https://silkcloudtest-asia.cloudant.com/${dbPrefix}ping" -H "Authorization: Basic c2lsa2Nsb3VkdGVzdC1hc2lhOiNCdWdzZm9yJA==" > /dev/null &
     python ./couchdbcmd.py dropdbs --prefix=$dbPrefix --key=$cipherKey --yes
     python ./couchdbcmd.py createdbs --prefix=$dbPrefix --key=$cipherKey --yes
     popd
