@@ -4,7 +4,10 @@ root
 
 personalConfigFile=`rootdir`/apphost/config-data/src/main/resources/junbo/conf/onebox/personal.properties
 # append \n to eof if not exists.
-sed -i '' -e '$a\' "$personalConfigFile"
+sed -i.bak -e '$a\' "$personalConfigFile"
+if [[ -f "${personalConfigFile}.bak" ]]; then
+    rm "${personalConfigFile}.bak"
+fi
 
 # remove the file generated due to bug in this script.
 if [[ -f "${personalConfigFile}-e" ]]; then 
@@ -35,7 +38,10 @@ else
         facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
     fi
     if [[ "$facebookProxy" == 'http://silkcloud:#Bugs4$1@127.0.0.1:13128' ]]; then
-        sed -i '' -e '/^facebook.proxy=/d' "$personalConfigFile"
+        sed -i.bak -e '/^facebook.proxy=/d' "$personalConfigFile"
+        if [[ -f "${personalConfigFile}.bak" ]]; then
+            rm "${personalConfigFile}.bak"
+        fi
         echo "facebook proxy is removed"
     fi
 fi
