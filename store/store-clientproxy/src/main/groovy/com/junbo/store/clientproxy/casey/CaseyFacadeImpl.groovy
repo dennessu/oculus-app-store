@@ -7,7 +7,6 @@ import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
-import com.junbo.common.json.JsonMessageCaseyTranscoder
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.Organization
@@ -72,7 +71,7 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     private final static ObjectMapper objectMapper;
 
-    @Resource(name = 'caseyTranscoder')
+    @Resource(name = 'store.jsonMessageCaseyTranscoder')
     JsonMessageCaseyTranscoder jsonMessageCaseyTranscoder
 
     @Resource(name = 'storeResourceContainer')

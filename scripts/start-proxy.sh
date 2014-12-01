@@ -9,6 +9,9 @@ PROXY_SERVER=silkcloud@54.92.103.97
 
 if ! ( ssh -S .tokyo-proxy -O check $PROXY_SERVER ) 2>/dev/null; then
     echo Starting proxy...
+	if [[ "$OS" == Windows* ]]; then
+	    chgrp Users .ssh/id_rsa
+	fi
     chmod 600 .ssh/id_rsa
     ssh -o "StrictHostKeyChecking no" -M -S .tokyo-proxy -L 13128:127.0.0.1:3128 $PROXY_SERVER -p 9222 -fnNT -i .ssh/id_rsa
 else

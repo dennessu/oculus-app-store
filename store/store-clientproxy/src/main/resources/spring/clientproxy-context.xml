@@ -23,7 +23,7 @@
     </bean>
 
     <bean id="store.CaseyExceptionHandler" class="com.junbo.store.clientproxy.casey.CaseyExceptionHandler">
-        <property name="messageTranscoder" ref="caseyTranscoder"/>
+        <property name="messageTranscoder" ref="store.jsonMessageCaseyTranscoder"/>
     </bean>
 
     <bean id="store.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
@@ -253,7 +253,7 @@
           class="com.junbo.store.spec.resource.external.proxy.CaseyResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.casey.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
-        <property name="transcoder" ref="caseyTranscoder"/>
+        <property name="transcoder" ref="store.jsonMessageCaseyTranscoder"/>
         <property name="exceptionHandler" ref="store.CaseyExceptionHandler"/>
     </bean>
 
@@ -266,7 +266,7 @@
     <bean id="store.caseyReviewClientProxy"
           class="com.junbo.store.spec.resource.external.proxy.CaseyReviewResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.casey.url}"/>
-        <property name="transcoder" ref="caseyTranscoder"/>
+        <property name="transcoder" ref="store.jsonMessageCaseyTranscoder"/>
         <property name="exceptionHandler" ref="store.CaseyExceptionHandler"/>
     </bean>
 

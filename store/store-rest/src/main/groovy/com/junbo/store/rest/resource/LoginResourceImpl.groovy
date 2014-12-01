@@ -223,8 +223,16 @@ class LoginResourceImpl implements LoginResource {
             return Promise.pure(null)
         }.then {
             requestValidator.validateAndGetCountry(new CountryId(request.cor))
-        }.then {
-            requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
+        }.then { Country inputCountry ->
+            return requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale)).recover { Throwable throwable ->
+                LOGGER.error("CreateUser:  Call perferredlocale, Ignore")
+                if (appErrorUtils.isAppError(throwable, ErrorCodes.Identity.LocaleNotFound)) {
+                    request.preferredLocale = inputCountry.defaultLocale.toString()
+                    return requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
+                }
+
+                throw throwable
+            }
         }.then {
             requestValidator.validateTosExists(request.tosAgreed)
         }.then {
@@ -249,22 +257,14 @@ class LoginResourceImpl implements LoginResource {
                 }
             }
         }.recover { Throwable ex ->
-            def promise = Promise.pure()
-
-            if (apiContext.user?.getId() != null) {
-                promise = rollBackUser(apiContext.user)
+            appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
+                    ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
+                    ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction,
+                    ErrorCodes.Sentry.BlockAccess)) {
+                throw ex
             }
-
-            promise.then {
-                appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
-                if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
-                        ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
-                        ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction,
-                        ErrorCodes.Sentry.BlockAccess)) {
-                    throw ex
-                }
-                appErrorUtils.throwUnknownError('createUser', ex)
-            }
+            appErrorUtils.throwUnknownError('createUser', ex)
         }.then {
             // get the auth token
             innerSignIn(apiContext.user, apiContext.userLoginName, apiContext.storeUserEmail).then { AuthTokenResponse response ->
@@ -301,6 +301,13 @@ class LoginResourceImpl implements LoginResource {
                     return Promise.pure()
                 }
             }
+        }.recover { Throwable ex ->
+            if (apiContext.user?.getId() != null) {
+                return rollBackUser(apiContext.user).then {
+                    throw ex
+                }
+            }
+            throw ex
         }.then {
             return facadeContainer.oAuthFacade.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId()).then {
                 return Promise.pure(authTokenResponse)

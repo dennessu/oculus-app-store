@@ -34,8 +34,9 @@ class EmailListenerCloudantImpl extends EmailBaseListener implements EmailListen
     }
 
     private void sendEmail(String emailId) {
-        emailHistoryRepository.getEmailHistory(emailId).recover { Throwable throwable ->
+        def result = emailHistoryRepository.getEmailHistory(emailId).recover { Throwable throwable ->
             LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email:', throwable)
+            return Promise.pure(null)
         }.then { Email email ->
             if (email == null) {
                 LOGGER.error('EMAIL_LISTENER_ERROR. Email not found with id:{}', emailId)
@@ -45,23 +46,23 @@ class EmailListenerCloudantImpl extends EmailBaseListener implements EmailListen
                 LOGGER.error('EMAIL_LISTENER_ERROR. EmailTemplate id should be not null')
                 return Promise.pure(null)
             }
-            def result = emailTemplateRepository.getEmailTemplate(email.templateId.value).recover {
-                    Throwable throwable ->
-                        LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email template:',throwable)
-                }.then { EmailTemplate template ->
-                    if (template == null) {
-                        LOGGER.error('EMAIL_LISTENER_ERROR. Email template not found')
-                        return Promise.pure(null)
-                    }
-                    return emailProvider.sendEmail(email, template).then {Email retEmail ->
-                        return emailHistoryRepository.updateEmailHistory(retEmail, retEmail)
-                    }
-                }.get()
-
-            if (result != null) {
-                LOGGER.info('EMAIL_LISTENER_INFO. Email has been sent')
+            return emailTemplateRepository.getEmailTemplate(email.templateId.value).recover {
+                Throwable throwable ->
+                    LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email template:',throwable)
+                    return Promise.pure(null)
+            }.then { EmailTemplate template ->
+                if (template == null) {
+                    LOGGER.error('EMAIL_LISTENER_ERROR. Email template not found')
+                    return Promise.pure(null)
+                }
+                return emailProvider.sendEmail(email, template).then {Email retEmail ->
+                    return emailHistoryRepository.updateEmailHistory(retEmail, retEmail)
+                }
             }
-        }
+        }.get()
 
+        if (result != null) {
+            LOGGER.info('EMAIL_LISTENER_INFO. Email has been sent')
+        }
     }
 }

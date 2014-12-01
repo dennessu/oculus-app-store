@@ -458,6 +458,30 @@ public class LoginResourceTesting extends BaseTestClass {
         AuthTokenResponse response = testDataProvider.CreateUser(createUserRequest, true);
         assert response != null;
         assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        TestContext.getData().putHeader("Accept-Language", "es");
+        response = testDataProvider.CreateUser(createUserRequest, true);
+        assert response != null;
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setPreferredLocale("es_US");
+        response = testDataProvider.CreateUser(createUserRequest, true);
+        assert response != null;
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setPreferredLocale("es-US");
+        response = testDataProvider.CreateUser(createUserRequest, true);
+        assert response != null;
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setPreferredLocale("es");
+        response = testDataProvider.CreateUser(createUserRequest, true);
+        assert response != null;
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
     }
 
     @Property(
