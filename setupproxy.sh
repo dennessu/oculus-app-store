@@ -2,10 +2,12 @@
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 root
 
-personalConfigFile=`rootdir`/apphost/config-data/src/main/resources/junbo/conf/onebox/personal.properties
+personalConfigFile=./apphost/config-data/src/main/resources/junbo/conf/onebox/personal.properties
 # append \n to eof if not exists.
+chmod +w "$personalConfigFile"
 sed -i.bak -e '$a\' "$personalConfigFile"
 if [[ -f "${personalConfigFile}.bak" ]]; then
+    chmod +w "${personalConfigFile}.bak"
     rm "${personalConfigFile}.bak"
 fi
 
@@ -40,6 +42,7 @@ else
     if [[ "$facebookProxy" == 'http://silkcloud:#Bugs4$1@127.0.0.1:13128' ]]; then
         sed -i.bak -e '/^facebook.proxy=/d' "$personalConfigFile"
         if [[ -f "${personalConfigFile}.bak" ]]; then
+            chmod +w "${personalConfigFile}.bak"
             rm "${personalConfigFile}.bak"
         fi
         echo "facebook proxy is removed"
