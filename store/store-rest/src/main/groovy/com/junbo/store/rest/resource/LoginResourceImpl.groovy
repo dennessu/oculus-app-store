@@ -223,8 +223,16 @@ class LoginResourceImpl implements LoginResource {
             return Promise.pure(null)
         }.then {
             requestValidator.validateAndGetCountry(new CountryId(request.cor))
-        }.then {
-            requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
+        }.then { Country inputCountry ->
+            return requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale)).recover { Throwable throwable ->
+                LOGGER.error("CreateUser:  Call perferredlocale, Ignore")
+                if (appErrorUtils.isAppError(throwable, ErrorCodes.Identity.LocaleNotFound)) {
+                    request.preferredLocale = inputCountry.defaultLocale.toString()
+                    return requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
+                }
+
+                throw throwable
+            }
         }.then {
             requestValidator.validateTosExists(request.tosAgreed)
         }.then {
