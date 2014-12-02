@@ -14,7 +14,6 @@ import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.identity.Identity;
-import com.sun.xml.internal.ws.developer.MemberSubmissionAddressing;
 import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
