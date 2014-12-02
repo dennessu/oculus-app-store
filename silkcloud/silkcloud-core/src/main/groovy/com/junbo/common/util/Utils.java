@@ -212,4 +212,42 @@ public class Utils {
     private interface Func<I, O> {
         O execute(I param);
     }
+
+    public static int compareCloudantRev(String rev1, String rev2) {
+        Object[] rev1Parsed = parseRev(rev1);
+        Object[] rev2Parsed = parseRev(rev2);
+
+        int rev1Num = (int)rev1Parsed[0];
+        int rev2Num = (int)rev2Parsed[0];
+        if (rev1Num != rev2Num) {
+            return rev1Num - rev2Num;
+        }
+        String rev1Hash = (String)rev1Parsed[1];
+        String rev2Hash = (String)rev2Parsed[1];
+        return rev1Hash.compareTo(rev2Hash);
+    }
+
+    private static Object[] parseRev(String rev) {
+        Object[] result = new Object[2];
+
+        if (StringUtils.isEmpty(rev)) {
+            result[0] = 0;
+            result[1] = "";
+            return result;
+        }
+
+        String[] revSplit = rev.split("-");
+        if (revSplit.length != 2) {
+            throw new RuntimeException("Unexpected rev format: " + rev);
+        }
+        int revNum;
+        try {
+            revNum = Integer.parseInt(revSplit[0]);
+        } catch (NumberFormatException ex) {
+            throw new RuntimeException("Unexpected rev format: " + rev, ex);
+        }
+        result[0] = revNum;
+        result[1] = revSplit[1];
+        return result;
+    }
 }
