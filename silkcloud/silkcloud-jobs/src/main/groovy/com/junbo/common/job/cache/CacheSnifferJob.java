@@ -7,6 +7,7 @@ package com.junbo.common.job.cache;
 
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.memcached.JunboMemcachedClient;
+import com.junbo.common.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,7 +229,7 @@ public class CacheSnifferJob implements InitializingBean {
                                 if (entity != null && entity.containsKey("_rev")) {
                                     revFound = true;
                                     String entityRev = (String)entity.get("_rev");
-                                    int compareResult = rev.compareTo(entityRev);
+                                    int compareResult = Utils.compareCloudantRev(rev, entityRev);
                                     if (compareResult == 0) {
                                         cacheIsValid = true;
                                         LOGGER.debug("[valid] {}@{}", entityKey, entityRev);

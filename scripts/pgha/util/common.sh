@@ -14,6 +14,16 @@ if [[ -z "$ENVIRONMENT" ]]; then
         exit 1
     fi
 fi
+
+# parameters overridable by env file
+# pgsql conf
+export MAX_CONNECTIONS=1200
+export SHARED_BUFFERS='128MB'
+export MAINTENANCE_WORK_MEM='16MB'
+export EFFECTIVE_CACHE_SIZE='128MB'
+export CHECKPOINT_SEGMENTS='3'
+export CHECKPOINT_COMPLETION_TARGET='0.5'
+
 ENVIRONMENT_FILE=$DIR/../env/${ENVIRONMENT}.sh
 if [[ -f $ENVIRONMENT_FILE ]]; then
     source $ENVIRONMENT_FILE
@@ -47,7 +57,6 @@ export READONLY_PGUSER='scro'
 export NEWRELIC_PGUSER='newrelic'
 export ZABBIX_PGUSER='zabbix'
 export DB_PORT=5432
-export MAX_CONNECTIONS=1200
 
 #master info
 export MASTER_DB_PORT=$DB_PORT

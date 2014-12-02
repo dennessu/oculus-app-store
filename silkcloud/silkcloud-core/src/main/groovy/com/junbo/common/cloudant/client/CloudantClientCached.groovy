@@ -5,6 +5,7 @@ import com.junbo.common.cloudant.DefaultCloudantMarshaller
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.id.CloudantId
 import com.junbo.common.memcached.JunboMemcachedClient
+import com.junbo.common.util.Utils
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.configuration.topo.DataCenters
@@ -229,7 +230,7 @@ class CloudantClientCached implements CloudantClientInternal {
                 boolean isSuccessful = false
                 if (casValue == null) {
                     isSuccessful = memcachedClient.add(getKey(dbUri, entity.cloudantId), this.expiration, value).get()
-                } else if (casValue.getValue() != null && casValue.getValue().cloudantRev >= entity.cloudantRev) {
+                } else if (casValue.getValue() != null && Utils.compareCloudantRev(casValue.getValue().cloudantRev, entity.cloudantRev) >= 0) {
                     logger.info("Entity {} rev {} already cached in memcached. Skip storing rev {}.", entity.cloudantId, casValue.value.cloudantRev, entity.cloudantRev)
                     isSuccessful = true
                 } else {
