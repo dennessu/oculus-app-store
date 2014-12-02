@@ -65,6 +65,12 @@ hot_standby = on
 max_connections = $MAX_CONNECTIONS
 archive_command = $ARCHIVE_COMMAND
 port = $MASTER_DB_PORT
+
+shared_buffers = $SHARED_BUFFERS
+maintenance_work_mem = $MAINTENANCE_WORK_MEM
+effective_cache_size = $EFFECTIVE_CACHE_SIZE
+checkpoint_segments = $CHECKPOINT_SEGMENTS
+checkpoint_completion_target = $CHECKPOINT_COMPLETION_TARGET
 EOF
 
 echo "[SETUP][MASTER] start master database"
