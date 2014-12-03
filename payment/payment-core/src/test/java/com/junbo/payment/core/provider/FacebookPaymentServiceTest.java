@@ -1,6 +1,8 @@
 package com.junbo.payment.core.provider;
 
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
+import com.junbo.payment.clientproxy.FacebookGatewayService;
+import com.junbo.payment.clientproxy.facebook.FacebookCreditCardTokenRequest;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
@@ -33,6 +35,8 @@ public class FacebookPaymentServiceTest extends BaseTest {
     private FacebookPaymentUtils facebookPaymentUtils;
     private PaymentInstrumentService mockFBPiService;
     private PaymentTransactionService mockFBPaymentService;
+    @Autowired
+    private FacebookGatewayService facebookGatewayService;
 
     @Autowired
     public void setMockFBPiService(@Qualifier("mockFBPaymentInstrumentService")PaymentInstrumentService mockFBPiService) {
@@ -57,18 +61,23 @@ public class FacebookPaymentServiceTest extends BaseTest {
         Assert.assertFalse(accessToken.contains("access_token"));
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testAuthCaptureFB() throws ExecutionException, InterruptedException {
         final PaymentInstrument request = buildPIRequest();
         //hard code user to avoid create too many test users
         request.setUserId(83886144L);
         PaymentInstrument result = null;
-        request.setAccountNumber("4111117711552927");
+        FacebookCreditCardTokenRequest ccTokenRequest = new FacebookCreditCardTokenRequest();
+        ccTokenRequest.setCreditCardNumber("4111117711552927");
+        ccTokenRequest.setCsc("123");
+        String ccToken = facebookGatewayService.getCCToken(ccTokenRequest).get();
+        request.setAccountNumber(ccToken);
         request.setBillingAddressId(null);
         request.setPhoneNumber(null);
         result = addPI(request);
         Assert.assertNotNull(result);
-        Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.piExternalToken);
+        Assert.assertNotNull(result.getExternalToken());
+        Assert.assertNotEquals("", result.getExternalToken());
         PaymentTransaction transaction = buildPaymentTransaction(request);
         PaymentTransaction paymentResult = mockFBPaymentService.authorize(transaction).get();
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.AUTHORIZED.toString());
@@ -89,12 +98,17 @@ public class FacebookPaymentServiceTest extends BaseTest {
         //hard code user to avoid create too many test users
         request.setUserId(83886144L);
         PaymentInstrument result = null;
-        request.setAccountNumber("eyJjYyI6NDExMTExNzcxMTU1MjkyNywiY3Z2IjoxMjMsInNhbHQiOjQyODg2MTU2NjExODgyNTA2MjN9");
+        FacebookCreditCardTokenRequest ccTokenRequest = new FacebookCreditCardTokenRequest();
+        ccTokenRequest.setCreditCardNumber("4111117711552927");
+        ccTokenRequest.setCsc("123");
+        String ccToken = facebookGatewayService.getCCToken(ccTokenRequest).get();
+        request.setAccountNumber(ccToken);
         request.setBillingAddressId(null);
         request.setPhoneNumber(null);
         result = addPI(request);
         Assert.assertNotNull(result);
-        Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.piExternalToken);
+        Assert.assertNotNull(result.getExternalToken());
+        Assert.assertNotEquals("", result.getExternalToken());
         PaymentTransaction transaction = buildPaymentTransaction(request);
         PaymentTransaction paymentResult = mockFBPaymentService.authorize(transaction).get();
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.AUTHORIZED.toString());

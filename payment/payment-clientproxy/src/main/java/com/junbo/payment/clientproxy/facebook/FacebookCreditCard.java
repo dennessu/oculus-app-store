@@ -7,6 +7,7 @@
 package com.junbo.payment.clientproxy.facebook;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.ws.rs.QueryParam;
@@ -14,6 +15,7 @@ import javax.ws.rs.QueryParam;
 /**
  * Facebook CreditCard.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacebookCreditCard {
     private String id;
     @QueryParam("token")
@@ -38,17 +40,17 @@ public class FacebookCreditCard {
     private String payerIp;
 
     @JsonProperty("payment_account")
-    private String paymentAccountId;
-    @JsonProperty("creditCardNumber_last4")
+    private FacebookPaymentAccount paymentAccount;
+    @JsonProperty("last4")
     private String last4;
-    @JsonProperty("creditCardNumber_first6")
+    @JsonProperty("first6")
     private String first6;
-    @JsonProperty("created_time")
-    private String createdTime;
     @JsonProperty("last_payment_time")
     private String lastPaymentTime;
     @JsonProperty("is_enabled")
     private Boolean isEnabled;
+    @JsonProperty("time_created")
+    private String timeCreated;
     private String error;
 
 
@@ -113,12 +115,12 @@ public class FacebookCreditCard {
         this.payerIp = payerIp;
     }
 
-    public String getPaymentAccountId() {
-        return paymentAccountId;
+    public FacebookPaymentAccount getPaymentAccount() {
+        return paymentAccount;
     }
-    @JsonIgnore
-    public void setPaymentAccountId(String paymentAccountId) {
-        this.paymentAccountId = paymentAccountId;
+
+    public void setPaymentAccount(FacebookPaymentAccount paymentAccount) {
+        this.paymentAccount = paymentAccount;
     }
 
     public String getLast4() {
@@ -137,14 +139,6 @@ public class FacebookCreditCard {
         this.first6 = first6;
     }
 
-    public String getCreatedTime() {
-        return createdTime;
-    }
-    @JsonIgnore
-    public void setCreatedTime(String createdTime) {
-        this.createdTime = createdTime;
-    }
-
     public String getLastPaymentTime() {
         return lastPaymentTime;
     }
@@ -161,12 +155,33 @@ public class FacebookCreditCard {
         this.isEnabled = isEnabled;
     }
 
+    public String getTimeCreated() {
+        return timeCreated;
+    }
+    @JsonIgnore
+    public void setTimeCreated(String timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
     public String getError() {
         return error;
     }
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public String toBatchString(){
+        String concat = "&";
+        StringBuilder sb = new StringBuilder();
+        sb.append("expiry_month=" + this.expiryMonth + concat);
+        sb.append("expiry_year="+ this.expiryYear + concat);
+        sb.append("token=" + this.token + concat);
+        sb.append("card_holder_name=" + this.cardHolderName + concat);
+        if(billingAddress != null){
+            sb.append("billing_address=" + this.billingAddress.toBatchString());
+        }
+        return sb.toString();
     }
 }
 

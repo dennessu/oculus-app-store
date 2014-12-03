@@ -7,7 +7,7 @@
 package com.junbo.payment.core.provider.facebook;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.payment.clientproxy.facebook.FacebookOauthApi;
+import com.junbo.payment.clientproxy.FacebookGatewayService;
 import com.junbo.payment.clientproxy.facebook.FacebookTokenRequest;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 public class FacebookPaymentUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(FacebookPaymentUtils.class);
     private String token;
-    private FacebookOauthApi facebookPaymentApi;
+    private FacebookGatewayService facebookGatewayService;
     private String oculusAppId;
     private String oculusAppSecret;
 
@@ -31,15 +31,14 @@ public class FacebookPaymentUtils {
         FacebookTokenRequest tokenRequest = new FacebookTokenRequest();
         tokenRequest.setClientId(oculusAppId);
         tokenRequest.setClientSecret(oculusAppSecret);
-        return facebookPaymentApi.getAccessToken(tokenRequest).then(new Promise.Func<String, Promise<String>>() {
+        return facebookGatewayService.getAccessToken(tokenRequest).then(new Promise.Func<String, Promise<String>>() {
             @Override
             public Promise<String> apply(String s) {
                 if(CommonUtil.isNullOrEmpty(s)){
                     LOGGER.error("unable to get the access token for facebook graph API");
                     throw AppServerExceptions.INSTANCE.unAuthorized("facebook graph API").exception();
                 }
-                token = s.replace("access_token=", "");
-                return Promise.pure(token);
+                return Promise.pure(s);
             }
         });
     }
@@ -52,8 +51,8 @@ public class FacebookPaymentUtils {
         this.oculusAppSecret = oculusAppSecret;
     }
 
-    public void setFacebookPaymentApi(FacebookOauthApi facebookPaymentApi) {
-        this.facebookPaymentApi = facebookPaymentApi;
+    public void setFacebookGatewayService(FacebookGatewayService facebookGatewayService) {
+        this.facebookGatewayService = facebookGatewayService;
     }
 
     public void setOculusAppId(String oculusAppId) {

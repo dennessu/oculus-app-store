@@ -4,12 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.clientproxy.facebook;
+package com.junbo.oauth.common.cache;
 
 /**
- * Facebook Item Type.
+ * Callable.
  */
-public enum FacebookItemType {
-    open_graph_product,
-    oculus_launch_v1
+public interface Callable<D> {
+    D execute();
 }

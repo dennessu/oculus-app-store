@@ -66,7 +66,11 @@ class ChallengeHelperImpl implements ChallengeHelper {
             }
 
             List<Tos> tosList = toses.items.sort { Tos item ->
-                return item.version
+                try {
+                    return Double.parseDouble(item.version)
+                } catch (NumberFormatException ex) {
+                    return Double.valueOf(0)
+                }
             }
 
             Tos tos = tosList.reverse().find { Tos tos ->

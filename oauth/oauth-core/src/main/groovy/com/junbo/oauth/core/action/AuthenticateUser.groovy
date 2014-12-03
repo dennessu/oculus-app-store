@@ -145,6 +145,9 @@ class AuthenticateUser implements Action {
                 return Promise.pure(new ActionResult('captchaRequired'))
             }
 
+            def user = userService.getUser(loginAttempt.getUserId()).get()
+            contextWrapper.user = user
+
             // Create the LoginState and save it in the ActionContext
             def loginState = new LoginState(
                     userId: loginAttempt.userId.value,
