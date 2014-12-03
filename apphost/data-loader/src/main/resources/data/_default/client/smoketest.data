@@ -13,5 +13,11 @@
   "default_logout_redirect_uri" : "http://localhost",
   "need_consent" : false,
   "debug_enabled" : true,
-  "internal" : true
+  "internal" : true,
+  "required_tos" : [
+    {
+      "type": "TOS",
+      "title": "end user tos"
+    }
+  ]
 }

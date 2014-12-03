@@ -12,6 +12,9 @@ dependencies {
     compile(libraries.spring_orm)
     compile(libraries.spring_beans)
     compile(libraries.common_io)
+    compile(libraries.ehcache)
+    compile(libraries.kryo)
+    compile(libraries.spring_context_support)
 
     compile junboProject(':silkcloud-core')
 }

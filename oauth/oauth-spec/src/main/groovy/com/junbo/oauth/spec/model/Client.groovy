@@ -83,6 +83,14 @@ class Client extends ResourceMeta<String> {
     @JsonProperty('allow_partial_scopes')
     Boolean allowPartialScopes = false
 
+    @JsonProperty('required_tos')
+    List<RequiredTos> requiredTos
+
+    public static class RequiredTos {
+        String type
+        String title
+    }
+
     @Override
     String getId() {
         return clientId
