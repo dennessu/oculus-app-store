@@ -187,7 +187,8 @@ class OAuthTests(ut.TestBase):
             'scope': 'identity openid',
             'redirect_uri': ut.test_redirect_uri,
             'state': 'testState',
-            'nonce': 'testNonce'
+            'nonce': 'testNonce',
+            'prompt': 'none'
         }, headers = {
             'oculus-internal': 'true'
         })
