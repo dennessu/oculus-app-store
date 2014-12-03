@@ -417,6 +417,11 @@ class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    Promise<User> getUser(UserId userId) {
+        return userResource.get(userId, new UserGetOptions())
+    }
+
     private Promise<String> getDefaultUserEmail(User user) {
         if (user == null) {
             throw AppErrors.INSTANCE.errorCallingIdentity().exception()

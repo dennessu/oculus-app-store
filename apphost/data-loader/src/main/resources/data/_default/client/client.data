@@ -15,5 +15,11 @@
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "CLIENT_CREDENTIALS", "PASSWORD", "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
   "id_token_issuer" : "www.junbo.com",
-  "need_consent" : false
+  "need_consent" : false,
+  "required_tos" : [
+    {
+      "type": "TOS",
+      "title": "end user tos"
+    }
+  ]
 }

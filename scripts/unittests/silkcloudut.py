@@ -123,8 +123,17 @@ def curlRedirect(method, baseUrl, url = None, query = None, headers = None, body
     return locations[0]
 
 def curlForm(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
-    resp = curlFormRaw(method, baseUrl, url, query, headers, data, raiseOnError)
-    return json.loads(resp)
+    body, resp = curlFormRaw(method, baseUrl, url, query, headers, data, raiseOnError)
+    return json.loads(body)
+
+def curlFormRedirect(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
+    body, resp = curlFormRaw(method, baseUrl, url, query, headers, data, raiseOnError)
+    if resp.status < 300:
+        raise Exception('Expected redirect. Actual: %s %s in %s %s\n%s' % (resp.status, resp.reason, method, url, body))
+    locations = [v for k, v in resp.getheaders() if k.lower() == 'location']
+    if len(locations) != 1:
+        raise Exception('Unexpected location header count: %s, locations: %s' % (len(locations), locations))
+    return locations[0]
 
 def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
     if data is None: data = {}
@@ -136,7 +145,7 @@ def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data =
         headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
 
     body = urlencode(data)
-    return curl(method, baseUrl, url, query, headers, body, raiseOnError)
+    return curlRaw(method, baseUrl, url, query, headers, body, raiseOnError)
 
 def curlJson(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
     if headers is None:
@@ -239,7 +248,7 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
                 verbose("[resp][profile] " + (" " * indent * 4) + p)
                 if p == "[": indent += 1
             verbose("")
-        
+
         if resp.status >= 400 and raiseOnError:
             raise Exception('%s %s in %s %s\n%s' % (resp.status, resp.reason, method, url, body))
 

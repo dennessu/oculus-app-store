@@ -42,6 +42,10 @@ class RegisterView extends AbstractView {
             modelMap['recaptchaPublicKey'] = recaptchaPublicKey
         }
         
+        if (contextWrapper.client.requiredTos != null) {
+            modelMap['tosRequired'] = contextWrapper.client.requiredTos
+        }
+        
         modelMap.putAll(contextWrapper.extraParameterMap)
 
         def model = new ViewModel(

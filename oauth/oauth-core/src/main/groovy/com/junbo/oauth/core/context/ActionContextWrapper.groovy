@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.context
 
+import com.junbo.common.id.TosId
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserTFA
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -62,6 +63,7 @@ class ActionContextWrapper {
     public static final String USER_DEFAULT_EMAIL = 'default_email'
     public static final String EMAIL_VERIFY_LINK = 'email_verify_link'
     public static final String OVERRIDE_EXPIRATION = 'override_expiration'
+    public static final String TOS_CHALLENGE = 'tos_challenge'
 
     @Delegate
     private final ActionContext actionContext
@@ -431,5 +433,13 @@ class ActionContextWrapper {
 
     void setOverrideExpiration(Long overrideExpiration) {
         actionContext.flowScope[OVERRIDE_EXPIRATION] = overrideExpiration
+    }
+
+    Set<String> getTosChallenge() {
+        return actionContext.flowScope[TOS_CHALLENGE] as Set<String>
+    }
+
+    void setTosChallenge(Set<String> tosChallenge) {
+        actionContext.flowScope[TOS_CHALLENGE] = tosChallenge
     }
 }

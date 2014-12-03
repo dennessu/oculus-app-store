@@ -142,6 +142,6 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
         def startKey = [title, type, state, country.toString()]
         def endKey = [title, type, state, country.toString()]
         return queryView('by_title_type_state_country', startKey.toArray(new String()), endKey.toArray(new String()), false, limit,
-                offset, false)
+                offset, true)
     }
 }
