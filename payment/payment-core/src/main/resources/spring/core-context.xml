@@ -62,7 +62,7 @@
     </bean>
 
     <bean id="facebookPaymentUtil" class="com.junbo.payment.core.provider.facebook.FacebookPaymentUtils">
-        <property name="facebookPaymentApi" ref="facebookOauthClient"/>
+        <property name="facebookGatewayService" ref="facebookGatewayService"/>
         <property name="oculusAppId" value="${payment.provider.facebook.appid}"/>
         <property name="oculusAppSecret" value="${payment.provider.facebook.appsecret}"/>
     </bean>
@@ -71,7 +71,7 @@
         <property name="facebookPaymentUtils" ref="facebookPaymentUtil"/>
         <property name="oculusAppId" value="${payment.provider.facebook.appid}"/>
         <property name="env" value="${payment.provider.facebook.env}"/>
-        <property name="facebookPaymentApi" ref="facebookPaymentClient"/>
+        <property name="facebookGatewayService" ref="facebookGatewayService"/>
         <property name="personalInfoFacade" ref="personalInfoFacade"/>
         <property name="piRepository" ref="paymentInstrumentRepositoryFacade"/>
     </bean>

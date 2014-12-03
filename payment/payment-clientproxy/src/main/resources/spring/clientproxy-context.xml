@@ -79,8 +79,33 @@
         <property name="proxyServer" value="${facebook.proxy:#{null}}" />
     </bean>
 
+    <bean id="facebookCCTokenClient" class="com.junbo.payment.clientproxy.facebook.proxy.FacebookCreditCardTokenApiClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${payment.clientproxy.facebook.cctoken.url}"/>
+        <property name="transcoder" ref="rawDataTranscoder"/>
+        <property name="exceptionHandler" ref="facebookPaymentException"/>
+        <property name="proxyServer" value="${facebook.proxy:#{null}}" />
+    </bean>
+
+    <bean id="facebookBatchApiClient" class="com.junbo.payment.clientproxy.facebook.proxy.FacebookBatchApiClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${payment.clientproxy.facebook.payment.url}"/>
+        <property name="transcoder" ref="rawDataTranscoder"/>
+        <property name="exceptionHandler" ref="facebookPaymentException"/>
+        <property name="proxyServer" value="${facebook.proxy:#{null}}" />
+    </bean>
+
+
     <bean id="mockFacebookPaymentClient" class="com.junbo.payment.clientproxy.impl.MockFacebookPaymentApiImpl">
         <property name="facebookPaymentApi" ref="facebookPaymentClient" />
+    </bean>
+
+
+    <bean id="facebookGatewayService" class="com.junbo.payment.clientproxy.impl.FacebookGatewayServiceImpl">
+        <property name="facebookPaymentApi" ref="facebookPaymentClient" />
+        <property name="facebookCCTokenApi" ref="facebookCCTokenClient"/>
+        <property name="facebookOauthApi" ref="facebookOauthClient"/>
+        <property name="facebookBatchApi" ref="facebookBatchApiClient"/>
     </bean>
 
 </beans>

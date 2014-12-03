@@ -9,6 +9,7 @@ package com.junbo.payment.clientproxy.facebook;
 import com.junbo.langur.core.client.ExceptionHandler;
 import com.junbo.langur.core.client.MessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.payment.common.CommonUtil;
 import com.ning.http.client.Response;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -30,6 +31,9 @@ public class FacebookPaymentExceptionHandler  implements ExceptionHandler {
     @Override
     public void handleExceptionResponse(Response response) {
         try {
+            if(CommonUtil.isNullOrEmpty(response.getResponseBody())){
+                throw new FacebookPaymentException(new FacebookPaymentError(new FacebookPaymentError.Error("empty response", null, 0)));
+            }
             FacebookPaymentError error = (FacebookPaymentError)messageTranscoder.<FacebookPaymentError>decode(
                     new TypeReference<FacebookPaymentError>() { },response.getResponseBody());
             throw new FacebookPaymentException(error);
