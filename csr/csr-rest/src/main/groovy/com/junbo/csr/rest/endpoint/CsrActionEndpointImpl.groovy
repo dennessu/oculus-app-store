@@ -11,6 +11,8 @@ import com.junbo.csr.spec.model.SearchForm
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 
 /**
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class CsrActionEndpointImpl implements CsrActionEndpoint {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CsrActionEndpointImpl)
     private IdentityService identityService
 
     @Required
@@ -38,7 +41,13 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
                 results.items.add(user)
                 break
             case SearchType.USERID:
-                Long userId = IdFormatter.decodeId(UserId, searchForm.value)
+                Long userId;
+                try {
+                    userId = IdFormatter.decodeId(UserId, searchForm.value)
+                } catch (Exception e) {
+                    LOGGER.error('input userId is not correct format')
+                    throw AppErrors.INSTANCE.invalidRequest().exception()
+                }
                 def user = identityService.getUserById(new UserId(userId)).get()
                 results.items.add(user)
                 break
