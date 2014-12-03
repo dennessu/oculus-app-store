@@ -657,7 +657,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         Tos newTos = new Tos();
         newTos.setTitle(tos.getTitle());
         newTos.setState(status);
-        newTos.setVersion(tos.getVersion() + ".1");
+        newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
         newTos.setCountries(tos.getCountries());
         newTos.setType(tos.getType());
         newTos.setContent(tos.getContent());
