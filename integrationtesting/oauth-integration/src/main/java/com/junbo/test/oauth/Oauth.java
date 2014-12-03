@@ -17,6 +17,7 @@ import com.junbo.test.identity.Identity;
 import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
@@ -98,7 +99,8 @@ public class Oauth {
                                                   Boolean addInternalHeader, Boolean enableRedirect) throws Exception {
         HttpPost httpPost = new HttpPost(requestURI);
         if (addInternalHeader) httpPost.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
-        httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
+        httpPost.setConfig(RequestConfig.custom()
+                .setRedirectsEnabled(enableRedirect).setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build());
         httpPost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
         return HttpclientHelper.Execute(httpPost);
     }
@@ -111,7 +113,8 @@ public class Oauth {
                                                  Boolean addInternalHeader, Boolean enableRedirect) throws Exception {
         HttpPut httpPut = new HttpPut(requestURI);
         if (addInternalHeader) httpPut.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
-        httpPut.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
+        httpPut.setConfig(RequestConfig.custom()
+                .setRedirectsEnabled(enableRedirect).setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build());
         httpPut.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
         return HttpclientHelper.Execute(httpPut);
     }
@@ -124,7 +127,8 @@ public class Oauth {
                                                  Boolean addInternalHeader, Boolean enableRedirect) throws Exception {
         HttpGet httpGet = new HttpGet(requestURI);
         if (addInternalHeader) httpGet.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
-        httpGet.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
+        httpGet.setConfig(RequestConfig.custom()
+                .setRedirectsEnabled(enableRedirect).setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build());
         if (nvpHeaders != null && !nvpHeaders.isEmpty()) {
             for (NameValuePair nvp : nvpHeaders) {
                 httpGet.addHeader(nvp.getName(), nvp.getValue());
@@ -141,7 +145,8 @@ public class Oauth {
             throws Exception {
         HttpDelete httpDelete = new HttpDelete(requestURI);
         if (addInternalHeader) httpDelete.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
-        httpDelete.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
+        httpDelete.setConfig(RequestConfig.custom()
+                .setRedirectsEnabled(enableRedirect).setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build());
         HttpclientHelper.Execute(httpDelete);
     }
 
