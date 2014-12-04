@@ -1,5 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PITypeId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -36,7 +37,7 @@ class PITypeResourceImpl implements PITypeResource {
     @Override
     Promise<PIType> create(PIType piType) {
         if (piType == null) {
-            throw new IllegalArgumentException('piType is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         piType = piTypeFilter.filterForCreate(piType)
@@ -58,11 +59,11 @@ class PITypeResourceImpl implements PITypeResource {
     @Override
     Promise<PIType> put(PITypeId piTypeId, PIType piType) {
         if (piTypeId == null) {
-            throw new IllegalArgumentException('piTypeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (piType == null) {
-            throw new IllegalArgumentException('piType is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return piTypeService.get(piTypeId).then { PIType oldPIType ->
@@ -84,11 +85,11 @@ class PITypeResourceImpl implements PITypeResource {
     @Override
     Promise<PIType> patch(PITypeId piTypeId, PIType piType) {
         if (piTypeId == null) {
-            throw new IllegalArgumentException('piTypeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (piType == null) {
-            throw new IllegalArgumentException('piType is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return piTypeService.get(piTypeId).then { PIType oldPIType ->
@@ -109,6 +110,10 @@ class PITypeResourceImpl implements PITypeResource {
 
     @Override
     Promise<PIType> get(PITypeId piTypeId, PITypeGetOptions getOptions) {
+        if (piTypeId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
+
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -150,8 +155,8 @@ class PITypeResourceImpl implements PITypeResource {
 
     @Override
     Promise<Response> delete(PITypeId piTypeId) {
-        if (piTypeId != null) {
-            throw new IllegalArgumentException('piTypeId is null')
+        if (piTypeId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return piTypeValidator.validateForGet(piTypeId).then {

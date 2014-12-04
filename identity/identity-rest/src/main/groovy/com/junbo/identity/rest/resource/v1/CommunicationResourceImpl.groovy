@@ -2,6 +2,7 @@ package com.junbo.identity.rest.resource.v1
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
@@ -50,7 +51,7 @@ class CommunicationResourceImpl implements CommunicationResource {
     @Override
     Promise<Communication> create(Communication communication) {
         if (communication == null) {
-            throw new IllegalArgumentException('communication is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         communication = communicationFilter.filterForCreate(communication)
@@ -68,11 +69,11 @@ class CommunicationResourceImpl implements CommunicationResource {
     @Override
     Promise<Communication> put(CommunicationId communicationId, Communication communication) {
         if (communicationId == null) {
-            throw new IllegalArgumentException('communicationId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (communication == null) {
-            throw new IllegalArgumentException('communication is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return communicationService.get(communicationId).then { Communication oldCommunication ->
@@ -94,11 +95,11 @@ class CommunicationResourceImpl implements CommunicationResource {
     @Override
     Promise<Communication> patch(CommunicationId communicationId, Communication communication) {
         if (communicationId == null) {
-            throw new IllegalArgumentException('communicationId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (communication == null) {
-            throw new IllegalArgumentException('communication is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return communicationService.get(communicationId).then { Communication oldCommunication ->
@@ -158,7 +159,7 @@ class CommunicationResourceImpl implements CommunicationResource {
     @Override
     Promise<Void> delete(CommunicationId communicationId) {
         if (communicationId == null) {
-            throw new IllegalArgumentException('communicationId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return communicationValidator.validateForGet(communicationId).then { Communication communication ->

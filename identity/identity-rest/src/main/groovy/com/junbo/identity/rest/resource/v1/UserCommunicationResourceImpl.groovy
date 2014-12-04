@@ -48,7 +48,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     @Override
     Promise<UserCommunication> create(UserCommunication userCommunication) {
         if (userCommunication == null) {
-            throw new IllegalArgumentException('userCommunication is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = authorizeCallbackFactory.create(userCommunication.userId)
@@ -97,11 +97,11 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     @Override
     Promise<UserCommunication> patch(UserCommunicationId userCommunicationId, UserCommunication userCommunication) {
         if (userCommunicationId == null) {
-            throw new IllegalArgumentException('userCommunicationId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (userCommunication == null) {
-            throw new IllegalArgumentException('userCommunication is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userCommunicationService.get(userCommunicationId).then { UserCommunication oldUserOptin ->
@@ -132,11 +132,11 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     @Override
     Promise<UserCommunication> put(UserCommunicationId userCommunicationId, UserCommunication userCommunication) {
         if (userCommunicationId == null) {
-            throw new IllegalArgumentException('userCommunicationId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (userCommunication == null) {
-            throw new IllegalArgumentException('userCommunication is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userCommunicationService.get(userCommunicationId).then { UserCommunication oldUserOptin ->

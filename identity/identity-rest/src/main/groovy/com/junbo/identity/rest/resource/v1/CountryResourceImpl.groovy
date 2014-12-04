@@ -2,6 +2,7 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CountryFilter
@@ -50,7 +51,7 @@ class CountryResourceImpl implements CountryResource {
     @Override
     Promise<Country> create(Country country) {
         if (country == null) {
-            throw new IllegalArgumentException('country is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         country = countryFilter.filterForCreate(country)
@@ -68,11 +69,11 @@ class CountryResourceImpl implements CountryResource {
     @Override
     Promise<Country> put(CountryId countryId, Country country) {
         if (countryId == null) {
-            throw new IllegalArgumentException('countryId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (country == null) {
-            throw new IllegalArgumentException('country is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return countryService.get(countryId).then { Country oldCountry ->
@@ -94,11 +95,11 @@ class CountryResourceImpl implements CountryResource {
     @Override
     Promise<Country> patch(CountryId countryId, Country country) {
         if (countryId == null) {
-            throw new IllegalArgumentException('countryId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (country == null) {
-            throw new IllegalArgumentException('country is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return countryService.get(countryId).then { Country oldCountry ->
@@ -172,7 +173,7 @@ class CountryResourceImpl implements CountryResource {
     @Override
     Promise<Response> delete(CountryId countryId) {
         if (countryId == null) {
-            throw new IllegalArgumentException('countryId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return countryValidator.validateForGet(countryId).then {

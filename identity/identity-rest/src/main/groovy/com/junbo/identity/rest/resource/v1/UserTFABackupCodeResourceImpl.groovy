@@ -49,11 +49,11 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     @Override
     Promise<UserTFABackupCode> create(UserId userId, UserTFABackupCode userTFABackupCode) {
         if (userTFABackupCode == null) {
-            throw new IllegalArgumentException('userTFABackupCode is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -83,7 +83,10 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
         }
 
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+        if (userTFABackupCodeId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFABackupCodeId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -106,15 +109,15 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     Promise<UserTFABackupCode> patch(UserId userId, UserTFABackupCodeId userTFABackupCodeId,
                                       UserTFABackupCode userTFABackupCode) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFABackupCodeId == null) {
-            throw new IllegalArgumentException('userTFABackupCodeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFABackupCodeId').exception()
         }
 
         if (userTFABackupCode == null) {
-            throw new IllegalArgumentException('userTFABackupCode is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -146,15 +149,15 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     Promise<UserTFABackupCode> put(UserId userId, UserTFABackupCodeId userTFABackupCodeId,
                                     UserTFABackupCode userTFABackupCode) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFABackupCodeId == null) {
-            throw new IllegalArgumentException('userTFABackupCodeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFABackupCodeId').exception()
         }
 
         if (userTFABackupCode == null) {
-            throw new IllegalArgumentException('userTFABackupCode is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -184,11 +187,11 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     @Override
     Promise<Void> delete(UserId userId, UserTFABackupCodeId userTFABackupCodeId) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFABackupCodeId == null) {
-            throw new IllegalArgumentException('userTFABackupCodeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFABackupCodeId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -208,7 +211,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     @Override
     Promise<Results<UserTFABackupCode>> list(UserId userId, UserTFABackupCodeListOptions listOptions) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (listOptions == null) {

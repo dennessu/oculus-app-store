@@ -2,6 +2,7 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CurrencyFilter
@@ -49,7 +50,7 @@ class CurrencyResourceImpl implements CurrencyResource {
     @Override
     Promise<Currency> create(Currency currency) {
         if (currency == null) {
-            throw new IllegalArgumentException('country is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         currency = currencyFilter.filterForCreate(currency)
@@ -67,11 +68,11 @@ class CurrencyResourceImpl implements CurrencyResource {
     @Override
     Promise<Currency> put(CurrencyId currencyId, Currency currency) {
         if (currencyId == null) {
-            throw new IllegalArgumentException('currencyId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (currency == null) {
-            throw new IllegalArgumentException('currency is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return currencyService.get(currencyId).then { Currency oldCurrency ->
@@ -93,11 +94,11 @@ class CurrencyResourceImpl implements CurrencyResource {
     @Override
     Promise<Currency> patch(CurrencyId currencyId, Currency currency) {
         if (currencyId == null) {
-            throw new IllegalArgumentException('currencyId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (currency == null) {
-            throw new IllegalArgumentException('currency is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return currencyService.get(currencyId).then { Currency oldCurrency ->
@@ -157,7 +158,7 @@ class CurrencyResourceImpl implements CurrencyResource {
     @Override
     Promise<Response> delete(CurrencyId currencyId) {
         if (currencyId == null) {
-            throw new IllegalArgumentException('currencyId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
         return currencyValidator.validateForGet(currencyId).then {
             return currencyService.delete(currencyId).then {
