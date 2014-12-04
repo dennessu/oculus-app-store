@@ -1,6 +1,7 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.LocaleFilter
@@ -42,7 +43,7 @@ class LocaleResourceImpl implements LocaleResource {
     @Override
     Promise<Locale> create(Locale locale) {
         if (locale == null) {
-            throw new IllegalArgumentException('locale is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         locale = localeFilter.filterForCreate(locale)
@@ -59,11 +60,11 @@ class LocaleResourceImpl implements LocaleResource {
     @Override
     Promise<Locale> put(LocaleId localeId, Locale locale) {
         if (localeId == null) {
-            throw new IllegalArgumentException('localeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (locale == null) {
-            throw new IllegalArgumentException('locale is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return localeService.get(localeId).then { Locale oldLocale ->
@@ -85,11 +86,11 @@ class LocaleResourceImpl implements LocaleResource {
     @Override
     Promise<Locale> patch(LocaleId localeId, Locale locale) {
         if (localeId == null) {
-            throw new IllegalArgumentException('localeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (locale == null) {
-            throw new IllegalArgumentException('locale is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return localeService.get(localeId).then { Locale oldLocale ->
@@ -110,6 +111,9 @@ class LocaleResourceImpl implements LocaleResource {
 
     @Override
     Promise<Locale> get(LocaleId localeId, LocaleGetOptions getOptions) {
+        if (localeId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -160,7 +164,7 @@ class LocaleResourceImpl implements LocaleResource {
     @Override
     Promise<Response> delete(LocaleId localeId) {
         if (localeId == null) {
-            throw new IllegalArgumentException('localeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return localeValidator.validateForGet(localeId).then {

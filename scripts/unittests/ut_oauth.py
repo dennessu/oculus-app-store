@@ -187,7 +187,8 @@ class OAuthTests(ut.TestBase):
             'scope': 'identity openid',
             'redirect_uri': ut.test_redirect_uri,
             'state': 'testState',
-            'nonce': 'testNonce'
+            'nonce': 'testNonce',
+            'prompt': 'none'
         }, headers = {
             'oculus-internal': 'true'
         })
@@ -1051,6 +1052,18 @@ class OAuthTests(ut.TestBase):
             'oculus-end-user-ip': '1.2.3.4'
         }, raiseOnError=False)
         assert error['details'][0]['reason'] == 'Conversation Ip Violation'
+        pass
+
+    def testInvalidRedirectUri(self, scope = 'identity'):
+        ut.cookies.clear()
+        error = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': scope,
+            'redirect_uri': 'https://.google.c.om.oculus.com'
+        }, raiseOnError=False)
+        assert error['details'][0]['field'] == 'redirect_uri'
+        assert error['details'][0]['reason'] == 'Field value is invalid.'
         pass
 
     def testConversationWithInvalidEvent(self, scope = 'identity'):

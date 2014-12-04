@@ -53,7 +53,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
     @Override
     Promise<UserGroup> create(UserGroup userGroup) {
         if (userGroup == null) {
-            throw new IllegalArgumentException('userGroup is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userGroup = userGroupFilter.filterForCreate(userGroup)
@@ -99,11 +99,11 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
     @Override
     Promise<UserGroup> patch(UserGroupId userGroupId, UserGroup userGroup) {
         if (userGroupId == null) {
-            throw new IllegalArgumentException('userGroupId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (userGroup == null) {
-            throw new IllegalArgumentException('userGroup is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userGroupService.get(userGroupId).then { UserGroup oldUserGroup ->
@@ -132,11 +132,11 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
     @Override
     Promise<UserGroup> put(UserGroupId userGroupId, UserGroup userGroup) {
         if (userGroupId == null) {
-            throw new IllegalArgumentException('userGroupId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (userGroup == null) {
-            throw new IllegalArgumentException('userGroup is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userGroupService.get(userGroupId).then { UserGroup oldUserGroup ->

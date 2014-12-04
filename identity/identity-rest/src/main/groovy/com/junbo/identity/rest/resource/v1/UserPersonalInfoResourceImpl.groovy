@@ -53,7 +53,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
     @Override
     Promise<UserPersonalInfo> create(UserPersonalInfo userPii) {
         if (userPii == null) {
-            throw new IllegalArgumentException('userPii is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPii)
@@ -79,7 +79,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
     @Override
     Promise<UserPersonalInfo> get(UserPersonalInfoId userPiiId, UserPersonalInfoGetOptions getOptions) {
         if (userPiiId == null) {
-            throw new IllegalArgumentException('userPiiId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (getOptions == null) {
@@ -103,11 +103,11 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
     @Override
     Promise<UserPersonalInfo> patch(UserPersonalInfoId userPiiId, UserPersonalInfo userPersonalInfo) {
         if (userPiiId == null) {
-            throw new IllegalArgumentException('userPiiId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (userPersonalInfo == null) {
-            throw new IllegalArgumentException('userPersonalInfo is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userPersonalInfo = filterUserPersonalInfo(userPersonalInfo)
@@ -139,11 +139,11 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
     @Override
     Promise<UserPersonalInfo> put(UserPersonalInfoId userPiiId, UserPersonalInfo userPii) {
         if (userPiiId == null) {
-            throw new IllegalArgumentException('userPiiId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (userPii == null) {
-            throw new IllegalArgumentException('userPii is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userPii = filterUserPersonalInfo(userPii)

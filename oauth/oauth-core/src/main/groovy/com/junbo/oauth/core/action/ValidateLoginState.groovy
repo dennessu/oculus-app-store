@@ -56,26 +56,26 @@ class ValidateLoginState implements Action {
             if (loginState == null) {
                 return Promise.pure(new ActionResult('loginRequired'))
             }
+        }
 
-            def user = contextWrapper.user
-            def client = contextWrapper.client
-            assert user != null : 'user is null'
-            assert client != null : 'client is null'
+        def user = contextWrapper.user
+        def client = contextWrapper.client
+        assert user != null : 'user is null'
+        assert client != null : 'client is null'
 
-            Set<TosId> tosChallenge = tosUtil.getRequiredTos(client, user)
+        Set<TosId> tosChallenge = tosUtil.getRequiredTos(client, user)
 
-            Set<String> tosChallengeStr = []
-            tosChallenge.each { TosId tosId ->
-                tosChallengeStr.add(tosId.value)
-            }
-            contextWrapper.tosChallenge = tosChallengeStr
+        Set<String> tosChallengeStr = []
+        tosChallenge.each { TosId tosId ->
+            tosChallengeStr.add(tosId.value)
+        }
+        contextWrapper.tosChallenge = tosChallengeStr
 
-            if (!tosChallenge.isEmpty()) {
-                if (prompts.contains(Prompt.TOS)) {
-                    return Promise.pure(new ActionResult('tosChallenge'))
-                } else {
-                    return Promise.pure(new ActionResult('tosChallengeRequired'))
-                }
+        if (!tosChallenge.isEmpty()) {
+            if (prompts.contains(Prompt.NONE)) {
+                return Promise.pure(new ActionResult('tosChallengeRequired'))
+            } else {
+                return Promise.pure(new ActionResult('tosChallenge'))
             }
         }
 
