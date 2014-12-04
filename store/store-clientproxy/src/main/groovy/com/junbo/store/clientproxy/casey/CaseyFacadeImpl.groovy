@@ -373,8 +373,11 @@ class CaseyFacadeImpl implements CaseyFacade {
                     aggregatedRatings[CaseyReview.RatingType.comfort.name()] = reviewBuilder.buildAggregatedRatings(caseyItem?.comfortRating)
                     results.items << itemBuilder.buildItem(caseyOffer, aggregatedRatings, publisher, developer, imageBuildType, apiContext)
                     return Promise.pure()
+                }.recover { Throwable ex ->
+                    LOGGER.error('name=Process_Offer_Error', ex)
+                    return Promise.pure()
                 }
-            }then {
+            }.then {
                 processCaseyResultsCursor(results)
                 return Promise.pure(results)
             }
