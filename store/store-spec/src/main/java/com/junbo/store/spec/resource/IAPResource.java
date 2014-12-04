@@ -10,6 +10,7 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.browse.LibraryResponse;
 import com.junbo.store.spec.model.iap.IAPConsumeItemRequest;
 import com.junbo.store.spec.model.iap.IAPConsumeItemResponse;
+import com.junbo.store.spec.model.iap.IAPGetItemsParam;
 import com.junbo.store.spec.model.iap.IAPItemsResponse;
 
 import javax.ws.rs.*;
@@ -34,10 +35,10 @@ public interface IAPResource {
     @Path("/items")
     @Consumes()
     // This requires email verification
-    Promise<IAPItemsResponse> getItems();
+    Promise<IAPItemsResponse> getItems(@BeanParam IAPGetItemsParam iapGetItemsParam);
 
     @POST
-    @Path("/consume-item")
+    @Path("/consume-purchase")
     // This requires email verification
-    Promise<IAPConsumeItemResponse> consumeItem(IAPConsumeItemRequest request);
+    Promise<IAPConsumeItemResponse> consumePurchase(IAPConsumeItemRequest request);
 }

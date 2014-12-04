@@ -21,12 +21,16 @@ import java.util.Set;
  */
 public interface EntitlementFacade {
 
-    Promise<List<Entitlement>> getEntitlements(EntitlementType entitlementType, Set<String> itemTypes, ItemId hostItemId,  boolean includeItemDetails, ApiContext apiContext);
+    Promise<List<Entitlement>> getEntitlements(EntitlementType entitlementType, Set<String> itemTypes, ItemId hostItemId, boolean includeItemDetails, ApiContext apiContext);
 
     Promise<List<Entitlement>> getEntitlementsByIds(Set<EntitlementId> entitlementIdList, boolean includeItemDetails, ApiContext apiContext);
 
     Promise<Boolean> checkEntitlements(UserId userId, ItemId itemId, EntitlementType entitlementType);
 
     Promise<Set<ItemId>> checkEntitlements(UserId userId, Set<ItemId> itemIds, EntitlementType entitlementType);
+
+    Promise updateEntitlementDeveloperPayload(EntitlementId entitlementId, String developerPayload);
+
+    Promise consumeEntitlement(EntitlementId entitlementId);
 
 }

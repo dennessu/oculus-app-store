@@ -3,8 +3,10 @@ import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
+import com.junbo.catalog.spec.model.item.ItemsGetOptions
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
+import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
 import com.junbo.entitlement.spec.model.DownloadUrlGetOptions
 import com.junbo.entitlement.spec.model.DownloadUrlResponse
@@ -17,6 +19,7 @@ import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.browse.SectionService
 import com.junbo.store.rest.challenge.ChallengeHelper
+import com.junbo.store.rest.utils.StoreUtils
 import com.junbo.store.rest.validator.ResponseValidator
 import com.junbo.store.rest.validator.ReviewValidator
 import com.junbo.store.spec.error.AppErrors
@@ -24,12 +27,9 @@ import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.Item
-import com.junbo.store.spec.model.browse.document.Review
-import com.junbo.store.spec.model.browse.document.RevisionNote
-import com.junbo.store.spec.model.browse.document.SectionInfo
-import com.junbo.store.spec.model.browse.document.SectionInfoNode
+import com.junbo.store.spec.model.browse.document.*
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
+import com.junbo.store.spec.model.iap.HostItemInfo
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -52,6 +52,8 @@ class BrowseServiceImpl implements BrowseService {
     private static final int DEFAULT_PAGE_SIZE = 10
 
     private static final int MAX_PAGE_SIZE = 50
+
+    private static final int IAP_ITEM_PAGE_SIZE = 100
 
     @Value('${store.tos.browse}')
     private String storeBrowseTos
@@ -86,6 +88,9 @@ class BrowseServiceImpl implements BrowseService {
     @Resource(name = 'storeResponseValidator')
     private ResponseValidator responseValidator
 
+    @Resource(name = 'storeUtils')
+    private StoreUtils storeUtils
+
     private Set<String> libraryItemTypes = [
             ItemType.APP.name()
     ] as Set
@@ -107,7 +112,9 @@ class BrowseServiceImpl implements BrowseService {
         }.then { Item item ->
             decorateItem(true, includeDetails, apiContext, item).then {
                 DetailsResponse response = new DetailsResponse(item: item)
-                responseValidator.validateItemDetailsResponse(response)
+                if (item.itemType != ItemType.CONSUMABLE_UNLOCK.name() && item.itemType != ItemType.PERMANENT_UNLOCK.name()) {
+                    responseValidator.validateItemDetailsResponse(response)
+                }
                 return Promise.pure(response)
             }
         }
@@ -171,21 +178,28 @@ class BrowseServiceImpl implements BrowseService {
     }
 
     @Override
-    Promise<LibraryResponse> getLibrary(boolean isIAP, ItemId hostItemId, ApiContext apiContext) {
+    Promise<LibraryResponse> getLibrary(boolean isIAP, HostItemInfo hostItemInfo, ApiContext apiContext) {
         LibraryResponse result = new LibraryResponse(items: [])
         EntitlementType entitlementType = isIAP ? EntitlementType.ALLOW_IN_APP : EntitlementType.DOWNLOAD
         Set<String> itemTypes = isIAP ? iapLibraryItemTypes : libraryItemTypes
 
-        facadeContainer.entitlementFacade.getEntitlements(entitlementType, itemTypes, hostItemId, true, apiContext).then { List<com.junbo.store.spec.model.Entitlement> entitlementList ->
+        facadeContainer.entitlementFacade.getEntitlements(entitlementType, itemTypes, hostItemInfo?.hostItemId, true, apiContext).then { List<com.junbo.store.spec.model.Entitlement> entitlementList ->
             result.items = entitlementList.collect {com.junbo.store.spec.model.Entitlement entitlement -> entitlement.itemDetails}.asList()
             if (isIAP) {
-                return Promise.pure()
+                return Promise.each(entitlementList) { com.junbo.store.spec.model.Entitlement entitlement ->
+                    Assert.notNull(hostItemInfo)
+                    entitlement.itemDetails.iapDetails.packageName = hostItemInfo.packageName
+                    entitlement.itemDetails.iapDetails.hostItem = hostItemInfo.hostItemId
+                    storeUtils.signIAPPurchase(entitlement, hostItemInfo)
+                }
             }
             fillCurrentUserReview(result?.items, apiContext).then {
                 return Promise.pure(result)
             }
         }.then {
-            responseValidator.validateLibraryResponse(result)
+            if (!isIAP) {
+                responseValidator.validateLibraryResponse(result)
+            }
             return Promise.pure(result)
         }
     }
@@ -227,6 +241,42 @@ class BrowseServiceImpl implements BrowseService {
             return facadeContainer.caseyFacade.addReview(request, apiContext).then { Review review ->
                 return Promise.pure(new AddReviewResponse(review: review))
             }
+        }
+    }
+
+    @Override
+    Promise<List<Item>> getIAPItems(HostItemInfo hostItemInfo, Set<String> skus, ApiContext apiContext) {
+        List<Item> result = [] as List
+        ItemsGetOptions itemOption = new ItemsGetOptions(
+                hostItemId: hostItemInfo.hostItemId.value,
+                size: IAP_ITEM_PAGE_SIZE,
+        )
+
+        return CommonUtils.loop {
+            return resourceContainer.itemResource.getItems(itemOption).then { Results<com.junbo.catalog.spec.model.item.Item> itemResults ->
+                itemOption.cursor = CommonUtils.getQueryParam(itemResults?.next?.href, 'cursor')
+                return Promise.each(itemResults.items) { com.junbo.catalog.spec.model.item.Item catalogItem ->
+                    getItem(new ItemId(catalogItem.getId()), false, apiContext).then { DetailsResponse detailsResponse ->
+                        Item item = detailsResponse.item
+                        item.iapDetails.hostItem = hostItemInfo.hostItemId
+                        item.iapDetails.packageName = hostItemInfo.packageName
+                        String itemSku = item.iapDetails?.sku
+                        if (!skus.contains(itemSku)) {
+                            return Promise.pure()
+                        }
+
+                        result << item
+                        return Promise.pure()
+                    }
+                }.then {
+                    if (CollectionUtils.isEmpty(itemResults?.items) || org.apache.commons.lang3.StringUtils.isBlank(itemOption.cursor)) {
+                        return Promise.pure(Promise.BREAK)
+                    }
+                    return Promise.pure()
+                }
+            }
+        }.then {
+            return Promise.pure(result)
         }
     }
 

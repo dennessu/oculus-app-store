@@ -122,6 +122,7 @@
                 <entry key="TokenResource.updateToken" value="csr token.service"/>
                 <!-- Store API -->
                 <entry key="StoreResource" value="storeapi"/>
+                <entry key="IAPResource" value="storeapi"/>
             </map>
         </property>
     </bean>

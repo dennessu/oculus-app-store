@@ -1,26 +1,20 @@
 package com.junbo.store.rest.utils
 
-import com.junbo.catalog.spec.enums.ItemType
-import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.id.ItemId
-import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.common.util.IdFormatter
 import com.junbo.crypto.spec.model.ItemCryptoMessage
-import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.common.utils.CommonUtils
+import com.junbo.store.spec.model.Entitlement
 import com.junbo.store.spec.model.StoreApiHeader
 import com.junbo.store.spec.model.browse.document.Item
+import com.junbo.store.spec.model.iap.HostItemInfo
 import com.junbo.store.spec.model.iap.IAPParam
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 import org.springframework.util.Assert
-import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
-
 /**
  * The StoreUtils class.
  */
@@ -31,19 +25,24 @@ class StoreUtils {
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
-    Promise<Item> signIAPItem(UserId userId, Item item, ItemId hostItemId) {
-        Assert.isTrue(item.iapDetails != null)
+    Promise<Item> signIAPPurchase(Entitlement entitlement, HostItemInfo hostItemInfo) {
+        Item item = entitlement.itemDetails
+        Assert.notNull(item)
+        Assert.notNull(item.iapDetails)
+
         Map<String, Object> valuesMap = new HashMap<>()
-        valuesMap.put('userId', IdFormatter.encodeId(userId))
-        valuesMap.put('useCount', item.useCount)
+        valuesMap.put('packageName', hostItemInfo.packageName)
         valuesMap.put('sku', item.iapDetails.sku)
         valuesMap.put('type', item.itemType)
-        valuesMap.put('isConsumable', item.itemType == ItemType.CONSUMABLE_UNLOCK.name())
-        valuesMap.put('signatureTimestamp', System.currentTimeMillis())
+        if (entitlement.createdTime != null) {
+            valuesMap.put('purchaseTime', entitlement.createdTime.time)
+        }
+        valuesMap.put('developerPayload', entitlement.developerPayload)
+        valuesMap.put('iapPurchaseToken', entitlement.self.value)
         String jsonText = ObjectMapperProvider.instance().writeValueAsString(valuesMap)
-
         item.payload = jsonText
-        return resourceContainer.itemCryptoResource.sign(hostItemId.value, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
+
+        return resourceContainer.itemCryptoResource.sign(hostItemInfo.hostItemId.value, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
             item.signature = itemCryptoMessage.message
             return Promise.pure(item)
         }

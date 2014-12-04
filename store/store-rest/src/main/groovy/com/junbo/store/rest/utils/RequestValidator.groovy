@@ -345,7 +345,13 @@ class RequestValidator {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-        notEmpty(request.offer, 'offerId')
+
+        if (!request.isIAP) {
+            notEmpty(request.offer, 'offerId')
+        } else {
+            notEmpty(request.sku, 'sku')
+        }
+
         if (request.challengeAnswer != null) {
             if (request.challengeAnswer.type == Constants.ChallengeType.PIN) {
                 notEmpty(request.challengeAnswer.pin, 'challengeAnswer.pin')
@@ -467,9 +473,7 @@ class RequestValidator {
     }
 
     public void validateIAPConsumeItemRequest(IAPConsumeItemRequest iapConsumeItemRequest) {
-        notEmpty(iapConsumeItemRequest.sku, 'sku')
-        notEmpty(iapConsumeItemRequest.trackingGuid, 'trackingGuid')
-        notEmpty(iapConsumeItemRequest.useCountConsumed, 'useCountConsumed')
+        notEmpty(iapConsumeItemRequest.iapPurchaseToken, 'iapPurchaseToken')
     }
 
     private Promise<Boolean> isMailChanged(UserProfileUpdateRequest request, User currentUser) {

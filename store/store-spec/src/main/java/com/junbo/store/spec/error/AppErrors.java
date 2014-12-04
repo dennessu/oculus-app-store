@@ -21,14 +21,6 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = "101", message = "Unknown Error.")
     AppError unknownError();
 
-    @ErrorDef(httpStatusCode = 412, code = "102", message = "Entitlement Not Consumable.",
-            field = "entitlementId", reason = "Entitlement not consumable, entitlementId={0}.")
-    AppError entitlementNotConsumable(String entitlementId);
-
-    @ErrorDef(httpStatusCode = 412, code = "103", message = "Entitlement Not Enough Use Count.",
-            field = "entitlementId", reason = "Entitlement not enough use count, entitlementId={0}.")
-    AppError entitlementNotEnoughUseCount(String entitlementId);
-
     @ErrorDef(httpStatusCode = 412, code = "104", message = "Stored Value Payment Instrument Not Found.")
     AppError storeValuePINotFound();
 
@@ -106,4 +98,14 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "126", message = "Sentry block check username.")
     AppError sentryBlockCheckUsername();
+
+    @ErrorDef(httpStatusCode = 412, code = "150", message = "IAP purchase not consumable.")
+    AppError iapPurchaseNotConsumable();
+
+    @ErrorDef(httpStatusCode = 412, code = "151", message = "Invalid IAP purchase token.",
+            field = "iapPurchaseToken", reason = "Invalid IAP purchase token.")
+    AppError invalidIAPPurchaseToken();
+
+    @ErrorDef(httpStatusCode = 412, code = "152", message = "IAP item not found via sku.")
+    AppError iapItemNotFoundWithSku();
 }

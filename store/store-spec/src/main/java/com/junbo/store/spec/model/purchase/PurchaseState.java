@@ -26,6 +26,8 @@ public class PurchaseState {
 
     private Date timestamp;
 
+    private String developerPayload;
+
     private String iapPackageName;
 
     public UserId getUser() {
@@ -82,5 +84,13 @@ public class PurchaseState {
 
     public void setOffer(String offer) {
         this.offer = offer;
+    }
+
+    public String getDeveloperPayload() {
+        return developerPayload;
+    }
+
+    public void setDeveloperPayload(String developerPayload) {
+        this.developerPayload = developerPayload;
     }
 }

@@ -199,6 +199,15 @@ class CatalogFacadeImpl implements CatalogFacade {
         }
     }
 
+    @Override
+    Promise<Boolean> checkHostItem(ItemId itemId, ItemId hostItemId) {
+        resourceContainer.itemResource.getItem(itemId.value).then { Item item ->
+            resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
+                return Promise.pure(itemRevision.iapHostItemIds != null && itemRevision.iapHostItemIds.contains(hostItemId.value))
+            }
+        }
+    }
+
     private Promise<Organization> getOrganization(OrganizationId organizationId) {
         if (organizationId == null) {
             return Promise.pure()

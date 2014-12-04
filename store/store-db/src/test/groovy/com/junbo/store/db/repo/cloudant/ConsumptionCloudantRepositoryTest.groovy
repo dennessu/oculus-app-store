@@ -1,6 +1,5 @@
 package com.junbo.store.db.repo.cloudant
 
-import com.junbo.common.id.EntitlementId
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.UserId
 import com.junbo.store.db.repo.ConsumptionRepository
@@ -39,10 +38,13 @@ class ConsumptionCloudantRepositoryTest extends AbstractTestNGSpringContextTests
         def created = consumptionRepository.create(consumption).get();
         validate(consumption, created)
 
-        def read = consumptionRepository.get(consumption.trackingGuid).get();
+        def read = consumptionRepository.get(consumption.hostItem, consumption.trackingGuid).get()
         validate(consumption, read)
         assert read.signatureTimestamp == null
 
+        consumptionRepository.delete(consumption.hostItem, consumption.trackingGuid).get()
+        read = consumptionRepository.get(consumption.hostItem, consumption.trackingGuid).get()
+        assert read == null
     }
 
     private static void validate(Consumption c1, Consumption c2) {

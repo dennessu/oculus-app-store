@@ -604,9 +604,9 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public IAPConsumeItemResponse iapConsumeEntitlement(String sku, String offerId, IAPParam iapParam)
             throws Exception {
         IAPConsumeItemRequest request = new IAPConsumeItemRequest();
-        request.setTrackingGuid(UUID.randomUUID().toString());
-        request.setSku(sku);
-        request.setUseCountConsumed(1);
+        //request.setTrackingGuid(UUID.randomUUID().toString());
+        //request.setSku(sku);
+        //request.setUseCountConsumed(1);
         Offer offer = offerClient.getOffer(offerId);
         OfferRevision offerRevision = offerRevisionClient.getOfferRevision(offer.getCurrentRevisionId());
         Item item = itemClient.getItem(offerRevision.getItems().get(0).getItemId());

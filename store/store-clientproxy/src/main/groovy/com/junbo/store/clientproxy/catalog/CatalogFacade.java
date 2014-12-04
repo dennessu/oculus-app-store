@@ -32,4 +32,6 @@ public interface CatalogFacade {
     Promise<com.junbo.catalog.spec.model.item.Item> getCatalogItemByPackageName(String packageName, Integer versionCode, String signatureHash);
 
     Promise<List<RevisionNote>> getRevisionNotes(ItemId itemId, ApiContext apiContext);
+
+    Promise<Boolean> checkHostItem(ItemId itemId, ItemId hostItemId);
 }

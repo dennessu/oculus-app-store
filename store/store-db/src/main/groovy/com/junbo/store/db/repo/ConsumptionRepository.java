@@ -6,6 +6,7 @@
 
 package com.junbo.store.db.repo;
 
+import com.junbo.common.id.ItemId;
 import com.junbo.store.spec.model.iap.Consumption;
 import com.junbo.langur.core.promise.Promise;
 
@@ -16,5 +17,7 @@ public interface ConsumptionRepository {
 
     Promise<Consumption> create(Consumption consumption);
 
-    Promise<Consumption> get(String trackingGuid);
+    Promise<Consumption> get(ItemId hostItemId, String trackingGuid);
+
+    Promise<Void> delete(ItemId hostItemId, String trackingGuid);
 }

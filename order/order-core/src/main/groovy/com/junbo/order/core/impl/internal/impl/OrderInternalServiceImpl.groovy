@@ -517,7 +517,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     Promise<Order> validateDuplicatePurchase(Order order, Offer offer, int quantity) {
         LOGGER.info('name=internal.validateDuplicatePurchase')
         if (offer.items.any { Item item ->
-            !['APP', 'DOWNLOADED_ADDITION', 'PERMANENT_UNLOCK'].contains(item.type)
+            !['APP', 'DOWNLOADED_ADDITION', 'PERMANENT_UNLOCK', 'CONSUMABLE_UNLOCK'].contains(item.type)
         }) {
             LOGGER.info("name=skip_validateDuplicatePurchase")
             return Promise.pure(order)

@@ -46,6 +46,9 @@ class ResourceContainer {
     @Resource(name='store.entitlementClient')
     EntitlementResource entitlementResource
 
+    @Resource(name='store.entitlementServiceClient')
+    EntitlementResource entitlementServiceResource
+
     @Resource(name='store.sewerEntitlementResource')
     SewerEntitlementResource sewerEntitlementResource
 

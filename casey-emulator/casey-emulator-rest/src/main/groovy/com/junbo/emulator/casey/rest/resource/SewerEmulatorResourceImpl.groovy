@@ -45,7 +45,7 @@ class SewerEmulatorResourceImpl implements SewerEmulatorResource {
 
     @Override
     Promise<SewerEntitlement> getEntitlement(EntitlementId entitlementId, String expand, String locale) {
-        Assert.isTrue("(item(developer,currentRevision,categories,genres,rating))".equals(expand))
+        // Assert.isTrue("(item(developer,currentRevision,categories,genres,rating))".equals(expand))
         resourceContainer.entitlementResource.getEntitlement(entitlementId).then { Entitlement entitlement ->
             return Promise.pure(toSewerEntitlement(entitlement, locale))
         }
@@ -75,7 +75,9 @@ class SewerEmulatorResourceImpl implements SewerEmulatorResource {
                 grantTime: entitlement.grantTime,
                 expirationTime: entitlement.expirationTime,
                 useCount: entitlement.useCount,
-                type: entitlement.type
+                type: entitlement.type,
+                createdTime: entitlement.createdTime,
+                futureExpansion: entitlement.futureExpansion
         )
         Item item = resourceContainer.itemResource.getItem(entitlement.itemId).get()
         SewerItem sewerItem = toSewerItem(item, locale)

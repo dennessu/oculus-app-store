@@ -16,11 +16,13 @@ import com.junbo.common.model.ResourceMeta;
  */
 public class Consumption extends ResourceMeta<String> {
 
+    private String consumptionId;
     private UserId user;
     private Integer useCountConsumed;
     private String sku;
     private String trackingGuid;
     private ItemId hostItem;
+    private String packageName;
 
     @CloudantIgnore
     private Long signatureTimestamp;
@@ -73,13 +75,21 @@ public class Consumption extends ResourceMeta<String> {
         this.hostItem = hostItem;
     }
 
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
     @Override
     public String getId() {
-        return getTrackingGuid();
+        return consumptionId;
     }
 
     @Override
     public void setId(String id) {
-        setTrackingGuid(id);
+        consumptionId = id;
     }
 }

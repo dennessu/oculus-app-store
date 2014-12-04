@@ -50,7 +50,7 @@ class EntitlementFacadeImpl implements EntitlementFacade {
     private ItemBuilder itemBuilder
 
     @Override
-    Promise<List<Entitlement>> getEntitlements(EntitlementType entitlementType, Set<String> itemTypes, ItemId hostItemId,  boolean includeItemDetails, ApiContext apiContext) {
+    Promise<List<Entitlement>> getEntitlements(EntitlementType entitlementType, Set<String> itemTypes, ItemId hostItemId, boolean includeItemDetails, ApiContext apiContext) {
         PageMetadata pageMetadata = new PageMetadata()
         EntitlementSearchParam searchParam = new EntitlementSearchParam(userId: apiContext.user, type: entitlementType.name(), isActive: true,
                                             hostItemId: hostItemId)
@@ -133,6 +133,22 @@ class EntitlementFacadeImpl implements EntitlementFacade {
         }
     }
 
+    @Override
+    Promise updateEntitlementDeveloperPayload(EntitlementId entitlementId, String developerPayload) {
+        resourceContainer.entitlementServiceResource.getEntitlement(entitlementId).then { com.junbo.entitlement.spec.model.Entitlement entitlement ->
+            if (entitlement.futureExpansion == null) {
+                entitlement.futureExpansion = [:] as Map
+            }
+            entitlement.futureExpansion['developerPayload'] = ObjectMapperProvider.instance().valueToTree(developerPayload)
+            resourceContainer.entitlementServiceResource.updateEntitlement(entitlementId, entitlement)
+        }
+    }
+
+    @Override
+    Promise consumeEntitlement(EntitlementId entitlementId) {
+        resourceContainer.entitlementServiceResource.deleteEntitlement(entitlementId) // may need change to update
+    }
+
     private Entitlement toEntitlement(SewerEntitlement sewerEntitlement, SewerItem sewerItem, boolean includeDetails, ApiContext apiContext) {
         Entitlement result = new Entitlement()
         result.self = new EntitlementId(sewerEntitlement.getId())
@@ -140,6 +156,10 @@ class EntitlementFacadeImpl implements EntitlementFacade {
         result.entitlementType = sewerEntitlement.type
         result.itemType = sewerItem.type
         result.item = new ItemId(sewerItem.itemId)
+        result.createdTime = sewerEntitlement.createdTime
+        if (result.entitlementType == EntitlementType.ALLOW_IN_APP.name()) {
+            result.developerPayload = sewerEntitlement.futureExpansion?.get('developerPayload')?.textValue()
+        }
         boolean isIAP = (result.itemType == ItemType.CONSUMABLE_UNLOCK.name()) || (result.itemType == ItemType.PERMANENT_UNLOCK.name())
         if (includeDetails) {
             result.itemDetails = itemBuilder.buildItem(sewerItem, Images.BuildType.Item_Details, apiContext)

@@ -9,6 +9,11 @@ import com.junbo.common.id.ItemId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
 import com.junbo.store.spec.model.browse.*;
+import com.junbo.store.spec.model.browse.document.Item;
+import com.junbo.store.spec.model.iap.HostItemInfo;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * The BrowseService class.
@@ -25,11 +30,13 @@ public interface BrowseService {
 
     Promise<InitialDownloadItemsResponse> getInitialDownloadItems(ApiContext apiContext);
 
-    Promise<LibraryResponse> getLibrary(boolean isIAP, ItemId hostItemId, ApiContext apiContext);
+    Promise<LibraryResponse> getLibrary(boolean isIAP, HostItemInfo hostItemInfo, ApiContext apiContext);
 
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request, ApiContext apiContext);
 
     Promise<ReviewsResponse> getReviews(ReviewsRequest request, ApiContext apiContext);
 
     Promise<AddReviewResponse> addReview(AddReviewRequest request, ApiContext apiContext);
+
+    Promise<List<Item>> getIAPItems(HostItemInfo hostItemInfo, Set<String> skus, ApiContext apiContext);
 }

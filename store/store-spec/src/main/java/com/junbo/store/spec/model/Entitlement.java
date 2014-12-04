@@ -11,6 +11,8 @@ import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
 import com.junbo.store.spec.model.browse.document.Item;
 
+import java.util.Date;
+
 /**
  * Entitlement used for IAP.
  */
@@ -20,6 +22,11 @@ public class Entitlement {
 
     @JsonIgnore
     private UserId user;
+
+    @JsonIgnore
+    private String developerPayload;
+
+    private Date createdTime;
 
     private String entitlementType;
 
@@ -53,6 +60,14 @@ public class Entitlement {
         this.self = self;
     }
 
+    public String getDeveloperPayload() {
+        return developerPayload;
+    }
+
+    public void setDeveloperPayload(String developerPayload) {
+        this.developerPayload = developerPayload;
+    }
+
     public String getItemType() {
         return itemType;
     }
@@ -67,6 +82,14 @@ public class Entitlement {
 
     public void setItemDetails(Item itemDetails) {
         this.itemDetails = itemDetails;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
     }
 
     public String getEntitlementType() {

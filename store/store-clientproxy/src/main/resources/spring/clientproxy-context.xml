@@ -103,6 +103,13 @@
         <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
     </bean>
 
+    <bean id="store.entitlementServiceClient"
+          class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.store.core.api.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="inProcessCallable" value="${store.clientproxy.inprocess}"/>
+    </bean>
+
     <bean id="store.sewerEntitlementResource"
           class="com.junbo.store.clientproxy.sewer.proxy.SewerEntitlementResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.sewer.url}"/>

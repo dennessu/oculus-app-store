@@ -10,23 +10,13 @@ package com.junbo.store.spec.model.iap;
  */
 public class IAPConsumeItemResponse {
 
-    private String payload;
+    private String iapPurchaseToken;
 
-    private String signature;
-
-    public String getPayload() {
-        return payload;
+    public String getIapPurchaseToken() {
+        return iapPurchaseToken;
     }
 
-    public void setPayload(String payload) {
-        this.payload = payload;
-    }
-
-    public String getSignature() {
-        return signature;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
+    public void setIapPurchaseToken(String iapPurchaseToken) {
+        this.iapPurchaseToken = iapPurchaseToken;
     }
 }

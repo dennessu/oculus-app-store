@@ -10,33 +10,13 @@ package com.junbo.store.spec.model.iap;
  */
 public class IAPConsumeItemRequest {
 
-    private String sku;
+    private String iapPurchaseToken;
 
-    private Integer useCountConsumed;
-
-    private String trackingGuid;
-
-    public String getSku() {
-        return sku;
+    public String getIapPurchaseToken() {
+        return iapPurchaseToken;
     }
 
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
-
-    public Integer getUseCountConsumed() {
-        return useCountConsumed;
-    }
-
-    public void setUseCountConsumed(Integer useCountConsumed) {
-        this.useCountConsumed = useCountConsumed;
-    }
-
-    public String getTrackingGuid() {
-        return trackingGuid;
-    }
-
-    public void setTrackingGuid(String trackingGuid) {
-        this.trackingGuid = trackingGuid;
+    public void setIapPurchaseToken(String iapPurchaseToken) {
+        this.iapPurchaseToken = iapPurchaseToken;
     }
 }

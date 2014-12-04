@@ -160,6 +160,7 @@ public class EmulatorUtils {
             caseyItem.communityForumLink = localeProperties?.communityForumLink
             caseyItem.images = localeProperties?.images
             caseyItem.updatedTime = itemRevision.updatedTime
+            caseyItem.sku = itemRevision.sku
         }
 
 

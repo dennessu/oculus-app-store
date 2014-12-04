@@ -45,4 +45,8 @@ class ErrorCodes {
         static final String ReviewCreateError = '104.102'
         static final String ReviewUpdateError = '104.103'
     }
+
+    class Entitlement {
+        static final String EntitlementNotFound = '127.004'
+    }
 }

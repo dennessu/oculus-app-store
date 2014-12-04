@@ -1,27 +1,27 @@
 {
     "item": {
-        "genres": [], 
-        "defaultOffer": null, 
+        "genres": [],
+        "defaultOffer": null,
         "rev": null,
-        "currentRevision": null, 
-        "revisions": null, 
-        "type": "CONSUMABLE_UNLOCK", 
+        "currentRevision": null,
+        "revisions": null,
+        "type": "PERMANENT_UNLOCK",
         "developer": {
             "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"
         }
-    }, 
+    },
     "itemRevision": {
-        "status": "DRAFT", 
+        "status": "DRAFT",
         "distributionChannel": [
             "INAPP", "STORE"
         ],
-        "sku": "10_bird",
+        "sku": "upgrade_bird",
         "countries": {
             "US": {
                 "supportPhone": "1234567890"
             }
-        }, 
+        },
         "rev": null,
         "item": {
             "href": "https://api.oculus.com/v1/items/aabbccddeef7",
@@ -48,100 +48,100 @@
             "en_US": {
                 "minimumSystemRequirements": {
                     "PC": {
-                        "notice": "notice", 
-                        "multiplayer": "multiplayer", 
-                        "memory": "16G", 
-                        "hardDrive": "1T", 
-                        "processor": "4 CPUs", 
-                        "noticeImportant": "Notice important", 
-                        "other": "Other", 
-                        "graphics": "Intel", 
-                        "soundCard": "soundCard", 
-                        "operatingSystem": "Win7", 
+                        "notice": "notice",
+                        "multiplayer": "multiplayer",
+                        "memory": "16G",
+                        "hardDrive": "1T",
+                        "processor": "4 CPUs",
+                        "noticeImportant": "Notice important",
+                        "other": "Other",
+                        "graphics": "Intel",
+                        "soundCard": "soundCard",
+                        "operatingSystem": "Win7",
                         "directX": "Direct 11"
                     }
-                }, 
-                "legalInformation": "legalInformation", 
-                "name": "testItem_IAP",
-                "copyright": "copyright", 
-                "knownBugs": "knownBugs", 
-                "color": "black", 
+                },
+                "legalInformation": "legalInformation",
+                "name": "testItem_IAP_Permanent",
+                "copyright": "copyright",
+                "knownBugs": "knownBugs",
+                "color": "black",
                 "releaseNotes": {
-                    "longNotes": "Long notes", 
+                    "longNotes": "Long notes",
                     "shortNotes": "Short Notes"
-                }, 
+                },
                 "communityForumLink": "http://www.google.com",
-                "longDescription": "long description", 
-                "credits": "credits", 
+                "longDescription": "long description",
+                "credits": "credits",
                 "supportEmail": "jasonfu@silkcloud.com",
-                "videos": [], 
+                "videos": [],
                 "images": {
                     "main": {"15x20":{
-                        "y": 15, 
-                        "x": 20, 
-                        "href": "http://www.google.com", 
-                        "id": "id of image", 
+                        "y": 15,
+                        "x": 20,
+                        "href": "http://www.google.com",
+                        "id": "id of image",
                         "size": 300
                     }},
                     "thumbnail": {"15x20":{
-                        "y": 10, 
-                        "x": 20, 
-                        "href": "http://www.google.com", 
-                        "id": "id of image", 
+                        "y": 10,
+                        "x": 20,
+                        "href": "http://www.google.com",
+                        "id": "id of image",
                         "size": 200
                     }}
-                }, 
+                },
                 "recommendedSystemRequirements": {
                     "PC": {
-                        "notice": "notice", 
-                        "multiplayer": "multiplayer", 
-                        "memory": "16G", 
-                        "hardDrive": "1T", 
-                        "processor": "4 CPUs", 
-                        "noticeImportant": "Notice important", 
-                        "other": "Other", 
-                        "graphics": "Intel", 
-                        "soundCard": "soundCard", 
-                        "operatingSystem": "Win7", 
+                        "notice": "notice",
+                        "multiplayer": "multiplayer",
+                        "memory": "16G",
+                        "hardDrive": "1T",
+                        "processor": "4 CPUs",
+                        "noticeImportant": "Notice important",
+                        "other": "Other",
+                        "graphics": "Intel",
+                        "soundCard": "soundCard",
+                        "operatingSystem": "Win7",
                         "directX": "Direct 11"
                     }
-                }, 
-                "shortDescription": "short description", 
+                },
+                "shortDescription": "short description",
                 "manualDocument": "http://www.google.com/manual.pdf",
                 "size": "small"
             }
-        }, 
-        "futureExpansion": {}, 
+        },
+        "futureExpansion": {},
         "supportedInputDevices": [
-            "KEYBOARD", 
+            "KEYBOARD",
             "MOUSE"
-        ], 
+        ],
         "msrp": {
             "prices": {
                 "JP": {
                     "JPY": 1000
-                }, 
+                },
                 "US": {
                     "USD": 10.0
                 }
-            }, 
-            "priceTier": null, 
+            },
+            "priceTier": null,
             "priceType": "CUSTOM"
-        }, 
+        },
         "developer": {
             "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"
         }
-    }, 
+    },
     "offer": {
         "publisher": {
             "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"
-        }, 
+        },
         "rev": null,
-        "isPublished": false, 
-        "environment": "DEV", 
-        "currentRevision": null, 
+        "isPublished": false,
+        "environment": "DEV",
+        "currentRevision": null,
         "categories": []
     },
     "offerRevision": {
@@ -191,7 +191,7 @@
                             "id": "aabbccddeef7"
                         },
                         "type": "GRANT_ENTITLEMENT",
-                        "useCount": 10
+                        "useCount": 1
                     }
                 ]
             },
@@ -281,7 +281,7 @@
                         }}
                     },
                     "shortDescription": "short description",
-                    "name": "testOffer_IAP",
+                    "name": "testOffer_IAP_Permanent",
                     "videos": [
                         {
                             "id": "id of the video",

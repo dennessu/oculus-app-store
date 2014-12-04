@@ -109,7 +109,6 @@ class ItemBuilder {
         result.creator = developer
         result.self = caseyItem?.self
         result.images = buildImages(caseyOffer?.images, type)
-        result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext)
         if (result.itemType == ItemType.CONSUMABLE_UNLOCK.name() || result.itemType == ItemType.PERMANENT_UNLOCK.name()) {
             result.iapDetails = buildIAPDetails(caseyItem?.sku)
         } else {
@@ -410,6 +409,9 @@ class ItemBuilder {
     }
 
     private void fillNullValueWithDefault(Item item, boolean offerAvailable) {
+        if (item.itemType == ItemType.PERMANENT_UNLOCK.name() || item.itemType == ItemType.CONSUMABLE_UNLOCK.name()) {
+            return
+        }
         item.title = CommonUtils.toDefaultIfNull(item.title)
         item.descriptionHtml = CommonUtils.toDefaultIfNull(item.descriptionHtml)
         item.creator = CommonUtils.toDefaultIfNull(item.creator)

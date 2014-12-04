@@ -22,6 +22,10 @@ public class PreparePurchaseRequest {
 
     private Boolean isIAP;
 
+    private String sku;
+
+    private String developerPayload;
+
     private ChallengeAnswer challengeAnswer;
 
     public PaymentInstrumentId getInstrument() {
@@ -48,6 +52,14 @@ public class PreparePurchaseRequest {
         this.purchaseToken = purchaseToken;
     }
 
+    public String getDeveloperPayload() {
+        return developerPayload;
+    }
+
+    public void setDeveloperPayload(String developerPayload) {
+        this.developerPayload = developerPayload;
+    }
+
     public ChallengeAnswer getChallengeAnswer() {
         return challengeAnswer;
     }
@@ -62,5 +74,13 @@ public class PreparePurchaseRequest {
 
     public void setIsIAP(Boolean isIAP) {
         this.isIAP = isIAP;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 }

@@ -38,6 +38,7 @@ import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.Entitlement
 import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.browse.*
+import com.junbo.store.spec.model.iap.HostItemInfo
 import com.junbo.store.spec.model.iap.IAPParam
 import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
@@ -346,7 +347,7 @@ class StoreResourceImpl implements StoreResource {
             facadeContainer.orderFacade.freePurchaseOrder(user.getId(), Collections.singletonList(request.offer), apiContext).then { Order settled ->
                 MakeFreePurchaseResponse response = new MakeFreePurchaseResponse()
                 response.order = settled.getId()
-                getEntitlementsByOrder(settled, null, apiContext).then { List<Entitlement> entitlements ->
+                getEntitlementsByOrder(settled, null, null, apiContext).then { List<Entitlement> entitlements ->
                     response.entitlements = entitlements
                     return Promise.pure(response)
                 }
@@ -356,7 +357,6 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<PreparePurchaseResponse> preparePurchase(PreparePurchaseRequest request) {
-        OfferId offerId = request.offer
         Item hostItem
         User user
         ApiContext apiContext
@@ -376,17 +376,23 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             requestValidator.validatePreparePurchaseRequest(request).then {
-                requestValidator.validateOfferForPurchase(user.getId(), request.offer, apiContext.country.getId(), apiContext.locale.getId(), false)
-            }
-        }.then { // validate offer if inapp purchase
-            if (request.isIAP != null) { // todo validate offer is iap & package is correct
-                iapParam = storeUtils.buildIAPParam()
-                return facadeContainer.catalogFacade.getCatalogItemByPackageName(iapParam.packageName, iapParam.packageVersion, iapParam.packageSignatureHash).then { Item item ->
-                    hostItem = item
-                    return iapValidator.validateInAppOffer(offerId, hostItem)
+                if (!request.isIAP) {
+                    return requestValidator.validateOfferForPurchase(user.getId(), request.offer, apiContext.country.getId(), apiContext.locale.getId(), false)
+                } else {
+                    iapParam = storeUtils.buildIAPParam()
+                    return facadeContainer.catalogFacade.getCatalogItemByPackageName(iapParam.packageName, iapParam.packageVersion, iapParam.packageSignatureHash).then { Item item ->
+                        hostItem = item
+                        browseService.getIAPItems(new HostItemInfo(packageName: iapParam.packageName, hostItemId: new ItemId(hostItem.itemId)),
+                                Collections.singleton(request.sku), apiContext).then { List<com.junbo.store.spec.model.browse.document.Item> iapItems ->
+                            if (CollectionUtils.isEmpty(iapItems)) {
+                                throw AppErrors.INSTANCE.iapItemNotFoundWithSku().exception()
+                            }
+                            request.offer = iapItems[0].offer.self
+                            return Promise.pure()
+                        }
+                    }
                 }
             }
-            return Promise.pure(null)
         }.then {
             if (request.purchaseToken == null) {
                 purchaseState = new PurchaseState(
@@ -469,13 +475,12 @@ class StoreResourceImpl implements StoreResource {
                 apiContext = ac
                 return Promise.pure(null)
             }
-            return Promise.pure()
         }.then {
             requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest)
         }.then {
             tokenProcessor.toTokenObject(commitPurchaseRequest.purchaseToken, PurchaseState).then { PurchaseState e ->
                 purchaseState = e
-                if (purchaseState.user != AuthorizeContext.currentUserId) {
+                if (purchaseState.user != apiContext.user) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('purchaseToken').exception()
                 }
                 if (purchaseState.order == null) {
@@ -654,7 +659,7 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<List<Entitlement>> getEntitlementsByOrder(Order order, ItemId hostItemId, ApiContext apiContext) {
+    private Promise<List<Entitlement>> getEntitlementsByOrder(Order order, HostItemInfo hostItemInfo, String developerPayload, ApiContext apiContext) {
         Assert.notNull(order)
         Set<EntitlementId> entitlementIds = [] as HashSet
 
@@ -675,7 +680,10 @@ class StoreResourceImpl implements StoreResource {
         facadeContainer.entitlementFacade.getEntitlementsByIds(entitlementIds, true, apiContext).then { List<Entitlement> entitlements ->
             Promise.each(entitlements) { Entitlement e ->
                 if (e.itemType == ItemType.CONSUMABLE_UNLOCK.name() || e.itemType == ItemType.PERMANENT_UNLOCK.name()) { // iap
-                    return storeUtils.signIAPItem(apiContext.user, e.itemDetails, hostItemId)
+                    return facadeContainer.entitlementFacade.updateEntitlementDeveloperPayload(e.self, developerPayload).then {
+                        e.developerPayload = developerPayload
+                        return storeUtils.signIAPPurchase(e, hostItemInfo)
+                    }
                 }
                 return Promise.pure()
             }.then {
@@ -738,6 +746,7 @@ class StoreResourceImpl implements StoreResource {
 
     Promise<CommitPurchaseResponse> doCommitPurchaseResponse(PurchaseState purchaseState, ApiContext apiContext) {
         OrderId orderId = purchaseState.order
+        HostItemInfo hostItemInfo
         Item hostItem
         CommitPurchaseResponse response = new CommitPurchaseResponse()
 
@@ -746,6 +755,7 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure()
             }
             facadeContainer.catalogFacade.getCatalogItemByPackageName(purchaseState.iapPackageName, null, null).then { Item e ->
+                hostItemInfo = new HostItemInfo(packageName: purchaseState.iapPackageName, hostItemId: new ItemId(e.itemId))
                 hostItem = e
                 return Promise.pure()
             }
@@ -754,7 +764,7 @@ class StoreResourceImpl implements StoreResource {
                 order.tentative = false
                 resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
                     response.order = settled.getId()
-                    getEntitlementsByOrder(settled, hostItem?.itemId == null ? null : new ItemId(hostItem.itemId), apiContext).then { List<Entitlement> entitlements ->
+                    getEntitlementsByOrder(settled, hostItemInfo, purchaseState.developerPayload, apiContext).then { List<Entitlement> entitlements ->
                         response.entitlements = entitlements
                         return Promise.pure(response)
                     }
@@ -786,6 +796,11 @@ class StoreResourceImpl implements StoreResource {
             purchaseState.iapPackageName = iapParam?.packageName
         } else if (purchaseState.iapPackageName != iapParam?.packageName) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('iapParams.packageName', 'Input packageName isn\'t consistent with token').exception()
+        }
+        if (purchaseState.developerPayload == null) {
+            purchaseState.developerPayload = request.developerPayload
+        } else if (purchaseState.developerPayload != request?.developerPayload) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('developerPayload', 'Input developerPayload isn\'t consistent with token').exception()
         }
     }
 
