@@ -38,11 +38,15 @@ public class PaymentInstrumentRepositoryCloudantImpl extends BaseCloudantReposit
 
     @Override
     public Promise<Void> delete(Long piId){
-        PaymentInstrument existing = this.get(piId).get();
-        if(existing != null){
-            existing.setIsDeleted(true);
-            this.update(existing, existing);
-        }
-        return Promise.pure(null);
+        return this.get(piId).then(new Promise.Func<PaymentInstrument, Promise<Void>>() {
+            @Override
+            public Promise<Void> apply(PaymentInstrument existing) {
+                if (existing != null) {
+                    existing.setIsDeleted(true);
+                    return (Promise)PaymentInstrumentRepositoryCloudantImpl.this.update(existing, existing);
+                }
+                return Promise.pure(null);
+            }
+        });
     }
 }

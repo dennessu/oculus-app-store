@@ -16,5 +16,6 @@
   "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
 
   "id_token_issuer" : "api.oculus.com",
-  "need_consent" : false
+  "need_consent" : false,
+  "required_tos" : [ { "type" : "TOS", "title" : "end user title" } ]
 }
