@@ -188,8 +188,6 @@ class BrowseServiceImpl implements BrowseService {
             if (isIAP) {
                 return Promise.each(entitlementList) { com.junbo.store.spec.model.Entitlement entitlement ->
                     Assert.notNull(hostItemInfo)
-                    entitlement.itemDetails.iapDetails.packageName = hostItemInfo.packageName
-                    entitlement.itemDetails.iapDetails.hostItem = hostItemInfo.hostItemId
                     storeUtils.signIAPPurchase(entitlement, hostItemInfo)
                 }
             }
@@ -258,8 +256,6 @@ class BrowseServiceImpl implements BrowseService {
                 return Promise.each(itemResults.items) { com.junbo.catalog.spec.model.item.Item catalogItem ->
                     getItem(new ItemId(catalogItem.getId()), false, apiContext).then { DetailsResponse detailsResponse ->
                         Item item = detailsResponse.item
-                        item.iapDetails.hostItem = hostItemInfo.hostItemId
-                        item.iapDetails.packageName = hostItemInfo.packageName
                         String itemSku = item.iapDetails?.sku
                         if (!skus.contains(itemSku)) {
                             return Promise.pure()

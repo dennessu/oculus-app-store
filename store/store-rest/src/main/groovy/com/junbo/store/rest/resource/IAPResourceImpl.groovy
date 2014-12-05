@@ -158,39 +158,4 @@ class IAPResourceImpl implements IAPResource {
             return Promise.pure()
         }
     }
-
-    private Promise<IAPItemsResponse> getInAppItems(HostItemInfo hostItemInfo, Set<String> skus, ApiContext apiContext) {
-        IAPItemsResponse response = new IAPItemsResponse(items : [] as List)
-        ItemsGetOptions itemOption = new ItemsGetOptions(
-                hostItemId: hostItemInfo.hostItemId.value,
-                size: PAGE_SIZE,
-        )
-
-        return CommonUtils.loop {
-            return resourceContainer.itemResource.getItems(itemOption).then { Results<Item> itemResults ->
-                itemOption.cursor = CommonUtils.getQueryParam(itemResults?.next?.href, 'cursor')
-                return Promise.each(itemResults.items) { Item catalogItem ->
-                    browseService.getItem(new ItemId(catalogItem.getId()), false, apiContext).then { DetailsResponse detailsResponse ->
-                        com.junbo.store.spec.model.browse.document.Item item = detailsResponse.item
-                        item.iapDetails.hostItem = hostItemInfo.hostItemId
-                        item.iapDetails.packageName = hostItemInfo.packageName
-                        String itemSku = item.iapDetails?.sku
-                        if (skus != null && (itemSku == null && !skus.contains(itemSku))) {
-                            return Promise.pure()
-                        }
-
-                        response.items << item
-                        return Promise.pure()
-                    }
-                }.then {
-                    if (CollectionUtils.isEmpty(itemResults?.items) || StringUtils.isBlank(itemOption.cursor)) {
-                        return Promise.pure(Promise.BREAK)
-                    }
-                    return Promise.pure()
-                }
-            }
-        }.then {
-            return Promise.pure(response)
-        }
-    }
 }
