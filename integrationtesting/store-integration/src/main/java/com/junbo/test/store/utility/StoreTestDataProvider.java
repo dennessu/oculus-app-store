@@ -42,6 +42,7 @@ import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
 import com.junbo.store.spec.model.external.sewer.casey.cms.CmsSchedule;
 import com.junbo.store.spec.model.iap.IAPConsumeItemRequest;
 import com.junbo.store.spec.model.iap.IAPConsumeItemResponse;
+import com.junbo.store.spec.model.iap.IAPItemsResponse;
 import com.junbo.store.spec.model.iap.IAPParam;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
@@ -79,6 +80,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.text.SimpleDateFormat;
@@ -386,7 +388,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
         request.setPurchaseToken(token);
         request.setInstrument(pid);
-        request.setOffer(new OfferId(offerId));
+        //request.setOffer(new OfferId(offerId));
         IAPParam params = null;
 
         if (!StringUtils.isEmpty(pin)) {
@@ -409,6 +411,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
             Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
             ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
+            request.setSku(itemRevision.getSku());
+            request.setDeveloperPayload("developerPayload");
             params = new IAPParam();
             params.setPackageName(hostItemRevision.getPackageName());
             // Todo:    This value is workaround
@@ -601,18 +605,25 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.commitPurchase(commitPurchaseRequest, expectedResponseCode);
     }
 
-    public IAPConsumeItemResponse iapConsumeEntitlement(String sku, String offerId, IAPParam iapParam)
+    public IAPConsumeItemResponse iapConsumeEntitlement(String payload, String offerId)
             throws Exception {
+
         IAPConsumeItemRequest request = new IAPConsumeItemRequest();
-        //request.setTrackingGuid(UUID.randomUUID().toString());
-        //request.setSku(sku);
-        //request.setUseCountConsumed(1);
-        Offer offer = offerClient.getOffer(offerId);
-        OfferRevision offerRevision = offerRevisionClient.getOfferRevision(offer.getCurrentRevisionId());
-        Item item = itemClient.getItem(offerRevision.getItems().get(0).getItemId());
-        ItemRevision itemRevision = itemRevisionClient.getItemRevision(item.getCurrentRevisionId());
-        String packageName = itemRevision.getPackageName();
-        return storeClient.iapConsumeEntitlement(request, iapParam);
+        request.setIapPurchaseToken(getIapPurchaseToken(payload));
+
+        Offer offer = Master.getInstance().getOffer(offerId);
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
+        Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
+        ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
+        Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
+        ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
+
+        IAPParam params = new IAPParam();
+        params.setPackageName(hostItemRevision.getPackageName());
+        // Todo:    This value is workaround
+        params.setPackageSignatureHash(UUID.randomUUID().toString());
+        params.setPackageVersion(RandomFactory.getRandomInteger(0, 1000));
+        return storeClient.iapConsumeEntitlement(request, params);
     }
 
     private Address getBillingAddress() throws Exception {
@@ -950,5 +961,31 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public InitialDownloadItemsResponse getInitialDownloadItems() throws Exception {
         return storeClient.getInitialDownloadItemsResponse();
+    }
+
+    public String getIapPurchaseToken(String payload) throws IOException{
+             ObjectMapper mapper = new ObjectMapper();
+             JsonNode node = mapper.readTree(payload);
+             return node.get("iapPurchaseToken").textValue();
+    }
+
+    public IAPParam getIapParam(String offerId) throws Exception{
+        Offer offer = Master.getInstance().getOffer(offerId);
+        OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
+        Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
+        ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
+        Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
+        ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
+
+        IAPParam params = new IAPParam();
+        params.setPackageName(hostItemRevision.getPackageName());
+        // Todo:    This value is workaround
+        params.setPackageSignatureHash(UUID.randomUUID().toString());
+        params.setPackageVersion(RandomFactory.getRandomInteger(0, 1000));
+        return params;
+    }
+
+    public IAPItemsResponse getIapItems(IAPParam iapParam, List<String> skus) throws Exception{
+        return storeClient.getIAPItems(iapParam, skus);
     }
 }

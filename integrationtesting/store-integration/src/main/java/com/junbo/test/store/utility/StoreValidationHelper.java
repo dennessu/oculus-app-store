@@ -76,7 +76,7 @@ public class StoreValidationHelper extends ValidationHelper {
     }
 
     public void verifyLibraryResponse(LibraryResponse response, ItemId itemId) throws Exception {
-        Item item =  storeTestDataProvider.getItemByItemId(itemId.getValue());
+        Item item = storeTestDataProvider.getItemByItemId(itemId.getValue());
         ItemRevision itemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevisionId());
         com.junbo.store.spec.model.browse.document.Item responseItem = null;
         for (com.junbo.store.spec.model.browse.document.Item e : response.getItems()) {
@@ -88,13 +88,13 @@ public class StoreValidationHelper extends ValidationHelper {
 
         Assert.assertNotNull(responseItem);
         verifyEqual(responseItem.getItemType(), item.getType(), "verify item type");
-        verifyEqual(responseItem.getTitle(), itemRevision.getLocales().get("en_US").getName(),"verify entitlement type");
-        verifyEqual(responseItem.getOwnedByCurrentUser(), Boolean.valueOf(true),"verify owned by current user");
+        verifyEqual(responseItem.getTitle(), itemRevision.getLocales().get("en_US").getName(), "verify entitlement type");
+        verifyEqual(responseItem.getOwnedByCurrentUser(), Boolean.valueOf(true), "verify owned by current user");
     }
 
     public void verifyItemsInLibrary(LibraryResponse response, List<String> itemNames) throws Exception {
         Set<ItemId> itemIdSet = new HashSet<>();
-        for (String itemName: itemNames) {
+        for (String itemName : itemNames) {
             itemIdSet.add(new ItemId(storeTestDataProvider.getItemByName(itemName).getId()));
         }
         Set<ItemId> actual = new HashSet<>();
@@ -134,7 +134,7 @@ public class StoreValidationHelper extends ValidationHelper {
         verifyEqual(userProfile.getPin(), "****", "verify pin");
     }
 
-    public void verifyEWallet(InstrumentUpdateResponse response){
+    public void verifyEWallet(InstrumentUpdateResponse response) {
         BillingProfile billingProfile = response.getBillingProfile();
         if (billingProfile.getInstruments().size() <= 0) {
             throw new TestException("missing payment instrument");
@@ -160,5 +160,16 @@ public class StoreValidationHelper extends ValidationHelper {
         Assert.assertEquals(tocResponse.getSections().size(), 4); // current 3 sections will be returned.
     }
 
+    public void verifyIapLibrary(LibraryResponse libraryResponse, CommitPurchaseResponse commitPurchaseResponse) {
+        Entitlement entitlement = commitPurchaseResponse.getEntitlements().get(0);
+        com.junbo.store.spec.model.browse.document.Item item = libraryResponse.getItems().get(0);
+        com.junbo.store.spec.model.browse.document.Item expectedItem = entitlement.getItemDetails();
+        verifyEqual(item.getItemType(), expectedItem.getItemType(), "verify item type");
+        verifyEqual(item.getTitle(), expectedItem.getTitle(), "verify item title");
+        //verifyEqual(item.getPayload(), expectedItem.getPayload(), "verify item payload");
+        //verifyEqual(item.getSignature(), expectedItem.getSignature(), "verify item signature");
+        verifyEqual(item.getOwnedByCurrentUser(), Boolean.valueOf(true), "verify item owned by user");
+        verifyEqual(item.getIapDetails().getSku(), expectedItem.getIapDetails().getSku(), "verify item sku");
+    }
 }
 

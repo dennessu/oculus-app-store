@@ -45,6 +45,13 @@ public abstract class ValidationHelper {
         }
     }
 
+    public static void verifyEqual(Object actual, Object expect, String message) {
+        if (actual != expect) {
+            throw new TestException(
+                    String.format("Verify failed for %s, expect %s, but found %s", message, expect, actual));
+        }
+    }
+
     public static void verifyEqual(List<String> actual, List<String> expect, String message) {
         if (actual.size() != expect.size() || !(actual.equals(expect))) {
             throw new TestException(

@@ -45,7 +45,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
         FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope, headersToRemove);
         headers.put("X-ANDROID-ID", Collections.singletonList(DataGenerator.instance().generateAndroidId()));
         headers.put("Accept-Language", Collections.singletonList("en-US"));
-        for (Map.Entry<String, String> entry: TestContext.getData().getHeaders().entrySet()) {
+        for (Map.Entry<String, String> entry : TestContext.getData().getHeaders().entrySet()) {
             headers.put(entry.getKey(), Collections.singletonList(entry.getValue()));
         }
 
@@ -62,8 +62,8 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
         //for further header, we can set dynamic value from properties here
         return headers;
     }
-    
-    StoreServiceImpl(){
+
+    StoreServiceImpl() {
         endPointUrlSuffix = "/horizon-api";
     }
 
@@ -232,7 +232,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public IAPConsumeItemResponse iapConsumeEntitlement(IAPConsumeItemRequest request, IAPParam iapParam, int expectedResponseCode) throws Exception {
         iapParamThreadLocal.set(iapParam);
-        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/iap/consumption", request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl() + "/iap/consume-purchase", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             IAPConsumeItemResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPConsumeItemResponse>() {
             }, responseBody);
@@ -260,15 +260,18 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     }
 
     @Override
-    public IAPItemsResponse getIAPItems(IAPParam iapParam) throws Exception {
-        return getIAPItems(iapParam, 200);
+    public IAPItemsResponse getIAPItems(IAPParam iapParam, List<String> skus) throws Exception {
+        return getIAPItems(iapParam, skus, 200);
     }
 
     @Override
-    public IAPItemsResponse getIAPItems(IAPParam iapParam, int expectedResponseCode) throws Exception {
-        //TODO url
+    public IAPItemsResponse getIAPItems(IAPParam iapParam, List<String> skus, int expectedResponseCode) throws Exception {
+        String url = getEndPointUrl() + "/iap/items?";
+        for (int i = 0; i < skus.size(); i++) {
+            url = (i == 0) ? url.concat(String.format("sku=%s", skus.get(i))) : url.concat(String.format("&sku=%s", skus.get(i)));
+        }
         iapParamThreadLocal.set(iapParam);
-        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/iap/items", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             IAPItemsResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPItemsResponse>() {
             }, responseBody);
@@ -384,7 +387,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public LibraryResponse getLibrary(int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/library", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/iap/library", expectedResponseCode);
         if (expectedResponseCode == 200) {
             LibraryResponse response = new JsonMessageTranscoder().decode(new TypeReference<LibraryResponse>() {
             }, responseBody);
@@ -402,7 +405,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public DetailsResponse getDetails(DetailsRequest request, int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/item-details?itemId=" + request.getItemId().getValue() , expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/item-details?itemId=" + request.getItemId().getValue(), expectedResponseCode);
         if (expectedResponseCode == 200) {
             DetailsResponse response = new JsonMessageTranscoder().decode(new TypeReference<DetailsResponse>() {
             }, responseBody);
@@ -476,9 +479,9 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public InitialDownloadItemsResponse getInitialDownloadItemsResponse() throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/initial-download-items" , 200);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/initial-download-items", 200);
         return new JsonMessageTranscoder().decode(new TypeReference<InitialDownloadItemsResponse>() {
-            }, responseBody);
+        }, responseBody);
     }
 
     private String appendQuery(String url, String name, Object val) {

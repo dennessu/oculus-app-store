@@ -14,6 +14,8 @@ import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
 
+import java.util.List;
+
 //import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
 //import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 
@@ -63,9 +65,9 @@ public interface StoreService {
 
     MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request, int expectedResponseCode) throws Exception;
 
-    IAPItemsResponse getIAPItems(IAPParam iapParam) throws Exception;
+    IAPItemsResponse getIAPItems(IAPParam iapParam, List<String> skus) throws Exception;
 
-    IAPItemsResponse getIAPItems(IAPParam iapParam, int expectedResponseCode) throws Exception;
+    IAPItemsResponse getIAPItems(IAPParam iapParam, List<String> skus, int expectedResponseCode) throws Exception;
 
     LibraryResponse getIAPLibrary(IAPParam iapParam) throws Exception;
 

@@ -12,8 +12,9 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
-import com.junbo.store.spec.model.browse.DeliveryResponse;
 import com.junbo.store.spec.model.browse.LibraryResponse;
+import com.junbo.store.spec.model.iap.IAPConsumeItemResponse;
+import com.junbo.store.spec.model.iap.IAPItemsResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
@@ -25,8 +26,8 @@ import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.RandomHelper;
+import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.Validator;
-import com.junbo.test.common.apihelper.common.HttpClientHelper;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
@@ -43,7 +44,6 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by weiyu_000 on 8/6/14.
@@ -67,9 +67,9 @@ public class StoreTesting extends BaseTestClass {
                     "5. Select payment instrument for purchase",
                     "6. Commit purchase",
                     "7. Verify purchase response",
-                    "8. Consume iap entitlement",
-                    "9. Get library",
-                    "10. Verify library response"
+                    "8. Get library",
+                    "9. Verify library response",
+                    "10. Consume iap entitlement",
             }
     )
     @Test
@@ -79,23 +79,19 @@ public class StoreTesting extends BaseTestClass {
         validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
-
         InstrumentUpdateResponse instrumentUpdateResponse = testDataProvider.CreateCreditCard(uid);
         //verify decrypted credit card info
         validationHelper.verifyAddNewCreditCard(instrumentUpdateResponse);
-
         //get payment id in billing profile
         PaymentInstrumentId paymentId = instrumentUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
-
-        String offerId = testDataProvider.getOfferIdByName(offer_digital_normal1);
+        String offerId = testDataProvider.getOfferIdByName(offer_inApp_consumable);
         //post order without set payment instrument
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null, null);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, true, 200);
 
         assert preparePurchaseResponse.getChallenge() != null;
         assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
-                offerId, paymentId, "1234", null);
+        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, "1234", null, true, 200);
 
         if (preparePurchaseResponse.getChallenge() != null) {
             assert preparePurchaseResponse.getChallenge() != null;
@@ -105,22 +101,28 @@ public class StoreTesting extends BaseTestClass {
             preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                     preparePurchaseResponse.getChallenge().getTos().getTosId());
         }
-
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);
 
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
+        //IAPParam iapParam = testDataProvider.getIapParam(offerId);
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        //EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
-        //IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offerId);
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
 
-        DeliveryResponse deliveryResponse = testDataProvider.getDeliveryByOfferId(offerId);
-        String downloadLink = deliveryResponse.getDownloadUrl();
+        validationHelper.verifyIapLibrary(libraryResponse, commitPurchaseResponse);
 
-        HttpClientHelper.validateURLAccessibility(downloadLink, 200);
+        String payload = commitPurchaseResponse.getEntitlements().get(0).getItemDetails().getPayload();
+
+        IAPConsumeItemResponse iapConsumeItemResponse = testDataProvider.iapConsumeEntitlement(payload, offerId);
+
+        assert iapConsumeItemResponse.getIapPurchaseToken().equals(testDataProvider.getIapPurchaseToken(payload));
+
+        //DeliveryResponse deliveryResponse = testDataProvider.getDeliveryByOfferId(offerId);
+        //String downloadLink = deliveryResponse.getDownloadUrl();
+        //HttpClientHelper.validateURLAccessibility(downloadLink, 200);
     }
 
     @Property(
@@ -559,7 +561,35 @@ public class StoreTesting extends BaseTestClass {
         String userName = RandomFactory.getRandomStringOfAlphabet(6);
         String password = "Test1234";
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
-        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        testDataProvider.CreateUser(createUserRequest, true);
     }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store checkout",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test get iap item",
+            steps = {
+                    "1. test get iap item",
+                    "2. Verify response",
+            }
+    )
+    @Test
+    public void testGetIapItem() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
+
+        String offerId = testDataProvider.getOfferIdByName(offer_inApp_consumable);
+        List<String> skus = new ArrayList<>();
+        skus.add("upgrade_bird");
+        IAPItemsResponse iapItemsResponse = testDataProvider.getIapItems(testDataProvider.getIapParam(offerId), skus);
+
+        ValidationHelper.verifyEqual(iapItemsResponse.getItems().get(0).getIapDetails().getSku(), "upgrade_bird", "verify sku");
+        ValidationHelper.verifyEqual(iapItemsResponse.getItems().get(0).getTitle(), "testOffer_IAP_Consumable","verify item title");
+    }
+
 
 }
