@@ -122,7 +122,46 @@ class CatalogDataHandler extends BaseDataHandler {
 
         if (itemExisting == null) {
             logger.info("----loading item $itemRevisionName and its revision")
-            if (itemRevisionName.contains("testItem_IAP")) {
+            if (itemRevisionName.equalsIgnoreCase("testItem_IAP_Consumable") ||
+                    itemRevisionName.equalsIgnoreCase("testItem_IAP_Permanent")) {
+
+                // for such two itemRevisions, search host item firstly. If found, use the existing one; otherwise, post
+                // a new one with predefined name.
+                Item iapHostItem
+                String iapHostItemId
+
+                Results<Item> itemHostResults = itemResource.getItems(new ItemsGetOptions(query: "name:testItem_IAP_MultiSonItems")).get()
+                if (itemHostResults != null && itemHostResults.items != null && itemHostResults.items.size() > 0) {
+                    iapHostItem = itemHostResults.items.get(0)
+                    iapHostItemId = iapHostItem.itemId
+                }
+
+                if (iapHostItem == null) {
+                    iapHostItem = CloneUtils.clone(item)
+                    ItemRevision iapHostItemRevision = CloneUtils.clone(itemRevision)
+
+                    iapHostItem.type = ItemType.APP
+                    iapHostItemId = handle(iapHostItem)
+
+                    iapHostItemRevision.locales.get("en_US").name = "testItem_IAP_MultiSonItems"
+                    iapHostItemRevision.packageName = UUID.randomUUID().toString()
+                    iapHostItemRevision.itemId = iapHostItemId
+                    iapHostItemRevision.downloadName = "download name"
+                    iapHostItemRevision.distributionChannels = ["STORE"]
+                    handle(iapHostItemRevision)
+                }
+
+                //Post the IAP item
+                itemId = handle(item)
+
+                itemRevision.itemId = itemId
+                itemRevision.binaries = null
+                itemRevision.iapHostItemIds = []
+                itemRevision.iapHostItemIds.add(iapHostItemId)
+                handle(itemRevision)
+
+            }
+            else if (itemRevisionName.contains("testItem_IAP")) {
                 //Post an IAP host item firstly
                 Item hostItem = CloneUtils.clone(item)
                 ItemRevision hotsItemRevision = CloneUtils.clone(itemRevision)
