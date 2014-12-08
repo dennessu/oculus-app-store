@@ -1064,6 +1064,16 @@ class OAuthTests(ut.TestBase):
         }, raiseOnError=False)
         assert error['details'][0]['field'] == 'redirect_uri'
         assert error['details'][0]['reason'] == 'Field value is invalid.'
+
+        error = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': scope,
+            'redirect_uri': 'https:///auth'
+        }, raiseOnError=False)
+        assert error['details'][0]['field'] == 'redirect_uri'
+        assert error['details'][0]['reason'] == 'Field value is invalid.'
+
         pass
 
     def testConversationWithInvalidEvent(self, scope = 'identity'):

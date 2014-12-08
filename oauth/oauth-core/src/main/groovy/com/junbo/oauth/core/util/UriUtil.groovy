@@ -50,6 +50,10 @@ class UriUtil {
     }
 
     private static boolean authorityMatches(String authority, String authorityTemplate) {
+        if (StringUtils.isEmpty(authority)) {
+            return false
+        }
+
         if (StringUtils.isEmpty(authorityTemplate)) {
             return true
         }

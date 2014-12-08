@@ -126,7 +126,8 @@ public class TestPutOffer extends BaseTestClass {
         //can't update current revision id
         offer = offerService.postDefaultOffer(organizationId);
         offer.setCurrentRevisionId("0L");
-        verifyExpectedError(offer.getOfferId(), offer);
+        offer = offerService.updateOffer(offer.getOfferId(), offer);
+        Assert.assertNotEquals(offer.getCurrentRevisionId(), "0");
 
         //test category is not existed
         offer = offerService.postDefaultOffer(organizationId);
