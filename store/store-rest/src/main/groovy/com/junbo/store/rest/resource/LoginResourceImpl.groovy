@@ -414,7 +414,11 @@ class LoginResourceImpl implements LoginResource {
             }
 
             List<Tos> tosList = tosResults.items.sort { Tos tos ->
-                return tos.version
+                try {
+                    return Double.parseDouble(tos.version)
+                } catch (NumberFormatException ex) {
+                    return Double.valueOf(0)
+                }
             }
 
             Tos tos = tosList.reverse().find { Tos tos ->
