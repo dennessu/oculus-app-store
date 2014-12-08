@@ -387,7 +387,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     @Override
     public LibraryResponse getLibrary(int expectedResponseCode) throws Exception {
         //TODO url
-        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/iap/library", expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/library", expectedResponseCode);
         if (expectedResponseCode == 200) {
             LibraryResponse response = new JsonMessageTranscoder().decode(new TypeReference<LibraryResponse>() {
             }, responseBody);
