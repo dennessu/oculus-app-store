@@ -11,5 +11,6 @@ package com.junbo.payment.clientproxy.facebook;
  */
 public enum FacebookItemType {
     open_graph_product,
-    oculus_launch_v1
+    oculus_real,
+    oculus_digital
 }

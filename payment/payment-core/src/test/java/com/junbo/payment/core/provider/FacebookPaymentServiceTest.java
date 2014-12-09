@@ -156,18 +156,23 @@ public class FacebookPaymentServiceTest extends BaseTest {
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.REVERSED.toString());
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testAuthChargeRefundFB() throws ExecutionException, InterruptedException {
         final PaymentInstrument request = buildPIRequest();
         //hard code user to avoid create too many test users
         request.setUserId(83886144L);
         PaymentInstrument result = null;
-        request.setAccountNumber("4111117711552927");
+        FacebookCreditCardTokenRequest ccTokenRequest = new FacebookCreditCardTokenRequest();
+        ccTokenRequest.setCreditCardNumber("4111117711552927");
+        ccTokenRequest.setCsc("123");
+        String ccToken = facebookGatewayService.getCCToken(ccTokenRequest).get();
+        request.setAccountNumber(ccToken);
         request.setBillingAddressId(null);
         request.setPhoneNumber(null);
         result = addPI(request);
         Assert.assertNotNull(result);
-        Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.piExternalToken);
+        Assert.assertNotNull(result.getExternalToken());
+        Assert.assertNotEquals("", result.getExternalToken());
         PaymentTransaction transaction = buildPaymentTransaction(request);
         PaymentTransaction paymentResult = mockFBPaymentService.authorize(transaction).get();
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.AUTHORIZED.toString());
@@ -184,12 +189,14 @@ public class FacebookPaymentServiceTest extends BaseTest {
         ChargeInfo first = new ChargeInfo();
         first.setCurrency(transaction.getChargeInfo().getCurrency());
         first.setAmount(new BigDecimal("5.00"));
+        first.setBusinessDescriptor("fb_refund");
         transaction.setChargeInfo(first);
         paymentResult = mockFBPaymentService.refund(paymentResult.getId(), transaction).get();
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.REFUNDED.toString());
         ChargeInfo second = new ChargeInfo();
         second.setCurrency(transaction.getChargeInfo().getCurrency());
         second.setAmount(new BigDecimal("95.00"));
+        second.setBusinessDescriptor("fb_refund");
         transaction.setChargeInfo(second);
         paymentResult = mockFBPaymentService.refund(paymentResult.getId(), transaction).get();
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.REFUNDED.toString());

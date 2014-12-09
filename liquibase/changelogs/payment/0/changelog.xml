@@ -664,4 +664,14 @@
         </sql>
     </changeSet>
     <include file="../../common/ping.xml" relativeToChangelogFile="true" />
+
+    <changeSet id="8" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                        ALTER TABLE payment_event ADD COLUMN external_token varchar(128);
+                    ]]>
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
