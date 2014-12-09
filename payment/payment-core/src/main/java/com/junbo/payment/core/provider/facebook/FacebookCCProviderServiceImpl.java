@@ -98,7 +98,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 }
                 FacebookPaymentAccount fbPaymentAccount = new FacebookPaymentAccount();
                 fbPaymentAccount.setPayerId(request.getUserId().toString());
-                if(env.equalsIgnoreCase(TEST_ENV)){
+                if(TEST_ENV.equalsIgnoreCase(env)){
                     fbPaymentAccount.setEnv(TEST_ENV);
                 }
                 return facebookGatewayService.createAccount(s, oculusAppId, fbPaymentAccount).then(new Promise.Func<FacebookPaymentAccount, Promise<PaymentInstrument>>() {
@@ -139,6 +139,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         if(address != null){
             fbCreditCard.setBillingAddress(getFacebookAddress(address, request));
         }
+
         return facebookGatewayService.batchAddAndGetCreditCard(accessToken, fbAccount, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(FacebookCreditCard facebookCreditCard) {
@@ -148,23 +149,11 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                     request.getTypeSpecificDetails().setExpireDate(facebookCreditCard.getExpiryYear() + "-" + facebookCreditCard.getExpiryMonth());
                     request.setAccountNumber(facebookCreditCard.getLast4());
                     return Promise.pure(request);
-                    /*
-                    return facebookPaymentApi.getCreditCard(accessToken, facebookCreditCard.getId())
-                            .then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
-                                @Override
-                                public Promise<PaymentInstrument> apply(FacebookCreditCard getCreditCatd) {
-                                    request.getTypeSpecificDetails().setIssuerIdentificationNumber(getCreditCatd.getFirst6());
-                                    request.getTypeSpecificDetails().setExpireDate(getCreditCatd.getExpiryYear() + "-" + getCreditCatd.getExpiryMonth());
-                                    request.setAccountNumber(getCreditCatd.getLast4());
-                                    return Promise.pure(request);
-                                }
-                            });
-                            */
                 }else if(!CommonUtil.isNullOrEmpty(facebookCreditCard.getError())){
                     LOGGER.error("error response:" + facebookCreditCard.getError());
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, facebookCreditCard.getError()).exception();
                 }else{
-                    throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
+                    throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknown server error").exception();
                 }
             }
         });
@@ -200,8 +189,12 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setAction(FacebookPaymentActionType.authorize);
                 fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                fbPayment.setItemType(FacebookItemType.open_graph_product);
-                FacebookItemDescription description = new FacebookItemDescription(FacebookPaymentEntity.us, FacebookPaymentType.digital);
+                fbPayment.setItemType(FacebookItemType.oculus_digital);
+                FacebookPaymentEntity fbEntity = FacebookPaymentEntity.us;
+                if(!"US".equalsIgnoreCase(paymentRequest.getChargeInfo().getCountry())){
+                    fbEntity = FacebookPaymentEntity.international;
+                }
+                FacebookItemDescription description = new FacebookItemDescription(fbEntity, FacebookPaymentType.digital);
                 description.setItems(new String[]{paymentRequest.getChargeInfo().getBusinessDescriptor()});
                 fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
@@ -324,6 +317,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
 
     @Override
     public Promise<PaymentTransaction> refund(final String transactionId, final PaymentTransaction paymentRequest) {
+        if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getBusinessDescriptor())){
+            throw AppCommonErrors.INSTANCE.fieldRequired("refund_reason").exception();
+        }
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(String s) {
