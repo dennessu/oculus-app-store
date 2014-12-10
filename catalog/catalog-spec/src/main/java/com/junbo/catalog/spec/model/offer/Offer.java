@@ -51,6 +51,7 @@ public class Offer extends BaseEntityModel {
     @ApiModelProperty(position = 26, required = true, value = "Environment", allowableValues = "DEV, STAGING, PROD")
     private String environment;
 
+    @Deprecated
     @JsonProperty("publisherRevenueRatio")
     @ApiModelProperty(position = 27, required = true, value = "Revenue ratio to developer")
     private BigDecimal developerRatio;

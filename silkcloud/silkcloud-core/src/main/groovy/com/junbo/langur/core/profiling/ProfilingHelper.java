@@ -96,7 +96,26 @@ public class ProfilingHelper {
         return null;
     }
 
+    public static boolean hasProfileHeader() {
+        MultivaluedMap<String, String> headers = JunboHttpContext.getRequestHeaders();
+        if (headers != null) {
+            String header = headers.getFirst("X-Enable-Profiling");
+            return !StringUtils.isEmpty(header);
+        }
+        return false;
+    }
+
     public static boolean isProfileEnabled() {
+        Data data = getOrInitProfileData();
+        return data.profilingEnabled;
+    }
+
+    public static boolean isProfileOutputEnabled() {
+        Data data = getOrInitProfileData();
+        return data.profilingOutputEnabled;
+    }
+
+    private static Data getOrInitProfileData() {
         Data data = profileData.get();
         if (data == null) {
             data = new Data();
@@ -116,7 +135,7 @@ public class ProfilingHelper {
             data.profilingEnabled = profilingLoggerEnabled || data.profilingOutputEnabled;
             data.init();
         }
-        return data.profilingEnabled;
+        return data;
     }
 
     public static void begin(String type, String message, Object... args) {

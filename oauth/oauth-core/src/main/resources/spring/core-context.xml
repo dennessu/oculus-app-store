@@ -27,8 +27,8 @@
         <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
         <property name="userCredentialResource" ref="oauth_userCredentialResource" />
         <property name="emailLinkBaseUri" value="${oauth.core.email.linkBaseUri}"/>
-        <property name="emailVerifyExpiration" value="${oauth.core.resetPassword.default.expiration}" />
-        <property name="resetPasswordExpiration" value="${oauth.core.emailVerify.default.expiration}" />
+        <property name="emailVerifyExpiration" value="${oauth.core.emailVerify.default.expiration}" />
+        <property name="resetPasswordExpiration" value="${oauth.core.resetPassword.default.expiration}" />
     </bean>
 
     <bean id="clientService" class="com.junbo.oauth.core.service.impl.ClientServiceImpl">
