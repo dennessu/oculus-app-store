@@ -69,9 +69,9 @@ public interface StoreService {
 
     IAPItemsResponse getIAPItems(IAPParam iapParam, List<String> skus, int expectedResponseCode) throws Exception;
 
-    LibraryResponse getIAPLibrary(IAPParam iapParam) throws Exception;
+    LibraryResponse getIAPLibrary() throws Exception;
 
-    LibraryResponse getIAPLibrary(IAPParam iapParam, int expectedResponseCode) throws Exception;
+    LibraryResponse getIAPLibrary(int expectedResponseCode) throws Exception;
 
     TocResponse getTOC() throws Exception;
 

@@ -110,7 +110,7 @@ public class StoreTesting extends BaseTestClass {
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
-        LibraryResponse libraryResponse = testDataProvider.getLibrary();
+        LibraryResponse libraryResponse = testDataProvider.getIapLibrary();
 
         validationHelper.verifyIapLibrary(libraryResponse, commitPurchaseResponse);
 

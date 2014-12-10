@@ -763,6 +763,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getLibrary();
     }
 
+    public LibraryResponse getIapLibrary() throws Exception {
+        return storeClient.getIAPLibrary();
+    }
+
     public TocResponse getToc() throws Exception {
         return storeClient.getTOC();
     }
