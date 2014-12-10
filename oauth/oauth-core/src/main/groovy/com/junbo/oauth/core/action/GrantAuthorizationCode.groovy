@@ -53,7 +53,8 @@ class GrantAuthorizationCode implements Action {
                     nonce: oauthInfo.nonce,
                     redirectUri: oauthInfo.redirectUri,
                     expiredBy: new Date(System.currentTimeMillis() + defaultExpiration * 1000),
-                    lastAuthDate: loginState.lastAuthDate
+                    lastAuthDate: loginState.lastAuthDate,
+                    loginStateHash: loginState.hashedId
             )
 
             authorizationCodeRepository.save(authorizationCode)
