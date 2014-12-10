@@ -570,14 +570,14 @@ public class StoreTesting extends BaseTestClass {
             component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
-            description = "Test get iap item",
+            description = "Test get iap items",
             steps = {
-                    "1. test get iap item",
+                    "1. test get iap items",
                     "2. Verify response",
             }
     )
     @Test
-    public void testGetIapItem() throws Exception {
+    public void testGetIapItems() throws Exception {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
@@ -589,6 +589,36 @@ public class StoreTesting extends BaseTestClass {
 
         ValidationHelper.verifyEqual(iapItemsResponse.getItems().get(0).getIapDetails().getSku(), "upgrade_bird", "verify sku");
         ValidationHelper.verifyEqual(iapItemsResponse.getItems().get(0).getTitle(), "testOffer_IAP_Consumable","verify item title");
+
+        ValidationHelper.verifyEqual(iapItemsResponse.getItems().get(1).getIapDetails().getSku(), "upgrade_bird", "verify sku");
+        ValidationHelper.verifyEqual(iapItemsResponse.getItems().get(1).getTitle(), "testItem_IAP_Permanent","verify item title");
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store checkout",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test get iap items with non-existing sku name",
+            steps = {
+                    "1. test get iap item by invalid name",
+                    "2. Verify response",
+            }
+    )
+    @Test
+    public void testGetIapItemsByInvalidSku() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
+
+        String offerId = testDataProvider.getOfferIdByName(offer_inApp_consumable);
+        List<String> skus = new ArrayList<>();
+        skus.add("10_bird");
+        IAPItemsResponse iapItemsResponse = testDataProvider.getIapItems(testDataProvider.getIapParam(offerId), skus);
+
+        ValidationHelper.verifyEqual(iapItemsResponse.getItems().size(), 0, "verify nothing returns");
+
     }
 
 
