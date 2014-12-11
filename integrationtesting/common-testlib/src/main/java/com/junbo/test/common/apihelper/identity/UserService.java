@@ -5,7 +5,6 @@
  */
 package com.junbo.test.common.apihelper.identity;
 
-import com.junbo.common.error.*;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
@@ -61,6 +60,8 @@ public interface UserService {
     String PutUser(String userId, User user) throws Exception;
 
     String PutUser(String userId, User user, int expectedResponseCode) throws Exception;
+
+    String PutUser(String userId, User user, int expectedResponseCode, boolean serviceScope) throws Exception;
 
     com.junbo.common.error.Error PutUserWithError(String userId, User user, int expectedResponseCode, String errorCode) throws Exception;
 
