@@ -34,7 +34,7 @@ public class MerchantAccountRepository extends DomainDataRepository<MerchantAcco
         List<MerchantAccountEntity> results = CommonUtil.filter(entities, new IPredicate<MerchantAccountEntity>() {
             @Override
             public boolean apply(MerchantAccountEntity type) {
-                return type.getCurrency().equalsIgnoreCase(currencyIsoNum);
+                return type.getPaymentProviderId() == paymentProviderId;
             }
         });
         if(results.size() == 1){
@@ -45,7 +45,8 @@ public class MerchantAccountRepository extends DomainDataRepository<MerchantAcco
                     new IPredicate<MerchantAccountEntity>() {
                         @Override
                         public boolean apply(MerchantAccountEntity type) {
-                            return type.getPaymentProviderId() == paymentProviderId;
+                            return type.getCurrency().equalsIgnoreCase(currencyIsoNum) ||
+                                    CommonUtil.isNullOrEmpty(type.getCurrency());
                         }
                     });
             if(providerResults.isEmpty()){

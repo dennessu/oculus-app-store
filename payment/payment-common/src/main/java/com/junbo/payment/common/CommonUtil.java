@@ -72,7 +72,7 @@ public final class CommonUtil {
     }
 
     public static boolean isNullOrEmpty(String value){
-        return value == null || value.isEmpty();
+        return value == null || value.trim().isEmpty();
     }
 
     public static <T> List<T> filter(List<T> target, IPredicate<T> predicate) {
