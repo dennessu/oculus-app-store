@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.test.common.HttpclientHelper;
@@ -600,6 +601,38 @@ public class postUser {
         Validator.Validate("Validate Response code", 400, response.getStatusLine().getStatusCode());
         Validator.Validate("Validate response error message", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testUserPartialUpdate() throws Exception {
+        User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
+
+        User partialUser = new User();
+        partialUser.setId(user.getId());
+        partialUser.setCountryOfResidence(new CountryId("US"));
+        user = Identity.UserPartialPost(partialUser);
+
+        assert user.getCountryOfResidence().getValue().equalsIgnoreCase("US");
+        assert user.getEmails().size() == 1;
+
+        User newPartialUser = new User();
+        newPartialUser.setId(user.getId());
+        newPartialUser.setEmails(user.getEmails());
+
+        String label = "testLabel";
+        for(UserPersonalInfoLink link : newPartialUser.getEmails()) {
+            link.setLabel(label);
+        }
+        user = Identity.UserPartialPost(newPartialUser);
+        assert user.getEmails().size() == 1;
+        assert user.getEmails().get(0).getLabel().equalsIgnoreCase(label);
+
+        for (UserPersonalInfoLink link : newPartialUser.getEmails()) {
+            link.setLabel(null);
+        }
+        user = Identity.UserPartialPost(newPartialUser);
+        assert user.getEmails().size() == 1;
+        assert user.getEmails().get(0).getLabel() == null;
     }
 
     protected static User createUser(String username, String nickName) throws Exception{

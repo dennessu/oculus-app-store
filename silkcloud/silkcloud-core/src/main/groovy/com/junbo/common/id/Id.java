@@ -6,13 +6,18 @@
 
 package com.junbo.common.id;
 
+import com.junbo.common.json.PropertyAssignedAware;
+import com.junbo.common.json.PropertyAssignedAwareSupport;
+
 import java.util.Properties;
 
 /**
  * generic identifier class.
  *
  */
-public abstract class Id implements UniversalId {
+public abstract class Id implements UniversalId, PropertyAssignedAware {
+
+    private final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
 
     private Long value;
 
@@ -33,10 +38,12 @@ public abstract class Id implements UniversalId {
 
     public void setValue(Long value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public void setCloudantId(String id) {
         this.value = Long.parseLong(id);
+        support.setPropertyAssigned("value");
     }
 
     public Properties getResourcePathPlaceHolder() {
@@ -69,5 +76,10 @@ public abstract class Id implements UniversalId {
             return false;
         }
         return value.equals(((Id)other).value);
+    }
+
+    @Override
+    public boolean isPropertyAssigned(String propertyName) {
+        return support.isPropertyAssigned(propertyName);
     }
 }
