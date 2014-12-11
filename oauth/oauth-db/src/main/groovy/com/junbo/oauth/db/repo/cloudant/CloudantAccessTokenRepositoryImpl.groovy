@@ -88,6 +88,25 @@ class CloudantAccessTokenRepositoryImpl
     }
 
     @Override
+    void removeByLoginStateHash(String loginStateHash) {
+        assert StringUtils.hasText(loginStateHash) : 'loginStateHash is empty'
+        def startKey = [loginStateHash, System.currentTimeMillis()]
+        def endKey = [loginStateHash]
+
+        List<AccessToken> tokens = queryViewSync('by_login_state_hash_expired_by', startKey.toArray(new String()), endKey.toArray(new String()), true, null, null, true)
+
+        try {
+            setStrongUseBulk(true)
+            for (AccessToken token : tokens) {
+                cloudantDeleteSync(token)
+            }
+            CloudantClientBulk.commit().get()
+        } finally {
+            setStrongUseBulk(false)
+        }
+    }
+
+    @Override
     boolean isValidAccessToken(String tokenValue) {
         return tokenGenerator.isValidAccessToken(tokenValue)
     }

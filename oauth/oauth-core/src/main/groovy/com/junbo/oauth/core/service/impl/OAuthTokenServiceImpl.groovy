@@ -103,7 +103,16 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
     }
 
     @Override
+    AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes, Long overrideExpiration, String loginStateHash) {
+        return generateAccessToken(client, userId, scopes, false, overrideExpiration, loginStateHash)
+    }
+
     AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes, Boolean ipRestriction, Long overrideExpiration) {
+        return generateAccessToken(client, userId, scopes, ipRestriction, overrideExpiration, null)
+    }
+
+    @Override
+    AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes, Boolean ipRestriction, Long overrideExpiration, String loginStateHash) {
         Assert.notNull(client, 'client is null')
         Assert.notNull(client.clientId, 'client.clientId is null')
         Assert.notNull(userId, 'userId is null')
@@ -123,7 +132,8 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
                 userId: userId,
                 scopes: scopes,
                 expiredBy: new Date(System.currentTimeMillis() + expiration * MILLISECONDS_PER_SECOND),
-                debugEnabled: client.debugEnabled
+                debugEnabled: client.debugEnabled,
+                loginStateHash: loginStateHash
         )
 
         if (ipRestriction) {
@@ -377,6 +387,12 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
         Assert.notNull(userId, 'userId is null')
         Assert.isTrue(userId != 0L, 'userId is 0')
         accessTokenRepository.removeByUserId(userId)
+    }
+
+    @Override
+    void revokeAccessTokenByLoginStateHash(String loginState) {
+        Assert.notNull(loginState, 'loginStateHash is null')
+        accessTokenRepository.removeByLoginStateHash(loginState)
     }
 
     @Override

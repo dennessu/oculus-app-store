@@ -387,6 +387,11 @@ public class Identity {
                 JsonHelper.JsonSerializer(user), User.class);
     }
 
+    public static User UserPartialPost(User user) throws Exception {
+        return IdentityPost(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()),
+                JsonHelper.JsonSerializer(user), User.class);
+    }
+
     public static void UserDelete(User user) throws Exception {
         IdentityDelete(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()));
     }

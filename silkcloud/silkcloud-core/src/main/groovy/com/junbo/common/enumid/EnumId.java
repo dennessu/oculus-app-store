@@ -5,14 +5,18 @@
  */
 package com.junbo.common.enumid;
 
+import com.junbo.common.json.PropertyAssignedAware;
+import com.junbo.common.json.PropertyAssignedAwareSupport;
+
 import java.io.Serializable;
 import java.util.Properties;
 
 /**
  * Created by haomin on 14-4-24.
  */
-public abstract class EnumId extends Object implements Serializable {
+public abstract class EnumId extends Object implements Serializable, PropertyAssignedAware {
 
+    private final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
     private String value;
 
     protected Properties resourcePathPlaceHolder;
@@ -32,6 +36,7 @@ public abstract class EnumId extends Object implements Serializable {
 
     public void setValue(String value) {
         this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public Properties getResourcePathPlaceHolder() {
@@ -64,5 +69,10 @@ public abstract class EnumId extends Object implements Serializable {
             return false;
         }
         return value.equals(((EnumId)other).value);
+    }
+
+    @Override
+    public boolean isPropertyAssigned(String propertyName) {
+        return support.isPropertyAssigned(propertyName);
     }
 }

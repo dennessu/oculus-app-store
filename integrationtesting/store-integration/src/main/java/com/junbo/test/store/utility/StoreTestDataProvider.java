@@ -26,6 +26,7 @@ import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
 import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
@@ -991,5 +992,12 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public IAPItemsResponse getIapItems(IAPParam iapParam, List<String> skus) throws Exception{
         return storeClient.getIAPItems(iapParam, skus);
+    }
+
+    public void clearUserPreferLocalAndCountry(UserId userId) throws Exception {
+        User user = Master.getInstance().getUser(identityClient.GetUserByUserId(IdFormatter.encodeId(userId)));
+        user.setCountryOfResidence(null);
+        user.setPreferredLocale(null);
+        identityClient.PutUser(IdFormatter.encodeId(user.getId()), user, 200, true);
     }
 }

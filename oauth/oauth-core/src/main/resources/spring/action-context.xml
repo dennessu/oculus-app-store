@@ -34,6 +34,7 @@
     <bean id="clearLoginCookies" class="com.junbo.oauth.core.action.ClearLoginCookies">
         <property name="loginStateRepository" ref="loginStateRepository"/>
         <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="consentError" class="com.junbo.oauth.core.action.BuildRedirectUri">

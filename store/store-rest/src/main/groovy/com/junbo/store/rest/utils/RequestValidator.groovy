@@ -23,6 +23,7 @@ import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.StoreApiHeader
@@ -184,7 +185,7 @@ class RequestValidator {
         return null
     }
 
-    Promise<UserProfileUpdateResponse> validateUserProfileUpdateRequest(UserProfileUpdateRequest request) {
+    Promise<UserProfileUpdateResponse> validateUserProfileUpdateRequest(UserProfileUpdateRequest request, ApiContext apiContext) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -199,7 +200,7 @@ class RequestValidator {
                 return Promise.pure(response)
             }
 
-            return userProfileUpdateEmailVerification(request).then {
+            return userProfileUpdateEmailVerification(request, apiContext).then {
                 return Promise.pure(null)
             }
         }
@@ -249,8 +250,10 @@ class RequestValidator {
         }
     }
 
-    Promise<Void> userProfileUpdateEmailVerification(UserProfileUpdateRequest request) {
+    Promise<Void> userProfileUpdateEmailVerification(UserProfileUpdateRequest request, ApiContext apiContext) {
         return identityUtils.getVerifiedUserFromToken().then { User user ->
+            LocaleId locale = user.preferredLocale != null ? user.preferredLocale : apiContext.locale.getId()
+            CountryId country = user.countryOfResidence != null ? user.countryOfResidence : apiContext.country.getId()
             return isMailChanged(request, user).then { Boolean mailChanged ->
                 if (mailChanged) {
                     Email email = new Email(
@@ -262,7 +265,7 @@ class RequestValidator {
                             value: ObjectMapperProvider.instance().valueToTree(email)
                     )
                     return resourceContainer.userUserPersonalInfoResource.create(emailPii).then { UserPersonalInfo userPersonalInfo ->
-                        return facadeContainer.oAuthFacade.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), userPersonalInfo.getId()).then {
+                        return facadeContainer.oAuthFacade.sendVerifyEmail(locale.value, country.value, user.getId(), userPersonalInfo.getId()).then {
                             return Promise.pure(null)
                         }
                     }

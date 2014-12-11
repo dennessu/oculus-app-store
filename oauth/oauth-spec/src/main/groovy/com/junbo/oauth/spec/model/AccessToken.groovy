@@ -28,6 +28,7 @@ class AccessToken extends ExpirableToken {
     String refreshTokenValue
     String ipAddress
     Boolean debugEnabled
+    String loginStateHash
 
     @Override
     String getId() {
