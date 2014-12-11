@@ -18,6 +18,7 @@ import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.internal.FacebookPaymentAccountMapping;
+import com.junbo.payment.spec.internal.FacebookPaymentType;
 import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -176,6 +177,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             LOGGER.error("not able to find external token for pi:" + pi.getId());
             throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(pi.getId().toString()).exception();
         }
+        if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getPaymentType())){
+            LOGGER.error("payment type needed for facebook.");
+            throw AppCommonErrors.INSTANCE.fieldRequired("payment_type").exception();
+        }
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(String s) {
@@ -190,11 +195,8 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
                 fbPayment.setItemType(FacebookItemType.oculus_digital);
-                FacebookPaymentEntity fbEntity = FacebookPaymentEntity.us;
-                if(!"US".equalsIgnoreCase(paymentRequest.getChargeInfo().getCountry())){
-                    fbEntity = FacebookPaymentEntity.international;
-                }
-                FacebookItemDescription description = new FacebookItemDescription(fbEntity, FacebookPaymentType.digital);
+                FacebookItemDescription description = new FacebookItemDescription(getPaymentEntity(paymentRequest.getMerchantAccount()),
+                        getPaymentType(paymentRequest.getChargeInfo().getPaymentType()));
                 description.setItems(new String[]{paymentRequest.getChargeInfo().getBusinessDescriptor()});
                 fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
@@ -253,6 +255,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             LOGGER.error("not able to find external token for pi:" + pi.getId());
             throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(pi.getId().toString()).exception();
         }
+        if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getPaymentType())){
+            LOGGER.error("payment type needed for facebook.");
+            throw AppCommonErrors.INSTANCE.fieldRequired("payment_type").exception();
+        }
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(String s) {
@@ -266,8 +272,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setAction(FacebookPaymentActionType.charge);
                 fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                fbPayment.setItemType(FacebookItemType.open_graph_product);
-                FacebookItemDescription description = new FacebookItemDescription(FacebookPaymentEntity.us, FacebookPaymentType.digital);
+                fbPayment.setItemType(FacebookItemType.oculus_digital);
+                FacebookItemDescription description = new FacebookItemDescription(getPaymentEntity(paymentRequest.getMerchantAccount()),
+                        getPaymentType(paymentRequest.getChargeInfo().getPaymentType()));
                 description.setItems(new String[]{paymentRequest.getChargeInfo().getBusinessDescriptor()});
                 fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
@@ -400,6 +407,25 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             }
         });
     }
+
+    private FacebookPaymentType getPaymentType(String type){
+        try{
+            FacebookPaymentType paymentType = FacebookPaymentType.valueOf(type);
+            return paymentType;
+        }catch (Exception ex){
+            throw AppCommonErrors.INSTANCE.fieldInvalid("payment_type").exception();
+        }
+    }
+
+    private FacebookPaymentEntity getPaymentEntity(String merchantAccount){
+        try{
+            FacebookPaymentEntity paymentEntity = FacebookPaymentEntity.valueOf(merchantAccount);
+            return paymentEntity;
+        }catch (Exception ex){
+            throw AppCommonErrors.INSTANCE.fieldInvalid("payment_entity").exception();
+        }
+    }
+
 
     @Required
     public void setOculusAppId(String oculusAppId) {

@@ -154,8 +154,12 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<UserProfileUpdateResponse> updateUserProfile(UserProfileUpdateRequest request) {
+        ApiContext apiContext
         requestValidator.validateRequiredApiHeaders()
-        return requestValidator.validateUserProfileUpdateRequest(request).then { UserProfileUpdateResponse response ->
+        apiContextBuilder.buildApiContext().then { ApiContext ac ->
+            apiContext = ac
+            return requestValidator.validateUserProfileUpdateRequest(request, apiContext)
+        }.then { UserProfileUpdateResponse response ->
             if (response != null) {
                 return Promise.pure(response)
             }

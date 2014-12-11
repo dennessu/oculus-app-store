@@ -19,6 +19,7 @@ public class ChargeInfo {
     private String businessDescriptor;
     private String ipAddress;
     private List<Item> items;
+    private String paymentType;
 
     public String getCountry() {
         return country;
@@ -66,5 +67,13 @@ public class ChargeInfo {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
     }
 }

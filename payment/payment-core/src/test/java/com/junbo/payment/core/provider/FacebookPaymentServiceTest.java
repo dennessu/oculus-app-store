@@ -466,6 +466,7 @@ public class FacebookPaymentServiceTest extends BaseTest {
                 setCurrency("USD");
                 setAmount(new BigDecimal("100.00"));
                 setBusinessDescriptor("ut");
+                setPaymentType("digital");
             }
         });
         payment.setPaymentInstrumentId(pi.getId());
