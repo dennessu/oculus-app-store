@@ -22,7 +22,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import scala.reflect.internal.Trees;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -215,8 +214,8 @@ public class postCountry {
                 Validator.Validate("Validate LongName ", countryLocaleKey.getShortName() != null, true);
             }
 
-            countries = Identity.CountriesSearch(locale.getLocaleCode(), null);
-            for (Country country : countries) {
+            Results<Country> results = Identity.CountriesSearch(locale.getLocaleCode(), null, null);
+            for (Country country : results.getItems()) {
                 Validator.Validate("Validate " + country.getCountryCode(), country.getSubCountries() != null, true);
                 CountryLocaleKey countryLocaleKey = country.getLocales().get(locale.getLocaleCode());
                 Validator.Validate("Validate shortName ", countryLocaleKey.getShortName() != null, true);

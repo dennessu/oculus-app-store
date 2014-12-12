@@ -5,6 +5,7 @@
  */
 package com.junbo.authorization.filter
 
+import com.fasterxml.jackson.databind.JsonNode
 import groovy.transform.CompileStatic
 
 /**
@@ -17,7 +18,8 @@ class FilterUtil {
                 type == String ||
                 type == Date ||
                 Number.isAssignableFrom(type) ||
-                type == UUID
+                type == UUID ||
+                type == JsonNode
     }
 
     static boolean equalsSimpleType(Object obj1, Object obj2) {
