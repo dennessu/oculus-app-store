@@ -1,0 +1,5 @@
+{
+    "name": "readonly.service",
+    "description": "Scope for the service account to read the resource only (used for api response validation).",
+    "tfaRequired": false
+}

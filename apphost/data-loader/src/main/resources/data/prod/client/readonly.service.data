@@ -1,0 +1,19 @@
+{
+  "client_id" : "readonly.service",
+  "client_secret" : "56F888C63EC596A5B26F9F682822687D#154CD9EC9B4A1C177F47EBD33DD6DE0EFDA7843FB87EC22BF233E5C7335243A714410F9E6524BBB594D81883484A8738",
+  "client_name" : "readonly.service",
+
+  "redirect_uris" : [],
+
+  "logout_redirect_uris" : [],
+
+  "scopes" : [ "readonly.service" ],
+  "default_scopes" : [ "readonly.service" ],
+
+  "response_types" : [],
+  "grant_types" : ["CLIENT_CREDENTIALS", "EXCHANGE"],
+
+  "id_token_issuer" : "api.oculus.com",
+  "need_consent" : false,
+  "internal" : true
+}
