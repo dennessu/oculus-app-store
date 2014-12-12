@@ -8,6 +8,7 @@ package com.junbo.test.store;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.identity.*;
@@ -32,6 +33,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -458,6 +460,30 @@ public class LoginResourceTesting extends BaseTestClass {
         AuthTokenResponse response = testDataProvider.CreateUser(createUserRequest, true);
         assert response != null;
         assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        TestContext.getData().putHeader("Accept-Language", "es");
+        response = testDataProvider.CreateUser(createUserRequest, true);
+        assert response != null;
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setPreferredLocale("es_US");
+        response = testDataProvider.CreateUser(createUserRequest, true);
+        assert response != null;
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setPreferredLocale("es-US");
+        response = testDataProvider.CreateUser(createUserRequest, true);
+        assert response != null;
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+
+        createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setPreferredLocale("es");
+        response = testDataProvider.CreateUser(createUserRequest, true);
+        assert response != null;
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
     }
 
     @Property(
@@ -635,6 +661,27 @@ public class LoginResourceTesting extends BaseTestClass {
             owner = "ZhaoYunlong",
             status = Status.Enable,
             steps = {
+                    "Check login max login attempt"
+            }
+    )
+    @Test
+    public void testLoginReachMaxAttempt() throws Exception {
+        int allowMaxTime = 3;
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+        for (int i  = 0;i < allowMaxTime;++i) {
+            testDataProvider.SignInWithError(createUserRequest.getEmail(), "PASSWORD", RandomHelper.randomAlphabetic(10), 412, "132.103");
+        }
+        testDataProvider.SignInWithError(createUserRequest.getEmail(), "PASSWORD", RandomHelper.randomAlphabetic(10), 429, "131.139");
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
                     "Check refresh token works"
             }
     )
@@ -668,10 +715,9 @@ public class LoginResourceTesting extends BaseTestClass {
         assert error.getDetails().get(0).getField().contains("refreshToken");
         assert error.getDetails().get(0).getReason().contains("Field is required");
 
-        error = testDataProvider.getTokenWithError(authTokenResponse.getRefreshToken(), 400, "132.001");
-        assert error != null;
-        assert error.getDetails().get(0).getField().contains("refresh_token");
-        assert error.getDetails().get(0).getReason().contains("Field value is invalid.");
+        // within 5 minutes the refresh token will still be valid
+        AuthTokenResponse response1 = testDataProvider.getToken(authTokenResponse.getRefreshToken());
+        assert response1.getRefreshToken().equals(response.getRefreshToken());
     }
 
     @Property(
@@ -690,6 +736,67 @@ public class LoginResourceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
 
+        UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
+        StoreUserProfile storeUserProfile = new StoreUserProfile();
+        StoreUserEmail storeUserEmail = new StoreUserEmail();
+        String newEmail = RandomHelper.randomEmail();
+        storeUserEmail.setValue(newEmail);
+        storeUserProfile.setEmail(storeUserEmail);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+
+        UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getChallenge() != null;
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
+
+        ChallengeAnswer answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 1;
+        String link = links.get(0);
+        ConfirmEmailResponse confirmEmailResponse = testDataProvider.confirmEmail(link);
+        assert confirmEmailResponse.getIsSuccess();
+        assert newEmail.equalsIgnoreCase(confirmEmailResponse.getEmail());
+
+        UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+
+        AuthTokenResponse response = testDataProvider.SignIn(newEmail, createUserRequest.getPassword());
+        validationHelper.verifyEmailInAuthResponse(response, newEmail, true);
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "Check update email works if country & locale is missing"
+            }
+    )
+    @Test
+    public void testUpdateEmailUserCountryLocaleMissing() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
+
+        // clear country & locale field of user
+        Master.getInstance().setCurrentUid(IdFormatter.encodeId(authTokenResponse.getUserId()));
+        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()),
+                testDataProvider.getUserAccessToken(URLEncoder.encode(createUserRequest.getEmail(), "UTF-8"), createUserRequest.getPassword()));
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+        testDataProvider.clearUserPreferLocalAndCountry(authTokenResponse.getUserId());
+
+        testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
         StoreUserProfile storeUserProfile = new StoreUserProfile();
         StoreUserEmail storeUserEmail = new StoreUserEmail();

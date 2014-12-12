@@ -11,11 +11,11 @@ import com.junbo.billing.spec.model.Transaction;
 import com.junbo.common.model.Results;
 import com.junbo.order.spec.model.*;
 import com.junbo.test.billing.entities.TransactionInfo;
+import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.order.model.*;
 import com.junbo.test.order.model.enums.OrderStatus;
-import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Created by weiyu_000 on 5/19/14.
  */
-public class OrderValidationHelper extends BaseValidationHelper {
+public class OrderValidationHelper extends ValidationHelper {
     OrderTestDataProvider testDataProvider = new OrderTestDataProvider();
 
     public void validateOrderStatus(Map<String, OrderStatus> expectedOrderStatus) {

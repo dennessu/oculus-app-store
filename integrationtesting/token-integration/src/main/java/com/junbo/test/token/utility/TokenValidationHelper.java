@@ -5,10 +5,10 @@
  */
 package com.junbo.test.token.utility;
 
-import com.junbo.test.common.Utility.BaseValidationHelper;
+import com.junbo.test.common.Utility.ValidationHelper;
 
 /**
  * Created by weiyu_000 on 7/24/14.
  */
-public class TokenValidationHelper extends BaseValidationHelper {
+public class TokenValidationHelper extends ValidationHelper {
 }

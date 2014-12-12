@@ -36,5 +36,5 @@
         ]]></sql>
     </changeSet>
 
-
+    <include file="../../common/ping.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

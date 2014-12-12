@@ -68,7 +68,8 @@ class EmailVerifyCodeRepositoryImpl implements EmailVerifyCodeRepository {
         return new EmailVerifyCode(
                 code: entity.id,
                 email: entity.email,
-                userId: entity.userId
+                userId: entity.userId,
+                expiredBy: entity.expiredBy
         )
     }
 
@@ -80,7 +81,8 @@ class EmailVerifyCodeRepositoryImpl implements EmailVerifyCodeRepository {
         return new EmailVerifyCodeEntity(
                 id: entity.code,
                 email: entity.email,
-                userId: entity.userId
+                userId: entity.userId,
+                expiredBy: entity.expiredBy
         )
     }
 }

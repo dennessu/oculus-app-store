@@ -23,7 +23,6 @@
     <bean id="commonQueryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
     <bean id="commonTranscoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
     <bean id="commonIgnoreUnknownTranscoder" class="com.junbo.common.json.JsonMessageIgnoreUnknownTranscoder"/>
-    <bean id="caseyTranscoder" class="com.junbo.common.json.JsonMessageCaseyTranscoder"/>
     <bean id="rawDataTranscoder" class="com.junbo.common.json.RawDataTranscoder" />
     <bean id="commonExceptionHandler" class="com.junbo.common.error.CommonExceptionHandler">
         <property name="messageTranscoder" ref="commonTranscoder"/>
@@ -86,6 +85,7 @@
 
     <bean id="userLogRepository" class="com.junbo.common.userlog.UserLogRepositoryCloudantImpl" parent="cloudantClientWithSearch">
         <property name="dbName" value="user_log"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="userLogProcessor" class="com.junbo.common.userlog.UserLogProcessorImpl">

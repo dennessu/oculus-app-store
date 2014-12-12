@@ -54,6 +54,9 @@ public class PaymentEventEntity extends GenericEntity {
     @Type(type = "json-string")
     private String response;
 
+    @Column(name = "external_token")
+    private String externalToken;
+
     public Long getId() {
         return id;
     }
@@ -121,5 +124,13 @@ public class PaymentEventEntity extends GenericEntity {
 
     public void setResponse(String response) {
         this.response = response;
+    }
+
+    public String getExternalToken() {
+        return externalToken;
+    }
+
+    public void setExternalToken(String externalToken) {
+        this.externalToken = externalToken;
     }
 }

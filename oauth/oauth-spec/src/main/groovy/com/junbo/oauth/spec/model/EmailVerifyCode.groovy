@@ -14,7 +14,7 @@ import groovy.transform.CompileStatic
  * EmailVerifyCode.
  */
 @CompileStatic
-class EmailVerifyCode extends ResourceMeta<String> {
+class EmailVerifyCode extends ExpirableToken {
     @CloudantIgnore
     String code
 

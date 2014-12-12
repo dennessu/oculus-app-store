@@ -47,7 +47,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
     @Override
     Promise<Void> validateForSearch(UserId userId, UserCredentialListOptions options) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
         if (options == null) {
             throw new IllegalArgumentException('options is null')
@@ -67,8 +67,11 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
 
     @Override
     Promise<Object> validateForCreate(UserId userId, UserCredential userCredential) {
+        if (userId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
         if (userCredential == null) {
-            throw new IllegalArgumentException('userCredential is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         userCredential.userId = userId
 

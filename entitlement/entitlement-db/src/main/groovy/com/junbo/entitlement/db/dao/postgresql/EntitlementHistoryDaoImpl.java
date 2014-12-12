@@ -8,6 +8,7 @@ package com.junbo.entitlement.db.dao.postgresql;
 
 import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
+import com.junbo.langur.core.promise.Promise;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,7 +17,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntitlementHistoryDaoImpl extends BaseDao<EntitlementHistoryEntity> implements EntitlementHistoryDao {
     @Override
-    public EntitlementHistoryEntity insert(EntitlementHistoryEntity entitlementHistoryEntity) {
-        return get((String)currentSession(entitlementHistoryEntity.getShardMasterId()).save(entitlementHistoryEntity));
+    public void insertAsync(EntitlementHistoryEntity entitlementHistoryEntity) {
+        currentSession(entitlementHistoryEntity.getShardMasterId()).save(entitlementHistoryEntity);
+    }
+
+    @Override
+    public Promise<EntitlementHistoryEntity> insertSync(EntitlementHistoryEntity entitlementHistoryEntity) {
+        currentSession(entitlementHistoryEntity.getShardMasterId()).save(entitlementHistoryEntity);
+        return Promise.pure(null);
     }
 }

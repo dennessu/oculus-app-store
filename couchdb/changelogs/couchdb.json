@@ -4,39 +4,45 @@
       "views": {
         "by_refresh_token": {
           "map": "function(doc) {  if (doc.refreshToken != null) {    emit(doc.refreshToken, doc._id);  }}"
-        }, 
+        },
         "by_user_id_client_id": {
           "map": "function(doc) {  emit(doc.userId + ':' + doc.clientId, doc._id)}"
+        },
+        "by_user_id_expired_by": {
+          "map": "function(doc) { emit([doc.userId, Date.parse(doc.expiredBy)], doc._id) }"
+        },
+        "by_login_state_hash_expired_by": {
+          "map": "function(doc) { emit([doc.loginStateHash, Date.parse(doc.expiredBy)], doc._id) }"
         }
       }
-    }, 
-    "api_definition": {}, 
-    "authorization_code": {}, 
+    },
+    "api_definition": {},
+    "authorization_code": {},
     "cart": {
       "views": {
         "by_client_name_user": {
           "map": "function(doc) {  emit(doc.clientId + \":\" + doc.user + \":\" + doc.cartName, doc._id)}"
         }
       }
-    }, 
-    "client": {}, 
+    },
+    "client": {},
     "communication": {
       "views": {
         "by_region": {
           "map": "function(doc) {if (doc.regions) {for (var i in doc.regions) {emit(doc.regions[i], doc._id)}}}",
             "reduce": "_count"
-        }, 
+        },
         "by_region_and_translation": {
           "map": "function(doc) {if (doc.translations && doc.regions) {for (var i in doc.regions) {for (var j in doc.translations) {emit([doc.regions[i], doc.translations[j]], doc._id)}}}}",
             "reduce": "_count"
-        }, 
+        },
         "by_translation": {
           "map": "function(doc) {if (doc.translations) {for (var i in doc.translations) {emit(doc.translations[i], doc._id)}}}",
             "reduce": "_count"
         }
       }
-    }, 
-    "consent": {}, 
+    },
+    "consent": {},
     "country": {
       "views": {
         "by_default_currency": {
@@ -52,15 +58,15 @@
           "reduce": "_count"
         }
       }
-    }, 
-    "currency": {}, 
+    },
+    "currency": {},
     "device": {
       "views": {
         "by_serial_number": {
           "map": "function(doc) {  emit(doc.serialNumber, doc._id)}"
         }
       }
-    }, 
+    },
     "device_type": {
       "views": {
         "by_type_code": {
@@ -79,42 +85,42 @@
         }
       }
     },
-    "dualwrite_pending_action": {}, 
-    "email_history": {}, 
-    "email_schedule": {}, 
+    "dualwrite_pending_action": {},
+    "email_history": {},
+    "email_schedule": {},
     "email_template": {
       "indexes": {
         "search": {
           "index": "function(doc) {index('name', doc.name)}"
         }
-      }, 
+      },
       "views": {
         "by_action": {
           "map": "function(doc) {emit(doc.action, doc._id)}"
-        }, 
+        },
         "by_action_locale": {
           "map": "function(doc) {emit(doc.action + ':' + doc.locale, doc._id)}"
-        }, 
+        },
         "by_locale": {
           "map": "function(doc) {emit(doc.locale, doc._id)}"
-        }, 
+        },
         "by_name": {
           "map": "function(doc) {emit(doc.name, doc._id)}"
-        }, 
+        },
         "by_source": {
           "map": "function(doc) {emit(doc.source, doc._id)}"
-        }, 
+        },
         "by_source_action": {
           "map": "function(doc) {emit(doc.source + ':' + doc.action, doc._id)}"
-        }, 
+        },
         "by_source_action_locale": {
           "map": "function(doc) {emit(doc.source + ':' + doc.action +':' + doc.locale, doc._id)}"
-        }, 
+        },
         "by_source_locale": {
           "map": "function(doc) {emit(doc.source + ':' + doc.locale, doc._id)}"
         }
       }
-    }, 
+    },
     "email_verify_code": {
         "views": {
             "by_user_id_email": {
@@ -133,9 +139,9 @@
       "views": {
         "by_hash_value": {
           "map": "function(doc) {  emit(doc.hashSearchInfo, doc._id)}"
-        } 
+        }
       }
-    }, 
+    },
     "group": {
       "views": {
         "by_organization_id_and_name": {
@@ -147,55 +153,61 @@
           "reduce": "_count"
         }
       }
-    }, 
-    "locale": {}, 
-    "login_state": {}, 
-    "oauth_flow_state": {}, 
+    },
+    "locale": {},
+    "login_state": {
+        "views": {
+          "by_user_id_expired_by": {
+            "map": "function(doc) { emit([doc.userId, Date.parse(doc.expiredBy)], doc._id) }"
+          }
+        }
+    },
+    "oauth_flow_state": {},
     "order": {
       "views": {
         "by_user": {
           "map": "function(doc) {emit(doc.user, doc._id)}"
-        }, 
+        },
         "by_user_tentitive": {
           "map": "function(doc) {if (doc.tentative !== null) {emit(doc.user + \"_\" + doc.tentative, doc._id)}}"
         }
       }
-    }, 
+    },
     "order_billing_history": {
       "views": {
         "by_order": {
           "map": "function(doc) {if (doc.orderId) {emit(doc.orderId, doc._id)}}"
         }
       }
-    }, 
+    },
     "order_discount": {
       "views": {
         "by_order": {
           "map": "function(doc) {if (doc.orderId) {emit(doc.orderId, doc._id)}}"
         }
       }
-    }, 
+    },
     "order_event": {
       "views": {
         "by_order": {
           "map": "function(doc) {if (doc.order) {emit(doc.order, doc._id)}}"
         }
       }
-    }, 
+    },
     "order_fulfillment_history": {
       "views": {
         "by_order_item": {
           "map": "function(doc) {if (doc.orderItemId) {emit(doc.orderItemId, doc._id)}}"
         }
       }
-    }, 
+    },
     "order_item": {
       "views": {
         "by_order": {
           "map": "function(doc) {if (doc.orderId) {emit(doc.orderId, doc._id)}}"
         }
       }
-    }, 
+    },
     "order_preorder_info": {
       "views": {
         "by_order_item": {
@@ -239,37 +251,40 @@
             "reduce": "_count"
         }
       }
-    }, 
+    },
     "refresh_token": {
       "views": {
         "by_user_id_client_id": {
           "map": "function(doc) {  emit(doc.userId + ':' + doc.clientId, doc._id)}"
+        },
+        "by_user_id_expired_by": {
+          "map": "function(doc) { emit([doc.userId, Date.parse(doc.expiredBy)], doc._id) }"
         }
       }
-    }, 
-    "remember_me_token": {}, 
+    },
+    "remember_me_token": {},
     "role": {
       "views": {
         "by_role_name": {
           "map": "function(doc) {  emit(doc.name + ':' + doc.target.targetType + ':' + doc.target.filterType + ':' + doc.target.filterLinkIdType + ':' + doc.target.filterLinkId, doc._id)}"
         }
       }
-    }, 
+    },
     "role_assignment": {
       "views": {
         "by_role_id": {
           "map": "function(doc) {  emit(doc.roleId + ':' + doc.assigneeType + ':' + doc.assigneeId, doc._id)}"
         }
       }
-    }, 
-    "scope": {}, 
+    },
+    "scope": {},
     "subledger": {
       "views": {
         "by_seller_status_offer_time_cc": {
           "map": "function(doc) {emit(doc.seller + ';' + doc.payoutStatus + ';' + doc.startTime + ';' + doc.offer + ';' + doc.currency + ';' + doc.country, doc._id)}"
         }
       }
-    }, 
+    },
     "subledger_item": {
         "views": {
             "by_orderitemid": {
@@ -358,40 +373,40 @@
           "map": "function(doc) {  if (doc.vat) { for (var key in doc.vat) { if (doc.vat.hasOwnProperty(key) && doc.vat[key]) { if (doc.vat[key].lastValidateTime == null && doc.vat[key].vatNumber) { emit(doc.vat[key].vatNumber, doc._id)} }} }}"
         }
       }
-    }, 
+    },
     "user_authenticator": {
       "views": {
         "by_authenticator_externalId": {
           "map": "function(doc) {  emit(doc.externalId, doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_authenticator_externalId_auth_type": {
           "map": "function(doc) { emit([doc.externalId, doc.type], doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id_auth_type": {
           "map": "function(doc) {  emit([doc.userId, doc.type], doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id_auth_type_externalId": {
           "map": "function(doc) {  emit([doc.userId, doc.type, doc.externalId], doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id_externalId": {
           "map": "function(doc) {  emit([doc.userId, doc.externalId], doc._id)}",
             "reduce": "_count"
         }
       }
-    }, 
+    },
     "user_credential_verify_attempt": {
       "views": {
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
-        }, 
+        },
         "by_user_id_credential_type_time": {
           "map": "function(doc) { emit([doc.userId, doc.type, Date.parse(doc.createdTime)], doc._id)}"
         },
@@ -402,12 +417,12 @@
           "map": "function(doc) { emit([doc.ipAddress, doc.type, Date.parse(doc.createdTime)], doc._id)}"
         }
       }
-    }, 
+    },
     "user_crypt_key": {
       "views": {
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
-        }, 
+        },
         "by_user_id_key_version": {
           "map": "function(doc) {  emit(doc.userId + ':' + doc.keyVersion.toString(), doc._id)}"
         }
@@ -425,11 +440,11 @@
         "by_group_id": {
           "map": "function(doc) {  emit(doc.groupId, doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id_group_id": {
           "map": "function(doc) {  emit([doc.userId, doc.groupId], doc._id)}"
         },
@@ -438,7 +453,7 @@
           "reduce": "_count"
         }
       }
-    }, 
+    },
     "user_optin": {
       "views": {
         "by_communication_id": {
@@ -454,41 +469,41 @@
             "reduce": "_count"
         }
       }
-    }, 
+    },
     "user_password": {
       "views": {
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id_active_status": {
           "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}",
             "reduce": "_count"
         }
       }
-    }, 
+    },
     "user_personal_info_id_to_user_id": {
       "views": {
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
-        }, 
+        },
         "by_user_personal_info_id": {
           "map": "function(doc) {  emit(doc.userPersonalInfoId, doc._id)}"
         }
       }
-    }, 
+    },
     "user_pin": {
       "views": {
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id_active_status": {
           "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}",
             "reduce": "_count"
         }
       }
-    }, 
+    },
     "user_security_question": {
       "views": {
         "by_user_id": {
@@ -496,19 +511,19 @@
             "reduce": "_count"
         }
       }
-    }, 
+    },
     "user_security_question_attempt": {
       "views": {
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id_security_question_id_time": {
           "map": "function(doc) {  emit([doc.userId, doc.userSecurityQuestionId, Date.parse(doc.createdTime)], doc._id)}",
             "reduce": "_count"
         }
       }
-    }, 
+    },
     "user_tfa_phone": {
       "views": {
         "by_user_id_personal_info": {
@@ -530,13 +545,13 @@
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id_active": {
           "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}",
             "reduce": "_count"
         }
       }
-    }, 
+    },
     "user_tfa_phone_back_up_code_attempt": {
       "views": {
         "by_user_id": {
@@ -544,13 +559,13 @@
             "reduce": "_count"
         }
       }
-    }, 
+    },
     "user_tfa_code_attempt": {
       "views": {
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id_tfa_id_time": {
           "map": "function(doc) {  emit([doc.userId, doc.userTFAId, Date.parse(doc.createdTime)], doc._id)}",
             "reduce": "_count"
@@ -566,7 +581,7 @@
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}",
             "reduce": "_count"
-        }, 
+        },
         "by_user_id_tos_id": {
           "map": "function(doc) { emit([doc.userId, doc.tosId], doc._id)}",
             "reduce": "_count"
@@ -636,11 +651,11 @@
     },
     "payment_instrument": {
         "views": {
-            "by_user_id": {
-                "map": "function(doc) {  emit(doc.userId, doc._id)}"
+            "by_user_id_deleted": {
+                "map": "function(doc) {  emit(doc.userId + ':' + doc.isDeleted, doc._id)}"
             },
-            "by_user_id_type": {
-                "map": "function(doc) {  emit(doc.userId  + ':' + doc.type, doc._id)}"
+            "by_user_id_deleted_type": {
+                "map": "function(doc) {  emit(doc.userId + ':' + doc.isDeleted + ':' + doc.type, doc._id)}"
             }
         }
     },
@@ -759,8 +774,9 @@
               }
           }
       },
-      "encrypt_user_personal_info": { }
-  }, 
+      "encrypt_user_personal_info": { },
+      "ping": {}
+  },
   "cloudant": {
     "user_log": {
       "indexes": {
@@ -774,7 +790,7 @@
         "search": {
           "index": "function(doc) {index('userId', doc.userId);index('isDeleted', doc.isDeleted);index('type', doc.type);index('isBanned', doc.isBanned);index('itemId', doc.itemId);index('useCount', doc.useCount);index('grantTime', doc.grantTime);index('expirationTime', doc.expirationTime);index('updatedTime', doc.updatedTime || doc.createdTime);}"
         }
-      }, 
+      },
       "views": {
         "byTrackingUuid": {
           "map": "function(doc) {emit(doc.trackingUuid.toString(), doc._id)}"
@@ -789,86 +805,86 @@
           "map": "function(doc) {emit(doc.userId.toString() + ':' + doc.itemId.toString() + ':' + doc.type, doc._id)}"
         }
       }
-    }, 
-    "entitlement_history": {}, 
+    },
+    "entitlement_history": {},
     "item": {
       "indexes": {
         "search": {
           "index": "function(doc) {index('type', doc.type);index('default', doc.type);if (doc.genres) {for (var genreIdx in doc.genres) {index('genreId', doc.genres[genreIdx]);index('default', doc.genres[genreIdx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);index('itemId', doc._id);index('default', doc._id);if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.sku) {index('sku', doc.activeRevision.sku);index('default', doc.activeRevision.sku);}if(doc.activeRevision.packageName) {index('packageName', doc.activeRevision.packageName);index('default', doc.activeRevision.packageName);}if (doc.activeRevision.iapHostItemIds) {for (var iapIdx in doc.activeRevision.iapHostItemIds) {index('hostItemId', doc.activeRevision.iapHostItemIds[iapIdx]);index('default', doc.activeRevision.iapHostItemIds[iapIdx]);}}if (doc.activeRevision.userInteractionModes) {for (var userInteractionMode in doc.activeRevision.userInteractionModes) {index('userInteractionMode', doc.activeRevision.userInteractionModes[userInteractionMode]);index('default', doc.activeRevision.userInteractionModes[userInteractionMode]);}}if (doc.activeRevision.platforms) {for (var platformIdx in doc.activeRevision.platforms) {index('platform', doc.activeRevision.platforms[platformIdx]);index('default', doc.activeRevision.platforms[platformIdx]);}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.releaseNotes) {if(locale.releaseNotes.shortNotes) {index('shortNotes', locale.releaseNotes.shortNotes);index('default', locale.releaseNotes.shortNotes);}if(locale.releaseNotes.longNotes) {index('longNotes', locale.releaseNotes.longNotes);index('default', locale.releaseNotes.longNotes);}}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
         }
-      }, 
+      },
       "views": {
         "by_itemId": {
           "map": "function(doc) {emit(doc._id, doc._id)}"
         }
       }
-    }, 
+    },
     "item_attribute": {
       "views": {
         "by_attributeId": {
           "map": "function(doc) {emit(doc._id, doc._id)}"
-        }, 
+        },
         "by_type": {
           "map": "function(doc) {emit(doc.type, doc._id)}"
         }
       }
-    }, 
+    },
     "item_revision": {
       "indexes": {
         "search": {
           "index": "function(doc) {if(doc.itemId){index('itemId', doc.itemId);}if(doc.ownerId){index('ownerId', doc.ownerId);}index('revisionId', doc._id);index('status', doc.status);if(doc.timestamp){index('timeInMillis', doc.timestamp);}if(doc.packageName){index('packageName',doc.packageName);}}"
         }
-      }, 
+      },
       "views": {
         "by_hostItemId": {
           "map": "function(doc) {if (doc.iapHostItemIds) {for (var idx in doc.iapHostItemIds) {emit(doc.iapHostItemIds[idx], doc._id);}}}"
-        }, 
+        },
         "by_itemId": {
           "map": "function(doc) {emit(doc.itemId, doc._id)}"
-        }, 
+        },
         "by_status": {
           "map": "function(doc) {if (doc.status){ emit(doc.status, doc._id); }}"
         }
       }
-    }, 
+    },
     "offer": {
       "indexes": {
         "search": {
           "index": "function(doc) {index('offerId', doc._id);index('default', doc._id);if (doc.published !== null && doc.published !== undefined) {index('published', doc.published);}if (doc.environment) {index('environment', doc.environment);index('default', doc.environment);}if (doc.categories) {for (var idx in doc.categories) {index('categoryId', doc.categories[idx]);index('default', doc.categories[idx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);if (!doc.currentRevisionId) {index('scheduledPublish', true);}if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.countries) { for (var countryCode in doc.activeRevision.countries) { if (doc.activeRevision.countries[countryCode]) { if (doc.activeRevision.countries[countryCode].isPurchasable) { index('availableCountry', countryCode); } else { index('unavailableCountry', countryCode); } } } } if (doc.activeRevision.items) {for (var itemIdx in doc.activeRevision.items) {if (doc.activeRevision.items[itemIdx].itemId) {index('itemId', doc.activeRevision.items[itemIdx].itemId);}}}if (doc.activeRevision.subOffers) {for (var subOfferIdx in doc.activeRevision.subOffers) {if (doc.activeRevision.subOffers[subOfferIdx]) {index('subOfferId', doc.activeRevision.subOffers[subOfferIdx]);}}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
         }
-      }, 
+      },
       "views": {
         "by_offerId": {
           "map": "function(doc) {emit(doc._id, doc._id)}"
         }
       }
-    }, 
+    },
     "offer_attribute": {
       "views": {
         "by_attributeId": {
           "map": "function(doc) {emit(doc._id, doc._id)}"
-        }, 
+        },
         "by_type": {
           "map": "function(doc) {emit(doc.type, doc._id)}"
         }
       }
-    }, 
+    },
     "offer_revision": {
       "indexes": {
         "search": {
           "index": "function(doc) {if(doc.offerId){index('offerId', doc.offerId);}if(doc.ownerId){index('ownerId', doc.ownerId);}index('revisionId', doc._id);index('status', doc.status);if(doc.timestamp){index('timeInMillis', doc.timestamp);}}"
         }
-      }, 
+      },
       "views": {
         "by_itemId": {
           "map": "function(doc) {if (doc.items) {for (var idx in doc.items) {emit(doc.items[idx].itemId, doc._id);}}}"
-        }, 
+        },
         "by_offerId": {
           "map": "function(doc) {if(doc.offerId){ emit(doc.offerId, doc._id); }}"
-        }, 
+        },
         "by_status": {
           "map": "function(doc) {if (doc.status){ emit(doc.status, doc._id); }}"
-        }, 
+        },
         "by_subOfferId": {
           "map": "function(doc) {if (doc.subOffers) {for (var idx in doc.subOffers) {emit(doc.subOffers[idx], doc._id);}}}"
         }
@@ -881,9 +897,6 @@
         }
       }
     }
-  },
-  "pii": {
-    "encrypt_user_personal_info": { }
   }
 }
 

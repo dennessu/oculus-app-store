@@ -11,6 +11,8 @@ import com.junbo.csr.spec.model.SearchForm
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 
 /**
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class CsrActionEndpointImpl implements CsrActionEndpoint {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CsrActionEndpointImpl)
     private IdentityService identityService
 
     @Required
@@ -32,26 +35,38 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
         }
 
         def results = new Results<User>(items: [])
-        User user = null
         switch (searchForm.type) {
             case SearchType.USERNAME:
-                user = identityService.getUserByUsername(searchForm.value).get()
+                def user = identityService.getUserByUsername(searchForm.value).get()
+                results.items.add(user)
                 break
             case SearchType.USERID:
-                Long userId = IdFormatter.decodeId(UserId, searchForm.value)
-                user = identityService.getUserById(new UserId(userId)).get()
+                Long userId;
+                try {
+                    userId = IdFormatter.decodeId(UserId, searchForm.value)
+                } catch (Exception e) {
+                    LOGGER.error('input userId is not correct format')
+                    throw AppErrors.INSTANCE.invalidRequest().exception()
+                }
+                def user = identityService.getUserById(new UserId(userId)).get()
+                results.items.add(user)
                 break
             case SearchType.FULLNAME:
-                return identityService.getUserByUserFullName(searchForm.value)
+                results = identityService.getUserByUserFullName(searchForm.value).get()
+                break
             case SearchType.EMAIL:
-                return identityService.getUserByUserEmail(searchForm.value)
+                results = identityService.getUserByUserEmail(searchForm.value).get()
+                break
             case SearchType.PHONENUMBER:
-                return identityService.getUserByPhoneNumber(searchForm.value)
+                results = identityService.getUserByPhoneNumber(searchForm.value).get()
+                break
         }
 
-        if (user != null) {
-            results.items.add(user)
+        // unique results by user id
+        results.items.unique { User user ->
+            return user.getId()
         }
+
         return Promise.pure(results)
     }
 }

@@ -122,7 +122,13 @@ class ApiContextBuilder {
                     return resourceContainer.localeResource.get(new LocaleId(defaultLocale), new LocaleGetOptions())
                 }
                 CountryId countryId = new CountryId(locales[1])
-                return resourceContainer.countryResource.get(countryId, new CountryGetOptions()).then { Country country ->
+                return resourceContainer.countryResource.get(countryId, new CountryGetOptions()).recover { Throwable t ->
+                    if (appErrorUtils.isAppError(t, ErrorCodes.Identity.CountryNotFound)) {
+                        LOGGER.warn('name=Store_Locale_Country_Not_Found, country={}, fallback to default', countryId)
+                        return Promise.pure(null)
+                    }
+                    throw t
+                }.then { Country country ->
                     if (country == null || country.defaultLocale == null) {
                         return resourceContainer.localeResource.get(new LocaleId(defaultLocale), new LocaleGetOptions())
                     }

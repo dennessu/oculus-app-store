@@ -20,6 +20,5 @@ dependencies {
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
 
-    compile junboProject(':csr-common')
     compile junboProject(':csr-spec')
 }

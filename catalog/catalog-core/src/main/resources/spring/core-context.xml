@@ -49,6 +49,7 @@
 
     <bean id="itemAttributeService" class="com.junbo.catalog.core.service.ItemAttributeServiceImpl">
         <property name="attributeRepo" ref="itemAttributeCloudantRepo"/>
+        <property name="itemRepo" ref="itemCloudantRepo"/>
     </bean>
     <bean id="offerAttributeService" class="com.junbo.catalog.core.service.OfferAttributeServiceImpl">
         <property name="attributeRepo" ref="offerAttributeCloudantRepo"/>

@@ -108,7 +108,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
 
     public PaymentInstrument getByPIId(Long piId){
         PaymentInstrument pi = paymentInstrumentRepository.get(piId).get();
-        if (pi == null) {
+        if (pi == null || (pi.getIsDeleted() != null && pi.getIsDeleted()) ) {
             return null;
         }
 
@@ -162,7 +162,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
     }
 
     private void setAdditionalInfo(PaymentInstrument pi) {
-        if (PIType.CREDITCARD.getId().equals(pi.getType())) {
+        if (pi != null && PIType.CREDITCARD.getId().equals(pi.getType())) {
             CreditCardDetail ccDetail = creditCardDetailRepository.get(pi.getId()).get();
             pi.setTypeSpecificDetails(paymentMapperExtension.toTypeSpecificDetails(ccDetail));
         }

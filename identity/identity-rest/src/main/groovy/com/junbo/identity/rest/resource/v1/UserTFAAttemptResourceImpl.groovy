@@ -56,11 +56,11 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
     @Override
     Promise<UserTFAAttempt> create(UserId userId, UserTFAAttempt userTeleAttempt) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTeleAttempt == null) {
-            throw new IllegalArgumentException('userTeleAttempt is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userTeleAttempt = userTFAAttemptFilter.filterForCreate(userTeleAttempt)
@@ -96,7 +96,11 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+
+        if (userTFAAttemptId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAAttemptId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -116,7 +120,7 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
     @Override
     Promise<Results<UserTFAAttempt>> list(UserId userId, UserTFAAttemptListOptions listOptions) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (listOptions == null) {

@@ -15,6 +15,10 @@
     [devops] sudo mkdir -p /var/silkcloud
     [devops] sudo chown silkcloud:silkcloud /var/silkcloud
 
+#create ops base direcotry
+    [devops] sudo mkdir -p /var/ops
+    [devops] sudo chown silkcloud:silkcloud /var/ops
+
 [Postgres Installation]
 #install postgresql
     [devops] sudo apt-get update
@@ -152,11 +156,17 @@
 [MASTER is broken]
 #[slave] promote slave to take traffic
 
-#[bastion] switch master/slave configuration and refresh scripts
-    original slave -> master
-    original master -> slave
+#[master] repaire master
+    $DEPLOYMENT_PATH/util/repair_master.sh
 
-#repeat normal replciation setup process
+#[master] test slave -> master
+    $DEPLOYMENT_PATH/test/test_slave2master.sh
+
+#[master] do failback
+    $DEPLOYMENT_PATH/switchover/failback.sh
+
+#[master] test master -> slave
+    $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 =====Release Memo=====
 # Londiste doesn't support DDL replication, liquibase scripts should be first run against REPLICA then MASTER

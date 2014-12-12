@@ -39,6 +39,8 @@ class TaxAuditor {
 
     int numOfFuturesToTrack
 
+    boolean isEnabled
+
     List<String> statusToProcess
 
     ThreadPoolTaskExecutor threadPoolTaskExecutor
@@ -63,6 +65,9 @@ class TaxAuditor {
     }
 
     void execute() {
+        if (!isEnabled) {
+            return
+        }
         LOGGER.info('name=OrderAuditTaxJobStart')
         def start = System.currentTimeMillis()
         def numProcessed = 0, numSuccess = new AtomicInteger(), numFail = new AtomicInteger()

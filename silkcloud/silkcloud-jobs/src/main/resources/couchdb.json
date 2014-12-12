@@ -1,5 +1,6 @@
 {
     "couchdb": {
+        "ping": {},
         "access_token": {
             "views": {
                 "by_refresh_token": {

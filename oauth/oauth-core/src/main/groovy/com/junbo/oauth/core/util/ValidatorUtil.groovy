@@ -1,7 +1,12 @@
 package com.junbo.oauth.core.util
 
-import com.junbo.common.error.AppCommonErrors
-import com.junbo.oauth.common.CountryCode
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
+import com.junbo.identity.spec.v1.model.Country
+import com.junbo.identity.spec.v1.option.model.CountryGetOptions
+import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
+import com.junbo.identity.spec.v1.resource.CountryResource
+import com.junbo.identity.spec.v1.resource.LocaleResource
 import groovy.transform.CompileStatic
 
 /**
@@ -9,62 +14,27 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class ValidatorUtil {
-    static Locale convertToLocale(String locale) {
+    static boolean isValidLocale(String locale, LocaleResource localeResource) {
         if (locale == null) {
             throw new IllegalArgumentException('locale is null')
         }
 
-        locale = locale.replace('-', '_')
+        com.junbo.identity.spec.v1.model.Locale l = localeResource.get(new LocaleId(locale), new LocaleGetOptions()).get()
 
-        String[] parts = locale.split('_')
-        switch (parts.length) {
-            case 2:
-                return new Locale(parts[0], parts[1])
-            case 1:
-                return new Locale(parts[0])
-            default:
-                throw AppCommonErrors.INSTANCE.fieldInvalid('locale', "Invalid locale: $locale").exception()
+        if (l == null) {
+            return false
         }
+
+        return true
     }
 
-    static boolean isValidLocale(String locale) {
-        if (locale == null) {
-            throw new IllegalArgumentException('locale is null')
-        }
-
-        locale = locale.replace('-', '_')
-
-        String[] parts = locale.split('_')
-        switch (parts.length) {
-            case 2:
-                return isValidLocale(new Locale(parts[0], parts[1]))
-            case 1:
-                return isValidLocale(new Locale(parts[0]))
-            default:
-                return false
-        }
-    }
-
-    static boolean isValidLocale(Locale locale) {
-        try {
-            return locale.ISO3Language != null && locale.ISO3Country != null;
-        } catch (MissingResourceException e) {
-            return false;
-        }
-    }
-
-    static boolean isValidCountryCode(String countryCode) {
+    static boolean isValidCountryCode(String countryCode, CountryResource countryResource) {
         if (countryCode == null) {
             throw new IllegalArgumentException('countryCode is null')
         }
 
-        // Due to Oculus's requirement, this will need to hack WORLD as one new countryCode
-        if (countryCode == "WORLD") {
-            return true
-        }
-
-        CountryCode cc = CountryCode.getByCode(countryCode)
-        if (cc == null) {
+        Country country = countryResource.get(new CountryId(countryCode), new CountryGetOptions()).get()
+        if (country == null) {
             return false
         }
 

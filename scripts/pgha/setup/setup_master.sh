@@ -65,10 +65,16 @@ hot_standby = on
 max_connections = $MAX_CONNECTIONS
 archive_command = $ARCHIVE_COMMAND
 port = $MASTER_DB_PORT
+
+shared_buffers = $SHARED_BUFFERS
+maintenance_work_mem = $MAINTENANCE_WORK_MEM
+effective_cache_size = $EFFECTIVE_CACHE_SIZE
+checkpoint_segments = $CHECKPOINT_SEGMENTS
+checkpoint_completion_target = $CHECKPOINT_COMPLETION_TARGET
 EOF
 
 echo "[SETUP][MASTER] start master database"
-$PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH -l "${MASTER_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
+startDB $MASTER_DATA_PATH $MASTER_LOG_PATH
 
 while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT;
 do 
@@ -78,12 +84,7 @@ done
 echo "[SETUP][MASTER] master database started successfully!"
 
 echo "[SETUP][MASTER] create smoke test tables in postgres database"
-set +e
-$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE dummy_test (id bigint, PRIMARY KEY(id));"
-$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE tly (id bigint, PRIMARY KEY(id));"
-$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE msx (id bigint, PRIMARY KEY(id));"
-$PGBIN_PATH/psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE gyh (id bigint, PRIMARY KEY(id));"
-set -e
+$DEPLOYMENT_PATH/test/test_smoke_table.sh
 
 echo "[SETUP][MASTER] start primary pgbouncer proxy and connect to master server"
 $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh

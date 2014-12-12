@@ -2,6 +2,7 @@ package com.junbo.identity.rest.resource.v1
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ErrorIdentifier
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
@@ -50,7 +51,7 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
     @Override
     Promise<ErrorInfo> create(ErrorInfo errorInfo) {
         if (errorInfo == null) {
-            throw new IllegalArgumentException('errorInfo is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         errorInfo = errorInfoFilter.filterForCreate(errorInfo)
@@ -68,11 +69,11 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
     @Override
     Promise<ErrorInfo> put(ErrorIdentifier errorIdentifier, ErrorInfo errorInfo) {
         if (errorIdentifier == null) {
-            throw new IllegalArgumentException('errorIdentifier is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (errorInfo == null) {
-            throw new IllegalArgumentException('errorInfo is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return errorInfoService.get(errorIdentifier).then { ErrorInfo oldErrorInfo ->
@@ -94,11 +95,11 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
     @Override
     Promise<ErrorInfo> patch(ErrorIdentifier errorIdentifier, ErrorInfo errorInfo) {
         if (errorIdentifier == null) {
-            throw new IllegalArgumentException('errorIdentifier is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (errorInfo == null) {
-            throw new IllegalArgumentException('errorInfo is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return errorInfoService.get(errorIdentifier).then { ErrorInfo oldErrorInfo ->
@@ -119,6 +120,9 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
 
     @Override
     Promise<ErrorInfo> get(ErrorIdentifier errorIdentifier, ErrorInfoGetOptions getOptions) {
+        if (errorIdentifier == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }

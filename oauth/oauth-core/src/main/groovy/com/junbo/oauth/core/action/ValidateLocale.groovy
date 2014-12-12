@@ -1,5 +1,6 @@
 package com.junbo.oauth.core.action
 
+import com.junbo.identity.spec.v1.resource.LocaleResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -17,10 +18,16 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class ValidateLocale implements Action {
     private String defaultLocale
+    private LocaleResource localeResource
 
     @Required
     void setDefaultLocale(String defaultLocale) {
         this.defaultLocale = defaultLocale
+    }
+
+    @Required
+    void setLocaleResource(LocaleResource localeResource) {
+        this.localeResource = localeResource
     }
 
     @Override
@@ -37,7 +44,7 @@ class ValidateLocale implements Action {
         }
 
         if (StringUtils.hasText(locale)) {
-            if (!ValidatorUtil.isValidLocale(locale)) {
+            if (!ValidatorUtil.isValidLocale(locale, localeResource)) {
                 locale = defaultLocale
             }
         }

@@ -91,6 +91,12 @@ public interface StoreResource {
     Promise<AcceptTosResponse> acceptTos(AcceptTosRequest request);
 
     @GET
+    @Path("/initial-download-items")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
+    Promise<InitialDownloadItemsResponse> getInitialDownloadItems();
+
+    @GET
     @Path("/section-layout")
     @RouteByAccessToken(switchable = true)
     @Consumes()

@@ -42,7 +42,7 @@ port = $SLAVE_DB_PORT
 EOF
 
 echo "[SETUP][SLAVE] start slave database"
-$PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH -l "${SLAVE_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
+startDB $SLAVE_DATA_PATH $SLAVE_LOG_PATH
 
 while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT;
 do

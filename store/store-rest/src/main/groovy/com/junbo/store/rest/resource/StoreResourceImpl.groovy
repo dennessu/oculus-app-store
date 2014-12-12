@@ -154,8 +154,12 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<UserProfileUpdateResponse> updateUserProfile(UserProfileUpdateRequest request) {
+        ApiContext apiContext
         requestValidator.validateRequiredApiHeaders()
-        return requestValidator.validateUserProfileUpdateRequest(request).then { UserProfileUpdateResponse response ->
+        apiContextBuilder.buildApiContext().then { ApiContext ac ->
+            apiContext = ac
+            return requestValidator.validateUserProfileUpdateRequest(request, apiContext)
+        }.then { UserProfileUpdateResponse response ->
             if (response != null) {
                 return Promise.pure(response)
             }
@@ -526,6 +530,14 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
+    Promise<InitialDownloadItemsResponse> getInitialDownloadItems() {
+        requestValidator.validateRequiredApiHeaders()
+        prepareBrowse(false).then { ApiContext apiContext ->
+            return browseService.getInitialDownloadItems(apiContext)
+        }
+    }
+
+    @Override
     Promise<SectionLayoutResponse> getSectionLayout(@BeanParam SectionLayoutRequest request) {
         requestValidator.validateRequiredApiHeaders()
         prepareBrowse().then { ApiContext apiContext ->
@@ -797,9 +809,19 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private Promise<ApiContext> prepareBrowse() {
+        return prepareBrowse(true)
+    }
+
+    private Promise<ApiContext> prepareBrowse(boolean needEmailVerify) {
         if (verifyUserInBrowse) {
-            return identityUtils.getVerifiedUserFromToken().then {
-                return apiContextBuilder.buildApiContext()
+            if (needEmailVerify) {
+                return identityUtils.getVerifiedUserFromToken().then {
+                    return apiContextBuilder.buildApiContext()
+                }
+            } else {
+                return identityUtils.getActiveUserFromToken().then {
+                    return apiContextBuilder.buildApiContext()
+                }
             }
         } else {
             return apiContextBuilder.buildApiContext()

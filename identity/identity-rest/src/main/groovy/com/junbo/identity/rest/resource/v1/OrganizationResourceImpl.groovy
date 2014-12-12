@@ -57,7 +57,7 @@ class OrganizationResourceImpl implements OrganizationResource {
     @Override
     Promise<Organization> create(Organization organization) {
         if (organization == null) {
-            throw new IllegalArgumentException('organization is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         organization = organizationFilter.filterForCreate(organization)
 
@@ -81,11 +81,11 @@ class OrganizationResourceImpl implements OrganizationResource {
     @Override
     Promise<Organization> put(OrganizationId organizationId, Organization organization) {
         if (organizationId == null) {
-            throw new IllegalArgumentException('organizationId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (organization == null) {
-            throw new IllegalArgumentException('organization is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return organizationService.get(organizationId).then { Organization oldOrganization ->
@@ -113,11 +113,11 @@ class OrganizationResourceImpl implements OrganizationResource {
     @Override
     Promise<Organization> patch(OrganizationId organizationId, Organization organization) {
         if (organizationId == null) {
-            throw new IllegalArgumentException('organizationId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (organization == null) {
-            throw new IllegalArgumentException('organization is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return organizationService.get(organizationId).then { Organization oldOrganization ->
@@ -144,6 +144,9 @@ class OrganizationResourceImpl implements OrganizationResource {
 
     @Override
     Promise<Organization> get(OrganizationId organizationId, OrganizationGetOptions getOptions) {
+        if (organizationId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -219,7 +222,10 @@ class OrganizationResourceImpl implements OrganizationResource {
 
     @Override
     Promise<Response> delete(OrganizationId organizationId) {
-        return organizationValidator.validateForGet(organizationId).then { Organization organization ->
+        if (organizationId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
+        return organizationValidator.validateForDelete(organizationId).then { Organization organization ->
             def callback = authorizeCallbackFactory.create(organization)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {

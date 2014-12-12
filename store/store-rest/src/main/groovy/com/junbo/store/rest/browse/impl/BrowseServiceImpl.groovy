@@ -56,6 +56,15 @@ class BrowseServiceImpl implements BrowseService {
     @Value('${store.tos.browse}')
     private String storeBrowseTos
 
+    @Value('${store.browse.cmsPage.initialItems.path}')
+    private String initialItemsCmsPagePath
+
+    @Value('${store.browse.cmsPage.initialItems.slot}')
+    private String initialItemsCmsPageSlot
+
+    @Value('${store.browse.cmsPage.initialItems.contentName}')
+    private String initialItemsCmsPageContentName
+
     @Resource(name = 'storeFacadeContainer')
     private FacadeContainer facadeContainer
 
@@ -150,6 +159,14 @@ class BrowseServiceImpl implements BrowseService {
                 responseValidator.validateListResponse(listResponse)
                 return Promise.pure(listResponse)
             }
+        }
+    }
+
+    @Override
+    Promise<InitialDownloadItemsResponse> getInitialDownloadItems(ApiContext apiContext) {
+        facadeContainer.caseyFacade.getInitialDownloadItemsFromCmsPage(initialItemsCmsPagePath,
+                initialItemsCmsPageSlot, initialItemsCmsPageContentName,  apiContext).then { List<InitialDownloadItemsResponse.InitialDownloadItemEntry> list ->
+            return Promise.pure(new InitialDownloadItemsResponse(items: list))
         }
     }
 

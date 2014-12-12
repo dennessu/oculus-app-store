@@ -1,6 +1,7 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.DeviceTypeId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.DeviceTypeFilter
@@ -34,7 +35,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
     @Override
     Promise<DeviceType> create(DeviceType deviceType) {
         if (deviceType == null) {
-            throw new IllegalArgumentException('deviceType is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         deviceType = deviceTypeFilter.filterForCreate(deviceType)
@@ -52,11 +53,11 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
     @Override
     Promise<DeviceType> put(DeviceTypeId deviceTypeId, DeviceType deviceType) {
         if (deviceTypeId == null) {
-            throw new IllegalArgumentException('deviceTypeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (deviceType == null) {
-            throw new IllegalArgumentException('country is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return deviceTypeService.get(deviceTypeId).then { DeviceType oldDeviceType ->
@@ -78,11 +79,11 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
     @Override
     Promise<DeviceType> patch(DeviceTypeId deviceTypeId, DeviceType deviceType) {
         if (deviceTypeId == null) {
-            throw new IllegalArgumentException('deviceTypeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (deviceType == null) {
-            throw new IllegalArgumentException('deviceType is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return deviceTypeService.get(deviceTypeId).then { DeviceType oldDeviceType ->
@@ -104,6 +105,9 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
 
     @Override
     Promise<DeviceType> get(DeviceTypeId deviceTypeId, DeviceTypeGetOptions getOptions) {
+        if (deviceTypeId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -147,7 +151,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
     @Override
     Promise<Response> delete(DeviceTypeId deviceTypeId) {
         if (deviceTypeId == null) {
-            throw new IllegalArgumentException('countryId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return deviceTypeValidator.validateForGet(deviceTypeId).then {

@@ -26,6 +26,8 @@ class FlowExecutorImpl implements FlowExecutor {
 
     private StateExecutorFactory stateExecutorFactory
 
+    private Boolean verifyEnabled = false
+
     @Required
     void setFlowDefLoader(FlowDefLoader flowDefLoader) {
         this.flowDefLoader = flowDefLoader
@@ -39,6 +41,10 @@ class FlowExecutorImpl implements FlowExecutor {
     @Required
     void setStateExecutorFactory(StateExecutorFactory stateExecutorFactory) {
         this.stateExecutorFactory = stateExecutorFactory
+    }
+
+    void setVerifyEnabled(Boolean verifyEnabled) {
+        this.verifyEnabled = verifyEnabled
     }
 
     @Override
@@ -89,7 +95,7 @@ class FlowExecutorImpl implements FlowExecutor {
             throw WebFlowErrors.INSTANCE.ipViolation().exception()
         }
 
-        if (StringUtils.hasText(conversation.conversationVerifyCode)) {
+        if (verifyEnabled && StringUtils.hasText(conversation.conversationVerifyCode)) {
             if (conversation.conversationVerifyCode != conversationVerifyCode) {
                 throw WebFlowErrors.INSTANCE.conversationVerifyFailed().exception()
             }

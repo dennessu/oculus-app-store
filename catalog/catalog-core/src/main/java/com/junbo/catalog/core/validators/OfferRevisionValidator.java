@@ -89,6 +89,10 @@ public class OfferRevisionValidator extends ValidationSupport {
 
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
 
+        if (revision.getRank() != null && revision.getRank() < 0) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("rank", "Should not be negative."));
+        }
+
         if (!errors.isEmpty()) {
             AppErrorException exception = Utils.invalidFields(errors).exception();
             LOGGER.error("Error updating offer-revision. ", exception);

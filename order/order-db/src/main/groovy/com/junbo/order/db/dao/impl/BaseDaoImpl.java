@@ -107,7 +107,7 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
                     String.format("name=MarkDelete_Not_Supported, type=%s", entityType.getCanonicalName()));
         }
         CommonDbEntityDeletable entity = (CommonDbEntityDeletable) read(id);
-        if(entity != null && !entity.isDeleted()) {
+        if(entity != null && !Boolean.TRUE.equals(entity.isDeleted())) {
             entity.setDeleted(true);
         }
     }

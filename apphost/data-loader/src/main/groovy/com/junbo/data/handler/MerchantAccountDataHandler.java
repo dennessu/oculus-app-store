@@ -1,3 +1,8 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.data.handler;
 
 import com.junbo.langur.core.client.TypeReference;
@@ -22,7 +27,8 @@ public class MerchantAccountDataHandler extends BaseDataHandler {
     public void handle(String content) {
         MerchantAccount merchantAccount = null;
         try {
-            merchantAccount = transcoder.decode(new TypeReference<MerchantAccount>() {}, content);
+            merchantAccount = transcoder.decode(new TypeReference<MerchantAccount>() {
+            }, content);
         } catch (Exception e) {
             logger.error("Error parsing merchant Account:" + content, e);
             exit();
@@ -31,15 +37,11 @@ public class MerchantAccountDataHandler extends BaseDataHandler {
         MerchantAccount existing = merchantAccountRepository.get(merchantAccount.getMerchantAccountId());
 
         if (existing != null) {
-            if (alwaysOverwrite) {
-                logger.debug("Overwrite merchant Account:" + merchantAccount.getMerchantAccountId());
-                try {
-                    merchantAccountRepository.update(merchantAccount, existing);
-                } catch (Exception e) {
-                    logger.error("Error updating merchant Account" + merchantAccount.getMerchantAccountId(), e);
-                }
-            } else {
-                logger.debug("The merchant Account:" + merchantAccount.getMerchantAccountId());
+            logger.debug("Overwrite merchant Account:" + merchantAccount.getMerchantAccountId());
+            try {
+                merchantAccountRepository.update(merchantAccount, existing);
+            } catch (Exception e) {
+                logger.error("Error updating merchant Account" + merchantAccount.getMerchantAccountId(), e);
             }
         } else {
             logger.debug("Create new merchant Account:" + merchantAccount.getMerchantAccountId());

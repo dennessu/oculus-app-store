@@ -69,6 +69,8 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
     private Long email;
     @ApiModelProperty(position = 13, required = true, value = "option for choose provider")
     private ProviderOption providerOption;
+    @JsonIgnore
+    private Boolean isDeleted;
 
     @FilterIn
     @JsonIgnore
@@ -254,5 +256,13 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
 
     public void setProviderOption(ProviderOption providerOption) {
         this.providerOption = providerOption;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

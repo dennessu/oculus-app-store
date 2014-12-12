@@ -5,6 +5,7 @@ import com.junbo.common.cloudant.DefaultCloudantMarshaller
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.id.CloudantId
 import com.junbo.common.memcached.JunboMemcachedClient
+import com.junbo.common.util.Utils
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.configuration.topo.DataCenters
@@ -50,14 +51,14 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         if (entity.id != null) {
             // force update cloudantId
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
         }
 
-        return impl.cloudantPost(dbUri, entityClass, entity).then { T result ->
+        return impl.cloudantPost(dbUri, entityClass, entity, noOverrideWrites).then { T result ->
             updateCache(dbUri, entityClass, null, result)
             return Promise.pure(result)
         }
@@ -69,7 +70,10 @@ class CloudantClientCached implements CloudantClientInternal {
         CASValue<T> result = getCache(dbUri, entityClass, id)
         if (result == null) {
             return impl.cloudantGet(dbUri, entityClass, id).then { T resp ->
-                updateCache(dbUri, entityClass, null, resp)     // result must be null
+                // try to get again from cache and compare result to avoid invalidating cache
+                // when multiple threads are trying to get same entity from cloudant
+                def casValue = getCache(dbUri, entityClass, id)
+                updateCache(dbUri, entityClass, casValue, resp)     // result must be null
                 return Promise.pure(resp)
             }
         }
@@ -77,23 +81,23 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
 
-        def casValue = getCache(dbUri, entityClass, entity.cloudantId)
-        return impl.cloudantPut(dbUri, entityClass, entity).recover { Throwable ex ->
+        return impl.cloudantPut(dbUri, entityClass, entity, noOverrideWrites).recover { Throwable ex ->
             deleteCacheOnError(dbUri, entity.cloudantId)
             throw ex
         }.then { T result ->
+            def casValue = getCache(dbUri, entityClass, entity.cloudantId)
             updateCache(dbUri, entityClass, casValue, result)
             return Promise.pure(result)
         }
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         if (entity == null) {
             return Promise.pure(null)
         }
@@ -101,7 +105,7 @@ class CloudantClientCached implements CloudantClientInternal {
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
 
-        return impl.cloudantDelete(dbUri, entityClass, entity).recover { Throwable ex ->
+        return impl.cloudantDelete(dbUri, entityClass, entity, noOverrideWrites).recover { Throwable ex ->
             deleteCacheOnError(dbUri, entity.cloudantId)
             throw ex
         }.then {
@@ -226,20 +230,30 @@ class CloudantClientCached implements CloudantClientInternal {
                 boolean isSuccessful = false
                 if (casValue == null) {
                     isSuccessful = memcachedClient.add(getKey(dbUri, entity.cloudantId), this.expiration, value).get()
+                } else if (casValue.getValue() != null && Utils.compareCloudantRev(casValue.getValue().cloudantRev, entity.cloudantRev) >= 0) {
+                    logger.info("Entity {} rev {} already cached in memcached. Skip storing rev {}.", entity.cloudantId, casValue.value.cloudantRev, entity.cloudantRev)
+                    isSuccessful = true
                 } else {
                     CASResponse casResponse = memcachedClient.cas(getKey(dbUri, entity.cloudantId), casValue.getCas(), this.expiration, value)
                     isSuccessful = (casResponse == CASResponse.OK)
                 }
                 if (!isSuccessful) {
-                    logger.warn("Update conflict for {} rev {} to memcached.", entity.cloudantId, entity.cloudantRev)
-                    deleteCacheOnError(dbUri, entity.cloudantId)
+                    if (casValue != null) {
+                        // Update conflict
+                        // Most likely it conflicted with sniffer. Sniffer will delete the entity from the cache, so give a try to add directly.
+                        logger.info("Update conflict detected, trying to directly add to cache for {} rev {}", entity.cloudantId, entity.cloudantRev)
+                        isSuccessful = memcachedClient.add(getKey(dbUri, entity.cloudantId), this.expiration, value).get()
+                    }
+                    if (!isSuccessful) {
+                        logger.warn("Update conflict for {} rev {} to memcached.", entity.cloudantId, entity.cloudantRev)
+                        deleteCacheOnError(dbUri, entity.cloudantId)
+                    }
+                } else {
+                    logger.debug("Updated {} rev {} to memcached.", entity.cloudantId, entity.cloudantRev)
                 }
             } else {
                 memcachedClient.delete(getKey(dbUri, entity.cloudantId)).get()
                 logger.warn("Entity {} of type {} oversized for memcached. Entity size: {}", entity.cloudantId, entityClass, value.length())
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Updated {} rev {} to memcached.", entity.cloudantId, entity.cloudantRev)
             }
         } catch (Exception ex) {
             logger.warn("Error writing to memcached.", ex)

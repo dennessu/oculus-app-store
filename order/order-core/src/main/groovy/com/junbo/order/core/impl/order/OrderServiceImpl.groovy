@@ -385,12 +385,14 @@ class OrderServiceImpl implements OrderService {
         LOGGER.info('name=PrepareOrder')
         mergeSameOrderItems(order)
         checkItemCount(order)
+        def orderSnapshot = []
         return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
             LOGGER.info('name=get_offers')
             return orderServiceContextBuilder.getOffer(item.offer, context).then { Offer offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
+                orderSnapshot << CoreBuilder.buildOfferSnapshot(offer)
                 return orderInternalService.validateDuplicatePurchase(order, offer, item.quantity).syncThen {
                     item.type = offer.type.name()
                     item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
@@ -399,6 +401,10 @@ class OrderServiceImpl implements OrderService {
                 }
             }
         }.syncThen {
+            if (!order.tentative) {
+                // save order snapshot for free checkout
+                order.orderSnapshot = orderSnapshot
+            }
             LOGGER.info('name=PrepareOrder_Complete')
             return null
         }

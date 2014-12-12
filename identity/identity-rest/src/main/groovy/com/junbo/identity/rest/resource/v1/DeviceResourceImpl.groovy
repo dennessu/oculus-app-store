@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.DeviceId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -41,6 +42,9 @@ class DeviceResourceImpl implements DeviceResource {
 
     @Override
     Promise<Device> create(Device device) {
+        if (device == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
         device = deviceFilter.filterForCreate(device)
 
         return deviceValidator.validateForCreate(device).then {
@@ -56,7 +60,10 @@ class DeviceResourceImpl implements DeviceResource {
     @Override
     Promise<Device> put(DeviceId deviceId, Device device) {
         if (deviceId == null) {
-            throw new IllegalArgumentException('device is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
+        if (device == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         return deviceService.get(deviceId).then { Device oldDevice ->
             if (oldDevice == null) {
@@ -77,7 +84,10 @@ class DeviceResourceImpl implements DeviceResource {
     @Override
     Promise<Device> patch(DeviceId deviceId, Device device) {
         if (deviceId == null) {
-            throw new IllegalArgumentException('deviceId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
+        if (device == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return deviceService.get(deviceId).then { Device oldDevice ->

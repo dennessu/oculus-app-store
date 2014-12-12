@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.rest.resource;
 
+import com.junbo.catalog.clientproxy.LocaleFacade;
 import com.junbo.catalog.core.OfferAttributeService;
 import com.junbo.catalog.spec.enums.LocaleAccuracy;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
@@ -26,6 +27,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Attribute resource implementation.
@@ -33,19 +35,31 @@ import java.util.List;
 public class OfferAttributeResourceImpl extends ResourceSupport implements OfferAttributeResource {
     @Autowired
     private OfferAttributeService attributeService;
+    @Autowired
+    private LocaleFacade localeFacade;
 
     @Override
     public Promise<OfferAttribute> getAttribute(String attributeId, final OfferAttributeGetOptions options) {
         final OfferAttribute attribute = attributeService.getAttribute(attributeId);
-        filterLocale(attribute, options.getLocale());
+        attribute.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+        if (!StringUtils.isEmpty(options.getLocale())) {
+            Map<String, String> localeRelations = localeFacade.getLocaleRelations();
+            filterLocale(attribute, options.getLocale(), localeRelations);
+        }
         return Promise.pure(attribute);
     }
 
     @Override
     public Promise<Results<OfferAttribute>> getAttributes(@BeanParam OfferAttributesGetOptions options) {
         List<OfferAttribute> attributes = attributeService.getAttributes(options);
-        for (final OfferAttribute attribute : attributes) {
-            filterLocale(attribute, options.getLocale());
+        for (OfferAttribute attribute : attributes) {
+            attribute.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+        }
+        if (!StringUtils.isEmpty(options.getLocale())) {
+            Map<String, String> localeRelations = localeFacade.getLocaleRelations();
+            for (OfferAttribute attribute : attributes) {
+                filterLocale(attribute, options.getLocale(), localeRelations);
+            }
         }
         Results<OfferAttribute> results = new Results<>();
         results.setItems(attributes);
@@ -55,12 +69,11 @@ public class OfferAttributeResourceImpl extends ResourceSupport implements Offer
         return Promise.pure(results);
     }
 
-    private void filterLocale(final OfferAttribute attribute, final String locale) {
-        attribute.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+    private void filterLocale(final OfferAttribute attribute, final String locale, final Map<String, String> localeRelations) {
         if (!StringUtils.isEmpty(locale)) {
             attribute.setLocaleAccuracy(calLocaleAccuracy(attribute.getLocales().get(locale)));
             attribute.setLocales(new HashMap<String, SimpleLocaleProperties>() {{
-                put(locale, getLocaleProperties(attribute.getLocales(), locale));
+                put(locale, getLocaleProperties(attribute.getLocales(), locale, localeRelations));
             }});
         }
     }

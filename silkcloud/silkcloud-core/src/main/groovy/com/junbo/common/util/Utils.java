@@ -7,13 +7,17 @@ package com.junbo.common.util;
 
 import com.junbo.common.id.Id;
 import com.junbo.configuration.topo.DataCenters;
+import com.ning.http.client.ProxyServer;
 import groovy.lang.Closure;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by haomin on 14-4-9.
@@ -169,6 +173,32 @@ public class Utils {
         return result;
     }
 
+    private static String PROXY_URI_PATTERN_STR = "^(?<protocol>http[s]?://)?((?<username>[^/@:]*):(?<password>[^/@:]*)@)?(?<host>[^/:]+):(?<port>\\d+)(?<path>(/|\\?).*)?$";
+    private static final Pattern PROXY_URI_PATTERN = Pattern.compile(PROXY_URI_PATTERN_STR);
+    public static ProxyServer parseProxyServer(String proxyServer) {
+        if (StringUtils.isEmpty(proxyServer)) {
+            return null;
+        }
+        Matcher matcher = PROXY_URI_PATTERN.matcher(proxyServer);
+        if (!matcher.matches()) {
+            throw new RuntimeException("Invalid proxy URI: " + proxyServer);
+        }
+
+        String host = matcher.group("host");
+        int port = Integer.parseInt(matcher.group("port"));
+
+        ProxyServer.Protocol protocol = ProxyServer.Protocol.HTTP;
+        String matchedProtocol = matcher.group("protocol");
+        if ("https://".equals(matchedProtocol)) {
+            protocol = ProxyServer.Protocol.HTTPS;
+        }
+
+        String username = matcher.group("username");
+        String password = matcher.group("password");
+
+        return new ProxyServer(protocol, host, port, username, password);
+    }
+
     private static Method fetchFirstMethodByFilter(Class<?> clazz, Func<Method, Boolean> filter) {
         for (Method method : clazz.getMethods()) {
             if (filter.execute(method)) {
@@ -181,5 +211,43 @@ public class Utils {
 
     private interface Func<I, O> {
         O execute(I param);
+    }
+
+    public static int compareCloudantRev(String rev1, String rev2) {
+        Object[] rev1Parsed = parseRev(rev1);
+        Object[] rev2Parsed = parseRev(rev2);
+
+        int rev1Num = (int)rev1Parsed[0];
+        int rev2Num = (int)rev2Parsed[0];
+        if (rev1Num != rev2Num) {
+            return rev1Num - rev2Num;
+        }
+        String rev1Hash = (String)rev1Parsed[1];
+        String rev2Hash = (String)rev2Parsed[1];
+        return rev1Hash.compareTo(rev2Hash);
+    }
+
+    private static Object[] parseRev(String rev) {
+        Object[] result = new Object[2];
+
+        if (StringUtils.isEmpty(rev)) {
+            result[0] = 0;
+            result[1] = "";
+            return result;
+        }
+
+        String[] revSplit = rev.split("-");
+        if (revSplit.length != 2) {
+            throw new RuntimeException("Unexpected rev format: " + rev);
+        }
+        int revNum;
+        try {
+            revNum = Integer.parseInt(revSplit[0]);
+        } catch (NumberFormatException ex) {
+            throw new RuntimeException("Unexpected rev format: " + rev, ex);
+        }
+        result[0] = revNum;
+        result[1] = revSplit[1];
+        return result;
     }
 }

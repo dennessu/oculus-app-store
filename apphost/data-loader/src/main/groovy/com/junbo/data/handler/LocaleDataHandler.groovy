@@ -1,4 +1,5 @@
 package com.junbo.data.handler
+
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppErrorException
 import com.junbo.identity.spec.v1.model.Locale
@@ -10,6 +11,7 @@ import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.core.io.Resource
 import org.springframework.util.StringUtils
+
 /**
  * Created by haomin on 14-6-3.
  */
@@ -99,18 +101,7 @@ class LocaleDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            if (alwaysOverwrite) {
-                logger.debug("Overwrite Locale $locale.localeName with this content")
-                locale.id = (LocaleId) existing.id
-                locale.rev = existing.rev
-                try {
-                    localeResource.patch(locale.id as LocaleId, locale).get()
-                } catch (Exception e) {
-                    logger.error("Error updating locale $locale.localeName", e)
-                }
-            } else {
-                logger.debug("$locale.localeCode already exists, skipped!")
-            }
+            logger.debug("$locale.localeCode already exists, skipped!")
         } else {
             logger.debug('Create new locale with this content')
             try {

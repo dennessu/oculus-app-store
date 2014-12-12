@@ -1,5 +1,8 @@
 package com.junbo.store.clientproxy.casey
+
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OrganizationId
@@ -26,6 +29,7 @@ import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.AddReviewRequest
 import com.junbo.store.spec.model.browse.Images
+import com.junbo.store.spec.model.browse.InitialDownloadItemsResponse
 import com.junbo.store.spec.model.browse.ReviewsResponse
 import com.junbo.store.spec.model.browse.document.AggregatedRatings
 import com.junbo.store.spec.model.browse.document.Item
@@ -64,6 +68,11 @@ class CaseyFacadeImpl implements CaseyFacade {
     private final static String CMSPAGE_GET_EXPAND = '(schedule)'
 
     private final static String CMSPAGE_LIST_EXPAND = '(results(schedule))'
+
+    private final static ObjectMapper objectMapper;
+
+    @Resource(name = 'store.jsonMessageCaseyTranscoder')
+    JsonMessageCaseyTranscoder jsonMessageCaseyTranscoder
 
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
@@ -183,12 +192,13 @@ class CaseyFacadeImpl implements CaseyFacade {
         resourceContainer.caseyResource.getCmsPages(
             new CmsPageGetParams(path: StringUtils.isBlank(path) ? null : "\"${path}\"", label: StringUtils.isBlank(label) ? null : "\"${label}\""),
             new SewerParam(country: country, locale: locale, expand: CMSPAGE_LIST_EXPAND)
-        ).then { CaseyResults<CmsPage> results ->
+        ).then { CaseyResults<JsonNode> results ->
             if (CollectionUtils.isEmpty(results?.items) || results.items.size() > 1) {
                 LOGGER.error('name=GetCmsPageIncorrectResponse, payload={}', ObjectMapperProvider.instance().writeValueAsString(results))
                 throw new RuntimeException('Invalid Number Of CmsPage returned, should be 1')
             }
-            return Promise.pure(results.items[0])
+            return Promise.pure(results.items[0] == null ? null :
+                    jsonMessageCaseyTranscoder.objectMapper.readValue(results.items[0].traverse(), new TypeReference<CmsPage>() {}))
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_GetCmsPage_Error, path={}, label={}', path, label, ex)
             return Promise.pure(null)
@@ -197,8 +207,8 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     @Override
     Promise<CmsPage> getCmsPage(String cmsPageId, String country, String locale) {
-        resourceContainer.caseyResource.getCmsPages(cmsPageId, new SewerParam(country: country, locale: locale, expand: CMSPAGE_GET_EXPAND)).then { CmsPage page ->
-            return Promise.pure(page)
+        resourceContainer.caseyResource.getCmsPages(cmsPageId, new SewerParam(country: country, locale: locale, expand: CMSPAGE_GET_EXPAND)).then { JsonNode pageNode ->
+            return Promise.pure(pageNode == null ? null : jsonMessageCaseyTranscoder.objectMapper.readValue(pageNode.traverse(), new TypeReference<CmsPage>() {}))
         }.recover { Throwable ex ->
             LOGGER.error('name=Store_GetCmsPage_Error, id={}', cmsPageId, ex)
             return Promise.pure(null)
@@ -257,6 +267,57 @@ class CaseyFacadeImpl implements CaseyFacade {
         }
     }
 
+    @Override
+    Promise<List<InitialDownloadItemsResponse.InitialDownloadItemEntry>> getInitialDownloadItemsFromCmsPage(String pagePath, String pageSlot, String contentName, ApiContext apiContext) {
+        String expand = "(results(schedule(slots(${pageSlot}(content(contents(${contentName}(links(currentRevision)))))))))"
+        String resultProperties =
+                "(results(schedule(slots(${pageSlot}(content(contents(${contentName}(links(currentRevision(item,packageName,locales(${apiContext.locale.getId().value}(name))))))))))))"
+
+        Set<ItemId> added = [] as Set
+        resourceContainer.caseyResource.getCmsPages(new CmsPageGetParams(path: StringUtils.isBlank(pagePath) ? null : "\"${pagePath}\""),
+                new SewerParam(country: apiContext.country.getId().value,  locale: apiContext.locale.getId().value, expand: expand,
+                        resultProperties: resultProperties)).then { CaseyResults<JsonNode> cmsPageResults ->
+            List<InitialDownloadItemsResponse.InitialDownloadItemEntry> results = []
+
+            if (cmsPageResults?.items == null) {
+                return Promise.pure(results)
+            }
+
+            cmsPageResults.items.each { JsonNode cmsPage ->
+                JsonNode linkNodes = cmsPage?.get('schedule')?.get('slots')?.get(pageSlot)?.get('content')?.get('contents')?.get(contentName)?.get('links')
+                if (linkNodes == null || !linkNodes.isArray()) {
+                    return
+                }
+
+                for (int i = 0;i < linkNodes.size();++i) {
+                    JsonNode itemRevision = linkNodes.get(i)?.get('currentRevision')
+                    if (itemRevision == null || itemRevision.isNull()) {
+                        continue
+                    }
+                    String itemId = itemRevision.get('item')?.get('id')?.asText()
+                    if (itemId != null) {
+                        InitialDownloadItemsResponse.InitialDownloadItemEntry entry = new InitialDownloadItemsResponse.InitialDownloadItemEntry()
+                        entry.item = new ItemId(itemId)
+                        if (added.contains(entry.item)) {
+                            continue
+                        }
+                        entry.name = itemRevision.get('locales')?.get(apiContext.locale.getId().value)?.get('name')?.asText()
+                        entry.packageName = itemRevision.get('packageName')?.asText()
+                        added << entry.item
+                        results << entry
+                    }
+                }
+            }
+            return Promise.pure(results)
+        }.recover { Throwable ex ->
+            if (isCaseyError(ex)) {
+                LOGGER.error('name=CaseyError_GetInitialItems', ex)
+                return Promise.pure([] as List)
+            }
+            throw ex
+        }
+    }
+
     private Promise<CaseyResults<CaseyOffer>> doRawSearch(OfferSearchParams searchParams) {
         resourceContainer.caseyResource.searchOffers(searchParams).recover { Throwable ex ->
             wrapAndThrow(ex)
@@ -312,8 +373,11 @@ class CaseyFacadeImpl implements CaseyFacade {
                     aggregatedRatings[CaseyReview.RatingType.comfort.name()] = reviewBuilder.buildAggregatedRatings(caseyItem?.comfortRating)
                     results.items << itemBuilder.buildItem(caseyOffer, aggregatedRatings, publisher, developer, imageBuildType, apiContext)
                     return Promise.pure()
+                }.recover { Throwable ex ->
+                    LOGGER.error('name=Process_Offer_Error', ex)
+                    return Promise.pure()
                 }
-            }then {
+            }.then {
                 processCaseyResultsCursor(results)
                 return Promise.pure(results)
             }
@@ -420,7 +484,7 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     private static boolean isCaseyError(Throwable throwable, String... errorCode) {
         if (throwable instanceof  CaseyException) {
-            if (errorCode == null || Arrays.asList(errorCode).contains(throwable.errorCode)) {
+            if (errorCode == null || errorCode.length == 0 || Arrays.asList(errorCode).contains(throwable.errorCode)) {
                 return true
             }
         }

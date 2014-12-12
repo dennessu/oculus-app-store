@@ -5,6 +5,7 @@
  */
 package com.junbo.common.webflow
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.util.UUIDUtils
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.langur.core.context.JunboHttpContext
@@ -13,7 +14,6 @@ import com.junbo.langur.core.webflow.state.StateRepository
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 /**
  * CloudantStateRepositoryImpl.
  */
@@ -47,6 +47,9 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
             logger.info("Routing to remote shard {} for cid {}", tokenDc, conversationId)
         }
         def dbUri = getDbUriByDc(tokenDc)
+        if (dbUri == null) {
+            return null;
+        }
         return wrap((ConversationEntity)getEffective().cloudantGet(dbUri, entityClass, conversationId).get())
     }
 
@@ -62,21 +65,25 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
             logger.info("Routing to remote shard {} for cid {}", tokenDc, conversation.id)
         }
         def dbUri = getDbUriByDc(tokenDc)
+        if (dbUri == null) {
+            logger.error("Cloudant URI not found for datacenter: $tokenDc id: $conversation.id")
+            throw AppCommonErrors.INSTANCE.invalidId("id", conversation.id).exception()
+        }
         def effective = getEffective()
 
         if (conversation.flowStack == null || conversation.flowStack.empty) {
             effective.cloudantGet(dbUri, entityClass, conversation.id).then { ConversationEntity entity ->
-                return effective.cloudantDelete(dbUri, entityClass, entity)
+                return effective.cloudantDelete(dbUri, entityClass, entity, noOverrideWrites)
             }.get()
         } else {
             ConversationEntity existing = (ConversationEntity)effective.cloudantGet(dbUri, entityClass, conversation.id).get()
 
             if (existing == null) {
-                effective.cloudantPost(dbUri, entityClass, unwrap(conversation)).get()
+                effective.cloudantPost(dbUri, entityClass, unwrap(conversation), noOverrideWrites).get()
             } else {
                 ConversationEntity entity = unwrap(conversation)
                 entity.rev = existing.rev
-                effective.cloudantPut(dbUri, entityClass, entity).get()
+                effective.cloudantPut(dbUri, entityClass, entity, noOverrideWrites).get()
             }
         }
     }

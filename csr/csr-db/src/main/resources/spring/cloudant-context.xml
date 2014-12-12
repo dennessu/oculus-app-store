@@ -9,10 +9,12 @@
     <!-- Cloudant Repository -->
     <bean id="csrUpdateCloudantRepo" class="com.junbo.csr.db.repo.impl.cloudant.CsrUpdateRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="csr_update"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="csrLogCloudantRepo" class="com.junbo.csr.db.repo.impl.cloudant.CsrLogRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="csr_log"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="csrInvitationCodeCloudantRepo" class="com.junbo.csr.db.repo.impl.cloudant.CsrInvitationCodeRepositoryCloudantImpl" parent="cloudantClient">

@@ -280,8 +280,19 @@ def liquibase(command, dbVersion, shardId, configFile):
     cmd.append("--url=" + shardConfig.jdbcUrl)
     if not isNoneOrEmpty(shardConfig.schema):
         cmd.append("--defaultSchemaName=" + shardConfig.schema)
+    else:
+        shardConfig.schema = 'public'
     cmd.append(command)
     executeCommand(" ".join(cmd))
+
+    os.environ["PGSQL_USER"] = shardConfig.loginUserName
+    os.environ["PGPASSWORD"] = shardConfig.loginPassword
+
+    from urlparse import urlparse
+    uri = urlparse(shardConfig.jdbcUrl.replace('jdbc:postgresql:', ''))
+    (host, port) = uri.netloc.split(':')
+
+    executeCommand("bash ./scripts/adddbchangelogpk.sh '%s' '%s' '%s' '%s'" % (configFile.dbName, shardConfig.schema, host, port))
 
 def executeCommand(command):
     try:

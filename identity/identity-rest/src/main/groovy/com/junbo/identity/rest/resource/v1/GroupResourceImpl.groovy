@@ -58,7 +58,7 @@ class GroupResourceImpl implements GroupResource {
     @Override
     Promise<Group> create(Group group) {
         if (group == null) {
-            throw new IllegalArgumentException('group is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         group = groupFilter.filterForCreate(group)
 
@@ -81,8 +81,11 @@ class GroupResourceImpl implements GroupResource {
 
     @Override
     Promise<Group> put(GroupId groupId, Group group) {
+        if (groupId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
         if (group == null) {
-            throw new IllegalArgumentException('group is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         return groupValidator.validateForGet(groupId).then { Group oldGroup ->
             if (oldGroup == null) {
@@ -109,8 +112,11 @@ class GroupResourceImpl implements GroupResource {
 
     @Override
     Promise<Group> patch(GroupId groupId, Group group) {
+        if (groupId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
         if (group == null) {
-            throw new IllegalArgumentException('group is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         return groupValidator.validateForGet(groupId).then { Group oldGroup ->
             if (oldGroup == null) {
@@ -137,6 +143,9 @@ class GroupResourceImpl implements GroupResource {
 
     @Override
     Promise<Group> get(GroupId groupId, GroupGetOptions getOptions) {
+        if (groupId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -227,6 +236,9 @@ class GroupResourceImpl implements GroupResource {
 
     @Override
     Promise<Void> delete(GroupId groupId) {
+        if (groupId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
         return groupValidator.validateForGet(groupId).then { Group existing ->
             def callback = authorizeCallbackFactory.create(existing)
             return RightsScope.with(authorizeService.authorize(callback)) {

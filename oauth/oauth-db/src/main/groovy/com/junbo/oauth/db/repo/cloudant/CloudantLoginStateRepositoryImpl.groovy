@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.db.repo.cloudant
 
+import com.junbo.common.cloudant.client.CloudantClientBulk
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.spec.model.LoginState
 import groovy.transform.CompileStatic
@@ -65,5 +66,22 @@ class CloudantLoginStateRepositoryImpl extends CloudantTokenRepositoryBase<Login
     @Override
     void removeByHash(String hash) {
         cloudantDeleteSync(hash)
+    }
+
+    @Override
+    void removeByUserId(Long userId) {
+        def startKey = [userId.toString(), System.currentTimeMillis()]
+        def endKey = [userId.toString()]
+        List<LoginState> loginStates = queryViewSync('by_user_id_expired_by', startKey.toArray(new String()), endKey.toArray(new String()), true, null, null, true)
+
+        try {
+            setStrongUseBulk(true)
+            for (LoginState loginState : loginStates) {
+                cloudantDeleteSync(loginState)
+            }
+            CloudantClientBulk.commit().get()
+        } finally {
+            setStrongUseBulk(false)
+        }
     }
 }

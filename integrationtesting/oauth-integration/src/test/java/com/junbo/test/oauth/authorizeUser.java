@@ -209,6 +209,60 @@ public class authorizeUser {
         Oauth.Logout(idToken);
     }
 
+    @Test(groups = "dailies")
+    public void loginNonExistUser() throws Exception {
+        String cid = Oauth.GetLoginCid();
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+        Error error = new Error();
+        error.setMessage("Invalid Credential");
+        error.setCode("132.103");
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        ErrorDetail errorDetail = new ErrorDetail();
+        errorDetail.setField("email, password");
+        errorDetail.setReason("email and credential doesn't match");
+        errorDetails.add(errorDetail);
+        error.setDetails(errorDetails);
+        Oauth.UserLogin(cid, RandomHelper.randomEmail(), Oauth.DefaultUserPwd, error);
+    }
+
+    @Test(groups = "dailies")
+    public void loginWithWrongPassword() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        Oauth.PostRegisterUser(cid, userName, email);
+
+        HttpclientHelper.ResetHttpClient();
+        cid = Oauth.GetLoginCid();
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+        Error error = new Error();
+        error.setMessage("Invalid Credential");
+        error.setCode("132.103");
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        ErrorDetail errorDetail = new ErrorDetail();
+        errorDetail.setField("email, password");
+        errorDetail.setReason("email and credential doesn't match");
+        errorDetails.add(errorDetail);
+        error.setDetails(errorDetails);
+        Oauth.UserLogin(cid, email, RandomHelper.randomAlphabetic(10), error);
+    }
+
     @Property(environment = "release")
     @Test(groups = "dailies")
     public void registerWithUserPii() throws Exception {
@@ -354,10 +408,11 @@ public class authorizeUser {
         cid = Oauth.GetLoginCid();
         currentViewResponse = Oauth.GetViewStateByCid(cid);
         Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
-        String loginResponseLink = Oauth.UserLogin(cid, email, newPassword, Oauth.DefaultOauthSecondaryEndpoint + "/oauth2/authorize");
-        String idToken = Oauth.GetLoginUser(loginResponseLink, Oauth.DefaultOauthSecondaryEndpoint).get(Oauth.DefaultFNIdToken);
+        String loginResponseLink = Oauth.UserLogin(cid, email, newPassword,
+                Oauth.DefaultOauthSecondaryEndpoint + "/oauth2/authorize", null);
+        String idToken = Oauth.GetLoginUser(loginResponseLink, Oauth.DefaultOauthSecondaryEndpoint)
+                .get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
-
     }
 
     @Test(groups = "dailies")
@@ -821,5 +876,58 @@ public class authorizeUser {
         error.setDetails(errorDetails);
         response = Oauth.OauthPost(Oauth.DefaultAuthorizeURI, nvps);
         Oauth.validateViewModeResponse(response, "register", error);
+    }
+
+    /*
+     * test case to cover https://oculus.atlassian.net/browse/SER-800
+     */
+    @Test(groups = "dailies")
+    public void registerWithDuplicateUserName() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        Oauth.PostRegisterUser(cid, userName, email);
+
+        HttpclientHelper.ResetHttpClient();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        postViewResponse = Oauth.PostViewRegisterByCid(cid);
+        Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
+
+        Error error = new Error();
+        error.setMessage("Input Error");
+        error.setCode("132.001");
+        List<ErrorDetail> details = new ArrayList<>();
+        ErrorDetail detail = new ErrorDetail();
+        detail.setField("username");
+        detail.setReason("Field value is duplicate");
+        details.add(detail);
+        error.setDetails(details);
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        Oauth.PostRegisterUser(cid, userName, email, error);
     }
 }

@@ -1,6 +1,8 @@
 package com.junbo.emulator.casey.rest
 import com.junbo.catalog.spec.model.attribute.OfferAttribute
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
+import com.junbo.catalog.spec.model.item.Item
+import com.junbo.catalog.spec.model.item.ItemsGetOptions
 import com.junbo.common.model.Results
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData
 import com.junbo.store.common.utils.CommonUtils
@@ -22,6 +24,18 @@ class CaseyEmulatorDataRepository implements InitializingBean {
 
     @Value('${store.browse.cmsPage.section.path}')
     private String sectionCmsPagePath
+
+    @Value('${store.browse.cmsPage.initialItems.path}')
+    private String initialItemsCmsPagePath
+
+    @Value('${store.browse.cmsPage.initialItems.slot}')
+    private String initialItemsCmsPageSlot
+
+    @Value('${store.browse.cmsPage.initialItems.contentName}')
+    private String initialItemsCmsPageContentName
+
+    @Value('${emulator.casey.initialItem.names}')
+    private String initialItemNames
 
     @Resource(name = 'caseyResourceContainer')
     ResourceContainer resourceContainer
@@ -56,12 +70,15 @@ class CaseyEmulatorDataRepository implements InitializingBean {
     public void resetData() {
         CmsPage page = generateDefaultCmsPage()
         CmsPage sectionPage = generateSectionCmsPage()
+        CmsPage initialDownloadItemPage = generateInitialDownloadItemCmsPage()
 
         caseyEmulatorData = new CaseyEmulatorData(
                 caseyAggregateRatings: [],
                 caseyReviews: [],
-                cmsPages: [page, sectionPage] as List,
-                cmsSchedules: [generateDefaultCmsSchedule(page.self.getId()), generateSectionCmsSchedule(sectionPage.self.getId(), page.self.getId())] as List
+                cmsPages: [page, sectionPage, initialDownloadItemPage] as List,
+                cmsSchedules: [generateDefaultCmsSchedule(page.self.getId()),
+                               generateSectionCmsSchedule(sectionPage.self.getId(), page.self.getId()),
+                               generateInitialDownloadItemSchedule(initialDownloadItemPage.self.getId())] as List
         )
     }
 
@@ -98,11 +115,30 @@ class CaseyEmulatorDataRepository implements InitializingBean {
         return page
     }
 
+    private CmsPage generateInitialDownloadItemCmsPage() {
+        CmsPage page =  new CmsPage(
+                path: initialItemsCmsPagePath,
+                label: UUID.randomUUID().toString(),
+                slots: [:] as Map,
+                self: new CaseyLink(
+                        id:  UUID.randomUUID().toString()
+                ))
+        page.slots[initialItemsCmsPageSlot] = new CmsContentSlot(description: 'initial item slot')
+        return page
+    }
+
     private CmsSchedule generateDefaultCmsSchedule(String pageId) {
         CmsSchedule cmsSchedule = new CmsSchedule(self: new CaseyLink(id: pageId))
         cmsSchedule.slots = [:] as Map
         cmsSchedule.slots['slot1'] = generateCmsScheduleStringContent('Featured All');
         cmsSchedule.slots['slot2'] = generateCmsScheduleStringContent('Featured SS');
+        return cmsSchedule
+    }
+
+    private CmsSchedule generateInitialDownloadItemSchedule(String pageId) {
+        CmsSchedule cmsSchedule = new CmsSchedule(self: new CaseyLink(id: pageId))
+        cmsSchedule.slots = [:] as LinkedHashMap<String, CmsScheduleContent>
+        cmsSchedule.slots[initialItemsCmsPageSlot] = generateCmsScheduleItemContent();
         return cmsSchedule
     }
 
@@ -162,6 +198,26 @@ class CaseyEmulatorDataRepository implements InitializingBean {
         CmsContent cmsContent = new CmsContent()
         cmsContent.contents = Collections.singletonMap(name, contentItem)
         return new CmsScheduleContent(content: cmsContent)
+    }
+
+    private CmsScheduleContent generateCmsScheduleItemContent() {
+        ContentItem contentItem = new ContentItem()
+        contentItem.type = ContentItem.Type.item.name()
+        contentItem.links = [] as List
+        for (String itemName: initialItemNames.split(',')) {
+            String itemId = getItemIdViaName(itemName)
+            if (itemId != null) {
+                contentItem.links << new CaseyLink(id: itemId)
+            }
+        }
+        CmsContent cmsContent = new CmsContent()
+        cmsContent.contents = Collections.singletonMap(initialItemsCmsPageContentName, contentItem)
+        return new CmsScheduleContent(content: cmsContent)
+    }
+
+    private String getItemIdViaName(String name) {
+        List<Item> items = resourceContainer.itemResource.getItems(new ItemsGetOptions(query: "name:${name}")).get().items
+        return items.isEmpty() ? null : items[0].getId()
     }
 
     private String getOfferAttribute(String name) {

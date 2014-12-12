@@ -5,16 +5,18 @@
  */
 package com.junbo.sharding.dualwrite.data
 import com.junbo.common.cloudant.CloudantEntity
+import com.junbo.common.model.EntityAdminInfo
 import com.junbo.common.model.ResourceMeta
 import groovy.transform.CompileStatic
 /**
  * The pending action.
  */
 @CompileStatic
-public class PendingAction extends ResourceMeta<Long> {
+public class PendingAction extends ResourceMeta<Long> implements EntityAdminInfo {
 
     private Long id;
     private CloudantEntity savedEntity;
+    private String deletedEntityType;
     private Long deletedKey;
     private Long changedEntityId;
     private Integer retryCount;
@@ -33,6 +35,14 @@ public class PendingAction extends ResourceMeta<Long> {
 
     public void setSavedEntity(CloudantEntity savedEntity) {
         this.savedEntity = savedEntity;
+    }
+
+    String getDeletedEntityType() {
+        return deletedEntityType
+    }
+
+    void setDeletedEntityType(String deletedEntityType) {
+        this.deletedEntityType = deletedEntityType
     }
 
     public Long getDeletedKey() {

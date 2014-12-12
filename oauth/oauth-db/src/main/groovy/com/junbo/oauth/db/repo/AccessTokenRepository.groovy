@@ -27,5 +27,9 @@ interface AccessTokenRepository {
 
     void removeByHash(String hash)
 
+    void removeByUserId(Long userId)
+
+    void removeByLoginStateHash(String loginStateHash)
+
     boolean isValidAccessToken(String tokenValue)
 }

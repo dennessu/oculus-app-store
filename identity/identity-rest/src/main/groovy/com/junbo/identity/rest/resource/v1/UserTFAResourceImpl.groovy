@@ -77,11 +77,11 @@ class UserTFAResourceImpl implements UserTFAResource {
     @Override
     Promise<UserTFA> create(UserId userId, UserTFA userTFA) {
         if (userTFA == null) {
-            throw new IllegalArgumentException('userTFA is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFA.userId != null && userTFA.userId != userId) {
@@ -120,11 +120,11 @@ class UserTFAResourceImpl implements UserTFAResource {
         }
 
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFAId == null) {
-            throw new IllegalArgumentException('userTFAId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -148,15 +148,15 @@ class UserTFAResourceImpl implements UserTFAResource {
     @Override
     Promise<UserTFA> patch(UserId userId, UserTFAId userTFAId, UserTFA userTFA) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFAId == null) {
-            throw new IllegalArgumentException('userTFAId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAId').exception()
         }
 
         if (userTFA == null) {
-            throw new IllegalArgumentException('userTFA is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userTFA.verifyCode = null
@@ -191,15 +191,15 @@ class UserTFAResourceImpl implements UserTFAResource {
     @Override
     Promise<UserTFA> put(UserId userId, UserTFAId userTFAId, UserTFA userTFA) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFAId == null) {
-            throw new IllegalArgumentException('userTFAId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAId').exception()
         }
 
         if (userTFA == null) {
-            throw new IllegalArgumentException('userTFA is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userTFA.verifyCode = null
@@ -233,11 +233,11 @@ class UserTFAResourceImpl implements UserTFAResource {
     @Override
     Promise<Response> delete(UserId userId, UserTFAId userTFAId) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFAId == null) {
-            throw new IllegalArgumentException('userTFAId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -261,7 +261,7 @@ class UserTFAResourceImpl implements UserTFAResource {
         }
 
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)

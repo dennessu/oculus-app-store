@@ -11,6 +11,7 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
 import com.junbo.store.spec.model.browse.AddReviewRequest;
 import com.junbo.store.spec.model.browse.Images;
+import com.junbo.store.spec.model.browse.InitialDownloadItemsResponse;
 import com.junbo.store.spec.model.browse.ReviewsResponse;
 import com.junbo.store.spec.model.browse.document.AggregatedRatings;
 import com.junbo.store.spec.model.browse.document.Item;
@@ -20,6 +21,7 @@ import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
 import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
 import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,4 +49,7 @@ public interface CaseyFacade {
     Promise<CmsPage> getCmsPage(String cmsPageId, String country, String locale);
 
     Promise<Review> addReview(AddReviewRequest request, ApiContext apiContext);
+
+    Promise<List<InitialDownloadItemsResponse.InitialDownloadItemEntry>> getInitialDownloadItemsFromCmsPage(
+            String pagePath, String pageSlot, String contentName, ApiContext apiContext);
 }

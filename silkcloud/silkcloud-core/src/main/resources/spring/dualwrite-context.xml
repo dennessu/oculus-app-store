@@ -6,8 +6,6 @@
     <bean id="baseRepository" class="com.junbo.sharding.dualwrite.RepositoryFactoryBean" abstract="true">
         <property name="sqlPendingActionRepository" ref="pendingActionSqlRepo" />
         <property name="cloudantPendingActionRepository" ref="pendingActionCloudantRepo" />
-        <property name="sqlUseAsyncDualWrite" value="false" />
-
         <property name="ignoreDualWriteErrors" value="${dualwrite.ignoreDualWriteErrors}" />
         <property name="platformTransactionManager" ref="transactionManager" />
         <property name="transactionManager" ref="simpleTransactionManager" />
@@ -31,6 +29,7 @@
         <property name="hardDelete" value="true" />
         <property name="mapper" ref="pendingActionMapper" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="dualwriteDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
@@ -66,7 +65,19 @@
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
         </property>
-        <property name="packagesToScan" value="com.junbo.sharding.dualwrite.data"/>
+        <property name="packagesToScan">
+            <list>
+                <value>com.junbo.sharding.dualwrite.data</value>
+                <value>com.junbo.common.health.ping</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="dualwritePingSqlRepo" class="com.junbo.common.health.ping.PingSqlRepo">
+        <property name="sessionFactory" ref="dualwriteSessionFactory" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="dualwrite" />
     </bean>
 
 </beans>

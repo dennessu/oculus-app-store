@@ -62,6 +62,8 @@ class CommunicationDataHandler extends BaseDataHandler {
             } catch (Exception e) {
                 logger.error("Error creating communication " + getCommunicationTitle(communication), e)
             }
+        } else {
+            logger.debug('communication exists, skip')
         }
     }
 
@@ -80,7 +82,7 @@ class CommunicationDataHandler extends BaseDataHandler {
             return ''
         }
 
-        CommunicationLocale communicationLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(jsonNode, CommunicationLocale)
+        CommunicationLocale communicationLocale = (CommunicationLocale) JsonHelper.jsonNodeToObj(jsonNode, CommunicationLocale)
         return communicationLocale.name
     }
 }

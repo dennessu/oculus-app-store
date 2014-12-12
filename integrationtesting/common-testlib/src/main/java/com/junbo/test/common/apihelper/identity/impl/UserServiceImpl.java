@@ -545,11 +545,15 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     public String PutUser(String userId, User user, int expectedResponseCode) throws Exception {
+        return PutUser(userId, user, expectedResponseCode, false);
+    }
 
+    @Override
+    public String PutUser(String userId, User user, int expectedResponseCode, boolean serviceScope) throws Exception {
         String putUrl = getEndPointUrl() + "/" + userId;
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode, serviceScope);
         User userPut = new JsonMessageTranscoder().decode(new TypeReference<User>() {
-        },
+                                                          },
                 responseBody);
         String userRtnId = IdConverter.idToHexString(userPut.getId());
         Master.getInstance().addUser(userRtnId, userPut);
@@ -657,7 +661,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         Tos newTos = new Tos();
         newTos.setTitle(tos.getTitle());
         newTos.setState(status);
-        newTos.setVersion(tos.getVersion() + ".1");
+        newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
         newTos.setCountries(tos.getCountries());
         newTos.setType(tos.getType());
         newTos.setContent(tos.getContent());

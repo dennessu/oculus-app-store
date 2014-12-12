@@ -57,11 +57,11 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
     Promise<UserSecurityQuestionVerifyAttempt> create(
             UserId userId, UserSecurityQuestionVerifyAttempt userSecurityQuestionAttempt) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userSecurityQuestionAttempt == null) {
-            throw new IllegalArgumentException('userSecurityQuestionAttempt')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userSecurityQuestionAttempt = userSecurityQuestionAttemptFilter.filterForCreate(userSecurityQuestionAttempt)
@@ -134,6 +134,10 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
 
         if (userId == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+        }
+
+        if (id == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('UserSecurityQuestionVerifyAttemptId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)

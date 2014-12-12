@@ -23,7 +23,7 @@ import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
-import com.junbo.test.common.Utility.BaseValidationHelper;
+import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import org.testng.Assert;
@@ -36,7 +36,7 @@ import java.util.TreeMap;
 /**
  * Created by weiyu_000 on 8/6/14.
  */
-public class StoreValidationHelper extends BaseValidationHelper {
+public class StoreValidationHelper extends ValidationHelper {
 
     private static final TreeMap<Integer, String> lengthToImageSizeGroup = new TreeMap<>();
 
@@ -117,7 +117,7 @@ public class StoreValidationHelper extends BaseValidationHelper {
 
     public void verifySignInResponse(AuthTokenResponse createResponse, AuthTokenResponse signInResponse) {
         verifyEqual(signInResponse.getUsername(), createResponse.getUsername(), "verify user name");
-        verifyEqual(signInResponse.getExpiresIn(), createResponse.getExpiresIn(), "verify expires in");
+        assert signInResponse.getExpiresIn() > 3500;
         verifyEqual(signInResponse.getUserId().getValue(), createResponse.getUserId().getValue(), "verify user id");
     }
 

@@ -9,9 +9,11 @@
     <!-- Cloudant Repository -->
     <bean id="emailHistoryCloudantRepo" class="com.junbo.email.db.repo.impl.cloudant.EmailHistoryRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="email_history"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
     <bean id="emailScheduleCloudantRepo" class="com.junbo.email.db.repo.impl.cloudant.EmailScheduleRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="email_schedule"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
     <bean id="emailTemplateCloudantRepo" class="com.junbo.email.db.repo.impl.cloudant.EmailTemplateRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="email_template"/>

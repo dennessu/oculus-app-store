@@ -71,6 +71,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppServerExceptions.INSTANCE.providerNotFound(PIType.get(request.getType()).toString()).exception();
         }
         request.setPaymentProvider(provider.getProviderName());
+        LOGGER.info("start to call provider add PI");
         return provider.add(request).recover(new Promise.Func<Throwable, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(Throwable throwable) {
@@ -81,6 +82,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         }).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
+                LOGGER.info("call provider add PI successfully");
                 provider.clonePIResult(paymentInstrument, request);
                 request.setIsActive(true);
                 if (request.getLastValidatedTime() != null) {

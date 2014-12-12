@@ -20,6 +20,7 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.identity.spec.v1.resource.LocaleResource
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.context.JunboHttpContext
@@ -58,6 +59,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     private UserPersonalInfoResource userPersonalInfoResource
     private UserService userService
     private CsrLogResource csrLogResource
+    private LocaleResource localeResource
 
     private String successRedirectUri
     private String failedRedirectUri
@@ -109,9 +111,14 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         this.verifyEmailAutoLogin = verifyEmailAutoLogin
     }
 
+    @Required
+    void setLocaleResource(LocaleResource localeResource) {
+        this.localeResource = localeResource
+    }
+
     @Override
     Promise<Response> verifyEmail(String code, String locale) {
-        if (StringUtils.isEmpty(locale) || !ValidatorUtil.isValidLocale(locale)) {
+        if (StringUtils.isEmpty(locale) || !ValidatorUtil.isValidLocale(locale, localeResource)) {
             locale = 'en-US'
         }
 
@@ -131,6 +138,10 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         EmailVerifyCode emailVerifyCode = emailVerifyCodeRepository.getAndRemove(code)
 
         if (emailVerifyCode == null) {
+            return Promise.pure(response(failedUri, false, locale, null, AppCommonErrors.INSTANCE.fieldInvalid('evc')).build())
+        }
+
+        if (emailVerifyCode.isExpired()) {
             return Promise.pure(response(failedUri, false, locale, null, AppCommonErrors.INSTANCE.fieldInvalid('evc')).build())
         }
 

@@ -31,8 +31,6 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     @Override
     public EntitlementEntity insert(EntitlementEntity entitlement) {
         entitlement.setIsDeleted(false);
-        entitlement.setUpdatedBy(123L);
-        entitlement.setUpdatedTime(new Date());
         return cloudantPostSync(entitlement);
     }
 
@@ -121,6 +119,10 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     private List<EntitlementEntity> filterActive(List<EntitlementEntity> list, Boolean isActive) {
         List<EntitlementEntity> removeList = new ArrayList<>();
         for (EntitlementEntity entity : list) {
+            if (Boolean.TRUE.equals(entity.getIsDeleted())) {
+                removeList.add(entity);
+                continue;
+            }
             Boolean entityActive = isActive(entity);
             if (isActive && (!entityActive)) {
                 removeList.add(entity);
@@ -223,7 +225,12 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     public EntitlementEntity get(Long userId, String itemId, String type) {
         String key = userId.toString() + ":" + itemId + ":" + (type == null ? EntitlementConsts.NO_TYPE : type.toUpperCase());
         List<EntitlementEntity> results = queryViewSync("byUserIdAndItemIdAndType", key);
-        return results.size() == 0 ? null : results.get(0);
+        if (results.size() == 0) {
+            return null;
+        } else {
+            EntitlementEntity result = results.get(0);
+            return Boolean.TRUE.equals(result.getIsDeleted()) ? null : result;
+        }
     }
 
     private Long parse(String date) throws ParseException {

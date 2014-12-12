@@ -28,7 +28,7 @@ class DeviceValidatorImpl implements DeviceValidator {
     @Override
     Promise<Device> validateForGet(DeviceId deviceId) {
         if (deviceId == null || deviceId.value == null) {
-            throw new IllegalArgumentException('deviceId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return deviceService.get(deviceId).then { Device device ->

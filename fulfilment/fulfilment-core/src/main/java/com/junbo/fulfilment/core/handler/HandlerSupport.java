@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class HandlerSupport<T extends FulfilmentContext>
         extends TransactionSupport
         implements FulfilmentHandler<T> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FulfilmentHandler.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(FulfilmentHandler.class);
 
     @Autowired
     protected CatalogGateway catalogGateway;
@@ -56,10 +56,15 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
                 action.setStatus(FulfilmentStatus.SUCCEED);
 
                 LOGGER.info("Finish processing action [" + action.getActionId() + "].");
-                actionRepo.update(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
             } catch (Exception e) {
                 LOGGER.error("Error occurred during processing action.", e);
                 action.setStatus(FulfilmentStatus.FAILED);
+            }
+
+            try {
+                actionRepo.update(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
+            } catch (Exception e) {
+                LOGGER.error("Error occurred during updating action.", e);
             }
         }
     }

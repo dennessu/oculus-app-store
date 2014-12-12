@@ -2,6 +2,7 @@ package com.junbo.common.cloudant.client
 import com.junbo.common.cloudant.*
 import com.junbo.common.cloudant.exception.CloudantException
 import com.junbo.common.cloudant.model.CloudantBulkDocs
+import com.junbo.common.cloudant.model.CloudantBulkResult
 import com.junbo.common.cloudant.model.CloudantError
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.error.AppCommonErrors
@@ -25,6 +26,8 @@ class CloudantClientBulk implements CloudantClientInternal {
     public static CloudantClientBulk instance() {
         return singleton
     }
+
+    private static CloudantClientCached memcache = CloudantClientCached.instance();
 
     public static interface Callback {
         void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String key)
@@ -85,7 +88,7 @@ class CloudantClientBulk implements CloudantClientInternal {
     private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
 
     @Override
-    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         if (entity.id == null) {
             // must be cloudant based id, assign a string is okay
             return CloudantIdGenerator.nextId().then { String id ->
@@ -119,7 +122,7 @@ class CloudantClientBulk implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
@@ -128,7 +131,7 @@ class CloudantClientBulk implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity, boolean noOverrideWrites) {
         if (entity == null) {
             return Promise.pure(null)
         }
@@ -136,8 +139,8 @@ class CloudantClientBulk implements CloudantClientInternal {
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
 
-        delete(dbUri, entity.cloudantId)
-        return impl.cloudantDelete(dbUri, entityClass, entity)
+        addDeleted(dbUri, entity, entityClass)
+        return Promise.pure()
     }
 
     @Override
@@ -230,6 +233,7 @@ class CloudantClientBulk implements CloudantClientInternal {
         def cloudantBulk = getBulkDataReadonly().cloudantBulk
 
         Closure<Promise> commitToDb = { CloudantDbUri dbUri ->
+            Map<String, CloudantEntity> bulkDocsMap = new HashMap<>();
             CloudantBulkDocs bulkDocs = new CloudantBulkDocs()
             def entitiesWithType = cloudantBulk.get(dbUri).values().toArray(new EntityWithType[0])
             bulkDocs.docs = (CloudantEntity[])entitiesWithType.collect { EntityWithType entityWithType ->
@@ -245,7 +249,28 @@ class CloudantClientBulk implements CloudantClientInternal {
                         throw new CloudantException("Failed to bulk commit, error: $cloudantError.error," +
                                 " reason: $cloudantError.reason")
                     }
+
+                    String bulkFullResponse = response.getResponseBody();
+                    List<CloudantBulkResult> results = marshaller.unmarshall(bulkFullResponse, List, CloudantBulkResult);
+                    for (CloudantBulkResult result : results) {
+                        if (result.error != null) {
+                            logger.error("Partial update in bulk action. Bulk response: \n{}", bulkFullResponse)
+                            throw new CloudantException("Failed to bulk commit, response: \n $bulkFullResponse")
+                        }
+                    }
+
                     return Promise.pure(null)
+                }.then {
+                    for (CloudantEntity entity : bulkDocs.docs) {
+                        if (entity.getCloudantId() != null) {
+                            // invalidate cache on delete or update.
+                            // always delete cache because we don't know the new id/rev mapping to bulk docs.
+                            if (entity.isDeleted() || entity.getCloudantRev() != null) {
+                                memcache.deleteCache(dbUri, entity.cloudantId);
+                            }
+                        }
+                    }
+                    return Promise.pure()
                 }
             }
             return Promise.pure(null)
@@ -327,6 +352,16 @@ class CloudantClientBulk implements CloudantClientInternal {
         addCachedRaw(entity.cloudantId, entityClass, value)
     }
 
+    private void addDeleted(CloudantDbUri dbUri, CloudantEntity entity, Class entityClass) {
+        entity.setCloudantId(entity.getId().toString());
+        entity.setDeleted(true)
+        def bulk = getOrCreateBulk(dbUri)
+
+        def value = marshaller.marshall(entity)
+        bulk.put(entity.cloudantId, new EntityWithType(entity: value, type: entityClass))
+        getCache().remove(entity.cloudantId)
+    }
+
     private void addCached(CloudantEntity entity) {
         if (entity == null) {
             return
@@ -341,11 +376,6 @@ class CloudantClientBulk implements CloudantClientInternal {
 
     private void addCachedRaw(String cloudantId, Class entityClass, String value) {
         getCache().put(cloudantId + ":" + entityClass.getName(), value)
-    }
-
-    private void delete(CloudantDbUri dbUri, String id) {
-        getOrCreateBulk(dbUri).remove(id)
-        getCache().remove(id)
     }
 
     private <T> T getCached(String id, Class<T> entityClass) {

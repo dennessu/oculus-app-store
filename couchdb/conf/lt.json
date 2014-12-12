@@ -1,7 +1,6 @@
 {
     "dbs":{
         "couchdb": "https://silkcloudtest1:#Bugsfor$@silkcloudtest1.cloudant.com",
-        "pii": "https://silkcloudtest1:#Bugsfor$@silkcloudtest1.cloudant.com",
         "cloudant": "https://silkcloudtest1:#Bugsfor$@silkcloudtest1.cloudant.com"
     },
     "apikeys": [

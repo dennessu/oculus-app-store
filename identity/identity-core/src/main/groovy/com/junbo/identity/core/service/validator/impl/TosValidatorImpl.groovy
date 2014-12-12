@@ -112,6 +112,12 @@ class TosValidatorImpl implements TosValidator {
             throw AppCommonErrors.INSTANCE.fieldTooLong('version', maxVersionLength).exception()
         }
 
+        try {
+            Double.parseDouble(tos.version)
+        } catch (NumberFormatException ){
+            throw AppCommonErrors.INSTANCE.fieldInvalid('version', "The version should be a number").exception()
+        }
+
         if (tos.title == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('title').exception()
         }

@@ -12,7 +12,7 @@ import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderItem;
-import com.junbo.test.common.Utility.BaseValidationHelper;
+import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
@@ -20,7 +20,7 @@ import com.junbo.test.common.libs.IdConverter;
 /**
  * Created by yunlongzhao on 5/14/14.
  */
-public class FulfimentValidationHelper extends BaseValidationHelper {
+public class FulfimentValidationHelper extends ValidationHelper {
     public static final String SYSTEM_INTERNAL = "system internal";
 
     // constant number

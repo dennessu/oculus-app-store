@@ -4,6 +4,8 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.sharding.hibernate
+
+import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.model.EntityAdminInfo
 import com.junbo.common.model.EntityAdminInfoString
 import com.junbo.langur.core.profiling.ProfilingHelper
@@ -59,7 +61,7 @@ class SqlEventListeners {
     static class postInsert implements PostInsertEventListener {
         @Override
         void onPostInsert(PostInsertEvent event) {
-            end("insert", event.entity.class.simpleName, event.id.toString())
+            end()
         }
 
         @Override
@@ -96,7 +98,7 @@ class SqlEventListeners {
     static class postUpdate implements PostUpdateEventListener {
         @Override
         void onPostUpdate(PostUpdateEvent event) {
-            end("update", event.entity.class.simpleName, event.id.toString())
+            end()
         }
 
         @Override
@@ -115,7 +117,7 @@ class SqlEventListeners {
     static class postLoad implements PostLoadEventListener {
         @Override
         void onPostLoad(PostLoadEvent event) {
-            end("select", event.entity.class.simpleName, event.id.toString())
+            end()
         }
     }
 
@@ -130,7 +132,7 @@ class SqlEventListeners {
     static class postDelete implements PostDeleteEventListener {
         @Override
         void onPostDelete(PostDeleteEvent event) {
-            end("delete", event.entity.class.simpleName, event.id.toString())
+            end()
         }
 
         @Override
@@ -140,11 +142,11 @@ class SqlEventListeners {
     }
 
     private static void begin(String event, String entityName, String id) {
-        ProfilingHelper.appendRow(logger, "(SQL) BEGIN %s %s %s", event, entityName, id)
+        ProfilingHelper.begin("SQL", "%s %s %s", event, entityName, id)
     }
 
-    private static void end(String event, String entityName, String id) {
-        ProfilingHelper.appendRow(logger, "(SQL) END %s %s %s", event, entityName, id)
+    private static void end() {
+        ProfilingHelper.end(logger, "(DONE)")
     }
 
     private static void setValue(Object[] currentState, String[] propertyNames, String propertyToSet, Object value, Object entity) {

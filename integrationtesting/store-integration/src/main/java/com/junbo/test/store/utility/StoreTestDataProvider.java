@@ -8,6 +8,11 @@ package com.junbo.test.store.utility;
 // CHECKSTYLE:OFF
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
@@ -16,10 +21,12 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
 import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
@@ -27,7 +34,9 @@ import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.browse.document.Tos;
+import com.junbo.store.spec.model.external.sewer.SewerParam;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyLink;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
 import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
@@ -60,9 +69,11 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.payment.utility.PaymentTestDataProvider;
 import com.junbo.test.store.apihelper.CaseyEmulatorService;
+import com.junbo.test.store.apihelper.CaseyService;
 import com.junbo.test.store.apihelper.LoginService;
 import com.junbo.test.store.apihelper.StoreService;
 import com.junbo.test.store.apihelper.impl.CaseyEmulatorServiceImpl;
+import com.junbo.test.store.apihelper.impl.CaseyServiceImpl;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
 import org.apache.http.NameValuePair;
@@ -80,7 +91,7 @@ import java.util.*;
 
 public class StoreTestDataProvider extends BaseTestDataProvider {
 
-
+    private static ObjectMapper caseyObjectMapper;
     LoginService loginClient = LoginServiceImpl.getInstance();
     StoreService storeClient = StoreServiceImpl.getInstance();
     OfferService offerClient = OfferServiceImpl.instance();
@@ -94,8 +105,15 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     ItemAttributeService itemAttributeClient = ItemAttributeServiceImpl.instance();
     OrganizationService organizationClient = OrganizationServiceImpl.instance();
     OrderService orderClient = OrderServiceImpl.getInstance();
+    CaseyService caseyClient = CaseyServiceImpl.getInstance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
+
+    static {
+        caseyObjectMapper = ObjectMapperProvider.createObjectMapper();
+        caseyObjectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        caseyObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
 
     public CreateUserRequest CreateUserRequest() throws Exception {
         return CreateUserRequest(RandomFactory.getRandomStringOfAlphabet(6));
@@ -893,5 +911,52 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public void resetEmulatorData() throws Exception {
         caseyEmulatorClient.resetEmulatorData();
+    }
+
+    public Set<String> getInitialItems(String pageName, String slot) throws Exception {
+        SewerParam sewerParam = new SewerParam();
+        sewerParam.setCountry("US");
+        sewerParam.setLocale("en_US");
+        CaseyResults<JsonNode> results = caseyClient.searchCmsOffers(pageName, slot, "ANDROID", sewerParam);
+        Set<String> itemIds = new HashSet<>();
+        for (JsonNode result : results.getItems()) {
+            if (result.get("items") != null) {
+                for (int i =0;i < result.get("items").size();++i) {
+                    itemIds.add(result.get("items").get(i).get("self").get("id").asText());
+                }
+            }
+        }
+        return itemIds;
+    }
+
+    public List<String> getExpectedInitialDownloadItemIds(String path, String slot, String contentName) throws Exception {
+        SewerParam sewerParam = new SewerParam();
+        sewerParam.setCountry("US");
+        sewerParam.setLocale("en_US");
+        sewerParam.setExpand("(results(schedule))");
+        CaseyResults<JsonNode> results = caseyClient.getCmsPage(path, null, sewerParam);
+        Set<String> added = new HashSet<>();
+        List<String> itemIds = new ArrayList<>();
+        for (JsonNode result : results.getItems()) {
+            CmsPage cmsPage = caseyObjectMapper.readValue(result.traverse(), new TypeReference<CmsPage>() {});
+            for (CaseyLink link : cmsPage.getSchedule().getSlots().get(slot).getContent().getContents().get(contentName).getLinks()) {
+                if (!added.contains(link.getId())) {
+                    itemIds.add(link.getId());
+                    added.add(link.getId());
+                }
+            }
+        }
+        return itemIds;
+    }
+
+    public InitialDownloadItemsResponse getInitialDownloadItems() throws Exception {
+        return storeClient.getInitialDownloadItemsResponse();
+    }
+
+    public void clearUserPreferLocalAndCountry(UserId userId) throws Exception {
+        User user = Master.getInstance().getUser(identityClient.GetUserByUserId(IdFormatter.encodeId(userId)));
+        user.setCountryOfResidence(null);
+        user.setPreferredLocale(null);
+        identityClient.PutUser(IdFormatter.encodeId(user.getId()), user, 200, true);
     }
 }

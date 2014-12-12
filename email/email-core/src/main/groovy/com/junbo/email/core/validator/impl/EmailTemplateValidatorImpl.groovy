@@ -24,7 +24,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
 
     @Override
     void validateCreate(EmailTemplate template) {
-        this.validateCommonField(template)
+        this.validateCommonField(template, null)
         this.validatePlaceholderNamesField(template)
         this.validateTemplateName(template.name)
     }
@@ -32,7 +32,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     @Override
     void validateUpdate(EmailTemplate template, String templateId) {
         this.validateTemplateId(templateId)
-        this.validateCommonField(template)
+        this.validateCommonField(template, templateId)
         this.validatePlaceholderNamesField(template)
     }
 
@@ -53,12 +53,12 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
         }
     }
 
-    private void validateCommonField(EmailTemplate template) {
+    private void validateCommonField(EmailTemplate template, String id) {
         if (template == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-        if (template.id != null) {
-            throw AppCommonErrors.INSTANCE.fieldMustBeNull('self').exception()
+        if (id != null && template.id != null && !id.equalsIgnoreCase(template.getId().getValue())) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('self').exception()
         }
         if (StringUtils.isEmpty(template.source)) {
             throw AppCommonErrors.INSTANCE.fieldRequired('source').exception()

@@ -22,6 +22,8 @@ public class PaymentEvent extends ResourceMetaForDualWrite<Long> {
     private ChargeInfo chargeInfo;
     private String request;
     private String response;
+    @JsonIgnore
+    private String externalToken;
 
     @Override
     public Long getId() {
@@ -79,6 +81,14 @@ public class PaymentEvent extends ResourceMetaForDualWrite<Long> {
     @JsonIgnore
     public void setResponse(String response) {
         this.response = response;
+    }
+
+    public String getExternalToken() {
+        return externalToken;
+    }
+
+    public void setExternalToken(String externalToken) {
+        this.externalToken = externalToken;
     }
 
 }

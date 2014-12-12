@@ -5,6 +5,7 @@
  */
 package com.junbo.common.filter;
 
+import com.junbo.common.cloudant.CloudantClientBase;
 import com.junbo.common.util.Context;
 import com.junbo.langur.core.profiling.ProfilingHelper;
 
@@ -25,5 +26,8 @@ public class ContextFilter implements ContainerRequestFilter {
 
         // clear profiling info
         ProfilingHelper.clear();
+
+        // clear bulk state
+        CloudantClientBase.setStrongUseBulk(false);
     }
 }

@@ -19,10 +19,17 @@ import java.lang.reflect.ParameterizedType
 @CompileStatic
 abstract class CloudantClientBase<T extends CloudantEntity> implements InitializingBean {
     private static final ThreadLocal<Boolean> useBulk = new ThreadLocal<>()
+    private static final ThreadLocal<Boolean> ignoreLocalIgnoreBulk = new ThreadLocal<>()
 
     // Set whether use bulk cloudant to commit changes. The value is reset at the end of the request automatically.
     public static boolean setUseBulk(Boolean value) {
         useBulk.set(value)
+    }
+
+    // Set use bulk ignoring the localIgnoreBulk.
+    public static boolean setStrongUseBulk(Boolean value) {
+        useBulk.set(value)
+        ignoreLocalIgnoreBulk.set(value)
     }
 
     public CloudantClientInternal getEffective() {
@@ -31,7 +38,8 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         // 2. Use the thread static setUseBulk to specify whether bulk is used or not.
         // When bulk is used, it will ignore cache setting. Now bulk is only used in migration.
         Boolean flag = useBulk.get()
-        if (flag == null || flag == false || localIgnoreBulk) {
+        Boolean ignoreLocalIgnoreBulk = ignoreLocalIgnoreBulk.get() ?: false;
+        if (flag == null || flag == false || (localIgnoreBulk && !ignoreLocalIgnoreBulk)) {
             return internal
         }
         return bulk
@@ -52,6 +60,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     private boolean enableCache
     private boolean includeDocs
     private boolean localIgnoreBulk
+    private boolean noOverrideWrites
 
     public CloudantClientBase() {
         entityClass = (Class<T>) ((ParameterizedType) getClass().genericSuperclass).actualTypeArguments[0]
@@ -79,6 +88,14 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     void setLocalIgnoreBulk(boolean localIgnoreBulk) {
         this.localIgnoreBulk = localIgnoreBulk
+    }
+
+    void setNoOverrideWrites(boolean noOverrideWrites) {
+        this.noOverrideWrites = noOverrideWrites
+    }
+
+    boolean getNoOverrideWrites() {
+        return noOverrideWrites
     }
 
     @Override
@@ -115,10 +132,10 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             return future.then {
                 return postUnique(entity)
             }.then {
-                return getEffective().cloudantPost(getDbUri(entity.cloudantId), entityClass, entity)
+                return getEffective().cloudantPost(getDbUri(entity.cloudantId), entityClass, entity, noOverrideWrites)
             }
         }
-        return getEffective().cloudantPost(getDbUri(entity.cloudantId), entityClass, entity)
+        return getEffective().cloudantPost(getDbUri(entity.cloudantId), entityClass, entity, noOverrideWrites)
     }
 
     public Promise<T> cloudantGet(String id) {
@@ -132,10 +149,10 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         if (entity instanceof CloudantUnique) {
             // create unique items first
             return putUnique(entity).then {
-                return getEffective().cloudantPut(getDbUri(entity.cloudantId), entityClass, entity)
+                return getEffective().cloudantPut(getDbUri(entity.cloudantId), entityClass, entity, noOverrideWrites)
             }
         }
-        return getEffective().cloudantPut(getDbUri(entity.cloudantId), entityClass, entity)
+        return getEffective().cloudantPut(getDbUri(entity.cloudantId), entityClass, entity, noOverrideWrites)
     }
 
     public Promise<Void> cloudantDelete(String id) {
@@ -152,11 +169,11 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             entity.cloudantId = entity.id.toString()
         }
         if (entity instanceof CloudantUnique) {
-            return getEffective().cloudantDelete(getDbUri(entity.cloudantId), entityClass, entity).then {
+            return getEffective().cloudantDelete(getDbUri(entity.cloudantId), entityClass, entity, noOverrideWrites).then {
                 return deleteUnique(entity)
             }
         } else {
-            return getEffective().cloudantDelete(getDbUri(entity.cloudantId), entityClass, entity)
+            return getEffective().cloudantDelete(getDbUri(entity.cloudantId), entityClass, entity, noOverrideWrites)
         }
     }
 

@@ -35,6 +35,7 @@ def setUpModule():
     global opts
     global test_uri
     global test_remote_uri
+    global test_health_uri
     global test_client_id
     global test_client_secret
     global test_service_client_id
@@ -43,11 +44,13 @@ def setUpModule():
     global test_logout_redirect_uri
     global test_wildcard_logout_redirect_uri
     global test_sleep
+    global test_profile_enabled
     global cookies
 
     if opts is not None:
         test_uri = opts.uri
         test_remote_uri = opts.remoteuri
+        test_health_uri = opts.healthuri
         test_client_id = opts.client
         test_client_secret = opts.secret
         test_service_client_id = opts.sclient
@@ -55,10 +58,12 @@ def setUpModule():
         test_redirect_uri = opts.redirecturi
         test_logout_redirect_uri = opts.redirecturi
         test_wildcard_logout_redirect_uri = 'https://www.oculus.com/'
+        test_profile_enabled=opts.profile
         test_sleep = opts.sleep
     else:
         test_uri = 'http://localhost:8080/'
         test_remote_uri = 'http://localhost:8080/'
+        test_health_uri = 'http://localhost:8081/'
         test_client_id = 'smoketest'
         test_client_secret = 'secret'
         test_service_client_id = 'service'
@@ -66,6 +71,7 @@ def setUpModule():
         test_redirect_uri = 'http://localhost'
         test_logout_redirect_uri = 'http://localhost'
         test_wildcard_logout_redirect_uri = 'https://www.oculus.com/'
+        test_profile_enabled='0'
         test_sleep = None
 
     cookies = CookieJar()
@@ -86,11 +92,13 @@ def silkcloud_utmain(suite = None):
     parser = argparse.ArgumentParser()
     parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://localhost:8080/')
     parser.add_argument("-remoteuri", nargs = '?', help = "The URI to the silkcloud service in remote dc.", default = 'http://localhost:8080/')
+    parser.add_argument("-healthuri", nargs = '?', help = "The URI to the silkcloud health check port.", default = 'http://localhost:8081/')
     parser.add_argument("-client", nargs = '?', help = "The client ID used in test cases.", default = 'smoketest')
     parser.add_argument("-secret", nargs = '?', help = "The client secret used in the test cases.", default = 'secret')
     parser.add_argument("-sclient", nargs = '?', help = "The service client ID used in test cases.", default = 'service')
     parser.add_argument("-ssecret", nargs = '?', help = "The service client secret used in the test cases.", default = 'secret')
     parser.add_argument("-redirecturi", nargs = '?', help = "The redirect URI for the test cases.", default = 'http://localhost')
+    parser.add_argument("-profile", nargs = '?', help = "The profile setting.", default = '1')
     parser.add_argument("-sleep", nargs = '?', help = "The sleep between API calls.")
     parser.add_argument('tests', metavar='test', nargs='*', help='The test cases to run.')
 
@@ -115,8 +123,17 @@ def curlRedirect(method, baseUrl, url = None, query = None, headers = None, body
     return locations[0]
 
 def curlForm(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
-    resp = curlFormRaw(method, baseUrl, url, query, headers, data, raiseOnError)
-    return json.loads(resp)
+    body, resp = curlFormRaw(method, baseUrl, url, query, headers, data, raiseOnError)
+    return json.loads(body)
+
+def curlFormRedirect(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
+    body, resp = curlFormRaw(method, baseUrl, url, query, headers, data, raiseOnError)
+    if resp.status < 300:
+        raise Exception('Expected redirect. Actual: %s %s in %s %s\n%s' % (resp.status, resp.reason, method, url, body))
+    locations = [v for k, v in resp.getheaders() if k.lower() == 'location']
+    if len(locations) != 1:
+        raise Exception('Unexpected location header count: %s, locations: %s' % (len(locations), locations))
+    return locations[0]
 
 def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
     if data is None: data = {}
@@ -128,7 +145,7 @@ def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data =
         headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
 
     body = urlencode(data)
-    return curl(method, baseUrl, url, query, headers, body, raiseOnError)
+    return curlRaw(method, baseUrl, url, query, headers, body, raiseOnError)
 
 def curlJson(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
     if headers is None:
@@ -193,7 +210,8 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
             headers['Authorization'] = authheader
 
         # enable profiling
-        headers['X-Enable-Profiling'] = 'true'
+        if test_profile_enabled != 'False':
+            headers['X-Enable-Profiling'] = test_profile_enabled
 
         # process cookies
         request = HttpRequest(protocol, host, port, path, headers)
@@ -230,7 +248,7 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
                 verbose("[resp][profile] " + (" " * indent * 4) + p)
                 if p == "[": indent += 1
             verbose("")
-        
+
         if resp.status >= 400 and raiseOnError:
             raise Exception('%s %s in %s %s\n%s' % (resp.status, resp.reason, method, url, body))
 

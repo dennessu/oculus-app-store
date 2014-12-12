@@ -7,6 +7,7 @@ package com.junbo.common.job.cache;
 
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.memcached.JunboMemcachedClient;
+import com.junbo.common.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,11 +99,11 @@ public class CacheSnifferJob implements InitializingBean {
     }
 
     private String getLastChange(CloudantUri cloudantUri, String database) {
-        LOGGER.debug("Try to fetch last change token from memcached.");
+        LOGGER.trace("Try to fetch last change token from memcached.");
         String lastChange = getCache(buildLastChangeKey(cloudantUri, database));
 
         if (StringUtils.isEmpty(lastChange)) {
-            LOGGER.debug("Last change token is missing in memcached, fetch from cloudant instead.");
+            LOGGER.trace("Last change token is missing in memcached, fetch from cloudant instead.");
             lastChange = CloudantSniffer.instance().getLastChange(cloudantUri, database);
         }
 
@@ -157,7 +158,7 @@ public class CacheSnifferJob implements InitializingBean {
             @Override
             public void run() {
                 if (!handler.isDone()) {
-                    LOGGER.debug("Cloudant change feed connection is broken.");
+                    LOGGER.warn("Cloudant change feed connection is broken.");
                     handler.cancel(true);
                 }
             }
@@ -166,7 +167,7 @@ public class CacheSnifferJob implements InitializingBean {
         // blocking wait
         T result = handler.get();
         try {
-            LOGGER.debug("Cancel feed change monitor thread.");
+            LOGGER.trace("Cancel feed change monitor thread.");
             monitor.cancel(true);
         } catch (Exception e) {
             //silently ignore
@@ -176,10 +177,10 @@ public class CacheSnifferJob implements InitializingBean {
     }
 
     private void handleChange(CloudantUri cloudantUri, String database, String change) {
-        LOGGER.debug("Receive change feed " + change);
+        LOGGER.trace("[received raw] " + change);
 
         if (FEED_SEPARATOR.equals(change) || StringUtils.isEmpty(change)) {
-            LOGGER.debug("Cloundant heartbeat payload received.");
+            LOGGER.debug("[heartbeat]");
             return;
         }
 
@@ -199,12 +200,14 @@ public class CacheSnifferJob implements InitializingBean {
             String entityIdStr = entityId.toString();
             if (entityIdStr.startsWith("_")) {
                 // system data updated, ignore
+                LOGGER.debug("[ignored] {}", entityIdStr);
                 return;
             }
 
             boolean cacheIsValid = false;
             String entityKey = entityIdStr + ":" + database + ":" + cloudantUri.getDc();
 
+            boolean revFound = false;
             try {
                 // best effort: don't clear cache if the new rev is already in cache.
                 if (changes != null && changes.size() == 1) {
@@ -218,12 +221,23 @@ public class CacheSnifferJob implements InitializingBean {
                             if (existingValue == null) {
                                 // not in cache, so cache is valid
                                 cacheIsValid = true;
+                                revFound = true;
+                                LOGGER.debug("[miss] {}@{}", entityKey, rev);
                             } else {
                                 Map<String, Object> entity = SnifferUtils.parse(existingValue, Map.class);
 
                                 if (entity != null && entity.containsKey("_rev")) {
-                                    if (rev.equals(entity.get("_rev"))) {
+                                    revFound = true;
+                                    String entityRev = (String)entity.get("_rev");
+                                    int compareResult = Utils.compareCloudantRev(rev, entityRev);
+                                    if (compareResult == 0) {
                                         cacheIsValid = true;
+                                        LOGGER.debug("[valid] {}@{}", entityKey, entityRev);
+                                    } else if (compareResult < 0) {
+                                        cacheIsValid = true;
+                                        LOGGER.debug("[valid] {}@{} r@{}", entityKey, entityRev, rev);
+                                    } else {
+                                        LOGGER.debug("[invalid] {}@{} r@{}", entityKey, entityRev, rev);
                                     }
                                 }
                             }
@@ -231,8 +245,13 @@ public class CacheSnifferJob implements InitializingBean {
                     }
                 }
             } catch (Exception ex) {
-                LOGGER.error("Failed to compare cache rev with change. Default to delete existing cache.", ex);
+                LOGGER.error("Failed to compare cache rev with change for key {}. Default to delete existing cache.", entityKey, ex);
                 cacheIsValid = false;
+            } finally {
+                // add a trace anyway
+                if (!revFound) {
+                    LOGGER.warn("Received entity change key {}, rev not found. full change: {}", entityKey, change);
+                }
             }
 
             if (!cacheIsValid) {
@@ -253,7 +272,7 @@ public class CacheSnifferJob implements InitializingBean {
 
         try {
             memcachedClient.set(key, this.expiration, value).get();
-            LOGGER.debug("Memcached updated successfully. [key]" + key + " [value]" + value);
+            LOGGER.trace("[updated cache] [key]" + key + " [value]" + value);
         } catch (Exception e) {
             LOGGER.warn("Error writing to memcached.", e);
         }
@@ -272,7 +291,7 @@ public class CacheSnifferJob implements InitializingBean {
 
         try {
             memcachedClient.delete(key).get();
-            LOGGER.debug("Memcached deleted successfully. [key]" + key);
+            LOGGER.trace("[deleted cache] [key]" + key);
         } catch (Exception e) {
             LOGGER.warn("Error deleting from memcached.", e);
         }

@@ -214,6 +214,14 @@ public class postCountry {
                 Validator.Validate("Validate shortName ", countryLocaleKey.getShortName() != null, true);
                 Validator.Validate("Validate LongName ", countryLocaleKey.getShortName() != null, true);
             }
+
+            countries = Identity.CountriesSearch(locale.getLocaleCode(), null);
+            for (Country country : countries) {
+                Validator.Validate("Validate " + country.getCountryCode(), country.getSubCountries() != null, true);
+                CountryLocaleKey countryLocaleKey = country.getLocales().get(locale.getLocaleCode());
+                Validator.Validate("Validate shortName ", countryLocaleKey.getShortName() != null, true);
+                Validator.Validate("Validate LongName ", countryLocaleKey.getShortName() != null, true);
+            }
         }
     }
 

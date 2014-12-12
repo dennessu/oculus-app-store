@@ -12,7 +12,7 @@ import com.junbo.payment.spec.model.TypeSpecificDetails;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
-import com.junbo.test.common.Utility.BaseValidationHelper;
+import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.DBHelper;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by Yunlong on 4/4/14.
  */
-public class PaymentValidationHelper extends BaseValidationHelper {
+public class PaymentValidationHelper extends ValidationHelper {
     DBHelper dbHelper = new DBHelper();
 
     public PaymentValidationHelper() {

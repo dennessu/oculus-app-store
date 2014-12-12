@@ -1,12 +1,8 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.catalog.spec.enums.EntitlementType
-import com.junbo.catalog.spec.enums.PriceType
-import com.junbo.catalog.spec.model.offer.*
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
-import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
@@ -14,9 +10,10 @@ import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.common.cache.Cache
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
+import com.junbo.store.spec.model.external.sewer.casey.search.CaseyItem
 import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer
 import groovy.transform.CompileStatic
-import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -24,7 +21,6 @@ import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
-
 /**
  * The InitialItemPurchaseUtils class.
  */
@@ -50,7 +46,7 @@ class InitialItemPurchaseUtils {
     private ResourceContainer resourceContainer
 
     @Resource(name = 'storeInitialOfferCache')
-    private Cache<String, Set<OfferId>> initialOfferCache
+    private Cache<String, Map<ItemId, OfferId>> initialOfferCache
 
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
@@ -68,94 +64,75 @@ class InitialItemPurchaseUtils {
     }
 
     private Promise<Set<OfferId>> getPurchaseOfferIds(UserId userId, boolean newUser, ApiContext apiContext) {
-        Map<OfferId, Set<ItemId>> offerItemsMap = [:] as Map
-        Map<ItemId, OfferId> itemOffersMap = [:] as Map
-        Set<OfferId> filteredOfferId = [] as Set
+        Set<OfferId> results = [] as Set
 
-        searchInitialOfferIds(apiContext).then { Set<OfferId> offerIds ->
-            if (CollectionUtils.isEmpty(offerIds)) {
-                return Promise.pure([] as Set)
+        searchInitialOfferIds(apiContext).then { Map<ItemId, OfferId> itemIdOfferIdMap ->
+            results.addAll(itemIdOfferIdMap.values())
+            if (results.isEmpty() || newUser) {
+                return Promise.pure(results)
             }
-            // filter out duplicate offers that has same items
-            resourceContainer.offerResource.getOffers(new OffersGetOptions(offerIds: new HashSet<String>(offerIds.collect { OfferId e -> return e.value }))).then { Results<Offer> offerResults ->
-                Set<String> revisionIds = [] as Set
-                offerResults.items.each { Offer offer ->
-                    if (offer.currentRevisionId != null) {
-                        revisionIds << offer.currentRevisionId
-                    }
-                }
 
-                if (revisionIds.isEmpty()) {
-                    return Promise.pure()
+            facadeContainer.entitlementFacade.checkEntitlements(userId, itemIdOfferIdMap.keySet(), EntitlementType.DOWNLOAD).then { Set<ItemId> itemIdsOwned ->
+                itemIdsOwned.each { ItemId itemId ->
+                    results.remove(itemIdOfferIdMap[itemId])
                 }
-
-                resourceContainer.offerRevisionResource.getOfferRevisions(new OfferRevisionsGetOptions(revisionIds: revisionIds,
-                        locale: apiContext.locale.getId().value)).then { Results<OfferRevision> offerRevisions ->
-                    offerRevisions.items.each { OfferRevision offerRevision ->
-                        if (offerRevision.items.isEmpty() || offerRevision.price?.priceType != PriceType.FREE.name()) {
-                            return
-                        }
-
-                        boolean duplicate = offerRevision.items.any { ItemEntry itemEntry ->
-                            itemOffersMap.containsKey(new ItemId(itemEntry.itemId))
-                        }
-
-                        OfferId offerId = new OfferId(offerRevision.offerId)
-                        if (!duplicate) {
-                            Set<ItemId> itemIdSet = [] as Set
-                            offerRevision.items.each { ItemEntry itemEntry ->
-                                ItemId itemId = new ItemId(itemEntry.itemId)
-                                itemIdSet << itemId
-                                itemOffersMap[itemId] = offerId
-                            }
-                            offerItemsMap[offerId] = itemIdSet
-                        } else {
-                            filteredOfferId << offerId
-                        }
-                    }
-
-                    return Promise.pure()
-                }
-            }.then {
-                if (!filteredOfferId.isEmpty()) {
-                    LOGGER.info('name=InitialApp_DuplicatedOffers_Found, filter out offers:{}', StringUtils.join(filteredOfferId, ','))
-                }
-
-                if (newUser) {
-                    return Promise.pure(offerItemsMap.keySet())
-                }
-                facadeContainer.entitlementFacade.checkEntitlements(userId, itemOffersMap.keySet(), EntitlementType.DOWNLOAD).then { Set<ItemId> itemIdsOwned ->
-                    itemIdsOwned.each { ItemId itemId ->
-                        offerItemsMap.remove(itemOffersMap[itemId])
-                    }
-                    return Promise.pure(offerItemsMap.keySet())
-                }
+                return Promise.pure(results)
             }
         }
     }
 
-    private Promise<Set<OfferId>> searchInitialOfferIds(ApiContext apiContext) {
-        Set<OfferId> offerIds = initialOfferCache.get(apiContext.country.getId().value)
-        if (offerIds != null) {
-            return Promise.pure(offerIds)
+    private Promise<Map<ItemId, OfferId>> searchInitialOfferIds(ApiContext apiContext) {
+        Map<ItemId, OfferId> itemIdOfferIdMap = initialOfferCache.get(apiContext.country.getId().value)
+        if (itemIdOfferIdMap != null) {
+            return Promise.pure(itemIdOfferIdMap)
         }
 
-        offerIds = [] as Set
+        itemIdOfferIdMap = [:] as Map
         facadeContainer.caseyFacade.searchRaw(initialOfferSearchPage, initialOfferSearchSlot,
                 null, initialOfferLimit + 1, apiContext).then { CaseyResults<CaseyOffer> caseyResults ->
             if (caseyResults?.items != null && caseyResults.items.size() > initialOfferLimit) {
                 LOGGER.warn('name=Too_Many_Initial_Offers')
                 caseyResults.items = caseyResults.items.subList(0, initialOfferLimit)
             }
-            if (!CollectionUtils.isEmpty(caseyResults?.items)) {
+
+            Set<OfferId> filtered = [] as Set
+            if (!CollectionUtils.isEmpty(caseyResults.items)) {
                 caseyResults.items.each { CaseyOffer caseyOffer ->
-                    if (caseyOffer?.self != null) {
-                        offerIds << caseyOffer.self
+                    if (CollectionUtils.isEmpty(caseyOffer.items) || (!caseyOffer.price.isFree)) {
+                        return
+                    }
+
+                    boolean hasDuplicateItem = containsDuplicateItem(caseyOffer) || caseyOffer.items.any { CaseyItem caseyItem ->
+                        itemIdOfferIdMap.containsKey(caseyItem.self)
+                    }
+
+                    if (!hasDuplicateItem) {
+                        caseyOffer.items.each { CaseyItem caseyItem ->
+                            itemIdOfferIdMap[caseyItem.self] = caseyOffer.self
+                        }
+                    } else {
+                        filtered << caseyOffer.self
                     }
                 }
             }
-            initialOfferCache.put(apiContext.country.getId().value, offerIds)
-            return Promise.pure(offerIds)
+
+            if (!filtered.isEmpty()) {
+                LOGGER.warn('name=InitialApp_DuplicatedOffers_Found, filter out offers:{}', StringUtils.join(filtered, ','))
+            }
+
+            initialOfferCache.put(apiContext.country.getId().value, itemIdOfferIdMap)
+            return Promise.pure(itemIdOfferIdMap)
         }
+    }
+
+    private boolean containsDuplicateItem(CaseyOffer caseyOffer) {
+        Set<ItemId> itemIdSet = [] as Set
+        for (CaseyItem caseyItem : caseyOffer.items) {
+            if (itemIdSet.contains(caseyItem.self)) {
+                return true
+            }
+            itemIdSet << caseyItem.self
+        }
+        return false
     }
 }

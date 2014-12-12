@@ -55,12 +55,15 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         checkRights(options);
 
         List<OfferRevision> revisions = offerService.getRevisions(options);
-        for (final OfferRevision revision : revisions) {
+        for (OfferRevision revision : revisions) {
             revision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
-            if (!StringUtils.isEmpty(options.getLocale())) {
+        }
+        if (!StringUtils.isEmpty(options.getLocale())) {
+            final Map<String, String> localeRelations = localeFacade.getLocaleRelations();
+            for (final OfferRevision revision : revisions) {
                 revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
                 revision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
-                    put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
+                    put(options.getLocale(), getLocaleProperties(revision, options.getLocale(), localeRelations));
                 }});
             }
         }
@@ -149,9 +152,10 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         final OfferRevision revision = offerService.getRevision(revisionId);
         revision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
         if (!StringUtils.isEmpty(options.getLocale())) {
+            final Map<String, String> localeRelations = localeFacade.getLocaleRelations();
             revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
             revision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>(){{
-                put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
+                put(options.getLocale(), getLocaleProperties(revision, options.getLocale(), localeRelations));
             }});
         }
 
@@ -248,11 +252,11 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         });
     }
 
-    private OfferRevisionLocaleProperties getLocaleProperties(OfferRevision revision, String locale) {
+    private OfferRevisionLocaleProperties getLocaleProperties(OfferRevision revision, String locale, Map<String, String> localeRelations) {
         if (revision == null || locale == null) {
             return new OfferRevisionLocaleProperties();
         }
-        Map<String, String> localeRelations = localeFacade.getLocaleRelations();
+
         OfferRevisionLocaleProperties result = revision.getLocales().get(locale);
         if (result == null) {
             result = new OfferRevisionLocaleProperties();
@@ -271,7 +275,6 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         return result;
     }
 
-    // TODO: don't use reflection in future
     private void addFallbackProperties(OfferRevisionLocaleProperties properties,
                                        OfferRevisionLocaleProperties fallbackProperties) {
         try {
@@ -289,7 +292,6 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         }
     }
 
-    // TODO: don't use reflection in future
     private boolean checkOfferRevisionLocales(OfferRevisionLocaleProperties properties) {
         try {
             Map<String, Object> fields = PropertyUtils.describe(properties);
@@ -304,7 +306,6 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         return true;
     }
 
-    // TODO: don't use reflection in future
     private String getLocaleAccuracy(OfferRevisionLocaleProperties properties) {
         if (properties == null) {
             return LocaleAccuracy.LOW.name();

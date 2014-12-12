@@ -40,6 +40,21 @@ function pause() {
 echo pause
 }
 
+echo Uploading scripts
+cd /home/silkcloud
+rm -rf $APP_NAME
+unzip -o $APP_NAME.zip
+ln -sfn $APP_NAME apphost
+cd apphost/dbsetup/pgha
+./upload_script.sh $ENV
+cd $DIR
+
+./foreach-here.sh $ENV/masters.txt $ENV/secondaries.txt $ENV/bcps.txt $ENV/replicas.txt $ENV/crypto-dbs.txt << EOF
+set -e
+cd /var/silkcloud/pgha
+./util/safe.sh
+EOF
+
 echo Running liquibase
 ssh $LIQUIBASE_SETUP_SERVER << EOF
 set -e
@@ -49,5 +64,26 @@ cd /var/silkcloud/apphost/dbsetup/liquibase
 ./createdb.sh -env:$ENV -key:$CRYPTO_KEY
 ./updatedb.sh -env:$ENV -key:$CRYPTO_KEY
 EOF
+
+./foreach-here.sh $ENV/masters.txt << EOF
+set -e
+cd /var/silkcloud/pgha
+./londiste/londiste_upgrade_root.sh
+./util/safe.sh
+EOF
+
+./foreach-here.sh $ENV/secondaries.txt << EOF
+set -e
+cd /var/silkcloud/pgha
+./util/safe.sh
+EOF
+
+./foreach-here.sh $ENV/replicas.txt << EOF
+set -e
+cd /var/silkcloud/pgha
+./londiste/londiste_upgrade_leaf.sh
+./util/safe.sh
+EOF
+
 
 popd

@@ -13,10 +13,11 @@ import com.junbo.common.id.UserId
 import com.junbo.common.util.Context
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.context.JunboHttpContext
+import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.track.TrackContextManager
 import com.junbo.langur.core.track.UserLogProcessor
 import groovy.transform.CompileStatic
-import org.apache.log4j.MDC
+import org.slf4j.MDC
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
@@ -78,7 +79,16 @@ class UserLogProcessorImpl implements UserLogProcessor {
                     error: error
             )
 
-            getUserLogRepo().create(userLog).get()
+            if (JunboHttpContext.getRequestMethod().equalsIgnoreCase(HttpMethod.POST.toString())) {
+                LOGGER.info("Output Entity ID: $entityId");
+            }
+
+            Context.get().registerAsyncTask(new Promise.Func0<Promise>() {
+                @Override
+                Promise apply() {
+                    return getUserLogRepo().create(userLog)
+                }
+            })
         } catch (Exception e) {
             LOGGER.error("Error occurred while logging user action of [$JunboHttpContext.requestUri.path].", e)
         }

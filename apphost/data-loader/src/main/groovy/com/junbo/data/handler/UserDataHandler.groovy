@@ -95,30 +95,7 @@ class UserDataHandler extends BaseDataHandler {
             logger.debug('error happens', e)
         }
         if (existing != null) {
-            Boolean updated = false
-            // update username
-            if (existing.username != null) {
-                UserPersonalInfo usernamePII = userPersonalInfoResource.get(existing.username, new UserPersonalInfoGetOptions()).get()
-                UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(usernamePII.value, UserLoginName)
-                if (loginName.userName != username) {
-                    updated = true
-                }
-            }
-            if (updated || existing.username == null) {
-                existing = createUserNamePII(username, existing)
-            }
-
-            // create or update Email
-            updated = false || createOrUpdateEmail(email, existing)
-
-            // create or update name
-            updated = updated || createOrUpdateName(userNameData, existing)
-
-            if (updated) {
-                userResource.silentPut(existing.getId(), existing).get()
-            }
-
-            // Existing user's credential won't be updated.
+            logger.debug("user $existing.id exists, skip")
         } else {
             User created = null
             logger.debug("Create new user with username: $username")

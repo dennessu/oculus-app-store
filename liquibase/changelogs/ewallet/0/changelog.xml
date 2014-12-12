@@ -80,4 +80,16 @@
         </sql>
     </changeSet>
 
+    <changeSet id="2" author='Nanxin' context="PREDEPLOY">
+        <sql><![CDATA[
+            CREATE INDEX idx_wallet_tracking_uuid on ewallet(tracking_uuid);
+            CREATE INDEX idx_wallet_user_type_currency on ewallet(user_id, type_id, currency);
+            CREATE INDEX idx_wallet_lot_all on ewallet_lot(ewallet_id, remaining, expiration_date, type_id);
+            CREATE INDEX idx_transaction_tracking_uuid on transaction(tracking_uuid);
+            CREATE INDEX idx_transaction_wallet_id on transaction(ewallet_id);
+            CREATE INDEX idx_lot_transaction_all on lot_transaction(transaction_id, unrefunded_amount, wallet_lot_type_id);
+            ]]>
+        </sql>
+    </changeSet>
+    <include file="../../common/ping.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

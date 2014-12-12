@@ -71,7 +71,8 @@ public class ItemRevisionValidator extends ValidationSupport {
         }
         validatePlatforms(revision.getPlatforms(), errors);
         validateUserInteractionModes(revision.getUserInteractionModes(), errors);
-        validateSupportedInputDevices(revision.getSupportedInputDevices(), errors);
+        validateInputDevices(revision.getSupportedInputDevices(), "supportedInputDevices", errors);
+        validateInputDevices(revision.getRequiredInputDevices(), "requiredInputDevices", errors);
         validatePackageName(revision.getPackageName(), revision.getItemId(), errors);
         validateLocales(revision.getLocales(), errors);
         validateCountryCodes("regions", revision.getCountries().keySet(), errors);
@@ -103,7 +104,8 @@ public class ItemRevisionValidator extends ValidationSupport {
 
         validatePlatforms(revision.getPlatforms(), errors);
         validateUserInteractionModes(revision.getUserInteractionModes(), errors);
-        validateSupportedInputDevices(revision.getSupportedInputDevices(), errors);
+        validateInputDevices(revision.getSupportedInputDevices(), "supportedInputDevices", errors);
+        validateInputDevices(revision.getRequiredInputDevices(), "requiredInputDevices", errors);
         validatePackageName(revision.getPackageName(), revision.getItemId(), errors);
         validateLocales(revision.getLocales(), errors);
 
@@ -131,7 +133,8 @@ public class ItemRevisionValidator extends ValidationSupport {
 
         validatePlatforms(revision.getPlatforms(), errors);
         validateUserInteractionModes(revision.getUserInteractionModes(), errors);
-        validateSupportedInputDevices(revision.getSupportedInputDevices(), errors);
+        validateInputDevices(revision.getSupportedInputDevices(), "supportedInputDevices", errors);
+        validateInputDevices(revision.getRequiredInputDevices(), "requiredInputDevices", errors);
         validatePackageName(revision.getPackageName(), revision.getItemId(), errors);
         validateLocales(revision.getLocales(), errors);
 
@@ -227,6 +230,12 @@ public class ItemRevisionValidator extends ValidationSupport {
                     if (!StringUtils.isEmpty(binary.getMd5()) && !Utils.isValidMd5(binary.getMd5())) {
                         errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "invalid md5 for " + key));
                     }
+                    if (binary.getRequiredSpace() != null && binary.getRequiredSpace() < 0) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "requiredSpace should not be negative."));
+                    }
+                    if (binary.getSize() == null || binary.getSize() < 0) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "size is required and should not be negative."));
+                    }
                 }
             }
             validateStringNotEmpty("downloadName", downloadName, errors);
@@ -258,11 +267,11 @@ public class ItemRevisionValidator extends ValidationSupport {
         }
     }
 
-    private void validateSupportedInputDevices(List<String> devices, List<AppError> errors) {
+    private void validateInputDevices(List<String> devices, String fieldName, List<AppError> errors) {
         if (!CollectionUtils.isEmpty(devices)) {
             for (String device : devices) {
                 if (!InputDevices.contains(device)) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("supportedInputDevices", Joiner.on(',').join(InputDevices.values())));
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum(fieldName, Joiner.on(',').join(InputDevices.values())));
                 }
             }
         }

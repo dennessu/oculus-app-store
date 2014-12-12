@@ -27,6 +27,8 @@ import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Impl of EntitlementResource.
@@ -45,6 +47,12 @@ public class EntitlementResourceImpl implements EntitlementResource {
     public Promise<Entitlement> postEntitlement(Entitlement entitlement) {
         checkBodyNotNull(entitlement);
         return Promise.pure(entitlementService.addEntitlement(entitlement));
+    }
+
+    @Override
+    public Promise<Map<Long, List<Entitlement>>> postEntitlements(Map<Long, List<Entitlement>> entitlements) {
+        checkBodyNotNull(entitlements);
+        return Promise.pure(entitlementService.addEntitlements(entitlements));
     }
 
     @Override

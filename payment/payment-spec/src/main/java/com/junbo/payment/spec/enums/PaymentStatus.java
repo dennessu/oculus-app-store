@@ -35,7 +35,9 @@ public enum PaymentStatus implements Identifiable<Short> {
     UNCONFIRMED((short)19),
     CREDIT_CREATED((short)20),
     CREDIT_DECLINED((short)21),
-    UNRECOGNIZED((short)22);
+    UNRECOGNIZED((short)22),
+    CHARGE_BACK((short)23),
+    DISCREPANT((short)24);
 
     private final Short id;
 

@@ -55,4 +55,21 @@
     <bean id="identityOrganizationResource" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy" parent="organizationResourceClientProxy">
         <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
     </bean>
+
+    <bean id="identityItemResource" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy" parent="itemResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider" />
+    </bean>
+
+    <bean id="identityItemRevisionResource" class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy"
+          parent="itemRevisionClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider" />
+    </bean>
+
+    <bean id="identityOfferResource" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy" parent="offerResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider" />
+    </bean>
+
+    <bean id="identityOfferRevisionResource" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy" parent="offerRevisionClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider" />
+    </bean>
 </beans>

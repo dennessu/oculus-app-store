@@ -4,7 +4,6 @@ import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppError
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.model.ResourceMetaBase
@@ -60,7 +59,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     @Override
     Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt userCredentialAttempt) {
         if (userCredentialAttempt == null) {
-            throw new IllegalArgumentException('userLoginAttempt is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userCredentialAttempt = userCredentialVerifyAttemptFilter.filterForCreate(userCredentialAttempt)

@@ -5,10 +5,12 @@
  */
 package com.junbo.oauth.db.repo.cloudant
 
+import com.junbo.common.cloudant.client.CloudantClientBulk
 import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.spec.model.AccessToken
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
+
 /**
  * CloudantAccessTokenRepositoryImpl.
  */
@@ -66,6 +68,42 @@ class CloudantAccessTokenRepositoryImpl
     @Override
     void removeByHash(String hash) {
         cloudantDeleteSync(hash)
+    }
+
+    @Override
+    void removeByUserId(Long userId) {
+        def startKey = [userId.toString(), System.currentTimeMillis()]
+        def endKey = [userId.toString()]
+        List<AccessToken> tokens = queryViewSync('by_user_id_expired_by', startKey.toArray(new String()), endKey.toArray(new String()), true, null, null, true)
+
+        try {
+            setStrongUseBulk(true)
+            for (AccessToken token : tokens) {
+                cloudantDeleteSync(token)
+            }
+            CloudantClientBulk.commit().get()
+        } finally {
+            setStrongUseBulk(false)
+        }
+    }
+
+    @Override
+    void removeByLoginStateHash(String loginStateHash) {
+        assert StringUtils.hasText(loginStateHash) : 'loginStateHash is empty'
+        def startKey = [loginStateHash, System.currentTimeMillis()]
+        def endKey = [loginStateHash]
+
+        List<AccessToken> tokens = queryViewSync('by_login_state_hash_expired_by', startKey.toArray(new String()), endKey.toArray(new String()), true, null, null, true)
+
+        try {
+            setStrongUseBulk(true)
+            for (AccessToken token : tokens) {
+                cloudantDeleteSync(token)
+            }
+            CloudantClientBulk.commit().get()
+        } finally {
+            setStrongUseBulk(false)
+        }
     }
 
     @Override

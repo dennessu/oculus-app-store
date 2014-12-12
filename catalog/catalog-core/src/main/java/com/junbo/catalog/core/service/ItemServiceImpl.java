@@ -107,6 +107,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
         revisionValidator.validateCreationBasic(revision);
+        normalizeRequiredSpace(revision);
         return itemRevisionRepo.create(revision);
     }
 
@@ -138,11 +139,21 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         } else {
             revisionValidator.validateUpdateBasic(revision, oldRevision);
         }
+        normalizeRequiredSpace(revision);
         return itemRevisionRepo.update(revision, oldRevision);
     }
 
     @Override
+    public ItemRevision getRevision(String revisionId) {
+        ItemRevision revision = getRevisionRepo().get(revisionId);
+        checkEntityNotNull(revisionId, revision, getRevisionType());
+        normalizeRequiredSpace(revision);
+        return revision;
+    }
+
+    @Override
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
+        List<ItemRevision> revisions;
         if (options.getTimestamp() != null) {
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 AppErrorException exception =
@@ -150,12 +161,17 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                 LOGGER.error("Error getting item-revisions. ", exception);
                 throw exception;
             }
-            List<ItemRevision> revisions = itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
+            revisions = itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
             options.setTotal(Long.valueOf(revisions.size()));
-            return revisions;
         } else {
-            return itemRevisionRepo.getRevisions(options);
+            revisions = itemRevisionRepo.getRevisions(options);
         }
+
+        for (ItemRevision revision : revisions) {
+            normalizeRequiredSpace(revision);
+        }
+
+        return revisions;
     }
 
     @Override
@@ -301,6 +317,20 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                         errors.add(AppErrors.INSTANCE.categoryNotFound("categories", categoryId));
                     }
                 }
+            }
+        }
+    }
+
+    private void normalizeRequiredSpace(ItemRevision revision) {
+        if (revision.getBinaries() == null) {
+            return;
+        }
+        for (Binary binary : revision.getBinaries().values()) {
+            if (binary.getSize() == null) {
+                binary.setSize(0L);
+            }
+            if (binary.getRequiredSpace() == null) {
+                binary.setRequiredSpace(binary.getSize() * 2);
             }
         }
     }

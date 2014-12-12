@@ -125,7 +125,7 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(review.getTitle(), caseyReview.getReviewTitle());
         Assert.assertEquals(review.getStarRatings().size(), caseyReview.getRatings().size());
         for (CaseyReview.Rating rating : caseyReview.getRatings()) {
-            Assert.assertEquals(review.getStarRatings().get(rating.getType()).intValue(), rating.getScore() / 20, "rating result not correct");
+            Assert.assertEquals(review.getStarRatings().get(rating.getType()).intValue(), rating.getScore().intValue(), "rating result not correct");
         }
     }
 
@@ -137,10 +137,6 @@ public class StoreBrowseValidationHelper {
             Assert.assertNull(ratings.getCommentsCount());
             Assert.assertTrue(ratings.getAverageRating() >= 0.0);
             Assert.assertTrue(ratings.getRatingsCount() >= 0);
-            Assert.assertEquals(ratings.getRatingsHistogram().size(), 5);
-            for (Long val : ratings.getRatingsHistogram().values()) {
-                Assert.assertTrue(val >= 0L);
-            }
         }
     }
 
@@ -161,14 +157,10 @@ public class StoreBrowseValidationHelper {
                 }
             });
             AggregatedRatings rating = entry.getValue();
-            Assert.assertEquals(rating.getAverageRating(), caseyAggregateRating.getAverage() / 20, 0.00001, "average rating not correct");
+            Assert.assertEquals(rating.getAverageRating(), caseyAggregateRating.getAverage(), 0.00001, "average rating not correct");
             Assert.assertEquals(rating.getRatingsCount(), caseyAggregateRating.getCount(), "rating count not correct");
             Assert.assertNull(rating.getCommentsCount(), "comments count should be null");
 
-            for (int i = 0; i < caseyAggregateRating.getHistogram().length; i += 2) {
-                Assert.assertEquals(rating.getRatingsHistogram().get(i / 2).longValue(),
-                        (caseyAggregateRating.getHistogram()[i] + caseyAggregateRating.getHistogram()[i + 1]), "rating histogram not correct");
-            }
         }
     }
 
@@ -284,11 +276,6 @@ public class StoreBrowseValidationHelper {
         Assert.assertNull(aggregatedRating.getCommentsCount());
         Assert.assertEquals(aggregatedRating.getAverageRating(), 0.0, 0.00001);
         Assert.assertEquals(aggregatedRating.getRatingsCount(), new Long(0));
-        Map<Integer, Long> ratingsHistogram = new HashMap<>();
-        for (int i = 0; i < 5; ++i) {
-            ratingsHistogram.put(i, 0L);
-        }
-        Assert.assertEquals(aggregatedRating.getRatingsHistogram(), ratingsHistogram);
     }
 
     public void validateAddReview(AddReviewRequest addReviewRequest, Review review, String nickName) {
@@ -327,7 +314,11 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(item.getDescriptionHtml(), defaultIfNull(offerAvailable ? offerLocaleProperties.getLongDescription() : itemLocaleProperties.getLongDescription()),
                 "description html not match");
         verifySupportedLocaleEquals(item.getSupportedLocales(), defaultIfNull(itemRevision.getSupportedLocales()));
-
+        if (offerAvailable) {
+            Assert.assertEquals(item.getRank(), offerRevision.getRank(), 0.00001);
+        } else {
+            Assert.assertNull(item.getRank());
+        }
         if (serviceClientEnabled) {
             Assert.assertEquals(item.getCreator(), defaultIfNull(developer == null ? null : developer.getName()));
         }
@@ -394,11 +385,13 @@ public class StoreBrowseValidationHelper {
         Assert.assertEquals(appDetails.getForumUrl(), localeProperties.getCommunityForumLink());
         Assert.assertEquals(appDetails.getDeveloperEmail(), defaultIfNull(localeProperties.getSupportEmail()));
         Assert.assertEquals(appDetails.getPackageName(), defaultIfNull(itemRevision.getPackageName()));
+        Assert.assertEquals(appDetails.getRequiredInputDevices(), itemRevision.getRequiredInputDevices());
 
         if (itemRevision.getBinaries() != null && itemRevision.getBinaries().get(Platform) != null) {
             Binary binary = itemRevision.getBinaries().get(Platform);
             Assert.assertEquals(appDetails.getVersionString(), defaultIfNull(binary.getVersion()));
             Assert.assertEquals(appDetails.getInstallationSize(), defaultIfNull(binary.getSize()));
+            Assert.assertEquals(appDetails.getRequiredSpace(), defaultIfNull(binary.getRequiredSpace()));
             Assert.assertEquals(appDetails.getVersionCode(), defaultIfNull(binary.getMetadata() == null
                     || binary.getMetadata().get("versionCode") == null ? null : binary.getMetadata().get("versionCode").asInt()));
         }
@@ -428,17 +421,10 @@ public class StoreBrowseValidationHelper {
 
     private void verifyRevisionNote(List<RevisionNote> revisionNotes, List<ItemRevision> itemRevisions, boolean offerAvailable) {
         // verify release notes
-        List<ItemRevision> revisions = new ArrayList<>(itemRevisions);
-        Collections.sort(revisions, new Comparator<ItemRevision>() {
-            @Override
-            public int compare(ItemRevision o1, ItemRevision o2) {
-                return o2.getUpdatedTime().compareTo(o1.getUpdatedTime());
-            }
-        });
-        Assert.assertEquals(revisionNotes.size(), revisions.size());
+        Assert.assertEquals(revisionNotes.size(), itemRevisions.size());
         for (int i = 0; i < revisionNotes.size(); ++i) {
             RevisionNote revisionNote = revisionNotes.get(i);
-            ItemRevision historyItemRevision = revisions.get(i);
+            ItemRevision historyItemRevision = itemRevisions.get(i);
             ItemRevisionLocaleProperties historyLocalProperties = historyItemRevision.getLocales().get(locale);
             Binary historyBinary = historyItemRevision.getBinaries() == null ? null : historyItemRevision.getBinaries().get(Platform);
 

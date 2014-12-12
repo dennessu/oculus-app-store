@@ -7,7 +7,6 @@ import com.junbo.sharding.dualwrite.annotations.DeleteMethod
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
 import com.junbo.sharding.dualwrite.annotations.WriteMethod
 import com.junbo.sharding.dualwrite.data.PendingActionRepository
-import com.junbo.sharding.dualwrite.strategies.AsyncDualWriteStrategy
 import com.junbo.sharding.dualwrite.strategies.SingleWriteStrategy
 import com.junbo.sharding.dualwrite.strategies.SyncDualWriteStrategy
 import com.junbo.sharding.repo.BaseRepository
@@ -20,6 +19,7 @@ import org.springframework.transaction.PlatformTransactionManager
 import javax.transaction.TransactionManager
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
 /**
  * Created by minhao on 4/20/14.
@@ -29,11 +29,11 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
     private Class<T> repositoryInterface
     private BaseRepository sqlRepositoryImpl
     private BaseRepository cloudantRepositoryImpl
+    private Class entityType
 
     private PendingActionRepository sqlPendingActionRepository
     private PendingActionRepository cloudantPendingActionRepository
 
-    private boolean sqlUseAsyncDualWrite;
     private boolean ignoreDualWriteErrors;
 
     private PlatformTransactionManager platformTransactionManager
@@ -64,10 +64,6 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
         this.cloudantPendingActionRepository = cloudantPendingActionRepository
     }
 
-    public void setSqlUseAsyncDualWrite(boolean sqlUseAsyncDualWrite) {
-        this.sqlUseAsyncDualWrite = sqlUseAsyncDualWrite
-    }
-
     void setIgnoreDualWriteErrors(boolean ignoreDualWriteErrors) {
         this.ignoreDualWriteErrors = ignoreDualWriteErrors
     }
@@ -83,6 +79,7 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         validate(repositoryInterface);
+        this.entityType = resolveEntityType(cloudantRepositoryImpl.getClass());
 
         if (sqlRepositoryImpl == null && cloudantRepositoryImpl == null) {
             throw new RuntimeException("Cannot create RepositoryProxy if both SQL and Cloudant Repository implementation are null.");
@@ -96,21 +93,18 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
         }
 
         if (sqlRepositoryImpl != null && cloudantRepositoryImpl != null && sqlPendingActionRepository != null) {
-            if (!sqlUseAsyncDualWrite) {
-                sqlFirstStrategy = new SyncDualWriteStrategy(
-                        sqlRepositoryImpl,
-                        sqlPendingActionRepository,
-                        new PendingActionReplayer(
-                                cloudantRepositoryImpl,
-                                sqlPendingActionRepository,
-                                platformTransactionManager
-                        ),
-                        transactionManager,
-                        ignoreDualWriteErrors
-                );
-            } else {
-                sqlFirstStrategy = new AsyncDualWriteStrategy(sqlRepositoryImpl, sqlPendingActionRepository);
-            }
+            sqlFirstStrategy = new SyncDualWriteStrategy(
+                    sqlRepositoryImpl,
+                    sqlPendingActionRepository,
+                    new PendingActionReplayer(
+                            cloudantRepositoryImpl,
+                            sqlPendingActionRepository,
+                            platformTransactionManager,
+                            entityType
+                    ),
+                    transactionManager,
+                    ignoreDualWriteErrors,
+            );
         }
     }
 
@@ -198,5 +192,21 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
         if (previousFoundDeleteMethod != null) {
             throw new RuntimeException("Repository only supports one DeleteMethod: Promise<Void> delete(K id). Found two: ${method} and ${previousFoundDeleteMethod}");
         }
+    }
+
+    private static Class resolveEntityType(Class repositoryType) {
+        Class c = repositoryType;
+        while (c != null) {
+            Type t = c.getGenericSuperclass();
+            if (t instanceof ParameterizedType) {
+                Type[] p = ((ParameterizedType) t).getActualTypeArguments();
+                for (Type t2 : p) {
+                    if (t2 instanceof Class && CloudantEntity.isAssignableFrom((Class)t2)) {
+                        return (Class)t2;
+                    }
+                }
+            }
+        }
+        throw new RuntimeException("Cannot find entity class from repository: " + repositoryType);
     }
 }

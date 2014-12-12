@@ -28,6 +28,7 @@ import com.junbo.store.rest.utils.InitialItemPurchaseUtils
 import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
+import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.external.sentry.SentryCategory
 import com.junbo.store.spec.model.external.sentry.SentryFieldConstant
 import com.junbo.store.spec.model.external.sentry.SentryResponse
@@ -99,6 +100,9 @@ class LoginResourceImpl implements LoginResource {
 
     @Value('${store.communication.createuser}')
     private String registerUserCommunication
+
+    @Value('${store.tos.freepurchase.enable}')
+    private Boolean tosFreepurchaseEnable
 
     private class CreateUserContext {
         User user
@@ -219,8 +223,16 @@ class LoginResourceImpl implements LoginResource {
             return Promise.pure(null)
         }.then {
             requestValidator.validateAndGetCountry(new CountryId(request.cor))
-        }.then {
-            requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
+        }.then { Country inputCountry ->
+            return requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale)).recover { Throwable throwable ->
+                LOGGER.error("CreateUser:  Call perferredlocale, Ignore")
+                if (appErrorUtils.isAppError(throwable, ErrorCodes.Identity.LocaleNotFound)) {
+                    request.preferredLocale = inputCountry.defaultLocale.toString()
+                    return requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
+                }
+
+                throw throwable
+            }
         }.then {
             requestValidator.validateTosExists(request.tosAgreed)
         }.then {
@@ -245,43 +257,57 @@ class LoginResourceImpl implements LoginResource {
                 }
             }
         }.recover { Throwable ex ->
-            def promise = Promise.pure()
-
-            if (apiContext.user?.getId() != null) {
-                promise = rollBackUser(apiContext.user)
+            appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
+                    ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
+                    ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction,
+                    ErrorCodes.Sentry.BlockAccess)) {
+                throw ex
             }
-
-            promise.then {
-                appErrorUtils.throwOnFieldInvalidError(errorContext, ex, ErrorCodes.Identity.majorCode)
-                if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
-                        ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
-                        ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction,
-                        ErrorCodes.Sentry.BlockAccess)) {
-                    throw ex
-                }
-                appErrorUtils.throwUnknownError('createUser', ex)
-            }
+            appErrorUtils.throwUnknownError('createUser', ex)
         }.then {
             // get the auth token
             innerSignIn(apiContext.user, apiContext.userLoginName, apiContext.storeUserEmail).then { AuthTokenResponse response ->
                 authTokenResponse = response
                 CommonUtils.pushAuthHeader(authTokenResponse.accessToken)
-                Promise.pure().then { // create user tos using the access token
-                    return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: apiContext.user.getId(),
-                            tosId: request.tosAgreed,
-                            agreementTime: new Date()))
-                }.then {
-                    createUserCommunication(request, apiContext.user.getId(), apc) // create user communication using the access token
-                }.then {
-                    initialItemPurchaseUtils.checkAndPurchaseInitialOffers(authTokenResponse.userId, true, apc)
-                }.recover { Throwable ex ->
+                Promise.parallel(
+                    {
+                        return resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: apiContext.user.getId(),
+                                tosId: request.tosAgreed,
+                                agreementTime: new Date())).recover { Throwable ex ->
+                            return Promise.pure(ex)
+                        }
+                    },
+                    {
+                        createUserCommunication(request, apiContext.user.getId(), apc).recover{ Throwable ex ->  // create user communication using the access token
+                            return Promise.pure(ex)
+                        }
+                    },
+                    {
+                        initialItemPurchaseUtils.checkAndPurchaseInitialOffers(authTokenResponse.userId, true, apc).recover { Throwable ex ->
+                            return Promise.pure(ex)
+                        }
+                    }
+                ).recover { Throwable ex ->
                     CommonUtils.popAuthHeader()
                     throw ex
-                }.then {
+                }.then { List results ->
                     CommonUtils.popAuthHeader()
+                    results.each { Object e ->
+                        if (e instanceof Throwable) {
+                            throw e
+                        }
+                    }
                     return Promise.pure()
                 }
             }
+        }.recover { Throwable ex ->
+            if (apiContext.user?.getId() != null) {
+                return rollBackUser(apiContext.user).then {
+                    throw ex
+                }
+            }
+            throw ex
         }.then {
             return facadeContainer.oAuthFacade.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId()).then {
                 return Promise.pure(authTokenResponse)
@@ -312,7 +338,7 @@ class LoginResourceImpl implements LoginResource {
             return Promise.pure()
         }.then {
             innerSignIn(userSignInRequest.email, userSignInRequest.userCredential.value).recover { Throwable ex ->
-                if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {
+                if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential, ErrorCodes.Identity.MaximumLoginAttempt)) {
                     throw ex
                 }
                 appErrorUtils.throwUnknownError('signIn', ex)
@@ -352,7 +378,7 @@ class LoginResourceImpl implements LoginResource {
         requestValidator.validateRequiredApiHeaders().validateConfirmEmailRequest(confirmEmailRequest);
 
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
-            return facadeContainer.oAuthFacade.verifyEmail(confirmEmailRequest.evc, apiContext.locale.toString())
+            return facadeContainer.oAuthFacade.verifyEmail(confirmEmailRequest.evc, apiContext.locale.getId().value)
         }.recover { Throwable ex ->
             appErrorUtils.throwUnknownError('confirmEmail', ex)
         }.then { ViewModel viewModel ->
@@ -388,7 +414,11 @@ class LoginResourceImpl implements LoginResource {
             }
 
             List<Tos> tosList = tosResults.items.sort { Tos tos ->
-                return tos.version
+                try {
+                    return Double.parseDouble(tos.version)
+                } catch (NumberFormatException ex) {
+                    return Double.valueOf(0)
+                }
             }
 
             Tos tos = tosList.reverse().find { Tos tos ->
@@ -539,86 +569,116 @@ class LoginResourceImpl implements LoginResource {
     }
 
     private Promise createUserPersonalInfo(CreateUserRequest createUserRequest, CreateUserContext apiContext, ErrorContext errorContext) {
-        errorContext.fieldName = 'username'
-        return resourceContainer.userPersonalInfoResource.create(
-                new UserPersonalInfo(
-                        type: 'USERNAME',
-                        userId: apiContext.user.getId(),
-                        value: ObjectMapperProvider.instance().valueToTree(new UserLoginName(
-                                userName: createUserRequest.username
-                        ))
-                )
-        ).then { UserPersonalInfo userPersonalInfo ->
-            apiContext.user.username = userPersonalInfo.getId()
-            apiContext.user.isAnonymous = false
-            apiContext.userLoginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, UserLoginName)
-            return Promise.pure()
-        }.then {
-            StoreUserEmail userEmail = new StoreUserEmail()
-            errorContext.fieldName = 'email'
-            return resourceContainer.userPersonalInfoResource.create(
-                    new UserPersonalInfo(
-                            type: 'EMAIL',
-                            userId: apiContext.user.getId(),
-                            value: ObjectMapperProvider.instance().valueToTree(new Email(info: createUserRequest.email))
-                    )
-            ).then { UserPersonalInfo emailInfo ->
-                userEmail.isValidated = emailInfo.isValidated
-                userEmail.value = ObjectMapperProvider.instance().treeToValue(emailInfo.value, Email)?.info
-                apiContext.storeUserEmail = userEmail
-                apiContext.user.emails = [
-                        new UserPersonalInfoLink(
-                                isDefault: true,
-                                value: emailInfo.getId()
+        final String[] fieldList = ["username", "email", "dob", "name"]
+        Promise.parallel(
+            // create user name
+            {
+                return resourceContainer.userPersonalInfoResource.create(
+                        new UserPersonalInfo(
+                                type: 'USERNAME',
+                                userId: apiContext.user.getId(),
+                                value: ObjectMapperProvider.instance().valueToTree(new UserLoginName(
+                                        userName: createUserRequest.username
+                                ))
                         )
-                ]
-                return Promise.pure()
-            }
-        }.then { // create  dob
-            if (createUserRequest.dob == null) {
-                return Promise.pure()
-            }
+                ).then { UserPersonalInfo userPersonalInfo ->
+                    apiContext.user.username = userPersonalInfo.getId()
+                    apiContext.user.isAnonymous = false
+                    apiContext.userLoginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, UserLoginName)
+                    return Promise.pure()
+                }.recover { Throwable throwable ->
+                    return Promise.pure(throwable)
+                }
+            },
 
-            errorContext.fieldName = 'dob'
-            return resourceContainer.userPersonalInfoResource.create(
-                    new UserPersonalInfo(
-                            userId: apiContext.user.getId(),
-                            type: 'DOB',
-                            value: ObjectMapperProvider.instance().valueToTree(new UserDOB(info: createUserRequest.dob))
-                    )
-            ).then { UserPersonalInfo dobInfo ->
-                apiContext.user.dob = dobInfo.getId()
-                return Promise.pure()
-            }
-
-        }.then { // create name info
-            if (createUserRequest.firstName == null
-                    && createUserRequest.middleName == null
-                    && createUserRequest.lastName == null) {
-                return Promise.pure()
-            }
-
-            errorContext.fieldName = 'name'
-            return resourceContainer.userPersonalInfoResource.create(
-                    new UserPersonalInfo(
-                            userId: apiContext.user.getId(),
-                            type: 'NAME',
-                            value: ObjectMapperProvider.instance().valueToTree(
-                                    new UserName(
-                                            givenName: createUserRequest.firstName,
-                                            middleName: createUserRequest.middleName,
-                                            familyName: createUserRequest.lastName
-                                    )
+            // create email
+            {
+                StoreUserEmail userEmail = new StoreUserEmail()
+                errorContext.fieldName = 'email'
+                return resourceContainer.userPersonalInfoResource.create(
+                        new UserPersonalInfo(
+                                type: 'EMAIL',
+                                userId: apiContext.user.getId(),
+                                value: ObjectMapperProvider.instance().valueToTree(new Email(info: createUserRequest.email))
+                        )
+                ).then { UserPersonalInfo emailInfo ->
+                    userEmail.isValidated = emailInfo.isValidated
+                    userEmail.value = ObjectMapperProvider.instance().treeToValue(emailInfo.value, Email)?.info
+                    apiContext.storeUserEmail = userEmail
+                    apiContext.user.emails = [
+                            new UserPersonalInfoLink(
+                                    isDefault: true,
+                                    value: emailInfo.getId()
                             )
-                    )
-            ).then { UserPersonalInfo nameInfo ->
-                apiContext.user.name = nameInfo.getId()
-                return Promise.pure()
+                    ]
+                    return Promise.pure()
+                }.recover { Throwable throwable ->
+                    return Promise.pure(throwable)
+                }
+            },
+
+            // create dob
+            {
+                if (createUserRequest.dob == null) {
+                    return Promise.pure()
+                }
+
+                errorContext.fieldName = 'dob'
+                return resourceContainer.userPersonalInfoResource.create(
+                        new UserPersonalInfo(
+                                userId: apiContext.user.getId(),
+                                type: 'DOB',
+                                value: ObjectMapperProvider.instance().valueToTree(new UserDOB(info: createUserRequest.dob))
+                        )
+                ).then { UserPersonalInfo dobInfo ->
+                    apiContext.user.dob = dobInfo.getId()
+                    return Promise.pure()
+                }.recover { Throwable throwable ->
+                    return Promise.pure(throwable)
+                }
+            },
+
+            // create name
+            {
+                if (createUserRequest.firstName == null
+                        && createUserRequest.middleName == null
+                        && createUserRequest.lastName == null) {
+                    return Promise.pure()
+                }
+
+                errorContext.fieldName = 'name'
+                return resourceContainer.userPersonalInfoResource.create(
+                        new UserPersonalInfo(
+                                userId: apiContext.user.getId(),
+                                type: 'NAME',
+                                value: ObjectMapperProvider.instance().valueToTree(
+                                        new UserName(
+                                                givenName: createUserRequest.firstName,
+                                                middleName: createUserRequest.middleName,
+                                                familyName: createUserRequest.lastName
+                                        )
+                                )
+                        )
+                ).then { UserPersonalInfo nameInfo ->
+                    apiContext.user.name = nameInfo.getId()
+                    return Promise.pure()
+                }.recover { Throwable throwable ->
+                    return Promise.pure(throwable)
+                }
             }
-        }.then {
+        ).then { List results ->
+            Assert.isTrue(fieldList.length == results.size())
+            for (int i = 0;i < fieldList.length;++i) {
+                if (results[i] instanceof Throwable) {
+                    errorContext.fieldName = fieldList[i]
+                    throw results[i]
+                }
+            }
+
+            // update user
             return resourceContainer.userResource.put(apiContext.user.getId(), apiContext.user).then { User u ->
-                apiContext.user = u
-                return Promise.pure()
+                    apiContext.user = u
+                    return Promise.pure()
             }
         }
     }
@@ -626,17 +686,8 @@ class LoginResourceImpl implements LoginResource {
     private Promise<AuthTokenResponse> processAfterSignIn(UserSignInRequest userSignInRequest, AuthTokenResponse authTokenResponse, com.junbo.store.spec.model.ApiContext apiContext) {
         CommonUtils.pushAuthHeader(authTokenResponse.accessToken)
         Promise.pure().then {
-            return challengeHelper.checkTosChallenge(authTokenResponse.getUserId(), tosCreateUser, apiContext.country.getId(), userSignInRequest.challengeAnswer).then { Challenge challenge ->
-                if (challenge == null) {
-                    return Promise.pure(authTokenResponse)
-                }
-
-                AuthTokenResponse tosChallengeAuthToken = new AuthTokenResponse(
-                        challenge: challenge
-                )
-
-                return Promise.pure(tosChallengeAuthToken)
-            }.then { AuthTokenResponse response ->
+            return checkTosChallengeForLogin(authTokenResponse.getUserId(), apiContext.country.getId(), userSignInRequest.challengeAnswer, authTokenResponse)
+                    .then { AuthTokenResponse response ->
                 if (response.challenge != null) {
                     return Promise.pure(response)
                 }
@@ -651,6 +702,24 @@ class LoginResourceImpl implements LoginResource {
         }.then { AuthTokenResponse response ->
             CommonUtils.popAuthHeader()
             return Promise.pure(response)
+        }
+    }
+
+    private Promise<AuthTokenResponse> checkTosChallengeForLogin(UserId userId, CountryId country, ChallengeAnswer challengeAnswer, AuthTokenResponse authTokenResponse) {
+        if (tosFreepurchaseEnable) {
+            return challengeHelper.checkTosChallenge(userId, tosCreateUser, country, challengeAnswer).then { Challenge challenge ->
+                if (challenge == null) {
+                    return Promise.pure(authTokenResponse)
+                }
+
+                AuthTokenResponse tosChallengeAuthToken = new AuthTokenResponse(
+                        challenge: challenge
+                )
+
+                return Promise.pure(tosChallengeAuthToken)
+            }
+        } else {
+            return Promise.pure(authTokenResponse)
         }
     }
 

@@ -116,7 +116,7 @@ class UserResourceImpl implements UserResource {
     @Override
     Promise<User> create(User user) {
         if (user == null) {
-            throw new IllegalArgumentException('user is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = userAuthorizeCallbackFactory.create(user)
@@ -141,7 +141,7 @@ class UserResourceImpl implements UserResource {
     @Override
     Promise<User> put(UserId userId, User user) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (user == null) {
@@ -169,7 +169,7 @@ class UserResourceImpl implements UserResource {
     @Override
     public Promise<User> silentPut(UserId userId, User user) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (user == null) {
@@ -206,11 +206,11 @@ class UserResourceImpl implements UserResource {
     @Override
     Promise<User> patch(UserId userId, User user) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (user == null) {
-            throw new IllegalArgumentException('user is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userService.get(userId).then { User oldUser ->
@@ -255,7 +255,7 @@ class UserResourceImpl implements UserResource {
     @Override
     Promise<User> get(UserId userId, UserGetOptions getOptions) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (getOptions == null) {
@@ -390,7 +390,7 @@ class UserResourceImpl implements UserResource {
     @Override
     Promise<Response> delete(UserId userId) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return userValidator.validateForGet(userId).then { User user ->
@@ -566,9 +566,9 @@ class UserResourceImpl implements UserResource {
     }
 
     private Promise<Void> triggerCsrUserUpdateEmail(User user, User oldUser) {
-        // check x-send-email header
-        if (JunboHttpContext.getRequestHeaders() == null
-                || CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_TRIGGER_EMAIL))) {
+        // check x-disable-email header
+        if (JunboHttpContext.getRequestHeaders() != null
+                && !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_DISABLE_EMAIL))) {
             return Promise.pure(null)
         }
 

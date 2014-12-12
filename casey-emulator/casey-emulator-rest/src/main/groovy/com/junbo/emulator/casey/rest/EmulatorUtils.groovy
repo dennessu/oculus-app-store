@@ -95,6 +95,7 @@ public class EmulatorUtils {
 
         if (offer.currentRevisionId != null) {
             OfferRevision offerRevision = resourceContainer.offerRevisionResource.getOfferRevision(offer.currentRevisionId, new OfferRevisionGetOptions(locale: localeId.value)).get();
+            caseyOffer.rank = offerRevision.rank
             caseyOffer.currentRevision = new OfferRevisionId(offer.currentRevisionId)
             caseyOffer.images = offerRevision.locales?.get(localeId.value)?.images
             caseyOffer.name = offerRevision.locales?.get(localeId.value)?.name
@@ -122,13 +123,8 @@ public class EmulatorUtils {
         aggregateRatingCaseyResults.items.each { CaseyAggregateRating aggregateRating ->
             CaseyRating caseyRating = new CaseyRating()
             caseyRating.count = aggregateRating.count
-            caseyRating.stars = aggregateRating.average / 20.0 as double
+            caseyRating.averagePercent = aggregateRating.average
             caseyRating.type = aggregateRating.type
-            caseyRating.numOnes = aggregateRating.histogram[0] + aggregateRating.histogram[1]
-            caseyRating.numTwos = aggregateRating.histogram[2] + aggregateRating.histogram[3]
-            caseyRating.numThrees = aggregateRating.histogram[4] + aggregateRating.histogram[5]
-            caseyRating.numFours = aggregateRating.histogram[6] + aggregateRating.histogram[7]
-            caseyRating.numFives = aggregateRating.histogram[8] + aggregateRating.histogram[9]
             caseyRatingMap[aggregateRating.type] = caseyRating
         }
         return caseyRatingMap
@@ -151,6 +147,7 @@ public class EmulatorUtils {
         if (item.currentRevisionId != null) {
             caseyItem.currentRevision = new ItemRevisionId(item.currentRevisionId)
             ItemRevision itemRevision = resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions(locale: localeId.value)).get()
+            caseyItem.requiredInputDevices = itemRevision.requiredInputDevices
             caseyItem.packageName = itemRevision.packageName
             caseyItem.supportedLocales = itemRevision.supportedLocales
             caseyItem.binaries = itemRevision.binaries

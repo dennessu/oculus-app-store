@@ -7,18 +7,25 @@
 package com.junbo.payment.clientproxy.facebook;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.payment.common.exception.AppServerExceptions;
+import com.junbo.payment.spec.internal.FacebookPaymentType;
 
 /**
  * Facebook Item Description.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacebookItemDescription {
-    private String id;
-    private Integer quantity;
-    private String title;
+    private FacebookPaymentEntity entity;
+    private FacebookPaymentType type;
+    private String[] items;
 
+    public FacebookItemDescription(FacebookPaymentEntity entity, FacebookPaymentType type){
+        this.entity = entity;
+        this.type = type;
+    }
     @Override
     public String toString() {
         ObjectMapper mapper = new ObjectMapper();
@@ -29,27 +36,27 @@ public class FacebookItemDescription {
         }
     }
 
-    public String getId() {
-        return id;
+    public FacebookPaymentEntity getEntity() {
+        return entity;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setEntity(FacebookPaymentEntity entity) {
+        this.entity = entity;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public FacebookPaymentType getType() {
+        return type;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setType(FacebookPaymentType type) {
+        this.type = type;
     }
 
-    public String getTitle() {
-        return title;
+    public String[] getItems() {
+        return items;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setItems(String[] items) {
+        this.items = items;
     }
 }

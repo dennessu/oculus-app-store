@@ -6,7 +6,7 @@
 package com.junbo.test.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferId;
@@ -14,6 +14,7 @@ import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.browse.document.*;
+import com.junbo.store.spec.model.browse.document.Item;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating;
 import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
 import com.junbo.store.spec.model.external.sewer.casey.cms.CmsCampaign;
@@ -68,6 +69,10 @@ public class StoreBrowseTesting extends BaseTestClass {
 
     private StoreBrowseValidationHelper storeBrowseValidationHelper;
 
+    private Set<String> initialItemIds = null;
+
+    private String featuredSectionName = "Featured";
+
     @BeforeClass(alwaysRun = true)
     public void setUp() throws Exception {
         if (serviceClientEnabled) {
@@ -86,6 +91,10 @@ public class StoreBrowseTesting extends BaseTestClass {
 
         if (ConfigHelper.getSetting("casey.emulator.cmspage.label") != null) {
             caseyCmsPageLabel = ConfigHelper.getSetting("casey.emulator.cmspage.label");
+        }
+
+        if (ConfigHelper.getSetting("testdata.section.featured.name") != null) {
+            featuredSectionName = ConfigHelper.getSetting("testdata.section.featured.name");
         }
 
         if (serviceClientEnabled && useCaseyEmulator) {
@@ -141,6 +150,48 @@ public class StoreBrowseTesting extends BaseTestClass {
         } finally {
             testDataProvider.resetEmulatorData();
         }
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store browse",
+            component = Component.STORE,
+            owner = "fzhang",
+            status = Status.Enable,
+            // environment = "release",
+            description = "Test for the api initial-download-items"
+    )
+    @Test
+    public void testGetInitialDownloadItems() throws Exception {
+        testDataProvider.resetEmulatorData();
+        List<String> expectedItemIds = testDataProvider.getExpectedInitialDownloadItemIds(initialDownloadItemCmsPage, initialDownloadItemSlot,
+                initialDownloadItemContentName);
+
+        // create user and sign in
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+
+        InitialDownloadItemsResponse response = testDataProvider.getInitialDownloadItems();
+        Assert.assertEquals(response.getItems().size(), expectedItemIds.size());
+        for (int i = 0;i < response.getItems().size(); ++i) {
+            InitialDownloadItemsResponse.InitialDownloadItemEntry entry = response.getItems().get(i);
+            Assert.assertEquals(entry.getItem(), new ItemId(expectedItemIds.get(i)));
+            com.junbo.catalog.spec.model.item.Item item = testDataProvider.getItemByItemId(entry.getItem().getValue());
+            ItemRevision itemRevision = testDataProvider.getItemRevision(item.getCurrentRevisionId());
+            Assert.assertEquals(entry.getPackageName(), itemRevision.getPackageName());
+            Assert.assertEquals(entry.getName(), itemRevision.getLocales().get("en_US").getName());
+        }
+    }
+
+    @Test
+    public void testGetInitialDownloadItemsCmsPageError() throws Exception {
+        // create user and sign in
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+
+        TestContext.getData().putHeader("X_QA_CASEY_ERROR", "getCmsPages");
+        InitialDownloadItemsResponse response = testDataProvider.getInitialDownloadItems();
+        Assert.assertEquals(response.getItems().size(), 0);
     }
 
     @Test
@@ -478,7 +529,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         SectionLayoutResponse sectionLayoutResponse = testDataProvider.getLayout(featuredSectionInfo.getCategory(), featuredSectionInfo.getCriteria(), pageSize);
         Assert.assertTrue(sectionLayoutResponse.getBreadcrumbs().isEmpty(), "top level section's breadcrumbs should be empty");
         Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0);
-        Assert.assertEquals(sectionLayoutResponse.getName(), "Featured");
+        Assert.assertEquals(sectionLayoutResponse.getName(), featuredSectionName);
         storeBrowseValidationHelper.getAndValidateItemList(sectionLayoutResponse.getCategory(), sectionLayoutResponse.getCriteria(), null, pageSize, 0, false);
         Assert.assertTrue(sectionLayoutResponse.getChildren().size() > 0, "Child under feature section is empty");
 
@@ -622,15 +673,21 @@ public class StoreBrowseTesting extends BaseTestClass {
         com.junbo.catalog.spec.model.offer.Offer offer = testDataProvider.getOfferByOfferId(offerId);
         OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
         itemId = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId()).getItemId();
+        boolean isInitialItem = getInitialItems().contains(itemId);
 
-        // add review not purchased
         AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
-        testDataProvider.addReview(addReviewRequest, 412);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.120"));
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("item not purchased."));
+        if (!isInitialItem) {
+            // add review not purchased
+            testDataProvider.addReview(addReviewRequest, 412);
+            Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.120"));
+            Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("item not purchased."));
 
-        // purchase & add again
-        testDataProvider.makeFreePurchase(offerId, null, 200);
+            // purchase & add again
+            testDataProvider.makeFreePurchase(offerId, null, 200);
+        } else {
+            LOGGER.info("name=Skip_AddReview_NotPurchased_Test");
+        }
+
         AddReviewResponse reviewResponse = testDataProvider.addReview(addReviewRequest, 200);
         storeBrowseValidationHelper.validateAddReview(addReviewRequest, reviewResponse.getReview(), userProfile.getNickName());
 
@@ -671,6 +728,33 @@ public class StoreBrowseTesting extends BaseTestClass {
     }
 
     @Test
+    public void testAddReviewMaxMinScore() throws Exception {
+        gotoToc();
+        StoreUserProfile userProfile = testDataProvider.getUserProfile().getUserProfile();
+
+        // get item
+        String offerId;
+        String itemId;
+        if (offer_digital_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+        com.junbo.catalog.spec.model.offer.Offer offer = testDataProvider.getOfferByOfferId(offerId);
+        OfferRevision offerRevision = testDataProvider.getOfferRevision(offer.getCurrentRevisionId());
+        itemId = testDataProvider.getItemByItemId(offerRevision.getItems().get(0).getItemId()).getItemId();
+
+        AddReviewRequest addReviewRequest = DataGenerator.instance().generateAddReviewRequest(new ItemId(itemId));
+        addReviewRequest.getStarRatings().put("quality", 0);
+        addReviewRequest.getStarRatings().put("comfort", 100);
+
+        // purchase & add again
+        testDataProvider.makeFreePurchase(offerId, null, 200);
+        AddReviewResponse reviewResponse = testDataProvider.addReview(addReviewRequest, 200);
+        storeBrowseValidationHelper.validateAddReview(addReviewRequest, reviewResponse.getReview(), userProfile.getNickName());
+    }
+
+    @Test
     public void testAddReviewInvalidRequest() throws Exception {
         // ratings missing
         SectionInfoNode sectionInfoNode = gotoToc().getSections().get(GAME_SECTION_INDEX);
@@ -696,12 +780,17 @@ public class StoreBrowseTesting extends BaseTestClass {
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.001"));
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("invalid rating type: test"));
 
-        // sore invalid
+        // score invalid
         addReviewRequest = DataGenerator.instance().generateAddReviewRequest(item.getSelf());
-        addReviewRequest.setStarRatings(Collections.singletonMap("quality", 6));
+        addReviewRequest.setStarRatings(Collections.singletonMap("quality", 101));
         testDataProvider.addReview(addReviewRequest, 400);
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.001"));
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("value must in range [1,5]"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("value must in range [0,100]"));
+
+        addReviewRequest.setStarRatings(Collections.singletonMap("quality", -1));
+        testDataProvider.addReview(addReviewRequest, 400);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.001"));
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("value must in range [0,100]"));
     }
 
     @Test
@@ -983,7 +1072,8 @@ public class StoreBrowseTesting extends BaseTestClass {
                 LOGGER.info("name=Verify_Item_InExplore, item={}", item.getSelf().getValue());
                 verifyItem(item, ApiEndPoint.List, null);
                 LOGGER.info("name=Get_And_Verify_ItemDetail_InExplore, item={}", item.getSelf().getValue());
-                verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), ApiEndPoint.Details, initialItems.contains(item.getSelf().getValue()));
+                verifyItem(testDataProvider.getItemDetails(item.getSelf().getValue()).getItem(), ApiEndPoint.Details,
+                        getInitialItems().contains(item.getSelf().getValue()));
             }
         }
     }
@@ -1010,6 +1100,13 @@ public class StoreBrowseTesting extends BaseTestClass {
             }
         }
         return null;
+    }
+
+    private Set<String> getInitialItems() throws Exception {
+        if (initialItemIds != null) {
+            return initialItemIds;
+        }
+        return testDataProvider.getInitialItems(initialAppsCmsPage, initialAppsCmsSlot);
     }
 }
 

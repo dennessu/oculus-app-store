@@ -9,6 +9,7 @@ package com.junbo.langur.core.promise;
 
 import com.google.common.util.concurrent.*;
 import groovy.lang.Closure;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -67,7 +68,7 @@ public class Promise<T> {
         return new Promise<T>(future);
     }
 
-    public static <Void> Promise<Void> pure() {
+    public static Promise pure() {
         return pure(null);
     }
 
@@ -79,17 +80,13 @@ public class Promise<T> {
         return wrap(Futures.<T>immediateFailedFuture(throwable));
     }
 
-    public static <T> Promise<T> delayed(long delay, TimeUnit unit, final Func0<T> func) {
+    public static <T> Promise<T> delayed(long delay, TimeUnit unit) {
         final SettableFuture<T> future = SettableFuture.create();
 
         final Runnable runnable = new RunnableWrapper(new Runnable() {
             @Override
             public void run() {
-                try {
-                    future.set(func.apply());
-                } catch (Throwable ex) {
-                    future.setException(ex);
-                }
+                future.set(null);
             }
         });
 
@@ -111,6 +108,25 @@ public class Promise<T> {
             try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
                 futures.add(closure.call(item).wrapped());
             }
+        }
+        return wrap(Futures.allAsList(futures));
+    }
+
+    public static <T> Promise<List<T>> parallel(final Iterable<?> iterable, final Closure<Promise<? extends T>> closure) {
+        final Iterator<?> iterator = iterable.iterator();
+        List<ListenableFuture<? extends T>> futures = new ArrayList<>();
+        while (iterator.hasNext()) {
+            Object item = iterator.next();
+            futures.add(closure.call(item).wrapped());
+        }
+        return wrap(Futures.allAsList(futures));
+    }
+
+    public static <T> Promise<List<T>> parallel(final Closure<Promise<? extends T>>... closures) {
+        Assert.notNull(closures);
+        List<ListenableFuture<? extends T>> futures = new ArrayList<>();
+        for (Closure<Promise<? extends T>> closure : closures) {
+            futures.add(closure.call().wrapped());
         }
         return wrap(Futures.allAsList(futures));
     }
@@ -223,17 +239,6 @@ public class Promise<T> {
                 action.invoke(t);
             }
         }, ExecutorContext.getExecutor());
-    }
-
-
-    public static <T> Promise<T> delayed(long delay, TimeUnit unit, final Closure closure) {
-        return delayed(delay, unit, new Func0<T>() {
-            @Override
-            @SuppressWarnings("unchecked")
-            public T apply() {
-                return (T) closure.call();
-            }
-        });
     }
 
     @SuppressWarnings("unchecked")

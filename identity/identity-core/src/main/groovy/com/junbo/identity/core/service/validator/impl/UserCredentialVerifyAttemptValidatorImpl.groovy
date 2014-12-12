@@ -105,7 +105,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Override
     Promise<UserCredentialVerifyAttempt> validateForGet(UserCredentialVerifyAttemptId userLoginAttemptId) {
         if (userLoginAttemptId == null) {
-            throw new IllegalArgumentException('userLoginAttemptId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return userCredentialVerifyAttemptService.get(userLoginAttemptId).then { UserCredentialVerifyAttempt userLoginAttempt ->
@@ -674,29 +674,34 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             return null
         }
 
-        // Try to increase the current api count for this api + request ip
-        long currentValue = memcachedClient.incr(key, 1L);
-        // return value = -1 means the key does not exist
-        if (currentValue == -1) {
-            try {
-                // Try to add key with value 1
-                // There is a bug in spymemcached client(spymemcached bug 41),
-                // we need to add a string value of "1" at the first time for further increment operation
-                Boolean result = memcachedClient.add(key, lockdownTime, "1").get();
+        try {
+            // Try to increase the current api count for this api + request ip
+            long currentValue = memcachedClient.incr(key, 1L);
+            // return value = -1 means the key does not exist
+            if (currentValue == -1) {
+                try {
+                    // Try to add key with value 1
+                    // There is a bug in spymemcached client(spymemcached bug 41),
+                    // we need to add a string value of "1" at the first time for further increment operation
+                    Boolean result = memcachedClient.add(key, lockdownTime, "1").get();
 
-                // If the add result is false, means the add operation fails, this key has already been added by other
-                // thread, just increase the current api count again.
-                if (!result) {
-                    currentValue = memcachedClient.incr(key, 1L);
+                    // If the add result is false, means the add operation fails, this key has already been added by other
+                    // thread, just increase the current api count again.
+                    if (!result) {
+                        currentValue = memcachedClient.incr(key, 1L);
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    LOGGER.error("Error calling memcached client", e);
                 }
-            } catch (InterruptedException | ExecutionException e) {
-                LOGGER.error("Error calling memcached client", e);
+
+                return null
             }
 
+            return currentValue
+        } catch (Exception e) {
+            LOGGER.error("Error calling memcached client", e)
             return null
         }
-
-        return currentValue
     }
 
     private Long getCurrentMemcachedValue(String key) {
@@ -704,8 +709,13 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             return null
         }
 
-        Object obj = memcachedClient.get(key)
-        return obj == null ? null : Long.decode((String)obj)
+        try {
+            Object obj = memcachedClient.get(key)
+            return obj == null ? null : Long.decode((String) obj)
+        } catch (Exception e) {
+            LOGGER.error("Error calling memcached client", e);
+            return null
+        }
     }
 
     @Required

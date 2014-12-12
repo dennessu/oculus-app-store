@@ -5,17 +5,22 @@
  */
 package com.junbo.common.util;
 
+import com.junbo.common.filter.SequenceIdFilter;
 import com.junbo.common.routing.model.DataAccessPolicy;
 import com.junbo.configuration.topo.Topology;
 import com.junbo.langur.core.profiling.ProfilingHelper;
+import com.junbo.langur.core.promise.ExecutorContext;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.promise.ThreadLocalRequireNew;
 import groovy.lang.Closure;
+import org.slf4j.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Data utilities.
@@ -37,7 +42,7 @@ public class Context {
         private boolean isInitialRestCallBeforeClear;
         private boolean isInitialRestCall;
 
-        private List<Promise> pendingTasks = new ArrayList<>();
+        private Queue<Promise> pendingTasks = new ConcurrentLinkedDeque<>();
         private List<Closure<Promise<Void>>> cleanupActions = new ArrayList<>();
 
         public Integer getShardId() {
@@ -101,7 +106,7 @@ public class Context {
         }
 
         public Promise<Void> executeCleanupActions() {
-            ProfilingHelper.appendRow(logger, "(PCA) BEGIN execute cleanup actions");
+            ProfilingHelper.begin("CA", "execute cleanup actions");
             Promise<Void> future = Promise.each(cleanupActions, new Promise.Func<Closure<Promise<Void>>, Promise>() {
                 @Override
                 public Promise<Void> apply(Closure<Promise<Void>> promiseClosure) {
@@ -112,8 +117,14 @@ public class Context {
                 future = future.then(new Promise.Func<Void, Promise<Void>>() {
                     @Override
                     public Promise<Void> apply(Void aVoid) {
-                        ProfilingHelper.appendRow(logger, "(PCA) END execute cleanup actions");
+                        ProfilingHelper.end("(OK)");
                         return Promise.pure();
+                    }
+                }).recover(new Promise.Func<Throwable, Promise<Void>>() {
+                    @Override
+                    public Promise<Void> apply(Throwable throwable) {
+                        ProfilingHelper.err(throwable);
+                        return Promise.throwing(throwable);
                     }
                 });
             }
@@ -128,13 +139,25 @@ public class Context {
          * The tasks will be drained automatically before returning from RestAdapter.
          * @param closure The closure which generates the promise.
          */
-        public void registerPendingTask(Closure<Promise> closure) {
-            ProfilingHelper.appendRow(logger, "(PT) BEGIN registering pending task");
-            try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
-                Promise promise = closure.call();
-                this.pendingTasks.add(promise);
+        public void registerPendingTask(final Closure<Promise> closure) {
+            ProfilingHelper.begin("PT", "registering pending task");
+            try {
+                final String requestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
+                try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                    ExecutorContext.useAsyncExecutor();
+                    pendingTasks.add(Promise.pure().then(new Promise.Func<Void, Promise<Void>>() {
+                        @Override
+                        public Promise<Void> apply(Void aVoid) {
+                            MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
+                            return closure.call();
+                        }
+                    }));
+                }
+                ProfilingHelper.end("(OK)");
+            } catch (Throwable ex) {
+                ProfilingHelper.err(ex);
+                throw ex;
             }
-            ProfilingHelper.appendRow(logger, "(PT) END registering pending task");
         }
 
         /**
@@ -145,13 +168,26 @@ public class Context {
          * The tasks will be drained automatically before returning from RestAdapter.
          * @param func The function which generates the promise.
          */
-        public void registerPendingTask(Promise.Func0<Promise> func) {
-            ProfilingHelper.appendRow(logger, "(PT) BEGIN registering pending task");
-            try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
-                Promise promise = func.apply();
-                this.pendingTasks.add(promise);
+        public void registerPendingTask(final Promise.Func0<Promise> func) {
+            ProfilingHelper.begin("PT", "registering pending task");
+            try {
+                final String requestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
+
+                try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                    ExecutorContext.useAsyncExecutor();
+                    pendingTasks.add(Promise.pure().then(new Promise.Func<Void, Promise<Void>>() {
+                        @Override
+                        public Promise<Void> apply(Void aVoid) {
+                            MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
+                            return func.apply();
+                        }
+                    }));
+                }
+                ProfilingHelper.end("(OK)");
+            } catch (Throwable ex) {
+                ProfilingHelper.err(ex);
+                throw ex;
             }
-            ProfilingHelper.appendRow(logger, "(PT) END registering pending task");
         }
 
         /**
@@ -159,7 +195,7 @@ public class Context {
          * @return The promise that all pending tasks are drained.
          */
         public Promise<Void> drainPendingTasks() {
-            ProfilingHelper.appendRow(logger, "(PT) BEGIN draining pending task");
+            ProfilingHelper.begin("PT", "draining pending task");
             Promise<Void> future = Promise.each(pendingTasks, new Promise.Func<Promise, Promise>() {
                 @Override
                 public Promise<Void> apply(Promise promise) {
@@ -171,13 +207,101 @@ public class Context {
                 future = future.then(new Promise.Func<Void, Promise<Void>>() {
                     @Override
                     public Promise<Void> apply(Void aVoid) {
-                        ProfilingHelper.appendRow(logger, "(PT) END draining pending task");
+                        ProfilingHelper.end("(OK)");
                         return Promise.pure();
+                    }
+                }).recover(new Promise.Func<Throwable, Promise<Void>>() {
+                    @Override
+                    public Promise<Void> apply(Throwable throwable) {
+                        ProfilingHelper.err(throwable);
+                        return Promise.throwing(throwable);
                     }
                 });
             }
             return future;
         }
+
+        /**
+         * Register async tasks.
+         * The tasks is not in the main Promise chain of the current API call, so we used ThreadLocalRequireNew to wrap
+         * the creation of the Promise. Please MAKE SURE the Promise is created in the closure passed in.
+         *
+         * The tasks will not be drained. Any exception in it is just logged.
+         * @param closure The closure which generates the promise.
+         */
+        public void registerAsyncTask(final Closure<Promise> closure) {
+            ProfilingHelper.begin("PT", "registering async task");
+            try {
+                final String requestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
+                try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                    ExecutorContext.useAsyncExecutor();
+                    Promise.pure().then(new Promise.Func<Void, Promise<Void>>() {
+                        @Override
+                        public Promise<Void> apply(Void aVoid) {
+                            MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
+                            try {
+                                return closure.call().recover(new Promise.Func<Throwable, Promise>() {
+                                    @Override
+                                    public Promise apply(Throwable throwable) {
+                                        logger.error("Unhandled exception in async task", throwable);
+                                        return Promise.pure();
+                                    }
+                                });
+                            } catch (Throwable throwable) {
+                                logger.error("Unhandled exception in async task", throwable);
+                                return Promise.pure();
+                            }
+                        }
+                    });
+                }
+                ProfilingHelper.end("(OK)");
+            } catch (Throwable ex) {
+                ProfilingHelper.err(ex);
+                throw ex;
+            }
+        }
+
+        /**
+         * Register async tasks.
+         * The tasks is not in the main Promise chain of the current API call, so we used ThreadLocalRequireNew to wrap
+         * the creation of the Promise. Please MAKE SURE the Promise is created in the closure passed in.
+         *
+         * The tasks will not be drained. Any exception in it is just logged.
+         * @param func The func which generates the promise.
+         */
+        public void registerAsyncTask(final Promise.Func0<Promise> func) {
+            ProfilingHelper.begin("PT", "registering async task");
+            try {
+                final String requestId = MDC.get(SequenceIdFilter.X_REQUEST_ID);
+
+                try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                    ExecutorContext.useAsyncExecutor();
+                    Promise.pure().then(new Promise.Func<Void, Promise<Void>>() {
+                        @Override
+                        public Promise<Void> apply(Void aVoid) {
+                            MDC.put(SequenceIdFilter.X_REQUEST_ID, requestId);
+                            try {
+                                return func.apply().recover(new Promise.Func<Throwable, Promise>() {
+                                    @Override
+                                    public Promise apply(Throwable throwable) {
+                                        logger.error("Unhandled exception in async task", throwable);
+                                        return Promise.pure();
+                                    }
+                                });
+                            } catch (Throwable throwable) {
+                                logger.error("Unhandled exception in async task", throwable);
+                                return Promise.pure();
+                            }
+                        }
+                    });
+                }
+                ProfilingHelper.end("(OK)");
+            } catch (Throwable ex) {
+                ProfilingHelper.err(ex);
+                throw ex;
+            }
+        }
+
     }
 
     public static Data get() {

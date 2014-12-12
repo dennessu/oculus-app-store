@@ -132,9 +132,9 @@ class ActionTest {
 
         context.set('value1')
 
-        Promise<String> promise = (Promise<String>)Promise.delayed(1, TimeUnit.SECONDS) {
+        Promise<String> promise = (Promise<String>)Promise.delayed(1, TimeUnit.SECONDS).then {
             assert 'value1' == context.get()
-            null
+            Promise.pure()
         }.then { String s ->
             return Promise.pure(s)
         }

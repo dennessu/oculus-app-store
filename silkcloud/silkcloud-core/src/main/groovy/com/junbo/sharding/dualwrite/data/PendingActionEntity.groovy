@@ -171,11 +171,11 @@ public class PendingActionEntity implements CloudantEntity<Long> {
         this.updatedBy = updatedBy;
     }
 
-    public boolean isDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
 

@@ -112,8 +112,10 @@ class UserGroupDataHandler extends BaseDataHandler {
             try {
                 userGroupMembershipResource.create(userGroup).get()
             } catch (Exception e) {
-                logger.info("Error creating userGroup.", e)
+                logger.error("Error creating userGroup.", e)
             }
+        } else {
+            logger.debug("userGroup exists, skip")
         }
     }
 

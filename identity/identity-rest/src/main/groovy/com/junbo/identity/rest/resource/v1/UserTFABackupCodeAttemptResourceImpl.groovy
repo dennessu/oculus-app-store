@@ -56,11 +56,11 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
     @Override
     Promise<UserTFABackupCodeAttempt> create(UserId userId, UserTFABackupCodeAttempt userTFABackupCodeAttempt) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFABackupCodeAttempt == null) {
-            throw new IllegalArgumentException('userTFABackupCodeAttempt is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userTFABackupCodeAttempt = userTFABackupCodeAttemptFilter.filterForCreate(userTFABackupCodeAttempt)
@@ -94,11 +94,11 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
         }
 
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFABackupCodeAttemptId == null) {
-            throw new IllegalArgumentException('userTFABackupCodeAttemptId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFABackupCodeAttemptId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -120,7 +120,7 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
     @Override
     Promise<Results<UserTFABackupCodeAttempt>> list(UserId userId, UserTFABackupCodeAttemptListOptions listOptions) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')

@@ -474,6 +474,13 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
         return null;
     }
 
+    @Override
+    public InitialDownloadItemsResponse getInitialDownloadItemsResponse() throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/initial-download-items" , 200);
+        return new JsonMessageTranscoder().decode(new TypeReference<InitialDownloadItemsResponse>() {
+            }, responseBody);
+    }
+
     private String appendQuery(String url, String name, Object val) {
         if (val != null) {
             return url + "&" + name + "=" + val.toString();

@@ -9,6 +9,7 @@ package com.junbo.payment.core.provider.facebook;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
+import com.junbo.payment.clientproxy.FacebookGatewayService;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.clientproxy.facebook.*;
 import com.junbo.payment.common.CommonUtil;
@@ -17,6 +18,7 @@ import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.internal.FacebookPaymentAccountMapping;
+import com.junbo.payment.spec.internal.FacebookPaymentType;
 import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -44,7 +46,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
     private String oculusAppId;
     private String env;
     private FacebookPaymentUtils facebookPaymentUtils;
-    private FacebookPaymentApi facebookPaymentApi;
+    private FacebookGatewayService facebookGatewayService;
     private PersonalInfoFacade personalInfoFacade;
     private PaymentInstrumentRepositoryFacade piRepository;
     @Autowired
@@ -97,10 +99,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 }
                 FacebookPaymentAccount fbPaymentAccount = new FacebookPaymentAccount();
                 fbPaymentAccount.setPayerId(request.getUserId().toString());
-                if(env.equalsIgnoreCase(TEST_ENV)){
+                if(TEST_ENV.equalsIgnoreCase(env)){
                     fbPaymentAccount.setEnv(TEST_ENV);
                 }
-                return facebookPaymentApi.createAccount(s, oculusAppId, fbPaymentAccount).then(new Promise.Func<FacebookPaymentAccount, Promise<PaymentInstrument>>() {
+                return facebookGatewayService.createAccount(s, oculusAppId, fbPaymentAccount).then(new Promise.Func<FacebookPaymentAccount, Promise<PaymentInstrument>>() {
                     @Override
                     public Promise<PaymentInstrument> apply(FacebookPaymentAccount fbPaymentAccount) {
                         if(!CommonUtil.isNullOrEmpty(fbPaymentAccount.getId())){
@@ -138,7 +140,8 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         if(address != null){
             fbCreditCard.setBillingAddress(getFacebookAddress(address, request));
         }
-        return facebookPaymentApi.addCreditCard(accessToken, fbAccount, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
+
+        return facebookGatewayService.batchAddAndGetCreditCard(accessToken, fbAccount, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(FacebookCreditCard facebookCreditCard) {
                 if(!CommonUtil.isNullOrEmpty(facebookCreditCard.getId())){
@@ -147,23 +150,11 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                     request.getTypeSpecificDetails().setExpireDate(facebookCreditCard.getExpiryYear() + "-" + facebookCreditCard.getExpiryMonth());
                     request.setAccountNumber(facebookCreditCard.getLast4());
                     return Promise.pure(request);
-                    /*
-                    return facebookPaymentApi.getCreditCard(accessToken, facebookCreditCard.getId())
-                            .then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
-                                @Override
-                                public Promise<PaymentInstrument> apply(FacebookCreditCard getCreditCatd) {
-                                    request.getTypeSpecificDetails().setIssuerIdentificationNumber(getCreditCatd.getFirst6());
-                                    request.getTypeSpecificDetails().setExpireDate(getCreditCatd.getExpiryYear() + "-" + getCreditCatd.getExpiryMonth());
-                                    request.setAccountNumber(getCreditCatd.getLast4());
-                                    return Promise.pure(request);
-                                }
-                            });
-                            */
                 }else if(!CommonUtil.isNullOrEmpty(facebookCreditCard.getError())){
                     LOGGER.error("error response:" + facebookCreditCard.getError());
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, facebookCreditCard.getError()).exception();
                 }else{
-                    throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknow server error").exception();
+                    throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "unknown server error").exception();
                 }
             }
         });
@@ -186,6 +177,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             LOGGER.error("not able to find external token for pi:" + pi.getId());
             throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(pi.getId().toString()).exception();
         }
+        if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getPaymentType())){
+            LOGGER.error("payment type needed for facebook.");
+            throw AppCommonErrors.INSTANCE.fieldRequired("payment_type").exception();
+        }
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(String s) {
@@ -199,14 +194,13 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setAction(FacebookPaymentActionType.authorize);
                 fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                fbPayment.setItemType(FacebookItemType.open_graph_product);
-                FacebookItemDescription description = new FacebookItemDescription();
-                description.setId("https://someog.com");
-                description.setQuantity(1);
-                description.setTitle(paymentRequest.getChargeInfo().getBusinessDescriptor());
+                fbPayment.setItemType(FacebookItemType.oculus_digital);
+                FacebookItemDescription description = new FacebookItemDescription(getPaymentEntity(paymentRequest.getMerchantAccount()),
+                        getPaymentType(paymentRequest.getChargeInfo().getPaymentType()));
+                description.setItems(new String[]{paymentRequest.getChargeInfo().getBusinessDescriptor()});
                 fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
-                return facebookPaymentApi.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
+                return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
                         if(!CommonUtil.isNullOrEmpty(fbPayment.getId())){
@@ -236,7 +230,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                     fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                     fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
                 }
-                return facebookPaymentApi.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
+                return facebookGatewayService.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
                         if(fbPayment.getSuccess()){
@@ -261,6 +255,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             LOGGER.error("not able to find external token for pi:" + pi.getId());
             throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(pi.getId().toString()).exception();
         }
+        if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getPaymentType())){
+            LOGGER.error("payment type needed for facebook.");
+            throw AppCommonErrors.INSTANCE.fieldRequired("payment_type").exception();
+        }
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(String s) {
@@ -274,14 +272,13 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setAction(FacebookPaymentActionType.charge);
                 fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                fbPayment.setItemType(FacebookItemType.open_graph_product);
-                FacebookItemDescription description = new FacebookItemDescription();
-                description.setId("https://someog.com");
-                description.setQuantity(1);
-                description.setTitle(paymentRequest.getChargeInfo().getBusinessDescriptor());
+                fbPayment.setItemType(FacebookItemType.oculus_digital);
+                FacebookItemDescription description = new FacebookItemDescription(getPaymentEntity(paymentRequest.getMerchantAccount()),
+                        getPaymentType(paymentRequest.getChargeInfo().getPaymentType()));
+                description.setItems(new String[]{paymentRequest.getChargeInfo().getBusinessDescriptor()});
                 fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
-                return facebookPaymentApi.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
+                return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
                         if(!CommonUtil.isNullOrEmpty(fbPayment.getId())){
@@ -307,7 +304,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             public Promise<PaymentTransaction> apply(String s) {
                 FacebookPayment fbPayment = new FacebookPayment();
                 fbPayment.setAction(FacebookPaymentActionType.cancel);
-                return facebookPaymentApi.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
+                return facebookGatewayService.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
                         if(fbPayment.getSuccess()){
@@ -327,6 +324,9 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
 
     @Override
     public Promise<PaymentTransaction> refund(final String transactionId, final PaymentTransaction paymentRequest) {
+        if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getBusinessDescriptor())){
+            throw AppCommonErrors.INSTANCE.fieldRequired("refund_reason").exception();
+        }
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(String s) {
@@ -337,7 +337,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                     fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
                     fbPayment.setRefundReason(paymentRequest.getChargeInfo().getBusinessDescriptor());
                 }
-                return facebookPaymentApi.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
+                return facebookGatewayService.modifyPayment(s, transactionId, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
                         if(fbPayment.getSuccess()){
@@ -408,6 +408,25 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         });
     }
 
+    private FacebookPaymentType getPaymentType(String type){
+        try{
+            FacebookPaymentType paymentType = FacebookPaymentType.valueOf(type);
+            return paymentType;
+        }catch (Exception ex){
+            throw AppCommonErrors.INSTANCE.fieldInvalid("payment_type").exception();
+        }
+    }
+
+    private FacebookPaymentEntity getPaymentEntity(String merchantAccount){
+        try{
+            FacebookPaymentEntity paymentEntity = FacebookPaymentEntity.valueOf(merchantAccount);
+            return paymentEntity;
+        }catch (Exception ex){
+            throw AppCommonErrors.INSTANCE.fieldInvalid("payment_entity").exception();
+        }
+    }
+
+
     @Required
     public void setOculusAppId(String oculusAppId) {
         this.oculusAppId = oculusAppId;
@@ -424,8 +443,8 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         this.personalInfoFacade = personalInfoFacade;
     }
     @Required
-    public void setFacebookPaymentApi(FacebookPaymentApi facebookPaymentApi) {
-        this.facebookPaymentApi = facebookPaymentApi;
+    public void setFacebookGatewayService(FacebookGatewayService facebookGatewayService) {
+        this.facebookGatewayService = facebookGatewayService;
     }
     @Required
     public void setPiRepository(PaymentInstrumentRepositoryFacade piRepository) {

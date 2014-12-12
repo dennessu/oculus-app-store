@@ -34,7 +34,7 @@ public class PropertyAssignedAwareSupport {
 
     public static boolean isPropertyAssigned(Object bean, String propertyName) {
         if (bean == null) {
-            throw new IllegalArgumentException("bean is null");
+            return false;
         }
 
         if (propertyName == null) {

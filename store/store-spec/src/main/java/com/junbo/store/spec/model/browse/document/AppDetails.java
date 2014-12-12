@@ -17,6 +17,8 @@ public class AppDetails {
 
     private List<GenreInfo> genres;
 
+    private List<String> requiredInputDevices;
+
     private Date releaseDate;
 
     private String website;
@@ -38,6 +40,8 @@ public class AppDetails {
 
     private Long installationSize;
 
+    private Long requiredSpace;
+
     private List<RevisionNote> revisionNotes;
 
     public List<CategoryInfo> getCategories() {
@@ -54,6 +58,14 @@ public class AppDetails {
 
     public void setGenres(List<GenreInfo> genres) {
         this.genres = genres;
+    }
+
+    public List<String> getRequiredInputDevices() {
+        return requiredInputDevices;
+    }
+
+    public void setRequiredInputDevices(List<String> requiredInputDevices) {
+        this.requiredInputDevices = requiredInputDevices;
     }
 
     public Date getReleaseDate() {
@@ -166,6 +178,14 @@ public class AppDetails {
 
     public void setInstallationSize(Long installationSize) {
         this.installationSize = installationSize;
+    }
+
+    public Long getRequiredSpace() {
+        return requiredSpace;
+    }
+
+    public void setRequiredSpace(Long requiredSpace) {
+        this.requiredSpace = requiredSpace;
     }
 
     public List<RevisionNote> getRevisionNotes() {

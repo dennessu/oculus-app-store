@@ -20,9 +20,9 @@ import javax.annotation.Resource
 @Component('storeReviewValidator')
 class ReviewValidatorImpl implements ReviewValidator {
 
-    private final static int MIN_STAR = 1
+    private final static int MIN_STAR = 0
 
-    private final static int MAX_STAR = 5
+    private final static int MAX_STAR = 100
 
     private final static Set<String> ratingTypes = [CaseyReview.RatingType.quality.name(), CaseyReview.RatingType.comfort.name()] as Set
 

@@ -26,6 +26,8 @@ public class Item {
 
     private String descriptionHtml;
 
+    private Double rank;
+
     private Map<String, AggregatedRatings> aggregatedRatings;
 
     private String creator;
@@ -84,6 +86,14 @@ public class Item {
 
     public void setDescriptionHtml(String descriptionHtml) {
         this.descriptionHtml = descriptionHtml;
+    }
+
+    public Double getRank() {
+        return rank;
+    }
+
+    public void setRank(Double rank) {
+        this.rank = rank;
     }
 
     public Map<String, AggregatedRatings>  getAggregatedRatings() {

@@ -178,9 +178,10 @@ public class Identity {
         String url = "";
         if (StringUtils.isEmpty(locale) && StringUtils.isEmpty(sortBy)) {
             url = IdentityV1CountryURI;
-        } else if (StringUtils.isEmpty(sortBy)) {
+
+        } else if (!StringUtils.isEmpty(locale)) {
             url = IdentityV1CountryURI + "?locale=" + locale;
-        } else if (StringUtils.isEmpty(locale)) {
+        } else if (!StringUtils.isEmpty(sortBy)) {
             url = IdentityV1CountryURI + "?sortBy=" + sortBy;
         } else {
             url = IdentityV1CountryURI + "?locale=" + locale + "&sortBy=" + sortBy;
@@ -188,7 +189,7 @@ public class Identity {
 
         List<Country> countries = new ArrayList<>();
         for (Object obj : IdentityGet(url, (Results.class)).getItems()) {
-            countries.add((Country)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Country.class));
+            countries.add((Country) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Country.class));
         }
         return countries;
     }
@@ -471,6 +472,11 @@ public class Identity {
                 JsonHelper.JsonSerializer(user), User.class);
     }
 
+    public static User UserPartialPost(User user) throws Exception {
+        return IdentityPost(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()),
+                JsonHelper.JsonSerializer(user), User.class);
+    }
+
     public static void UserDelete(User user) throws Exception {
         IdentityDelete(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()));
     }
@@ -505,7 +511,7 @@ public class Identity {
         return (User) IdentityGet(IdentityV1UserURI + "/" + IdFormatter.encodeId(userId), User.class);
     }
 
-    public static CloseableHttpResponse UserPersonalInfoPost(UserId userId, UserPersonalInfo upi, boolean validResponse) throws Exception {
+    public static CloseableHttpResponse UserPersonalInfoPost(UserPersonalInfo upi, boolean validResponse) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UserPersonalInfoURI,
@@ -519,6 +525,11 @@ public class Identity {
     public static UserPersonalInfo UserPersonalInfoPost(UserId userId, UserPersonalInfo upi) throws Exception {
         upi.setUserId(userId);
         return (UserPersonalInfo) IdentityPost(IdentityV1UserPersonalInfoURI,
+                JsonHelper.JsonSerializer(upi), UserPersonalInfo.class);
+    }
+
+    public static UserPersonalInfo UserPersonalInfoPatch(UserPersonalInfoId userPersonalInfoId, UserPersonalInfo upi) throws Exception {
+        return IdentityPost(IdentityV1UserPersonalInfoURI + "/" + IdConverter.idToHexString(userPersonalInfoId),
                 JsonHelper.JsonSerializer(upi), UserPersonalInfo.class);
     }
 
@@ -623,7 +634,7 @@ public class Identity {
         Results<UserGroup> userGroups = IdentityGet(url, Results.class);
         List<UserGroup> userGroupList = new ArrayList<>();
         for (Object obj : userGroups.getItems()) {
-            userGroupList.add((UserGroup)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
+            userGroupList.add((UserGroup) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
         }
 
         userGroups.setItems(userGroupList);
@@ -634,7 +645,7 @@ public class Identity {
         String url = "";
         if (userId != null && groupId != null) {
             url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId) + "&groupId=" + IdConverter.idToHexString(groupId);
-        }else if (groupId != null) {
+        } else if (groupId != null) {
             url = IdentityV1UserGroupMemberURI + "?groupId=" + IdConverter.idToHexString(groupId);
         } else if (userId != null) {
             url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId);
@@ -643,7 +654,7 @@ public class Identity {
         Results<UserGroup> userGroups = IdentityGet(url, Results.class);
         List<UserGroup> userGroupList = new ArrayList<>();
         for (Object obj : userGroups.getItems()) {
-            userGroupList.add((UserGroup)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
+            userGroupList.add((UserGroup) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
         }
 
         userGroups.setItems(userGroupList);
@@ -750,7 +761,7 @@ public class Identity {
         Results<UserAuthenticator> userAuthenticatorResults = IdentityGet(url, Results.class);
         List<UserAuthenticator> userAuthenticators = new ArrayList<>();
         for (Object obj : userAuthenticatorResults.getItems()) {
-            userAuthenticators.add((UserAuthenticator)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserAuthenticator.class));
+            userAuthenticators.add((UserAuthenticator) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserAuthenticator.class));
         }
 
         userAuthenticatorResults.setItems(userAuthenticators);
@@ -772,6 +783,10 @@ public class Identity {
     public static Results<Organization> OrganizationByName(String name, Integer limit, Integer offset) throws Exception {
         return IdentityGet(
                 IdentityV1OrganizationURI + "?name=" + name.toLowerCase() + buildIdentityCount(limit) + buildIdentityCursor(offset), Results.class);
+    }
+
+    public static void OrganizationDelete(OrganizationId organizationId) throws Exception {
+        IdentityDelete(IdentityV1OrganizationURI + "/" + IdFormatter.encodeId(organizationId));
     }
 
     public static Results<Organization> OrganizationGetAll(Integer limit, Integer offset) throws Exception {
@@ -935,7 +950,7 @@ public class Identity {
         }
 
         if (limit != null) {
-           url = !StringUtils.isEmpty(url)? (url + "&count=" + limit) : ("count=" + limit);
+            url = !StringUtils.isEmpty(url) ? (url + "&count=" + limit) : ("count=" + limit);
         }
 
         return url;

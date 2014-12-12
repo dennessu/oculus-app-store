@@ -35,12 +35,7 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
 
     @Override
     Promise<Currency> get(CurrencyId id) {
-        return cloudantGet(id.toString()).then { Currency currency ->
-            if (currency == null) {
-                return Promise.pure(null)
-            }
-            return Promise.pure(currency)
-        }
+        return cloudantGet(id.toString())
     }
 
     @Override

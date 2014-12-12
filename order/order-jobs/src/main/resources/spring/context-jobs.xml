@@ -15,7 +15,7 @@
             <list>
                 <!-- <ref bean="orderJobTrigger"/>  no functions needs order job, disable for now-->
                 <ref bean="subledgerJobTrigger"/>
-                <!--<ref bean="orderAuditTaxJobTrigger"/>-->
+                <ref bean="orderAuditTaxJobTrigger"/>
             </list>
         </property>
         <property name="quartzProperties">
@@ -94,6 +94,7 @@
     </bean>
 
     <bean id="orderAuditTaxJob" class="com.junbo.order.jobs.tax.TaxAuditor" >
+        <property name="isEnabled" value="${sabrix.tax.audit.enabled}"/>
         <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
         <property name="orderRepository" ref="orderRepositoryFacade"/>
         <property name="statusToProcess">

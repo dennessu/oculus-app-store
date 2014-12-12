@@ -85,6 +85,10 @@ class UserServiceImpl implements UserService {
 
     private URI emailLinkBaseUri
 
+    private Long resetPasswordExpiration
+
+    private Long emailVerifyExpiration
+
     @Required
     void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
@@ -139,6 +143,16 @@ class UserServiceImpl implements UserService {
     @Required
     void setEmailLinkBaseUri(String emailLinkBaseUri) {
         this.emailLinkBaseUri = new URI(emailLinkBaseUri)
+    }
+
+    @Required
+    void setResetPasswordExpiration(Long resetPasswordExpiration) {
+        this.resetPasswordExpiration = resetPasswordExpiration
+    }
+
+    @Required
+    void setEmailVerifyExpiration(Long emailVerifyExpiration) {
+        this.emailVerifyExpiration = emailVerifyExpiration
     }
 
     @Override
@@ -273,7 +287,8 @@ class UserServiceImpl implements UserService {
                 EmailVerifyCode code = new EmailVerifyCode(
                         userId: userId.value,
                         email: email,
-                        targetMailId: emailId == null ? null : emailId.value
+                        targetMailId: emailId == null ? null : emailId.value,
+                        expiredBy: new Date(System.currentTimeMillis() + emailVerifyExpiration * 1000)
                 )
 
                 emailVerifyCodeRepository.save(code)
@@ -339,7 +354,8 @@ class UserServiceImpl implements UserService {
 
                 ResetPasswordCode code = new ResetPasswordCode(
                         userId: userId.value,
-                        email: email
+                        email: email,
+                        expiredBy: new Date(System.currentTimeMillis() + resetPasswordExpiration * 1000)
                 )
 
                 resetPasswordCodeRepository.save(code)
@@ -399,6 +415,11 @@ class UserServiceImpl implements UserService {
         }.then {
             return Promise.pure(results)
         }
+    }
+
+    @Override
+    Promise<User> getUser(UserId userId) {
+        return userResource.get(userId, new UserGetOptions())
     }
 
     private Promise<String> getDefaultUserEmail(User user) {

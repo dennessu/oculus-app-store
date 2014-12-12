@@ -23,6 +23,8 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.Map;
 
 /**
  * API for entitlement.
@@ -44,6 +46,12 @@ public interface EntitlementResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     Promise<Entitlement> postEntitlement(@Valid Entitlement entitlement);
+
+    @RouteByAccessToken(switchable = true)
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Path("/bulk")
+    Promise<Map<Long, List<Entitlement>>> postEntitlements(Map<Long, List<Entitlement>> entitlements);
 
     @ApiOperation("Update an entitlement")
     @RouteBy(value = "entitlement.getUserId()", switchable = true)

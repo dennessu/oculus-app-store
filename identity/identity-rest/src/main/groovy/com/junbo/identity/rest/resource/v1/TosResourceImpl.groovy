@@ -6,6 +6,7 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.TosId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -48,7 +49,7 @@ class TosResourceImpl implements TosResource {
     @Override
     Promise<Tos> create(Tos tos) {
         if (tos == null) {
-            throw new IllegalArgumentException('tos is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         tos = tosFilter.filterForCreate(tos)
 
@@ -65,7 +66,7 @@ class TosResourceImpl implements TosResource {
     @Override
     Promise<Tos> get(TosId tosId, TosGetOptions getOptions) {
         if (tosId == null) {
-            throw new IllegalArgumentException('tosId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
@@ -108,11 +109,15 @@ class TosResourceImpl implements TosResource {
     @Override
     Promise<Tos> patch(TosId tosId, Tos tos) {
         if (tosId == null) {
-            throw new IllegalArgumentException('tosId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (tos == null) {
-            throw new IllegalArgumentException('tos is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
+        if (tos.id == null) {
+            tos.id = tosId
         }
 
         return tosService.get(tosId).then { Tos oldTos ->
@@ -134,11 +139,11 @@ class TosResourceImpl implements TosResource {
     @Override
     Promise<Tos> put(TosId tosId, Tos tos) {
         if (tosId == null) {
-            throw new IllegalArgumentException('tosId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (tos == null) {
-            throw new IllegalArgumentException('tos is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return tosService.get(tosId).then { Tos oldTos ->

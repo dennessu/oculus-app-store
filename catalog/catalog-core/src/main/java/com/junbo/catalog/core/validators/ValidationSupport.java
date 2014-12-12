@@ -54,6 +54,7 @@ public abstract class ValidationSupport {
 
     private static List<String> genAllCountryCodes() {
         List<String> result = new ArrayList<>(Arrays.asList(Locale.getISOCountries()));
+        result.add("SS");
         //result.add(Constants.DEFAULT_COUNTRY);
         return result;
     }
