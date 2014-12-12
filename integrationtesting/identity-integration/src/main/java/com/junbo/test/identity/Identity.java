@@ -426,7 +426,7 @@ public class Identity {
         return (User) IdentityGet(IdentityV1UserURI + "/" + IdFormatter.encodeId(userId), User.class);
     }
 
-    public static CloseableHttpResponse UserPersonalInfoPost(UserId userId, UserPersonalInfo upi, boolean validResponse) throws Exception {
+    public static CloseableHttpResponse UserPersonalInfoPost(UserPersonalInfo upi, boolean validResponse) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UserPersonalInfoURI,
@@ -440,6 +440,11 @@ public class Identity {
     public static UserPersonalInfo UserPersonalInfoPost(UserId userId, UserPersonalInfo upi) throws Exception {
         upi.setUserId(userId);
         return (UserPersonalInfo) IdentityPost(IdentityV1UserPersonalInfoURI,
+                JsonHelper.JsonSerializer(upi), UserPersonalInfo.class);
+    }
+
+    public static UserPersonalInfo UserPersonalInfoPatch(UserPersonalInfoId userPersonalInfoId, UserPersonalInfo upi) throws Exception {
+        return IdentityPost(IdentityV1UserPersonalInfoURI + "/" + IdConverter.idToHexString(userPersonalInfoId),
                 JsonHelper.JsonSerializer(upi), UserPersonalInfo.class);
     }
 
