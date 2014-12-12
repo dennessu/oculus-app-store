@@ -1214,6 +1214,22 @@ public class LoginResourceTesting extends BaseTestClass {
         links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         assert links != null;
         assert links.size() == 1;
+
+        // clear country & locale field of user
+        Master.getInstance().setCurrentUid(IdFormatter.encodeId(authTokenResponse.getUserId()));
+        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()),
+                testDataProvider.getUserAccessToken(URLEncoder.encode(createUserRequest.getEmail(), "UTF-8"), createUserRequest.getPassword()));
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+        testDataProvider.clearUserPreferLocalAndCountry(authTokenResponse.getUserId());
+
+        testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        response = testDataProvider.verifyEmail(new VerifyEmailRequest());
+        assert response != null;
+        assert response.getEmailSent();
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
+        assert links != null;
+        assert links.size() == 2;
     }
 
     @Property(

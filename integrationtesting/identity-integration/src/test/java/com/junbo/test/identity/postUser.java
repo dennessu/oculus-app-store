@@ -184,7 +184,7 @@ public class postUser {
         Email mailPii = new Email();
         mailPii.setInfo(email);
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(mailPii));
-        response = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo, false);
+        response = Identity.UserPersonalInfoPost(userPersonalInfo, false);
         String message = "Mail is already used.";
         Validator.Validate("Validator userPersonalInfo with same email", 400, response.getStatusLine().getStatusCode());
         Validator.Validate("Validator mail is used", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(message));
