@@ -118,11 +118,10 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             }
 
             def callback = userPropertyAuthorizeCallbackFactory.create(oldUserPersonalInfo.userId)
-            PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPersonalInfo)
             return RightsScope.with(authorizeService.authorize(callback)) {
-                piiAdvanceFilter.checkUpdatePermission()
-
                 userPersonalInfo = userPersonalInfoFilter.filterForPatch(userPersonalInfo, oldUserPersonalInfo)
+                PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPersonalInfo)
+                piiAdvanceFilter.checkUpdatePermission()
 
                 return userPersonalInfoValidator.validateForUpdate(userPersonalInfo, oldUserPersonalInfo).then {
                     return userPersonalInfoService.update(userPersonalInfo, oldUserPersonalInfo).then { UserPersonalInfo newUserPii ->
