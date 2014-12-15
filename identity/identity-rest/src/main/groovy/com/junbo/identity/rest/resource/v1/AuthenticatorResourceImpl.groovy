@@ -53,7 +53,8 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
     @Override
     Promise<UserAuthenticator> create(UserAuthenticator userAuthenticator) {
         if (userAuthenticator == null) {
-            throw new IllegalArgumentException('userAuthenticator is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+
         }
 
         def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
@@ -79,11 +80,11 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
     Promise<UserAuthenticator> put(UserAuthenticatorId userAuthenticatorId, UserAuthenticator userAuthenticator) {
 
         if (userAuthenticatorId == null) {
-            throw new IllegalArgumentException('userAuthenticatorId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (userAuthenticator == null) {
-            throw new IllegalArgumentException('userAuthenticator is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userAuthenticatorService.get(userAuthenticatorId).then { UserAuthenticator oldUserAuthenticator ->
@@ -115,11 +116,11 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
     Promise<UserAuthenticator> patch(UserAuthenticatorId userAuthenticatorId, UserAuthenticator userAuthenticator) {
 
         if (userAuthenticatorId == null) {
-            throw new IllegalArgumentException('userAuthenticatorId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (userAuthenticator == null) {
-            throw new IllegalArgumentException('userAuthenticator is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userAuthenticatorService.get(userAuthenticatorId).then { UserAuthenticator oldUserAuthenticator ->
@@ -208,7 +209,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
     @Override
     Promise<Response> delete(UserAuthenticatorId userAuthenticatorId) {
         if (userAuthenticatorId == null) {
-            throw new IllegalArgumentException('userAuthenticatorId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return userAuthenticatorValidator.validateForGet(userAuthenticatorId).then { UserAuthenticator authenticator ->

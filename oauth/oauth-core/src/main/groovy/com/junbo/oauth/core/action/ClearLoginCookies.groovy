@@ -10,12 +10,14 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.CookieUtil
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.db.repo.RememberMeTokenRepository
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 import org.springframework.web.util.UriComponentsBuilder
 
 import javax.ws.rs.core.Response
@@ -37,6 +39,8 @@ class ClearLoginCookies implements Action {
      */
     private RememberMeTokenRepository rememberMeTokenRepository
 
+    private OAuthTokenService tokenService
+
     @Required
     void setLoginStateRepository(LoginStateRepository loginStateRepository) {
         this.loginStateRepository = loginStateRepository
@@ -47,7 +51,11 @@ class ClearLoginCookies implements Action {
         this.rememberMeTokenRepository = rememberMeTokenRepository
     }
 
-    /**
+    @Required
+    void setTokenService(OAuthTokenService tokenService) {
+        this.tokenService = tokenService
+    }
+/**
      * Override the {@link com.junbo.langur.core.webflow.action.Action}.execute method.
      * @param context The ActionContext contains the execution context.
      * @return The ActionResult contains the transition or other kind of result contains in a map.
@@ -61,7 +69,10 @@ class ClearLoginCookies implements Action {
 
         // Delete the login state from the database if presented.
         if (loginState != null) {
-            loginStateRepository.removeByHash(loginState.hashedId)
+            if (StringUtils.hasText(loginState.hashedId)) {
+                loginStateRepository.removeByHash(loginState.hashedId)
+                tokenService.revokeAccessTokenByLoginStateHash(loginState.hashedId)
+            }
         }
 
         // Clear the login state cookie.

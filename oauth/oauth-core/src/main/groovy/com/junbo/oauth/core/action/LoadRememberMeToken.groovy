@@ -5,11 +5,14 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.db.repo.RememberMeTokenRepository
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.model.RememberMeToken
@@ -31,9 +34,16 @@ class LoadRememberMeToken implements Action {
 
     private RememberMeTokenRepository rememberMeTokenRepository
 
+    private UserService userService
+
     @Required
     void setRememberMeTokenRepository(RememberMeTokenRepository rememberMeTokenRepository) {
         this.rememberMeTokenRepository = rememberMeTokenRepository
+    }
+
+    @Required
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Override
@@ -62,6 +72,16 @@ class LoadRememberMeToken implements Action {
         contextWrapper.needRememberMe = true
         contextWrapper.rememberMeToken = rememberMeToken
         contextWrapper.loginState = loginState
+
+        try {
+            contextWrapper.user = userService.getUser(new UserId(loginState.userId)).get()
+        } catch (AppErrorException e) {
+            if (e.error.httpStatusCode == 404) {
+                LOGGER.warn("The remember me token $rememberMeCookie.value is invalid, silently ignore")
+                contextWrapper.loginState = null
+                return Promise.pure(null)
+            }
+        }
 
         return Promise.pure(null)
     }

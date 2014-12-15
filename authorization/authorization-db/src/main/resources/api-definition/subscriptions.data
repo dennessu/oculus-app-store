@@ -15,6 +15,13 @@
             "precondition": "true",
             "rights": ["read", "create"],
             "scriptType": "SPEL"
-        }]
+        }],
+        "readonly.service": [
+            {
+                "precondition": "true",
+                "rights": [ "read" ],
+                "scriptType": "SPEL"
+            }
+        ]
     }
 }

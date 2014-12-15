@@ -88,6 +88,11 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
     }
 
     @Override
+    void removeByLoginStateHash(String loginStateHash) {
+
+    }
+
+    @Override
     boolean isValidAccessToken(String tokenValue) {
         return tokenGenerator.isValidAccessToken(tokenValue)
     }

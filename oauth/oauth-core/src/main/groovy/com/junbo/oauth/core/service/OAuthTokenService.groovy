@@ -17,6 +17,10 @@ interface OAuthTokenService {
 
     AccessToken generateAccessToken(Client appClient, Long userId, Set<String> scopes, Boolean ipRestriction, Long overrideExpiration)
 
+    AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes, Long overrideExpiration, String loginStateHash)
+
+    AccessToken generateAccessToken(Client appClient, Long userId, Set<String> scopes, Boolean ipRestriction, Long overrideExpiration, String loginStateHash)
+
     AccessToken getAccessToken(String tokenValue)
 
     AccessToken extractAccessToken(String authorization)
@@ -47,6 +51,8 @@ interface OAuthTokenService {
     void revokeAccessTokenByUserId(Long userId, Client client)
 
     void revokeAccessToken(Long userId)
+
+    void revokeAccessTokenByLoginStateHash(String loginState)
 
     void revokeRefreshToken(Long userId)
 

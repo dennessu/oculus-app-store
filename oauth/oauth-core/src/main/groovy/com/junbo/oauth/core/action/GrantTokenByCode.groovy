@@ -73,7 +73,8 @@ class GrantTokenByCode implements Action {
         Boolean ipRestrictionRequired = Boolean.parseBoolean(ipRestriction);
 
         AccessToken accessToken = tokenService.generateAccessToken(client,
-                authorizationCode.userId, authorizationCode.scopes, ipRestrictionRequired, contextWrapper.overrideExpiration)
+                authorizationCode.userId, authorizationCode.scopes, ipRestrictionRequired,
+                contextWrapper.overrideExpiration, authorizationCode.loginStateHash)
 
         LoginState loginState = new LoginState(
                 userId: authorizationCode.userId,

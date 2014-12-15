@@ -333,8 +333,7 @@
             "href": "/v1/organizations/6354f5d1fcdf",
             "id": "6354f5d1fcdf"
         },
-        "isPublished": false,
-        "publisherRevenueRatio": 0.7
+        "isPublished": false
      },
      "offerRevision": {
         "status": "DRAFT",

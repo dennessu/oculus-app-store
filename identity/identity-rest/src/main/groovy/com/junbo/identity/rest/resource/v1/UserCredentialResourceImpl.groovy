@@ -61,11 +61,11 @@ class UserCredentialResourceImpl implements UserCredentialResource {
     @Override
     Promise<UserCredential> create(UserId userId, UserCredential userCredential) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userCredential == null) {
-            throw new IllegalArgumentException('userCredential is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)

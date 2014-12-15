@@ -12,7 +12,6 @@ import java.util.Properties;
  * Created by haomin on 14-4-24.
  */
 public abstract class EnumId extends Object implements Serializable {
-
     private String value;
 
     protected Properties resourcePathPlaceHolder;

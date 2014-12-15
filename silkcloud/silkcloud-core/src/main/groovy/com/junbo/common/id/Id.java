@@ -13,7 +13,6 @@ import java.util.Properties;
  *
  */
 public abstract class Id implements UniversalId {
-
     private Long value;
 
     protected Properties resourcePathPlaceHolder;

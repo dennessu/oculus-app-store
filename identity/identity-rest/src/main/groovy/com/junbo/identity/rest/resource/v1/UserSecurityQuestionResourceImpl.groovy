@@ -48,8 +48,11 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
     @Override
     Promise<UserSecurityQuestion> create(UserId userId, UserSecurityQuestion userSecurityQuestion) {
+        if (userId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
         if (userSecurityQuestion == null) {
-            throw new IllegalArgumentException('userSecurityQuestion is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
@@ -76,11 +79,11 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     Promise<UserSecurityQuestion> get(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
                                       UserSecurityQuestionGetOptions getOptions) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userSecurityQuestionId == null) {
-            throw new IllegalArgumentException('userSecurityQuestionId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userSecurityQuestionId').exception()
         }
 
         if (getOptions == null) {
@@ -106,16 +109,17 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     @Override
     Promise<UserSecurityQuestion> patch(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
                                         UserSecurityQuestion userSecurityQuestion) {
+
         if (userSecurityQuestionId == null) {
-            throw new IllegalArgumentException('userSecurityQuestionId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userSecurityQuestionId').exception()
         }
 
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userSecurityQuestion == null) {
-            throw new IllegalArgumentException('userSecurityQuestion is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userSecurityQuestionService.get(userSecurityQuestionId).then {
@@ -150,15 +154,15 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     Promise<UserSecurityQuestion> put(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
                                       UserSecurityQuestion userSecurityQuestion) {
         if (userSecurityQuestionId == null) {
-            throw new IllegalArgumentException('userSecurityQuestionId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userSecurityQuestionId').exception()
         }
 
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userSecurityQuestion == null) {
-            throw new IllegalArgumentException('userSecurityQuestion is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
@@ -208,7 +212,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     @Override
     Promise<Results<UserSecurityQuestion>> list(UserId userId, UserSecurityQuestionListOptions listOptions) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')

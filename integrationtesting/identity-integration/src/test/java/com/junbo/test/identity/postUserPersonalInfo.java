@@ -108,6 +108,17 @@ public class postUserPersonalInfo {
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
+    }
 
+    @Test(groups = "dailies", enabled = false)
+    public void patchUserPersonalInfo() throws Exception {
+        User user = Identity.UserPostDefault();
+        UserPersonalInfo upi = IdentityModel.DefaultUserPersonalInfoAddress();
+        upi = Identity.UserPersonalInfoPost(user.getId(), upi);
+
+        UserPersonalInfo newUPI = new UserPersonalInfo();
+        newUPI.setLastValidateTime(new Date());
+        upi = Identity.UserPersonalInfoPatch(upi.getId(), newUPI);
+        assert upi.getLastValidateTime() == newUPI.getLastValidateTime();
     }
 }

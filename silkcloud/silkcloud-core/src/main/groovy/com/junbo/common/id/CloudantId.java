@@ -15,7 +15,6 @@ import java.util.Properties;
  *
  */
 public abstract class CloudantId implements UniversalId {
-
     private String value;
 
     protected Properties resourcePathPlaceHolder;

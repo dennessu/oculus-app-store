@@ -8,6 +8,7 @@ package com.junbo.test.store;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.identity.*;
@@ -32,6 +33,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -778,6 +780,67 @@ public class LoginResourceTesting extends BaseTestClass {
             owner = "ZhaoYunlong",
             status = Status.Enable,
             steps = {
+                    "Check update email works if country & locale is missing"
+            }
+    )
+    @Test
+    public void testUpdateEmailUserCountryLocaleMissing() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+        validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
+
+        // clear country & locale field of user
+        Master.getInstance().setCurrentUid(IdFormatter.encodeId(authTokenResponse.getUserId()));
+        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()),
+                testDataProvider.getUserAccessToken(URLEncoder.encode(createUserRequest.getEmail(), "UTF-8"), createUserRequest.getPassword()));
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+        testDataProvider.clearUserPreferLocalAndCountry(authTokenResponse.getUserId());
+
+        testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        UserProfileUpdateRequest userProfileUpdateRequest = new UserProfileUpdateRequest();
+        StoreUserProfile storeUserProfile = new StoreUserProfile();
+        StoreUserEmail storeUserEmail = new StoreUserEmail();
+        String newEmail = RandomHelper.randomEmail();
+        storeUserEmail.setValue(newEmail);
+        storeUserProfile.setEmail(storeUserEmail);
+        userProfileUpdateRequest.setUserProfile(storeUserProfile);
+
+        UserProfileUpdateResponse userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse.getChallenge() != null;
+        assert userProfileUpdateResponse.getChallenge().getType().equalsIgnoreCase("PASSWORD");
+
+        ChallengeAnswer answer = new ChallengeAnswer();
+        answer.setType(userProfileUpdateResponse.getChallenge().getType());
+        answer.setPassword(createUserRequest.getPassword());
+        userProfileUpdateRequest.setChallengeAnswer(answer);
+        userProfileUpdateResponse = testDataProvider.updateUserProfile(userProfileUpdateRequest);
+        assert userProfileUpdateResponse != null;
+        assert userProfileUpdateResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(createUserRequest.getEmail());
+
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), newEmail);
+        assert links != null;
+        assert links.size() == 1;
+        String link = links.get(0);
+        ConfirmEmailResponse confirmEmailResponse = testDataProvider.confirmEmail(link);
+        assert confirmEmailResponse.getIsSuccess();
+        assert newEmail.equalsIgnoreCase(confirmEmailResponse.getEmail());
+
+        UserProfileGetResponse userProfileGetResponse = testDataProvider.getUserProfile();
+        assert userProfileGetResponse.getUserProfile().getEmail().getValue().equalsIgnoreCase(newEmail);
+
+        AuthTokenResponse response = testDataProvider.SignIn(newEmail, createUserRequest.getPassword());
+        validationHelper.verifyEmailInAuthResponse(response, newEmail, true);
+        assert response.getUsername().equalsIgnoreCase(createUserRequest.getUsername());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
                     "Check update email in invalid situation, all those steps should be done after password input",
                     "1. check if the update link is not clicked, email cannot be updated",
                     "2. check if the update link is not clicked, update again, it will generate two emails",
@@ -1151,6 +1214,22 @@ public class LoginResourceTesting extends BaseTestClass {
         links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
         assert links != null;
         assert links.size() == 1;
+
+        // clear country & locale field of user
+        Master.getInstance().setCurrentUid(IdFormatter.encodeId(authTokenResponse.getUserId()));
+        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()),
+                testDataProvider.getUserAccessToken(URLEncoder.encode(createUserRequest.getEmail(), "UTF-8"), createUserRequest.getPassword()));
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+        testDataProvider.clearUserPreferLocalAndCountry(authTokenResponse.getUserId());
+
+        testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        response = testDataProvider.verifyEmail(new VerifyEmailRequest());
+        assert response != null;
+        assert response.getEmailSent();
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
+        assert links != null;
+        assert links.size() == 2;
     }
 
     @Property(

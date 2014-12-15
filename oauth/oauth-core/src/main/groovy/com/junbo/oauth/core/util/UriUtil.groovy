@@ -40,14 +40,20 @@ class UriUtil {
                 return false
             }
 
+            uri1.parseServerAuthority()
+
             return true
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | URISyntaxException e) {
             LOGGER.debug('Invalid uri format', e)
             return false
         }
     }
 
     private static boolean authorityMatches(String authority, String authorityTemplate) {
+        if (StringUtils.isEmpty(authority)) {
+            return false
+        }
+
         if (StringUtils.isEmpty(authorityTemplate)) {
             return true
         }

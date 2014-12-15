@@ -5,20 +5,29 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.id.TosId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.util.TosUtil
 import com.junbo.oauth.spec.model.Prompt
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Required
 
 /**
  * ValidateLoginState.
  */
 @CompileStatic
 class ValidateLoginState implements Action {
+    private TosUtil tosUtil
+
+    @Required
+    void setTosUtil(TosUtil tosUtil) {
+        this.tosUtil = tosUtil
+    }
 
     @Override
     Promise<ActionResult> execute(ActionContext context) {
@@ -46,6 +55,27 @@ class ValidateLoginState implements Action {
 
             if (loginState == null) {
                 return Promise.pure(new ActionResult('loginRequired'))
+            }
+        }
+
+        def user = contextWrapper.user
+        def client = contextWrapper.client
+        assert user != null : 'user is null'
+        assert client != null : 'client is null'
+
+        Set<TosId> tosChallenge = tosUtil.getRequiredTos(client, user)
+
+        Set<String> tosChallengeStr = []
+        tosChallenge.each { TosId tosId ->
+            tosChallengeStr.add(tosId.value)
+        }
+        contextWrapper.tosChallenge = tosChallengeStr
+
+        if (!tosChallenge.isEmpty()) {
+            if (prompts.contains(Prompt.NONE)) {
+                return Promise.pure(new ActionResult('tosChallengeRequired'))
+            } else {
+                return Promise.pure(new ActionResult('tosChallenge'))
             }
         }
 

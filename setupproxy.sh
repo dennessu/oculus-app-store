@@ -16,14 +16,16 @@ if [[ -f "${personalConfigFile}-e" ]]; then
     rm "${personalConfigFile}-e"
 fi
 
+# clear the proxy setting first
+export facebookProxy=
 if ! (curl -X HEAD --connect-timeout 3 www.facebook.com) >/dev/null 2>&1; then
     # set proxy
     if [[ -f "$personalConfigFile" ]]; then
-        facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
+        export facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
     fi
     if [[ -z "$facebookProxy" ]]; then
         echo 'facebook.proxy=http://silkcloud:#Bugs4$1@127.0.0.1:13128' >> $personalConfigFile
-        facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
+        export facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
         if [[ -z "$facebookProxy" ]]; then
             echo Error setting facebookProxy
             exit 1
@@ -37,7 +39,7 @@ else
     echo "No need to set proxy"
     # remove proxy
     if [[ -f "$personalConfigFile" ]]; then
-        facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
+        export facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
     fi
     if [[ "$facebookProxy" == 'http://silkcloud:#Bugs4$1@127.0.0.1:13128' ]]; then
         sed -i.bak -e '/^facebook.proxy=/d' "$personalConfigFile"
@@ -45,6 +47,7 @@ else
             chmod +w "${personalConfigFile}.bak"
             rm "${personalConfigFile}.bak"
         fi
+        export facebookProxy=
         echo "facebook proxy is removed"
     fi
 fi

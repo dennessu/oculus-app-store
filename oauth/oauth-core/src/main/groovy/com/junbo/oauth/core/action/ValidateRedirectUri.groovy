@@ -13,6 +13,8 @@ import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.apache.commons.validator.routines.UrlValidator
+
 /**
  * ValidateRedirectUri.
  */
@@ -35,12 +37,17 @@ class ValidateRedirectUri implements Action {
             throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri', redirectUri).exception()
         }
 
+        UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS)
+        if (!urlValidator.isValid(redirectUri)) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri', redirectUri).exception()
+        }
+
         boolean allowed = client.redirectUris.any {
             String allowedRedirectUri -> UriUtil.match(redirectUri, allowedRedirectUri)
         }
 
         if (!allowed) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri', redirectUri).exception()
         }
 
         def oauthInfo = contextWrapper.oauthInfo

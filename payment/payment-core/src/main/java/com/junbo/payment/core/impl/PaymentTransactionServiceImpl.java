@@ -404,17 +404,18 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound("null paymentId").exception();
         }
         PaymentTransaction payment = getPaymentById(event.getPaymentId());
+        PaymentStatus status = PaymentUtil.getPaymentStatus(event.getStatus());
         if(paymentNew != null){
             if(!CommonUtil.isNullOrEmpty(paymentNew.getExternalToken())){
                 payment.setExternalToken(paymentNew.getExternalToken());
             }
             if(!CommonUtil.isNullOrEmpty(paymentNew.getStatus())){
-                payment.setStatus(paymentNew.getStatus());
+                status = PaymentUtil.getPaymentStatus(paymentNew.getStatus());
             }
         }
+        payment.setStatus(status.toString());
         LOGGER.info("report event for payment:" + event.getPaymentId());
-        updatePaymentAndSaveEvent(payment, Arrays.asList(event), PaymentAPI.ReportEvent,
-                PaymentUtil.getPaymentStatus(event.getStatus()), false);
+        updatePaymentAndSaveEvent(payment, Arrays.asList(event), PaymentAPI.ReportEvent,status, false);
         payment.setPaymentEvents(Arrays.asList(event));
         if(paymentCallbackParams != null){
             final PaymentProviderService provider = getProviderByName(payment.getPaymentProvider());
@@ -463,6 +464,10 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         }
         final PaymentTransaction existedTransaction = getPaymentById(paymentId);
         validateTransactionRequest(paymentId, request, existedTransaction);
+        if(PaymentStatus.CHARGE_BACK.equals(PaymentStatus.valueOf(existedTransaction.getStatus()))){
+            LOGGER.error("the payment status CHARGE_BACK is not allowed to be refunded.");
+            throw AppServerExceptions.INSTANCE.invalidPaymentStatus(PaymentStatus.CHARGE_BACK.toString()).exception();
+        }
 
         CloneRequest(request, existedTransaction);
         PaymentStatus createStatus = PaymentStatus.REFUND_CREATED;

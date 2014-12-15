@@ -83,14 +83,14 @@ class CheckEmailVerified implements Action {
                     return Promise.pure(new ActionResult('error'))
                 }
 
+                def email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
+                contextWrapper.userDefaultEmail = email.info
+
                 // the pii data has been validated if lastValidateTime is not null
                 if (personalInfo.lastValidateTime != null) {
                     // can't return success ActionResult, there is another check on changeAtNextLogin in CheckChangePassword
                     return Promise.pure(null)
                 }
-
-                def email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
-                contextWrapper.userDefaultEmail = email.info
 
                 return Promise.pure(new ActionResult('emailVerifyRequired'))
             }

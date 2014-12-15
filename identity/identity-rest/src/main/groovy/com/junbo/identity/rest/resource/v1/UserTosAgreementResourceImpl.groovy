@@ -46,7 +46,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     @Override
     Promise<UserTosAgreement> create(UserTosAgreement userTos) {
         if (userTos == null) {
-            throw new IllegalArgumentException('userTos is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userTos = userTosFilter.filterForCreate(userTos)
@@ -75,7 +75,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
         }
 
         if (userTosAgreementId == null) {
-            throw new IllegalArgumentException('userTosAgreementId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTosAgreementId').exception()
         }
 
         return userTosValidator.validateForGet(userTosAgreementId).then { UserTosAgreement newUserTos ->
@@ -95,11 +95,11 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
     Promise<UserTosAgreement> patch(UserTosAgreementId userTosAgreementId, UserTosAgreement userTos) {
         if (userTosAgreementId == null) {
-            throw new IllegalArgumentException('userTosId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTosAgreementId').exception()
         }
 
         if (userTos == null) {
-            throw new IllegalArgumentException('userTos is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userTosService.get(userTosAgreementId).then { UserTosAgreement oldUserTos ->
@@ -128,11 +128,11 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
     Promise<UserTosAgreement> put(UserTosAgreementId userTosAgreementId, UserTosAgreement userTos) {
         if (userTosAgreementId == null) {
-            throw new IllegalArgumentException('userTosId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTosAgreementId').exception()
         }
 
         if (userTos == null) {
-            throw new IllegalArgumentException('userTos is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userTosService.get(userTosAgreementId).then { UserTosAgreement oldUserTos ->

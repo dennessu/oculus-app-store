@@ -136,10 +136,14 @@ class StoreResourceImpl implements StoreResource {
     Promise<VerifyEmailResponse> verifyEmail() {
         requestValidator.validateRequiredApiHeaders()
         return identityUtils.getActiveUserFromToken().then { User user->
-            return facadeContainer.oAuthFacade.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), null).then {
-                return Promise.pure(new VerifyEmailResponse(
-                        emailSent: true
-                ))
+            apiContextBuilder.buildApiContext().then { ApiContext apiContext ->
+                LocaleId locale = user.preferredLocale != null ? user.preferredLocale : apiContext.locale.getId()
+                CountryId country = user.countryOfResidence != null ? user.countryOfResidence : apiContext.country.getId()
+                return facadeContainer.oAuthFacade.sendVerifyEmail(locale.value, country.value, user.getId(), null).then {
+                    return Promise.pure(new VerifyEmailResponse(
+                            emailSent: true
+                    ))
+                }
             }
         }
     }
@@ -154,8 +158,12 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<UserProfileUpdateResponse> updateUserProfile(UserProfileUpdateRequest request) {
+        ApiContext apiContext
         requestValidator.validateRequiredApiHeaders()
-        return requestValidator.validateUserProfileUpdateRequest(request).then { UserProfileUpdateResponse response ->
+        apiContextBuilder.buildApiContext().then { ApiContext ac ->
+            apiContext = ac
+            return requestValidator.validateUserProfileUpdateRequest(request, apiContext)
+        }.then { UserProfileUpdateResponse response ->
             if (response != null) {
                 return Promise.pure(response)
             }

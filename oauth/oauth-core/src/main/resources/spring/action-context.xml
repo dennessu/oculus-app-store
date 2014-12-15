@@ -34,6 +34,7 @@
     <bean id="clearLoginCookies" class="com.junbo.oauth.core.action.ClearLoginCookies">
         <property name="loginStateRepository" ref="loginStateRepository"/>
         <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+        <property name="tokenService" ref="tokenService"/>
     </bean>
 
     <bean id="consentError" class="com.junbo.oauth.core.action.BuildRedirectUri">
@@ -134,6 +135,17 @@
         <property name="groupResource" ref="oauth_groupResource"/>
         <property name="organizationResource" ref="oauth_organizationResource"/>
         <property name="userGroupMembershipResource" ref="oauth_userGroupResource"/>
+    </bean>
+
+    <bean id="tosCache" class="com.junbo.oauth.common.cache.CacheImpl">
+        <property name="cacheManager" ref="oauthCacheManager"/>
+        <property name="name" value="TOS"/>
+    </bean>
+
+    <bean id="tosUtil" class="com.junbo.oauth.core.util.TosUtil">
+        <property name="tosResource" ref="oauth_tosResource"/>
+        <property name="userTosAgreementResource" ref="oauth_userTosAgreementResource"/>
+        <property name="tosCache" ref="tosCache"/>
     </bean>
 
 </beans>
