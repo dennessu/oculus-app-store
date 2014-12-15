@@ -21,15 +21,20 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class GenerateConversationVerifyCode implements Action {
     private Integer expiration
+    private Boolean verifyEnabled = false
 
     @Required
     void setExpiration(Integer expiration) {
         this.expiration = expiration
     }
 
+    void setVerifyEnabled(Boolean verifyEnabled) {
+        this.verifyEnabled = verifyEnabled
+    }
+
     @Override
     Promise<ActionResult> execute(ActionContext context) {
-        if (StringUtils.isEmpty(context.conversationVerifyCode)) {
+        if (StringUtils.isEmpty(context.conversationVerifyCode) && verifyEnabled) {
             context.conversationVerifyCode = UUID.randomUUID().toString()
             CookieUtil.setCookie(context, OAuthParameters.CONVERSATION_VERIFY_CODE, context.conversationVerifyCode, expiration)
         }

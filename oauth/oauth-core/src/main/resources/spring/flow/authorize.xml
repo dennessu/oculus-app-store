@@ -566,6 +566,7 @@
 
     <bean id="generateConversationVerifyCode" class="com.junbo.oauth.core.action.GenerateConversationVerifyCode">
         <property name="expiration" value="${oauth.conversation.verify.code.expiration}"/>
+        <property name="verifyEnabled" value="${oauth.flow.verify.enabled}"/>
     </bean>
 
     <bean id="clearConversationVerifyCode" class="com.junbo.oauth.core.action.ClearConversationVerifyCode"/>
