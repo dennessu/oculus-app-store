@@ -1,5 +1,4 @@
 package com.junbo.identity.core.service.filter
-
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.json.PropertyAssignedAwareSupport
 import com.junbo.identity.common.util.FilterUtil
@@ -7,6 +6,8 @@ import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertyMappingEvent
 import com.junbo.oom.core.filter.PropertyMappingFilter
 import groovy.transform.CompileStatic
+
+import static com.junbo.authorization.filter.FilterUtil.initComplexProperty
 
 /**
  * Created by liangfu on 3/26/14.
@@ -66,9 +67,7 @@ class PutFilter implements PropertyMappingFilter {
                 if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
                     throw AppCommonErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
-                    if (!alternativeSourcePropertyIsNull) {
-                        event.sourceProperty = initInstance(event.sourcePropertyType)
-                    }
+                    initComplexProperty(event);
                 }
             }
 
@@ -80,15 +79,5 @@ class PutFilter implements PropertyMappingFilter {
 
     @Override
     void endPropertyMapping(PropertyMappingEvent event, MappingContext context) {
-    }
-
-    private Object initInstance(Class cls) {
-        if (cls == Map.class) {
-            return new HashMap()
-        } else if (cls == List.class) {
-            return new ArrayList()
-        } else {
-            return cls.newInstance()
-        }
     }
 }
