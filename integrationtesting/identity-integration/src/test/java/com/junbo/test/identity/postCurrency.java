@@ -109,6 +109,17 @@ public class postCurrency {
         Validator.Validate("Validate currency accuracy valid", currency.getLocaleAccuracy(), "LOW");
     }
 
+    @Test(groups = "dailies")
+    public void testPutCurrencyErrorCode() throws Exception {
+        Currency currency = Identity.CurrencyGetByCurrencyCode("CNY");
+        Validator.Validate("Validate Currency Locales not empty", true, currency.getLocales() != null && !currency.getLocales().isEmpty());
+
+        com.junbo.common.error.Error error = Identity.CurrencyPutWithoutToken(currency);
+        assert error != null;
+        assert error.getMessage().contains("Forbidden");
+        assert error.getCode().equals("131.003");
+    }
+
     private void checkCurrencyLocale(Currency currency, List<String> expectedLocales, List<String> unexpectedLocales) throws Exception {
         for (String expectedLocale : expectedLocales) {
             CurrencyLocaleKey currencyLocaleKey = currency.getLocales().get(expectedLocale);

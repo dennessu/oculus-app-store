@@ -197,6 +197,17 @@ public class Identity {
         return CurrencyPostDefault(IdentityModel.DefaultCurrency());
     }
 
+    public static Currency CurrencyPut(Currency currency) throws Exception {
+        return IdentityPut(IdentityV1CurrencyURI + "/" + currency.getId().toString(), JsonHelper.JsonSerializer(currency), Currency.class);
+    }
+
+    public static com.junbo.common.error.Error CurrencyPutWithoutToken(Currency currency) throws Exception {
+        HttpPut httpPut = new HttpPut(IdentityV1CurrencyURI + "/" + currency.getId().toString());
+        httpPut.addHeader("Content-Type", "application/json; charset=utf-8");
+        httpPut.setEntity(new StringEntity(JsonHelper.JsonSerializer(currency), "utf-8"));
+        return HttpclientHelper.Execute(httpPut, com.junbo.common.error.Error.class);
+    }
+
     public static Currency CurrencyPostDefault(Currency currency) throws Exception {
         return (Currency) IdentityPost(IdentityV1CurrencyURI, JsonHelper.JsonSerializer(currency), Currency.class);
     }
