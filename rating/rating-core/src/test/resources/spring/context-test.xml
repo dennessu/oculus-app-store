@@ -9,4 +9,5 @@
     <!--mock-->
     <bean id="ratingCatalogGateway" class="com.junbo.rating.core.mock.MockCatalogGatewayImpl"/>
     <bean id="ratingEntitlementGateway" class="com.junbo.rating.core.mock.MockEntitlementGatewayImpl"/>
+    <bean id="ratingOrganizationGateway" class="com.junbo.rating.core.mock.MockOrganizationGatewayImpl"/>
 </beans>

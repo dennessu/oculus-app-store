@@ -12,4 +12,5 @@ dependencies {
     runtime junboProject(':entitlement-rest')
     runtime junboProject(':catalog-rest')
     runtime junboProject(':oauth-api')
+    runtime junboProject(":identity-rest")
 }

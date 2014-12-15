@@ -6,7 +6,8 @@
 
 package com.junbo.rating.spec.fusion;
 
-import java.math.BigDecimal;
+import com.junbo.common.id.OrganizationId;
+
 import java.util.*;
 
 /**
@@ -17,7 +18,9 @@ public class RatingOffer {
 
     private Price price;
     private Price preOrderPrice;
-    private BigDecimal developerRatio;
+    //private BigDecimal developerRatio;
+    private OrganizationId organizationId;
+
     private Map<String, Properties> countries = new HashMap<>();
 
     private List<String> categories = new ArrayList<>();
@@ -51,12 +54,12 @@ public class RatingOffer {
         this.preOrderPrice = preOrderPrice;
     }
 
-    public BigDecimal getDeveloperRatio() {
-        return developerRatio;
+    public OrganizationId getOrganizationId() {
+        return organizationId;
     }
 
-    public void setDeveloperRatio(BigDecimal developerRatio) {
-        this.developerRatio = developerRatio;
+    public void setOrganizationId(OrganizationId organizationId) {
+        this.organizationId = organizationId;
     }
 
     public Map<String, Properties> getCountries() {
