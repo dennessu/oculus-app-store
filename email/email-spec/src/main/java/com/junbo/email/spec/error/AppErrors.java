@@ -25,7 +25,7 @@ public interface AppErrors {
             field = "id", reason = "Email Schedule {0} is not found.")
     AppError emailScheduleNotFound(String id);
 
-    @ErrorDef(httpStatusCode = 412, code = "104", message = "Email Template Not Found",
+    @ErrorDef(httpStatusCode = 404, code = "104", message = "Email Template Not Found",
             field = "template", reason = "Email Template {0} is not found.")
     AppError emailTemplateNotFound(Object id);
 
