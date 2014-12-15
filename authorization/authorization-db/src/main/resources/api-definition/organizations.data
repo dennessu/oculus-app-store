@@ -66,6 +66,13 @@
                  ],
                  "scriptType": "SPEL"
              }
+        ],
+        "readonly.service": [
+            {
+                "precondition": "true",
+                "rights": [ "read" ],
+                "scriptType": "SPEL"
+            }
         ]
     }
 }

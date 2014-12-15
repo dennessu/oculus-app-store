@@ -13,6 +13,7 @@ dependencies {
     compile junboProject(':catalog-spec')
     compile junboProject(':entitlement-spec')
     compile junboProject(':oauth-spec')
+    compile junboProject(':identity-spec')
 
     processor junboProject(':silkcloud-processor')
     processor (libraries.log4j)

@@ -9,12 +9,15 @@ package com.junbo.rating.core.service;
 import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
+import com.junbo.rating.clientproxy.OrganizationGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -26,6 +29,10 @@ import java.util.Set;
  */
 public class OrderRatingService extends RatingServiceSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderRatingService.class);
+
+    @Autowired
+    @Qualifier("ratingOrganizationGateway")
+    protected OrganizationGateway organizationGateway;
 
     @Override
     public void rate(PriceRatingContext context) {
@@ -67,7 +74,9 @@ public class OrderRatingService extends RatingServiceSupport {
             entry.setOfferId(item.getOfferId());
             entry.setQuantity(item.getQuantity());
             entry.setShippingMethodId(item.getShippingMethodId());
-            entry.setDeveloperRatio(item.getOffer().getDeveloperRatio());
+            //entry.setDeveloperRatio(item.getOffer().getDeveloperRatio());
+            Double developerRatio = organizationGateway.getOrganization(item.getOffer().getOrganizationId()).getPublisherRevenueRatio();
+            entry.setDeveloperRatio(developerRatio == null? BigDecimal.ZERO: BigDecimal.valueOf(developerRatio));
             entry.setPreOrderPrice(getPreOrderPrice(item.getOffer(), context.getCountry(), currency.getCurrencyCode()));
             entry.setOriginalPrice(originalPrice);
             entry.setAppliedPromotion(new HashSet<String>());

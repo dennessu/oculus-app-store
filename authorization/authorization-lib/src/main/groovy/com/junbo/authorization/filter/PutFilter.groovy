@@ -69,9 +69,7 @@ class PutFilter implements PropertyMappingFilter {
                 if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
                     throw AppCommonErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
-                    if (!alternativeSourcePropertyIsNull) {
-                        event.sourceProperty = initInstance(event.sourcePropertyType)
-                    }
+                    FilterUtil.initComplexProperty(event);
                 }
             }
 
@@ -83,15 +81,5 @@ class PutFilter implements PropertyMappingFilter {
 
     @Override
     void endPropertyMapping(PropertyMappingEvent event, MappingContext context) {
-    }
-
-    private Object initInstance(Class cls) {
-        if (cls == Map.class) {
-            return new HashMap()
-        } else if (cls == List.class) {
-            return new ArrayList()
-        } else {
-            return cls.newInstance()
-        }
     }
 }
