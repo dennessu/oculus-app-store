@@ -15,6 +15,9 @@ oauth = ut_oauth.OAuthTests('testRegister')
 checkout = ut_checkout.CheckoutTests('getEncryptedCardInfo')
 class PaymentTests(ut.TestBase):
 
+    def testProxy(self):
+        curlRaw('GET', 'https://www.facebook.com', proxy = os.getenv('facebookProxy'))
+
     def createUserAndAddress(self, paymentToken):
         user = oauth.testRegister('identity commerce')
         name = curlJson('POST', ut.test_uri, '/v1/personal-info', headers={
@@ -91,7 +94,7 @@ class PaymentTests(ut.TestBase):
             },
             "futureExpansion": { }
         })
-        assert(authPI['status'], 'AUTHORIZED')
+        assert authPI['status'] == 'AUTHORIZED'
         #capture the pi(partial)
         capturePI = curlJson('POST', ut.test_uri, '/v1/payment-transactions/' + authPI['self']['id'] + '/capture', headers = {
             "Authorization": "Bearer " + paymentToken
@@ -106,7 +109,7 @@ class PaymentTests(ut.TestBase):
             },
             "futureExpansion": { }
         })
-        assert(capturePI['status'],'SETTLEMENT_SUBMITTED')
+        assert capturePI['status'] == 'SETTLEMENT_SUBMITTED'
 
         chargePI = curlJson('POST', ut.test_uri, '/v1/payment-transactions/charge', headers = {
             "Authorization": "Bearer " + paymentToken
@@ -121,7 +124,7 @@ class PaymentTests(ut.TestBase):
             },
             "futureExpansion": { }
         })
-        assert(authPI['status'], 'SETTLEMENT_SUBMITTED')
+        assert authPI['status'] == 'SETTLEMENT_SUBMITTED'
 
         refundPI = curlJson('PUT', ut.test_uri, '/v1/payment-transactions/' + chargePI['self']['id'] + '/refund', headers = {
             "Authorization": "Bearer " + paymentToken
@@ -136,7 +139,7 @@ class PaymentTests(ut.TestBase):
             },
             "futureExpansion": { }
         })
-        assert(authPI['status'], 'REFUNDED')
+        assert authPI['status'] == 'REFUNDED'
 
         refundPI = curlJson('PUT', ut.test_uri, '/v1/payment-transactions/' + chargePI['self']['id'] + '/refund', headers = {
             "Authorization": "Bearer " + paymentToken
@@ -157,7 +160,7 @@ class PaymentTests(ut.TestBase):
             "Authorization": "Bearer " + paymentToken
         })
         #charge 2, refund 2, refund 2
-        assert(len(getPayment['paymentEvents']) == 6)
+        assert len(getPayment['paymentEvents']) == 6
 
     def testAdyenWebPayment(self):
         paymentToken = oauth.getServiceAccessToken('payment.service identity.service')
@@ -184,7 +187,7 @@ class PaymentTests(ut.TestBase):
         getPI = curlJson('GET', ut.test_uri, '/v1/payment-instruments/' + piId, headers = {
             "Authorization": "Bearer " + paymentToken
         })
-        assert(getPI['self']['id'], piId)
+        assert getPI['self']['id'] == piId
 
          #charge the pi
         chargePI = curlJson('POST', ut.test_uri, '/v1/payment-transactions/charge', headers = {
@@ -204,13 +207,13 @@ class PaymentTests(ut.TestBase):
             },
             "futureExpansion": { }
         })
-        assert(len(chargePI['webPaymentInfo']['redirectURL']) > 1)
+        assert len(chargePI['webPaymentInfo']['redirectURL']) > 1
 
         #get payment status
         getPayment = curlJson('GET', ut.test_uri, '/v1/payment-transactions/' + chargePI['self']['id'], headers = {
             "Authorization": "Bearer " + paymentToken
         })
-        assert(getPayment['status'], 'UNCONFIRMED')
+        assert getPayment['status'] == 'UNCONFIRMED'
 
         #mock the callback properties
         strToSign="AUTHORISEDut1234" + chargePI['self']['id'] + "0ceFRQOp3650-3399-5423";
@@ -227,7 +230,7 @@ class PaymentTests(ut.TestBase):
         getPayment = curlJson('GET', ut.test_uri, '/v1/payment-transactions/' + chargePI['self']['id'], headers = {
             "Authorization": "Bearer " + paymentToken
         })
-        assert(getPayment['status'], 'SETTLEMENT_SUBMITTED')
+        assert getPayment['status'] == 'SETTLEMENT_SUBMITTED'
 
     def testStoredValue(self):
         paymentToken = oauth.getServiceAccessToken('payment.service identity.service')
@@ -319,7 +322,7 @@ class PaymentTests(ut.TestBase):
         getPI = curlJson('GET', ut.test_uri, '/v1/payment-instruments/' + piId, headers = {
             "Authorization": "Bearer " + paymentToken
         })
-        assert(getPI['self']['id'], piId)
+        assert getPI['self']['id'] == piId
 
          #charge the pi
         chargePI = curlJson('POST', ut.test_uri, '/v1/payment-transactions/charge', headers = {
@@ -339,7 +342,7 @@ class PaymentTests(ut.TestBase):
             },
             "futureExpansion": { }
         })
-        assert(len(chargePI['webPaymentInfo']['redirectURL']) > 1)
+        assert len(chargePI['webPaymentInfo']['redirectURL']) > 1
         #mock the payment by add callback properties
         callbackRequest = "provider=PayPal&paymentId="
         callbackRequest += chargePI['self']['id']
@@ -354,7 +357,7 @@ class PaymentTests(ut.TestBase):
             "Authorization": "Bearer " + paymentToken
         })
         checkResult = json.loads(checkStatus)
-        assert(checkResult['status'],'UNCONFIRMED')
+        assert checkResult['status'] == 'UNCONFIRMED'
         #TODO: need manual confirm the redirectURL and then call confirm.
 
 
@@ -382,7 +385,7 @@ class PaymentTests(ut.TestBase):
         getPI = curlJson('GET', ut.test_uri, '/v1/payment-instruments/' + piId, headers = {
             "Authorization": "Bearer " + paymentToken
         })
-        assert(getPI['self']['id'], piId)
+        assert getPI['self']['id'] == piId
 
         #search won't show the PI without external token
         searchPI = curlJson('GET', ut.test_uri, '/v1/payment-instruments', query = {
