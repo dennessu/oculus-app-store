@@ -7,9 +7,7 @@ package com.junbo.test.common.libs;
 
 import com.junbo.test.common.exception.TestException;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Jason
@@ -21,7 +19,19 @@ public final class RandomFactory {
 
     private static final Random RANDOM = new Random();
 
+    private static List<String> ipList = new ArrayList<>();
+
     private RandomFactory() {
+        
+        ipList.add("157.144.234.144");
+        ipList.add("57.123.144.115");
+        ipList.add("27.23.144.123");
+        ipList.add("38.23.144.123");
+        ipList.add("133.23.144.123");
+        ipList.add("53.23.144.123");
+        ipList.add("54.23.144.123");
+        ipList.add("79.23.144.123");
+        ipList.add("82.23.144.123");
     }
 
     public static String getRandomEmailAddress() {
@@ -102,8 +112,10 @@ public final class RandomFactory {
     }
 
     public static String getRandomIp() {
-        return RANDOM.nextInt(256) + "." + RANDOM.nextInt(256) + "." +
+       /* return RANDOM.nextInt(256) + "." + RANDOM.nextInt(256) + "." +
                 RANDOM.nextInt(256) + "." + RANDOM.nextInt(256);
+                */
+        return ipList.get(RandomFactory.getRandomInteger(0,8));
     }
 
     public static Calendar nextDate() {
