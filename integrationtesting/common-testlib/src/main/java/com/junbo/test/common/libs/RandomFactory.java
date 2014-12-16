@@ -115,7 +115,7 @@ public final class RandomFactory {
        /* return RANDOM.nextInt(256) + "." + RANDOM.nextInt(256) + "." +
                 RANDOM.nextInt(256) + "." + RANDOM.nextInt(256);
                 */
-        return ipList.get(RandomFactory.getRandomInteger(0,8));
+        return ipList.get(RandomFactory.getRandomInteger(1,8));
     }
 
     public static Calendar nextDate() {
