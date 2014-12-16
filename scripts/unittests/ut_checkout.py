@@ -496,12 +496,13 @@ class CheckoutTests(ut.TestBase):
         if cardInfo is None:
             cardInfo = self.getFBDefaultCardInfo()
 
-        #tokenResult = curl('POST', 'https://www.facebook.com', '/payments/generate_token', headers = {
-        #}, body = "creditCardNumber=4111117711552927&csc=123")
+        tokenResult = curl('POST', 'https://www.facebook.com', '/payments/generate_token', headers = {
+            'User-Agent': 'curl/7.30.0'
+        }, body = "creditCardNumber=4111117711552927&csc=123", proxy = os.getenv('facebookProxy'))
 
-        #jsonResult = json.dumps(tokenResult)
+        jsonResult = json.loads(tokenResult)
 
-        cardInfo['encryptedCardInfo'] = 'MTc1ODkwODM5MDYzOTM0NzgwMDoxNDE4MDMyOTU4LjE4ODg6ZnJjM2MwNw=='
+        cardInfo['encryptedCardInfo'] = jsonResult['token']
         return cardInfo
 
 

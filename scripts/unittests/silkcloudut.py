@@ -167,18 +167,11 @@ def curl(method, baseUrl, url = None, query= None, headers = None, body = None, 
     body, resp = curlRaw(method, baseUrl, url, query, headers, body, proxy, raiseOnError)
     return body
 
-connCache = {}
 def getConnection(protocol, host, port):
-    global connCache
-    cacheKey = xstr(protocol) + xstr(host) + ":" + xstr(port)
-    if connCache.has_key(cacheKey):
-        conn = connCache[cacheKey]
+    if protocol == "https://":
+        conn = httplib.HTTPSConnection(host, port)
     else:
-        if protocol == "https://":
-            conn = httplib.HTTPSConnection(host, port)
-        else:
-            conn = httplib.HTTPConnection(host, port)
-        connCache[cacheKey] = conn
+        conn = httplib.HTTPConnection(host, port)
     return conn
 
 def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = None, proxy = None, raiseOnError = True):
