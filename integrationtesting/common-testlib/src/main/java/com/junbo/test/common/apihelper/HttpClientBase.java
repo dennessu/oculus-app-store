@@ -93,7 +93,8 @@ public abstract class HttpClientBase {
         headers.add(Header.CONTENT_TYPE, contentType);
         headers.add(Header.OCULUS_INTERNAL, String.valueOf(true));
         String uid = Master.getInstance().getCurrentUid();
-        if(ConfigHelper.getSetting("testClientEncrypted").equals(String.valueOf(true))){
+        if (ConfigHelper.getSetting("testClientEncrypted") != null &&
+                ConfigHelper.getSetting("testClientEncrypted").equals(String.valueOf(true))) {
             headers.add(Header.X_ENABLE_PROFILING, "10");
         }
         if (isServiceScope) {
