@@ -19,19 +19,18 @@ public final class RandomFactory {
 
     private static final Random RANDOM = new Random();
 
-    private static List<String> ipList = new ArrayList<>();
+    private static List<String> ipList = Arrays.asList("157.144.234.144",
+            "57.123.144.115",
+            "27.23.144.123",
+            "38.23.144.123",
+            "133.23.144.123",
+            "53.23.144.123",
+            "54.23.144.123",
+            "79.23.144.123",
+            "82.23.144.123");
 
     private RandomFactory() {
-        
-        ipList.add("157.144.234.144");
-        ipList.add("57.123.144.115");
-        ipList.add("27.23.144.123");
-        ipList.add("38.23.144.123");
-        ipList.add("133.23.144.123");
-        ipList.add("53.23.144.123");
-        ipList.add("54.23.144.123");
-        ipList.add("79.23.144.123");
-        ipList.add("82.23.144.123");
+
     }
 
     public static String getRandomEmailAddress() {
@@ -115,7 +114,8 @@ public final class RandomFactory {
        /* return RANDOM.nextInt(256) + "." + RANDOM.nextInt(256) + "." +
                 RANDOM.nextInt(256) + "." + RANDOM.nextInt(256);
                 */
-        return ipList.get(RandomFactory.getRandomInteger(1,8));
+
+        return ipList.get(RandomFactory.getRandomInteger(0, 8));
     }
 
     public static Calendar nextDate() {
@@ -135,7 +135,6 @@ public final class RandomFactory {
         }
         return number.toString();
     }
-
 
 
 }
