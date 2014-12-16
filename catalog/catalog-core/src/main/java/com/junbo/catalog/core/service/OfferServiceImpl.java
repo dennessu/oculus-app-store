@@ -396,9 +396,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         } else if (organizationFacade.getOrganization(offer.getOwnerId()) == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(offer.getOwnerId())));
         }
-        if (Boolean.TRUE.equals(offer.getPublished())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
-        }
 
         validateOfferCommon(offer, errors);
 
@@ -425,9 +422,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("publisher", Utils.encodeId(offer.getOwnerId()), Utils.encodeId(oldOffer.getOwnerId())));
         } else if (organizationFacade.getOrganization(offer.getOwnerId()) == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(offer.getOwnerId())));
-        }
-        if (Boolean.TRUE.equals(offer.getPublished()) && !Boolean.TRUE.equals(oldOffer.getPublished()) && oldOffer.getCurrentRevisionId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
         }
 
         validateOfferCommon(offer, errors);
