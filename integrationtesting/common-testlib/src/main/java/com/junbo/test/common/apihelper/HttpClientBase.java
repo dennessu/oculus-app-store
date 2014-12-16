@@ -8,6 +8,7 @@ package com.junbo.test.common.apihelper;
 // CHECKSTYLE:OFF
 
 import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
@@ -92,6 +93,9 @@ public abstract class HttpClientBase {
         headers.add(Header.CONTENT_TYPE, contentType);
         headers.add(Header.OCULUS_INTERNAL, String.valueOf(true));
         String uid = Master.getInstance().getCurrentUid();
+        if(ConfigHelper.getSetting("testClientEncrypted").equals(String.valueOf(true))){
+            headers.add(Header.X_ENABLE_PROFILING, "10");
+        }
         if (isServiceScope) {
             headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getServiceAccessToken(componentType));
         } else if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
