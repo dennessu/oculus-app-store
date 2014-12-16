@@ -10,6 +10,7 @@ import com.junbo.common.model.Results
 import com.junbo.email.core.EmailTemplateService
 import com.junbo.email.core.validator.EmailTemplateValidator
 import com.junbo.email.db.repo.EmailTemplateRepository
+import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.QueryParam
 import com.junbo.langur.core.promise.Promise
@@ -46,7 +47,13 @@ import javax.transaction.Transactional
     }
 
     Promise<EmailTemplate> getEmailTemplate(String id) {
-        return templateRepository.getEmailTemplate(id)
+        return templateRepository.getEmailTemplate(id).then { EmailTemplate emailTemplate ->
+            if (emailTemplate == null) {
+                throw AppErrors.INSTANCE.emailTemplateNotFound(id).exception()
+            }
+
+            return Promise.pure(emailTemplate)
+        }
     }
 
     Promise<EmailTemplate> putEmailTemplate(String id, EmailTemplate template) {

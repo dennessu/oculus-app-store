@@ -22,6 +22,8 @@ import com.junbo.test.common.property.Status;
 import com.junbo.test.email.impl.EmailTemplateServiceImpl;
 import org.testng.annotations.Test;
 
+import java.util.UUID;
+
 import static org.testng.AssertJUnit.*;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -63,6 +65,9 @@ public class EmailTemplateTesting {
         EmailTemplate template = templateService.getEmailTemplate(templates.getItems().get(0).getId(), false);
         assertNotNull("get email template by id failed, it can't be null", template);
         assertEquals("email template count should be 1", template.getLocale(), "en_US");
+
+        template = templateService.getEmailTemplate(new EmailTemplateId(UUID.randomUUID().toString()), 404, false);
+        assert template == null;
     }
 
     @Property(
@@ -240,7 +245,7 @@ public class EmailTemplateTesting {
 
     private QueryParam buildQueryParam() {
         QueryParam queryParam = new QueryParam();
-        queryParam.setAction("Welcome_V1");
+        queryParam.setAction("Welcome_V2");
         queryParam.setSource("Oculus");
         queryParam.setLocale("en_US");
         return queryParam;
