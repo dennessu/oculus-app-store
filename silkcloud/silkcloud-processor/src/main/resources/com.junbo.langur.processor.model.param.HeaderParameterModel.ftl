@@ -8,12 +8,7 @@ for (${innerParamType} __item : ${paramName}) {
 __requestBuilder.addHeader("${headerName}", __item);
 }
 [#else]
-if("Authorization".equalsIgnoreCase("${headerName}")){
-__requestBuilder.setHeader("${headerName}", ${paramName});
-}
-else{
 __requestBuilder.addHeader("${headerName}", ${paramName});
-}
 [/#if]
 }
 
