@@ -569,6 +569,20 @@ class OAuthTests(ut.TestBase):
 
         assert response['message'] == 'Input Error'
         assert response['details'][0]['field'] == 'redirect_uri'
+
+        response = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'token id_token',
+            'scope': 'identity openid',
+            'redirect_uri': 'https://abc.a.com/oculus.com/',
+            'state': 'testState',
+            'nonce': 'testNonce'
+        }, headers = {
+            'oculus-internal': 'true'
+        }, raiseOnError = False)
+
+        assert response['message'] == 'Input Error'
+        assert response['details'][0]['field'] == 'redirect_uri'
         pass
 
     def testWildcardLogout(self):
@@ -1073,7 +1087,7 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': 'https://.google.c.om.oculus.com'
         }, raiseOnError=False)
         assert error['details'][0]['field'] == 'redirect_uri'
-        assert error['details'][0]['reason'] == 'Field value is invalid.'
+        assert error['details'][0]['reason'] == 'Field value is invalid. https://.google.c.om.oculus.com'
 
         error = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
             'client_id': ut.test_client_id,
@@ -1082,8 +1096,25 @@ class OAuthTests(ut.TestBase):
             'redirect_uri': 'https:///auth'
         }, raiseOnError=False)
         assert error['details'][0]['field'] == 'redirect_uri'
-        assert error['details'][0]['reason'] == 'Field value is invalid.'
+        assert error['details'][0]['reason'] == 'Field value is invalid. https:///auth'
 
+        error = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': scope,
+            'redirect_uri': 'https://.oculus.com/'
+        }, raiseOnError=False)
+        assert error['details'][0]['field'] == 'redirect_uri'
+        assert error['details'][0]['reason'] == 'Field value is invalid. https://.oculus.com/'
+
+        error = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
+            'client_id': ut.test_client_id,
+            'response_type': 'code',
+            'scope': scope,
+            'redirect_uri': 'https:/oculus.com/'
+        }, raiseOnError=False)
+        assert error['details'][0]['field'] == 'redirect_uri'
+        assert error['details'][0]['reason'] == 'Field value is invalid. https:/oculus.com/'
         pass
 
     def testConversationWithInvalidEvent(self, scope = 'identity'):

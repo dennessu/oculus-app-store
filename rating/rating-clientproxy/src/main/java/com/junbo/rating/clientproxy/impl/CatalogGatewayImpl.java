@@ -82,7 +82,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
                 : getOfferRevisionByTimestamp(offerId, Utils.parseDateTime(timestamp));
 
         RatingOffer result = wash(offerRevision);
-        result.setDeveloperRatio(offer.getDeveloperRatio() == null ? BigDecimal.ZERO : offer.getDeveloperRatio());
+        result.setOrganizationId(offer.getOwnerId());
         result.setId(offerId);
         if (offer.getCategories() != null) {
             result.getCategories().addAll(offer.getCategories());

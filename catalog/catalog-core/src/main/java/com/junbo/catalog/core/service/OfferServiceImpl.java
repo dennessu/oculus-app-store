@@ -7,7 +7,6 @@
 package com.junbo.catalog.core.service;
 
 import com.junbo.catalog.clientproxy.OrganizationFacade;
-import com.junbo.catalog.common.util.Configuration;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.core.validators.OfferRevisionValidator;
@@ -25,7 +24,6 @@ import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 
@@ -42,9 +40,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private OfferAttributeRepository offerAttributeRepo;
     private OfferRevisionValidator revisionValidator;
     private OrganizationFacade organizationFacade;
-
-    @Autowired
-    private Configuration config;
 
     @Required
     public void setOfferRepo(OfferRepository offerRepo) {
@@ -328,9 +323,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private void fillDefaultValue(Offer offer) {
-        if (offer.getDeveloperRatio() == null) {
-            offer.setDeveloperRatio(config.getDeveloperRatio());
-        }
         if (offer.getPublished() == null) {
             offer.setPublished(Boolean.FALSE);
         }
@@ -404,9 +396,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         } else if (organizationFacade.getOrganization(offer.getOwnerId()) == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(offer.getOwnerId())));
         }
-        if (Boolean.TRUE.equals(offer.getPublished())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
-        }
 
         validateOfferCommon(offer, errors);
 
@@ -433,9 +422,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("publisher", Utils.encodeId(offer.getOwnerId()), Utils.encodeId(oldOffer.getOwnerId())));
         } else if (organizationFacade.getOrganization(offer.getOwnerId()) == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(offer.getOwnerId())));
-        }
-        if (Boolean.TRUE.equals(offer.getPublished()) && !Boolean.TRUE.equals(oldOffer.getPublished()) && oldOffer.getCurrentRevisionId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
         }
 
         validateOfferCommon(offer, errors);

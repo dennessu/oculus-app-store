@@ -6,6 +6,8 @@
 package com.junbo.authorization.filter
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.json.PropertyAssignedAware
+import com.junbo.oom.core.filter.PropertyMappingEvent
 import groovy.transform.CompileStatic
 
 /**
@@ -20,6 +22,39 @@ class FilterUtil {
                 Number.isAssignableFrom(type) ||
                 type == UUID ||
                 type == JsonNode
+    }
+
+    static boolean isPropertyAssignedAwareType(Class type) {
+        return PropertyAssignedAware.isAssignableFrom(type)
+    }
+
+    /**
+     * Initialize the instance with type cls for further object mapping.
+     * If defaultValue exists and the object is not property assigned aware,
+     * use the defaultValue rather then creating a clean initial object.
+     */
+    static void initComplexProperty(PropertyMappingEvent event) {
+        Class cls = event.sourcePropertyType;
+        Object alternativeSourceProperty = event.alternativeSourceProperty;
+        if (alternativeSourceProperty != null) {
+            if (!FilterUtil.isPropertyAssignedAwareType(cls)) {
+                event.sourceProperty = alternativeSourceProperty
+                // alternativeSourceProperty should be treated null to prevent futher mapping
+                event.alternativeSourceProperty = null
+            } else {
+                event.sourceProperty = initInstance(cls)
+            }
+        }
+    }
+
+    private static Object initInstance(Class cls) {
+        if (cls == Map.class) {
+            return new HashMap()
+        } else if (cls == List.class) {
+            return new ArrayList()
+        } else {
+            return cls.newInstance()
+        }
     }
 
     static boolean equalsSimpleType(Object obj1, Object obj2) {

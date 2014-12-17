@@ -17,7 +17,7 @@ public final class Header {
     public static final String USER_IP = "oculus-end-user-ip";
     public static final String AUTHORIZATION = "Authorization";
     public static final String OCULUS_INTERNAL = "Oculus-internal";
-    public static final String X_ENABLE_PROFILING = "X-Enable-profiling";
+    public static final String X_ENABLE_PROFILING = "X-Enable-Profiling";
 
 
     private Header() {

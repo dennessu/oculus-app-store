@@ -12,6 +12,7 @@
     <!-- fusion -->
     <bean id="ratingCatalogGateway" class="com.junbo.rating.clientproxy.impl.CatalogGatewayImpl"/>
     <bean id="ratingEntitlementGateway" class="com.junbo.rating.clientproxy.impl.EntitlementGatewayImpl"/>
+    <bean id="ratingOrganizationGateway" class="com.junbo.rating.clientproxy.impl.OrganizationGatewayImpl"/>
 
     <bean id="ratingAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
         <property name="scope" value="catalog.service entitlement.service"/>
@@ -55,6 +56,11 @@
 
     <bean id="ratingEntitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy"
           parent="entitlementResourceClientProxy">
+        <property name="accessTokenProvider" ref="ratingAccessTokenProvider"/>
+    </bean>
+
+    <bean id="ratingOrganizationClient" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
+          parent="organizationResourceClientProxy">
         <property name="accessTokenProvider" ref="ratingAccessTokenProvider"/>
     </bean>
 </beans>

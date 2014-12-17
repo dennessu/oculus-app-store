@@ -6,7 +6,6 @@
 package com.junbo.identity.common.util
 
 import groovy.transform.CompileStatic
-
 /**
  * Created by liangfu on 3/26/14.
  */

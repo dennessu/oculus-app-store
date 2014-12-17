@@ -113,8 +113,8 @@ def silkcloud_utmain(suite = None):
         if not result.wasSuccessful():
             error("Errors found in test result.")
 
-def curlRedirect(method, baseUrl, url = None, query = None, headers = None, body = None, raiseOnError = True):
-    body, resp = curlRaw(method, baseUrl, url, query, headers, body, raiseOnError)
+def curlRedirect(method, baseUrl, url = None, query = None, headers = None, body = None, proxy = None, raiseOnError = True):
+    body, resp = curlRaw(method, baseUrl, url, query, headers, body, proxy, raiseOnError)
     if resp.status < 300:
         raise Exception('Expected redirect. Actual: %s %s in %s %s\n%s' % (resp.status, resp.reason, method, url, body))
     locations = [v for k, v in resp.getheaders() if k.lower() == 'location']
@@ -122,12 +122,12 @@ def curlRedirect(method, baseUrl, url = None, query = None, headers = None, body
         raise Exception('Unexpected location header count: %s, locations: %s' % (len(locations), locations))
     return locations[0]
 
-def curlForm(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
-    body, resp = curlFormRaw(method, baseUrl, url, query, headers, data, raiseOnError)
+def curlForm(method, baseUrl, url = None, query= None, headers = None, data = None, proxy = None, raiseOnError = True):
+    body, resp = curlFormRaw(method, baseUrl, url, query, headers, data, proxy, raiseOnError)
     return json.loads(body)
 
-def curlFormRedirect(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
-    body, resp = curlFormRaw(method, baseUrl, url, query, headers, data, raiseOnError)
+def curlFormRedirect(method, baseUrl, url = None, query= None, headers = None, data = None, proxy = None, raiseOnError = True):
+    body, resp = curlFormRaw(method, baseUrl, url, query, headers, data, proxy, raiseOnError)
     if resp.status < 300:
         raise Exception('Expected redirect. Actual: %s %s in %s %s\n%s' % (resp.status, resp.reason, method, url, body))
     locations = [v for k, v in resp.getheaders() if k.lower() == 'location']
@@ -135,7 +135,7 @@ def curlFormRedirect(method, baseUrl, url = None, query= None, headers = None, d
         raise Exception('Unexpected location header count: %s, locations: %s' % (len(locations), locations))
     return locations[0]
 
-def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
+def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data = None, proxy = None, raiseOnError = True):
     if data is None: data = {}
     if headers is None:
         headers = {
@@ -145,9 +145,9 @@ def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data =
         headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
 
     body = urlencode(data)
-    return curlRaw(method, baseUrl, url, query, headers, body, raiseOnError)
+    return curlRaw(method, baseUrl, url, query, headers, body, proxy, raiseOnError)
 
-def curlJson(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
+def curlJson(method, baseUrl, url = None, query= None, headers = None, data = None, proxy = None, raiseOnError = True):
     if headers is None:
         headers = {
             'Content-Type': 'application/json'
@@ -158,17 +158,23 @@ def curlJson(method, baseUrl, url = None, query= None, headers = None, data = No
     body = None
     if data is not None:
         body = json.dumps(data)
-    response = curl(method, baseUrl, url, query, headers, body, raiseOnError)
+    response = curl(method, baseUrl, url, query, headers, body, proxy, raiseOnError)
     return json.loads(response)
 
-def curl(method, baseUrl, url = None, query= None, headers = None, body = None, raiseOnError = True):
+def curl(method, baseUrl, url = None, query= None, headers = None, body = None, proxy = None, raiseOnError = True):
     if headers is None: headers = {}
 
-    body, resp = curlRaw(method, baseUrl, url, query, headers, body, raiseOnError)
+    body, resp = curlRaw(method, baseUrl, url, query, headers, body, proxy, raiseOnError)
     return body
 
-connCache = {}
-def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = None, raiseOnError = True):
+def getConnection(protocol, host, port):
+    if protocol == "https://":
+        conn = httplib.HTTPSConnection(host, port)
+    else:
+        conn = httplib.HTTPConnection(host, port)
+    return conn
+
+def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = None, proxy = None, raiseOnError = True):
     global cookies
 
     url = combineUrl(baseUrl, url, query)
@@ -177,7 +183,7 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
     conn = None
     start_time = time.time()
     try:
-        urlRegex = r'^(?P<protocol>http[s]?://)?((?P<userpass>([^/@:]*):([^/@:]*))@)?(?P<host>[^/:]+)(:(?P<port>\d+))?(?P<path>(/|\?).*)$'
+        urlRegex = r'^(?P<protocol>http[s]?://)?((?P<userpass>([^/@:]*):([^/@:]*))@)?(?P<host>[^/:]+)(:(?P<port>\d+))?(?P<path>(/|\?).*)?$'
         m = re.match(urlRegex, url)
         if m is None:
             raise Exception('Invalid url: ' + url)
@@ -185,23 +191,34 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
         protocol = m.group('protocol')
         host = m.group('host')
         port = m.group('port')
-        path = m.group('path')
+        path = xstr(m.group('path'))
 
         userpass = m.group('userpass')
 
         if port:
             port = int(port)
 
-        global connCache
-        cacheKey = protocol + host + ":" + str(port)
-        if connCache.has_key(cacheKey):
-            conn = connCache[cacheKey]
+        if proxy:
+            m = re.match(urlRegex, proxy)
+            if m is None:
+                raise Exception('Invalid proxy: ' + proxy)
+
+            proxyHost = m.group('host')
+            proxyPort = m.group('port')
+
+            proxyUserpass = m.group('userpass')
+
+            conn = getConnection(protocol, proxyHost, proxyPort)
+            proxyHeaders = {}
+            if proxyUserpass:
+                import base64
+                base64String = base64.encodestring(proxyUserpass).strip()
+                authheader = "Basic %s" % base64String
+                proxyHeaders['Proxy-Authorization'] = authheader
+            conn.set_tunnel(host, port, proxyHeaders)
+            conn.connect()
         else:
-            if protocol == "https://":
-                conn = httplib.HTTPSConnection(host, port)
-            else:
-                conn = httplib.HTTPConnection(host, port)
-            connCache[cacheKey] = conn
+            conn = getConnection(protocol, host, port)
 
         if userpass:
             import base64
@@ -300,7 +317,7 @@ class HttpRequest:
         full_url = self._protocol + self._host
         if self._port is not None:
             full_url += ":" + str(self._port)
-        full_url + self._url
+        full_url += self._url
         return full_url
 
     def get_header(self, header_name, default = None):
