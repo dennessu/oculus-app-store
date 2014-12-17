@@ -10,6 +10,11 @@ class TestAccessTokenProvider implements AccessTokenProvider {
     String token
 
     @Override
+    String getTokenType() {
+        return "Bearer"
+    }
+
+    @Override
     String getAccessToken() {
         return token
     }

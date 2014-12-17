@@ -48,6 +48,11 @@ class ClientCredentialsAccessTokenProvider implements AccessTokenProvider {
     }
 
     @Override
+    String getTokenType() {
+        return "Bearer"
+    }
+
+    @Override
     String getAccessToken() {
         if (tokenCache != null && new Date().before(tokenCache.expiresBy)) {
             return tokenCache.tokenValue

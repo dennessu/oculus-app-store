@@ -30,12 +30,18 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
 
     [#if !authorizationNotRequired]
     if (__accessTokenProvider != null) {
+        String __tokenType = __accessTokenProvider.getTokenType();
         String __accessToken = __accessTokenProvider.getAccessToken();
+        boolean __attachedUserToken = false;
         if (__attachUserToken && JunboHttpContext.getRequestHeaders() != null) {
             String __userToken = JunboHttpContext.getRequestHeaders().getFirst("Authorization");
-            __requestBuilder.addHeader("Authorization", __userToken + ',' +  __accessToken);
-        } else {
-            __requestBuilder.addHeader("Authorization", "Bearer " + __accessToken);
+            if (__userToken != null && __userToken.length() > 0) {
+                __attachedUserToken = true;
+                __requestBuilder.addHeader("Authorization", __userToken + ',' +  __accessToken);
+            }
+        }
+        if (!__attachedUserToken) {
+            __requestBuilder.addHeader("Authorization", __tokenType + " " + __accessToken);
         }
     } else {
         if (JunboHttpContext.getRequestHeaders() != null){

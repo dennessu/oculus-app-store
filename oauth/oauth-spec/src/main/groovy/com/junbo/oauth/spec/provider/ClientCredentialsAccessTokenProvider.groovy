@@ -61,6 +61,11 @@ class ClientCredentialsAccessTokenProvider implements AccessTokenProvider {
     }
 
     @Override
+    String getTokenType() {
+        return "Bearer"
+    }
+
+    @Override
     String getAccessToken() {
         // if the token cache is not available (null or expired), get the token for the first time
         if (tokenCache == null || new Date().after(tokenCache.tokenExpiresBy)) {

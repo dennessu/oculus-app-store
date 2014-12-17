@@ -3,10 +3,10 @@
   "client_secret" : "F05865F918568C5D9ACFF066761F722D#B15BE72E97952669A23449309E286E6FBD1F0F9D495403081D598DFDE6EFEEF8BCAF65AD213834705C4253A45B1854C1",
   "client_name" : "share-admin-tool",
 
-  "redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
+  "redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*" ],
   "default_redirect_uri" : "https://id.oculus.com",
 
-  "logout_redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
+  "logout_redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*" ],
   "default_logout_redirect_uri" : "https://id.oculus.com",
 
   "scopes" : [ "identity", "identity.pii", "openid", "offline" ],

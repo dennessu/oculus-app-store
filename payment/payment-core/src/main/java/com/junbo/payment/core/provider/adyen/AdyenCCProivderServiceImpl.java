@@ -116,7 +116,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                     //Rest call
                     String authCode = Base64.encodeBase64String((getAuthUser() + ":" + getAuthPassword()).getBytes());
                     StringBuffer sbReq = getRawRequest(defaultCurrency, minAuthAmount, piId, request, address);
-                    String restResponse = adyenRestClient.authorise("text/html", "Basic " + authCode, sbReq.toString()).get();
+                    String restResponse = adyenRestClient.authorise("Basic " + authCode, sbReq.toString()).get();
                     if(CommonUtil.isNullOrEmpty(restResponse)){
                         LOGGER.error("empty response from Adyen.");
                         throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "no response").exception();
