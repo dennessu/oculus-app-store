@@ -1,6 +1,7 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.enumid.DeviceTypeId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.spec.v1.model.DeviceType
 import com.junbo.langur.core.promise.Promise
@@ -12,13 +13,13 @@ import groovy.transform.CompileStatic
 class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implements DeviceTypeRepository {
 
     @Override
-    Promise<List<DeviceType>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false)
+    Promise<Results<DeviceType>> searchAll(Integer limit, Integer offset) {
+        return cloudantGetAll(limit, offset, false, true)
     }
 
     @Override
-    Promise<List<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset) {
-        return queryView('by_type_code', typeCode, limit, offset, false)
+    Promise<Results<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset) {
+        return queryViewResults('by_type_code', typeCode, limit, offset, false)
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.junbo.identity.data.repository
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.common.id.UserTFAId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.UserTFAAttempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
@@ -15,9 +16,9 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserTFAAttemptRepository extends BaseRepository<UserTFAAttempt, UserTFAAttemptId> {
     @ReadMethod
-    Promise<List<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset)
+    Promise<Results<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId,
+    Promise<Results<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId,
                                                                Integer limit, Integer offset)
 }

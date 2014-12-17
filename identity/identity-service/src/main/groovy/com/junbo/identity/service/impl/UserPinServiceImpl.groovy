@@ -2,6 +2,7 @@ package com.junbo.identity.service.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPinId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.service.UserPinService
 import com.junbo.identity.spec.model.users.UserPin
@@ -37,12 +38,12 @@ class UserPinServiceImpl implements UserPinService {
     }
 
     @Override
-    Promise<List<UserPin>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<Results<UserPin>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         return userPinRepository.searchByUserId(userId, limit, offset)
     }
 
     @Override
-    Promise<List<UserPin>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset) {
+    Promise<Results<UserPin>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset) {
         return userPinRepository.searchByUserIdAndActiveStatus(userId, active, limit, offset)
     }
 

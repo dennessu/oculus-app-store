@@ -38,47 +38,20 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
 
     @Override
     Promise<Results<Communication>> searchByTranslation(LocaleId translation, Integer limit, Integer offset) {
-        Results<Communication> results = new Results<>()
-        return queryView('by_translation', translation.toString(), limit, offset, false).then { List<Communication> communicationList ->
-            results.items = communicationList
-
-            return queryViewTotal('by_translation', translation.toString()).then { Integer total ->
-                results.total = total
-
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_translation', translation.toString(), limit, offset, false)
     }
 
     @Override
     Promise<Results<Communication>> searchByRegion(CountryId region, Integer limit, Integer offset) {
-        Results<Communication> results = new Results<>()
-        return queryView('by_region', region.toString(), limit, offset, false).then { List<Communication> communicationList ->
-            results.items = communicationList
-
-            return queryViewTotal('by_region', region.toString()).then { Integer total ->
-                results.total = total
-
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_region', region.toString(), limit, offset, false)
     }
 
     @Override
     Promise<Results<Communication>> searchByRegionAndTranslation(CountryId region, LocaleId translation, Integer limit, Integer offset) {
-        Results<Communication> results = new Results<>()
         def startKey = [region.toString(), translation.toString()]
         def endKey = [region.toString(), translation.toString()]
-        return super.queryView('by_region_and_translation', startKey.toArray(new String()), endKey.toArray(new String()),
-                false, limit, offset, false).then { List<Communication> communicationList ->
-            results.items = communicationList
-
-            return queryViewTotal('by_region_and_translation', startKey.toArray(new String()), endKey.toArray(new String()), false, false).then { Integer total ->
-                results.total = total
-
-                return Promise.pure(results)
-            }
-        }
+        return super.queryViewResults('by_region_and_translation', startKey.toArray(new String()), endKey.toArray(new String()),
+                false, limit, offset, false)
     }
 
     @Override

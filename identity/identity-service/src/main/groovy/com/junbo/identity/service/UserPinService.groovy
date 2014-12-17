@@ -2,6 +2,7 @@ package com.junbo.identity.service
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPinId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -19,7 +20,7 @@ public interface UserPinService {
 
     Promise<Void> delete(UserPinId id)
 
-    Promise<List<UserPin>> searchByUserId(UserId userId, Integer limit, Integer offset)
+    Promise<Results<UserPin>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
-    Promise<List<UserPin>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset)
+    Promise<Results<UserPin>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset)
 }

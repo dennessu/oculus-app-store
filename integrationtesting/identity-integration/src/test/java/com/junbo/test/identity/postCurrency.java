@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.CurrencyLocaleKey;
 import com.junbo.test.common.HttpclientHelper;
@@ -107,6 +108,30 @@ public class postCurrency {
         unexpectedLocales.add("zh_CN");
         checkCurrencyLocale(currency, expectedLocales, unexpectedLocales);
         Validator.Validate("Validate currency accuracy valid", currency.getLocaleAccuracy(), "LOW");
+    }
+
+    @Test(groups = "dailies")
+    public void testCurrencySearch() throws Exception {
+        Long oldTotal, newTotal;
+        Results<Currency> results = Identity.CurrencySearch(null);
+        assert results != null;
+        assert results.getTotal() > 1;
+        oldTotal = results.getTotal();
+        assert results.getItems().size() > 1;
+
+        results = Identity.CurrencySearch(1);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert results.getItems().size() == 1;
+
+        results = Identity.CurrencySearch(10);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert results.getItems().size() == 10;
     }
 
     @Test(groups = "dailies")

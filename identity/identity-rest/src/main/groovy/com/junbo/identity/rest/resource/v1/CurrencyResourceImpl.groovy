@@ -139,10 +139,10 @@ class CurrencyResourceImpl implements CurrencyResource {
         }
 
         return currencyValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<Currency> currencyList ->
+            return search(listOptions).then { Results<Currency> currencyList ->
                 def result = new Results<Currency>(items: [])
-
-                currencyList.each { Currency newCurrency ->
+                result.total = currencyList.total
+                currencyList.items.each { Currency newCurrency ->
                     newCurrency = currencyFilter.filterForGet(newCurrency, null)
 
                     if (newCurrency != null) {
@@ -167,7 +167,7 @@ class CurrencyResourceImpl implements CurrencyResource {
         }
     }
 
-    private Promise<List<Currency>> search(CurrencyListOptions listOptions) {
+    private Promise<Results<Currency>> search(CurrencyListOptions listOptions) {
         return currencyService.searchAll(listOptions.limit, listOptions.offset)
     }
 

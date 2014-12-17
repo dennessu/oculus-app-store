@@ -22,6 +22,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class postUserPersonalInfo {
         response.close();
     }
 
-    @Test(groups = "dailies", enabled = false)
+    @Test(groups = "dailies")
     public void patchUserPersonalInfo() throws Exception {
         User user = Identity.UserPostDefault();
         UserPersonalInfo upi = IdentityModel.DefaultUserPersonalInfoAddress();
@@ -118,7 +119,19 @@ public class postUserPersonalInfo {
 
         UserPersonalInfo newUPI = new UserPersonalInfo();
         newUPI.setLastValidateTime(new Date());
-        upi = Identity.UserPersonalInfoPatch(upi.getId(), newUPI);
-        assert upi.getLastValidateTime() == newUPI.getLastValidateTime();
+        UserPersonalInfo newPII = Identity.UserPersonalInfoPatch(upi.getId(), newUPI);
+        assert ignoreMillionSeconds(newUPI.getLastValidateTime()).equals(ignoreMillionSeconds(newPII.getLastValidateTime()));
+        assert upi.getValue().equals(newPII.getValue());
+
+        newUPI.setValue(upi.getValue());
+        newPII = Identity.UserPersonalInfoPatch(upi.getId(), newUPI);
+        assert upi.getValue().equals(newPII.getValue());
+    }
+
+    public Date ignoreMillionSeconds(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 }

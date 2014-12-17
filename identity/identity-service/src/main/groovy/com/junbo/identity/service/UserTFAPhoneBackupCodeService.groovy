@@ -2,6 +2,7 @@ package com.junbo.identity.service
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.UserTFABackupCode
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -19,8 +20,8 @@ public interface UserTFAPhoneBackupCodeService {
 
     Promise<Void> delete(UserTFABackupCodeId id)
 
-    Promise<List<UserTFABackupCode>> searchByUserId(UserId userId, Integer limit, Integer offset)
+    Promise<Results<UserTFABackupCode>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
-    Promise<List<UserTFABackupCode>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
+    Promise<Results<UserTFABackupCode>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
                                                                    Integer offset)
 }

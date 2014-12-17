@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PITypeId
+import com.junbo.common.model.Results
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.PITypeValidator
@@ -74,8 +75,8 @@ class PITypeValidatorImpl implements PITypeValidator {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
-        return piTypeService.searchByTypeCode(piType.typeCode, Integer.MAX_VALUE, 0).then { List<PIType> existing ->
-            if (!CollectionUtils.isEmpty(existing)) {
+        return piTypeService.searchByTypeCode(piType.typeCode, Integer.MAX_VALUE, 0).then { Results<PIType> existing ->
+            if (existing != null && !CollectionUtils.isEmpty(existing.items)) {
                 throw AppCommonErrors.INSTANCE.fieldDuplicate('typeCode').exception()
             }
 

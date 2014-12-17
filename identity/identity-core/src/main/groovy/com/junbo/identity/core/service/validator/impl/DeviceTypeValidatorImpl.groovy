@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.validator.DeviceTypeValidator
 import com.junbo.identity.service.DeviceTypeService
 import com.junbo.identity.spec.error.AppErrors
@@ -117,9 +118,8 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
         }
 
         return checkBasicDeviceType(deviceType).then {
-            return deviceTypeService.searchByDeviceTypeCode(deviceType.typeCode, 1, 0).then {
-                List<DeviceType> deviceTypeList ->
-                    if (!CollectionUtils.isEmpty(deviceTypeList)) {
+            return deviceTypeService.searchByDeviceTypeCode(deviceType.typeCode, 1, 0).then { Results<DeviceType> deviceTypeList ->
+                    if (deviceTypeList != null && !CollectionUtils.isEmpty(deviceTypeList.items)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('typeCode').exception()
                     }
 
@@ -148,9 +148,8 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
 
         return checkBasicDeviceType(deviceType).then {
             if (deviceType.typeCode != oldDeviceType.typeCode) {
-                return deviceTypeService.searchByDeviceTypeCode(deviceType.typeCode, Integer.MAX_VALUE, 0).then {
-                    List<DeviceType> deviceTypeList ->
-                        if (!CollectionUtils.isEmpty(deviceTypeList)) {
+                return deviceTypeService.searchByDeviceTypeCode(deviceType.typeCode, 1, 0).then { Results<DeviceType> deviceTypeList ->
+                        if (deviceTypeList != null && !CollectionUtils.isEmpty(deviceTypeList.items)) {
                             throw AppCommonErrors.INSTANCE.fieldDuplicate('typeCode').exception()
                         }
 

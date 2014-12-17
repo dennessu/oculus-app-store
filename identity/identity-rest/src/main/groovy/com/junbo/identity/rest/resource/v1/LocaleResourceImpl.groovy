@@ -145,10 +145,10 @@ class LocaleResourceImpl implements LocaleResource {
         }
 
         return localeValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<Locale> localeList ->
+            return search(listOptions).then { Results<Locale> localeList ->
                 def result = new Results<Locale>(items: [])
-
-                localeList.each { Locale newLocale ->
+                result.total = localeList.total
+                localeList.items.each { Locale newLocale ->
                     newLocale = localeFilter.filterForGet(newLocale, null)
 
                     if (newLocale != null) {
@@ -174,7 +174,7 @@ class LocaleResourceImpl implements LocaleResource {
         }
     }
 
-    private Promise<List<Locale>> search(LocaleListOptions listOptions) {
+    private Promise<Results<Locale>> search(LocaleListOptions listOptions) {
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }

@@ -7,6 +7,7 @@ package com.junbo.identity.data.repository
 
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.OrganizationId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.langur.core.promise.Promise
@@ -18,8 +19,8 @@ import com.junbo.sharding.repo.BaseRepository
  */
 interface GroupRepository extends BaseRepository<Group, GroupId> {
     @ReadMethod
-    Promise<Group> searchByOrganizationIdAndName(OrganizationId id, String name, Integer limit, Integer offset)
+    Promise<Results<Group>> searchByOrganizationIdAndName(OrganizationId id, String name, Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<Group>> searchByOrganizationId(OrganizationId id, Integer limit, Integer offset)
+    Promise<Results<Group>> searchByOrganizationId(OrganizationId id, Integer limit, Integer offset)
 }

@@ -131,10 +131,11 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         return deviceTypeValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<DeviceType> deviceTypeList ->
+            return search(listOptions).then { Results<DeviceType> deviceTypeList ->
                 def result = new Results<DeviceType>(items: [])
+                result.total = deviceTypeList.total
 
-                deviceTypeList.each { DeviceType newDeviceType ->
+                deviceTypeList.items.each { DeviceType newDeviceType ->
                     newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
 
                     if (newDeviceType != null) {
@@ -160,7 +161,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
     }
 
-    private Promise<List<DeviceType>> search(DeviceTypeListOptions listOptions) {
+    private Promise<Results<DeviceType>> search(DeviceTypeListOptions listOptions) {
         return deviceTypeService.searchAll(listOptions.limit, listOptions.offset)
     }
 }

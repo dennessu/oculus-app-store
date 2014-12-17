@@ -2,6 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.CurrencyRepository
 import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.langur.core.promise.Promise
@@ -45,7 +46,7 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
     }
 
     @Override
-    Promise<List<Currency>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false)
+    Promise<Results<Currency>> searchAll(Integer limit, Integer offset) {
+        return cloudantGetAll(limit, offset, false, true)
     }
 }

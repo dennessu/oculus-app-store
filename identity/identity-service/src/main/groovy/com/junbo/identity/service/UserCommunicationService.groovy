@@ -3,6 +3,7 @@ package com.junbo.identity.service
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.UserCommunicationId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -20,11 +21,11 @@ public interface UserCommunicationService {
 
     Promise<Void> delete(UserCommunicationId id)
 
-    Promise<List<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset)
+    Promise<Results<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
-    Promise<List<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit,
+    Promise<Results<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit,
                                                              Integer offset)
 
-    Promise<List<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId,
+    Promise<Results<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId,
                                                                       Integer limit, Integer offset)
 }

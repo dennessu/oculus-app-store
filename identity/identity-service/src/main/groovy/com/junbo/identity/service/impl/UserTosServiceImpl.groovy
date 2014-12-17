@@ -3,6 +3,7 @@ package com.junbo.identity.service.impl
 import com.junbo.common.id.TosId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTosAgreementId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserTosRepository
 import com.junbo.identity.service.UserTosService
 import com.junbo.identity.spec.v1.model.UserTosAgreement
@@ -38,17 +39,17 @@ class UserTosServiceImpl implements UserTosService {
     }
 
     @Override
-    Promise<List<UserTosAgreement>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<Results<UserTosAgreement>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         return userTosRepository.searchByUserId(userId, limit, offset)
     }
 
     @Override
-    Promise<List<UserTosAgreement>> searchByTosId(TosId tosId, Integer limit, Integer offset) {
+    Promise<Results<UserTosAgreement>> searchByTosId(TosId tosId, Integer limit, Integer offset) {
         return userTosRepository.searchByTosId(tosId, limit, offset)
     }
 
     @Override
-    Promise<List<UserTosAgreement>> searchByUserIdAndTosId(UserId userId, TosId tosId, Integer limit, Integer offset) {
+    Promise<Results<UserTosAgreement>> searchByUserIdAndTosId(UserId userId, TosId tosId, Integer limit, Integer offset) {
         return userTosRepository.searchByUserIdAndTosId(userId, tosId, limit, offset)
     }
 

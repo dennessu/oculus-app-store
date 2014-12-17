@@ -103,6 +103,10 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             throw AppCommonErrors.INSTANCE.fieldInvalid('type', 'type can\'t be updated.').exception()
         }
 
+        if (userPersonalInfo.userId != oldUserPersonalInfo.userId) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('user', 'user can\'t be updated.').exception()
+        }
+
         if (userPersonalInfo.id == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
         }

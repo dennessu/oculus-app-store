@@ -235,8 +235,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newGroup.setName(newValue)
         newGroup = groupRepository.update(newGroup, group).get()
         Assert.assertEquals(newValue, newGroup.getName())
-        Group groupSearched = groupRepository.searchByOrganizationIdAndName(new OrganizationId(789L), newValue, Integer.MAX_VALUE, 0).get()
+        Results<Group> groupSearched = groupRepository.searchByOrganizationIdAndName(new OrganizationId(789L), newValue, Integer.MAX_VALUE, 0).get()
         Assert.assertNotNull(groupSearched)
+        assert groupSearched.total == 1
     }
 
     @Test
@@ -264,9 +265,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserPasswordListOptions getOption = new UserPasswordListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPassword> userPasswordList = userPasswordRepository.searchByUserId(new UserId(userId),
+        Results<UserPassword> userPasswordList = userPasswordRepository.searchByUserId(new UserId(userId),
                 Integer.MAX_VALUE, 0).get()
-        assert userPasswordList.size() != 0
+        assert userPasswordList.getItems().size() != 0
     }
 
     @Test
@@ -294,8 +295,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserPinListOptions getOption = new UserPinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPin> userPins = userPinRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
-        assert userPins.size() != 0
+        Results<UserPin> userPins = userPinRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
+        assert userPins.getItems().size() != 0
     }
 
     @Test
@@ -396,7 +397,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserCommunication> userOptins = userCommunicationRepository.searchByUserId(new UserId(userId), null,
-                null).get()
+                null).get().getItems()
         assert userOptins.size() != 0
     }
 
@@ -420,9 +421,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserSecurityQuestion = userSecurityQuestionRepository.update(newUserSecurityQuestion, userSecurityQuestion).get()
         Assert.assertEquals(newUserSecurityQuestion.getAnswerHash(), value)
 
-        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
+        Results<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
                 searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
-        assert securityQuestions.size() != 0
+        assert securityQuestions.items.size() != 0
     }
 
     @Test
@@ -446,9 +447,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserTosAgreementListOptions userTosGetOption = new UserTosAgreementListOptions()
         userTosGetOption.setUserId(new UserId(userId))
         userTosGetOption.setTosId(new TosId("456L"))
-        List<UserTosAgreement> userToses = userTosRepository.searchByUserIdAndTosId(new UserId(userId), new TosId("456L"),
+        Results<UserTosAgreement> userToses = userTosRepository.searchByUserIdAndTosId(new UserId(userId), new TosId("456L"),
                 Integer.MAX_VALUE, 0).get()
-        assert userToses.size() != 0
+        assert userToses.items.size() != 0
     }
 
     @Test
@@ -471,10 +472,11 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserSecurityQuestionAttemptListOptions option = new UserSecurityQuestionAttemptListOptions()
         option.setUserId(new UserId(userId))
         option.setUserSecurityQuestionId(new UserSecurityQuestionId("123L"))
-        List<UserSecurityQuestionVerifyAttempt> attempts =
+        Results<UserSecurityQuestionVerifyAttempt> attempts =
                 userSecurityQuestionAttemptRepository.searchByUserIdAndSecurityQuestionId(new UserId(userId),
                         new UserSecurityQuestionId("123L"), Integer.MAX_VALUE, 0).get()
-        assert attempts.size() != 0
+        assert attempts != null;
+        assert attempts.items.size() != 0
     }
 
     @Test
@@ -550,9 +552,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTeleAttempt = userTFAAttemptRepository.update(newUserTeleAttempt, newUserTeleAttempt).get()
         assert userTeleAttempt.ipAddress == newIpAddress
 
-        List<UserTFAAttempt> results = userTFAAttemptRepository.searchByUserIdAndUserTFAId(userId, userTeleId, 100,
+        Results<UserTFAAttempt> results = userTFAAttemptRepository.searchByUserIdAndUserTFAId(userId, userTeleId, 100,
                 0).get()
-        assert results.size() != 0
+        assert results != null
+        assert results.items.size() != 0
     }
 
     @Test
@@ -580,8 +583,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         assert userTeleBackupCode.verifyCode == newVerifyCode
 
-        List<UserTFABackupCode> results = userTFABackupCodeRepository.searchByUserId(userId, 100, 0).get()
-        assert results.size() != 0
+        Results<UserTFABackupCode> results = userTFABackupCodeRepository.searchByUserId(userId, 100, 0).get()
+        assert results.items.size() != 0
     }
 
     @Test
@@ -606,8 +609,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         assert attempt.verifyCode == newVerifyCode
 
-        List<UserTFABackupCodeAttempt> results = userTFABackupCodeAttemptRepository.searchByUserId(userId, 100, 0).get()
-        assert results.size() != 0
+        Results<UserTFABackupCodeAttempt> results = userTFABackupCodeAttemptRepository.searchByUserId(userId, 100, 0).get()
+        assert results.items.size() != 0
     }
 
     @Test(enabled = false)

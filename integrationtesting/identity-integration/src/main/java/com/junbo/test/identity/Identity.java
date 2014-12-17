@@ -12,6 +12,9 @@ import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
+import com.junbo.identity.spec.v1.model.Currency;
+import com.junbo.identity.spec.v1.model.Locale;
+import com.junbo.identity.spec.v1.model.PIType;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
@@ -29,9 +32,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author dw
@@ -55,6 +56,9 @@ public class Identity {
     public static final String IdentityV1UsernameMailBlockerURI = IdentityEndPointV1 + "/imports/username-email-block";
     public static final String IdentityV1TosURI = IdentityEndPointV1 + "/tos";
     public static final String IdentityV1UserAuthenticatorURI = IdentityEndPointV1 + "/authenticators";
+    public static final String IdentityV1PITypeURI = IdentityEndPointV1 + "/payment-instrument-types";
+    public static final String IdentityV1UserCommunicationURI = IdentityEndPointV1 + "/opt-ins";
+    public static final String IdentityV1UserTosURI = IdentityEndPointV1 + "/tos-agreements";
 
     public static String httpAuthorizationHeader = "";
 
@@ -170,10 +174,11 @@ public class Identity {
         return countries;
     }
 
-    public static List<Country> CountriesSearch(String locale, String sortBy) throws Exception {
+    public static List<Country> CountriesSearchSort(String locale, String sortBy) throws Exception {
         String url = "";
         if (StringUtils.isEmpty(locale) && StringUtils.isEmpty(sortBy)) {
             url = IdentityV1CountryURI;
+
         } else if (!StringUtils.isEmpty(locale)) {
             url = IdentityV1CountryURI + "?locale=" + locale;
         } else if (!StringUtils.isEmpty(sortBy)) {
@@ -189,12 +194,53 @@ public class Identity {
         return countries;
     }
 
+    public static Results<Country> CountriesSearch(String defaultLocale, String defaultCurrency, Integer limit) throws Exception {
+        String url = "";
+        if (StringUtils.isEmpty(defaultCurrency) && StringUtils.isEmpty(defaultLocale)) {
+            url = IdentityV1CountryURI;
+        } else if (StringUtils.isEmpty(defaultLocale)) {
+            url = IdentityV1CountryURI + "?defaultCurrencyId=" + defaultCurrency;
+        } else if (StringUtils.isEmpty(defaultCurrency)) {
+            url = IdentityV1CountryURI + "?defaultLocaleId=" + defaultLocale;
+        } else {
+            url = IdentityV1CountryURI + "?defaultCurrencyId=" + defaultCurrency + "&defaultLocaleId=" + defaultLocale;
+        }
+
+        if (limit != null) {
+            if (url.contains("?")) {
+                url = url + "&count=" + limit;
+            } else {
+                url = url + "?count=" + limit;
+            }
+        }
+
+        Results<Country> results = IdentityGet(url, Results.class);
+        List<Country> countries = new ArrayList<>();
+        for (Object obj : results.getItems()) {
+            countries.add((Country)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Country.class));
+        }
+        results.setItems(countries);
+        return results;
+    }
+
     public static void CountryDeleteByCountryId(String countryId) throws Exception {
         IdentityDelete(IdentityV1CountryURI + "/" + countryId);
     }
 
-    public static Currency CurrencyPostDefault() throws Exception {
-        return CurrencyPostDefault(IdentityModel.DefaultCurrency());
+    public static Results<Currency> CurrencySearch(Integer limit) throws Exception {
+        String url = IdentityV1CurrencyURI;
+
+        if (limit != null) {
+            url = url + "?count=" + limit;
+        }
+
+        Results<Currency> results = IdentityGet(url, Results.class);
+        List<Currency> currencies = new ArrayList<>();
+        for (Object obj : results.getItems()) {
+            currencies.add((Currency)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Currency.class));
+        }
+        results.setItems(currencies);
+        return results;
     }
 
     public static Currency CurrencyPut(Currency currency) throws Exception {
@@ -240,15 +286,18 @@ public class Identity {
         return (Locale) IdentityGet(IdentityV1LocaleURI + "/" + localeId, Locale.class);
     }
 
-    public static Results<Locale> LocaleGetAll() throws Exception {
+    public static Results<Locale> LocaleGetAll(Integer limit) throws Exception {
         Results<Locale> results = new Results<>();
         results.setItems(new ArrayList<Locale>());
-        Results res = IdentityGet(IdentityV1LocaleURI, Results.class);
+        String url = limit == null ? IdentityV1LocaleURI : IdentityV1LocaleURI + "?count=" + limit;
+        Results res = IdentityGet(url, Results.class);
+        List<Locale> locales = new ArrayList<>();
         for (Object obj : res.getItems()) {
-            results.getItems().add((Locale) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+            locales.add((Locale) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
                             Locale.class)
             );
         }
+        results.setItems(locales);
         results.setTotal(res.getTotal());
         results.setNext(res.getNext());
         results.setSelf(res.getSelf());
@@ -348,26 +397,27 @@ public class Identity {
         return IdentityGet(IdentityV1TosURI + "/" + tosId.getValue(), Tos.class);
     }
 
-    public static List<Tos> TosSearch(String title, String type, String state, String country) throws Exception {
+    public static Results<Tos> TosSearch(String title, String type, String state, String country) throws Exception {
         List<Tos> tosList = new ArrayList<Tos>();
-        List<Tos> tosResults = IdentityGet(buildTosSearchURI(title, state, type, country), Results.class).getItems();
-        for (Object obj : tosResults) {
+        Results<Tos> tosResults = IdentityGet(buildTosSearchURI(title, state, type, country), Results.class);
+        for (Object obj : tosResults.getItems()) {
             tosList.add((Tos) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class));
         }
-        return tosList;
+        tosResults.setItems(tosList);
+        return tosResults;
     }
 
     private static String buildTosSearchURI(String title, String state, String type, String country) {
         if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
-            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type + "&country" + country;
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type + "&country=" + country;
         } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(type)) {
             return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type;
         } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(country)) {
-            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&country" + country;
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&country=" + country;
         } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
-            return IdentityV1TosURI + "?title=" + title + "&type=" + type + "&country" + country;
+            return IdentityV1TosURI + "?title=" + title + "&type=" + type + "&country=" + country;
         } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
-            return IdentityV1TosURI + "?state=" + state + "&type=" + type + "&country" + country;
+            return IdentityV1TosURI + "?state=" + state + "&type=" + type + "&country=" + country;
         } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state)) {
             return IdentityV1TosURI + "?title=" + title + "&state=" + state;
         } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(type)) {
@@ -391,6 +441,41 @@ public class Identity {
         } else {
             return IdentityV1TosURI;
         }
+    }
+
+    public static UserTosAgreement UserTosAgreementPost(UserId userId, TosId tosId) throws Exception {
+        UserTosAgreement userTosAgreement = new UserTosAgreement();
+        userTosAgreement.setUserId(userId);
+        userTosAgreement.setTosId(tosId);
+        userTosAgreement.setAgreementTime(new Date());
+        return IdentityPost(IdentityV1UserTosURI, JsonHelper.JsonSerializer(userTosAgreement), UserTosAgreement.class);
+    }
+
+    public static UserTosAgreement UserTosAgreementGet(UserTosAgreement userTosAgreement) throws Exception {
+        return IdentityGet(IdentityV1UserTosURI + "/" + userTosAgreement.getId().toString(), UserTosAgreement.class);
+    }
+
+    public static Results<UserTosAgreement> UserTosAgreementSearch(UserId userId, TosId tosId, Integer limit) throws Exception {
+        String url = IdentityV1UserTosURI;
+        if (userId != null && tosId != null) {
+            url = url + "?tosId=" + tosId.toString() + "&userId=" + GetHexLongId(userId.getValue());
+        } else if (userId != null) {
+            url = url + "?userId=" + GetHexLongId(userId.getValue());
+        } else if (tosId != null) {
+            url = url + "?tosId=" + tosId.toString();
+        }
+
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+
+        Results results = IdentityGet(url, Results.class);
+        List<UserTosAgreement> userTosAgreements = new ArrayList<>();
+        for (Object obj : results.getItems()) {
+            userTosAgreements.add((UserTosAgreement)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserTosAgreement.class));
+        }
+        results.setItems(userTosAgreements);
+        return results;
     }
 
     public static User UserPut(User user) throws Exception {
@@ -599,6 +684,49 @@ public class Identity {
                 JsonHelper.JsonSerializer(userGroup), UserGroup.class);
     }
 
+    public static UserCommunication UserCommunicationPost(UserId userId, CommunicationId communicationId) throws Exception {
+        UserCommunication userCommunication = new UserCommunication();
+        userCommunication.setUserId(userId);
+        userCommunication.setCommunicationId(communicationId);
+        return IdentityPost(IdentityV1UserCommunicationURI, JsonHelper.JsonSerializer(userCommunication), UserCommunication.class);
+    }
+
+    public static UserCommunication UserCommunicationPut(UserCommunication userCommunication) throws Exception {
+        return IdentityPut(IdentityV1UserCommunicationURI + "/" + userCommunication.getId().toString(), JsonHelper.JsonSerializer(userCommunication),
+                UserCommunication.class);
+    }
+
+    public static UserCommunication UserCommunicationGet(UserCommunicationId userCommunicationId) throws Exception {
+        return IdentityGet(IdentityV1UserCommunicationURI + "/" + userCommunicationId.toString(), UserCommunication.class);
+    }
+
+    public static void UserCommunicationDelete(UserCommunicationId userCommunicationId) throws Exception {
+        IdentityDelete(IdentityV1UserCommunicationURI + "/" + userCommunicationId.toString());
+    }
+
+    public static Results<UserCommunication> UserCommunicationSearch(UserId userId, CommunicationId communicationId, Integer limit) throws Exception {
+        String url = IdentityV1UserCommunicationURI;
+
+        if (userId != null && communicationId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId) + "&communicationId=" + communicationId.toString();
+        } else if (userId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId);
+        } else if (communicationId != null) {
+            url = url + "?communicationId=" + communicationId.toString();
+        }
+
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+        Results results = IdentityGet(url, Results.class);
+        List<UserCommunication> userCommunications = new ArrayList<>();
+        for (Object obj : results.getItems()) {
+            userCommunications.add((UserCommunication)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserCommunication.class));
+        }
+        results.setItems(userCommunications);
+        return results;
+    }
+
     public static UserAuthenticator UserAuthenticatorPost(UserId userId, String externalRefId) throws Exception {
         UserAuthenticator userAuthenticator = new UserAuthenticator();
         userAuthenticator.setUserId(userId);
@@ -696,6 +824,29 @@ public class Identity {
         IdentityDelete(IdentityV1GroupURI + "/" + group.getId());
     }
 
+    public static Results<Group> GroupSearch(String name, OrganizationId organizationId, UserId userId, Integer limit) throws Exception {
+        String url = IdentityV1GroupURI;
+        if (userId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId);
+        } else if (!StringUtils.isEmpty(organizationId) && !StringUtils.isEmpty(name)) {
+            url = url + "?organizationId=" + IdConverter.idToHexString(organizationId) + "&name=" + name;
+        } else if (!StringUtils.isEmpty(organizationId)) {
+            url = url + "?organizationId=" + IdConverter.idToHexString(organizationId);
+        }
+
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+
+        Results<Group> groupResults = IdentityGet(url, Results.class);
+        List<Group> groups = new ArrayList<>();
+        for (Object obj : groupResults.getItems()) {
+            groups.add((Group)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Group.class));
+        }
+        groupResults.setItems(groups);
+        return groupResults;
+    }
+
     public static DeviceType DeviceTypeDefault(DeviceType deviceType) throws Exception {
         DeviceType type = deviceType == null ? IdentityModel.DefaultDeviceType(null) : deviceType;
         return IdentityPost(IdentityV1DeviceTypeURI, JsonHelper.JsonSerializer(type), DeviceType.class);
@@ -710,10 +861,11 @@ public class Identity {
         return IdentityGet(IdentityV1DeviceTypeURI + "/" + deviceTypeCode, DeviceType.class);
     }
 
-    public static Results<DeviceType> DeviceTypeGetAll() throws Exception {
+    public static Results<DeviceType> DeviceTypeGetAll(Integer limit) throws Exception {
         Results<DeviceType> results = new Results<>();
         results.setItems(new ArrayList<DeviceType>());
-        Results res = IdentityGet(IdentityV1DeviceTypeURI, Results.class);
+        String url = limit == null ? IdentityV1DeviceTypeURI : IdentityV1DeviceTypeURI + "?count=" + limit;
+        Results res = IdentityGet(url, Results.class);
         for (Object obj : res.getItems()) {
             results.getItems().add((DeviceType) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
                             DeviceType.class)
@@ -743,15 +895,17 @@ public class Identity {
         return IdentityGet(IdentityV1ErrorInfoURI + "/" + errorIdentifier, ErrorInfo.class);
     }
 
-    public static Results<ErrorInfo> ErrorInfoGetAll() throws Exception {
+    public static Results<ErrorInfo> ErrorInfoGetAll(Integer limit) throws Exception {
         Results<ErrorInfo> results = new Results<>();
         results.setItems(new ArrayList<ErrorInfo>());
-        Results res = IdentityGet(IdentityV1ErrorInfoURI, Results.class);
+        String url = limit == null ? IdentityV1ErrorInfoURI : IdentityV1ErrorInfoURI + "?count=" + limit;
+        Results res = IdentityGet(url, Results.class);
+        List<ErrorInfo> errorInfos = new ArrayList<>();
         for (Object obj : res.getItems()) {
-            results.getItems().add((ErrorInfo) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+            errorInfos.add((ErrorInfo) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
                     ErrorInfo.class));
         }
-
+        results.setItems(errorInfos);
         results.setTotal(res.getTotal());
         results.setNext(res.getNext());
         results.setSelf(res.getSelf());
@@ -935,6 +1089,67 @@ public class Identity {
         return (UserSecurityQuestion) IdentityGet(
                 IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) +
                         "/security-questions/" + usqId.getValue(), UserSecurityQuestion.class);
+    }
+
+    public static Results<UserSecurityQuestion> UserSecurityQuestionSearch(UserId userId, Integer limit) throws Exception {
+        String url = IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) + "/security-questions";
+        if (limit != null) {
+            url = url + "?count=" + limit;
+        }
+        Results results = IdentityGet(url, Results.class);
+        List<UserSecurityQuestion> userSecurityQuestions = new ArrayList<>();
+        for (Object obj : results.getItems()) {
+            userSecurityQuestions.add((UserSecurityQuestion)JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserSecurityQuestion.class));
+        }
+        results.setItems(userSecurityQuestions);
+
+        return results;
+    }
+
+    public static PIType PITypePostDefault(String typeCode) throws Exception {
+        PIType piType = new PIType();
+        piType.setTypeCode(typeCode);
+        piType.setCapableOfRecurring(true);
+        piType.setIsRefundable(true);
+        LocaleName localeName = new LocaleName();
+        localeName.setDescription(RandomHelper.randomAlphabetic(15));
+        Map<String, JsonNode> locales = new HashMap<>();
+        locales.put("en_US", JsonHelper.ObjectToJsonNode(localeName));
+        piType.setLocales(locales);
+
+        return IdentityPost(IdentityV1PITypeURI, JsonHelper.JsonSerializer(piType), PIType.class);
+    }
+
+    public static PIType PITypeGet(PITypeId piTypeId) throws Exception {
+        return IdentityGet(IdentityV1PITypeURI + "/" + piTypeId.toString(), PIType.class);
+    }
+
+    public static PIType PITypePutDefault(PIType piType) throws Exception {
+        return IdentityPut(IdentityV1PITypeURI + "/" + piType.getId().toString(), JsonHelper.JsonSerializer(piType), PIType.class);
+    }
+
+    public static Results<PIType> PITypeSearch(String piTypeCode, Integer limit) throws Exception {
+        String url = IdentityV1PITypeURI;
+        if (piTypeCode != null) {
+            url = url + "?typeCode=" + piTypeCode;
+        }
+
+        if (limit != null) {
+            if (piTypeCode != null) {
+                url = url + "&count=" + limit;
+            } else {
+                url = url + "?count=" + limit;
+            }
+        }
+
+        Results<PIType> results = IdentityGet(url, Results.class);
+        List<PIType> piTypes = new ArrayList<>();
+        for(Object obj : results.getItems()) {
+            piTypes.add((PIType) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    PIType.class));
+        }
+        results.setItems(piTypes);
+        return results;
     }
 
     public static UserSecurityQuestionVerifyAttempt UserSecurityQuestionVerifyAttemptPost(UserId userId, UserSecurityQuestionVerifyAttempt attempt)

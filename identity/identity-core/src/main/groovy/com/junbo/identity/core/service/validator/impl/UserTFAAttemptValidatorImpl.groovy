@@ -4,6 +4,7 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.common.id.UserTFAId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.validator.UserTFAAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.service.UserService
@@ -192,12 +193,12 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserTFAAttempt attempt) {
-         return userTFAAttemptService.searchByUserIdAndUserTFAId((UserId)user.id, attempt.userTFAId, maxTeleCodeAttemptNumber, 0).then { List<UserTFAAttempt> userTeleAttemptList ->
-            if (CollectionUtils.isEmpty(userTeleAttemptList) || userTeleAttemptList.size() < maxTeleCodeAttemptNumber) {
+         return userTFAAttemptService.searchByUserIdAndUserTFAId((UserId)user.id, attempt.userTFAId, maxTeleCodeAttemptNumber, 0).then { Results<UserTFAAttempt> userTeleAttemptList ->
+            if (userTeleAttemptList == null || CollectionUtils.isEmpty(userTeleAttemptList.items) || userTeleAttemptList.items.size() < maxTeleCodeAttemptNumber) {
                 return Promise.pure(null)
             }
 
-            UserTFAAttempt userTFAAttempt = userTeleAttemptList.find { UserTFAAttempt tfaAttempt ->
+            UserTFAAttempt userTFAAttempt = userTeleAttemptList.items.find { UserTFAAttempt tfaAttempt ->
                 return tfaAttempt.succeeded
             }
 

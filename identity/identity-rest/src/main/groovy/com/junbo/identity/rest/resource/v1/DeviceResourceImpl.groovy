@@ -130,9 +130,7 @@ class DeviceResourceImpl implements DeviceResource {
             return deviceService.searchBySerialNumber(listOptions.externalRef).then { Device newDevice ->
                 if (newDevice != null) {
                     newDevice = deviceFilter.filterForGet(newDevice, listOptions.properties?.split(',') as List<String>)
-                }
-
-                if (newDevice != null) {
+                    resultList.total = 1
                     resultList.items.add(newDevice)
                 }
 

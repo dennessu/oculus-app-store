@@ -68,8 +68,23 @@ public class postDeviceType {
         DeviceType deviceTypePut = Identity.DeviceTypePut(postedDeviceType);
         Validator.Validate("Type code validation", postedDeviceType.getInstructionManual(), deviceTypePut.getInstructionManual());
 
-        Results<DeviceType> deviceTypeResults = Identity.DeviceTypeGetAll();
+        Long oldTotal, newTotal;
+        Results<DeviceType> deviceTypeResults = Identity.DeviceTypeGetAll(null);
+        assert deviceTypeResults.getTotal() > 0;
+        oldTotal = deviceTypeResults.getTotal();
         assert deviceTypeResults.getItems().size() != 0;
+
+        deviceTypeResults = Identity.DeviceTypeGetAll(1);
+        assert deviceTypeResults.getTotal() > 0;
+        newTotal = deviceTypeResults.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert deviceTypeResults.getItems().size() == 1;
+
+        deviceTypeResults = Identity.DeviceTypeGetAll(0);
+        assert deviceTypeResults.getTotal() > 0;
+        newTotal = deviceTypeResults.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert deviceTypeResults.getItems().size() == 0;
 
         Identity.DeviceTypeDelete(deviceType.getTypeCode());
     }

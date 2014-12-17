@@ -176,15 +176,15 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 userLoginAttempt.setUserId((UserId)user.id)
 
                 if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-                    return userPasswordService.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
-                            0).then { List<UserPassword> userPasswordList ->
-                        if (CollectionUtils.isEmpty(userPasswordList) || userPasswordList.size() > 1) {
+                    // Check whether there are multiple userpasswords exists
+                    return userPasswordService.searchByUserIdAndActiveStatus((UserId)user.id, true, 2, 0).then { Results<UserPassword> userPasswordList ->
+                        if (userPasswordList == null || CollectionUtils.isEmpty(userPasswordList.items) || userPasswordList.items.size() > 1) {
                             throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                         }
 
                         List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
                         CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                            return hash.matches(userLoginAttempt.value, userPasswordList.get(0).passwordHash)
+                            return hash.matches(userLoginAttempt.value, userPasswordList.items.get(0).passwordHash)
                         }
                         userLoginAttempt.setSucceeded(matched != null)
                         return checkMaximumRetryCount(user, userLoginAttempt).then {
@@ -193,15 +193,14 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
                 }
                 else if (userLoginAttempt.type == CredentialType.PIN.toString()) {
-                    return userPinService.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
-                            0).then { List<UserPin> userPinList ->
-                        if (CollectionUtils.isEmpty(userPinList) || userPinList.size() > 1) {
+                    return userPinService.searchByUserIdAndActiveStatus((UserId)user.id, true, 2, 0).then { Results<UserPin> userPinList ->
+                        if (userPinList == null || CollectionUtils.isEmpty(userPinList.items) || userPinList.items.size() > 1) {
                             throw AppErrors.INSTANCE.userPinIncorrect().exception()
                         }
 
                         List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
                         CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                            return hash.matches(userLoginAttempt.value, userPinList.get(0).pinHash)
+                            return hash.matches(userLoginAttempt.value, userPinList.items.get(0).pinHash)
                         }
 
                         userLoginAttempt.setSucceeded(matched != null)
@@ -471,20 +470,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<Date> getActiveCredentialCreatedTime(User user, UserCredentialVerifyAttempt userLoginAttempt) {
         if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-            return userPasswordService.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPassword> userPasswordList ->
-                if (CollectionUtils.isEmpty(userPasswordList)) {
+            return userPasswordService.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { Results<UserPassword> userPasswordList ->
+                if (userPasswordList == null || CollectionUtils.isEmpty(userPasswordList.items)) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'No Active password exists').exception()
                 }
 
-                return Promise.pure(userPasswordList.get(0).createdTime)
+                return Promise.pure(userPasswordList.items.get(0).createdTime)
             }
         } else {
-            return userPinService.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPin> userPinList ->
-                if (CollectionUtils.isEmpty(userPinList)) {
+            return userPinService.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { Results<UserPin> userPinList ->
+                if (userPinList == null || CollectionUtils.isEmpty(userPinList.items)) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'No Active pin exists').exception()
                 }
 
-                return Promise.pure(userPinList.get(0).createdTime)
+                return Promise.pure(userPinList.items.get(0).createdTime)
             }
         }
     }

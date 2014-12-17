@@ -2,6 +2,7 @@ package com.junbo.identity.service.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeAttemptId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeAttemptRepository
 import com.junbo.identity.service.UserTFAPhoneBackupCodeAttemptService
 import com.junbo.identity.spec.v1.model.UserTFABackupCodeAttempt
@@ -37,7 +38,7 @@ class UserTFAPhoneBackupCodeAttemptServiceImpl implements UserTFAPhoneBackupCode
     }
 
     @Override
-    Promise<List<UserTFABackupCodeAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<Results<UserTFABackupCodeAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         return userTFAPhoneBackupCodeAttemptRepository.searchByUserId(userId, limit, offset)
     }
 

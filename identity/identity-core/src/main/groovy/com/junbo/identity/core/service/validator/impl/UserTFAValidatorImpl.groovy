@@ -4,6 +4,7 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTFAId
+import com.junbo.common.model.Results
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.util.CodeGenerator
 import com.junbo.identity.core.service.validator.UserTFAValidator
@@ -202,8 +203,8 @@ class UserTFAValidatorImpl implements UserTFAValidator {
 
     private Promise<Void> tfaMailAdvanceCheck(UserTFA userTFA) {
         return userTFAMailService.searchTFACodeByUserIdAndPIIAfterTime(userTFA.userId, userTFA.personalInfo,
-                maxSMSRequestsPerHour + 1, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { List<UserTFA> userTFAList ->
-            if (CollectionUtils.isEmpty(userTFAList) || userTFAList.size() <= maxSMSRequestsPerHour) {
+                maxSMSRequestsPerHour + 1, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { Results<UserTFA> userTFAList ->
+            if (userTFAList == null || CollectionUtils.isEmpty(userTFAList.items) || userTFAList.items.size() <= maxSMSRequestsPerHour) {
                 return Promise.pure(null)
             }
 
@@ -213,8 +214,8 @@ class UserTFAValidatorImpl implements UserTFAValidator {
 
     private Promise<Void> tfaPhoneAdvanceCheck(UserTFA userTFA) {
         return userTFAPhoneService.searchTFACodeByUserIdAndPIIAfterTime(userTFA.userId, userTFA.personalInfo,
-                maxSMSRequestsPerHour + 1, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { List<UserTFA> userTeleCodeList ->
-            if (CollectionUtils.isEmpty(userTeleCodeList) || userTeleCodeList.size() <= maxSMSRequestsPerHour) {
+                maxSMSRequestsPerHour + 1, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { Results<UserTFA> userTeleCodeList ->
+            if (userTeleCodeList == null || CollectionUtils.isEmpty(userTeleCodeList.items) || userTeleCodeList.items.size() <= maxSMSRequestsPerHour) {
                 return Promise.pure(null)
             }
 
@@ -231,11 +232,11 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     private Promise<Void> fillEmailCode(UserId userId, UserTFA userTFA) {
-        return userTFAMailService.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo, 1, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
-            if (CollectionUtils.isEmpty(codeList)) {
+        return userTFAMailService.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo, 1, 0, getTimeStartOffset(maxReuseSeconds)).then { Results<UserTFA> codeList ->
+            if (codeList == null || CollectionUtils.isEmpty(codeList.items)) {
                 userTFA.verifyCode = codeGenerator.generateCode()
             } else {
-                userTFA.verifyCode = codeList.get(0).verifyCode
+                userTFA.verifyCode = codeList.items.get(0).verifyCode
             }
 
             return Promise.pure(null)
@@ -244,8 +245,8 @@ class UserTFAValidatorImpl implements UserTFAValidator {
 
     private Promise<Void> fillPhoneCode(UserId userId, UserTFA userTFA) {
         return userTFAPhoneService.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo,
-                1, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
-            if (CollectionUtils.isEmpty(codeList)) {
+                1, 0, getTimeStartOffset(maxReuseSeconds)).then { Results<UserTFA> codeList ->
+            if (codeList == null || CollectionUtils.isEmpty(codeList.items)) {
                 String code = codeGenerator.generateCode()
                 if (userTFA.verifyType == TFAVerifyType.CALL.toString()) {
                     if (code.length() > 5) {
@@ -256,7 +257,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
                     userTFA.verifyCode = code
                 }
             } else {
-                userTFA.verifyCode = codeList.get(0).verifyCode
+                userTFA.verifyCode = codeList.items.get(0).verifyCode
             }
 
             return Promise.pure(null)

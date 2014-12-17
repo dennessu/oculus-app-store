@@ -192,9 +192,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         newGroup = groupRepository.get(group.getId()).get()
         Assert.assertEquals(newValue, newGroup.getName())
 
-        Group groupSearched = groupRepository.searchByOrganizationIdAndName(new OrganizationId(456L), newValue, Integer.MAX_VALUE, null).get()
+        Results<Group> groupSearched = groupRepository.searchByOrganizationIdAndName(new OrganizationId(456L), newValue, Integer.MAX_VALUE, null).get()
 
         Assert.assertNotNull(groupSearched)
+        assert groupSearched.total == 1
     }
 
     @Test
@@ -240,14 +241,14 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserPasswordListOptions getOption = new UserPasswordListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPassword> userPasswordList = userPasswordRepository.searchByUserId(new UserId(userId),
+        Results<UserPassword> userPasswordList = userPasswordRepository.searchByUserId(new UserId(userId),
                 Integer.MAX_VALUE, 0).get()
-        assert userPasswordList.size() != 0
+        assert userPasswordList.items.size() != 0
 
         getOption.active = newUserPassword.active
         userPasswordList = userPasswordRepository.searchByUserIdAndActiveStatus(new UserId(userId),
                 newUserPassword.active, Integer.MAX_VALUE, 0).get()
-        assert userPasswordList.size() != 0
+        assert userPasswordList.items.size() != 0
     }
 
     @Test
@@ -275,8 +276,8 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         UserPinListOptions getOption = new UserPinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPin> userPins = userPinRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
-        assert userPins.size() != 0
+        Results<UserPin> userPins = userPinRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
+        assert userPins.getItems().size() != 0
     }
 
     @Test
@@ -384,7 +385,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserCommunication> userOptins = userCommunicationRepository.searchByUserId(new UserId(userId), null,
-                null).get()
+                null).get().getItems()
         assert userOptins.size() != 0
     }
 
@@ -429,10 +430,11 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserSecurityQuestionAttemptListOptions option = new UserSecurityQuestionAttemptListOptions()
         option.setUserId(new UserId(userId))
         option.setUserSecurityQuestionId(new UserSecurityQuestionId("123L"))
-        List<UserSecurityQuestionVerifyAttempt> attempts =
+        Results<UserSecurityQuestionVerifyAttempt> attempts =
                 userSecurityQuestionAttemptRepository.searchByUserIdAndSecurityQuestionId(new UserId(userId),
                         new UserSecurityQuestionId("123L"), Integer.MAX_VALUE, 0).get()
-        assert attempts.size() != 0
+        assert attempts != null
+        assert attempts.items.size() != 0
     }
 
     @Test
@@ -457,9 +459,9 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId()).get()
         Assert.assertEquals(newUserSecurityQuestion.getAnswerHash(), value)
 
-        List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
+        Results<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
                 searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
-        assert securityQuestions.size() != 0
+        assert securityQuestions.items.size() != 0
     }
 
     @Test
@@ -483,7 +485,8 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserTosAgreementListOptions userTosGetOption = new UserTosAgreementListOptions()
         userTosGetOption.setUserId(new UserId(userId))
         userTosGetOption.setTosId(new TosId("456L"))
-        List<UserTosAgreement> userToses = userTosRepository.searchByUserIdAndTosId(new UserId(userId), new TosId("456L"), Integer.MAX_VALUE, 0).get()
-        assert userToses.size() != 0
+        Results<UserTosAgreement> userToses = userTosRepository.searchByUserIdAndTosId(new UserId(userId), new TosId("456L"), Integer.MAX_VALUE, 0).get()
+        assert userToses != null;
+        assert userToses.items.size() != 0
     }
 }

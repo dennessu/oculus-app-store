@@ -541,8 +541,8 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     Promise<UserPassword> saveOrUpdatePassword(OculusInput oculusInput, User user) {
-        return userPasswordService.searchByUserId(user.getId(), Integer.MAX_VALUE, 0).then { List<UserPassword> userPasswordList ->
-            if (CollectionUtils.isEmpty(userPasswordList)) {
+        return userPasswordService.searchByUserId(user.getId(), Integer.MAX_VALUE, 0).then { Results<UserPassword> userPasswordList ->
+            if (userPasswordList == null || CollectionUtils.isEmpty(userPasswordList.items)) {
                 UserPassword userPassword = new UserPassword(
                         changeAtNextLogin: oculusInput.forceResetPassword,
                         userId: user.getId(),
@@ -552,7 +552,7 @@ class MigrationResourceImpl implements MigrationResource {
                 // create password
                 return userPasswordService.create(userPassword)
             } else {
-                UserPassword activePassword = userPasswordList.find { UserPassword userPassword ->
+                UserPassword activePassword = userPasswordList.items.find { UserPassword userPassword ->
                     return userPassword.active
                 }
 
@@ -583,18 +583,18 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(null)
                 }
                 return userCommunicationService.searchByUserIdAndCommunicationId(user.getId(), new CommunicationId(entry.key),
-                        Integer.MAX_VALUE, 0).then { List<UserCommunication> userCommunicationList ->
-                    if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && entry.value) {
+                        Integer.MAX_VALUE, 0).then { Results<UserCommunication> userCommunicationList ->
+                    if (userCommunicationList == null || (CollectionUtils.isEmpty(userCommunicationList.items)) && entry.value) {
                         // create
                         return userCommunicationService.create(new UserCommunication(
                                 userId: user.getId(),
                                 communicationId: new CommunicationId(entry.key)
                         ))
-                    } else if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && !entry.value) {
+                    } else if (userCommunicationList == null || (CollectionUtils.isEmpty(userCommunicationList.items)) && !entry.value) {
                         // do nothing
                         return Promise.pure(null)
                     } else {
-                        UserCommunication userCommunication = userCommunicationList.get(0)
+                        UserCommunication userCommunication = userCommunicationList.items.get(0)
                         if (entry.value) {
                             // update
                             if (userCommunication.userId != user.getId() || userCommunication.communicationId != new CommunicationId(entry.key)) {
@@ -1084,15 +1084,15 @@ class MigrationResourceImpl implements MigrationResource {
         if (oculusInput.company.isAdmin) {
             // Add to ADMIN group
             return removeUserGroupMemberShip(oculusInput, createdUser, existingOrganization, DEVELOPER_ROLE).then {
-                return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), ADMIN_ROLE, Integer.MAX_VALUE, null).then { Group group ->
-                    if (group == null) {
+                return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), ADMIN_ROLE, Integer.MAX_VALUE, null).then { Results<Group> group ->
+                    if (group == null || CollectionUtils.isEmpty(group.items)) {
                         return saveOrReturnGroup(existingOrganization, ADMIN_ROLE).then { Group newGroup ->
                             return saveOrReturnUserGroup(createdUser, newGroup).then {
                                 return Promise.pure(existingOrganization)
                             }
                         }
                     }
-                    return saveOrReturnUserGroup(createdUser, group).then {
+                    return saveOrReturnUserGroup(createdUser, group.items.get(0)).then {
                         return Promise.pure(existingOrganization)
                     }
                 }
@@ -1100,8 +1100,8 @@ class MigrationResourceImpl implements MigrationResource {
         } else {
             // Add to DEVELOPER group
             return removeUserGroupMemberShip(oculusInput, createdUser, existingOrganization, ADMIN_ROLE).then {
-                return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), DEVELOPER_ROLE, Integer.MAX_VALUE, null).then { Group group ->
-                    if (group == null) {
+                return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), DEVELOPER_ROLE, Integer.MAX_VALUE, null).then { Results<Group> group ->
+                    if (group == null || CollectionUtils.isEmpty(group.items)) {
                         return saveOrReturnGroup(existingOrganization, DEVELOPER_ROLE).then { Group newGroup ->
                             return saveOrReturnUserGroup(createdUser, newGroup).then {
                                 return Promise.pure(existingOrganization)
@@ -1109,7 +1109,7 @@ class MigrationResourceImpl implements MigrationResource {
                         }
                     }
 
-                    return saveOrReturnUserGroup(createdUser, group).then {
+                    return saveOrReturnUserGroup(createdUser, group.items.get(0)).then {
                         return Promise.pure(existingOrganization)
                     }
                 }
@@ -1120,12 +1120,12 @@ class MigrationResourceImpl implements MigrationResource {
 
     private Promise<Void> removeUserGroupMemberShip(OculusInput oculusInput, User createdUser, Organization existingOrganization, String roleName) {
         // remove from developer group
-        return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), roleName, Integer.MAX_VALUE, null).then { Group group ->
-            if (group == null) {
+        return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), roleName, Integer.MAX_VALUE, null).then { Results<Group> group ->
+            if (group == null || CollectionUtils.isEmpty(group.items)) {
                 return Promise.pure(null)
             }
 
-            return userGroupService.searchByUserIdAndGroupId(createdUser.getId(), group.getId(), Integer.MAX_VALUE, null).then { Results<UserGroup> userGroupList ->
+            return userGroupService.searchByUserIdAndGroupId(createdUser.getId(), group.items.get(0).getId(), Integer.MAX_VALUE, null).then { Results<UserGroup> userGroupList ->
                 if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
                     return Promise.pure(null)
                 }
@@ -1259,8 +1259,8 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Promise<Group> saveOrReturnGroup(Organization org, String roleName) {
-        return groupService.searchByOrganizationId(org.getId(), Integer.MAX_VALUE, 0).then { List<Group> groupList ->
-            if (CollectionUtils.isEmpty(groupList)) {
+        return groupService.searchByOrganizationId(org.getId(), Integer.MAX_VALUE, 0).then { Results<Group> groupList ->
+            if (groupList == null || CollectionUtils.isEmpty(groupList.items)) {
                 Group newGroup = new Group(
                         name: roleName,
                         active: true,
@@ -1269,8 +1269,8 @@ class MigrationResourceImpl implements MigrationResource {
 
                 return groupService.create(newGroup)
             } else {
-                return groupService.searchByOrganizationIdAndName(org.getId(), roleName, Integer.MAX_VALUE, 0).then { Group existingGroup ->
-                    if (existingGroup == null) {
+                return groupService.searchByOrganizationIdAndName(org.getId(), roleName, Integer.MAX_VALUE, 0).then { Results<Group> existingGroup ->
+                    if (existingGroup == null || CollectionUtils.isEmpty(existingGroup.items)) {
                         Group newGroup = new Group(
                             name: roleName,
                             active: true,

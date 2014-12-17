@@ -3,10 +3,10 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPinId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.validator.UserPinValidator
-import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.service.UserPinService
 import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
@@ -15,6 +15,7 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.list.UserPinListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
@@ -124,14 +125,14 @@ class UserPinValidatorImpl implements UserPinValidator {
             return Promise.pure(null)
         }
 
-        return userPinService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then { List<UserPin> userPinList ->
-            if (userPinList == null || userPinList.size() == 0 || userPinList.size() > 1) {
+        return userPinService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then { Results<UserPin> userPinList ->
+            if (userPinList == null || CollectionUtils.isEmpty(userPinList.items) || userPinList.items.size() > 1) {
                 throw AppErrors.INSTANCE.userPinIncorrect().exception()
             }
 
             List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
             CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                return hash.matches(oldPassword, userPinList.get(0).pinHash)
+                return hash.matches(oldPassword, userPinList.items.get(0).pinHash)
             }
 
             if (matched == null) {

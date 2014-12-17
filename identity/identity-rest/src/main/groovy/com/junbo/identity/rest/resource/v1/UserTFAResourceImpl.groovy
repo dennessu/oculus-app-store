@@ -274,8 +274,9 @@ class UserTFAResourceImpl implements UserTFAResource {
             listOptions.setUserId(userId)
 
             return userTFAValidator.validateForSearch(listOptions).then {
-                return search(listOptions).then { List<UserTFA> userTeleCodeList ->
-                    userTeleCodeList.each { UserTFA newUserTeleCode ->
+                return search(listOptions).then { Results<UserTFA> userTeleCodeList ->
+                    result.total = userTeleCodeList.total
+                    userTeleCodeList.items.each { UserTFA newUserTeleCode ->
                         if (newUserTeleCode != null) {
                             newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode,
                                     listOptions.properties?.split(',') as List<String>)
@@ -294,7 +295,7 @@ class UserTFAResourceImpl implements UserTFAResource {
         }
     }
 
-    private Promise<List<UserTFA>> search(UserTFAListOptions listOptions) {
+    private Promise<Results<UserTFA>> search(UserTFAListOptions listOptions) {
         if (listOptions.userId != null && listOptions.personalInfo != null) {
             if (listOptions.type == TFASearchType.PHONE.toString()) {
                 return userTFAPhoneService.searchTFACodeByUserIdAndPersonalInfoId(listOptions.userId, listOptions.personalInfo,

@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.test.identity;
-
+// CHECKSTYLE:OFF
 import com.junbo.authorization.spec.model.Role;
 import com.junbo.authorization.spec.model.RoleTarget;
 import com.junbo.common.id.RoleId;

@@ -226,7 +226,8 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
             }
 
             return userTFABackupCodeValidator.validateForSearch(userId, listOptions).then {
-                return search(listOptions).then { List<UserTFABackupCode> userTFABackupCodeList ->
+                return search(listOptions).then { Results<UserTFABackupCode> userTFABackupCodeList ->
+                    result.total = userTFABackupCodeList.total
                     userTFABackupCodeList.each { UserTFABackupCode userTFABackupCode ->
                         if (userTFABackupCode != null) {
                             userTFABackupCode = userTFABackupCodeFilter.filterForGet(userTFABackupCode,
@@ -242,7 +243,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
         }
     }
 
-    private Promise<List<UserTFABackupCode>> search(UserTFABackupCodeListOptions listOptions) {
+    private Promise<Results<UserTFABackupCode>> search(UserTFABackupCodeListOptions listOptions) {
         if (listOptions.userId != null && listOptions.active != null) {
             return userTFAPhoneBackupCodeService.searchByUserIdAndActiveStatus(listOptions.userId, listOptions.active,
                     listOptions.limit, listOptions.offset)

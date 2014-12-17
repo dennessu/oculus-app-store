@@ -2,6 +2,7 @@ package com.junbo.identity.service.impl
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPasswordId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.service.UserPasswordService
 import com.junbo.identity.spec.model.users.UserPassword
@@ -37,12 +38,12 @@ class UserPasswordServiceImpl implements UserPasswordService {
     }
 
     @Override
-    Promise<List<UserPassword>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<Results<UserPassword>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         return userPasswordRepository.searchByUserId(userId, limit, offset)
     }
 
     @Override
-    Promise<List<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset) {
+    Promise<Results<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset) {
         return userPasswordRepository.searchByUserIdAndActiveStatus(userId, active, limit, offset)
     }
 

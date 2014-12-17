@@ -137,10 +137,10 @@ class PITypeResourceImpl implements PITypeResource {
         }
 
         return piTypeValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<PIType> piTypeList ->
+            return search(listOptions).then { Results<PIType> piTypeList ->
                 def result = new Results<PIType>(items: [])
-
-                piTypeList.each { PIType newPItype ->
+                result.total = piTypeList.total
+                piTypeList.items.each { PIType newPItype ->
                     newPItype = piTypeFilter.filterForGet(newPItype, null)
 
                     if (newPItype != null) {
@@ -166,7 +166,7 @@ class PITypeResourceImpl implements PITypeResource {
         }
     }
 
-    private Promise<List<PIType>> search(PITypeListOptions listOptions) {
+    private Promise<Results<PIType>> search(PITypeListOptions listOptions) {
         if (listOptions.typeCode != null) {
             return piTypeService.searchByTypeCode(listOptions.typeCode, listOptions.limit, listOptions.offset)
         } else {

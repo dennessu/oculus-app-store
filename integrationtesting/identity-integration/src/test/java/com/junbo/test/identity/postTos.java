@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Tos;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.RandomHelper;
@@ -57,82 +58,109 @@ public class postTos {
         List<String> supportedCountries = new ArrayList<>();
         supportedCountries.add("US");
         supportedCountries.add("CN");
-        supportedCountries.add("ZZ");
         Tos tos1 = IdentityModel.DefaultTos(RandomHelper.randomAlphabetic(15), "EULA", "APPROVED", supportedCountries);
         Tos tos1Get = Identity.TosPostDefault(tos1);
 
         Tos tos2 = IdentityModel.DefaultTos(RandomHelper.randomAlphabetic(15), "TOS", "DRAFT", supportedCountries);
         Tos tos2Get = Identity.TosPostDefault(tos2);
 
-        List<Tos> tosList = Identity.TosSearch(RandomHelper.randomAlphabetic(15), null, null, null);
-        assert tosList.size() == 0;
+        Results<Tos> tosList = Identity.TosSearch(RandomHelper.randomAlphabetic(15), null, null, null);
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
         tosList = Identity.TosSearch(tos1.getTitle(), null, null, null);
-        assert tosList.size() == 1;
+        assert tosList.getTotal() == 1;
+        assert tosList.getItems().size() == 1;
 
         tosList = Identity.TosSearch(null, RandomHelper.randomAlphabetic(15), null, null);
-        assert tosList.size() == 0;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
         tosList = Identity.TosSearch(null, tos1.getType(), null, null);
-        assert tosList.size() != 0;
+        assert tosList.getTotal() > 0;
+        assert tosList.getItems().size() != 0;
 
         tosList = Identity.TosSearch(null, null, RandomHelper.randomAlphabetic(15), null);
-        assert tosList.size() == 0;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
         tosList = Identity.TosSearch(null, null, "APPROVED", null);
-        assert tosList.size() != 0;
+        assert tosList.getTotal() > 0;
+        assert tosList.getItems().size() != 0;
 
         tosList = Identity.TosSearch(null, null, null, "HK");
-        assert tosList.size() > 0;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
         tosList = Identity.TosSearch(null, null, null, "US");
-        assert tosList.size() > 0;
+        assert tosList.getTotal() > 0;
+        assert tosList.getItems().size() > 1;
 
         tosList = Identity.TosSearch(tos1.getTitle(), null, null, null);
-        assert tosList.size() == 1;
+        assert tosList.getTotal() == 1;
+        assert tosList.getItems().size() == 1;
 
         tosList = Identity.TosSearch(tos1.getTitle(), "EULA", null, null);
-        assert tosList.size() == 1;
+        assert tosList.getTotal() == 1;
+        assert tosList.getItems().size() == 1;
         tosList = Identity.TosSearch(tos1.getTitle(), "TOS", null, null);
-        assert tosList.size() == 0;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
 
         tosList = Identity.TosSearch(tos1.getTitle(), null, "APPROVED", null);
-        assert tosList.size() == 1;
+        assert tosList.getTotal() == 1;
+        assert tosList.getItems().size() == 1;
         tosList = Identity.TosSearch(tos1.getTitle(), null, "DRAFT", null);
-        assert tosList.size() == 0;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
 
         tosList = Identity.TosSearch(tos1.getTitle(), null, null, "US");
-        assert tosList.size() == 1;
+        assert tosList.getTotal() == 1;
+        assert tosList.getItems().size() == 1;
         tosList = Identity.TosSearch(tos1.getTitle(), null, null, "HK");
-        assert tosList.size() == 1;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
 
         tosList = Identity.TosSearch(null, "EULA", null, null);
-        assert tosList.size() != 0;
+        assert tosList.getTotal() > 0;
+        assert tosList.getItems().size() != 0;
 
         tosList = Identity.TosSearch(null, "EULA", "APPROVED", null);
-        assert tosList.size() != 0;
+        assert tosList.getTotal() != 0;
+        assert tosList.getItems().size() != 0;
         tosList = Identity.TosSearch(null, "EULA", "DRAFT", null);
-        assert tosList.size() == 0;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
 
         tosList = Identity.TosSearch(null, "EULA", null, "US");
-        assert tosList.size() != 0;
+        assert tosList.getTotal() > 0;
+        assert tosList.getItems().size() != 0;
         tosList = Identity.TosSearch(null, "EULA", null, "HK");
-        assert tosList.size() != 0;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
 
         tosList = Identity.TosSearch(null, null, "APPROVED", "US");
-        assert tosList.size() != 0;
+        assert tosList.getTotal() > 0;
+        assert tosList.getItems().size() != 0;
         tosList = Identity.TosSearch(null, null, "APPROVED", "HK");
-        assert tosList.size() != 0;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
 
         tosList = Identity.TosSearch(tos1.getTitle(), tos1.getType(), tos1.getState(), null);
-        assert tosList.size() == 1;
+        assert tosList.getTotal() == 1;
+        assert tosList.getItems().size() == 1;
         tosList = Identity.TosSearch(tos1.getTitle(), RandomHelper.randomAlphabetic(14), RandomHelper.randomAlphabetic(14), null);
-        assert tosList.size() == 0;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
 
         tosList = Identity.TosSearch(tos1.getTitle(), null, tos1.getState(), "US");
-        assert tosList.size() == 1;
+        assert tosList.getTotal() == 1;
+        assert tosList.getItems().size() == 1;
         tosList = Identity.TosSearch(tos1.getTitle(), null, tos1.getState(), "HK");
-        assert tosList.size() == 1;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
 
         tosList = Identity.TosSearch(null, tos1.getType(), tos1.getState(), "US");
-        assert tosList.size() != 0;
+        assert tosList.getTotal() > 0;
+        assert tosList.getItems().size() != 0;
         tosList = Identity.TosSearch(null, tos1.getType(), tos1.getState(), "HK");
-        assert tosList.size() != 0;
+        assert tosList.getTotal() == 0;
+        assert tosList.getItems().size() == 0;
     }
 }

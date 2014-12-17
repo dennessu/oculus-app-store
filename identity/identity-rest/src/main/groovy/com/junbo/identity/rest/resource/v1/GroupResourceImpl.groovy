@@ -174,12 +174,13 @@ class GroupResourceImpl implements GroupResource {
         return groupValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Group>(items: [])
             if (listOptions.organizationId != null) {
-                return search(listOptions).then { List<Group> groupList ->
-                    if (CollectionUtils.isEmpty(groupList)) {
+                return search(listOptions).then { Results<Group> groupList ->
+                    resultList.total = groupList.total
+                    if (groupList == null || CollectionUtils.isEmpty(groupList.items)) {
                         return Promise.pure(resultList)
                     }
 
-                    return Promise.each(groupList) { Group existingGroup ->
+                    return Promise.each(groupList.items) { Group existingGroup ->
                         def callback = authorizeCallbackFactory.create(existingGroup)
                         return RightsScope.with(authorizeService.authorize(callback)) {
                             if (AuthorizeContext.hasRights('read')) {
@@ -187,6 +188,7 @@ class GroupResourceImpl implements GroupResource {
                                 resultList.items.add(filterGroup)
                                 return Promise.pure(filterGroup)
                             } else {
+                                resultList.total = resultList.total - 1
                                 return Promise.pure(null)
                             }
                         }
@@ -196,6 +198,7 @@ class GroupResourceImpl implements GroupResource {
                 }
             } else {
                 return userGroupService.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset).then { Results<UserGroup> userGroupList ->
+                    resultList.total = userGroupList.total
                     if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
                         return Promise.pure(resultList)
                     }
@@ -209,6 +212,7 @@ class GroupResourceImpl implements GroupResource {
                                     resultList.items.add(existing)
                                     return Promise.pure(existing)
                                 } else {
+                                    resultList.total = resultList.total -1
                                     return Promise.pure(null)
                                 }
                             }
@@ -221,17 +225,10 @@ class GroupResourceImpl implements GroupResource {
         }
     }
 
-    private Promise<List<Group>> search(GroupListOptions listOptions) {
-        List<Group> result = new ArrayList<>()
+    private Promise<Results<Group>> search(GroupListOptions listOptions) {
         if (listOptions.organizationId != null && listOptions.name != null) {
             return groupService.searchByOrganizationIdAndName(listOptions.organizationId, listOptions.name,
-                    listOptions.limit, listOptions.offset).then { Group group ->
-                if (group != null) {
-                    result.add(group)
-                }
-
-                return Promise.pure(result)
-            }
+                    listOptions.limit, listOptions.offset)
         } else if (listOptions.organizationId != null) {
             return groupService.searchByOrganizationId(listOptions.organizationId, listOptions.limit, listOptions.offset)
         }

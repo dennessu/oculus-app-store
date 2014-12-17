@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCommunicationId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.validator.UserCommunicationValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.service.CommunicationService
@@ -66,8 +67,8 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             }
 
             return userCommunicationService.searchByUserIdAndCommunicationId(userCommunication.userId,
-                    userCommunication.communicationId, 1, 0).then { List<UserCommunication> existing ->
-                if (!CollectionUtils.isEmpty(existing)) {
+                    userCommunication.communicationId, 1, 0).then { Results<UserCommunication> existing ->
+                if (existing != null && !CollectionUtils.isEmpty(existing.items)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                 }
 
@@ -105,8 +106,8 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
 
             if (userCommunication.communicationId != oldUserCommunication.communicationId) {
                 return userCommunicationService.searchByUserIdAndCommunicationId(userCommunication.userId,
-                        userCommunication.communicationId, 1, 0).then { List<UserCommunication> existing ->
-                    if (!CollectionUtils.isEmpty(existing)) {
+                        userCommunication.communicationId, 1, 0).then { Results<UserCommunication> existing ->
+                    if (existing != null && !CollectionUtils.isEmpty(existing.items)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                     }
 

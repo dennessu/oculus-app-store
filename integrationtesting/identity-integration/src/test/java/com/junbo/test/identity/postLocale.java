@@ -13,6 +13,7 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import net.sf.cglib.core.Local;
 import org.apache.commons.collections.CollectionUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -65,7 +66,31 @@ public class postLocale {
         Validator.Validate("validate locale long name", locale.getLongName(), stored.getLongName());
         Validator.Validate("validate locale short name", locale.getShortName(), stored.getShortName());
 
-        Results<Locale> results = Identity.LocaleGetAll();
+        Results<Locale> results = Identity.LocaleGetAll(null);
         Validator.Validate("validate locale getAll", true, !CollectionUtils.isEmpty(results.getItems()));
+    }
+
+    @Test(groups = "dailies")
+    public void postLocaleSearch() throws Exception {
+        Long oldTotal, newTotal;
+        Results<Locale> results = Identity.LocaleGetAll(null);
+        assert results != null;
+        assert results.getTotal() > 1;
+        oldTotal = results.getTotal();
+        assert results.getItems().size() > 1;
+
+        results = Identity.LocaleGetAll(10);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert results.getItems().size() == 10;
+
+        results = Identity.LocaleGetAll(0);
+        assert results != null;
+        assert results.getTotal() > 1;
+        newTotal = results.getTotal();
+        assert oldTotal.equals(newTotal);
+        assert results.getItems().size() == 0;
     }
 }

@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.validator.UserSecurityQuestionValidator
@@ -114,30 +115,29 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
             }
             return Promise.pure(null)
         }.then {
-            return userSecurityQuestionService.searchByUserId(userId, maximumFetchSize, 0).then {
-                List<UserSecurityQuestion> userSecurityQuestionList ->
-                    if (!CollectionUtils.isEmpty(userSecurityQuestionList)) {
-                        boolean exists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
-                            return (existing.securityQuestion == userSecurityQuestion.securityQuestion)
-                        }
-                        if (exists) {
-                            throw AppCommonErrors.INSTANCE.fieldInvalid('securityQuestion').exception()
-                        }
+            return userSecurityQuestionService.searchByUserId(userId, maximumFetchSize, 0).then { Results<UserSecurityQuestion> userSecurityQuestionList ->
+                if (userSecurityQuestionList != null && !CollectionUtils.isEmpty(userSecurityQuestionList.items)) {
+                    boolean exists = userSecurityQuestionList.items.any { UserSecurityQuestion existing ->
+                        return (existing.securityQuestion == userSecurityQuestion.securityQuestion)
                     }
-                    userSecurityQuestion.setUserId(userId)
-
-                    List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
-                    CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                        return hash.handles(currentCredentialVersion)
+                    if (exists) {
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('securityQuestion').exception()
                     }
+                }
+                userSecurityQuestion.setUserId(userId)
 
-                    if (matched == null) {
-                        throw new IllegalStateException('No matched version: ' + currentCredentialVersion
-                                + ' for CredentialHash')
-                    }
+                List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+                CredentialHash matched = credentialHashList.find { CredentialHash hash ->
+                    return hash.handles(currentCredentialVersion)
+                }
 
-                    userSecurityQuestion.setAnswerHash(matched.hash(userSecurityQuestion.answer))
-                    return Promise.pure(null)
+                if (matched == null) {
+                    throw new IllegalStateException('No matched version: ' + currentCredentialVersion
+                            + ' for CredentialHash')
+                }
+
+                userSecurityQuestion.setAnswerHash(matched.hash(userSecurityQuestion.answer))
+                return Promise.pure(null)
             }
         }
     }
@@ -179,9 +179,11 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
             }
 
             if (userSecurityQuestion.securityQuestion != oldUserSecurityQuestion.securityQuestion) {
-                return userSecurityQuestionService.searchByUserId(userId, maximumFetchSize, 0).then {
-                    List<UserSecurityQuestion> userSecurityQuestionList ->
-                    boolean securityQuestionExists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
+                return userSecurityQuestionService.searchByUserId(userId, maximumFetchSize, 0).then { Results<UserSecurityQuestion> userSecurityQuestionList ->
+                    if (userSecurityQuestionList == null || CollectionUtils.isEmpty(userSecurityQuestionList.items)) {
+                        return Promise.pure(null)
+                    }
+                    boolean securityQuestionExists = userSecurityQuestionList.items.any { UserSecurityQuestion existing ->
                         return (existing.securityQuestion == userSecurityQuestion.securityQuestion)
                     }
                     if (securityQuestionExists) {

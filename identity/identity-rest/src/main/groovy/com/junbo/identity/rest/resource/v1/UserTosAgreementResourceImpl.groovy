@@ -178,10 +178,10 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
         }
 
         return userTosValidator.validateForSearch(listOptions).then {
-            return search(listOptions).then { List<UserTosAgreement> userTosList ->
+            return search(listOptions).then { Results<UserTosAgreement> userTosList ->
                 def result = new Results<UserTosAgreement>(items: [])
-
-                return Promise.each(userTosList) { UserTosAgreement newUserTos ->
+                result.total = userTosList.total
+                return Promise.each(userTosList.items) { UserTosAgreement newUserTos ->
                     def callback = authorizeCallbackFactory.create(newUserTos.userId)
                     return RightsScope.with(authorizeService.authorize(callback)) {
                         if (newUserTos != null) {
@@ -203,7 +203,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
         }
     }
 
-    Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions listOptions) {
+    Promise<Results<UserTosAgreement>> search(UserTosAgreementListOptions listOptions) {
         if (listOptions.userId != null && listOptions.tosId != null) {
             return userTosService.searchByUserIdAndTosId(listOptions.userId, listOptions.tosId, listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {

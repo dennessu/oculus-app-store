@@ -31,50 +31,23 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
 
     @Override
     Promise<Results<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        Results<UserGroup> results = new Results<>();
-        return queryView('by_user_id', userId.toString(), limit, offset, false).then { List<UserGroup> userGroupList ->
-            results.items = userGroupList
-
-            return queryViewTotal('by_user_id', userId.toString()).then { Integer total ->
-                results.total = total
-
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<Results<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset) {
-        Results<UserGroup> results = new Results<>();
-        return queryView('by_group_id', groupId.toString(), limit, offset, false).then { List<UserGroup> userGroupList ->
-            results.items = userGroupList
-
-            return queryViewTotal('by_group_id', groupId.toString()).then { Integer total ->
-                results.total = total
-
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_group_id', groupId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<Results<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset) {
-        Results<UserGroup> results = new Results<>()
         def startKey = [userId.toString(), groupId.toString()]
         def endKey = [userId.toString(), groupId.toString()]
         // todo:    The reason why we add one new view here is because the query view doesn't have reduce=false
         // To not break any code, we will add one new view
         // After the deploy, we will remove the reduce one
-        return queryView('by_user_id_group_id_with_reduce', startKey.toArray(new String()), endKey.toArray(new String()),
-                false, limit, offset, false).then { List<UserGroup> userGroupList ->
-            results.items = userGroupList
-
-            return queryViewTotal('by_user_id_group_id_with_reduce', startKey.toArray(new String()), endKey.toArray(new String()), false, false).then { Integer total ->
-                results.total = total
-
-                return Promise.pure(results)
-            }
-        }
+        return queryViewResults('by_user_id_group_id_with_reduce', startKey.toArray(new String()), endKey.toArray(new String()),
+                false, limit, offset, false)
     }
 
     @Override

@@ -7,6 +7,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.GroupId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.validator.GroupValidator
 import com.junbo.identity.service.GroupService
 import com.junbo.identity.service.OrganizationService
@@ -17,6 +18,7 @@ import com.junbo.identity.spec.v1.option.list.GroupListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 /**
@@ -107,8 +109,8 @@ class GroupValidatorImpl implements GroupValidator {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('organization').exception()
             }
 
-            return groupService.searchByOrganizationIdAndName(group.organizationId, group.name, 1, 0).then { Group existing ->
-                if (existing != null) {
+            return groupService.searchByOrganizationIdAndName(group.organizationId, group.name, 1, 0).then { Results<Group> existing ->
+                if (existing != null && !CollectionUtils.isEmpty(existing.getItems())) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
                 }
 
@@ -139,8 +141,8 @@ class GroupValidatorImpl implements GroupValidator {
         }
 
         if (group.name != oldGroup.name) {
-            return groupService.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Group existing ->
-                if (existing != null) {
+            return groupService.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Results<Group> existing ->
+                if (existing != null && !CollectionUtils.isEmpty(existing.items)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
                 }
 

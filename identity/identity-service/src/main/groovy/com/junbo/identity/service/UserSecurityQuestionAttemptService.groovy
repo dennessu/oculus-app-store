@@ -3,6 +3,7 @@ package com.junbo.identity.service
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -21,8 +22,8 @@ public interface UserSecurityQuestionAttemptService {
 
     Promise<Void> delete(UserSecurityQuestionVerifyAttemptId id)
 
-    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset)
+    Promise<Results<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
-    Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
+    Promise<Results<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
                                      UserSecurityQuestionId userSecurityQuestionId, Integer limit, Integer offset)
 }

@@ -3,6 +3,7 @@ package com.junbo.identity.service.impl
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.common.id.UserTFAId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserTFAAttemptRepository
 import com.junbo.identity.service.UserTFAAttemptService
 import com.junbo.identity.spec.v1.model.UserTFAAttempt
@@ -38,12 +39,12 @@ class UserTFAAttemptServiceImpl implements UserTFAAttemptService {
     }
 
     @Override
-    Promise<List<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+    Promise<Results<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         return userTFAAttemptRepository.searchByUserId(userId, limit, offset)
     }
 
     @Override
-    Promise<List<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId, Integer limit, Integer offset) {
+    Promise<Results<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId, Integer limit, Integer offset) {
         return userTFAAttemptRepository.searchByUserIdAndUserTFAId(userId, userTFAId, limit, offset)
     }
 

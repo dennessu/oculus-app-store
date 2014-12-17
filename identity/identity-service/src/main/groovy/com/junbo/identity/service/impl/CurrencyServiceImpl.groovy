@@ -1,6 +1,7 @@
 package com.junbo.identity.service.impl
 
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.CurrencyRepository
 import com.junbo.identity.service.CurrencyService
 import com.junbo.langur.core.promise.Promise
@@ -36,7 +37,7 @@ class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    Promise<List<com.junbo.identity.spec.v1.model.Currency>> searchAll(Integer limit, Integer offset) {
+    Promise<Results<com.junbo.identity.spec.v1.model.Currency>> searchAll(Integer limit, Integer offset) {
         return currencyRepository.searchAll(limit, offset)
     }
 

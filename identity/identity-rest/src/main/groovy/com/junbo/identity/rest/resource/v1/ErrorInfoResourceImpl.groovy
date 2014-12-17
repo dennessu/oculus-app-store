@@ -147,10 +147,10 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
         }
 
         return errorInfoValidator.validateForSearch(listOptions).then {
-            return errorInfoService.searchAll(listOptions.limit, listOptions.offset).then { List<ErrorInfo> errorInfoList ->
+            return errorInfoService.searchAll(listOptions.limit, listOptions.offset).then { Results<ErrorInfo> errorInfoList ->
                 def result = new Results<ErrorInfo>(items: [])
-
-                errorInfoList.each { ErrorInfo newErrorInfo ->
+                result.total = errorInfoList.total
+                errorInfoList.items.each { ErrorInfo newErrorInfo ->
                     newErrorInfo = errorInfoFilter.filterForGet(newErrorInfo, null)
 
                     if (newErrorInfo != null) {

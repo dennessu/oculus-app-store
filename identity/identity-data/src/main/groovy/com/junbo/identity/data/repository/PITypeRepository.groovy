@@ -1,6 +1,7 @@
 package com.junbo.identity.data.repository
 
 import com.junbo.common.id.PITypeId
+import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.langur.core.promise.Promise
@@ -14,8 +15,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 public interface PITypeRepository extends BaseRepository<PIType, PITypeId> {
     @ReadMethod
-    Promise<List<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset)
+    Promise<Results<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<PIType>> searchAll(Integer limit, Integer offset)
+    Promise<Results<PIType>> searchAll(Integer limit, Integer offset)
 }
