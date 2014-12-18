@@ -44,5 +44,6 @@ class ErrorCodes {
     class Casey {
         static final String ReviewCreateError = '104.102'
         static final String ReviewUpdateError = '104.103'
+        static final String LinkedResourceValidationFailed = '101.104'
     }
 }

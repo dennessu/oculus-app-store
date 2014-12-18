@@ -5,6 +5,8 @@
  */
 package com.junbo.store.spec.exception.casey;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 /**
  * The CaseyException class.
  */
@@ -12,17 +14,25 @@ public class CaseyException extends Exception {
 
     private final String errorCode;
 
+    private final JsonNode details;
+
     public String getErrorCode() {
         return errorCode;
     }
 
-    public CaseyException(String errorCode, String msg, Throwable cause) {
+    public JsonNode getDetails() {
+        return details;
+    }
+
+    public CaseyException(String errorCode, JsonNode details, String msg, Throwable cause) {
         super(msg, cause);
+        this.details = details;
         this.errorCode = errorCode;
     }
 
-    public CaseyException(String errorCode, String msg) {
+    public CaseyException(String errorCode, JsonNode details, String msg) {
         super(msg);
+        this.details = details;
         this.errorCode = errorCode;
     }
 }

@@ -69,6 +69,8 @@ class CaseyFacadeImpl implements CaseyFacade {
 
     private final static String CMSPAGE_LIST_EXPAND = '(results(schedule))'
 
+    private final static String INVALID_COUNTRY_DETAIL = 'Invalid country'.toLowerCase()
+
     private final static ObjectMapper objectMapper;
 
     @Resource(name = 'store.jsonMessageCaseyTranscoder')
@@ -333,6 +335,9 @@ class CaseyFacadeImpl implements CaseyFacade {
                 items: [] as List
         )
         resourceContainer.caseyResource.searchOffers(searchParams).recover { Throwable ex ->
+            if (isInvalidCountryCaseyError(ex)) {
+                throw AppErrors.INSTANCE.unsupportedCountry().exception()
+            }
             wrapAndThrow(ex)
         }.then { CaseyResults<CaseyOffer> rawResults ->
             if (rawResults?.items == null) {
@@ -479,7 +484,7 @@ class CaseyFacadeImpl implements CaseyFacade {
         if (throwable instanceof CaseyException) {
             throw throwable
         }
-        throw new CaseyException('Call_Casey_Error', null, throwable)
+        throw new CaseyException('Call_Casey_Error', null, null, throwable)
     }
 
     private static boolean isCaseyError(Throwable throwable, String... errorCode) {
@@ -489,5 +494,14 @@ class CaseyFacadeImpl implements CaseyFacade {
             }
         }
         return false
+    }
+
+    private static boolean isInvalidCountryCaseyError(Throwable throwable) {
+        if (!isCaseyError(throwable, ErrorCodes.Casey.LinkedResourceValidationFailed)) {
+            return false
+        }
+        CaseyException caseyException = (CaseyException) (throwable);
+        return caseyException.details != null &&
+                caseyException.details.toString().toLowerCase().contains(INVALID_COUNTRY_DETAIL)
     }
 }
