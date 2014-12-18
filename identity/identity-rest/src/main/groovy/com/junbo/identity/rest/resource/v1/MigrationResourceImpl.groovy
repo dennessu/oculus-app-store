@@ -117,9 +117,6 @@ class MigrationResourceImpl implements MigrationResource {
         htmlEncode.put('GT', '>')
         htmlEncode.put('amp', '&')
         htmlEncode.put('AMP', '&')
-        htmlEncode.put('quot', '"')
-        htmlEncode.put('apos','\'')
-        htmlEncode.put('nbsp', '\240')
     }
 
     @Override
@@ -1107,11 +1104,12 @@ class MigrationResourceImpl implements MigrationResource {
         if (StringUtils.isEmpty(oculusInput.password)) {
             throw new IllegalArgumentException('password is null or empty with currentId: ' + oculusInput.currentId)
         }
+        /*
         String[] passwords = oculusInput.password.split(":")
         if (passwords.length != 4 && passwords[0] != "1") {
             throw new IllegalArgumentException('password only accept version 1 with currentId: ' + oculusInput.currentId)
         }
-
+        */
         return Promise.pure(null)
     }
 

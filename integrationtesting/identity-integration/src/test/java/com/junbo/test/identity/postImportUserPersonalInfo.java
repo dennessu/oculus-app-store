@@ -460,9 +460,6 @@ public class postImportUserPersonalInfo {
     //        'GT': '>',
     //        'amp': '&',
     //        'AMP': '&',
-    //        'quot': '"',
-    //        'apos': '\'',
-    //        'nbsp': '\240'
     //  };
     @Test(groups = "dailies")
     public void updateHtmlCodeAll() throws Exception {
@@ -474,9 +471,9 @@ public class postImportUserPersonalInfo {
         String firstName = "abc&" + oculusInput.getFirstName();
         oculusInput.setFirstName("abc" + "&" + "amp" + ";" + oculusInput.getFirstName());
         String lastName = "abc'" + oculusInput.getLastName();
-        oculusInput.setLastName("abc" + "&" + "apos" + ";" + oculusInput.getLastName());
+        oculusInput.setLastName(lastName);
         String headline = "abc" + "\240" + oculusInput.getProfile().getHeadline();
-        oculusInput.getProfile().setHeadline("abc" + "&" + "nbsp" + ";" + oculusInput.getProfile().getHeadline());
+        oculusInput.getProfile().setHeadline(headline);
         String summary = "abc<" + oculusInput.getProfile().getSummary();
         oculusInput.getProfile().setSummary("abc" + "&" + "LT" + ";" + oculusInput.getProfile().getSummary());
         String url = "abc>" + oculusInput.getProfile().getUrl();
@@ -576,7 +573,7 @@ public class postImportUserPersonalInfo {
         String lastName = "abc'" + oculusInput.getLastName();
         oculusInput.setLastName(lastName);
         String headline = "abc" + "\240" + oculusInput.getProfile().getHeadline();
-        oculusInput.getProfile().setHeadline("abc" + "&" + "nbsp" + ";" + oculusInput.getProfile().getHeadline());
+        oculusInput.getProfile().setHeadline(headline);
         String summary = "abc<" + oculusInput.getProfile().getSummary();
         oculusInput.getProfile().setSummary("abc" + "&" + "LT" + ";" + oculusInput.getProfile().getSummary());
         String url = "abc>" + oculusInput.getProfile().getUrl();
@@ -626,7 +623,7 @@ public class postImportUserPersonalInfo {
         String lastName = "abc'" + oculusInput.getLastName();
         oculusInput.setLastName(lastName);
         String headline = "abc" + "\240" + oculusInput.getProfile().getHeadline();
-        oculusInput.getProfile().setHeadline("abc" + "&" + "nbsp" + ";" + oculusInput.getProfile().getHeadline());
+        oculusInput.getProfile().setHeadline("abc" + "\240" + oculusInput.getProfile().getHeadline());
         String summary = "abc<" + oculusInput.getProfile().getSummary();
         oculusInput.getProfile().setSummary("abc" + "&" + "LT" + ";" + oculusInput.getProfile().getSummary());
         String url = "abc>" + oculusInput.getProfile().getUrl();
@@ -660,6 +657,98 @@ public class postImportUserPersonalInfo {
         UserPersonalInfo emailPII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getEmails().get(0).getValue());
         Email email1 = (Email)JsonHelper.JsonNodeToObject(emailPII.getValue(), Email.class);
         assert email1.getInfo().equals(email);
+    }
+
+    // The only three special characters has the mapping as follows:
+    // '>' -> '&gt;'
+    // '<' -> '&lt;'
+    // '&' -> '&amp;'
+    @Test(groups = "dailies")
+    public void testPasswordWithSpecialCharacter() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        String rawPassword = "1234567890!@#$%^&*()";
+        String hashedPassword = "2:$2a$10$cQ89KuDG.LR6dlK6NP/yhOPrs.oPz/zydxx7wIsAnF/5H0lf.97ba";
+        oculusInput.setPassword(hashedPassword);
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        List<UserCredential> userCredentials = Identity.UserCredentialList(output.getUserId(), "PASSWORD");
+        assert userCredentials.size() == 2;
+
+        response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testPasswordWithSpecialCharactersChangePassword() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        String rawPassword = "1234567890!@#$%^&*()";
+        String hashedPassword = "2:$2a$10$cQ89KuDG.LR6dlK6NP/yhOPrs.oPz/zydxx7wIsAnF/5H0lf.97ba";
+        oculusInput.setPassword(hashedPassword);
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+
+        String newPassword = "!@#$%^&*()1234567890";
+        CloseableHttpResponse response = Identity.UserCredentialPostDefault(output.getUserId(), rawPassword, newPassword);
+        response.close();
+
+        response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), newPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        List<UserCredential> userCredentials = Identity.UserCredentialList(output.getUserId(), "PASSWORD");
+        assert userCredentials.size() == 3;
+
+        response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), newPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testPasswordWithSpecialCharacters() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        String rawPassword = "1234567890qwertyuiop";
+        String hashedPassword = "2:$2a$10$vmLkP5DH4dmUPYy4CshjhOH5EeZB.mVH.yLXThbvKvCsP74LB4GIG";
+        oculusInput.setPassword(hashedPassword);
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        List<UserCredential> userCredentials = Identity.UserCredentialList(output.getUserId(), "PASSWORD");
+        assert userCredentials.size() == 2;
+
+        response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testPasswordWithNotsupportedSpecialCharacters() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        String rawPassword = "1234567890 '\"";
+        String hashedPassword = "2:$2a$10$U8p.lPXGpbNziqGOderxEOAyqYaDMUe2P9NHupOpKQo1dzJpqrc3.";
+        oculusInput.setPassword(hashedPassword);
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        List<UserCredential> userCredentials = Identity.UserCredentialList(output.getUserId(), "PASSWORD");
+        assert userCredentials.size() == 2;
+
+        response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
     }
 
     protected static User createUser(String username, String nickName) throws Exception {

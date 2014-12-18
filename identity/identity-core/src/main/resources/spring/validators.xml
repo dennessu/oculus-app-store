@@ -28,7 +28,7 @@
         <property name="userPasswordService" ref="userPasswordService"/>
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
-        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
+        <property name="credentialHelper" ref="credentialHelper" />
     </bean>
 
     <bean id="userPinValidator" class="com.junbo.identity.core.service.validator.impl.UserPinValidatorImpl">
@@ -94,6 +94,7 @@
         <property name="maxRetryCountEnable" value="${identity.conf.maxRetryCountEnable}" />
         <property name="maxSameIPAttemptsEnable" value="${identity.conf.maxSameIPAttemptsEnable}" />
         <property name="maxSameUserAttemptsEnable" value="${identity.conf.maxSameUserAttemptsEnable}" />
+        <property name="credentialHelper" ref="credentialHelper" />
     </bean>
 
     <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">
@@ -628,6 +629,18 @@
         <property name="generator" ref="bCryptSaltGenerator" />
     </bean>
 
+    <bean id="nonhtmlBcryptCredentialHash" class="com.junbo.identity.core.service.credential.impl.NonHtmlBcryptCredentialHash">
+        <property name="generator" ref="bCryptSaltGenerator" />
+    </bean>
+
+    <bean id="credentialHelper" class="com.junbo.identity.core.service.credential.impl.CredentialHelperImpl">
+        <property name="credentialHashFactory" ref="credentialHashFactory" />
+        <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
+        <property name="userPasswordService" ref="userPasswordService" />
+        <property name="updateHtml" value="${common.updateHtml.enable}" />
+    </bean>
+
     <bean id="oculusCredentialHash" class="com.junbo.identity.core.service.credential.impl.OculusCredentialHash">
         <property name="generator" ref="shaSaltGenerator" />
     </bean>
@@ -637,6 +650,7 @@
             <list>
                 <ref bean="bcryptCredentialHash" />
                 <ref bean="oculusCredentialHash" />
+                <ref bean="nonhtmlBcryptCredentialHash" />
             </list>
         </constructor-arg>
     </bean>
