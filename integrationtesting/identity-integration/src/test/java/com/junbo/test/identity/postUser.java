@@ -321,7 +321,7 @@ public class postUser {
 
         response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1UserURI + "/check-username/" +
-                        RandomHelper.randomAlphabetic(1) + RandomHelper.randomNumeric(2) + "%20" + "_" + "-." + RandomHelper.randomAlphabetic(1),
+                        RandomHelper.randomAlphabetic(1) + RandomHelper.randomNumeric(2) + "_" + "-." + RandomHelper.randomAlphabetic(1),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validate username can contain letters, numbers, spaces, dashes, underscores, and periods", 200, response.getStatusLine().getStatusCode());
         response.close();
@@ -348,6 +348,25 @@ public class postUser {
                 Identity.IdentityV1UserURI + "/check-username/" +
                         URLEncoder.encode(RandomHelper.randomAlphabetic(5) + ".." + RandomHelper.randomAlphabetic(1), "UTF-8"), "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validate username should not contain consecutive periods", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        RandomHelper.randomAlphabetic(1) + RandomHelper.randomNumeric(2) + "%20" + "-." + RandomHelper.randomAlphabetic(1),
+                "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username can not contain single space", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        RandomHelper.randomAlphabetic(1), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username length should be larger than 2", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        RandomHelper.randomAlphabetic(2), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username length can equal to 2", 200, response.getStatusLine().getStatusCode());
         response.close();
     }
 
