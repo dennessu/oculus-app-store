@@ -75,16 +75,8 @@ class AddressValidatorImpl implements PiiValidator {
     }
 
     private Promise<Void> checkAddress(Address address) {
-        if (address.street1 == null || address.street1.isEmpty()) {
-            throw AppCommonErrors.INSTANCE.fieldRequired("street1").exception()
-        }
-
         if (address.countryId == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired("country").exception()
-        }
-
-        if (address.city == null || address.city.isEmpty()) {
-            throw AppCommonErrors.INSTANCE.fieldRequired("city").exception()
         }
 
         if (address.postalCode == null || address.postalCode.isEmpty()) {
