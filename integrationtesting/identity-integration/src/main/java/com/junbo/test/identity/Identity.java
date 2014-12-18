@@ -593,6 +593,11 @@ public class Identity {
                 OculusOutput.class);
     }
 
+    public static Boolean UserHtmlUpdate(UserId userId) throws Exception {
+        return IdentityPost(IdentityV1ImportsURI + "/update-html/" + IdConverter.idToHexString(userId),
+                "", Boolean.class);
+    }
+
     public static Boolean GetUsernameEmailBlocker(String username, String email) throws Exception {
         return IdentityGet(IdentityV1UserURI + "/check-legacy-username-email?username=" + username + "&email=" + URLEncoder.encode(email, "UTF-8"),
                 Boolean.class);

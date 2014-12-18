@@ -5,7 +5,6 @@
  */
 package com.junbo.identity.common.util;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -41,10 +40,16 @@ public class JsonHelper {
         } catch (JsonMappingException jsonMappingException) {
             throw ERRORS.invalidJson(jsonMappingException.getOriginalMessage(),
                     buildField(jsonMappingException.getPath())).exception();
-        } catch (JsonParseException ex) {
-            throw ERRORS.invalidJson(ex.getOriginalMessage(), DEFAULT_FIELD).exception();
         } catch (JsonProcessingException json) {
             throw ERRORS.invalidJson(json.getOriginalMessage(), DEFAULT_FIELD).exception();
+        }
+    }
+
+    public static JsonNode objToJsonNode(Object obj) {
+        try {
+            return ObjectMapperProvider.instance().valueToTree(obj);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            throw ERRORS.invalidConversionToJson(illegalArgumentException.getMessage()).exception();
         }
     }
 
@@ -57,6 +62,9 @@ public class JsonHelper {
 
         @ErrorDef(httpStatusCode = 400, code = "501", message = "invalid Json: {0}", field = "{1}")
         AppError invalidJson(String detail, String field);
+
+        @ErrorDef(httpStatusCode = 400, code= "502", message = "invalid conversion to json: {0}")
+        AppError invalidConversionToJson(String detail);
     }
 
     private static String buildField(List<JsonMappingException.Reference> paths) {

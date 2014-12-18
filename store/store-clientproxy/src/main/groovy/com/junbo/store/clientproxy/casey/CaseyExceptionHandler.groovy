@@ -32,6 +32,6 @@ class CaseyExceptionHandler implements ExceptionHandler {
             errorNode = messageTranscoder.decode(new TypeReference<JsonNode>() {}, body) as JsonNode
         }
         String message = "Casey_Return_Error, status=${response.statusCode}, length=${body.length()}, response:\n${body}"
-        throw new CaseyException(errorNode?.get('code')?.textValue(), message)
+        throw new CaseyException(errorNode?.get('code')?.textValue(), errorNode?.get('details'), message)
     }
 }

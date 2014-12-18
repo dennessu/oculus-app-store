@@ -102,23 +102,6 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
         });
     }
 
-    private String getFieldValue(String nameValuePair, String fieldName){
-        if(nameValuePair == null && fieldName == null){
-            return null;
-        }
-        if(nameValuePair.contains(fieldName)){
-            String[] results = nameValuePair.split(":");
-            if(results.length > 1){
-                return results[results.length - 1].replace("\"", "").replace("\\","");
-            }
-        }
-        return null;
-    }
-
-    public static void main(String[] args){
-
-    }
-
     public void setFacebookOauthApi(FacebookOauthApi facebookOauthApi) {
         this.facebookOauthApi = facebookOauthApi;
     }

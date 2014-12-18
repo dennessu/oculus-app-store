@@ -108,6 +108,17 @@ class MigrationResourceImpl implements MigrationResource {
     @Autowired
     private PiiHashFactory piiHashFactory
 
+    private static Map htmlEncode = new HashMap<String, String>()
+
+    static {
+        htmlEncode.put('lt', '<')
+        htmlEncode.put('LT', '<')
+        htmlEncode.put('gt', '>')
+        htmlEncode.put('GT', '>')
+        htmlEncode.put('amp', '&')
+        htmlEncode.put('AMP', '&')
+    }
+
     @Override
     @Transactional
     Promise<OculusOutput> migrate(OculusInput oculusInput) {
@@ -202,6 +213,167 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(Response.status(200).build())
             }
         }
+    }
+
+    @Override
+    Promise<Boolean> updateUserHtmlCode(UserId userId) {
+        def changed = false
+        return userService.get(userId).then { User existing ->
+            return updateUserLoginName(existing).then { Boolean isChanged ->
+                changed = changed || isChanged
+                return Promise.pure(null)
+            }.then {
+                return updateUserName(existing).then { Boolean isChanged ->
+                    changed = changed || isChanged
+                    return Promise.pure(null)
+                }
+            }.then {
+                return updateUserEmail(existing).then { Boolean isChanged ->
+                    changed = changed || isChanged
+                    return Promise.pure(null)
+                }
+            }.then {
+                return updateUserProfile(existing).then { Boolean isChanged ->
+                    changed = changed || isChanged
+                    return Promise.pure(changed)
+                }
+            }.then {
+                if (changed) {
+                    return userService.update(existing, existing).then {
+                        return Promise.pure(changed)
+                    }
+                }
+
+                return Promise.pure(changed)
+            }
+        }.recover { Throwable ex ->
+            logger.error('fail to update user: ' + userId.toString(), ex)
+            return Promise.pure(false)
+        }
+    }
+
+    Promise<Boolean> updateUserLoginName(User existing) {
+        def changed = false
+        if (existing.username != null) {
+            return userPersonalInfoService.get(existing.username).then { UserPersonalInfo usernamePii ->
+                if (usernamePii == null || usernamePii.value == null) {
+                    changed = true
+                    existing.username = null
+                    return Promise.pure(changed)
+                }
+                UserLoginName userLoginName = (UserLoginName)JsonHelper.jsonNodeToObj(usernamePii.value, UserLoginName)
+                String updatedHtml = replaceHtmlCode(userLoginName.userName);
+                if (userLoginName.userName == updatedHtml) {
+                    return Promise.pure(changed)
+                }
+                changed = true;
+                userLoginName.setUserName(updatedHtml);
+                userLoginName.setCanonicalUsername(replaceHtmlCode(userLoginName.canonicalUsername))
+                usernamePii.value = JsonHelper.objToJsonNode(userLoginName)
+                return userPersonalInfoService.update(usernamePii, usernamePii).then {
+                    return Promise.pure(changed)
+                }
+            }
+        } else {
+            return Promise.pure(changed)
+        }
+    }
+
+    Promise<Boolean> updateUserName(User existing) {
+        def changed = false
+        if (existing.name != null) {
+            return userPersonalInfoService.get(existing.name).then { UserPersonalInfo name ->
+                if (name == null || name.value == null) {
+                    changed = true
+                    existing.name = null
+                    return Promise.pure(changed)
+                }
+                UserName userName = (UserName)JsonHelper.jsonNodeToObj(name.value, UserName)
+                String formattedGivenName = replaceHtmlCode(userName.givenName)
+                String formattedMiddleName = replaceHtmlCode(userName.middleName)
+                String formattedFamilyName = replaceHtmlCode(userName.familyName)
+                String formattedFullName = replaceHtmlCode(userName.fullName)
+
+                if (formattedGivenName == userName.givenName
+                 && formattedMiddleName == userName.middleName
+                 && formattedFamilyName == userName.familyName
+                 && formattedFullName == userName.fullName) {
+                    return Promise.pure(changed)
+                }
+                changed = true
+                userName.setGivenName(formattedGivenName)
+                userName.setMiddleName(formattedMiddleName)
+                userName.setFamilyName(formattedFamilyName)
+                userName.setFullName(formattedFullName)
+                name.value = JsonHelper.objToJsonNode(userName)
+                return userPersonalInfoService.update(name, name).then {
+                    return Promise.pure(changed)
+                }
+            }
+        } else {
+            return Promise.pure(changed)
+        }
+    }
+
+    Promise<Boolean> updateUserEmail(User existing) {
+        def changed = false
+        if (!CollectionUtils.isEmpty(existing.emails)) {
+            return Promise.each(existing.emails) { UserPersonalInfoLink userPersonalInfoLink ->
+                if (userPersonalInfoLink.value == null) {
+                    return Promise.pure(null)
+                }
+                return userPersonalInfoService.get(userPersonalInfoLink.value).then { UserPersonalInfo email ->
+                    if (email == null || email.value == null) {
+                        changed = true
+                        email.value = null
+                        return Promise.pure(null)
+                    }
+                    Email emailObj = (Email)JsonHelper.jsonNodeToObj(email.value, Email)
+                    String formattedEmailInfo = replaceHtmlCode(emailObj.info)
+                    if (formattedEmailInfo == emailObj.info) {
+                        return Promise.pure(null)
+                    }
+                    changed = true
+                    emailObj.info = formattedEmailInfo
+                    email.value = JsonHelper.objToJsonNode(emailObj)
+                    return userPersonalInfoService.update(email, email).then {
+                        return Promise.pure(null)
+                    }
+                }
+            }.then {
+                return Promise.pure(changed)
+            }
+        } else {
+            return Promise.pure(changed)
+        }
+    }
+
+    Promise<Boolean> updateUserProfile(User existing) {
+        def changed = false
+        if (existing.profile == null) {
+            return Promise.pure(changed)
+        }
+
+        String formattedHeadLine = replaceHtmlCode(existing.profile.headline);
+        String formattedSummary = replaceHtmlCode(existing.profile.summary);
+        String formattedWebpage = replaceHtmlCode(existing.profile.webpage);
+        String formattedHref = replaceHtmlCode(existing.profile.avatar?.href);
+
+        if (formattedHeadLine == existing.profile.headline
+         && formattedSummary == existing.profile.summary
+         && formattedWebpage == existing.profile.webpage
+         && formattedHref == existing.profile.avatar?.href) {
+            return Promise.pure(changed)
+        }
+
+        changed = true
+        existing.profile.headline = formattedHeadLine
+        existing.profile.summary = formattedSummary
+        existing.profile.webpage = formattedWebpage
+        if (existing.profile.avatar?.href != null) {
+            existing.profile.avatar.href = formattedHref
+        }
+        return Promise.pure(changed)
     }
 
     Promise<Boolean> validateBlockerValid(UsernameMailBlocker usernameMailBlocker) {
@@ -932,11 +1104,12 @@ class MigrationResourceImpl implements MigrationResource {
         if (StringUtils.isEmpty(oculusInput.password)) {
             throw new IllegalArgumentException('password is null or empty with currentId: ' + oculusInput.currentId)
         }
+        /*
         String[] passwords = oculusInput.password.split(":")
         if (passwords.length != 4 && passwords[0] != "1") {
             throw new IllegalArgumentException('password only accept version 1 with currentId: ' + oculusInput.currentId)
         }
-
+        */
         return Promise.pure(null)
     }
 
@@ -1569,5 +1742,21 @@ class MigrationResourceImpl implements MigrationResource {
                 }
             }
         }
+    }
+
+    private String replaceHtmlCode(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return str
+        }
+
+        String temp = str;
+        Iterator iterator = htmlEncode.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> entry = (Map.Entry<String, String>)iterator.next()
+            String key = '&' + entry.key + ';'
+            String value = entry.value
+            temp = temp.replaceAll(key, value)
+        }
+        return temp
     }
 }

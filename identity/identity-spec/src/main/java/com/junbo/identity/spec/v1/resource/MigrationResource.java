@@ -5,19 +5,18 @@
  */
 package com.junbo.identity.spec.v1.resource;
 
+import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -45,4 +44,9 @@ public interface MigrationResource {
     @POST
     @Path("/username-email-block")
     Promise<Response> usernameMailBlock(UsernameMailBlocker usernameMailBlocker);
+
+    @POST
+    @Path("/update-html/{userId}")
+    @RouteBy(value = "userId", switchable = true)
+    Promise<Boolean> updateUserHtmlCode(@PathParam("userId")UserId userId);
 }

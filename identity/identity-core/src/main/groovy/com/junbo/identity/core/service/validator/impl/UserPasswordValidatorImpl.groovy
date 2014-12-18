@@ -6,6 +6,7 @@ import com.junbo.common.id.UserPasswordId
 import com.junbo.common.model.Results
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
+import com.junbo.identity.core.service.credential.CredentialHelper
 import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserPasswordValidator
 import com.junbo.identity.service.UserPasswordService
@@ -34,8 +35,8 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
     private Integer currentCredentialVersion
 
     private CredentialHashFactory credentialHashFactory
-    // Any data that will use this data should be data issue, we may need to fix this.
-    private Integer maximumFetchSize
+
+    private CredentialHelper credentialHelper
 
     @Override
     Promise<UserPassword> validateForGet(UserId userId, UserPasswordId userPasswordId) {
@@ -125,20 +126,11 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
             return Promise.pure(null)
         }
 
-        return userPasswordService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
-            Results<UserPassword> userPasswordList ->
-            if (userPasswordList == null || CollectionUtils.isEmpty(userPasswordList.items) || userPasswordList.items.size() > 1) {
+        return credentialHelper.isValidPassword(userId, oldPassword).then { Boolean isValid ->
+            if (!isValid) {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
 
-            List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
-            CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                return hash.matches(oldPassword, userPasswordList.items.get(0).passwordHash)
-            }
-
-            if (matched == null) {
-                throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
-            }
             return Promise.pure(null)
         }
     }
@@ -189,7 +181,7 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
     }
 
     @Required
-    void setMaximumFetchSize(Integer maximumFetchSize) {
-        this.maximumFetchSize = maximumFetchSize
+    void setCredentialHelper(CredentialHelper credentialHelper) {
+        this.credentialHelper = credentialHelper
     }
 }

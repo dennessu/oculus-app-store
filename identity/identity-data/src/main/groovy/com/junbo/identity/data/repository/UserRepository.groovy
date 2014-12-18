@@ -23,4 +23,7 @@ interface UserRepository extends BaseRepository<User, UserId> {
 
     @ReadMethod
     Promise<List<User>> searchInvalidVatUser(Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<User>> searchAll(Integer limit, Integer offset)
 }

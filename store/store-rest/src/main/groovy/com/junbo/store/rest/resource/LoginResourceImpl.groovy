@@ -355,7 +355,7 @@ class LoginResourceImpl implements LoginResource {
     Promise<AuthTokenResponse> getAuthToken(AuthTokenRequest tokenRequest) {
         requestValidator.validateRequiredApiHeaders().validateAuthTokenRequest(tokenRequest)
 
-        return resourceContainer.tokenEndpoint.postToken(
+         return resourceContainer.tokenEndpoint.postToken(
                 new AccessTokenRequest(
                         refreshToken: tokenRequest.refreshToken,
                         grantType: GrantType.REFRESH_TOKEN.name(),

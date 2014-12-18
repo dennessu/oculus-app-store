@@ -57,6 +57,7 @@ public class postCredentialAttempts {
         UserLoginName loginName = (UserLoginName) JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), UserLoginName.class);
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(email, password);
         Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
     }
 
     @Test(groups = "dailies")

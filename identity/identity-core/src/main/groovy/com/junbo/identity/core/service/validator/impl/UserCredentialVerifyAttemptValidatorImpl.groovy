@@ -15,6 +15,7 @@ import com.junbo.identity.common.util.Constants
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
+import com.junbo.identity.core.service.credential.CredentialHelper
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
 import com.junbo.identity.data.identifiable.CredentialType
@@ -65,6 +66,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private UserPasswordService userPasswordService
     private UserPinService userPinService
     private UserPersonalInfoService userPersonalInfoService
+    private CredentialHelper credentialHelper
 
     private List<Pattern> allowedIpAddressPatterns
     private Integer userAgentMinLength
@@ -176,17 +178,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 userLoginAttempt.setUserId((UserId)user.id)
 
                 if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-                    // Check whether there are multiple userpasswords exists
-                    return userPasswordService.searchByUserIdAndActiveStatus((UserId)user.id, true, 2, 0).then { Results<UserPassword> userPasswordList ->
-                        if (userPasswordList == null || CollectionUtils.isEmpty(userPasswordList.items) || userPasswordList.items.size() > 1) {
-                            throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
-                        }
-
-                        List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
-                        CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                            return hash.matches(userLoginAttempt.value, userPasswordList.items.get(0).passwordHash)
-                        }
-                        userLoginAttempt.setSucceeded(matched != null)
+                    return credentialHelper.isValidPassword(user.getId(), userLoginAttempt.value).then { Boolean isValid ->
+                        userLoginAttempt.setSucceeded(isValid)
                         return checkMaximumRetryCount(user, userLoginAttempt).then {
                             return checkMaximumSameUserAttemptCount(user, userLoginAttempt)
                         }
@@ -835,6 +828,11 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
         this.userPersonalInfoService = userPersonalInfoService
+    }
+
+    @Required
+    void setCredentialHelper(CredentialHelper credentialHelper) {
+        this.credentialHelper = credentialHelper
     }
 
     @Required

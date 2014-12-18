@@ -9,6 +9,7 @@ package com.junbo.payment.clientproxy.facebook;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.payment.common.CommonUtil;
 
 import javax.ws.rs.QueryParam;
 
@@ -177,7 +178,9 @@ public class FacebookCreditCard {
         sb.append("expiry_month=" + this.expiryMonth + concat);
         sb.append("expiry_year="+ this.expiryYear + concat);
         sb.append("token=" + this.token + concat);
-        sb.append("card_holder_name=" + this.cardHolderName + concat);
+        if(!CommonUtil.isNullOrEmpty(this.cardHolderName)){
+            sb.append("card_holder_name=" + this.cardHolderName + concat);
+        }
         if(billingAddress != null){
             sb.append("billing_address=" + this.billingAddress.toBatchString());
         }

@@ -185,16 +185,16 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (StringUtils.isEmpty(options.email)) {
-            if (options.username == null && options.groupId == null) {
-                throw AppCommonErrors.INSTANCE.parameterRequired('username or groupId').exception()
-            }
-
             if (options.username != null && options.groupId != null) {
                 throw AppCommonErrors.INSTANCE.parameterInvalid('username and groupId', 'username and groupId can\'t search together.').exception()
             }
 
             if (options.username != null && StringUtils.isEmpty(normalizeService.normalize(options.username))) {
                 throw AppCommonErrors.INSTANCE.parameterInvalid('username', 'username can\'t be empty').exception()
+            }
+
+            if (options.username == null && options.groupId == null) {
+                options.limit = options.limit == null? maximumFetchSize : options.limit
             }
         } else {
             if (!StringUtils.isEmpty(options.username) || options.groupId != null) {

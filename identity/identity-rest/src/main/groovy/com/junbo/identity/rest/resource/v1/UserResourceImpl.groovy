@@ -404,6 +404,7 @@ class UserResourceImpl implements UserResource {
                 return userService.update(user, user).then {
                     return sendAccountDeleteEmail(user).recover {
                         LOGGER.error("Send delete account mail failure")
+                    }.then {
                         return Promise.pure(Response.status(204).build())
                     }
                 }

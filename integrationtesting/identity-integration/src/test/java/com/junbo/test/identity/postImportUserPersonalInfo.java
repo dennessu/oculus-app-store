@@ -444,6 +444,313 @@ public class postImportUserPersonalInfo {
         response.close();
     }
 
+
+    // The following scenarios will contain three parts:
+    // 1.   All USERNAME/EMAIL/LOGINNAME/PROFILE can be updated
+    // 2.   All USERNAME/EMAIL/LOGINNAME/PROFILE cannot be updated
+    // 3.   Some of the USERNAME/EMAIL/LOGINNAME/PROFILE can be updated
+
+    // The html special code doesn't have all of them html encoded
+    // https://github.com/mapbox/sanitize-caja/blob/master/sanitizer-bundle.js#L1421
+    // The above link is the data that has the link
+    // var ENTITIES = {
+    //        'lt': '<',
+    //        'LT': '<',
+    //        'gt': '>',
+    //        'GT': '>',
+    //        'amp': '&',
+    //        'AMP': '&',
+    //  };
+    @Test(groups = "dailies")
+    public void updateHtmlCodeAll() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        String username = oculusInput.getUsername() + "<a";
+        oculusInput.setUsername(oculusInput.getUsername() + "&" + "lt" + ';' + 'a');
+        String email = "abc>" + oculusInput.getEmail();
+        oculusInput.setEmail("abc" + "&" + "gt" + ";"+ oculusInput.getEmail());
+        String firstName = "abc&" + oculusInput.getFirstName();
+        oculusInput.setFirstName("abc" + "&" + "amp" + ";" + oculusInput.getFirstName());
+        String lastName = "abc'" + oculusInput.getLastName();
+        oculusInput.setLastName(lastName);
+        String headline = "abc" + "\240" + oculusInput.getProfile().getHeadline();
+        oculusInput.getProfile().setHeadline(headline);
+        String summary = "abc<" + oculusInput.getProfile().getSummary();
+        oculusInput.getProfile().setSummary("abc" + "&" + "LT" + ";" + oculusInput.getProfile().getSummary());
+        String url = "abc>" + oculusInput.getProfile().getUrl();
+        oculusInput.getProfile().setUrl("abc" + "&" + "GT" + ";" + oculusInput.getProfile().getUrl());
+        String href = "abc&" + oculusInput.getProfile().getAvatar().getHref();
+        oculusInput.getProfile().getAvatar().setHref("abc" + "&" + "AMP" + ";" + oculusInput.getProfile().getAvatar().getHref());
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+        User user = Identity.UserGetByUserId(output.getUserId());
+        String originalRevision = user.getRev();
+        Integer originalRevisionInteger = Integer.parseInt(originalRevision.substring(0, originalRevision.indexOf('-')));
+
+        Boolean isChanged = Identity.UserHtmlUpdate(user.getId());
+        assert isChanged;
+        User changedUser = Identity.UserGetByUserId(user.getId());
+        String changedRevision = changedUser.getRev();
+        Integer changedRevisionInteger = Integer.parseInt(changedRevision.substring(0, changedRevision.indexOf("-")));
+
+        assert originalRevisionInteger + 1 == changedRevisionInteger;
+        assert changedUser.getProfile().getAvatar().getHref().equals(href);
+        assert changedUser.getProfile().getHeadline().equals(headline);
+        assert changedUser.getProfile().getSummary().equals(summary);
+        assert changedUser.getProfile().getWebpage().equals(url);
+
+        UserPersonalInfo userLoginNamePII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getUsername());
+        UserLoginName userLoginName = (UserLoginName)JsonHelper.JsonNodeToObject(userLoginNamePII.getValue(), UserLoginName.class);
+        assert userLoginName.getUserName().equals(username);
+
+        UserPersonalInfo usernamePII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getName());
+        UserName userName = (UserName)JsonHelper.JsonNodeToObject(usernamePII.getValue(), UserName.class);
+        assert userName.getGivenName().equals(firstName);
+        assert userName.getFamilyName().equals(lastName);
+
+        UserPersonalInfo emailPII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getEmails().get(0).getValue());
+        Email email1 = (Email)JsonHelper.JsonNodeToObject(emailPII.getValue(), Email.class);
+        assert email1.getInfo().equals(email);
+    }
+
+    @Test(groups = "dailies")
+    public void updateHtmlCodeNone() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        String username = oculusInput.getUsername() + "<a";
+        oculusInput.setUsername(username);
+        String email = "abc>" + oculusInput.getEmail();
+        oculusInput.setEmail(email);
+        String firstName = "abc&" + oculusInput.getFirstName();
+        oculusInput.setFirstName(firstName);
+        String lastName = "abc'" + oculusInput.getLastName();
+        oculusInput.setLastName(lastName);
+        String headline = "abc" + "\240" + oculusInput.getProfile().getHeadline();
+        oculusInput.getProfile().setHeadline(headline);
+        String summary = "abc<" + oculusInput.getProfile().getSummary();
+        oculusInput.getProfile().setSummary(summary);
+        String url = "abc>" + oculusInput.getProfile().getUrl();
+        oculusInput.getProfile().setUrl(url);
+        String href = "abc&" + oculusInput.getProfile().getAvatar().getHref();
+        oculusInput.getProfile().getAvatar().setHref(href);
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+        User user = Identity.UserGetByUserId(output.getUserId());
+        String originalRevision = user.getRev();
+        Integer originalRevisionInteger = Integer.parseInt(originalRevision.substring(0, originalRevision.indexOf('-')));
+
+        Boolean isChanged = Identity.UserHtmlUpdate(user.getId());
+        assert isChanged == false;
+        User changedUser = Identity.UserGetByUserId(user.getId());
+        String changedRevision = changedUser.getRev();
+        Integer changedRevisionInteger = Integer.parseInt(changedRevision.substring(0, changedRevision.indexOf("-")));
+
+        assert originalRevisionInteger == changedRevisionInteger;
+        assert changedUser.getProfile().getAvatar().getHref().equals(href);
+        assert changedUser.getProfile().getHeadline().equals(headline);
+        assert changedUser.getProfile().getSummary().equals(summary);
+        assert changedUser.getProfile().getWebpage().equals(url);
+
+        UserPersonalInfo userLoginNamePII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getUsername());
+        UserLoginName userLoginName = (UserLoginName)JsonHelper.JsonNodeToObject(userLoginNamePII.getValue(), UserLoginName.class);
+        assert userLoginName.getUserName().equals(username);
+
+        UserPersonalInfo usernamePII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getName());
+        UserName userName = (UserName)JsonHelper.JsonNodeToObject(usernamePII.getValue(), UserName.class);
+        assert userName.getGivenName().equals(firstName);
+        assert userName.getFamilyName().equals(lastName);
+
+        UserPersonalInfo emailPII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getEmails().get(0).getValue());
+        Email email1 = (Email)JsonHelper.JsonNodeToObject(emailPII.getValue(), Email.class);
+        assert email1.getInfo().equals(email);
+    }
+
+    @Test(groups = "dailies")
+     public void updateHtmlCodePartial() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        String username = oculusInput.getUsername() + "<a";
+        oculusInput.setUsername(oculusInput.getUsername() + "&" + "lt" + ';' + 'a');
+        String email = "abc>" + oculusInput.getEmail();
+        oculusInput.setEmail("abc" + "&" + "gt" + ";"+ oculusInput.getEmail());
+        String firstName = "abc&" + oculusInput.getFirstName();
+        oculusInput.setFirstName(firstName);
+        String lastName = "abc'" + oculusInput.getLastName();
+        oculusInput.setLastName(lastName);
+        String headline = "abc" + "\240" + oculusInput.getProfile().getHeadline();
+        oculusInput.getProfile().setHeadline(headline);
+        String summary = "abc<" + oculusInput.getProfile().getSummary();
+        oculusInput.getProfile().setSummary("abc" + "&" + "LT" + ";" + oculusInput.getProfile().getSummary());
+        String url = "abc>" + oculusInput.getProfile().getUrl();
+        oculusInput.getProfile().setUrl(url);
+        String href = "abc&" + oculusInput.getProfile().getAvatar().getHref();
+        oculusInput.getProfile().getAvatar().setHref("abc" + "&" + "AMP" + ";" + oculusInput.getProfile().getAvatar().getHref());
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+        User user = Identity.UserGetByUserId(output.getUserId());
+        String originalRevision = user.getRev();
+        Integer originalRevisionInteger = Integer.parseInt(originalRevision.substring(0, originalRevision.indexOf('-')));
+
+        Boolean isChanged = Identity.UserHtmlUpdate(user.getId());
+        assert isChanged;
+        User changedUser = Identity.UserGetByUserId(user.getId());
+        String changedRevision = changedUser.getRev();
+        Integer changedRevisionInteger = Integer.parseInt(changedRevision.substring(0, changedRevision.indexOf("-")));
+
+        assert originalRevisionInteger + 1 == changedRevisionInteger;
+        assert changedUser.getProfile().getAvatar().getHref().equals(href);
+        assert changedUser.getProfile().getHeadline().equals(headline);
+        assert changedUser.getProfile().getSummary().equals(summary);
+        assert changedUser.getProfile().getWebpage().equals(url);
+
+        UserPersonalInfo userLoginNamePII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getUsername());
+        UserLoginName userLoginName = (UserLoginName)JsonHelper.JsonNodeToObject(userLoginNamePII.getValue(), UserLoginName.class);
+        assert userLoginName.getUserName().equals(username);
+
+        UserPersonalInfo usernamePII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getName());
+        UserName userName = (UserName)JsonHelper.JsonNodeToObject(usernamePII.getValue(), UserName.class);
+        assert userName.getGivenName().equals(firstName);
+        assert userName.getFamilyName().equals(lastName);
+
+        UserPersonalInfo emailPII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getEmails().get(0).getValue());
+        Email email1 = (Email)JsonHelper.JsonNodeToObject(emailPII.getValue(), Email.class);
+        assert email1.getInfo().equals(email);
+    }
+
+    @Test(groups = "dailies")
+    public void updateHtmlCodeFieldMissing() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        String username = oculusInput.getUsername() + "<a";
+        oculusInput.setUsername(oculusInput.getUsername() + "&" + "lt" + ';' + 'a');
+        String email = "abc>" + oculusInput.getEmail();
+        oculusInput.setEmail("abc" + "&" + "gt" + ";"+ oculusInput.getEmail());
+        String firstName = "abc&" + oculusInput.getFirstName();
+        oculusInput.setFirstName(firstName);
+        String lastName = "abc'" + oculusInput.getLastName();
+        oculusInput.setLastName(lastName);
+        String headline = "abc" + "\240" + oculusInput.getProfile().getHeadline();
+        oculusInput.getProfile().setHeadline("abc" + "\240" + oculusInput.getProfile().getHeadline());
+        String summary = "abc<" + oculusInput.getProfile().getSummary();
+        oculusInput.getProfile().setSummary("abc" + "&" + "LT" + ";" + oculusInput.getProfile().getSummary());
+        String url = "abc>" + oculusInput.getProfile().getUrl();
+        oculusInput.getProfile().setUrl(url);
+        oculusInput.getProfile().setAvatar(null);
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+        User user = Identity.UserGetByUserId(output.getUserId());
+        String originalRevision = user.getRev();
+        Integer originalRevisionInteger = Integer.parseInt(originalRevision.substring(0, originalRevision.indexOf('-')));
+
+        Boolean isChanged = Identity.UserHtmlUpdate(user.getId());
+        assert isChanged;
+        User changedUser = Identity.UserGetByUserId(user.getId());
+        String changedRevision = changedUser.getRev();
+        Integer changedRevisionInteger = Integer.parseInt(changedRevision.substring(0, changedRevision.indexOf("-")));
+
+        assert originalRevisionInteger + 1 == changedRevisionInteger;
+        assert changedUser.getProfile().getHeadline().equals(headline);
+        assert changedUser.getProfile().getSummary().equals(summary);
+        assert changedUser.getProfile().getWebpage().equals(url);
+
+        UserPersonalInfo userLoginNamePII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getUsername());
+        UserLoginName userLoginName = (UserLoginName)JsonHelper.JsonNodeToObject(userLoginNamePII.getValue(), UserLoginName.class);
+        assert userLoginName.getUserName().equals(username);
+
+        UserPersonalInfo usernamePII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getName());
+        UserName userName = (UserName)JsonHelper.JsonNodeToObject(usernamePII.getValue(), UserName.class);
+        assert userName.getGivenName().equals(firstName);
+        assert userName.getFamilyName().equals(lastName);
+
+        UserPersonalInfo emailPII = Identity.UserPersonalInfoGetByUserPersonalInfoId(changedUser.getEmails().get(0).getValue());
+        Email email1 = (Email)JsonHelper.JsonNodeToObject(emailPII.getValue(), Email.class);
+        assert email1.getInfo().equals(email);
+    }
+
+    // The only three special characters has the mapping as follows:
+    // '>' -> '&gt;'
+    // '<' -> '&lt;'
+    // '&' -> '&amp;'
+    @Test(groups = "dailies")
+    public void testPasswordWithSpecialCharacter() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        String rawPassword = "1234567890!@#$%^&*()";
+        String hashedPassword = "2:$2a$10$cQ89KuDG.LR6dlK6NP/yhOPrs.oPz/zydxx7wIsAnF/5H0lf.97ba";
+        oculusInput.setPassword(hashedPassword);
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        List<UserCredential> userCredentials = Identity.UserCredentialList(output.getUserId(), "PASSWORD");
+        assert userCredentials.size() == 2;
+
+        response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testPasswordWithSpecialCharactersChangePassword() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        String rawPassword = "1234567890!@#$%^&*()";
+        String hashedPassword = "2:$2a$10$cQ89KuDG.LR6dlK6NP/yhOPrs.oPz/zydxx7wIsAnF/5H0lf.97ba";
+        oculusInput.setPassword(hashedPassword);
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+
+        String newPassword = "!@#$%^&*()1234567890";
+        CloseableHttpResponse response = Identity.UserCredentialPostDefault(output.getUserId(), rawPassword, newPassword);
+        response.close();
+
+        response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), newPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        List<UserCredential> userCredentials = Identity.UserCredentialList(output.getUserId(), "PASSWORD");
+        assert userCredentials.size() == 3;
+
+        response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), newPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testPasswordWithSpecialCharacters() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        String rawPassword = "1234567890qwertyuiop";
+        String hashedPassword = "2:$2a$10$vmLkP5DH4dmUPYy4CshjhOH5EeZB.mVH.yLXThbvKvCsP74LB4GIG";
+        oculusInput.setPassword(hashedPassword);
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        List<UserCredential> userCredentials = Identity.UserCredentialList(output.getUserId(), "PASSWORD");
+        assert userCredentials.size() == 2;
+
+        response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testPasswordWithNotsupportedSpecialCharacters() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        String rawPassword = "1234567890 '\"";
+        String hashedPassword = "2:$2a$10$U8p.lPXGpbNziqGOderxEOAyqYaDMUe2P9NHupOpKQo1dzJpqrc3.";
+        oculusInput.setPassword(hashedPassword);
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        List<UserCredential> userCredentials = Identity.UserCredentialList(output.getUserId(), "PASSWORD");
+        assert userCredentials.size() == 2;
+
+        response = Identity.UserCredentialAttemptesPostDefault(oculusInput.getEmail(), rawPassword);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
     protected static User createUser(String username, String nickName) throws Exception {
         User user = IdentityModel.DefaultUser();
         user.setNickName(nickName);

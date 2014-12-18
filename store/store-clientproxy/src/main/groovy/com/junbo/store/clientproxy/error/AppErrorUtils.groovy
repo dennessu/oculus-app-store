@@ -56,6 +56,9 @@ class AppErrorUtils {
         if (isStoreError(ex)) { // error thrown by store
             throw ex
         }
+        if (isConflictUpdateError(ex)) {
+            throw ex
+        }
         LOGGER.error('nam=StoreApiUnknownError, operation={}', operation, ex)
         throw AppErrors.INSTANCE.unknownError().exception()
     }
@@ -63,6 +66,11 @@ class AppErrorUtils {
     public boolean isStoreError(Throwable ex) {
         String errorCode = getAppErrorCode(ex)
         return errorCode != null && errorCode.startsWith(ErrorCodes.Store.majorCode)
+    }
+
+    public boolean isConflictUpdateError(Throwable ex) {
+        String errorCode = getAppErrorCode(ex)
+        return errorCode != null && errorCode.endsWith('.005') // conflict update error end with 005
     }
 
     public String getAppErrorCode(Throwable ex) {
