@@ -18,6 +18,7 @@ import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
@@ -42,6 +43,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     private OfferRepository offerRepo;
     private ItemRevisionValidator revisionValidator;
     private OrganizationFacade organizationFacade;
+    private OfferRevisionRepository offerRevisionRepo;
 
     @Required
     public void setItemRevisionRepo(ItemRevisionRepository itemRevisionRepo) {
@@ -76,6 +78,11 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     @Required
     public void setOfferAttributeRepo(OfferAttributeRepository offerAttributeRepo) {
         this.offerAttributeRepo = offerAttributeRepo;
+    }
+
+    @Required
+    public void setOfferRevisionRepo(OfferRevisionRepository offerRevisionRepo) {
+        this.offerRevisionRepo = offerRevisionRepo;
     }
 
     @Override
@@ -172,6 +179,15 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         }
 
         return revisions;
+    }
+
+    @Override
+    public void deleteEntity(String entityId) {
+        List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisions(entityId);
+        if (offerRevisions.size() > 0) {
+            throw AppErrors.INSTANCE.itemReferenced(getEntityType(), entityId, (long)(offerRevisions.size()), "offer-revisions").exception();
+        }
+        super.deleteEntity(entityId);
     }
 
     @Override

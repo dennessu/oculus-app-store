@@ -62,6 +62,7 @@
         <property name="offerAttributeRepo" ref="offerAttributeCloudantRepo"/>
         <property name="revisionValidator" ref="itemRevisionValidator"/>
         <property name="organizationFacade" ref="catalogOrganizationFacade"/>
+        <property name="offerRevisionRepo" ref="offerRevisionCloudantRepo"/>
     </bean>
     <bean id="offerService" class="com.junbo.catalog.core.service.OfferServiceImpl">
         <property name="itemRepo" ref="itemCloudantRepo"/>
