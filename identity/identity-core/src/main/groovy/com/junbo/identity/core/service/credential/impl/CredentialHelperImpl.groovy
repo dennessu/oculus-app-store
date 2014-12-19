@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.credential.impl
 
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.common.util.Constants
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
@@ -10,6 +11,7 @@ import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.slf4j.LoggerFactory
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
@@ -48,12 +50,12 @@ class CredentialHelperImpl implements CredentialHelper {
         }
 
         return userPasswordService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
-            List<UserPassword> userPasswordList ->
-                if (userPasswordList == null || userPasswordList.size() == 0 || userPasswordList.size() > 1) {
+            Results<UserPassword> userPasswordList ->
+                if (userPasswordList == null || CollectionUtils.isEmpty(userPasswordList.items) || userPasswordList.items.size() > 1) {
                     return Promise.pure(false)
                 }
 
-                String[] split = userPasswordList.get(0).passwordHash.split(Constants.COLON)
+                String[] split = userPasswordList.items.get(0).passwordHash.split(Constants.COLON)
                 if (split.length <= 1) {
                     return Promise.pure(false)
                 }
@@ -76,18 +78,18 @@ class CredentialHelperImpl implements CredentialHelper {
 
                 if (!updateHtml || currentCredentialVersion == passwordVersion) {
                     // don't need to do any html change
-                    return Promise.pure(matched.matches(password, userPasswordList.get(0).passwordHash))
+                    return Promise.pure(matched.matches(password, userPasswordList.items.get(0).passwordHash))
                 } else {
                     // Need to convert data to html and update the password
                     String converted = toConvertedHtml(password)
-                    if (matched.matches(converted, userPasswordList.get(0).passwordHash)) {
+                    if (matched.matches(converted, userPasswordList.items.get(0).passwordHash)) {
                         // need to update this to the lastest version
                         UserPassword userPassword = new UserPassword()
-                        userPassword.expiresBy = userPasswordList.get(0).expiresBy
-                        userPassword.changeAtNextLogin = userPasswordList.get(0).changeAtNextLogin
-                        userPassword.userId = userPasswordList.get(0).userId
+                        userPassword.expiresBy = userPasswordList.items.get(0).expiresBy
+                        userPassword.changeAtNextLogin = userPasswordList.items.get(0).changeAtNextLogin
+                        userPassword.userId = userPasswordList.items.get(0).userId
                         userPassword.active = true
-                        userPassword.strength = userPasswordList.get(0).strength
+                        userPassword.strength = userPasswordList.items.get(0).strength
 
                         CredentialHash currentCredentialMatched = credentialHashList.find { CredentialHash hash ->
                             return hash.handles(currentCredentialVersion)
@@ -98,8 +100,8 @@ class CredentialHelperImpl implements CredentialHelper {
                         }
                         userPassword.passwordHash = currentCredentialMatched.hash(password)
                         return userPasswordService.create(userPassword).then {
-                            userPasswordList.get(0).setActive(false)
-                            return userPasswordService.update(userPasswordList.get(0), userPasswordList.get(0)).then {
+                            userPasswordList.items.get(0).setActive(false)
+                            return userPasswordService.update(userPasswordList.items.get(0), userPasswordList.items.get(0)).then {
                                 return Promise.pure(true)
                             }
                         }
