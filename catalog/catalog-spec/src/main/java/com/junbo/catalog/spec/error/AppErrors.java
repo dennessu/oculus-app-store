@@ -41,4 +41,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "106", message = "Genre Referenced By Other Resources",
             field = "{0}", reason = "Genre with ID {1} is referenced by {2} {3}.")
     AppError genreReferenced(String field, String genreId, Long refCount, String refResource);
+
+    @ErrorDef(httpStatusCode = 412, code = "107", message = "Item Referenced By Other Resources",
+            field = "{0}", reason = "Item with ID {1} is referenced by {2} {3}.")
+    AppError itemReferenced(String field, String genreId, Long refCount, String refResource);
 }
