@@ -32,6 +32,7 @@ class UserAttributeDefinitionResourceImpl implements UserAttributeDefinitionReso
     @Autowired
     private UserAttributeDefinitionValidator userAttributeDefinitionValidator
 
+    @Override
     Promise<UserAttributeDefinition> create(UserAttributeDefinition userAttributeDefinition) {
         if (userAttributeDefinition == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
@@ -47,38 +48,7 @@ class UserAttributeDefinitionResourceImpl implements UserAttributeDefinitionReso
         }
     }
 
-    Promise<UserAttributeDefinition> patch(UserAttributeDefinitionId userAttributeDefinitionId,
-            UserAttributeDefinition userAttributeDefinition) {
-        if (userAttributeDefinitionId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (userAttributeDefinition == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        if (userAttributeDefinition.id == null) {
-            userAttributeDefinition.id = userAttributeDefinitionId
-        }
-
-        return userAttributeDefinitionService.get(userAttributeDefinitionId).then { UserAttributeDefinition oldUserAttributeDefinition ->
-            if (oldUserAttributeDefinition == null) {
-                throw AppErrors.INSTANCE.userAttributeDefinitionNotFound(userAttributeDefinitionId).exception()
-            }
-
-            userAttributeDefinition = userAttributeDefinitionFilter.filterForPatch(userAttributeDefinition, oldUserAttributeDefinition)
-
-            return userAttributeDefinitionValidator.validateForUpdate(userAttributeDefinitionId, userAttributeDefinition,
-                    oldUserAttributeDefinition).then {
-                return userAttributeDefinitionService.update(userAttributeDefinition, oldUserAttributeDefinition).then {
-                    UserAttributeDefinition newUserAttributeDefinition ->
-                    newUserAttributeDefinition = userAttributeDefinitionFilter.filterForGet(newUserAttributeDefinition, null)
-                    return Promise.pure(newUserAttributeDefinition)
-                }
-            }
-        }
-    }
-
+    @Override
     Promise<UserAttributeDefinition> put(UserAttributeDefinitionId userAttributeDefinitionId,
             UserAttributeDefinition userAttributeDefinition) {
         if (userAttributeDefinitionId == null) {
@@ -107,6 +77,7 @@ class UserAttributeDefinitionResourceImpl implements UserAttributeDefinitionReso
         }
     }
 
+    @Override
     Promise<UserAttributeDefinition> get(UserAttributeDefinitionId userAttributeDefinitionId,
                                          UserAttributeDefinitionGetOptions getOptions) {
         if (userAttributeDefinitionId == null) {
@@ -128,6 +99,7 @@ class UserAttributeDefinitionResourceImpl implements UserAttributeDefinitionReso
         }
     }
 
+    @Override
     Promise<Results<UserAttributeDefinition>> list(UserAttributeDefinitionListOptions listOptions) {
         return userAttributeDefinitionValidator.validateForSearch(listOptions).then {
             def resultList = new Results<UserAttributeDefinition>(items: [])
@@ -144,6 +116,7 @@ class UserAttributeDefinitionResourceImpl implements UserAttributeDefinitionReso
         }
     }
 
+    @Override
     Promise<Response> delete(UserAttributeDefinitionId userAttributeDefinitionId) {
         return userAttributeDefinitionValidator.validateForGet(userAttributeDefinitionId).then {
             return userAttributeDefinitionService.delete(userAttributeDefinitionId).then {

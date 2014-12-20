@@ -77,33 +77,6 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
     }
 
     @Override
-    Promise<DeviceType> patch(DeviceTypeId deviceTypeId, DeviceType deviceType) {
-        if (deviceTypeId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (deviceType == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return deviceTypeService.get(deviceTypeId).then { DeviceType oldDeviceType ->
-            if (oldDeviceType == null) {
-                throw AppErrors.INSTANCE.deviceTypeNotFound(deviceTypeId).exception()
-            }
-
-            deviceType = deviceTypeFilter.filterForPatch(deviceType, oldDeviceType)
-
-            return deviceTypeValidator.validateForUpdate(
-                    deviceTypeId, deviceType, oldDeviceType).then {
-                return deviceTypeService.update(deviceType, oldDeviceType).then { DeviceType newDeviceType ->
-                    newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
-                    return Promise.pure(newDeviceType)
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<DeviceType> get(DeviceTypeId deviceTypeId, DeviceTypeGetOptions getOptions) {
         if (deviceTypeId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()

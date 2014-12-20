@@ -43,12 +43,6 @@ public interface UserPersonalInfoResource {
     Promise<UserPersonalInfo> get(@PathParam("userPiiId") UserPersonalInfoId userPiiId,
                          @BeanParam  UserPersonalInfoGetOptions getOptions);
 
-    @POST
-    @Path("/{userPiiId}")
-    @RouteBy(value = "userPiiId", switchable = true)
-    Promise<UserPersonalInfo> patch(@PathParam("userPiiId") UserPersonalInfoId userPiiId,
-                             UserPersonalInfo userPersonalInfo);
-
     @ApiOperation("Update user's personalInfo information")
     @PUT
     @Path("/{userPiiId}")

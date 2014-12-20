@@ -40,10 +40,6 @@ public interface PITypeResource {
     @Path("/{piTypeId}")
     Promise<PIType> put(@PathParam("piTypeId") PITypeId piTypeId, PIType piType);
 
-    @POST
-    @Path("/{piTypeId}")
-    Promise<PIType> patch(@PathParam("piTypeId") PITypeId piTypeId, PIType piType);
-
     @ApiOperation("Get a payment instrument type")
     @GET
     @Path("/{piTypeId}")

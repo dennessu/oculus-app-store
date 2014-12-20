@@ -101,42 +101,6 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
     }
 
     @Override
-    Promise<UserPersonalInfo> patch(UserPersonalInfoId userPiiId, UserPersonalInfo userPersonalInfo) {
-        if (userPiiId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (userPersonalInfo == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        userPersonalInfo = filterUserPersonalInfo(userPersonalInfo)
-
-        return userPersonalInfoService.get(userPiiId).then { UserPersonalInfo oldUserPersonalInfo ->
-            if (oldUserPersonalInfo == null) {
-                throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
-            }
-
-            def callback = userPropertyAuthorizeCallbackFactory.create(oldUserPersonalInfo.userId)
-            PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPersonalInfo)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                piiAdvanceFilter.checkUpdatePermission()
-
-                userPersonalInfo = userPersonalInfoFilter.filterForPatch(userPersonalInfo, oldUserPersonalInfo)
-
-                return userPersonalInfoValidator.validateForUpdate(userPersonalInfo, oldUserPersonalInfo).then {
-                    return userPersonalInfoService.update(userPersonalInfo, oldUserPersonalInfo).then { UserPersonalInfo newUserPii ->
-                        newUserPii.isValidated = newUserPii.lastValidateTime != null
-                        newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
-                        newUserPii = piiAdvanceFilter.getFilter(newUserPii)
-                        return Promise.pure(newUserPii)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserPersonalInfo> put(UserPersonalInfoId userPiiId, UserPersonalInfo userPii) {
         if (userPiiId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()

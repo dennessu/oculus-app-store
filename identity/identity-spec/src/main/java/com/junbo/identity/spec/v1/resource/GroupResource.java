@@ -43,10 +43,6 @@ public interface GroupResource {
     @Path("/{groupId}")
     Promise<Group> put(@PathParam("groupId") GroupId groupId, Group group);
 
-    @POST
-    @Path("/{groupId}")
-    Promise<Group> patch(@PathParam("groupId") GroupId groupId, Group group);
-
     @ApiOperation("Get a group")
     @GET
     @Path("/{groupId}")

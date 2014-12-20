@@ -106,36 +106,6 @@ class TosResourceImpl implements TosResource {
     }
 
     @Override
-    Promise<Tos> patch(TosId tosId, Tos tos) {
-        if (tosId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (tos == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        if (tos.id == null) {
-            tos.id = tosId
-        }
-
-        return tosService.get(tosId).then { Tos oldTos ->
-            if (oldTos == null) {
-                throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
-            }
-
-            tos = tosFilter.filterForPatch(tos, oldTos)
-
-            return tosValidator.validateForUpdate(tosId, tos, oldTos).then {
-                return tosService.update(tos, oldTos).then { Tos newTos ->
-                    newTos = tosFilter.filterForGet(newTos, null)
-                    return Promise.pure(newTos)
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<Tos> put(TosId tosId, Tos tos) {
         if (tosId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()

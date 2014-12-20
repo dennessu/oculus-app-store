@@ -93,33 +93,6 @@ class CountryResourceImpl implements CountryResource {
     }
 
     @Override
-    Promise<Country> patch(CountryId countryId, Country country) {
-        if (countryId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (country == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return countryService.get(countryId).then { Country oldCountry ->
-            if (oldCountry == null) {
-                throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
-            }
-
-            country = countryFilter.filterForPatch(country, oldCountry)
-
-            return countryValidator.validateForUpdate(
-                    countryId, country, oldCountry).then {
-                return countryService.update(country, oldCountry).then { Country newCountry ->
-                    newCountry = countryFilter.filterForGet(newCountry, null)
-                    return Promise.pure(newCountry)
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<Country> get(CountryId countryId, CountryGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')

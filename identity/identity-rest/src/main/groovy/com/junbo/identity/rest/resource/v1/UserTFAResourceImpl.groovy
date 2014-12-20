@@ -146,49 +146,6 @@ class UserTFAResourceImpl implements UserTFAResource {
     }
 
     @Override
-    Promise<UserTFA> patch(UserId userId, UserTFAId userTFAId, UserTFA userTFA) {
-        if (userId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
-        }
-
-        if (userTFAId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAId').exception()
-        }
-
-        if (userTFA == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        userTFA.verifyCode = null
-
-        def callback = authorizeCallbackFactory.create(userId)
-        return RightsScope.with(authorizeService.authorize(callback)) {
-            if (!AuthorizeContext.hasRights('update')) {
-                throw AppCommonErrors.INSTANCE.forbidden().exception()
-            }
-
-            return userTFAPhoneService.get(userTFAId).then { UserTFA oldUserTeleCode ->
-                if (oldUserTeleCode == null) {
-                    throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
-                }
-
-                userTFA = userTFAFilter.filterForPatch(userTFA, oldUserTeleCode)
-
-                return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
-
-                    return userTFAPhoneService.update(userTFA, oldUserTeleCode).then { UserTFA newUserTele ->
-                        newUserTele = userTFAFilter.filterForGet(newUserTele, null)
-                        if (!StringUtils.isEmpty(newUserTele.verifyCode) && !AuthorizeContext.debugEnabled) {
-                            newUserTele.verifyCode = null
-                        }
-                        return Promise.pure(newUserTele)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserTFA> put(UserId userId, UserTFAId userTFAId, UserTFA userTFA) {
         if (userId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()

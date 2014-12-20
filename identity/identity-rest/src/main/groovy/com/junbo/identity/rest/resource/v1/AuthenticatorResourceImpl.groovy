@@ -113,42 +113,6 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
     }
 
     @Override
-    Promise<UserAuthenticator> patch(UserAuthenticatorId userAuthenticatorId, UserAuthenticator userAuthenticator) {
-
-        if (userAuthenticatorId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (userAuthenticator == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return userAuthenticatorService.get(userAuthenticatorId).then { UserAuthenticator oldUserAuthenticator ->
-            if (oldUserAuthenticator == null) {
-                throw AppErrors.INSTANCE.userAuthenticatorNotFound(userAuthenticatorId).exception()
-            }
-
-            def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception()
-                }
-
-                userAuthenticator = userAuthenticatorFilter.filterForPatch(userAuthenticator, oldUserAuthenticator)
-
-                return userAuthenticatorValidator.validateForUpdate(
-                        userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                    return userAuthenticatorService.update(userAuthenticator, oldUserAuthenticator).then {
-                        UserAuthenticator newUserAuthenticator ->
-                        newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
-                        return Promise.pure(newUserAuthenticator)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserAuthenticator> get(UserAuthenticatorId userAuthenticatorId, AuthenticatorGetOptions getOptions) {
 
         if (getOptions == null) {

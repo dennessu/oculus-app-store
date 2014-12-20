@@ -95,41 +95,6 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     }
 
     @Override
-    Promise<UserCommunication> patch(UserCommunicationId userCommunicationId, UserCommunication userCommunication) {
-        if (userCommunicationId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (userCommunication == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return userCommunicationService.get(userCommunicationId).then { UserCommunication oldUserOptin ->
-            if (oldUserOptin == null) {
-                throw AppErrors.INSTANCE.userOptinNotFound(userCommunicationId).exception()
-            }
-
-            def callback = authorizeCallbackFactory.create(oldUserOptin.userId)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception()
-                }
-
-                userCommunication = userCommunicationFilter.filterForPatch(userCommunication, oldUserOptin)
-
-                return userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication,
-                        oldUserOptin).then {
-                    return userCommunicationService.update(userCommunication, oldUserOptin).then {
-                        UserCommunication newUserCommunication ->
-                            newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
-                            return Promise.pure(newUserCommunication)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserCommunication> put(UserCommunicationId userCommunicationId, UserCommunication userCommunication) {
         if (userCommunicationId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()

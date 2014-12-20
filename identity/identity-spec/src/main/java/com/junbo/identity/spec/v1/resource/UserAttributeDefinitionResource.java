@@ -35,12 +35,6 @@ public interface UserAttributeDefinitionResource {
     @POST
     Promise<UserAttributeDefinition> create(UserAttributeDefinition userAttributeDefinition);
 
-    @POST
-    @Path("/{userAttributeDefinitionId}")
-    Promise<UserAttributeDefinition> patch(
-            @PathParam("userAttributeDefinitionId")UserAttributeDefinitionId userAttributeDefinitionId,
-            UserAttributeDefinition userAttributeDefinition);
-
     @ApiOperation("Update an user attribute definition")
     @PUT
     @Path("/{userAttributeDefinitionId}")

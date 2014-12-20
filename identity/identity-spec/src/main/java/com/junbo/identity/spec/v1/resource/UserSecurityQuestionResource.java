@@ -46,13 +46,6 @@ public interface UserSecurityQuestionResource {
             @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
             @BeanParam UserSecurityQuestionGetOptions getOptions);
 
-    @RouteBy(value = "userId", switchable = true)
-    @POST
-    @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> patch(@PathParam("userId") UserId userId,
-            @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
-            UserSecurityQuestion userSecurityQuestion);
-
     @ApiOperation("Update one user security question")
     @RouteBy(value = "userId", switchable = true)
     @PUT

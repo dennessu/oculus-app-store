@@ -45,13 +45,6 @@ public interface UserTFABackupCodeResource {
                               @PathParam("userTFABackupCodeId") UserTFABackupCodeId userTFABackupCodeId,
                               @BeanParam UserTFABackupCodeGetOptions getOptions);
 
-    @RouteBy(value = "userId", switchable = true)
-    @POST
-    @Path("/{userTFABackupCodeId}")
-    Promise<UserTFABackupCode> patch(@PathParam("userId") UserId userId,
-                                @PathParam("userTFABackupCodeId") UserTFABackupCodeId userTFABackupCodeId,
-                                UserTFABackupCode userTFABackupCode);
-
     @ApiOperation("Update one user TFA backupCode resource")
     @RouteBy(value = "userId", switchable = true)
     @PUT

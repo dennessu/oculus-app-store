@@ -44,12 +44,6 @@ public interface UserGroupMembershipResource {
     Promise<UserGroup> get(@PathParam("userGroupMembershipId") UserGroupId userGroupId,
                             @BeanParam UserGroupGetOptions getOptions);
 
-    @POST
-    @RouteByAccessToken(switchable = true)
-    @Path("/{userGroupMembershipId}")
-    Promise<UserGroup> patch(@PathParam("userGroupMembershipId") UserGroupId userGroupId,
-                              UserGroup userGroup);
-
     @ApiOperation("Update one user group membership")
     @RouteBy(value = "userGroup.getUserId()", switchable = true)
     @PUT

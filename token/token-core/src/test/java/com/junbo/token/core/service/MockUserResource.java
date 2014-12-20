@@ -26,11 +26,6 @@ public class MockUserResource implements UserResource {
     }
 
     @Override
-    public Promise<User> patch(UserId userId, User user) {
-        return null;
-    }
-
-    @Override
     public Promise<User> get(UserId userId, @BeanParam UserGetOptions getOptions) {
         User user = new User(){
             {

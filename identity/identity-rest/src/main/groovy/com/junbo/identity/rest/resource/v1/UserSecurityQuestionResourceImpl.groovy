@@ -107,50 +107,6 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     }
 
     @Override
-    Promise<UserSecurityQuestion> patch(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
-                                        UserSecurityQuestion userSecurityQuestion) {
-
-        if (userSecurityQuestionId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('userSecurityQuestionId').exception()
-        }
-
-        if (userId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
-        }
-
-        if (userSecurityQuestion == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return userSecurityQuestionService.get(userSecurityQuestionId).then {
-            UserSecurityQuestion oldUserSecurityQuestion ->
-            def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception()
-                }
-
-                if (oldUserSecurityQuestion == null) {
-                    throw AppErrors.INSTANCE.userSecurityQuestionNotFound(userSecurityQuestionId).exception()
-                }
-
-                userSecurityQuestion = userSecurityQuestionFilter.
-                        filterForPatch(userSecurityQuestion, oldUserSecurityQuestion)
-
-                return userSecurityQuestionValidator.validateForUpdate(
-                        userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
-
-                    return userSecurityQuestionService.update(userSecurityQuestion, oldUserSecurityQuestion).
-                            then { UserSecurityQuestion newUserSecurityQuestion ->
-                        newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
-                        return Promise.pure(newUserSecurityQuestion)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserSecurityQuestion> put(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
                                       UserSecurityQuestion userSecurityQuestion) {
         if (userSecurityQuestionId == null) {

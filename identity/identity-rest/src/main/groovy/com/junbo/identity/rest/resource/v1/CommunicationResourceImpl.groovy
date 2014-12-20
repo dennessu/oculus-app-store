@@ -93,32 +93,6 @@ class CommunicationResourceImpl implements CommunicationResource {
     }
 
     @Override
-    Promise<Communication> patch(CommunicationId communicationId, Communication communication) {
-        if (communicationId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (communication == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return communicationService.get(communicationId).then { Communication oldCommunication ->
-            if (oldCommunication == null) {
-                throw AppErrors.INSTANCE.communicationNotFound(communicationId).exception()
-            }
-
-            communication = communicationFilter.filterForPatch(communication, oldCommunication)
-
-            return communicationValidator.validateForUpdate(communicationId, communication, oldCommunication).then {
-                return communicationService.update(communication, oldCommunication).then { Communication newCommunication ->
-                    newCommunication = communicationFilter.filterForGet(newCommunication, null)
-                    return Promise.pure(newCommunication)
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<Communication> get(CommunicationId communicationId, CommunicationGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')

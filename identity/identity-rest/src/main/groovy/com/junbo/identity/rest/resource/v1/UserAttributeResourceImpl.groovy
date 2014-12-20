@@ -42,6 +42,7 @@ class UserAttributeResourceImpl implements UserAttributeResource {
     @Autowired
     private UserPropertyAuthorizeCallbackFactory authorizeCallbackFactory
 
+    @Override
     Promise<UserAttribute> create(UserAttribute userAttribute) {
         if (userAttribute == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
@@ -70,37 +71,7 @@ class UserAttributeResourceImpl implements UserAttributeResource {
         }
     }
 
-    Promise<UserAttribute> patch(UserAttributeId userAttributeId, UserAttribute userAttribute) {
-        if (userAttributeId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (userAttribute == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return userAttributeService.get(userAttributeId).then { UserAttribute oldUserAttribute ->
-            if (oldUserAttribute == null) {
-                throw AppErrors.INSTANCE.userAttributeNotFound(userAttributeId).exception()
-            }
-
-            def callback = authorizeCallbackFactory.create(oldUserAttribute.userId)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception()
-                }
-
-                userAttribute = userAttributeFilter.filterForPatch(userAttribute, oldUserAttribute)
-                return userAttributeValidator.validateForUpdate(userAttributeId, userAttribute, oldUserAttribute).then {
-                    return userAttributeService.update(userAttribute, oldUserAttribute).then { UserAttribute newUserAttribute ->
-                        newUserAttribute = userAttributeFilter.filterForGet(newUserAttribute, null)
-                        return Promise.pure(newUserAttribute)
-                    }
-                }
-            }
-        }
-    }
-
+    @Override
     Promise<UserAttribute> put(UserAttributeId userAttributeId, UserAttribute userAttribute) {
         if (userAttributeId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
@@ -132,6 +103,7 @@ class UserAttributeResourceImpl implements UserAttributeResource {
         }
     }
 
+    @Override
     Promise<UserAttribute> get(UserAttributeId userAttributeId, UserAttributeGetOptions getOptions) {
         return userAttributeValidator.validateForGet(userAttributeId).then { UserAttribute existing ->
                 def callback = authorizeCallbackFactory.create(existing.userId)
@@ -146,6 +118,7 @@ class UserAttributeResourceImpl implements UserAttributeResource {
         }
     }
 
+    @Override
     Promise<Results<UserAttribute>> list(UserAttributeListOptions listOptions) {
         return userAttributeValidator.validateForSearch(listOptions).then {
             return search(listOptions).then { Results<UserAttribute> userAttributes ->
@@ -174,6 +147,7 @@ class UserAttributeResourceImpl implements UserAttributeResource {
         }
     }
 
+    @Override
     Promise<Response> delete(UserAttributeId userAttributeId) {
         return userAttributeValidator.validateForGet(userAttributeId).then { UserAttribute existing ->
             def callback = authorizeCallbackFactory.create(existing.userId)

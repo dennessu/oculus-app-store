@@ -83,32 +83,6 @@ class PITypeResourceImpl implements PITypeResource {
     }
 
     @Override
-    Promise<PIType> patch(PITypeId piTypeId, PIType piType) {
-        if (piTypeId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (piType == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return piTypeService.get(piTypeId).then { PIType oldPIType ->
-            if (oldPIType == null) {
-                throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
-            }
-
-            piType = piTypeFilter.filterForPatch(piType, oldPIType)
-
-            return piTypeValidator.validateForUpdate(piTypeId, piType, oldPIType).then {
-                return piTypeService.update(piType, oldPIType).then { PIType newPIType ->
-                    newPIType = piTypeFilter.filterForGet(newPIType, null)
-                    return Promise.pure(newPIType)
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<PIType> get(PITypeId piTypeId, PITypeGetOptions getOptions) {
         if (piTypeId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
