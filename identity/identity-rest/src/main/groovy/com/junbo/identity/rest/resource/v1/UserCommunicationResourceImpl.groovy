@@ -165,9 +165,15 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
 
     @Override
     Promise<Response> delete(UserCommunicationId userCommunicationId) {
-        return userCommunicationValidator.validateForGet(userCommunicationId).then {
-            return userCommunicationService.delete(userCommunicationId).then {
-                return Promise.pure(Response.status(204).build())
+        return userCommunicationValidator.validateForGet(userCommunicationId).then { UserCommunication existing ->
+            def callback = authorizeCallbackFactory.create(existing.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete')) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
+                return userCommunicationService.delete(userCommunicationId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }

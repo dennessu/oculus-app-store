@@ -5,9 +5,11 @@
  */
 package com.junbo.test.identity;
 // CHECKSTYLE:OFF
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.*;
 import com.junbo.common.id.OrganizationId;
+import com.junbo.common.id.UserAttributeDefinitionId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.identity.spec.v1.model.*;
@@ -16,6 +18,7 @@ import com.junbo.identity.spec.v1.model.Locale;
 import com.junbo.identity.spec.v1.model.migration.*;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
+import org.apache.commons.lang.time.DateUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -505,6 +508,39 @@ public class IdentityModel {
         array.add(TFAVerifyType.EMAIL.name());
         array.add(TFAVerifyType.SMS.name());
         return RandomHelper.randomValueFromList(array).toString();
+    }
+
+    public static UserAttribute DefaultUserAttribute(UserId userId, UserAttributeDefinitionId userAttributeDefinitionId) {
+        UserAttribute userAttribute = new UserAttribute();
+        userAttribute.setUserId(userId);
+        userAttribute.setUserAttributeDefinitionId(userAttributeDefinitionId);
+        userAttribute.setExpirationTime(DateUtils.addDays(new Date(), 2));
+        userAttribute.setGrantTime(DateUtils.addDays(new Date(), -1));
+        userAttribute.setUseCount(Math.abs(RandomHelper.randomInt()));
+
+        return userAttribute;
+    }
+
+    public static UserAttributeDefinition DefaultUserAttributeDefinition() {
+        UserAttributeDefinition userAttributeDefinition = new UserAttributeDefinition();
+        userAttributeDefinition.setType(RandomUserAttributeDefinitionType());
+        userAttributeDefinition.setDescription(RandomHelper.randomAlphabetic(15));
+
+        return userAttributeDefinition;
+    }
+
+    public static String RandomUserAttributeDefinitionType() {
+        List<Object> array = new ArrayList<>();
+        array.add(UserAttributeDefinitionType.CATEGORY.name());
+        array.add(UserAttributeDefinitionType.TUTORIAL.name());
+        array.add(UserAttributeDefinitionType.ACHIEVEMENT.name());
+        return RandomHelper.randomValueFromList(array).toString();
+    }
+
+    public static enum UserAttributeDefinitionType {
+        CATEGORY,
+        TUTORIAL,
+        ACHIEVEMENT
     }
 
     /**

@@ -34,6 +34,14 @@
         <property name="dbName" value="tos"/>
     </bean>
 
+    <bean id="cloudantUserAttributeRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserAttributeRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_attribute" />
+    </bean>
+
+    <bean id="cloudantUserAttributeDefinitionRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserAttributeDefinitionRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_attribute_definition" />
+    </bean>
+
     <bean id="cloudantUserPasswordRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPasswordRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="user_password"/>
     </bean>

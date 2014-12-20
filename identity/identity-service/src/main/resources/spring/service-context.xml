@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
        xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="identityUserService" class="com.junbo.identity.service.impl.UserServiceImpl">
         <property name="userRepository" ref="userRepository" />
@@ -51,6 +49,14 @@
 
     <bean id="tosService" class="com.junbo.identity.service.impl.TosServiceImpl">
         <property name="tosRepository" ref="tosRepository" />
+    </bean>
+
+    <bean id="userAttributeService" class="com.junbo.identity.service.impl.UserAttributeServiceImpl">
+        <property name="userAttributeRepository" ref="userAttributeRepository" />
+    </bean>
+    
+    <bean id="userAttributeDefinitionService" class="com.junbo.identity.service.impl.UserAttributeDefinitionServiceImpl">
+        <property name="userAttributeDefinitionRepository" ref="userAttributeDefinitionRepository" />
     </bean>
 
     <bean id="userAuthenticatorService" class="com.junbo.identity.service.impl.UserAuthenticatorServiceImpl">

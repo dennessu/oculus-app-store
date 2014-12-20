@@ -33,4 +33,6 @@
     <alias alias="organizationRepository" name="cloudantOrganizationRepository" />
     <alias alias="errorInfoRepository" name="cloudantErrorInfoRepository" />
     <alias alias="usernameEmailBlockerRepository" name="cloudantUsernameEmailBlockerRepository" />
+    <alias alias="userAttributeRepository" name="cloudantUserAttributeRepository" />
+    <alias alias="userAttributeDefinitionRepository" name="cloudantUserAttributeDefinitionRepository" />
 </beans>

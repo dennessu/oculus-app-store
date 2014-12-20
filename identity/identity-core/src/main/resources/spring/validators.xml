@@ -674,4 +674,20 @@
         <property name="logRound" value="${identity.conf.bcryptLogRound}" />
     </bean>
 
+    <bean id="userAttributeValidator" class="com.junbo.identity.core.service.validator.impl.UserAttributeValidatorImpl">
+        <property name="userAttributeDefinitionService" ref="userAttributeDefinitionService" />
+        <property name="userAttributeService" ref="userAttributeService" />
+        <property name="userService" ref="identityUserService" />
+    </bean>
+
+    <bean id="userAttributeDefinitionValidator" class="com.junbo.identity.core.service.validator.impl.UserAttributeDefinitionValidatorImpl">
+        <property name="userAttributeDefinitionService" ref="userAttributeDefinitionService" />
+        <property name="allowedTypes">
+            <list>
+                <value>CATEGORY</value>
+                <value>TUTORIAL</value>
+                <value>ACHIEVEMENT</value>
+            </list>
+        </property>
+    </bean>
 </beans>

@@ -94,4 +94,14 @@
           parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
+
+    <bean id="userAttributeResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserAttributeResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="userAttributeDefinitionResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserAttributeDefinitionResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}" />
+    </bean>
 </beans>

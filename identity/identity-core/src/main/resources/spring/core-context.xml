@@ -1500,4 +1500,102 @@
             </list>
         </property>
     </bean>
+
+    <bean id="userAttributeFilter" class="com.junbo.identity.core.service.filter.UserAttributeFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>userId</value>
+                <value>userAttributeDefinitionId</value>
+                <value>isActive</value>
+                <value>isSuspended</value>
+                <value>grantTime</value>
+                <value>expirationTime</value>
+                <value>useCount</value>
+                <value>futureExpansion</value>
+                <value>rev</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+                <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>userId</value>
+                <value>userAttributeDefinitionId</value>
+                <value>grantTime</value>
+                <value>expirationTime</value>
+                <value>useCount</value>
+                <value>isActive</value>
+                <value>futureExpansion</value>
+                <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>isSuspended</value>
+                <value>grantTime</value>
+                <value>expirationTime</value>
+                <value>useCount</value>
+                <value>isActive</value>
+                <value>futureExpansion</value>
+                <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="userAttributeDefinitionFilter" class="com.junbo.identity.core.service.filter.UserAttributeDefinitionFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>type</value>
+                <value>description</value>
+                <value>futureExpansion</value>
+                <value>rev</value>
+                <value>createdTime</value>
+                <value>updatedTime</value>
+                <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>type</value>
+                <value>description</value>
+                <value>futureExpansion</value>
+                <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
+            </list>
+        </property>
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>type</value>
+                <value>description</value>
+                <value>futureExpansion</value>
+                <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
+            </list>
+        </property>
+    </bean>
 </beans>

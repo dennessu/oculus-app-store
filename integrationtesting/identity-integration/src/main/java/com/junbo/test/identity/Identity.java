@@ -55,6 +55,8 @@ public class Identity {
     public static final String IdentityV1UsernameMailBlockerURI = IdentityEndPointV1 + "/imports/username-email-block";
     public static final String IdentityV1TosURI = IdentityEndPointV1 + "/tos";
     public static final String IdentityV1UserAuthenticatorURI = IdentityEndPointV1 + "/authenticators";
+    public static final String IdentityV1UserAttributeURI = IdentityEndPointV1 + "/user-attributes";
+    public static final String IdentityV1UserAttributeDefinitionURI = IdentityEndPointV1 + "/user-attribute-definitions";
 
     public static String httpAuthorizationHeader = "";
 
@@ -936,6 +938,98 @@ public class Identity {
         return IdentityPost(
                 IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) + "/security-question-attempts",
                 JsonHelper.JsonSerializer(attempt), UserSecurityQuestionVerifyAttempt.class);
+    }
+
+    public static UserAttributeDefinition UserAttributeDefinitionPost(UserAttributeDefinition userAttributeDefinition) throws Exception {
+        return IdentityPost(
+                IdentityV1UserAttributeDefinitionURI, JsonHelper.JsonSerializer(userAttributeDefinition), UserAttributeDefinition.class);
+    }
+
+    public static UserAttributeDefinition UserAttributeDefinitionPut(UserAttributeDefinition userAttributeDefinition) throws Exception {
+        return IdentityPut(
+                IdentityV1UserAttributeDefinitionURI + "/" + userAttributeDefinition.getId().toString(),
+                JsonHelper.JsonSerializer(userAttributeDefinition), UserAttributeDefinition.class);
+    }
+
+    public static UserAttributeDefinition UserAttributeDefinitionGet(UserAttributeDefinitionId userAttributeDefinitionId) throws Exception {
+        return IdentityGet(IdentityV1UserAttributeDefinitionURI + "/" + userAttributeDefinitionId.toString(),UserAttributeDefinition.class);
+    }
+
+    public static void UserAttributeDefinitionDelete(UserAttributeDefinitionId userAttributeDefinitionId) throws Exception {
+        IdentityDelete(IdentityV1UserAttributeDefinitionURI + "/" + userAttributeDefinitionId.toString());
+    }
+
+    public static Results<UserAttributeDefinition> UserAttributeDefinitionSearch(Integer limit, Integer offset) throws Exception {
+        String url = IdentityV1UserAttributeDefinitionURI;
+        if (limit != null && offset != null) {
+            url = url + "?cursor=" + offset + "&count=" + limit;
+        } else if (limit != null) {
+            url = url + "?count=" + limit;
+        } else if (offset != null) {
+            url = url + "?cursor=" + offset;
+        }
+        Results<UserAttributeDefinition> results = new Results<>();
+        Results res = IdentityGet(url, Results.class);
+        results.setItems(new ArrayList<UserAttributeDefinition>());
+        for (Object obj : res.getItems()) {
+            results.getItems().add((UserAttributeDefinition) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                            UserAttributeDefinition.class)
+            );
+        }
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+
+        return results;
+    }
+
+    public static UserAttribute UserAttributePost(UserAttribute userAttribute) throws Exception {
+        return IdentityPost(IdentityV1UserAttributeURI, JsonHelper.JsonSerializer(userAttribute), UserAttribute.class);
+    }
+
+    public static UserAttribute UserAttributePut(UserAttribute userAttribute) throws Exception {
+        return IdentityPut(IdentityV1UserAttributeURI + "/" + userAttribute.getId().toString(),
+                JsonHelper.JsonSerializer(userAttribute), UserAttribute.class);
+    }
+
+    public static UserAttribute UserAttributeGet(UserAttributeId userAttributeId) throws Exception {
+        return IdentityGet(IdentityV1UserAttributeURI + "/" + userAttributeId.toString(), UserAttribute.class);
+    }
+
+    public static void UserAttributeDelete(UserAttributeId userAttributeId) throws Exception {
+        IdentityDelete(IdentityV1UserAttributeURI + "/" + userAttributeId.toString());
+    }
+
+    public static Results<UserAttribute> UserAttributeSearch(UserId userId, UserAttributeDefinitionId userAttributeDefinitionId,
+                                                             Integer limit, Integer offset) throws Exception {
+        String url = IdentityV1UserAttributeURI;
+        if (userId != null && userAttributeDefinitionId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId) + "&userAttributeDefinitionId=" + IdConverter.idToHexString(userAttributeDefinitionId);
+        } else if (userId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId);
+        } else if (userAttributeDefinitionId != null) {
+            url = url + "?userAttributeDefinitionId=" + IdConverter.idToHexString(userAttributeDefinitionId);
+        }
+
+        if (limit != null) {
+            url = url + "&cursor=" + limit;
+        }
+        if (offset != null) {
+            url = url + "&count=" + offset;
+        }
+
+        Results res = IdentityGet(url, Results.class);
+        Results<UserAttribute> results = new Results<>();
+        results.setItems(new ArrayList<UserAttribute>());
+        for (Object obj : res.getItems()) {
+            results.getItems().add((UserAttribute) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserAttribute.class)
+            );
+        }
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+
+        return results;
     }
 
     public static String GetHexLongId(Long userId) throws Exception {
