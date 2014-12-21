@@ -336,6 +336,7 @@ class CaseyFacadeImpl implements CaseyFacade {
         )
         resourceContainer.caseyResource.searchOffers(searchParams).recover { Throwable ex ->
             if (isInvalidCountryCaseyError(ex)) {
+                LOGGER.error('name=CaseyInvalidCountryError', ex);
                 throw AppErrors.INSTANCE.unsupportedCountry().exception()
             }
             wrapAndThrow(ex)

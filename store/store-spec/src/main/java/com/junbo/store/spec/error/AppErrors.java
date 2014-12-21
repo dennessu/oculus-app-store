@@ -107,6 +107,6 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "126", message = "Sentry block check username.")
     AppError sentryBlockCheckUsername();
 
-    @ErrorDef(httpStatusCode = 412, code = "127", message = "Unsupported Country.")
+    @ErrorDef(httpStatusCode = 404, code = "127", message = "Unsupported Country.")
     AppError unsupportedCountry();
 }

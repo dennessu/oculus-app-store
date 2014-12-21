@@ -31,7 +31,12 @@ class CaseyExceptionHandler implements ExceptionHandler {
         if (!StringUtils.isBlank(body)) {
             errorNode = messageTranscoder.decode(new TypeReference<JsonNode>() {}, body) as JsonNode
         }
-        String message = "Casey_Return_Error, status=${response.statusCode}, length=${body.length()}, response:\n${body}"
+        URI requestUri = null
+        try {
+            requestUri = response.getUri();
+        } catch(MalformedURLException ex) {
+        }
+        String message = "Casey_Return_Error, status=${response.statusCode}, length=${body.length()}, response:\n${body}, \nrequestUri:${requestUri?.toString()}"
         throw new CaseyException(errorNode?.get('code')?.textValue(), errorNode?.get('details'), message)
     }
 }
