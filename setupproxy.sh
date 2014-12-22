@@ -5,7 +5,9 @@ root
 personalConfigFile=./apphost/config-data/src/main/resources/junbo/conf/onebox/personal.properties
 # append \n to eof if not exists.
 chmod +w "$personalConfigFile"
-sed -i.bak -e '$a\' "$personalConfigFile"
+python -c "import re;content=re.sub(r'^\$(\\r?\\n)', r'', re.sub(r'([^\\n])\$',r'\\1\\n', open('$personalConfigFile').read()), flags=re.M);open('$personalConfigFile', 'w').write(content)"
+
+# remove old backup file
 if [[ -f "${personalConfigFile}.bak" ]]; then
     chmod +w "${personalConfigFile}.bak"
     rm "${personalConfigFile}.bak"
@@ -42,11 +44,7 @@ else
         export facebookProxy=`cat $personalConfigFile | grep '^facebook.proxy=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
     fi
     if [[ "$facebookProxy" == 'http://silkcloud:#Bugs4$1@127.0.0.1:13128' ]]; then
-        sed -i.bak -e '/^facebook.proxy=/d' "$personalConfigFile"
-        if [[ -f "${personalConfigFile}.bak" ]]; then
-            chmod +w "${personalConfigFile}.bak"
-            rm "${personalConfigFile}.bak"
-        fi
+        python -c "import re;content=re.sub(r'^facebook\\.proxy=.*\$(\\r?\\n?)',r'', open('$personalConfigFile').read(), flags=re.M);open('$personalConfigFile', 'w').write(content)"
         export facebookProxy=
         echo "facebook proxy is removed"
     fi
