@@ -85,6 +85,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    Promise<List<User>> getAllUsers(Integer limit, Integer offset) {
+        return userRepository.searchAll(limit, offset)
+    }
+
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository

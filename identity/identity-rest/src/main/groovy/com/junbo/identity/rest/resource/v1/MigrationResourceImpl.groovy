@@ -37,6 +37,7 @@ import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.model.migration.OculusInput
 import com.junbo.identity.spec.v1.model.migration.OculusOutput
+import com.junbo.identity.spec.v1.model.migration.UpdateHtmlOutput
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker
 import com.junbo.identity.spec.v1.resource.MigrationResource
 import com.junbo.langur.core.context.JunboHttpContext
@@ -216,7 +217,7 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     @Override
-    Promise<Boolean> updateUserHtmlCode(UserId userId) {
+    Promise<UpdateHtmlOutput> updateUserHtmlCode(UserId userId) {
         def changed = false
         return userService.get(userId).then { User existing ->
             return updateUserLoginName(existing).then { Boolean isChanged ->
@@ -249,6 +250,12 @@ class MigrationResourceImpl implements MigrationResource {
         }.recover { Throwable ex ->
             logger.error('fail to update user: ' + userId.toString(), ex)
             return Promise.pure(false)
+        }.then { Boolean updated ->
+            UpdateHtmlOutput updateHtmlOutput = new UpdateHtmlOutput()
+            updateHtmlOutput.updated = updated
+            updateHtmlOutput.userId = userId
+
+            return Promise.pure(updateHtmlOutput)
         }
     }
 

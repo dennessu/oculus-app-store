@@ -22,4 +22,6 @@ public interface UserService {
     Promise<User> getActiveUsersByMigrateId(Long migrateId)
 
     Promise<List<User>> getActiveUsersWithInvalidVatUser(Integer limit, Integer offset)
+
+    Promise<List<User>> getAllUsers(Integer limit, Integer offset)
 }
