@@ -55,15 +55,20 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         checkRights(options);
 
         List<ItemRevision> revisions = itemService.getRevisions(options);
-        for (final ItemRevision revision : revisions) {
+        for (ItemRevision revision : revisions) {
             revision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
-            if (!StringUtils.isEmpty(options.getLocale())) {
+        }
+
+        if (!StringUtils.isEmpty(options.getLocale())) {
+            final Map<String, String> localeRelations = localeFacade.getLocaleRelations();
+            for (final ItemRevision revision : revisions) {
                 revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
                 revision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
-                        put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
+                    put(options.getLocale(), getLocaleProperties(revision, options.getLocale(), localeRelations));
                 }});
             }
         }
+
         Results<ItemRevision> results = new Results<>();
         results.setItems(revisions);
         Link nextLink = new Link();
@@ -149,9 +154,10 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         final ItemRevision itemRevision = itemService.getRevision(revisionId);
         itemRevision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
         if (!StringUtils.isEmpty(options.getLocale())) {
+            final Map<String, String> localeRelations = localeFacade.getLocaleRelations();
             itemRevision.setLocaleAccuracy(getLocaleAccuracy(itemRevision.getLocales().get(options.getLocale())));
             itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>(){{
-                put(options.getLocale(), getLocaleProperties(itemRevision, options.getLocale()));
+                put(options.getLocale(), getLocaleProperties(itemRevision, options.getLocale(), localeRelations));
             }});
         }
 
@@ -244,11 +250,11 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         });
     }
 
-    private ItemRevisionLocaleProperties getLocaleProperties(ItemRevision revision, String locale) {
+    private ItemRevisionLocaleProperties getLocaleProperties(ItemRevision revision, String locale, Map<String, String> localeRelations) {
         if (revision == null || locale == null) {
             return new ItemRevisionLocaleProperties();
         }
-        Map<String, String> localeRelations = localeFacade.getLocaleRelations();
+
         ItemRevisionLocaleProperties result = revision.getLocales().get(locale);
         if (result == null) {
             result = new ItemRevisionLocaleProperties();
@@ -267,7 +273,6 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         return result;
     }
 
-    // TODO: don't use reflection in future
     private void addFallbackProperties(ItemRevisionLocaleProperties properties,
                                        ItemRevisionLocaleProperties fallbackProperties) {
         try {
@@ -283,7 +288,6 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         }
     }
 
-    // TODO: don't use reflection in future
     private boolean checkItemRevisionLocales(ItemRevisionLocaleProperties properties) {
         try {
             Map<String, Object> fields = PropertyUtils.describe(properties);
@@ -298,7 +302,6 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         return true;
     }
 
-    // TODO: don't use reflection in future
     private String getLocaleAccuracy(ItemRevisionLocaleProperties properties) {
         if (properties == null) {
             return LocaleAccuracy.LOW.name();
@@ -327,7 +330,7 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     }
 
     private boolean isAdmin() {
-        return AuthorizeContext.hasAnyScope(new String[] {"catalog.admin"});
+        return AuthorizeContext.hasAnyScope(new String[] {"catalog.admin", "catalog.service"});
     }
 
     private boolean isDeveloper() {

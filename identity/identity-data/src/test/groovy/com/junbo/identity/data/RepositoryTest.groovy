@@ -4,12 +4,14 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.data
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
@@ -29,6 +31,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional
 import org.testng.Assert
 import org.testng.annotations.Test
+
 /**
  * Unittest.
  */
@@ -136,7 +139,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Qualifier('organizationRepository')
     private OrganizationRepository organizationRepository
 
-    @Test
+    @Test(enabled = false)
     public void testCountryRepository() {
         countryRepository.delete(new CountryId('US')).get()
 
@@ -149,7 +152,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         assert  country.countryCode == newCountry.countryCode
     }
 
-    @Test
+    @Test(enabled = false)
     public void testCurrencyRepository() {
         currencyRepository.delete(new CurrencyId('USD')).get()
 
@@ -161,7 +164,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         assert  currency.currencyCode == newCurrency.currencyCode
     }
 
-    @Test
+    @Test(enabled = false)
     public void testLocaleRepository() {
         localeRepository.delete(new LocaleId('en_US')).get()
 
@@ -315,9 +318,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         AuthenticatorListOptions getOption = new AuthenticatorListOptions()
         getOption.setExternalId(newValue)
-        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
+        Results<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
                 null).get()
-        assert userAuthenticators.size() != 0
+        assert userAuthenticators != null
+        assert userAuthenticators.items.size() != 0
     }
 
     @Test
@@ -335,10 +339,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroupListOptions getOption = new UserGroupListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setGroupId(new GroupId("1493188608L"))
-        List<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
+        Results<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
                 new GroupId("1493188608L"), Integer.MAX_VALUE, 0).get()
-
-        assert userGroups.size() != 0
+        assert userGroups != null
+        assert userGroups.items.size() != 0
     }
 
     @Test
@@ -347,7 +351,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setUserId(new UserId(userId))
         userLoginAttempt.setType('pin')
         userLoginAttempt.setValue(UUID.randomUUID().toString())
-        userLoginAttempt.setClientId(new ClientId(idGenerator.nextId()))
+        userLoginAttempt.setClientId(new ClientId(UUID.randomUUID().toString()))
         userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
         userLoginAttempt.setUserAgent(UUID.randomUUID().toString())
         userLoginAttempt.setSucceeded(true)
@@ -453,7 +457,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setUserId(new UserId(userId))
         attempt.setSucceeded(true)
         attempt.setValue(UUID.randomUUID().toString())
-        attempt.setClientId(new ClientId(idGenerator.nextId()))
+        attempt.setClientId(new ClientId(UUID.randomUUID().toString()))
         attempt.setIpAddress(UUID.randomUUID().toString())
         attempt.setUserSecurityQuestionId(new UserSecurityQuestionId("123L"))
         attempt.setUserAgent(UUID.randomUUID().toString())
@@ -529,7 +533,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         def userId = new UserId(idGenerator.nextId())
         UserTFAAttempt userTeleAttempt = new UserTFAAttempt()
         userTeleAttempt.setVerifyCode(UUID.randomUUID().toString())
-        userTeleAttempt.setClientId(new ClientId(123L))
+        userTeleAttempt.setClientId(new ClientId(UUID.randomUUID().toString()))
         userTeleAttempt.setUserId(userId)
         userTeleAttempt.setIpAddress(UUID.randomUUID().toString())
         userTeleAttempt.setSucceeded(true)
@@ -587,7 +591,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setUserId(userId)
         attempt.setVerifyCode(UUID.randomUUID().toString())
         attempt.setUserAgent(UUID.randomUUID().toString())
-        attempt.setClientId(new ClientId(123L))
+        attempt.setClientId(new ClientId(UUID.randomUUID().toString()))
         attempt.setIpAddress(UUID.randomUUID().toString())
         attempt.setSucceeded(true)
 
@@ -615,7 +619,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPersonalInfo.setLastValidateTime(new Date())
         userPersonalInfo.setUserId(userId)
         Email email = new Email()
-        email.info = UUID.randomUUID().toString()
+        email.info = UUID.randomUUID().toString() + '@hotmail.com'
         ObjectMapper objectMapper = new ObjectMapper()
         userPersonalInfo.setValue(objectMapper.valueToTree(email))
 
@@ -623,6 +627,32 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).get()
 
         assert newUserPersonalInfo.type == userPersonalInfo.type
+    }
+
+    @Test(enabled = false)
+    public void testUserPersonalInfoRepositoryUpdate() {
+        UserId userId = new UserId(idGenerator.nextId())
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo()
+        String email1 = UUID.randomUUID().toString() + '@hotmail.com'
+        String email2 = UUID.randomUUID().toString() + '@hotmial.com'
+        userPersonalInfo.setType('EMAIL')
+        userPersonalInfo.setIsNormalized(true)
+        userPersonalInfo.setLastValidateTime(new Date())
+        userPersonalInfo.setUserId(userId)
+        Email email = new Email(
+                info: email1
+        )
+        userPersonalInfo.setValue(ObjectMapperProvider.instance().valueToTree(email))
+        UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).get()
+        newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.getId()).get()
+        Email gotEmail = (Email)ObjectMapperProvider.instance().treeToValue(newUserPersonalInfo.getValue(), Email)
+        assert gotEmail.info == email1
+
+        email.setInfo(email2)
+        newUserPersonalInfo.setValue(ObjectMapperProvider.instance().valueToTree(email))
+        newUserPersonalInfo = userPersonalInfoRepository.update(newUserPersonalInfo, newUserPersonalInfo).get()
+        gotEmail = ObjectMapperProvider.instance().treeToValue(newUserPersonalInfo.getValue(), Email)
+        assert gotEmail.info == email2
     }
 
     @Test

@@ -3,7 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.DeviceId
 import com.junbo.identity.core.service.validator.DeviceValidator
-import com.junbo.identity.data.repository.DeviceRepository
+import com.junbo.identity.service.DeviceService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Device
 import com.junbo.identity.spec.v1.option.list.DeviceListOptions
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class DeviceValidatorImpl implements DeviceValidator {
 
-    private DeviceRepository deviceRepository
+    private DeviceService deviceService
 
     private Integer deviceExternalRefMinLength
     private Integer deviceExternalRefMaxLength
@@ -28,10 +28,10 @@ class DeviceValidatorImpl implements DeviceValidator {
     @Override
     Promise<Device> validateForGet(DeviceId deviceId) {
         if (deviceId == null || deviceId.value == null) {
-            throw new IllegalArgumentException('deviceId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
-        return deviceRepository.get(deviceId).then { Device device ->
+        return deviceService.get(deviceId).then { Device device ->
             if (device == null) {
                 throw AppErrors.INSTANCE.deviceNotFound(deviceId).exception()
             }
@@ -61,7 +61,7 @@ class DeviceValidatorImpl implements DeviceValidator {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
-        return deviceRepository.searchBySerialNumber(device.serialNumber).then { Device existing ->
+        return deviceService.searchBySerialNumber(device.serialNumber).then { Device existing ->
             if (existing != null) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('externalRef').exception()
             }
@@ -90,7 +90,7 @@ class DeviceValidatorImpl implements DeviceValidator {
 
         checkBasicDeviceInfo(device)
         if (device.serialNumber != oldDevice.serialNumber) {
-            return deviceRepository.searchBySerialNumber(device.serialNumber).then { Device newDevice ->
+            return deviceService.searchBySerialNumber(device.serialNumber).then { Device newDevice ->
                 if (newDevice != null) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('externalRef').exception()
                 }
@@ -118,8 +118,8 @@ class DeviceValidatorImpl implements DeviceValidator {
     }
 
     @Required
-    void setDeviceRepository(DeviceRepository deviceRepository) {
-        this.deviceRepository = deviceRepository
+    void setDeviceService(DeviceService deviceService) {
+        this.deviceService = deviceService
     }
 
     @Required

@@ -16,4 +16,5 @@ public interface OrganizationValidator {
     Promise<Void> validateForCreate(Organization organization)
     Promise<Void> validateForUpdate(OrganizationId organizationId, Organization organization,
                                     Organization oldOrganization)
+    Promise<Void> validateForDelete(OrganizationId organizationId)
 }

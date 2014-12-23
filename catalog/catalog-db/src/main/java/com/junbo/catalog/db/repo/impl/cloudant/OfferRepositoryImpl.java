@@ -10,6 +10,7 @@ import com.junbo.catalog.common.cache.CacheFacade;
 import com.junbo.catalog.common.util.Callable;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.OfferRepository;
+import com.junbo.catalog.spec.model.offer.CountryProperties;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
@@ -20,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Offer repository.
@@ -60,6 +62,8 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                 } else if (options.getOwnerId() != null
                         && !options.getOwnerId().equals(offer.getOwnerId())) {
                     continue;
+                } else if (options.getCountry() != null && !availableInCountry(options.getCountry(), offer)) {
+                    continue;
                 } else {
                     offers.add(offer);
                 }
@@ -71,7 +75,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
             offers = searchResult.getResults();
             options.setNextCursor(searchResult.getBookmark());
             options.setTotal(searchResult.getTotal());
-        } else if (options.getCategory() != null || options.getPublished() != null || options.getOwnerId() != null) {
+        } else if (options.getCategory() != null || options.getPublished() != null || options.getOwnerId() != null || options.getCountry() != null) {
             StringBuilder sb = new StringBuilder();
             if (options.getCategory() != null) {
                 sb.append("categoryId:'").append(options.getCategory()).append("'");
@@ -87,6 +91,13 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                     sb.append(" AND ");
                 }
                 sb.append("ownerId:'").append(options.getOwnerId().getValue()).append("'");
+            }
+            if (options.getCountry() != null) {
+                if (sb.length() > 0) {
+                    sb.append(" AND ");
+                }
+                sb.append("(availableCountry:('").append(options.getCountry()).append("')");
+                sb.append(" AND ").append("-unavailableCountry:'").append(options.getCountry()).append("')");
             }
             CloudantSearchResult<Offer> searchResult =
                     search("search", sb.toString(), options.getValidSize(), options.getCursor()).get();
@@ -114,5 +125,20 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
     public void delete(String offerId) {
         cloudantDeleteSync(offerId);
         CacheFacade.OFFER.evict(offerId);
+    }
+
+    private boolean availableInCountry(String countryCode, Offer offer) {
+        if (offer.getActiveRevision() == null || offer.getActiveRevision().getCountries()==null) {
+            return false;
+        }
+        Map<String, CountryProperties> countries = offer.getActiveRevision().getCountries();
+        if (countries.get(countryCode)==null) {
+            /*if (countries.get(Constants.DEFAULT_COUNTRY) != null) {
+                return Boolean.TRUE.equals(countries.get(Constants.DEFAULT_COUNTRY).getIsPurchasable());
+            }*/
+            return false;
+        } else {
+            return Boolean.TRUE.equals(countries.get(countryCode).getIsPurchasable());
+        }
     }
 }

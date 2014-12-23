@@ -1,0 +1,76 @@
+{
+	"countryCode": "ER",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/ERN",
+		"id": "ERN"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Anseba",
+					"longName": "Anseba"
+				}
+			}
+		},
+		"DK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Southern Red Sea",
+					"longName": "Southern Red Sea"
+				}
+			}
+		},
+		"DU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Debub",
+					"longName": "Debub"
+				}
+			}
+		},
+		"GB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gash-Barka",
+					"longName": "Gash-Barka"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Maekel",
+					"longName": "Maekel"
+				}
+			}
+		},
+		"SK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Northern Red Sea",
+					"longName": "Northern Red Sea"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Eritrea",
+			"longName": "State of Eritrea",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

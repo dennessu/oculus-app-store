@@ -26,6 +26,9 @@ public abstract class Entity implements CloudantEntity<String>, Shardable {
     @CloudantProperty("_id")
     private String id;
 
+    @CloudantProperty("_deleted")
+    private Boolean deleted;
+
     private Boolean isDeleted;
 
     @CloudantSerialize(DateSerializer.class)
@@ -55,6 +58,16 @@ public abstract class Entity implements CloudantEntity<String>, Shardable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public Boolean isDeleted() {
+        return deleted;
+    }
+
+    @Override
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Column(name = "is_deleted")

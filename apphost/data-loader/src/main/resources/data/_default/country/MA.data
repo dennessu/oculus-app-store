@@ -758,7 +758,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ar_MA",
 		"id": "ar_MA"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Morocco",

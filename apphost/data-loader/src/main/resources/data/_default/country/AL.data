@@ -444,9 +444,13 @@
 		}
 	},
 	"supportedLocales": [{
-		"href": "/v1/locales/sq_AL",
-		"id": "sq_AL"
-	}],
+        "href": "/v1/locales/sq_AL",
+        "id": "sq_AL"
+    },
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Albania",

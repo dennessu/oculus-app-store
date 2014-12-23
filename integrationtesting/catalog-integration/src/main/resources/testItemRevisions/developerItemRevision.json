@@ -12,7 +12,8 @@
     },
     "downloadName": "download name",
     "distributionChannel": ["STORE"],
-    "supportedInputDevices": ["KEYBOARD", "MOUSE"],
+    "supportedInputDevices": ["KEYBOARD", "MOUSE", "CONTROLLER", "TOUCHPAD", "GAMEPAD", "HEAD_LOOK"],
+    "requiredInputDevices": ["KEYBOARD", "MOUSE", "CONTROLLER", "TOUCHPAD", "GAMEPAD", "HEAD_LOOK"],
     "locales":{
         "en_US":{
             "name": "Angry Bird",

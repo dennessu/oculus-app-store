@@ -1,0 +1,241 @@
+{
+	"countryCode": "MH",
+	"defaultLocale": {
+		"href": "/v1/locales/en_MH",
+		"id": "en_MH"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"ALK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ailuk",
+					"longName": "Ailuk"
+				}
+			}
+		},
+		"ALL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ailinglaplap",
+					"longName": "Ailinglaplap"
+				}
+			}
+		},
+		"ARN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Arno",
+					"longName": "Arno"
+				}
+			}
+		},
+		"AUR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Aur",
+					"longName": "Aur"
+				}
+			}
+		},
+		"EBO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ebon",
+					"longName": "Ebon"
+				}
+			}
+		},
+		"ENI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Enewetak",
+					"longName": "Enewetak"
+				}
+			}
+		},
+		"JAB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jabat",
+					"longName": "Jabat"
+				}
+			}
+		},
+		"JAL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jaluit",
+					"longName": "Jaluit"
+				}
+			}
+		},
+		"KIL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kili",
+					"longName": "Kili"
+				}
+			}
+		},
+		"KWA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kwajalein",
+					"longName": "Kwajalein"
+				}
+			}
+		},
+		"L": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ralik chain",
+					"longName": "Ralik chain"
+				}
+			}
+		},
+		"LAE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lae",
+					"longName": "Lae"
+				}
+			}
+		},
+		"LIB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lib",
+					"longName": "Lib"
+				}
+			}
+		},
+		"LIK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Likiep",
+					"longName": "Likiep"
+				}
+			}
+		},
+		"MAJ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Majuro",
+					"longName": "Majuro"
+				}
+			}
+		},
+		"MAL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Maloelap",
+					"longName": "Maloelap"
+				}
+			}
+		},
+		"MEJ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mejit",
+					"longName": "Mejit"
+				}
+			}
+		},
+		"MIL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mili",
+					"longName": "Mili"
+				}
+			}
+		},
+		"NMK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Namdrik",
+					"longName": "Namdrik"
+				}
+			}
+		},
+		"NMU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Namu",
+					"longName": "Namu"
+				}
+			}
+		},
+		"RON": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rongelap",
+					"longName": "Rongelap"
+				}
+			}
+		},
+		"T": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ratak chain",
+					"longName": "Ratak chain"
+				}
+			}
+		},
+		"UJA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ujae",
+					"longName": "Ujae"
+				}
+			}
+		},
+		"UTI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Utirik",
+					"longName": "Utirik"
+				}
+			}
+		},
+		"WTH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Wotho",
+					"longName": "Wotho"
+				}
+			}
+		},
+		"WTJ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Wotje",
+					"longName": "Wotje"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_MH",
+		"id": "en_MH"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Marshall Islands",
+			"longName": "Republic of the Marshall Islands",
+			"postalCode": "Postal Code"
+		},
+		"en_MH": {
+			"shortName": "Marshall Islands",
+			"longName": "Republic of the Marshall Islands",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

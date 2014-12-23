@@ -68,6 +68,9 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
             "but the UI of the publisher organization defaults it to 0.7.")
     private Double publisherRevenueRatio;
 
+    @ApiModelProperty(position = 15, required = false, value = "[Nullable] The Unique string identity to identify the Oculus Payout Organization")
+    private String fbPayoutOrgId;
+
     @JsonIgnore
     private String canonicalName;
 
@@ -194,6 +197,15 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
         support.setPropertyAssigned("annualTaxReportIds");
     }
 
+    public String getFbPayoutOrgId() {
+        return fbPayoutOrgId;
+    }
+
+    public void setFbPayoutOrgId(String fbPayoutOrgId) {
+        this.fbPayoutOrgId = fbPayoutOrgId;
+        support.setPropertyAssigned("fbPayoutOrgId");
+    }
+
     public String getCanonicalName() {
         return canonicalName;
     }
@@ -248,6 +260,8 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
             return false;
         if (canonicalName != null ? !canonicalName.equals(that.canonicalName) : that.canonicalName != null)
             return false;
+        if (fbPayoutOrgId != null ? !fbPayoutOrgId.equals(that.fbPayoutOrgId) : that.fbPayoutOrgId != null)
+            return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (isValidated != null ? !isValidated.equals(that.isValidated) : that.isValidated != null) return false;
         if (migratedCompanyId != null ? !migratedCompanyId.equals(that.migratedCompanyId) : that.migratedCompanyId != null)
@@ -287,6 +301,7 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
         result = 31 * result + (payoutTaxProfile != null ? payoutTaxProfile.hashCode() : 0);
         result = 31 * result + (annualTaxReportIds != null ? annualTaxReportIds.hashCode() : 0);
         result = 31 * result + (publisherRevenueRatio != null ? publisherRevenueRatio.hashCode() : 0);
+        result = 31 * result + (fbPayoutOrgId != null ? fbPayoutOrgId.hashCode() : 0);
         result = 31 * result + (canonicalName != null ? canonicalName.hashCode() : 0);
         result = 31 * result + (migratedCompanyId != null ? migratedCompanyId.hashCode() : 0);
         return result;

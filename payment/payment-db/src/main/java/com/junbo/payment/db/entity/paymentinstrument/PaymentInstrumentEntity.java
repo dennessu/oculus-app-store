@@ -54,13 +54,16 @@ public class PaymentInstrumentEntity extends GenericEntity {
     @Column(name = "email")
     private Long email;
 
+    @Column(name = "payment_provider_id")
+    private Integer paymentProviderId;
+
     @Column(name = "relation_to_holder")
     private String relationToHolder;
 
     @Column(name = "active")
     private Boolean isActive;
 
-    @Column(name = "deleted", updatable = false)
+    @Column(name = "deleted")
     private Boolean isDeleted;
 
     @Column(name = "last_validated_time")
@@ -171,11 +174,11 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.isActive = isActive;
     }
 
-    public Boolean isDeleted() {
-        return isDeleted == null ? false : isDeleted;
+    public Boolean getIsDeleted() {
+        return isDeleted;
     }
 
-    public void setDeleted(Boolean isDeleted) {
+    public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 
@@ -193,6 +196,14 @@ public class PaymentInstrumentEntity extends GenericEntity {
 
     public void setExternalToken(String externalToken) {
         this.externalToken = externalToken;
+    }
+
+    public Integer getPaymentProviderId() {
+        return paymentProviderId;
+    }
+
+    public void setPaymentProviderId(Integer paymentProviderId) {
+        this.paymentProviderId = paymentProviderId;
     }
 
     public String toString() {

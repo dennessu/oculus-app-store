@@ -182,7 +182,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ar_SY",
 		"id": "ar_SY"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Syria",

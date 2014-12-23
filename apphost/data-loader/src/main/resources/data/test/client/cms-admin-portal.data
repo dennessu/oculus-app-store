@@ -1,0 +1,12 @@
+{
+  "scopes" : [ "identity.admin" ],
+  "client_id" : "cms-admin-portal",
+  "client_secret" : "D0BFD2922CB3FA45245D3D3D678ACB9F#533A7A99EDF4638D4BF60A370E51607A518A2744B92410F0613E5A5B9E394F08353628EB97D09EB9C869ED9FF5C7B6F9",
+  "client_name" : "cms-admin-portal",
+  "default_scopes" : [ "identity.admin" ],
+  "response_types" : [],
+  "grant_types" : [ "PASSWORD", "REFRESH_TOKEN" ],
+  "id_token_issuer" : "www.junbo.com",
+  "need_consent" : false,
+  "internal" : true
+}

@@ -14,7 +14,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -144,6 +144,9 @@ class AuthenticateUser implements Action {
                 contextWrapper.captchaRequired = true
                 return Promise.pure(new ActionResult('captchaRequired'))
             }
+
+            def user = userService.getUser(loginAttempt.getUserId()).get()
+            contextWrapper.user = user
 
             // Create the LoginState and save it in the ActionContext
             def loginState = new LoginState(

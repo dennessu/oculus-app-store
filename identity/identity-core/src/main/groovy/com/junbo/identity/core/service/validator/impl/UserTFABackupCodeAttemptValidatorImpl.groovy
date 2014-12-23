@@ -5,9 +5,9 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeAttemptId
 import com.junbo.identity.core.service.validator.UserTFABackupCodeAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeAttemptRepository
-import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeRepository
+import com.junbo.identity.service.UserService
+import com.junbo.identity.service.UserTFAPhoneBackupCodeAttemptService
+import com.junbo.identity.service.UserTFAPhoneBackupCodeService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserTFABackupCode
@@ -26,9 +26,9 @@ import java.util.regex.Pattern
 @CompileStatic
 class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptValidator {
 
-    private UserRepository userRepository
-    private UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository
-    private UserTFAPhoneBackupCodeAttemptRepository userTFABackupCodeAttemptRepository
+    private UserService userService
+    private UserTFAPhoneBackupCodeService userTFAPhoneBackupCodeService
+    private UserTFAPhoneBackupCodeAttemptService userTFAPhoneBackupCodeAttemptService
 
     private Integer minVerifyCodeLength
     private Integer maxVerifyCodeLength
@@ -43,6 +43,9 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
 
     private Integer maxRetryCount
 
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
+
     @Override
     Promise<UserTFABackupCodeAttempt> validateForGet(UserId userId, UserTFABackupCodeAttemptId attemptId) {
         if (userId == null) {
@@ -53,7 +56,7 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
             throw new IllegalArgumentException('userTFABackupCodeAttemptId is null')
         }
 
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -66,7 +69,7 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTFABackupCodeAttemptRepository.get(attemptId).then { UserTFABackupCodeAttempt attempt ->
+            return userTFAPhoneBackupCodeAttemptService.get(attemptId).then { UserTFABackupCodeAttempt attempt ->
                 if (attempt == null) {
                     throw AppErrors.INSTANCE.userTFABackupCodeAttemptNotFound(attemptId).exception()
                 }
@@ -133,7 +136,7 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
             }
         }
 
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -147,7 +150,7 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
 
             attempt.userId = userId
 
-            return userTFABackupCodeRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE,
+            return userTFAPhoneBackupCodeService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize,
                     0).then { List<UserTFABackupCode> userTFABackupCodeList ->
                 if (CollectionUtils.isEmpty(userTFABackupCodeList)) {
                     throw AppErrors.INSTANCE.userTFABackupCodeIncorrect().exception()
@@ -172,7 +175,7 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
             return Promise.pure(null)
         }
 
-        return userTFABackupCodeAttemptRepository.searchByUserId((UserId)user.id, maxRetryCount, 0).then { List<UserTFABackupCodeAttempt> attemptList ->
+        return userTFAPhoneBackupCodeAttemptService.searchByUserId((UserId)user.id, maxRetryCount, 0).then { List<UserTFABackupCodeAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                 return Promise.pure(null)
             }
@@ -190,18 +193,18 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserTFABackupCodeRepository(UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository) {
-        this.userTFABackupCodeRepository = userTFABackupCodeRepository
+    void setUserTFAPhoneBackupCodeService(UserTFAPhoneBackupCodeService userTFAPhoneBackupCodeService) {
+        this.userTFAPhoneBackupCodeService = userTFAPhoneBackupCodeService
     }
 
     @Required
-    void setUserTFABackupCodeAttemptRepository(UserTFAPhoneBackupCodeAttemptRepository userTFABackupCodeAttemptRepository) {
-        this.userTFABackupCodeAttemptRepository = userTFABackupCodeAttemptRepository
+    void setUserTFAPhoneBackupCodeAttemptService(UserTFAPhoneBackupCodeAttemptService userTFAPhoneBackupCodeAttemptService) {
+        this.userTFAPhoneBackupCodeAttemptService = userTFAPhoneBackupCodeAttemptService
     }
 
     @Required
@@ -244,6 +247,11 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
     @Required
     void setMaxRetryCount(Integer maxRetryCount) {
         this.maxRetryCount = maxRetryCount
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }
 

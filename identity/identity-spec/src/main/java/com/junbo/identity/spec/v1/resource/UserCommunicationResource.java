@@ -13,11 +13,14 @@ import com.junbo.identity.spec.v1.option.model.UserOptinGetOptions;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
+import com.junbo.langur.core.routing.RouteByAccessToken;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -30,32 +33,33 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserCommunicationResource {
     @ApiOperation("Create one user optin")
+    @RouteBy(value = "userOptin.getUserId()", switchable = true)
     @POST
     Promise<UserCommunication> create(UserCommunication userOptin);
 
     @ApiOperation("Get one user optin")
+    @RouteByAccessToken(switchable = true)
     @GET
     @Path("/{userOptinId}")
     Promise<UserCommunication> get(@PathParam("userOptinId") UserCommunicationId userOptinId,
                            @BeanParam UserOptinGetOptions getOptions);
 
-    @POST
-    @Path("/{userOptinId}")
-    Promise<UserCommunication> patch(@PathParam("userOptinId") UserCommunicationId userOptinId,
-                              UserCommunication userOptin);
-
     @ApiOperation("Update one user optin")
+    @RouteBy(value = "userOptin.getUserId()", switchable = true)
     @PUT
     @Path("/{userOptinId}")
     Promise<UserCommunication> put(@PathParam("userOptinId") UserCommunicationId userOptinId,
                             UserCommunication userOptin);
 
     @ApiOperation("Delete one user optin")
+    @RouteByAccessToken(switchable = true)
     @DELETE
     @Path("/{userOptinId}")
-    Promise<Void> delete(@PathParam("userOptinId") UserCommunicationId userOptinId);
+    Promise<Response> delete(@PathParam("userOptinId") UserCommunicationId userOptinId);
 
     @ApiOperation("Search user optins")
+    @RouteBy("listOptions.getUserId()")
+    @RouteByAccessToken(switchable = true)
     @GET
     Promise<Results<UserCommunication>> list(@BeanParam UserOptinListOptions listOptions);
 }

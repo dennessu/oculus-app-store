@@ -3,11 +3,11 @@
   "client_secret" : "56F888C63EC596A5B26F9F682822687D#154CD9EC9B4A1C177F47EBD33DD6DE0EFDA7843FB87EC22BF233E5C7335243A714410F9E6524BBB594D81883484A8738",
   "client_name" : "2dstore",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
-  "default_redirect_uri" : "http://localhost",
+  "redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*" ],
+  "default_redirect_uri" : "https://id.oculus.com",
 
-  "logout_redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
-  "default_logout_redirect_uri" : "http://localhost",
+  "logout_redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*" ],
+  "default_logout_redirect_uri" : "https://id.oculus.com",
 
   "scopes" : ["offline", "storeapi", "entitlement", "catalog" ],
   "default_scopes" : [ "offline", "storeapi", "entitlement", "catalog" ],

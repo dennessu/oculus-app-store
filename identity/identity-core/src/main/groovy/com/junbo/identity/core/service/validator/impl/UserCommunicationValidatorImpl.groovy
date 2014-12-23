@@ -4,9 +4,9 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCommunicationId
 import com.junbo.identity.core.service.validator.UserCommunicationValidator
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.CommunicationRepository
-import com.junbo.identity.data.repository.UserCommunicationRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.CommunicationService
+import com.junbo.identity.service.UserCommunicationService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Communication
 import com.junbo.identity.spec.v1.model.User
@@ -25,9 +25,9 @@ import org.springframework.util.CollectionUtils
 @CompileStatic
 class UserCommunicationValidatorImpl implements UserCommunicationValidator {
 
-    private UserRepository userRepository
-    private UserCommunicationRepository userCommunicationRepository
-    private CommunicationRepository communicationRepository
+    private UserService userService
+    private UserCommunicationService userCommunicationService
+    private CommunicationService communicationService
 
     @Override
     Promise<UserCommunication> validateForGet(UserCommunicationId userCommunicationId) {
@@ -36,7 +36,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             throw AppCommonErrors.INSTANCE.parameterRequired('userCommunicationId').exception()
         }
 
-        return userCommunicationRepository.get(userCommunicationId).then { UserCommunication userCommunication ->
+        return userCommunicationService.get(userCommunicationId).then { UserCommunication userCommunication ->
             if (userCommunication == null) {
                 throw AppErrors.INSTANCE.userOptinNotFound(userCommunicationId).exception()
             }
@@ -65,9 +65,8 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
                 throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
 
-            return userCommunicationRepository.searchByUserIdAndCommunicationId(userCommunication.userId,
-                    userCommunication.communicationId, Integer.MAX_VALUE, 0
-            ).then { List<UserCommunication> existing ->
+            return userCommunicationService.searchByUserIdAndCommunicationId(userCommunication.userId,
+                    userCommunication.communicationId, 1, 0).then { List<UserCommunication> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                 }
@@ -105,8 +104,8 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             }
 
             if (userCommunication.communicationId != oldUserCommunication.communicationId) {
-                return userCommunicationRepository.searchByUserIdAndCommunicationId(userCommunication.userId,
-                        userCommunication.communicationId, Integer.MAX_VALUE, 0).then { List<UserCommunication> existing ->
+                return userCommunicationService.searchByUserIdAndCommunicationId(userCommunication.userId,
+                        userCommunication.communicationId, 1, 0).then { List<UserCommunication> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                     }
@@ -131,7 +130,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
-        return userRepository.get(userCommunication.userId).then { User existingUser ->
+        return userService.getNonDeletedUser(userCommunication.userId).then { User existingUser ->
             if (existingUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userCommunication.userId).exception()
             }
@@ -144,7 +143,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userCommunication.userId).exception()
             }
 
-            return communicationRepository.get(userCommunication.communicationId).then { Communication communication ->
+            return communicationService.get(userCommunication.communicationId).then { Communication communication ->
                 if (communication == null) {
                     throw AppErrors.INSTANCE.communicationNotFound(userCommunication.communicationId).exception()
                 }
@@ -155,17 +154,17 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserCommunicationRepository(UserCommunicationRepository userCommunicationRepository) {
-        this.userCommunicationRepository = userCommunicationRepository
+    void setUserCommunicationService(UserCommunicationService userCommunicationService) {
+        this.userCommunicationService = userCommunicationService
     }
 
     @Required
-    void setCommunicationRepository(CommunicationRepository communicationRepository) {
-        this.communicationRepository = communicationRepository
+    void setCommunicationService(CommunicationService communicationService) {
+        this.communicationService = communicationService
     }
 }

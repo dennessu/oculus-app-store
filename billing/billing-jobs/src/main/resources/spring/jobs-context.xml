@@ -25,7 +25,7 @@
     <bean id="billingListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer" parent="baseListenerContainer">
         <property name="destination" ref="billingAsyncChargeQueue" />
         <property name="messageListener">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="asyncChargeListener"/>
                 </property>
@@ -54,7 +54,7 @@
     <!-- Billing Balance Process Job -->
     <bean id="billingSettlementJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="billingSettlementJob"/>
                 </property>

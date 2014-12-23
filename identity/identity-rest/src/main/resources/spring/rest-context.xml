@@ -36,6 +36,8 @@
     <bean id="defaultOrganizationResource" class="com.junbo.identity.rest.resource.v1.OrganizationResourceImpl" />
     <bean id="defaultErrorInfoResource" class="com.junbo.identity.rest.resource.v1.ErrorInfoResourceImpl" />
     <bean id="defaultMigrationResource" class="com.junbo.identity.rest.resource.v1.MigrationResourceImpl" />
+    <bean id="defaultUserAttributeResource" class="com.junbo.identity.rest.resource.v1.UserAttributeResourceImpl" />
+    <bean id="defaultUserAttributeDefinitionResource" class="com.junbo.identity.rest.resource.v1.UserAttributeDefinitionResourceImpl" />
 
     <bean id="defaultAuthenticatorResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxyFactory"/>
     <bean id="defaultUserCommunicationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCommunicationResourceClientProxyFactory"/>
@@ -64,5 +66,6 @@
     <bean id="defaultOrganizationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxyFactory" />
     <bean id="defaultErrorInfoResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.ErrorInfoResourceClientProxyFactory" />
     <bean id="defaultMigrationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.MigrationResourceClientProxyFactory" />
-
+    <bean id="defaultUserAttributeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserAttributeResourceClientProxyFactory" />
+    <bean id="defaultUserAttributeDefinitionResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserAttributeDefinitionResourceClientProxyFactory" />
 </beans>

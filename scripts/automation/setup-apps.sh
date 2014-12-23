@@ -20,12 +20,21 @@ for var in $ENV/apps.txt $ENV/crypto-apps.txt $ENV/utils.txt; do
     for p in `cat $var`; do
         if [[ ! -z "$p" && ! $p == \#* ]]; then
             echo copying apphost to $p
-            scp -o "StrictHostKeyChecking no" /home/silkcloud/$APP_NAME.zip $p:/var/silkcloud
+            scp -o "StrictHostKeyChecking no" /home/silkcloud/$APP_NAME.zip $p:/var/silkcloud &
         fi
     done
 done
+FAILED=0
+for job in `jobs -p`; do
+    wait $job || let "FAILED+=1"
+done
 
-./foreach-here.sh $ENV/crypto-apps.txt $ENV/apps.txt $ENV/utils.txt << EOF
+if [ "$FAILED" != "0" ]; then
+    exit 1
+fi
+
+
+./pforeach-here.sh $ENV/crypto-apps.txt $ENV/apps.txt $ENV/utils.txt << EOF
 cd /var/silkcloud
 (sudo initctl status silkcloud-apphost | grep start) && sudo stop silkcloud-apphost
 rm -rf $APP_NAME
@@ -38,26 +47,35 @@ for var in $ENV/apps.txt $ENV/crypto-apps.txt $ENV/utils.txt; do
     for p in `cat $var`; do
         if [[ ! -z "$p" && ! $p == \#* ]]; then
             echo copying newrelic to $p
-            scp -o "StrictHostKeyChecking no" -r ./newrelic/. $p:/var/silkcloud/apphost/newrelic/
+            scp -o "StrictHostKeyChecking no" -r ./newrelic/. $p:/var/silkcloud/apphost/newrelic/ &
         fi
     done
 done
+FAILED=0
+for job in `jobs -p`; do
+    wait $job || let "FAILED+=1"
+done
 
-./foreach-here.sh $ENV/crypto-apps.txt << EOF
+if [ "$FAILED" != "0" ]; then
+    exit 1
+fi
+
+
+./pforeach-here.sh $ENV/crypto-apps.txt << EOF
 sed -e 's@^export APPHOST_OPTS=".*"\$@export APPHOST_OPTS="-javaagent:/var/silkcloud/apphost/newrelic/newrelic.jar -Dnewrelic.environment=cry$ENV_BASE"@g' -i /var/silkcloud/apphost/startup.sh
 echo Updated to \`grep '^export APPHOST_OPTS=' /var/silkcloud/apphost/startup.sh\`
 
 sudo start silkcloud-apphost
 EOF
 
-./foreach-here.sh $ENV/utils.txt << EOF
+./pforeach-here.sh $ENV/utils.txt << EOF
 sed -e 's@^export APPHOST_OPTS=".*"\$@export APPHOST_OPTS="-javaagent:/var/silkcloud/apphost/newrelic/newrelic.jar -Dnewrelic.environment=utl$ENV_BASE"@g' -i /var/silkcloud/apphost/startup.sh
 echo Updated to \`grep '^export APPHOST_OPTS=' /var/silkcloud/apphost/startup.sh\`
 
 sudo start silkcloud-apphost
 EOF
 
-./foreach-here.sh $ENV/apps.txt << EOF
+./pforeach-here.sh $ENV/apps.txt << EOF
 sed -e 's@^export APPHOST_OPTS=".*"\$@export APPHOST_OPTS="-javaagent:/var/silkcloud/apphost/newrelic/newrelic.jar -Dnewrelic.environment=$ENV_BASE"@g' -i /var/silkcloud/apphost/startup.sh
 echo Updated to \`grep '^export APPHOST_OPTS=' /var/silkcloud/apphost/startup.sh\`
 

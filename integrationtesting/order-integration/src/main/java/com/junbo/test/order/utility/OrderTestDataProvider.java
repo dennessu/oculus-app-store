@@ -111,11 +111,23 @@ public class OrderTestDataProvider {
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
                             boolean hasPhysicalGood, Map<String, Integer> offers)
             throws Exception {
-        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200);
+        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200, true);
+    }
+
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            boolean hasPhysicalGood, Map<String, Integer> offers, boolean tentative)
+            throws Exception {
+        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200, tentative);
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
                             boolean hasPhysicalGood, Map<String, Integer> offers, int expectedResponseCode)
+            throws Exception {
+        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, expectedResponseCode, true);
+    }
+
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            boolean hasPhysicalGood, Map<String, Integer> offers, int expectedResponseCode, boolean tentative)
             throws Exception {
         Order order = new Order();
         UserId userId = new UserId();
@@ -150,10 +162,10 @@ public class OrderTestDataProvider {
             String offerName = (String) it.next();
             OfferId offerId;
             if (offerName.equals("Invalid")) {
-                offerId = new OfferId("123");
-            } else if(offerName.toLowerCase().contains("test")){
+                offerId = new OfferId(uid);
+            } else if (offerName.toLowerCase().contains("test")) {
                 offerId = new OfferId(offerClient.getOfferIdByName(offerName));
-            }else {
+            } else {
                 offerId = new OfferId(offerName);
             }
             orderItem.setQuantity(offers.get(offerName));
@@ -162,7 +174,7 @@ public class OrderTestDataProvider {
 
         }
         order.setOrderItems(orderItemList);
-        order.setTentative(true);
+        order.setTentative(tentative);
         order.setLocale(new LocaleId("en_US"));
         Master.getInstance().setCurrentUid(uid);
         return orderClient.postOrder(order, expectedResponseCode);
@@ -269,13 +281,18 @@ public class OrderTestDataProvider {
         return orderEventClient.getOrderEventsByOrderId(orderId);
     }
 
-    public void postOrderEvent(String orderId, EventStatus eventStatus, OrderActionType orderActionType)
+    public void postOrderEvent(String orderId, EventStatus eventStatus, OrderActionType orderActionType, int expectedResponseCode)
             throws Exception {
         OrderEvent orderEvent = new OrderEvent();
         orderEvent.setOrder(new OrderId(IdConverter.hexStringToId(OrderId.class, orderId)));
         orderEvent.setAction(orderActionType.toString());
         orderEvent.setStatus(eventStatus.toString());
-        orderEventClient.postOrderEvent(orderEvent);
+        orderEventClient.postOrderEvent(orderEvent, expectedResponseCode);
+    }
+
+    public void postOrderEvent(String orderId, EventStatus eventStatus, OrderActionType orderActionType)
+            throws Exception {
+        postOrderEvent(orderId, eventStatus, orderActionType, 200);
     }
 
     public OrderInfo getRefundedOrderInfo(OrderInfo orderInfo, Map<String, Integer> refundedOffers,
@@ -327,7 +344,9 @@ public class OrderTestDataProvider {
                     new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
             refundOrderItem.setRefundTax(refundTax.multiply(
                     new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
-
+            if (refundOrderItem.getRefundAmount().compareTo(new BigDecimal(0)) == 0) {
+                continue;
+            }
             billingHistory.getRefundOrderItemInfos().add(refundOrderItem);
         }
 
@@ -429,6 +448,11 @@ public class OrderTestDataProvider {
 
     public void refundOrder(String orderId, Map<String, Integer> refundedOffers,
                             Map<String, BigDecimal> partialRefundAmounts) throws Exception {
+        refundOrder(orderId, refundedOffers, partialRefundAmounts, 200);
+    }
+
+    public void refundOrder(String orderId, Map<String, Integer> refundedOffers,
+                            Map<String, BigDecimal> partialRefundAmounts, int expectedResponseCode) throws Exception {
         orderClient.getOrderByOrderId(orderId);
         Order order = Master.getInstance().getOrder(orderId);
 
@@ -454,7 +478,7 @@ public class OrderTestDataProvider {
             }
         }
 
-        orderClient.refundOrder(order);
+        orderClient.refundOrder(order, expectedResponseCode);
     }
 
     public BigDecimal refundTotalAmount(String orderId) throws Exception {

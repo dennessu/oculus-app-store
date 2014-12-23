@@ -986,7 +986,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/tr_TR",
 		"id": "tr_TR"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Turkey",

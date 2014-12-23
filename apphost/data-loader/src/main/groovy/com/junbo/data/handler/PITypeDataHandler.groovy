@@ -47,17 +47,13 @@ class PITypeDataHandler extends BaseDataHandler {
 
         if (results != null && results.items != null && !results.items.empty) {
             PIType existing = results.items.get(0)
-            if (alwaysOverwrite) {
-                logger.debug("Overwrite PIType $piType.typeCode with this content")
-                piType.id = (PITypeId) existing.id
-                piType.rev = existing.rev
-                try {
-                    piTypeResource.patch((PITypeId) existing.id, piType).get()
-                } catch (Exception e) {
-                    logger.error("Error updating piType $piType.typeCode", e)
-                }
-            } else {
-                logger.debug("$piType.typeCode already exists, skipped!")
+            logger.debug("Overwrite PIType $piType.typeCode with this content")
+            piType.id = (PITypeId) existing.id
+            piType.rev = existing.rev
+            try {
+                piTypeResource.put((PITypeId) existing.id, piType).get()
+            } catch (Exception e) {
+                logger.error("Error updating piType $piType.typeCode", e)
             }
         } else {
             logger.debug('Create new piType with this content')

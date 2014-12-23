@@ -25,6 +25,7 @@ class AuthorizationCode extends ExpirableToken {
     String nonce
     String redirectUri
     Date lastAuthDate
+    String loginStateHash
 
     @Override
     String getId() {

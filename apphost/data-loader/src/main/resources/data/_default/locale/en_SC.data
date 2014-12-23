@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_SC",
+   "shortName" : "English (SC)",
+   "longName" : "English (Seychelles)",
+   "localeName" : "English (SC)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

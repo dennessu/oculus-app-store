@@ -17,10 +17,12 @@ import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.util.PaymentUtil;
+import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.repo.TrackingUuidRepository;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.db.repository.PITypeRepository;
 import com.junbo.payment.spec.enums.PaymentAPI;
+import com.junbo.payment.spec.internal.ProviderCriteria;
 import com.junbo.payment.spec.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,17 +59,33 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                 return Promise.pure(CommonUtil.parseJson(result.getResponse(), PaymentInstrument.class));
             }
         }
-        final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
-                PIType.get(request.getType()));
+        ProviderCriteria providerCriteria = new ProviderCriteria(PaymentUtil.getPIType(request.getType()));
+        providerCriteria.setUserId(request.getUserId());
+        if(request.getProviderOption() != null){
+            providerCriteria.setCountry(request.getProviderOption().getCountry());
+            providerCriteria.setCurrency(request.getProviderOption().getCurrency());
+            providerCriteria.setCseType(request.getProviderOption().getCesType());
+        }
+        final PaymentProviderService provider = providerRoutingService.getPaymentProvider(providerCriteria);
         if(provider == null){
             throw AppServerExceptions.INSTANCE.providerNotFound(PIType.get(request.getType()).toString()).exception();
         }
-        return provider.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
+        request.setPaymentProvider(provider.getProviderName());
+        LOGGER.info("start to call provider add PI");
+        return provider.add(request).recover(new Promise.Func<Throwable, Promise<PaymentInstrument>>() {
+            @Override
+            public Promise<PaymentInstrument> apply(Throwable throwable) {
+                ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
+                LOGGER.error("add declined by due to:" + proxyResponse.getBody(), throwable);
+                throw AppServerExceptions.INSTANCE.providerProcessError(provider.getProviderName(), proxyResponse.getBody()).exception();
+            }
+        }).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
+                LOGGER.info("call provider add PI successfully");
                 provider.clonePIResult(paymentInstrument, request);
                 request.setIsActive(true);
-                if(request.getLastValidatedTime() != null){
+                if (request.getLastValidatedTime() != null) {
                     request.setLastValidatedTime(new Date());
                     request.setIsValidated(true);
                 }
@@ -142,8 +160,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         //if(userId != null && !userId.equals(result.getUserId())){
         //    throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         //}
-        final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
-                PIType.get(result.getType()));
+        final PaymentProviderService provider = providerRoutingService.getProviderByName(result.getPaymentProvider());
         if(provider == null){
             LOGGER.error("the provider is not available for pi type:" + result.getType());
             throw AppServerExceptions.INSTANCE.providerNotFound(PIType.get(result.getType()).toString()).exception();
@@ -245,6 +262,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             throw AppCommonErrors.INSTANCE.fieldRequired("payment_instrument_type").exception();
         }
         PaymentUtil.getPIType(request.getType());
+        if(request.getAccountName() != null && request.getAccountName().length() > 64){
+            throw AppCommonErrors.INSTANCE.fieldInvalid("account name too long").exception();
+        }
         validateCreditCard(request);
     }
 

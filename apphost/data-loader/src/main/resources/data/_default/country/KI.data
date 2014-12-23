@@ -1,0 +1,52 @@
+{
+	"countryCode": "KI",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AUD",
+		"id": "AUD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"G": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gilbert Islands",
+					"longName": "Gilbert Islands"
+				}
+			}
+		},
+		"L": {
+			"locales": {
+				"en_US": {
+					"shortName": "Line Islands",
+					"longName": "Line Islands"
+				}
+			}
+		},
+		"P": {
+			"locales": {
+				"en_US": {
+					"shortName": "Phoenix Islands",
+					"longName": "Phoenix Islands"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Kiribati",
+			"longName": "Independent and Sovereign Republic of Kiribati",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

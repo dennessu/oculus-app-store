@@ -1,0 +1,60 @@
+{
+	"countryCode": "FM",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"KSA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kosrae",
+					"longName": "Kosrae"
+				}
+			}
+		},
+		"PNI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pohnpei",
+					"longName": "Pohnpei"
+				}
+			}
+		},
+		"TRK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chuuk",
+					"longName": "Chuuk"
+				}
+			}
+		},
+		"YAP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Yap",
+					"longName": "Yap"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Federated States of Micronesia",
+			"longName": "Federated States of Micronesia",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

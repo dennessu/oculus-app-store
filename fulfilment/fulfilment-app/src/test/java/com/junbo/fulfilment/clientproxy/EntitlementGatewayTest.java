@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * EntitlementGatewayTest.
  */
@@ -25,7 +28,9 @@ public class EntitlementGatewayTest extends BaseTest {
         entitlement.setItemId("33570816L");
         entitlement.setUserId(33570816L);
 
-        String entitlementId = gateway.grant(entitlement);
+        List<Entitlement> entitlements = Collections.singletonList(entitlement);
+
+        String entitlementId = gateway.grant(entitlements).get(0);
         Assert.assertNotNull(entitlementId, "entitlementId should not be null.");
     }
 }

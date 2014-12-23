@@ -10,17 +10,69 @@
     <context:component-scan base-package="com.junbo.emulator.casey.spec.resource.adapter" />
     <context:component-scan base-package="com.junbo.emulator.casey.rest" />
 
+
+    <bean id="caseyEmulatorAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service email.service payment.service order.service fulfilment.service entitlement.service cms.service catalog crypto.service rating.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${store.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${store.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
     <bean id="defaultCaseyEmulatorResourceClientFactory" class="com.junbo.emulator.casey.spec.resource.proxy.CaseyEmulatorResourceClientProxyFactory"/>
+    <bean id="defaultSewerEmulatorResourceClientFactory" class="com.junbo.emulator.casey.spec.resource.proxy.SewerEmulatorResourceClientProxyFactory"/>
 
     <bean id="casey.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
+    </bean>
+
+    <bean id="casey.localeResource" class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
     </bean>
 
     <bean id="casey.itemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
-        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
+    </bean>
+
+    <bean id="casey.offerAttributeClient" class="com.junbo.catalog.spec.resource.proxy.OfferAttributeResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
+    </bean>
+
+    <bean id="casey.itemAttributeClient" class="com.junbo.catalog.spec.resource.proxy.ItemAttributeResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
+    </bean>
+
+    <bean id="casey.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
+    </bean>
+
+    <bean id="casey.offerItemRevisionClient"
+          class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
+    </bean>
+
+    <bean id="sewer.entitlementResource" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.entitlement.url}"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
+    </bean>
+
+    <bean id="sewer.organizationResource" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="caseyEmulatorAccessTokenProvider"/>
     </bean>
 </beans>

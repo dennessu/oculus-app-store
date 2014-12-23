@@ -1,0 +1,14 @@
+{
+   "localeCode" : "fa_IR",
+   "shortName" : "Persian (IR)",
+   "longName" : "Persian (Iran)",
+   "localeName" : "Persian (IR)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

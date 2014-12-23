@@ -9,12 +9,13 @@
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
 
     <!-- DataSource -->
-    <bean id="ewalletDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="ewalletDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${ewallet.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/ewallet"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${ewallet.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${ewallet.db.maxConnectionsPerPartition}"/>
+        <property name="className" value="${ewallet.db.driverClassName}"/>
+        <property name="minPoolSize" value="${ewallet.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${ewallet.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${ewallet.db.username}</prop>
@@ -43,9 +44,20 @@
                 <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             </map>
         </property>
-        <property name="packagesToScan" value="com.junbo.ewallet.db.entity"/>
+        <property name="packagesToScan">
+            <list>
+                <value>com.junbo.ewallet.db.entity</value>
+                <value>com.junbo.common.health.ping</value>
+            </list>
+        </property>
     </bean>
 
+    <bean id="ewalletPingSqlRepo" class="com.junbo.common.health.ping.PingSqlRepo">
+        <property name="sessionFactory" ref="ewalletSessionFactory" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="ewallet" />
+    </bean>
 
     <tx:annotation-driven/>
 

@@ -32,4 +32,7 @@ public interface CaseyEmulatorResource extends CaseyResource, CaseyReviewResourc
     @Path("/data")
     Promise<CaseyEmulatorData> postEmulatorData(CaseyEmulatorData caseyEmulatorData);
 
+    @POST
+    @Path("/reset")
+    Promise<Void> resetEmulatorData();
 }

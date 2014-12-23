@@ -230,7 +230,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/es_HN",
 		"id": "es_HN"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Honduras",

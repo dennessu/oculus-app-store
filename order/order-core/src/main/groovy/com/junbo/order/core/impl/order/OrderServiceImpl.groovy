@@ -5,11 +5,8 @@
  */
 
 package com.junbo.order.core.impl.order
-
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.OfferRevisionId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
@@ -27,6 +24,7 @@ import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
+import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.model.enums.OrderStatus
 import groovy.transform.CompileStatic
@@ -35,7 +33,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
@@ -44,7 +41,6 @@ import javax.annotation.Resource
  */
 @CompileStatic
 @TypeChecked
-@Service('orderService')
 class OrderServiceImpl implements OrderService {
     @Qualifier('orderFacadeContainer')
     @Autowired
@@ -67,6 +63,8 @@ class OrderServiceImpl implements OrderService {
     OrderServiceContextBuilder orderServiceContextBuilder
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl)
 
+    Integer offerCountLimitation
+    Integer itemCountLimitation
 
     void setFlowSelector(FlowSelector flowSelector) {
         this.flowSelector = flowSelector
@@ -131,6 +129,7 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
+                LOGGER.info('name=updateTentativeOrder_Completed')
                 return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
             }
         }
@@ -150,6 +149,7 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
+                LOGGER.info('name=updateNonTentativeOrder_Completed')
                 return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
             }
         }
@@ -174,18 +174,61 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
+                LOGGER.info('name=createQuote_Completed')
                 return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
             }
         }
     }
 
     @Override
+    Promise<Order> createFreeOrder(Order order, OrderServiceContext orderServiceContext) {
+        LOGGER.info('name=Create_Free_Order. userId: {}', order.user.value)
+
+        order.id = null
+        setHonoredTime(order)
+        return prepareOrder(order, orderServiceContext).then {
+            return orderInternalService.rateOrder(order, orderServiceContext).then { Order ratedOrder ->
+                if (!CoreUtils.isFreeOrder(ratedOrder)) {
+                    throw AppErrors.INSTANCE.notFreeOrder().exception()
+                }
+                LOGGER.info('name=Order_is_free')
+                //return validateDuplicatePurchase(ratedOrder, orderServiceContext).then {
+                orderServiceContext.order = ratedOrder
+
+                // TODO: compare the request and the order persisted
+                orderValidator.validateSettleOrderRequest(ratedOrder)
+
+                ratedOrder.purchaseTime = ratedOrder.honoredTime
+                return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_FREE).then { String flowName ->
+                    // Prepare Flow Request
+                    Map<String, Object> requestScope = [:]
+                    def orderActionContext = new OrderActionContext()
+                    orderActionContext.orderServiceContext = orderServiceContext
+                    orderActionContext.trackingUuid = UUID.randomUUID()
+                    requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
+                    return executeFlow(flowName, orderServiceContext, requestScope)
+                }.then {
+                    return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true).then { Order o ->
+                        LOGGER.info('name=Create_Free_Order_completed. orderId: {}', o.getId().value)
+                        return Promise.pure(o)
+                    }
+                }
+                //}
+            }
+        }
+    }
+
+    @Override
     Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate = true, OrderServiceContext context, Boolean updateOrderStatus) {
+        LOGGER.info('name=getOrderByOrderId')
         return orderInternalService.getOrderByOrderId(orderId, context, updateOrderStatus).then { Order order ->
             if (doRate) {
                 return refreshTentativeOrderPrice(order, context)
             }
             return Promise.pure(order)
+        }.then { Order o ->
+            LOGGER.info('name=getOrderByOrderId_Completed')
+            return Promise.pure(o)
         }
     }
 
@@ -205,12 +248,14 @@ class OrderServiceImpl implements OrderService {
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
             return executeFlow(flowName, orderServiceContext, requestScope)
         }.then {
+            LOGGER.info('name=refundOrCancelOrder_Completed')
             return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
         }
     }
 
     @Override
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext orderServiceContext, OrderQueryParam orderQueryParam, PageParam pageParam) {
+        LOGGER.info('name=getOrdersByUserId. userId: {}', userId)
         return orderInternalService.getOrdersByUserId(userId, orderServiceContext, orderQueryParam, pageParam).then { List<Order> orders ->
             List<Order> ods = []
             return Promise.each(orders) { Order order ->
@@ -224,6 +269,7 @@ class OrderServiceImpl implements OrderService {
                     return Promise.pure(order)
                 }
             }.then {
+                LOGGER.info('name=getOrdersByUserId_completed. userId: {}', userId)
                 return Promise.pure(ods)
             }
         }
@@ -241,6 +287,12 @@ class OrderServiceImpl implements OrderService {
             case OrderActionType.FULFILL.name():
                 LOGGER.info('name=Update_Fulfillment_Status. orderId: {}, action:{}, status{}',
                         event.order.value, event.action, event.status)
+                if (event.status != EventStatus.COMPLETED.name())
+                {
+                    LOGGER.error('name=Event_Action_Not_Supported. orderId: {}, action:{}, status{}',
+                            event.order.value, event.action, event.status)
+                    throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+                }
                 break
             default:
                 LOGGER.error('name=Event_Action_Not_Supported. orderId: {}, action:{}, status{}',
@@ -273,6 +325,7 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
+                LOGGER.info('name=updateOrderByOrderEvent_Completed')
                 orderInternalService.refreshOrderStatus(order, true)
                 return Promise.pure(orderServiceContext.orderEvent)
             }
@@ -280,6 +333,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     private Promise<Order> refreshTentativeOrderPrice(Order order, OrderServiceContext context) {
+        LOGGER.info('name=refreshTentativeOrderPrice')
         if (order.tentative && CoreUtils.isRateExpired(order)) {
             // if the price rating result changes, return expired.
             Order oldRatingInfo = CoreUtils.copyOrderRating(order)
@@ -288,9 +342,11 @@ class OrderServiceImpl implements OrderService {
                 if (!CoreUtils.compareOrderRating(oldRatingInfo, o)) {
                     o.status = OrderStatus.PRICE_RATING_CHANGED
                 }
+                LOGGER.info('name=refreshTentativeOrderPrice_Completed')
                 return Promise.pure(o)
             }
         }
+        LOGGER.info('name=skip_refreshTentativeOrderPrice')
         return Promise.pure(order)
     }
 
@@ -302,16 +358,16 @@ class OrderServiceImpl implements OrderService {
             scope = ActionUtils.initRequestScope(context)
         }
         scope.put(ActionUtils.REQUEST_FLOW_NAME, (Object) flowName)
+        LOGGER.info('name=start_flow. flowName: {}', flowName)
         return flowExecutor.start(flowName, scope).syncRecover { Throwable throwable ->
             LOGGER.error('name=Flow_Execution_Failed. flowName: ' + flowName, throwable)
             if (throwable instanceof AppErrorException) {
                 throw throwable
-            } else if (throwable instanceof AssertionError) {
-                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(throwable)).exception()
             } else {
                 throw AppCommonErrors.INSTANCE.internalServerError(new Exception(throwable)).exception()
             }
         }.syncThen {
+            LOGGER.info('name=flow_completed. flowName: {}', flowName)
             return context
         }
     }
@@ -326,12 +382,18 @@ class OrderServiceImpl implements OrderService {
     }
 
     private Promise<Void> prepareOrder(Order order, OrderServiceContext context) {
+        LOGGER.info('name=PrepareOrder')
+        mergeSameOrderItems(order)
+        checkItemCount(order)
+        def orderSnapshot = []
         return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
+            LOGGER.info('name=get_offers')
             return orderServiceContextBuilder.getOffer(item.offer, context).then { Offer offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
-                return orderInternalService.validateDuplicatePurchase(order, offer).syncThen {
+                orderSnapshot << CoreBuilder.buildOfferSnapshot(offer)
+                return orderInternalService.validateDuplicatePurchase(order, offer, item.quantity).syncThen {
                     item.type = offer.type.name()
                     item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
                     updateOfferInfo(order, item, offer)
@@ -339,8 +401,44 @@ class OrderServiceImpl implements OrderService {
                 }
             }
         }.syncThen {
+            if (!order.tentative) {
+                // save order snapshot for free checkout
+                order.orderSnapshot = orderSnapshot
+            }
+            LOGGER.info('name=PrepareOrder_Complete')
             return null
         }
+    }
+
+    private void mergeSameOrderItems (Order order) {
+        def temp = new HashMap<OrderItem, Integer>()
+        order.orderItems?.each { OrderItem oi ->
+            temp[oi] = temp.get(oi, 0) + oi.quantity
+        }
+        order.orderItems = []
+        temp.each { OrderItem k, Integer v ->
+            k.quantity = v
+            order.orderItems << k
+            LOGGER.info('name=Print_Order_Item. offerId: {}, quantity: {}', k.offer.toString(), k.quantity)
+        }
+    }
+
+    private void checkItemCount (Order order) {
+        assert (order != null && order.orderItems != null)
+        if (order.orderItems.size() > itemCountLimitation) {
+            LOGGER.error('name=tooManyItems:' + order.orderItems.size() + ' should not exceed: ' + itemCountLimitation)
+            throw AppErrors.INSTANCE.tooManyItems(itemCountLimitation).exception()
+        }
+        LOGGER.info('name=total_order_items: {}. limits: {}', order.orderItems.size(), itemCountLimitation)
+        def offerCount = 0L
+        order.orderItems.each { OrderItem oi ->
+            offerCount += oi.quantity
+        }
+        if (offerCount > offerCountLimitation) {
+            LOGGER.error('name=tooManyOffers:' + offerCount + ' should not exceed: ' + offerCountLimitation)
+            throw AppErrors.INSTANCE.tooManyOffers(offerCountLimitation).exception()
+        }
+        LOGGER.info('name=total_offers: {}. limits: {}', offerCount, offerCountLimitation)
     }
 
     private Promise<Void> validateDuplicatePurchase(Order order, OrderServiceContext context) {
@@ -351,7 +449,7 @@ class OrderServiceImpl implements OrderService {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
                 orderSnapshot << CoreBuilder.buildOfferSnapshot(offer)
-                return orderInternalService.validateDuplicatePurchase(order, offer)
+                return orderInternalService.validateDuplicatePurchase(order, offer, item.quantity)
             }
         }.syncThen {
             order.orderSnapshot = orderSnapshot

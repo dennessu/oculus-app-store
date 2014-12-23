@@ -1,0 +1,20 @@
+{
+  "client_id" : "www",
+  "client_secret" : "FB44AB8A058970405FC37ACAAEAC7D10#FD4F854FEF69CB92AC732E4A450B3CDE1DFFFD043E9C8ABAC4F70A0DCB36AB7DBAF6C967CBF9229AAB607F3FB256C0AD",
+  "client_name" : "www",
+
+  "redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*" ],
+  "default_redirect_uri" : "https://id.oculus.com",
+
+  "logout_redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*" ],
+  "default_logout_redirect_uri" : "https://id.oculus.com",
+
+  "scopes" : [ "identity", "identity.pii", "openid", "offline" ],
+  "default_scopes" : [ "identity", "identity.pii", "openid", "offline" ],
+
+  "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
+  "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
+
+  "id_token_issuer" : "api.oculus.com",
+  "need_consent" : false
+}

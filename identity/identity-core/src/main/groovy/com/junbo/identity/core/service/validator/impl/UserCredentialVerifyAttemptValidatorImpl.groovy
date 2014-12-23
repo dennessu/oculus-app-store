@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.id.UserId
+import com.junbo.common.memcached.JunboMemcachedClient
 import com.junbo.common.model.Results
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.email.spec.model.Email
@@ -14,11 +15,12 @@ import com.junbo.identity.common.util.Constants
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
+import com.junbo.identity.core.service.credential.CredentialHelper
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
 import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.*
+import com.junbo.identity.service.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
@@ -40,6 +42,7 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import java.util.Locale
+import java.util.concurrent.ExecutionException
 import java.util.regex.Pattern
 
 /**
@@ -53,32 +56,41 @@ import java.util.regex.Pattern
 @SuppressWarnings('UnnecessaryGetter')
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String EMAIL_ACTION = 'UserLockout'
     private static final String MAIL_IDENTIFIER = "@"
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCredentialVerifyAttemptValidatorImpl)
+    private JunboMemcachedClient memcachedClient = JunboMemcachedClient.instance()
 
-    private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
-    private UserRepository userRepository
-    private UserPasswordRepository userPasswordRepository
-    private UserPinRepository userPinRepository
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private UserCredentialVerifyAttemptService userCredentialVerifyAttemptService
+    private UserService userService
+    private UserPasswordService userPasswordService
+    private UserPinService userPinService
+    private UserPersonalInfoService userPersonalInfoService
+    private CredentialHelper credentialHelper
 
     private List<Pattern> allowedIpAddressPatterns
     private Integer userAgentMinLength
     private Integer userAgentMaxLength
     // This is to check good user can't fail to login in some time
-    private Integer maxRetryCount
-    private Integer retryInterval
+    private Integer maxRetryInterval                    // This is to control same user's allow retry count during interval
+                                                        // The first parameter is the maxRetryCount, the second parameter is the retryInterval
+                                                        // All of them are and operation, only when user's login history satisfy any configurations, it will be the same
+    private Map<Integer, Integer> maxLockDownTime       // This is to control same user's lock out time
+                                                        // The first parameter is the maxRetryCount, the second parameter is the lock down time
+    private Map<Integer, String> maxLockDownMail        // This is to control same user's lock out mail
+                                                        // The first parameter is the maxRetryCount, the second parametet is the lock down time email template
 
     // This is to check maxSameUserAttemptCount login attempts for the same user within attemptRetryCount time frame
-    private Integer maxSameUserAttemptCount
-    private Integer sameUserAttemptRetryInterval
+    private Map<Integer, Integer> maxSameUserAttemptIntervalMap    // This is to control smae user's retry interval
+                                                                    // The first parameter is the allowed number, the second parameter is the interval
 
     // This is to check More than maxSameIPRetryCount login attempts from the same IP address for different user account within sameIPRetryInterval timeframe
-    private Integer maxSameIPRetryCount
+    private Map<Integer, Integer> maxSameIPIntervalMap  // This is to control same ip's retry interval
+                                                        // The first parameter is the allowed number, the second parameter is the retryInterval
     private List<String> ip4WhiteList
-    private Integer sameIPRetryInterval
+
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     private NormalizeService normalizeService
     private CredentialHashFactory credentialHashFactory
@@ -86,19 +98,24 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private EmailResource emailResource
     private EmailTemplateResource emailTemplateResource
     private PlatformTransactionManager transactionManager
+    private Boolean enableMailSend
+
+    private Boolean maxRetryCountEnable
+    private Boolean maxSameIPAttemptsEnable
+    private Boolean maxSameUserAttemptsEnable
 
     @Override
     Promise<UserCredentialVerifyAttempt> validateForGet(UserCredentialVerifyAttemptId userLoginAttemptId) {
         if (userLoginAttemptId == null) {
-            throw new IllegalArgumentException('userLoginAttemptId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
-        return userLoginAttemptRepository.get(userLoginAttemptId).then { UserCredentialVerifyAttempt userLoginAttempt ->
+        return userCredentialVerifyAttemptService.get(userLoginAttemptId).then { UserCredentialVerifyAttempt userLoginAttempt ->
             if (userLoginAttempt == null) {
                 throw AppErrors.INSTANCE.userLoginAttemptNotFound(userLoginAttemptId).exception()
             }
 
-            return userRepository.get(userLoginAttempt.userId).then { User user ->
+            return userService.getNonDeletedUser(userLoginAttempt.userId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.userId).exception()
                 }
@@ -161,24 +178,15 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 userLoginAttempt.setUserId((UserId)user.id)
 
                 if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-                    return userPasswordRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
-                            0).then { List<UserPassword> userPasswordList ->
-                        if (CollectionUtils.isEmpty(userPasswordList) || userPasswordList.size() > 1) {
-                            throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
-                        }
-
-                        List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
-                        CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                            return hash.matches(userLoginAttempt.value, userPasswordList.get(0).passwordHash)
-                        }
-                        userLoginAttempt.setSucceeded(matched != null)
+                    return credentialHelper.isValidPassword(user.getId(), userLoginAttempt.value).then { Boolean isValid ->
+                        userLoginAttempt.setSucceeded(isValid)
                         return checkMaximumRetryCount(user, userLoginAttempt).then {
                             return checkMaximumSameUserAttemptCount(user, userLoginAttempt)
                         }
                     }
                 }
                 else if (userLoginAttempt.type == CredentialType.PIN.toString()) {
-                    return userPinRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
+                    return userPinService.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
                             0).then { List<UserPin> userPinList ->
                         if (CollectionUtils.isEmpty(userPinList) || userPinList.size() > 1) {
                             throw AppErrors.INSTANCE.userPinIncorrect().exception()
@@ -206,11 +214,11 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<User> findUser(UserCredentialVerifyAttempt userLoginAttempt) {
         if (userLoginAttempt.userId != null) {
-            return userRepository.get(userLoginAttempt.userId)
+            return userService.getNonDeletedUser(userLoginAttempt.userId)
         }
 
         if (isEmail(userLoginAttempt.username)) {
-            return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase(Locale.ENGLISH), null, Integer.MAX_VALUE,
+            return userPersonalInfoService.searchByEmail(userLoginAttempt.username.toLowerCase(Locale.ENGLISH), null, maximumFetchSize,
                     0).then { List<UserPersonalInfo> personalInfos ->
                     if (CollectionUtils.isEmpty(personalInfos)) {
                         throw AppErrors.INSTANCE.userNotFoundByName(userLoginAttempt.username).exception()
@@ -234,15 +242,15 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
                 }
         } else {
-            return userPersonalInfoRepository.searchByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username),
-                    Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+            return userPersonalInfoService.searchByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username),
+                    maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
                 if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                     return Promise.pure(null)
                 }
 
                 User user = null;
                 return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
-                    return userRepository.get(userPersonalInfo.userId).then { User existing ->
+                    return userService.getNonDeletedUser(userPersonalInfo.userId).then { User existing ->
                         if (existing.username == userPersonalInfo.getId() && existing.status != UserStatus.DELETED.toString()) {
                             user = existing
                             return Promise.pure(Promise.BREAK)
@@ -260,7 +268,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     Promise<User> getDefaultEmailUser(List<UserPersonalInfo> userPersonalInfoList) {
         User user = null
         return Promise.each(userPersonalInfoList){ UserPersonalInfo info ->
-            return userRepository.get(info.userId).then { User existing ->
+            return userService.getNonDeletedUser(info.userId).then { User existing ->
                 if (existing == null || CollectionUtils.isEmpty(existing.emails) || existing.status == UserStatus.DELETED.toString()) {
                     return Promise.pure(null)
                 }
@@ -282,53 +290,93 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
-
+        if (!maxRetryCountEnable) {
+            return Promise.pure(null)
+        }
         return getActiveCredentialCreatedTime(user, userLoginAttempt).then { Date passwordActiveTime ->
-            Long timeInterval = passwordActiveTime.getTime()
+            Integer maxRetryCount = maxLockDownTime.keySet().max()
+            Long maxRetryIntervalFromTime = System.currentTimeMillis() - maxRetryInterval * 1000L
+            Long timeInterval = maxRetryIntervalFromTime > passwordActiveTime.getTime() ? maxRetryIntervalFromTime : passwordActiveTime.getTime()
 
-            return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount + 1, 0).then {
-                    List<UserCredentialVerifyAttempt> attemptListTemp ->
-                if (CollectionUtils.isEmpty(attemptListTemp) || attemptListTemp.size() < maxRetryCount) {
+            return userCredentialVerifyAttemptService.searchNonLockPeriodHistory(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+                // If no credential verify attempt found, return
+                if (CollectionUtils.isEmpty(attemptList)) {
                     return Promise.pure(null)
                 }
-
-                List<UserCredentialVerifyAttempt> attemptList = new ArrayList<>()
-                for (int index = 0; index < maxRetryCount; index ++) {
-                    attemptList.add(attemptListTemp.get(index))
+                List<UserCredentialVerifyAttempt> consecutiveFailureAttempts = new ArrayList<>()
+                for (int i = 0; i < attemptList.size(); i++) {
+                    if (attemptList.get(i).succeeded) {
+                        break
+                    }
+                    consecutiveFailureAttempts.add(attemptList.get(i))
                 }
 
-                UserCredentialVerifyAttempt successAttempt = attemptList.find { UserCredentialVerifyAttempt attempt ->
-                    return attempt.succeeded
-                }
-                if (successAttempt != null) {
-                    return Promise.pure(null)
+                // Return the rule template
+                int index = getRetryKeyIndex(consecutiveFailureAttempts.size())
+
+                // Check whether this is in lock down period
+                checkLockDownPeriod(consecutiveFailureAttempts, index, userLoginAttempt)
+
+                // Check whether need to send email
+                if (index < maxLockDownTime.keySet().size() && !userLoginAttempt.succeeded && consecutiveFailureAttempts.size() == maxLockDownTime.keySet().getAt(index) - 1) {
+                    return sendMaximumRetryReachedNotification(user, userLoginAttempt, index).recover { Throwable ex ->
+                        LOGGER.error("Error sending Maximum retry reachable Notification")
+                        return Promise.pure(null)
+                    }
                 }
 
-                return sendMaximumRetryReachedNotification(user, userLoginAttempt, attemptListTemp).recover { Throwable throwable ->
-                    LOGGER.error("Error sending Maximum retry reachable Notification")
-                    return Promise.pure(null)
-                }.then {
-                    throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
-                }
+                // If not in lockdown period, will just return.
+                // Else if it is in lockdown period, return and throw potential exception
+                return Promise.pure(null)
             }
         }
     }
 
-    private Promise<Void> sendMaximumRetryReachedNotification(User user, UserCredentialVerifyAttempt userLoginAttempt, List<UserCredentialVerifyAttempt> attemptList) {
-        if (attemptList.size() < maxRetryCount + 1) {
+    private Integer getRetryKeyIndex(Integer value) {
+        int size = maxLockDownTime.keySet().size()
+        int startKey, endKey
+        for(int index = 0; index <= size; index ++) {
+            startKey = index == 0? 0: maxLockDownTime.keySet().getAt(index - 1)
+            endKey = index == size? Integer.MAX_VALUE : maxLockDownTime.keySet().getAt(index) - 1
+
+            if (value >= startKey && value <= endKey) {
+                return index
+            }
+        }
+    }
+
+    private void checkLockDownPeriod(List<UserCredentialVerifyAttempt> attemptList, int index, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (index == maxLockDownTime.keySet().size()) {
+            userLoginAttempt.isLockDownPeriodAttempt = true
+            return
+        }
+        for (int k = 0; k < index; k++) {
+            Integer retryCount = maxLockDownTime.keySet().getAt(k);
+            Integer lockDownTime = maxLockDownTime.get(retryCount);
+            if (attemptList.size() < retryCount) {
+                userLoginAttempt.isLockDownPeriodAttempt = false
+                continue
+            }
+            UserCredentialVerifyAttempt attempt = attemptList.get(attemptList.size() - retryCount)
+            // in lock down time
+            if (attempt.createdTime.after(DateUtils.addSeconds(new Date(), -lockDownTime))) {
+                userLoginAttempt.isLockDownPeriodAttempt = true
+                break
+            } else {
+                userLoginAttempt.isLockDownPeriodAttempt = false
+            }
+        }
+    }
+
+    private Promise<Void> sendMaximumRetryReachedNotification(User user, UserCredentialVerifyAttempt userLoginAttempt, int index) {
+        if (!enableMailSend) {
             return Promise.pure(null)
         }
 
-        UserCredentialVerifyAttempt userCredentialVerifyAttempt = attemptList.get(maxRetryCount);
-        // One day can send only one user lock mail
-        if (!userCredentialVerifyAttempt.succeeded && userCredentialVerifyAttempt.createdTime.after(DateUtils.addDays(new Date(), -1))) {
-            return Promise.pure(null)
-        }
-
-        // todo:    can remove this later due to mailenable is set to
-        if (!Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue("identity.conf.mailEnable"))) {
-            return Promise.pure(null)
-        }
+        String emailTemplate = this.maxLockDownMail.get(
+                this.maxLockDownMail.size() <= index ? this.maxLockDownMail.keySet().getAt(this.maxLockDownMail.size() - 1) : this.maxLockDownMail.keySet().getAt(index))
+        Integer lockDownTime = this.maxLockDownTime.get(
+                this.maxLockDownTime.size() <= index ? this.maxLockDownTime.keySet().getAt(this.maxLockDownTime.size() - 1) : this.maxLockDownTime.keySet().getAt(index))
 
         if (JunboHttpContext.getRequestHeaders() == null
                 || !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_DISABLE_EMAIL))) {
@@ -337,13 +385,13 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
         QueryParam queryParam = new QueryParam(
                 source: EMAIL_SOURCE,
-                action: EMAIL_ACTION,
+                action: emailTemplate,
                 locale: 'en_US'
         )
 
         return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
             if (results.items.isEmpty()) {
-                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(EMAIL_ACTION + ' with locale: en_US template not found')).exception()
+                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(emailTemplate + ' with locale: en_US template not found')).exception()
             }
             EmailTemplate template = results.items.get(0)
 
@@ -359,7 +407,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                             recipients: [userMail].asList(),
                             replacements: [
                                     'name': userLoginName,
-                                    'link': ConfigServiceManager.instance().getConfigValue('identity.conf.oculusHelpLink')
+                                    'link': ConfigServiceManager.instance().getConfigValue('identity.conf.oculusHelpLink'),
+                                    'minute': (lockDownTime/60).toString()
                             ]
                     )
 
@@ -379,7 +428,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (user.name == null) {
             return Promise.pure('')
         } else {
-            return userPersonalInfoRepository.get(user.name).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(user.name).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
                     return Promise.pure('')
                 }
@@ -405,7 +454,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             }
 
             link = link == null ? user.emails.get(0) : link;
-            return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(link.value).then { UserPersonalInfo userPersonalInfo ->
                 com.junbo.identity.spec.v1.model.Email email = (com.junbo.identity.spec.v1.model.Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value,
                         com.junbo.identity.spec.v1.model.Email)
                 return Promise.pure(email.info)
@@ -415,7 +464,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<Date> getActiveCredentialCreatedTime(User user, UserCredentialVerifyAttempt userLoginAttempt) {
         if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-            return userPasswordRepository.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPassword> userPasswordList ->
+            return userPasswordService.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPassword> userPasswordList ->
                 if (CollectionUtils.isEmpty(userPasswordList)) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'No Active password exists').exception()
                 }
@@ -423,7 +472,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 return Promise.pure(userPasswordList.get(0).createdTime)
             }
         } else {
-            return userPinRepository.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPin> userPinList ->
+            return userPinService.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPin> userPinList ->
                 if (CollectionUtils.isEmpty(userPinList)) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'No Active pin exists').exception()
                 }
@@ -434,30 +483,76 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumSameUserAttemptCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
-        Long timeInterval = System.currentTimeMillis() - sameUserAttemptRetryInterval * 1000
-        return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval,
-                maxSameUserAttemptCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameUserAttemptCount) {
+        if (!maxSameUserAttemptsEnable) {
+            return Promise.pure(null)
+        }
+        // Update memcached value
+        List<Integer> list = this.maxSameUserAttemptIntervalMap.values().asList()
+        list.each { Integer interval ->
+            increaseCurrentMemcachedValue(buildUserThrottlingKey(user.getId(), userLoginAttempt.type, interval), interval)
+        }
+        return Promise.pure().then {
+            return Promise.each(this.maxSameUserAttemptIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
+                Integer maxSameUserAttemptCount = entry.key
+                Integer sameUserAttemptRetryInterval = entry.value
+
+                Long currentValue = getCurrentMemcachedValue(buildUserThrottlingKey(user.getId(), userLoginAttempt.type, sameUserAttemptRetryInterval))
+
+                if (currentValue == null) {
+                    Long timeInterval = System.currentTimeMillis() - sameUserAttemptRetryInterval * 1000
+                    return userCredentialVerifyAttemptService.searchByUserIdAndCredentialTypeAndIntervalCount(user.getId(), userLoginAttempt.type, timeInterval,
+                            maxSameUserAttemptCount + 1, 0).then { Integer attemptListCount ->
+                        if (attemptListCount == null || attemptListCount <= maxSameUserAttemptCount) {
+                            return Promise.pure(null)
+                        }
+                        throw AppErrors.INSTANCE.maximumSameUserAttempt().exception()
+                    }
+                } else if (currentValue > maxSameUserAttemptCount) {
+                    throw AppErrors.INSTANCE.maximumSameUserAttempt().exception()
+                }
+
                 return Promise.pure(null)
             }
-            throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+        }.then {
+            return Promise.pure(null)
         }
     }
 
     private Promise<Void> checkMaximumSameIPAttemptCount(UserCredentialVerifyAttempt userLoginAttempt) {
+        if (!maxSameIPAttemptsEnable) {
+            return Promise.pure(null)
+        }
         if (StringUtils.isEmpty(userLoginAttempt.ipAddress) || isInIP4WhiteList(userLoginAttempt.ipAddress)) {
             return Promise.pure(null)
         }
 
-        Long fromTimeStamp = System.currentTimeMillis() - sameIPRetryInterval * 1000
+        List<Integer> list = this.maxSameIPIntervalMap.values().asList()
+        list.each { Integer interval ->
+            increaseCurrentMemcachedValue(buildIPThrottlingKey(userLoginAttempt.ipAddress, userLoginAttempt.type, interval), interval)
+        }
+        return Promise.pure().then {
+            return Promise.each(this.maxSameIPIntervalMap.entrySet()) { Map.Entry<Integer, Integer> entry ->
+                Integer maxSameIPRetryCount = entry.getKey()
+                Integer maxSameIPRetryInterval = entry.getValue()
 
-        return userLoginAttemptRepository.searchByIPAddressAndCredentialTypeAndInterval(userLoginAttempt.ipAddress, userLoginAttempt.type, fromTimeStamp,
-                maxSameIPRetryCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameIPRetryCount) {
+                Long currentValue = getCurrentMemcachedValue(buildIPThrottlingKey(userLoginAttempt.ipAddress, userLoginAttempt.type, maxSameIPRetryInterval))
+                if (currentValue == null) {
+                    Long fromTimeStamp = System.currentTimeMillis() - maxSameIPRetryInterval * 1000
+                    return userCredentialVerifyAttemptService.searchByIPAddressAndCredentialTypeAndIntervalCount(userLoginAttempt.ipAddress, userLoginAttempt.type,
+                            fromTimeStamp, maxSameIPRetryCount + 1, 0).then { Integer count ->
+                        if (count == null || count <= maxSameIPRetryCount) {
+                            return Promise.pure(null)
+                        }
+                        throw AppErrors.INSTANCE.maximumSameIPAttempt().exception()
+                    }
+                } else if (currentValue > maxSameIPRetryCount) {
+                    throw AppErrors.INSTANCE.maximumSameIPAttempt().exception()
+                }
+
                 return Promise.pure(null)
             }
-
-            throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+        }.then {
+            return Promise.pure(null)
         }
     }
 
@@ -520,8 +615,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             }
         }
 
+        if (StringUtils.isEmpty(userLoginAttempt.username) && userLoginAttempt.userId == null) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
+        }
+
+        if (!StringUtils.isEmpty(userLoginAttempt.username) && !isEmail(userLoginAttempt.username)) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'Only mail login is supported').exception()
+        }
+
         if (userLoginAttempt.value == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
+        }
+
+        if (userLoginAttempt.isLockDownPeriodAttempt != null) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('isLockDownPeriodAttempt').exception()
         }
     }
 
@@ -542,14 +649,88 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         return false
     }
 
-    @Required
-    void setUserLoginAttemptRepository(UserCredentialVerifyAttemptRepository userLoginAttemptRepository) {
-        this.userLoginAttemptRepository = userLoginAttemptRepository
+    static String buildUserThrottlingKey(UserId userId, String type, Integer lockdownTime) {
+        return userId.toString() + ':' + type + ':' + String.valueOf(lockdownTime)
+    }
+
+    static String buildIPThrottlingKey(String ipAddress, String type, Integer lockdownTime) {
+        return ipAddress + ':' + type + ':' + String.valueOf(lockdownTime)
+    }
+
+    // It will return null or value
+    // If it returns null, mean memcache isnot enabled or no record or the server is restarted
+    //                  In this case, we need to query DB
+    // If it returns value, will check this value comparing with the limit
+    //                  if it exceeds limit, don't record any value and directly return
+    //                  if it doesn't exceeds limit, just record the value
+    private Long increaseCurrentMemcachedValue(String key, Integer lockdownTime) {
+        if (memcachedClient == null) {
+            return null
+        }
+
+        try {
+            // Try to increase the current api count for this api + request ip
+            long currentValue = memcachedClient.incr(key, 1L);
+            // return value = -1 means the key does not exist
+            if (currentValue == -1) {
+                try {
+                    // Try to add key with value 1
+                    // There is a bug in spymemcached client(spymemcached bug 41),
+                    // we need to add a string value of "1" at the first time for further increment operation
+                    Boolean result = memcachedClient.add(key, lockdownTime, "1").get();
+
+                    // If the add result is false, means the add operation fails, this key has already been added by other
+                    // thread, just increase the current api count again.
+                    if (!result) {
+                        currentValue = memcachedClient.incr(key, 1L);
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    LOGGER.error("Error calling memcached client", e);
+                }
+
+                return null
+            }
+
+            return currentValue
+        } catch (Exception e) {
+            LOGGER.error("Error calling memcached client", e)
+            return null
+        }
+    }
+
+    private Long getCurrentMemcachedValue(String key) {
+        if (memcachedClient == null) {
+            return null
+        }
+
+        try {
+            Object obj = memcachedClient.get(key)
+            return obj == null ? null : Long.decode((String) obj)
+        } catch (Exception e) {
+            LOGGER.error("Error calling memcached client", e);
+            return null
+        }
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setMaxSameUserAttemptIntervalMap(String maxSameUserAttemptIntervalStr) {
+        String[] maxSameUserAttemptIntervalArray = maxSameUserAttemptIntervalStr.split(';')
+        this.maxSameUserAttemptIntervalMap = new HashMap<>()
+        maxSameUserAttemptIntervalArray.each { String retryIntervalStr ->
+            String[] retryIntervalArray = retryIntervalStr.split(':')
+            assert retryIntervalArray.size() == 2
+            this.maxSameUserAttemptIntervalMap.put(parseInteger(retryIntervalArray[0]), parseInteger(retryIntervalArray[1]))
+        }
+    }
+
+    @Required
+    void setUserCredentialVerifyAttemptService(UserCredentialVerifyAttemptService userCredentialVerifyAttemptService) {
+        this.userCredentialVerifyAttemptService = userCredentialVerifyAttemptService
+    }
+
+    @Required
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
@@ -570,13 +751,13 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     @Required
-    void setUserPasswordRepository(UserPasswordRepository userPasswordRepository) {
-        this.userPasswordRepository = userPasswordRepository
+    void setUserPasswordService(UserPasswordService userPasswordService) {
+        this.userPasswordService = userPasswordService
     }
 
     @Required
-    void setUserPinRepository(UserPinRepository userPinRepository) {
-        this.userPinRepository = userPinRepository
+    void setUserPinService(UserPinService userPinService) {
+        this.userPinService = userPinService
     }
 
     @Required
@@ -585,28 +766,50 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     @Required
-    void setMaxRetryCount(Integer maxRetryCount) {
-        this.maxRetryCount = maxRetryCount
+    void setMaxRetryInterval(String maxRetryInterval) {
+        this.maxRetryInterval = parseInteger(maxRetryInterval)
     }
 
     @Required
-    void setRetryInterval(Integer retryInterval) {
-        this.retryInterval = retryInterval
+    void setMaxLockDownTime(String maxLockDownTimeStr) {
+        String[] retryIntervalArray = maxLockDownTimeStr.split(';')
+        this.maxLockDownTime = new HashMap<>()
+        retryIntervalArray.each { String retryIntervalStr ->
+            String[] retryIntervalStrArray = retryIntervalStr.split(':')
+            assert retryIntervalStrArray.size() == 2
+            this.maxLockDownTime.put(parseInteger(retryIntervalStrArray[0]), parseInteger(retryIntervalStrArray[1]))
+        }
     }
 
     @Required
-    void setMaxAttemptCount(Integer maxAttemptCount) {
-        this.maxSameUserAttemptCount = maxAttemptCount
+    void setMaxLockDownMail(String maxLockDownMailStr) {
+        String[] lockDownMailTemplates = maxLockDownMailStr.split(';')
+        this.maxLockDownMail = new HashMap<>()
+        lockDownMailTemplates.each { String lockDownMailTemplate ->
+            String[] lockDownMailTemplateMap = lockDownMailTemplate.split(':')
+            assert lockDownMailTemplateMap.size() == 2
+            this.maxLockDownMail.put(parseInteger(lockDownMailTemplateMap[0]), lockDownMailTemplateMap[1])
+        }
     }
 
-    @Required
-    void setAttemptRetryInterval(Integer attemptRetryInterval) {
-        this.sameUserAttemptRetryInterval = attemptRetryInterval
+    private Integer parseInteger(String value) {
+        if ("MAX_VALUE".equalsIgnoreCase(value)) {
+            return Integer.MAX_VALUE
+        }
+
+        return Integer.parseInt(value)
     }
 
+
     @Required
-    void setMaxSameIPRetryCount(Integer maxSameIPRetryCount) {
-        this.maxSameIPRetryCount = maxSameIPRetryCount
+    void setMaxSameIPIntervalMap(String maxSameIPIntervalStr) {
+        String[] maxSameIPIntervalStrArray = maxSameIPIntervalStr.split(';')
+        this.maxSameIPIntervalMap = new HashMap<>()
+        maxSameIPIntervalStrArray.each { String retryIntervalStr ->
+            String[] retryIntervalStrArray = retryIntervalStr.split(':')
+            assert retryIntervalStrArray.size() == 2
+            this.maxSameIPIntervalMap.put(parseInteger(retryIntervalStrArray[0]), parseInteger(retryIntervalStrArray[1]))
+        }
     }
 
     @Required
@@ -624,13 +827,13 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     @Required
-    void setSameIPRetryInterval(Integer sameIPRetryInterval) {
-        this.sameIPRetryInterval = sameIPRetryInterval
+    void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
+        this.userPersonalInfoService = userPersonalInfoService
     }
 
     @Required
-    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
-        this.userPersonalInfoRepository = userPersonalInfoRepository
+    void setCredentialHelper(CredentialHelper credentialHelper) {
+        this.credentialHelper = credentialHelper
     }
 
     @Required
@@ -651,5 +854,30 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
+    }
+
+    @Required
+    void setEnableMailSend(Boolean enableMailSend) {
+        this.enableMailSend = enableMailSend
+    }
+
+    @Required
+    void setMaxRetryCountEnable(Boolean maxRetryCountEnable) {
+        this.maxRetryCountEnable = maxRetryCountEnable
+    }
+
+    @Required
+    void setMaxSameIPAttemptsEnable(Boolean maxSameIPAttemptsEnable) {
+        this.maxSameIPAttemptsEnable = maxSameIPAttemptsEnable
+    }
+
+    @Required
+    void setMaxSameUserAttemptsEnable(Boolean maxSameUserAttemptsEnable) {
+        this.maxSameUserAttemptsEnable = maxSameUserAttemptsEnable
     }
 }

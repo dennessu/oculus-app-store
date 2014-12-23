@@ -1,0 +1,34 @@
+{
+	"countryCode": "WF",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_WF",
+		"id": "fr_WF"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XPF",
+		"id": "XPF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_WF",
+		"id": "fr_WF"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Wallis and Futuna",
+			"longName": "Territory of the Wallis and Futuna Islands",
+			"postalCode": "Postal Code"
+		},
+		"fr_WF": {
+			"shortName": "Wallis et Futuna",
+			"longName": "Wallis et Futuna or Territoire des îles Wallis et Futuna",
+			"postalCode": "code postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

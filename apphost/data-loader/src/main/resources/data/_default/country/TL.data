@@ -1,0 +1,137 @@
+{
+	"countryCode": "TL",
+	"defaultLocale": {
+		"href": "/v1/locales/pt_TL",
+		"id": "pt_TL"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Aileu",
+					"longName": "Aileu"
+				}
+			}
+		},
+		"AN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ainaro",
+					"longName": "Ainaro"
+				}
+			}
+		},
+		"BA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Baucau",
+					"longName": "Baucau"
+				}
+			}
+		},
+		"BO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bobonaro",
+					"longName": "Bobonaro"
+				}
+			}
+		},
+		"CO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cova Lima",
+					"longName": "Cova Lima"
+				}
+			}
+		},
+		"DI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Díli",
+					"longName": "Díli"
+				}
+			}
+		},
+		"ER": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ermera",
+					"longName": "Ermera"
+				}
+			}
+		},
+		"LA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lautem",
+					"longName": "Lautem"
+				}
+			}
+		},
+		"LI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Liquiça",
+					"longName": "Liquiça"
+				}
+			}
+		},
+		"MF": {
+			"locales": {
+				"en_US": {
+					"shortName": "Manufahi",
+					"longName": "Manufahi"
+				}
+			}
+		},
+		"MT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Manatuto",
+					"longName": "Manatuto"
+				}
+			}
+		},
+		"OE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Oecussi",
+					"longName": "Oecussi"
+				}
+			}
+		},
+		"VI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Viqueque",
+					"longName": "Viqueque"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/pt_TL",
+		"id": "pt_TL"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "East Timor",
+			"longName": "Democratic Republic of Timor-Leste",
+			"postalCode": "Postal Code"
+		},
+		"pt_TL": {
+			"shortName": "Timor-Leste",
+			"longName": "República Democrática de Timor-Leste",
+			"postalCode": "código postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

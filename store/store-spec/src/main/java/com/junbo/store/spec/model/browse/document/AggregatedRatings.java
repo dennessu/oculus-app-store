@@ -5,29 +5,16 @@
  */
 package com.junbo.store.spec.model.browse.document;
 
-import java.util.Map;
-
 /**
  * The AggregatedRatings class.
  */
 public class AggregatedRatings {
-    private String type;
 
     private Double averageRating;
 
     private Long ratingsCount;
 
     private Long commentsCount;
-
-    private Map<Integer, Long> ratingsHistogram;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public Double getAverageRating() {
         return averageRating;
@@ -53,11 +40,4 @@ public class AggregatedRatings {
         this.commentsCount = commentsCount;
     }
 
-    public Map<Integer, Long> getRatingsHistogram() {
-        return ratingsHistogram;
-    }
-
-    public void setRatingsHistogram(Map<Integer, Long> ratingsHistogram) {
-        this.ratingsHistogram = ratingsHistogram;
-    }
 }

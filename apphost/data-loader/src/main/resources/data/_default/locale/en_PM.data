@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_PM",
+   "shortName" : "English (PM)",
+   "longName" : "English (Saint Pierre and Miquelon)",
+   "localeName" : "English (PM)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

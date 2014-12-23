@@ -1,0 +1,5 @@
+include 'silkcloud-apphost'
+include 'silkcloud-core'
+include 'silkcloud-interfaces'
+include 'silkcloud-jobs'
+include 'silkcloud-processor'

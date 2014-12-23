@@ -8,13 +8,11 @@ package com.junbo.store.spec.resource;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.routing.RouteByAccessToken;
-import com.junbo.store.spec.model.PageParam;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.browse.*;
-import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
 
@@ -31,23 +29,29 @@ import javax.ws.rs.core.MediaType;
 public interface StoreResource {
 
     @POST
-    @Path("/verify-email")
+    @Path("/resend-confirmation-email")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
     // This doesn't require email verification
-    Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request);
+    Promise<VerifyEmailResponse> verifyEmail();
 
     @GET
     @Path("/user-profile")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
     // This requires email verification
     Promise<UserProfileGetResponse> getUserProfile();
 
     @POST
     @Path("/user-profile")
+    @RouteByAccessToken(switchable = true)
     // This requires email verification
     Promise<UserProfileUpdateResponse> updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest);
 
     @GET
     @Path("/billing-profile")
     @RouteByAccessToken
+    @Consumes()
     // This requires email verification
     Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest billingProfileGetRequest);
 
@@ -76,53 +80,61 @@ public interface StoreResource {
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest);
 
     @GET
-    @Path("/iap/offers")
-    // This requires email verification
-    Promise<IAPOfferGetResponse> iapGetOffers(@BeanParam IAPOfferGetRequest iapOfferGetRequest);
-
-    @GET
-    @Path("/iap/entitlements")
-    // This requires email verification
-    Promise<IAPEntitlementGetResponse> iapGetEntitlements(@BeanParam IAPEntitlementGetRequest iapEntitlementGetRequest, @BeanParam PageParam pageParam);
-
-    @POST
-    @Path("/iap/consumption")
-    // This requires email verification
-    Promise<IAPEntitlementConsumeResponse> iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest);
-
-    @GET
     @Path("/toc")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<TocResponse> getToc();
 
     @POST
     @Path("/accept-tos")
+    @RouteByAccessToken(switchable = true)
     Promise<AcceptTosResponse> acceptTos(AcceptTosRequest request);
 
     @GET
+    @Path("/initial-download-items")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
+    Promise<InitialDownloadItemsResponse> getInitialDownloadItems();
+
+    @GET
     @Path("/section-layout")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<SectionLayoutResponse> getSectionLayout(@BeanParam SectionLayoutRequest request);
 
     @GET
-    @Path("/section-list")
+    @Path("/section-items")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<ListResponse> getList(@BeanParam ListRequest request);
 
     @GET
     @Path("/library")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<LibraryResponse> getLibrary();
 
     @GET
-    @Path("/details")
-    Promise<DetailsResponse> getDetails(@BeanParam DetailsRequest request);
+    @Path("/item-details")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
+    Promise<DetailsResponse> getItemDetails(@BeanParam DetailsRequest request);
 
     @GET
     @Path("/reviews")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<ReviewsResponse> getReviews(@BeanParam ReviewsRequest request);
 
     @POST
     @Path("/add-review")
+    @RouteByAccessToken(switchable = true)
     Promise<AddReviewResponse> addReview(AddReviewRequest request);
 
     @GET
-    @Path("/delivery")
+    @Path("/generate-download-info")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
     Promise<DeliveryResponse> getDelivery(@BeanParam DeliveryRequest request);
+
 }

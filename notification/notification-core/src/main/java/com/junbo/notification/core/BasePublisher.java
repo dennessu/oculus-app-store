@@ -19,6 +19,8 @@ import java.io.Serializable;
  * BasePublisher.
  */
 public abstract class BasePublisher {
+    public static final String X_REQUEST_ID = "oculus-request-id";
+
     protected JmsTemplate template;
     protected Destination destination;
 
@@ -44,6 +46,10 @@ public abstract class BasePublisher {
                 return eventId;
             }
 
+            public String requestId() {
+                return MDC.get(X_REQUEST_ID);
+            }
+
             public Message createMessage(Session session) throws JMSException {
                 return wrap(session.createTextMessage(content), eventId);
             }
@@ -54,6 +60,10 @@ public abstract class BasePublisher {
         publish(new Event() {
             public String getId() {
                 return eventId;
+            }
+
+            public String requestId() {
+                return MDC.get(X_REQUEST_ID);
             }
 
             public Message createMessage(Session session) throws JMSException {

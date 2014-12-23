@@ -9,7 +9,7 @@ dependencies {
     compile junboProject(":entitlement-spec")
     compile junboProject(":crypto-spec")
     compile junboProject(":authorization-lib")
-    compile junboProject(":common-lib")
+    compile junboProject(":silkcloud-core")
 
     compile (libraries.common_io)
 

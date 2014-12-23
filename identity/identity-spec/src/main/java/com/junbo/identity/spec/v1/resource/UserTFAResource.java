@@ -14,11 +14,13 @@ import com.junbo.identity.spec.v1.option.model.UserTFAGetOptions;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/22/14.
@@ -31,23 +33,20 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserTFAResource {
     @ApiOperation("Create one user tfa resource")
+    @RouteBy(value = "userId", switchable = true)
     @POST
     Promise<UserTFA> create(@PathParam("userId") UserId userId, UserTFA userTFA);
 
     @ApiOperation("Get one user tfa resource")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     @Path("/{userTFAId}")
     Promise<UserTFA> get(@PathParam("userId") UserId userId,
                           @PathParam("userTFAId") UserTFAId userTFAId,
                           @BeanParam UserTFAGetOptions getOptions);
 
-    @POST
-    @Path("/{userTFAId}")
-    Promise<UserTFA> patch(@PathParam("userId") UserId userId,
-                           @PathParam("userTFAId") UserTFAId userTFAId,
-                           UserTFA userTFA);
-
     @ApiOperation("Update one user TFA resource")
+    @RouteBy(value = "userId", switchable = true)
     @PUT
     @Path("/{userTFAId}")
     Promise<UserTFA> put(@PathParam("userId") UserId userId,
@@ -55,12 +54,14 @@ public interface UserTFAResource {
                           UserTFA userTFA);
 
     @ApiOperation("Delete one user TFA resource")
+    @RouteBy(value = "userId", switchable = true)
     @DELETE
     @Path("/{userTFAId}")
-    Promise<Void> delete(@PathParam("userId") UserId userId,
+    Promise<Response> delete(@PathParam("userId") UserId userId,
                          @PathParam("userTFAId") UserTFAId userTFAId);
 
     @ApiOperation("Search user TFA resource")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     Promise<Results<UserTFA>> list(@PathParam("userId") UserId userId,
                                     @BeanParam UserTFAListOptions listOptions);

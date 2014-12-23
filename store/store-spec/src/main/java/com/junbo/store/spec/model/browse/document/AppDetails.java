@@ -17,7 +17,7 @@ public class AppDetails {
 
     private List<GenreInfo> genres;
 
-    private Long contentRating;
+    private List<String> requiredInputDevices;
 
     private Date releaseDate;
 
@@ -36,8 +36,11 @@ public class AppDetails {
     private String packageName;
     private Integer versionCode;
     private String versionString;
+    private List<String> permissions;
 
     private Long installationSize;
+
+    private Long requiredSpace;
 
     private List<RevisionNote> revisionNotes;
 
@@ -57,12 +60,12 @@ public class AppDetails {
         this.genres = genres;
     }
 
-    public Long getContentRating() {
-        return contentRating;
+    public List<String> getRequiredInputDevices() {
+        return requiredInputDevices;
     }
 
-    public void setContentRating(Long contentRating) {
-        this.contentRating = contentRating;
+    public void setRequiredInputDevices(List<String> requiredInputDevices) {
+        this.requiredInputDevices = requiredInputDevices;
     }
 
     public Date getReleaseDate() {
@@ -161,12 +164,28 @@ public class AppDetails {
         this.versionString = versionString;
     }
 
+    public List<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<String> permissions) {
+        this.permissions = permissions;
+    }
+
     public Long getInstallationSize() {
         return installationSize;
     }
 
     public void setInstallationSize(Long installationSize) {
         this.installationSize = installationSize;
+    }
+
+    public Long getRequiredSpace() {
+        return requiredSpace;
+    }
+
+    public void setRequiredSpace(Long requiredSpace) {
+        this.requiredSpace = requiredSpace;
     }
 
     public List<RevisionNote> getRevisionNotes() {

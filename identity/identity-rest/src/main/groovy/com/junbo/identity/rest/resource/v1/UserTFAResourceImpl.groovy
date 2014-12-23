@@ -1,4 +1,5 @@
 package com.junbo.identity.rest.resource.v1
+
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
@@ -13,13 +14,13 @@ import com.junbo.email.spec.model.QueryParam
 import com.junbo.email.spec.resource.EmailResource
 import com.junbo.email.spec.resource.EmailTemplateResource
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
-import com.junbo.identity.clientproxy.TeleSign
 import com.junbo.identity.core.service.filter.UserTFAFilter
 import com.junbo.identity.core.service.validator.UserTFAValidator
 import com.junbo.identity.data.identifiable.TFASearchType
 import com.junbo.identity.data.identifiable.TFAVerifyType
-import com.junbo.identity.data.repository.UserTFAMailRepository
-import com.junbo.identity.data.repository.UserTFAPhoneRepository
+import com.junbo.identity.data.telesign.TeleSign
+import com.junbo.identity.service.UserTFAMailService
+import com.junbo.identity.service.UserTFAPhoneService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserTFA
 import com.junbo.identity.spec.v1.option.list.UserTFAListOptions
@@ -31,6 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
+
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 4/24/14.
  */
@@ -39,13 +43,13 @@ import org.springframework.util.StringUtils
 class UserTFAResourceImpl implements UserTFAResource {
 
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String EMAIL_ACTION = 'TFAVerificationCode'
+    private static final String EMAIL_ACTION = 'TFAVerificationCode_V1'
 
     @Autowired
-    private UserTFAPhoneRepository userTFAPhoneRepository
+    private UserTFAPhoneService userTFAPhoneService
 
     @Autowired
-    private UserTFAMailRepository userTFAMailRepository
+    private UserTFAMailService userTFAMailService
 
     @Autowired
     private UserTFAFilter userTFAFilter
@@ -73,7 +77,11 @@ class UserTFAResourceImpl implements UserTFAResource {
     @Override
     Promise<UserTFA> create(UserId userId, UserTFA userTFA) {
         if (userTFA == null) {
-            throw new IllegalArgumentException('userTFA is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
+        if (userId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFA.userId != null && userTFA.userId != userId) {
@@ -91,7 +99,7 @@ class UserTFAResourceImpl implements UserTFAResource {
 
             return userTFAValidator.validateForCreate(userId, userTFA).then {
                 return sendCode(userTFA).then {
-                    return userTFAPhoneRepository.create(userTFA).then { UserTFA newUserTeleCode ->
+                    return userTFAPhoneService.create(userTFA).then { UserTFA newUserTeleCode ->
                         Created201Marker.mark(newUserTeleCode.getId())
 
                         newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
@@ -112,7 +120,11 @@ class UserTFAResourceImpl implements UserTFAResource {
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+
+        if (userTFAId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -134,60 +146,17 @@ class UserTFAResourceImpl implements UserTFAResource {
     }
 
     @Override
-    Promise<UserTFA> patch(UserId userId, UserTFAId userTFAId, UserTFA userTFA) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
-        if (userTFAId == null) {
-            throw new IllegalArgumentException('userTFAId is null')
-        }
-
-        if (userTFA == null) {
-            throw new IllegalArgumentException('userTFA is null')
-        }
-
-        userTFA.verifyCode = null
-
-        def callback = authorizeCallbackFactory.create(userId)
-        return RightsScope.with(authorizeService.authorize(callback)) {
-            if (!AuthorizeContext.hasRights('update')) {
-                throw AppCommonErrors.INSTANCE.forbidden().exception()
-            }
-
-            return userTFAPhoneRepository.get(userTFAId).then { UserTFA oldUserTeleCode ->
-                if (oldUserTeleCode == null) {
-                    throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
-                }
-
-                userTFA = userTFAFilter.filterForPatch(userTFA, oldUserTeleCode)
-
-                return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
-
-                    return userTFAPhoneRepository.update(userTFA, oldUserTeleCode).then { UserTFA newUserTele ->
-                        newUserTele = userTFAFilter.filterForGet(newUserTele, null)
-                        if (!StringUtils.isEmpty(newUserTele.verifyCode) && !AuthorizeContext.debugEnabled) {
-                            newUserTele.verifyCode = null
-                        }
-                        return Promise.pure(newUserTele)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserTFA> put(UserId userId, UserTFAId userTFAId, UserTFA userTFA) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFAId == null) {
-            throw new IllegalArgumentException('userTFAId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAId').exception()
         }
 
         if (userTFA == null) {
-            throw new IllegalArgumentException('userTFA is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userTFA.verifyCode = null
@@ -198,7 +167,7 @@ class UserTFAResourceImpl implements UserTFAResource {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
-            return userTFAPhoneRepository.get(userTFAId).then { UserTFA oldUserTeleCode ->
+            return userTFAPhoneService.get(userTFAId).then { UserTFA oldUserTeleCode ->
                 if (oldUserTeleCode == null) {
                     throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
                 }
@@ -206,7 +175,7 @@ class UserTFAResourceImpl implements UserTFAResource {
                 userTFA = userTFAFilter.filterForPut(userTFA, oldUserTeleCode)
 
                 return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
-                    return userTFAPhoneRepository.update(userTFA, oldUserTeleCode).then { UserTFA newUserTeleCode ->
+                    return userTFAPhoneService.update(userTFA, oldUserTeleCode).then { UserTFA newUserTeleCode ->
                         newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
                         if (!StringUtils.isEmpty(newUserTeleCode.verifyCode) && !AuthorizeContext.debugEnabled) {
                             newUserTeleCode.verifyCode = null
@@ -219,9 +188,13 @@ class UserTFAResourceImpl implements UserTFAResource {
     }
 
     @Override
-    Promise<Void> delete(UserId userId, UserTFAId userTFAId) {
+    Promise<Response> delete(UserId userId, UserTFAId userTFAId) {
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+
+        if (userTFAId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -231,7 +204,9 @@ class UserTFAResourceImpl implements UserTFAResource {
             }
 
             return userTFAValidator.validateForGet(userId, userTFAId).then {
-                return userTFAPhoneRepository.delete(userTFAId)
+                return userTFAPhoneService.delete(userTFAId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }
@@ -243,7 +218,7 @@ class UserTFAResourceImpl implements UserTFAResource {
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -279,14 +254,14 @@ class UserTFAResourceImpl implements UserTFAResource {
     private Promise<List<UserTFA>> search(UserTFAListOptions listOptions) {
         if (listOptions.userId != null && listOptions.personalInfo != null) {
             if (listOptions.type == TFASearchType.PHONE.toString()) {
-                return userTFAPhoneRepository.searchTFACodeByUserIdAndPersonalInfoId(listOptions.userId, listOptions.personalInfo,
+                return userTFAPhoneService.searchTFACodeByUserIdAndPersonalInfoId(listOptions.userId, listOptions.personalInfo,
                     listOptions.limit, listOptions.offset)
             } else {
-                return userTFAMailRepository.searchTFACodeByUserIdAndPersonalInfoId(listOptions.userId, listOptions.personalInfo,
+                return userTFAMailService.searchTFACodeByUserIdAndPersonalInfoId(listOptions.userId, listOptions.personalInfo,
                     listOptions.limit, listOptions.offset)
             }
         } else {
-            throw new IllegalArgumentException('Unsupported search operation.')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()
         }
     }
 

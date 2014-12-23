@@ -11,13 +11,14 @@
 
     <!--Data source has the database information -->
     <!--Data source has the database information -->
-    <bean id="subscriptionDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="subscriptionDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${subscription.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/subscription"/>
         <property name="className" value="${subscription.db.driverClassName}"/>
-        <property name="minPoolSize" value="${subscription.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${subscription.db.maxConnectionsPerPartition}"/>
+        <property name="minPoolSize" value="${subscription.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${subscription.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${subscription.db.username}</prop>
@@ -46,22 +47,6 @@
         </property>
         <property name="packagesToScan" value="com.junbo.subscription.db.entity"/>
     </bean>
-
-    <!--bean id="subscriptionSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="subscriptionDataSource"/>
-        <property name="packagesToScan" value="com.junbo.subscription.db.entity"/>
-        <property name="jtaTransactionManager" ref="transactionManager"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${subscription.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${subscription.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${subscription.hibernate.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${subscription.hibernate.batch_size}</prop>
-                <prop key="hibernate.show_sql">${subscription.hibernate.show_sql}</prop>
-            </props>
-        </property>
-    </bean-->
 
     <!-- Transaction Manager -->
     <!--bean id="transactionManager"

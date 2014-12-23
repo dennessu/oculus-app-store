@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_VU",
+   "shortName" : "English (VU)",
+   "longName" : "English (Vanuatu)",
+   "localeName" : "English (VU)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

@@ -4,7 +4,7 @@ import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.LocaleValidator
-import com.junbo.identity.data.repository.LocaleRepository
+import com.junbo.identity.service.LocaleService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Locale
 import com.junbo.identity.spec.v1.option.list.LocaleListOptions
@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class LocaleValidatorImpl implements LocaleValidator {
 
-    private LocaleRepository localeRepository
+    private LocaleService localeService
 
     private Integer minShortNameLength
     private Integer maxShortNameLength
@@ -35,8 +35,8 @@ class LocaleValidatorImpl implements LocaleValidator {
     private Integer maxLocaleNameLength
 
     @Required
-    void setLocaleRepository(LocaleRepository localeRepository) {
-        this.localeRepository = localeRepository
+    void setLocaleService(LocaleService localeService) {
+        this.localeService = localeService
     }
 
     @Required
@@ -75,7 +75,7 @@ class LocaleValidatorImpl implements LocaleValidator {
             throw new IllegalArgumentException('localeId is null')
         }
 
-        return localeRepository.get(localeId).then { Locale locale ->
+        return localeService.get(localeId).then { Locale locale ->
             if (locale == null) {
                 throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
             }
@@ -100,7 +100,7 @@ class LocaleValidatorImpl implements LocaleValidator {
         }
 
         return checkBasicLocaleInfo(locale).then {
-            return localeRepository.get(new LocaleId(locale.localeCode)).then { Locale existing ->
+            return localeService.get(new LocaleId(locale.localeCode)).then { Locale existing ->
                 if (existing != null) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('localeCode').exception()
                 }
@@ -176,7 +176,7 @@ class LocaleValidatorImpl implements LocaleValidator {
         }
 
         if (locale.fallbackLocale != null) {
-            return localeRepository.get(locale.fallbackLocale).then { Locale existing ->
+            return localeService.get(locale.fallbackLocale).then { Locale existing ->
                 if (existing == null) {
                     throw AppErrors.INSTANCE.localeNotFound(locale.fallbackLocale).exception()
                 }

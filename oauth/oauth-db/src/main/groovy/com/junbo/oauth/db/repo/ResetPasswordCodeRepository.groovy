@@ -9,9 +9,10 @@ import groovy.transform.CompileStatic
 @CompileStatic
 public interface ResetPasswordCodeRepository {
     ResetPasswordCode get(String code)
-    ResetPasswordCode getByHash(String hash)
+    ResetPasswordCode getByHash(String hash, Integer dc)
     void remove(String code)
     void removeByHash(String hash)
     void save(ResetPasswordCode resetPasswordCode)
     void removeByUserIdEmail(Long userId, String email)
+    List<ResetPasswordCode> getByUserIdEmail(Long userId, String email)
 }

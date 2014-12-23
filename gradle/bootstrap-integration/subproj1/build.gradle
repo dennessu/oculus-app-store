@@ -3,12 +3,12 @@ apply plugin: 'java'
 dependencies {
     compile 'javax.ws.rs:javax.ws.rs-api:2.0'
 
-    compile 'com.goshop.langur:langur-core:0.0.1-SNAPSHOT'
+    compile 'com.goshop.langur:silkcloud-core:0.0.1-SNAPSHOT'
     compile 'com.google.guava:guava:15.0'
     compile 'org.springframework:spring-beans:3.2.4.RELEASE'
     compile 'org.springframework:spring-context:3.2.4.RELEASE'
 
-    processor 'com.goshop.langur:langur-processor:0.0.1-SNAPSHOT'
+    processor 'com.goshop.langur:silkcloud-processor:0.0.1-SNAPSHOT'
     processor 'log4j:log4j:1.2.17'
 
 }

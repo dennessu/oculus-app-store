@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -34,10 +35,6 @@ public interface TosResource {
     @ApiOperation("Create a tos")
     @POST
     Promise<Tos> create(Tos tos);
-
-    @POST
-    @Path("/{tosId}")
-    Promise<Tos> patch(@PathParam("tosId") TosId tosId, Tos tos);
 
     @ApiOperation("Update a tos")
     @PUT
@@ -58,5 +55,5 @@ public interface TosResource {
     @ApiOperation("Delete a tos")
     @DELETE
     @Path("/{tosId}")
-    Promise<Void> delete(@PathParam("tosId") TosId tosId);
+    Promise<Response> delete(@PathParam("tosId") TosId tosId);
 }

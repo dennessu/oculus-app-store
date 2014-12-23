@@ -5,10 +5,11 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPasswordId
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
+import com.junbo.identity.core.service.credential.CredentialHelper
 import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserPasswordValidator
-import com.junbo.identity.data.repository.UserPasswordRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.UserPasswordService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.v1.model.User
@@ -25,13 +26,15 @@ import org.springframework.util.StringUtils
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
 class UserPasswordValidatorImpl implements UserPasswordValidator {
-    private UserRepository userRepository
+    private UserService userService
 
-    private UserPasswordRepository userPasswordRepository
+    private UserPasswordService userPasswordService
 
     private Integer currentCredentialVersion
 
     private CredentialHashFactory credentialHashFactory
+
+    private CredentialHelper credentialHelper
 
     @Override
     Promise<UserPassword> validateForGet(UserId userId, UserPasswordId userPasswordId) {
@@ -43,12 +46,12 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
             throw AppCommonErrors.INSTANCE.parameterRequired('userPasswordId').exception()
         }
 
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            return userPasswordRepository.get(userPasswordId).then { UserPassword userPassword ->
+            return userPasswordService.get(userPasswordId).then { UserPassword userPassword ->
                 if (userPassword == null) {
                     throw AppErrors.INSTANCE.userPasswordNotFound(userPasswordId).exception()
                 }
@@ -121,20 +124,11 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
             return Promise.pure(null)
         }
 
-        return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
-            List<UserPassword> userPasswordList ->
-            if (userPasswordList == null || userPasswordList.size() == 0 || userPasswordList.size() > 1) {
+        return credentialHelper.isValidPassword(userId, oldPassword).then { Boolean isValid ->
+            if (!isValid) {
                 throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
             }
 
-            List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
-            CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                return hash.matches(oldPassword, userPasswordList.get(0).passwordHash)
-            }
-
-            if (matched == null) {
-                throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
-            }
             return Promise.pure(null)
         }
     }
@@ -165,13 +159,13 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserPasswordRepository(UserPasswordRepository userPasswordRepository) {
-        this.userPasswordRepository = userPasswordRepository
+    void setUserPasswordService(UserPasswordService userPasswordService) {
+        this.userPasswordService = userPasswordService
     }
 
     @Required
@@ -182,5 +176,10 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
     @Required
     void setCredentialHashFactory(CredentialHashFactory credentialHashFactory) {
         this.credentialHashFactory = credentialHashFactory
+    }
+
+    @Required
+    void setCredentialHelper(CredentialHelper credentialHelper) {
+        this.credentialHelper = credentialHelper
     }
 }

@@ -15,15 +15,17 @@ import java.util.Map;
  */
 public class Images {
 
+    /**
+     * The BuildType enum.
+     */
+    public static enum BuildType {
+        Item_Details,
+        Item_List
+    }
+
     private Map<String, Image> main;
 
-    private Map<String, Image> thumbnail;
-
-    private Map<String, Image> background;
-
-    private Map<String, Image> featured;
-
-    private List<ImageGalleryEntry> gallery;
+    private List<Map<String, Image>> gallery;
 
     public Map<String, Image> getMain() {
         return main;
@@ -33,35 +35,11 @@ public class Images {
         this.main = main;
     }
 
-    public Map<String, Image> getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(Map<String, Image> thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public Map<String, Image> getBackground() {
-        return background;
-    }
-
-    public void setBackground(Map<String, Image> background) {
-        this.background = background;
-    }
-
-    public Map<String, Image> getFeatured() {
-        return featured;
-    }
-
-    public void setFeatured(Map<String, Image> featured) {
-        this.featured = featured;
-    }
-
-    public List<ImageGalleryEntry> getGallery() {
+    public List<Map<String, Image>> getGallery() {
         return gallery;
     }
 
-    public void setGallery(List<ImageGalleryEntry> gallery) {
+    public void setGallery(List<Map<String, Image>> gallery) {
         this.gallery = gallery;
     }
 }

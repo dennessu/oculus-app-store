@@ -30,12 +30,12 @@ import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.ResetPasswordCode
@@ -56,9 +56,9 @@ import javax.ws.rs.core.UriBuilder
 class UserServiceImpl implements UserService {
 
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String VERIFY_EMAIL_ACTION = 'EmailVerification'
-    private static final String WELCOME_ACTION = 'Welcome'
-    private static final String RESET_PASSWORD_ACTION = 'PasswordReset'
+    private static final String VERIFY_EMAIL_ACTION = 'EmailVerification_V1'
+    private static final String WELCOME_ACTION = 'Welcome_V2'
+    private static final String RESET_PASSWORD_ACTION = 'PasswordReset_V1'
     private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
     private static final String EMAIL_RESET_PASSWORD_PATH = 'oauth2/reset-password'
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl)
@@ -84,6 +84,10 @@ class UserServiceImpl implements UserService {
     private EmailVerifyCodeRepository emailVerifyCodeRepository
 
     private URI emailLinkBaseUri
+
+    private Long resetPasswordExpiration
+
+    private Long emailVerifyExpiration
 
     @Required
     void setTokenService(OAuthTokenService tokenService) {
@@ -139,6 +143,16 @@ class UserServiceImpl implements UserService {
     @Required
     void setEmailLinkBaseUri(String emailLinkBaseUri) {
         this.emailLinkBaseUri = new URI(emailLinkBaseUri)
+    }
+
+    @Required
+    void setResetPasswordExpiration(Long resetPasswordExpiration) {
+        this.resetPasswordExpiration = resetPasswordExpiration
+    }
+
+    @Required
+    void setEmailVerifyExpiration(Long emailVerifyExpiration) {
+        this.emailVerifyExpiration = emailVerifyExpiration
     }
 
     @Override
@@ -273,7 +287,8 @@ class UserServiceImpl implements UserService {
                 EmailVerifyCode code = new EmailVerifyCode(
                         userId: userId.value,
                         email: email,
-                        targetMailId: emailId == null ? null : emailId.value
+                        targetMailId: emailId == null ? null : emailId.value,
+                        expiredBy: new Date(System.currentTimeMillis() + emailVerifyExpiration * 1000)
                 )
 
                 emailVerifyCodeRepository.save(code)
@@ -300,7 +315,7 @@ class UserServiceImpl implements UserService {
                 }
 
                 String link = uriBuilder.build().toString()
-                return this.sendEmail(queryParam, user, email, link)
+                return this.sendEmail(queryParam, user, email, link, buildReplacements(user, queryParam.action, link, email))
             }
         }
     }
@@ -339,7 +354,8 @@ class UserServiceImpl implements UserService {
 
                 ResetPasswordCode code = new ResetPasswordCode(
                         userId: userId.value,
-                        email: email
+                        email: email,
+                        expiredBy: new Date(System.currentTimeMillis() + resetPasswordExpiration * 1000)
                 )
 
                 resetPasswordCodeRepository.save(code)
@@ -360,7 +376,8 @@ class UserServiceImpl implements UserService {
                         locale: locale
                 )
 
-                return this.sendEmail(queryParam, user, email, uriBuilder.build().toString())
+                String uri = uriBuilder.build().toString()
+                return this.sendEmail(queryParam, user, email, uri, buildReplacements(user, queryParam.action, uri, email))
             }
         }
     }
@@ -371,6 +388,38 @@ class UserServiceImpl implements UserService {
         String country = contextWrapper.viewCountry
 
         return sendResetPassword(userId, locale, country)
+    }
+
+    @Override
+    Promise<List<String>> getResetPasswordLinks(String username, String email, String locale, String country) {
+        List<String> results = new ArrayList<>()
+        return userResource.list(new UserListOptions(username: username)).then { Results<User> userResults ->
+            userResults.items.each { User user ->
+                List<ResetPasswordCode> codes = resetPasswordCodeRepository.getByUserIdEmail(user.getId().value, email)
+                codes.each { ResetPasswordCode code ->
+                    UriBuilder uriBuilder = UriBuilder.fromUri(emailLinkBaseUri)
+                    uriBuilder.path(EMAIL_RESET_PASSWORD_PATH)
+                    uriBuilder.queryParam(OAuthParameters.RESET_PASSWORD_CODE, code.code)
+                    if (!StringUtils.isEmpty(locale)) {
+                        uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
+                    }
+                    if (!StringUtils.isEmpty(country)) {
+                        uriBuilder.queryParam(OAuthParameters.COUNTRY, country)
+                    }
+
+                    results.add(uriBuilder.build().toString())
+                }
+            }
+
+            return Promise.pure()
+        }.then {
+            return Promise.pure(results)
+        }
+    }
+
+    @Override
+    Promise<User> getUser(UserId userId) {
+        return userResource.get(userId, new UserGetOptions())
     }
 
     private Promise<String> getDefaultUserEmail(User user) {
@@ -428,7 +477,7 @@ class UserServiceImpl implements UserService {
         }
     }
 
-    private Promise<String> sendEmail(QueryParam queryParam, User user, String email, String uri) {
+    private Promise<String> sendEmail(QueryParam queryParam, User user, String email, String uri, Map<String, String> replacements) {
         // todo: remove this hard coded after email template has been setup
         queryParam.locale = 'en_US'
 
@@ -445,10 +494,7 @@ class UserServiceImpl implements UserService {
                     userId: user.id as UserId,
                     templateId: template.id as EmailTemplateId,
                     recipients: [email].asList(),
-                    replacements: [
-                            'name': getName(user).get(),
-                            'link': uri
-                    ]
+                    replacements: replacements
             )
 
             return emailResource.postEmail(emailToSend).then { Email emailSent ->
@@ -480,11 +526,65 @@ class UserServiceImpl implements UserService {
         }
     }
 
+    private Promise<String> getUserLoginName(User user) {
+        if (user.username == null) {
+            return Promise.pure('')
+        } else {
+            return userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return Promise.pure('')
+                }
+
+                UserLoginName userLoginName = (UserLoginName)jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                return Promise.pure(userLoginName.userName)
+            }
+        }
+    }
+
+    private Promise<String> getFirstName(User user) {
+        if (user.name == null) {
+            return Promise.pure('')
+        } else {
+            return userPersonalInfoResource.get(user.name, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return Promise.pure('')
+                }
+
+                UserName userName = (UserName)jsonNodeToObj(userPersonalInfo.value, UserName)
+                return Promise.pure(userName.givenName)
+            }
+        }
+    }
+
     public static Object jsonNodeToObj(JsonNode jsonNode, Class cls) {
         try {
             return ObjectMapperProvider.instance().treeToValue(jsonNode, cls);
         } catch (Exception e) {
             throw AppCommonErrors.INSTANCE.internalServerError(new Exception('Cannot convert JsonObject to ' + cls.toString() + ' e: ' + e.getMessage())).exception()
+        }
+    }
+
+    // todo:    We may need to refine the code here to use interface...
+    private Map<String, String> buildReplacements(User user, String action, String link, String email) {
+        if (action == VERIFY_EMAIL_ACTION) {
+            return [
+                'firstName': getFirstName(user).get(),
+                'link': link
+            ]
+        } else if (action == WELCOME_ACTION) {
+            return [
+                'firstName': getFirstName(user).get(),
+                'accountName': getUserLoginName(user).get(),
+                'email': email,
+                'link': link
+            ]
+        } else if (action == RESET_PASSWORD_ACTION) {
+            return [
+                'name': getName(user).get(),
+                'link': link
+            ]
+        } else {
+            throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported operation').exception()
         }
     }
 }

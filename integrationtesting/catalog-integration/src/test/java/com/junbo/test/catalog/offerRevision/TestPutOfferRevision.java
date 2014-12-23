@@ -627,6 +627,115 @@ public class TestPutOfferRevision extends BaseTestClass {
         offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Put v1/offer-revisions/{offerRevisionId}",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Bug 646: Updating an offer-revision with an endTime less than or equal to startTime is successful",
+            steps = {
+                    "1. Prepare a default offer revision",
+                    "2. Update it to set the start time and end time",
+                    "3. EndTime <= StartTime: raise errors only when the status is pending-review or approved"
+            }
+    )
+    @Test
+    public void testOfferRevisionEndTimeLessThanStartTime() throws Exception {
+        prepareCatalogAdminToken();
+
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
+
+        item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        releaseItem(item1);
+        offer1 = offerService.postDefaultOffer(organizationId);
+
+        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+
+        Long current = System.currentTimeMillis();
+        Date startTime = new Date();
+        offerRevision1.setStartTime(startTime);
+        offerRevision1.setEndTime(new Date(current - 3600));
+
+        offerRevision1 = offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.REJECTED.name());
+        offerRevision1 = offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+        verifyExpectedFailure(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.APPROVED.name());
+        verifyExpectedFailure(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1.setEndTime(new Date());
+        offerRevision1 = offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
+        offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Put v1/offer-revisions/{offerRevisionId}",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test put offer revision valid and invalid scenarios",
+            steps = {
+                    "1. Prepare a default offer revision",
+                    "2. Put the offer revision with corrected fields values",
+                    "3. Verify the action could be successful"
+            }
+    )
+    @Test
+    public void testPutOfferRevisionToObsolete() throws Exception {
+        prepareCatalogAdminToken();
+
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
+
+        item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        releaseItem(item1);
+        offer1 = offerService.postDefaultOffer(organizationId);
+
+        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+        String revisionId = offerRevision1.getRevisionId();
+
+        //obsolete a draft offer revision -- should fail;
+        offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
+        verifyExpectedFailure(revisionId, offerRevision1, 412);
+
+        //update to pending review, then obsolete -- should fail
+        offerRevision1.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+        offerRevision1 = offerRevisionService.updateOfferRevision(revisionId, offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
+        verifyExpectedFailure(revisionId, offerRevision1, 412);
+
+        //update the status to rejected, then obsolete -- should fail
+        offerRevision1.setStatus(CatalogEntityStatus.REJECTED.name());
+        offerRevision1 = offerRevisionService.updateOfferRevision(revisionId, offerRevision1);
+
+        offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
+        verifyExpectedFailure(revisionId, offerRevision1, 412);
+
+        //update to approved, then obsolete -- should succeed.
+        offerRevision1.setStatus(CatalogEntityStatus.APPROVED.name());
+        offerRevision1 = offerRevisionService.updateOfferRevision(revisionId, offerRevision1);
+        offer1 = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offer1.getCurrentRevisionId(), revisionId);
+
+        offerRevision1.setStatus(CatalogEntityStatus.OBSOLETE.name());
+        offerRevisionService.updateOfferRevision(revisionId, offerRevision1);
+        offer1 = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offer1.getCurrentRevisionId(), null);
+
+    }
+
     private void verifyExpectedFailure(String offerRevisionId, OfferRevision offerRevision) throws Exception {
         verifyExpectedFailure(offerRevisionId, offerRevision, 400);
     }

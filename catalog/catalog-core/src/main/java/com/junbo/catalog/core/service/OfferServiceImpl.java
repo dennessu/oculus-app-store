@@ -6,7 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.common.util.Configuration;
+import com.junbo.catalog.clientproxy.OrganizationFacade;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.core.validators.OfferRevisionValidator;
@@ -24,7 +24,6 @@ import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 
@@ -40,9 +39,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private ItemRepository itemRepo;
     private OfferAttributeRepository offerAttributeRepo;
     private OfferRevisionValidator revisionValidator;
-
-    @Autowired
-    private Configuration config;
+    private OrganizationFacade organizationFacade;
 
     @Required
     public void setOfferRepo(OfferRepository offerRepo) {
@@ -69,6 +66,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         this.revisionValidator = revisionValidator;
     }
 
+    @Required
+    public void setOrganizationFacade(OrganizationFacade organizationFacade) {
+        this.organizationFacade = organizationFacade;
+    }
+
     @Override
     public Offer createEntity(Offer offer) {
         validateOfferCreation(offer);
@@ -78,10 +80,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     @Override
     public Offer updateEntity(String offerId, Offer offer) {
-        Offer oldOffer = getEntity(offerId);
+        Offer oldOffer = getEntityRepo().get(offerId);
+        checkEntityNotNull(offerId, offer, getEntityType());
+        offer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
         validateOfferUpdate(offer, oldOffer);
 
-        offer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
         offer.setApprovedRevisions(oldOffer.getApprovedRevisions());
         offer.setActiveRevision(oldOffer.getActiveRevision());
         fillDefaultValue(offer);
@@ -138,7 +141,16 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     @Override
+    public OfferRevision getRevision(String revisionId) {
+        OfferRevision revision = getRevisionRepo().get(revisionId);
+        checkEntityNotNull(revisionId, revision, getRevisionType());
+        setDefaultRankIfAbsent(revision);
+        return revision;
+    }
+
+    @Override
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
+        List<OfferRevision> revisions;
         if (options.getTimestamp()!=null) {
             if (CollectionUtils.isEmpty(options.getOfferIds())) {
                 AppErrorException exception = AppCommonErrors.INSTANCE.parameterInvalid("offerId", "offerId must be specified when timeInMillis is present.").exception();
@@ -150,15 +162,21 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             for (String offerId : options.getOfferIds()) {
                 offerIds.add(offerId);
             }
-            return offerRevisionRepo.getRevisions(offerIds, options.getTimestamp());
+            revisions = offerRevisionRepo.getRevisions(offerIds, options.getTimestamp());
         } else {
-            return offerRevisionRepo.getRevisions(options);
+            revisions = offerRevisionRepo.getRevisions(options);
         }
+
+        for (OfferRevision revision : revisions) {
+            setDefaultRankIfAbsent(revision);
+        }
+        return revisions;
     }
 
     @Override
     public OfferRevision createRevision(OfferRevision revision) {
         revisionValidator.validateCreationBasic(revision);
+        setDefaultRankIfAbsent(revision);
         return offerRevisionRepo.create(revision);
     }
 
@@ -204,6 +222,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             revisionValidator.validateUpdateBasic(revision, oldRevision);
         }
 
+        setDefaultRankIfAbsent(revision);
         return offerRevisionRepo.update(revision, oldRevision);
     }
 
@@ -304,8 +323,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private void fillDefaultValue(Offer offer) {
-        if (offer.getDeveloperRatio() == null) {
-            offer.setDeveloperRatio(config.getDeveloperRatio());
+        if (offer.getPublished() == null) {
+            offer.setPublished(Boolean.FALSE);
         }
     }
 
@@ -374,9 +393,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
         if (offer.getOwnerId()==null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("publisher"));
-        }
-        if (Boolean.TRUE.equals(offer.getPublished())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
+        } else if (organizationFacade.getOrganization(offer.getOwnerId()) == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(offer.getOwnerId())));
         }
 
         validateOfferCommon(offer, errors);
@@ -402,9 +420,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
         if (!oldOffer.getOwnerId().equals(offer.getOwnerId())) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("publisher", Utils.encodeId(offer.getOwnerId()), Utils.encodeId(oldOffer.getOwnerId())));
-        }
-        if (Boolean.TRUE.equals(offer.getPublished()) && !Boolean.TRUE.equals(oldOffer.getPublished()) && oldOffer.getCurrentRevisionId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
+        } else if (organizationFacade.getOrganization(offer.getOwnerId()) == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(offer.getOwnerId())));
         }
 
         validateOfferCommon(offer, errors);
@@ -497,6 +514,12 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                 action.setItemId(itemEntry.getItemId());
                 purchaseActions.add(action);
             }
+        }
+    }
+
+    private void setDefaultRankIfAbsent(OfferRevision revision) {
+        if (revision.getRank()==null) {
+            revision.setRank(0d);
         }
     }
 }

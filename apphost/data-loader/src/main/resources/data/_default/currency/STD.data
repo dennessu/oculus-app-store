@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "STD",
+			"longName": "São Tomé and Príncipe dobra"
+		},
+		"pt_ST": {
+			"shortName": "dobra são-tomense",
+			"longName": "dobra são-tomense"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=STD",
+		"id": null
+	},
+	"currencyCode": "STD",
+	"symbol": "Db",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

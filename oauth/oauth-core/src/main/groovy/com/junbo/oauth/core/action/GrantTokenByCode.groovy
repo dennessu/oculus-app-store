@@ -11,7 +11,6 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.db.repo.AuthorizationCodeRepository
 import com.junbo.oauth.spec.model.AccessToken
@@ -74,7 +73,8 @@ class GrantTokenByCode implements Action {
         Boolean ipRestrictionRequired = Boolean.parseBoolean(ipRestriction);
 
         AccessToken accessToken = tokenService.generateAccessToken(client,
-                authorizationCode.userId, authorizationCode.scopes, ipRestrictionRequired, contextWrapper.overrideExpiration)
+                authorizationCode.userId, authorizationCode.scopes, ipRestrictionRequired,
+                contextWrapper.overrideExpiration, authorizationCode.loginStateHash)
 
         LoginState loginState = new LoginState(
                 userId: authorizationCode.userId,

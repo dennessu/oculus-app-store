@@ -18,12 +18,20 @@
 				"en_GB": {
 					"shortName": "ABD",
 					"longName": "Aberdeenshire"
+				},
+				"en_US": {
+					"shortName": "ABD",
+					"longName": "Aberdeenshire"
 				}
 			}
 		},
 		"ABE": {
 			"locales": {
 				"en_GB": {
+					"shortName": "ABE",
+					"longName": "Aberdeen City"
+				},
+				"en_US": {
 					"shortName": "ABE",
 					"longName": "Aberdeen City"
 				}
@@ -34,12 +42,20 @@
 				"en_GB": {
 					"shortName": "AGB",
 					"longName": "Argyll and Bute"
+				},
+				"en_US": {
+					"shortName": "AGB",
+					"longName": "Argyll and Bute"
 				}
 			}
 		},
 		"AGY": {
 			"locales": {
 				"en_GB": {
+					"shortName": "AGY",
+					"longName": "Isle of Anglesey"
+				},
+				"en_US": {
 					"shortName": "AGY",
 					"longName": "Isle of Anglesey"
 				}
@@ -50,12 +66,20 @@
 				"en_GB": {
 					"shortName": "ANS",
 					"longName": "Angus"
+				},
+				"en_US": {
+					"shortName": "ANS",
+					"longName": "Angus"
 				}
 			}
 		},
 		"ANT": {
 			"locales": {
 				"en_GB": {
+					"shortName": "ANT",
+					"longName": "Antrim"
+				},
+				"en_US": {
 					"shortName": "ANT",
 					"longName": "Antrim"
 				}
@@ -66,12 +90,20 @@
 				"en_GB": {
 					"shortName": "ARD",
 					"longName": "Ards"
+				},
+				"en_US": {
+					"shortName": "ARD",
+					"longName": "Ards"
 				}
 			}
 		},
 		"ARM": {
 			"locales": {
 				"en_GB": {
+					"shortName": "ARM",
+					"longName": "Armagh"
+				},
+				"en_US": {
 					"shortName": "ARM",
 					"longName": "Armagh"
 				}
@@ -82,12 +114,20 @@
 				"en_GB": {
 					"shortName": "BAS",
 					"longName": "Bath and North East Somerset"
+				},
+				"en_US": {
+					"shortName": "BAS",
+					"longName": "Bath and North East Somerset"
 				}
 			}
 		},
 		"BBD": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BBD",
+					"longName": "Blackburn with Darwen"
+				},
+				"en_US": {
 					"shortName": "BBD",
 					"longName": "Blackburn with Darwen"
 				}
@@ -98,12 +138,20 @@
 				"en_GB": {
 					"shortName": "BDF",
 					"longName": "Bedford"
+				},
+				"en_US": {
+					"shortName": "BDF",
+					"longName": "Bedford"
 				}
 			}
 		},
 		"BDG": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BDG",
+					"longName": "Barking and Dagenham"
+				},
+				"en_US": {
 					"shortName": "BDG",
 					"longName": "Barking and Dagenham"
 				}
@@ -114,12 +162,20 @@
 				"en_GB": {
 					"shortName": "BEN",
 					"longName": "Brent"
+				},
+				"en_US": {
+					"shortName": "BEN",
+					"longName": "Brent"
 				}
 			}
 		},
 		"BEX": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BEX",
+					"longName": "Bexley"
+				},
+				"en_US": {
 					"shortName": "BEX",
 					"longName": "Bexley"
 				}
@@ -130,12 +186,20 @@
 				"en_GB": {
 					"shortName": "BFS",
 					"longName": "Belfast"
+				},
+				"en_US": {
+					"shortName": "BFS",
+					"longName": "Belfast"
 				}
 			}
 		},
 		"BGE": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BGE",
+					"longName": "Bridgend"
+				},
+				"en_US": {
 					"shortName": "BGE",
 					"longName": "Bridgend"
 				}
@@ -146,12 +210,20 @@
 				"en_GB": {
 					"shortName": "BGW",
 					"longName": "Blaenau Gwent"
+				},
+				"en_US": {
+					"shortName": "BGW",
+					"longName": "Blaenau Gwent"
 				}
 			}
 		},
 		"BIR": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BIR",
+					"longName": "Birmingham"
+				},
+				"en_US": {
 					"shortName": "BIR",
 					"longName": "Birmingham"
 				}
@@ -162,12 +234,20 @@
 				"en_GB": {
 					"shortName": "BKM",
 					"longName": "Buckinghamshire"
+				},
+				"en_US": {
+					"shortName": "BKM",
+					"longName": "Buckinghamshire"
 				}
 			}
 		},
 		"BLA": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BLA",
+					"longName": "Ballymena"
+				},
+				"en_US": {
 					"shortName": "BLA",
 					"longName": "Ballymena"
 				}
@@ -178,12 +258,20 @@
 				"en_GB": {
 					"shortName": "BLY",
 					"longName": "Ballymoney"
+				},
+				"en_US": {
+					"shortName": "BLY",
+					"longName": "Ballymoney"
 				}
 			}
 		},
 		"BMH": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BMH",
+					"longName": "Bournemouth"
+				},
+				"en_US": {
 					"shortName": "BMH",
 					"longName": "Bournemouth"
 				}
@@ -194,12 +282,20 @@
 				"en_GB": {
 					"shortName": "BNB",
 					"longName": "Banbridge"
+				},
+				"en_US": {
+					"shortName": "BNB",
+					"longName": "Banbridge"
 				}
 			}
 		},
 		"BNE": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BNE",
+					"longName": "Barnet"
+				},
+				"en_US": {
 					"shortName": "BNE",
 					"longName": "Barnet"
 				}
@@ -210,12 +306,20 @@
 				"en_GB": {
 					"shortName": "BNH",
 					"longName": "Brighton and Hove"
+				},
+				"en_US": {
+					"shortName": "BNH",
+					"longName": "Brighton and Hove"
 				}
 			}
 		},
 		"BNS": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BNS",
+					"longName": "Barnsley"
+				},
+				"en_US": {
 					"shortName": "BNS",
 					"longName": "Barnsley"
 				}
@@ -226,12 +330,20 @@
 				"en_GB": {
 					"shortName": "BOL",
 					"longName": "Bolton"
+				},
+				"en_US": {
+					"shortName": "BOL",
+					"longName": "Bolton"
 				}
 			}
 		},
 		"BPL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BPL",
+					"longName": "Blackpool"
+				},
+				"en_US": {
 					"shortName": "BPL",
 					"longName": "Blackpool"
 				}
@@ -242,12 +354,20 @@
 				"en_GB": {
 					"shortName": "BRC",
 					"longName": "Bracknell Forest"
+				},
+				"en_US": {
+					"shortName": "BRC",
+					"longName": "Bracknell Forest"
 				}
 			}
 		},
 		"BRD": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BRD",
+					"longName": "Bradford"
+				},
+				"en_US": {
 					"shortName": "BRD",
 					"longName": "Bradford"
 				}
@@ -258,12 +378,20 @@
 				"en_GB": {
 					"shortName": "BRY",
 					"longName": "Bromley"
+				},
+				"en_US": {
+					"shortName": "BRY",
+					"longName": "Bromley"
 				}
 			}
 		},
 		"BST": {
 			"locales": {
 				"en_GB": {
+					"shortName": "BST",
+					"longName": "Bristol, City of"
+				},
+				"en_US": {
 					"shortName": "BST",
 					"longName": "Bristol, City of"
 				}
@@ -274,12 +402,20 @@
 				"en_GB": {
 					"shortName": "BUR",
 					"longName": "Bury"
+				},
+				"en_US": {
+					"shortName": "BUR",
+					"longName": "Bury"
 				}
 			}
 		},
 		"CAM": {
 			"locales": {
 				"en_GB": {
+					"shortName": "CAM",
+					"longName": "Cambridgeshire"
+				},
+				"en_US": {
 					"shortName": "CAM",
 					"longName": "Cambridgeshire"
 				}
@@ -290,12 +426,20 @@
 				"en_GB": {
 					"shortName": "CAY",
 					"longName": "Caerphilly"
+				},
+				"en_US": {
+					"shortName": "CAY",
+					"longName": "Caerphilly"
 				}
 			}
 		},
 		"CBF": {
 			"locales": {
 				"en_GB": {
+					"shortName": "CBF",
+					"longName": "Central Bedfordshire"
+				},
+				"en_US": {
 					"shortName": "CBF",
 					"longName": "Central Bedfordshire"
 				}
@@ -306,12 +450,20 @@
 				"en_GB": {
 					"shortName": "CGN",
 					"longName": "Ceredigion"
+				},
+				"en_US": {
+					"shortName": "CGN",
+					"longName": "Ceredigion"
 				}
 			}
 		},
 		"CGV": {
 			"locales": {
 				"en_GB": {
+					"shortName": "CGV",
+					"longName": "Craigavon"
+				},
+				"en_US": {
 					"shortName": "CGV",
 					"longName": "Craigavon"
 				}
@@ -322,12 +474,20 @@
 				"en_GB": {
 					"shortName": "CHE",
 					"longName": "Cheshire East"
+				},
+				"en_US": {
+					"shortName": "CHE",
+					"longName": "Cheshire East"
 				}
 			}
 		},
 		"CHW": {
 			"locales": {
 				"en_GB": {
+					"shortName": "CHW",
+					"longName": "Cheshire West and Chester"
+				},
+				"en_US": {
 					"shortName": "CHW",
 					"longName": "Cheshire West and Chester"
 				}
@@ -338,12 +498,20 @@
 				"en_GB": {
 					"shortName": "CKF",
 					"longName": "Carrickfergus"
+				},
+				"en_US": {
+					"shortName": "CKF",
+					"longName": "Carrickfergus"
 				}
 			}
 		},
 		"CKT": {
 			"locales": {
 				"en_GB": {
+					"shortName": "CKT",
+					"longName": "Cookstown"
+				},
+				"en_US": {
 					"shortName": "CKT",
 					"longName": "Cookstown"
 				}
@@ -354,12 +522,20 @@
 				"en_GB": {
 					"shortName": "CLD",
 					"longName": "Calderdale"
+				},
+				"en_US": {
+					"shortName": "CLD",
+					"longName": "Calderdale"
 				}
 			}
 		},
 		"CLK": {
 			"locales": {
 				"en_GB": {
+					"shortName": "CLK",
+					"longName": "Clackmannanshire"
+				},
+				"en_US": {
 					"shortName": "CLK",
 					"longName": "Clackmannanshire"
 				}
@@ -370,12 +546,20 @@
 				"en_GB": {
 					"shortName": "CLR",
 					"longName": "Coleraine"
+				},
+				"en_US": {
+					"shortName": "CLR",
+					"longName": "Coleraine"
 				}
 			}
 		},
 		"CMA": {
 			"locales": {
 				"en_GB": {
+					"shortName": "CMA",
+					"longName": "Cumbria"
+				},
+				"en_US": {
 					"shortName": "CMA",
 					"longName": "Cumbria"
 				}
@@ -386,12 +570,20 @@
 				"en_GB": {
 					"shortName": "CMD",
 					"longName": "Camden"
+				},
+				"en_US": {
+					"shortName": "CMD",
+					"longName": "Camden"
 				}
 			}
 		},
 		"CMN": {
 			"locales": {
 				"en_GB": {
+					"shortName": "CMN",
+					"longName": "Carmarthenshire"
+				},
+				"en_US": {
 					"shortName": "CMN",
 					"longName": "Carmarthenshire"
 				}
@@ -402,12 +594,20 @@
 				"en_GB": {
 					"shortName": "CON",
 					"longName": "Cornwall"
+				},
+				"en_US": {
+					"shortName": "CON",
+					"longName": "Cornwall"
 				}
 			}
 		},
 		"COV": {
 			"locales": {
 				"en_GB": {
+					"shortName": "COV",
+					"longName": "Coventry"
+				},
+                "en_US": {
 					"shortName": "COV",
 					"longName": "Coventry"
 				}
@@ -418,12 +618,20 @@
 				"en_GB": {
 					"shortName": "CRF",
 					"longName": "Cardiff"
+				},
+				"en_US": {
+					"shortName": "CRF",
+					"longName": "Cardiff"
 				}
 			}
 		},
 		"CRY": {
 			"locales": {
 				"en_GB": {
+					"shortName": "CRY",
+					"longName": "Croydon"
+				},
+				"en_US": {
 					"shortName": "CRY",
 					"longName": "Croydon"
 				}
@@ -434,12 +642,20 @@
 				"en_GB": {
 					"shortName": "CSR",
 					"longName": "Castlereagh"
+				},
+				"en_US": {
+					"shortName": "CSR",
+					"longName": "Castlereagh"
 				}
 			}
 		},
 		"CWY": {
 			"locales": {
 				"en_GB": {
+					"shortName": "CWY",
+					"longName": "Conwy"
+				},
+				"en_US": {
 					"shortName": "CWY",
 					"longName": "Conwy"
 				}
@@ -450,12 +666,20 @@
 				"en_GB": {
 					"shortName": "DAL",
 					"longName": "Darlington"
+				},
+				"en_US": {
+					"shortName": "DAL",
+					"longName": "Darlington"
 				}
 			}
 		},
 		"DBY": {
 			"locales": {
 				"en_GB": {
+					"shortName": "DBY",
+					"longName": "Derbyshire"
+				},
+				"en_US": {
 					"shortName": "DBY",
 					"longName": "Derbyshire"
 				}
@@ -466,12 +690,20 @@
 				"en_GB": {
 					"shortName": "DEN",
 					"longName": "Denbighshire"
+				},
+				"en_US": {
+					"shortName": "DEN",
+					"longName": "Denbighshire"
 				}
 			}
 		},
 		"DER": {
 			"locales": {
 				"en_GB": {
+					"shortName": "DER",
+					"longName": "Derby"
+				},
+				"en_US": {
 					"shortName": "DER",
 					"longName": "Derby"
 				}
@@ -482,12 +714,20 @@
 				"en_GB": {
 					"shortName": "DEV",
 					"longName": "Devon"
+				},
+				"en_US": {
+					"shortName": "DEV",
+					"longName": "Devon"
 				}
 			}
 		},
 		"DGN": {
 			"locales": {
 				"en_GB": {
+					"shortName": "DGN",
+					"longName": "Dungannon and South Tyrone"
+				},
+				"en_US": {
 					"shortName": "DGN",
 					"longName": "Dungannon and South Tyrone"
 				}
@@ -498,12 +738,20 @@
 				"en_GB": {
 					"shortName": "DGY",
 					"longName": "Dumfries and Galloway"
+				},
+				"en_US": {
+					"shortName": "DGY",
+					"longName": "Dumfries and Galloway"
 				}
 			}
 		},
 		"DNC": {
 			"locales": {
 				"en_GB": {
+					"shortName": "DNC",
+					"longName": "Doncaster"
+				},
+				"en_US": {
 					"shortName": "DNC",
 					"longName": "Doncaster"
 				}
@@ -514,12 +762,20 @@
 				"en_GB": {
 					"shortName": "DND",
 					"longName": "Dundee City"
+				},
+				"en_US": {
+					"shortName": "DND",
+					"longName": "Dundee City"
 				}
 			}
 		},
 		"DOR": {
 			"locales": {
 				"en_GB": {
+					"shortName": "DOR",
+					"longName": "Dorset"
+				},
+				"en_US": {
 					"shortName": "DOR",
 					"longName": "Dorset"
 				}
@@ -530,12 +786,20 @@
 				"en_GB": {
 					"shortName": "DOW",
 					"longName": "Down"
+				},
+				"en_US": {
+					"shortName": "DOW",
+					"longName": "Down"
 				}
 			}
 		},
 		"DRY": {
 			"locales": {
 				"en_GB": {
+					"shortName": "DRY",
+					"longName": "Derry"
+				},
+				"en_US": {
 					"shortName": "DRY",
 					"longName": "Derry"
 				}
@@ -546,12 +810,20 @@
 				"en_GB": {
 					"shortName": "DUD",
 					"longName": "Dudley"
+				},
+				"en_US": {
+					"shortName": "DUD",
+					"longName": "Dudley"
 				}
 			}
 		},
 		"DUR": {
 			"locales": {
 				"en_GB": {
+					"shortName": "DUR",
+					"longName": "Durham, County"
+				},
+				"en_US": {
 					"shortName": "DUR",
 					"longName": "Durham, County"
 				}
@@ -562,12 +834,20 @@
 				"en_GB": {
 					"shortName": "EAL",
 					"longName": "Ealing"
+				},
+				"en_US": {
+					"shortName": "EAL",
+					"longName": "Ealing"
 				}
 			}
 		},
 		"EAY": {
 			"locales": {
 				"en_GB": {
+					"shortName": "EAY",
+					"longName": "East Ayrshire"
+				},
+				"en_US": {
 					"shortName": "EAY",
 					"longName": "East Ayrshire"
 				}
@@ -578,12 +858,20 @@
 				"en_GB": {
 					"shortName": "EDH",
 					"longName": "Edinburgh, City of"
+				},
+				"en_US": {
+					"shortName": "EDH",
+					"longName": "Edinburgh, City of"
 				}
 			}
 		},
 		"EDU": {
 			"locales": {
 				"en_GB": {
+					"shortName": "EDU",
+					"longName": "East Dunbartonshire"
+				},
+				"en_US": {
 					"shortName": "EDU",
 					"longName": "East Dunbartonshire"
 				}
@@ -594,12 +882,20 @@
 				"en_GB": {
 					"shortName": "ELN",
 					"longName": "East Lothian"
+				},
+				"en_US": {
+					"shortName": "ELN",
+					"longName": "East Lothian"
 				}
 			}
 		},
 		"ELS": {
 			"locales": {
 				"en_GB": {
+					"shortName": "ELS",
+					"longName": "Eilean Siar"
+				},
+				"en_US": {
 					"shortName": "ELS",
 					"longName": "Eilean Siar"
 				}
@@ -610,12 +906,20 @@
 				"en_GB": {
 					"shortName": "ENF",
 					"longName": "Enfield"
+				},
+				"en_US": {
+					"shortName": "ENF",
+					"longName": "Enfield"
 				}
 			}
 		},
 		"ERW": {
 			"locales": {
 				"en_GB": {
+					"shortName": "ERW",
+					"longName": "East Renfrewshire"
+				},
+				"en_US": {
 					"shortName": "ERW",
 					"longName": "East Renfrewshire"
 				}
@@ -626,12 +930,20 @@
 				"en_GB": {
 					"shortName": "ERY",
 					"longName": "East Riding of Yorkshire"
+				},
+				"en_US": {
+					"shortName": "ERY",
+					"longName": "East Riding of Yorkshire"
 				}
 			}
 		},
 		"ESS": {
 			"locales": {
 				"en_GB": {
+					"shortName": "ESS",
+					"longName": "Essex"
+				},
+				"en_US": {
 					"shortName": "ESS",
 					"longName": "Essex"
 				}
@@ -642,12 +954,20 @@
 				"en_GB": {
 					"shortName": "ESX",
 					"longName": "East Sussex"
+				},
+				"en_US": {
+					"shortName": "ESX",
+					"longName": "East Sussex"
 				}
 			}
 		},
 		"FAL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "FAL",
+					"longName": "Falkirk"
+				},
+				"en_US": {
 					"shortName": "FAL",
 					"longName": "Falkirk"
 				}
@@ -658,12 +978,20 @@
 				"en_GB": {
 					"shortName": "FER",
 					"longName": "Fermanagh"
+				},
+				"en_US": {
+					"shortName": "FER",
+					"longName": "Fermanagh"
 				}
 			}
 		},
 		"FIF": {
 			"locales": {
 				"en_GB": {
+					"shortName": "FIF",
+					"longName": "Fife"
+				},
+				"en_US": {
 					"shortName": "FIF",
 					"longName": "Fife"
 				}
@@ -674,12 +1002,20 @@
 				"en_GB": {
 					"shortName": "FLN",
 					"longName": "Flintshire"
+				},
+				"en_US": {
+					"shortName": "FLN",
+					"longName": "Flintshire"
 				}
 			}
 		},
 		"GAT": {
 			"locales": {
 				"en_GB": {
+					"shortName": "GAT",
+					"longName": "Gateshead"
+				},
+				"en_US": {
 					"shortName": "GAT",
 					"longName": "Gateshead"
 				}
@@ -690,12 +1026,20 @@
 				"en_GB": {
 					"shortName": "GLG",
 					"longName": "Glasgow City"
+				},
+				"en_US": {
+					"shortName": "GLG",
+					"longName": "Glasgow City"
 				}
 			}
 		},
 		"GLS": {
 			"locales": {
 				"en_GB": {
+					"shortName": "GLS",
+					"longName": "Gloucestershire"
+				},
+				"en_US": {
 					"shortName": "GLS",
 					"longName": "Gloucestershire"
 				}
@@ -706,12 +1050,20 @@
 				"en_GB": {
 					"shortName": "GRE",
 					"longName": "Greenwich"
+				},
+				"en_US": {
+					"shortName": "GRE",
+					"longName": "Greenwich"
 				}
 			}
 		},
 		"GWN": {
 			"locales": {
 				"en_GB": {
+					"shortName": "GWN",
+					"longName": "Gwynedd"
+				},
+				"en_US": {
 					"shortName": "GWN",
 					"longName": "Gwynedd"
 				}
@@ -722,12 +1074,20 @@
 				"en_GB": {
 					"shortName": "HAL",
 					"longName": "Halton"
+				},
+				"en_US": {
+					"shortName": "HAL",
+					"longName": "Halton"
 				}
 			}
 		},
 		"HAM": {
 			"locales": {
 				"en_GB": {
+					"shortName": "HAM",
+					"longName": "Hampshire"
+				},
+				"en_US": {
 					"shortName": "HAM",
 					"longName": "Hampshire"
 				}
@@ -738,12 +1098,20 @@
 				"en_GB": {
 					"shortName": "HAV",
 					"longName": "Havering"
+				},
+				"en_US": {
+					"shortName": "HAV",
+					"longName": "Havering"
 				}
 			}
 		},
 		"HCK": {
 			"locales": {
 				"en_GB": {
+					"shortName": "HCK",
+					"longName": "Hackney"
+				},
+                "en_US": {
 					"shortName": "HCK",
 					"longName": "Hackney"
 				}
@@ -754,12 +1122,20 @@
 				"en_GB": {
 					"shortName": "HEF",
 					"longName": "Herefordshire"
+				},
+				"en_US": {
+					"shortName": "HEF",
+					"longName": "Herefordshire"
 				}
 			}
 		},
 		"HIL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "HIL",
+					"longName": "Hillingdon"
+				},
+				"en_US": {
 					"shortName": "HIL",
 					"longName": "Hillingdon"
 				}
@@ -770,12 +1146,20 @@
 				"en_GB": {
 					"shortName": "HLD",
 					"longName": "Highland"
+				},
+				"en_US": {
+					"shortName": "HLD",
+					"longName": "Highland"
 				}
 			}
 		},
 		"HMF": {
 			"locales": {
 				"en_GB": {
+					"shortName": "HMF",
+					"longName": "Hammersmith and Fulham"
+				},
+				"en_US": {
 					"shortName": "HMF",
 					"longName": "Hammersmith and Fulham"
 				}
@@ -786,12 +1170,20 @@
 				"en_GB": {
 					"shortName": "HNS",
 					"longName": "Hounslow"
+				},
+				"en_US": {
+					"shortName": "HNS",
+					"longName": "Hounslow"
 				}
 			}
 		},
 		"HPL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "HPL",
+					"longName": "Hartlepool"
+				},
+				"en_US": {
 					"shortName": "HPL",
 					"longName": "Hartlepool"
 				}
@@ -802,12 +1194,20 @@
 				"en_GB": {
 					"shortName": "HRT",
 					"longName": "Hertfordshire"
+				},
+				"en_US": {
+					"shortName": "HRT",
+					"longName": "Hertfordshire"
 				}
 			}
 		},
 		"HRW": {
 			"locales": {
 				"en_GB": {
+					"shortName": "HRW",
+					"longName": "Harrow"
+				},
+				"en_US": {
 					"shortName": "HRW",
 					"longName": "Harrow"
 				}
@@ -818,12 +1218,20 @@
 				"en_GB": {
 					"shortName": "HRY",
 					"longName": "Haringey"
+				},
+				"en_US": {
+					"shortName": "HRY",
+					"longName": "Haringey"
 				}
 			}
 		},
 		"IOW": {
 			"locales": {
 				"en_GB": {
+					"shortName": "IOW",
+					"longName": "Isle of Wight"
+				},
+				"en_US": {
 					"shortName": "IOW",
 					"longName": "Isle of Wight"
 				}
@@ -834,12 +1242,20 @@
 				"en_GB": {
 					"shortName": "ISL",
 					"longName": "Islington"
+				},
+				"en_US": {
+					"shortName": "ISL",
+					"longName": "Islington"
 				}
 			}
 		},
 		"IVC": {
 			"locales": {
 				"en_GB": {
+					"shortName": "IVC",
+					"longName": "Inverclyde"
+				},
+				"en_US": {
 					"shortName": "IVC",
 					"longName": "Inverclyde"
 				}
@@ -850,12 +1266,20 @@
 				"en_GB": {
 					"shortName": "KEC",
 					"longName": "Kensington and Chelsea"
+				},
+				"en_US": {
+					"shortName": "KEC",
+					"longName": "Kensington and Chelsea"
 				}
 			}
 		},
 		"KEN": {
 			"locales": {
 				"en_GB": {
+					"shortName": "KEN",
+					"longName": "Kent"
+				},
+				"en_US": {
 					"shortName": "KEN",
 					"longName": "Kent"
 				}
@@ -866,12 +1290,20 @@
 				"en_GB": {
 					"shortName": "KHL",
 					"longName": "Kingston upon Hull"
+				},
+				"en_US": {
+					"shortName": "KHL",
+					"longName": "Kingston upon Hull"
 				}
 			}
 		},
 		"KIR": {
 			"locales": {
 				"en_GB": {
+					"shortName": "KIR",
+					"longName": "Kirklees"
+				},
+				"en_US": {
 					"shortName": "KIR",
 					"longName": "Kirklees"
 				}
@@ -882,12 +1314,20 @@
 				"en_GB": {
 					"shortName": "KTT",
 					"longName": "Kingston upon Thames"
+				},
+				"en_US": {
+					"shortName": "KTT",
+					"longName": "Kingston upon Thames"
 				}
 			}
 		},
 		"KWL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "KWL",
+					"longName": "Knowsley"
+				},
+				"en_US": {
 					"shortName": "KWL",
 					"longName": "Knowsley"
 				}
@@ -898,12 +1338,20 @@
 				"en_GB": {
 					"shortName": "LAN",
 					"longName": "Lancashire"
+				},
+				"en_US": {
+					"shortName": "LAN",
+					"longName": "Lancashire"
 				}
 			}
 		},
 		"LBH": {
 			"locales": {
 				"en_GB": {
+					"shortName": "LBH",
+					"longName": "Lambeth"
+				},
+				"en_US": {
 					"shortName": "LBH",
 					"longName": "Lambeth"
 				}
@@ -914,12 +1362,20 @@
 				"en_GB": {
 					"shortName": "LCE",
 					"longName": "Leicester"
+				},
+				"en_US": {
+					"shortName": "LCE",
+					"longName": "Leicester"
 				}
 			}
 		},
 		"LDS": {
 			"locales": {
 				"en_GB": {
+					"shortName": "LDS",
+					"longName": "Leeds"
+				},
+				"en_US": {
 					"shortName": "LDS",
 					"longName": "Leeds"
 				}
@@ -930,12 +1386,20 @@
 				"en_GB": {
 					"shortName": "LEC",
 					"longName": "Leicestershire"
+				},
+				"en_US": {
+					"shortName": "LEC",
+					"longName": "Leicestershire"
 				}
 			}
 		},
 		"LEW": {
 			"locales": {
 				"en_GB": {
+					"shortName": "LEW",
+					"longName": "Lewisham"
+				},
+				"en_US": {
 					"shortName": "LEW",
 					"longName": "Lewisham"
 				}
@@ -946,12 +1410,20 @@
 				"en_GB": {
 					"shortName": "LIN",
 					"longName": "Lincolnshire"
+				},
+				"en_US": {
+					"shortName": "LIN",
+					"longName": "Lincolnshire"
 				}
 			}
 		},
 		"LIV": {
 			"locales": {
 				"en_GB": {
+					"shortName": "LIV",
+					"longName": "Liverpool"
+				},
+				"en_US": {
 					"shortName": "LIV",
 					"longName": "Liverpool"
 				}
@@ -962,12 +1434,20 @@
 				"en_GB": {
 					"shortName": "LMV",
 					"longName": "Limavady"
+				},
+				"en_US": {
+					"shortName": "LMV",
+					"longName": "Limavady"
 				}
 			}
 		},
 		"LND": {
 			"locales": {
 				"en_GB": {
+					"shortName": "LND",
+					"longName": "London, City of"
+				},
+				"en_US": {
 					"shortName": "LND",
 					"longName": "London, City of"
 				}
@@ -978,12 +1458,20 @@
 				"en_GB": {
 					"shortName": "LRN",
 					"longName": "Larne"
+				},
+				"en_US": {
+					"shortName": "LRN",
+					"longName": "Larne"
 				}
 			}
 		},
 		"LSB": {
 			"locales": {
 				"en_GB": {
+					"shortName": "LSB",
+					"longName": "Lisburn"
+				},
+				"en_US": {
 					"shortName": "LSB",
 					"longName": "Lisburn"
 				}
@@ -994,12 +1482,20 @@
 				"en_GB": {
 					"shortName": "LUT",
 					"longName": "Luton"
+				},
+				"en_US": {
+					"shortName": "LUT",
+					"longName": "Luton"
 				}
 			}
 		},
 		"MAN": {
 			"locales": {
 				"en_GB": {
+					"shortName": "MAN",
+					"longName": "Manchester"
+				},
+				"en_US": {
 					"shortName": "MAN",
 					"longName": "Manchester"
 				}
@@ -1010,12 +1506,20 @@
 				"en_GB": {
 					"shortName": "MDB",
 					"longName": "Middlesbrough"
+				},
+                "en_US": {
+					"shortName": "MDB",
+					"longName": "Middlesbrough"
 				}
 			}
 		},
 		"MDW": {
 			"locales": {
 				"en_GB": {
+					"shortName": "MDW",
+					"longName": "Medway"
+				},
+				"en_US": {
 					"shortName": "MDW",
 					"longName": "Medway"
 				}
@@ -1026,12 +1530,20 @@
 				"en_GB": {
 					"shortName": "MFT",
 					"longName": "Magherafelt"
+				},
+				"en_US": {
+					"shortName": "MFT",
+					"longName": "Magherafelt"
 				}
 			}
 		},
 		"MIK": {
 			"locales": {
 				"en_GB": {
+					"shortName": "MIK",
+					"longName": "Milton Keynes"
+				},
+				"en_US": {
 					"shortName": "MIK",
 					"longName": "Milton Keynes"
 				}
@@ -1042,12 +1554,20 @@
 				"en_GB": {
 					"shortName": "MLN",
 					"longName": "Midlothian"
+				},
+				"en_US": {
+					"shortName": "MLN",
+					"longName": "Midlothian"
 				}
 			}
 		},
 		"MON": {
 			"locales": {
 				"en_GB": {
+					"shortName": "MON",
+					"longName": "Monmouthshire"
+				},
+				"en_US": {
 					"shortName": "MON",
 					"longName": "Monmouthshire"
 				}
@@ -1058,12 +1578,20 @@
 				"en_GB": {
 					"shortName": "MRT",
 					"longName": "Merton"
+				},
+				"en_US": {
+					"shortName": "MRT",
+					"longName": "Merton"
 				}
 			}
 		},
 		"MRY": {
 			"locales": {
 				"en_GB": {
+					"shortName": "MRY",
+					"longName": "Moray"
+				},
+				"en_US": {
 					"shortName": "MRY",
 					"longName": "Moray"
 				}
@@ -1074,12 +1602,20 @@
 				"en_GB": {
 					"shortName": "MTY",
 					"longName": "Merthyr Tydfil"
+				},
+				"en_US": {
+					"shortName": "MTY",
+					"longName": "Merthyr Tydfil"
 				}
 			}
 		},
 		"MYL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "MYL",
+					"longName": "Moyle"
+				},
+				"en_US": {
 					"shortName": "MYL",
 					"longName": "Moyle"
 				}
@@ -1090,12 +1626,20 @@
 				"en_GB": {
 					"shortName": "NAY",
 					"longName": "North Ayrshire"
+				},
+				"en_US": {
+					"shortName": "NAY",
+					"longName": "North Ayrshire"
 				}
 			}
 		},
 		"NBL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "NBL",
+					"longName": "Northumberland"
+				},
+				"en_US": {
 					"shortName": "NBL",
 					"longName": "Northumberland"
 				}
@@ -1106,12 +1650,20 @@
 				"en_GB": {
 					"shortName": "NDN",
 					"longName": "North Down"
+				},
+				"en_US": {
+					"shortName": "NDN",
+					"longName": "North Down"
 				}
 			}
 		},
 		"NEL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "NEL",
+					"longName": "North East Lincolnshire"
+				},
+				"en_US": {
 					"shortName": "NEL",
 					"longName": "North East Lincolnshire"
 				}
@@ -1122,12 +1674,20 @@
 				"en_GB": {
 					"shortName": "NET",
 					"longName": "Newcastle upon Tyne"
+				},
+				"en_US": {
+					"shortName": "NET",
+					"longName": "Newcastle upon Tyne"
 				}
 			}
 		},
 		"NFK": {
 			"locales": {
 				"en_GB": {
+					"shortName": "NFK",
+					"longName": "Norfolk"
+				},
+				"en_US": {
 					"shortName": "NFK",
 					"longName": "Norfolk"
 				}
@@ -1138,12 +1698,20 @@
 				"en_GB": {
 					"shortName": "NGM",
 					"longName": "Nottingham"
+				},
+				"en_US": {
+					"shortName": "NGM",
+					"longName": "Nottingham"
 				}
 			}
 		},
 		"NLK": {
 			"locales": {
 				"en_GB": {
+					"shortName": "NLK",
+					"longName": "North Lanarkshire"
+				},
+				"en_US": {
 					"shortName": "NLK",
 					"longName": "North Lanarkshire"
 				}
@@ -1154,12 +1722,20 @@
 				"en_GB": {
 					"shortName": "NLN",
 					"longName": "North Lincolnshire"
+				},
+				"en_US": {
+					"shortName": "NLN",
+					"longName": "North Lincolnshire"
 				}
 			}
 		},
 		"NSM": {
 			"locales": {
 				"en_GB": {
+					"shortName": "NSM",
+					"longName": "North Somerset"
+				},
+				"en_US": {
 					"shortName": "NSM",
 					"longName": "North Somerset"
 				}
@@ -1170,12 +1746,20 @@
 				"en_GB": {
 					"shortName": "NTA",
 					"longName": "Newtownabbey"
+				},
+				"en_US": {
+					"shortName": "NTA",
+					"longName": "Newtownabbey"
 				}
 			}
 		},
 		"NTH": {
 			"locales": {
 				"en_GB": {
+					"shortName": "NTH",
+					"longName": "Northamptonshire"
+				},
+				"en_US": {
 					"shortName": "NTH",
 					"longName": "Northamptonshire"
 				}
@@ -1186,12 +1770,20 @@
 				"en_GB": {
 					"shortName": "NTL",
 					"longName": "Neath Port Talbot"
+				},
+				"en_US": {
+					"shortName": "NTL",
+					"longName": "Neath Port Talbot"
 				}
 			}
 		},
 		"NTT": {
 			"locales": {
 				"en_GB": {
+					"shortName": "NTT",
+					"longName": "Nottinghamshire"
+				},
+				"en_US": {
 					"shortName": "NTT",
 					"longName": "Nottinghamshire"
 				}
@@ -1202,12 +1794,20 @@
 				"en_GB": {
 					"shortName": "NTY",
 					"longName": "North Tyneside"
+				},
+				"en_US": {
+					"shortName": "NTY",
+					"longName": "North Tyneside"
 				}
 			}
 		},
 		"NWM": {
 			"locales": {
 				"en_GB": {
+					"shortName": "NWM",
+					"longName": "Newham"
+				},
+				"en_US": {
 					"shortName": "NWM",
 					"longName": "Newham"
 				}
@@ -1218,12 +1818,20 @@
 				"en_GB": {
 					"shortName": "NWP",
 					"longName": "Newport"
+				},
+				"en_US": {
+					"shortName": "NWP",
+					"longName": "Newport"
 				}
 			}
 		},
 		"NYK": {
 			"locales": {
 				"en_GB": {
+					"shortName": "NYK",
+					"longName": "North Yorkshire"
+				},
+				"en_US": {
 					"shortName": "NYK",
 					"longName": "North Yorkshire"
 				}
@@ -1234,12 +1842,20 @@
 				"en_GB": {
 					"shortName": "NYM",
 					"longName": "Newry and Mourne District"
+				},
+				"en_US": {
+					"shortName": "NYM",
+					"longName": "Newry and Mourne District"
 				}
 			}
 		},
 		"OLD": {
 			"locales": {
 				"en_GB": {
+					"shortName": "OLD",
+					"longName": "Oldham"
+				},
+				"en_US": {
 					"shortName": "OLD",
 					"longName": "Oldham"
 				}
@@ -1250,12 +1866,20 @@
 				"en_GB": {
 					"shortName": "OMH",
 					"longName": "Omagh"
+				},
+				"en_US": {
+					"shortName": "OMH",
+					"longName": "Omagh"
 				}
 			}
 		},
 		"ORK": {
 			"locales": {
 				"en_GB": {
+					"shortName": "ORK",
+					"longName": "Orkney Islands"
+				},
+				"en_US": {
 					"shortName": "ORK",
 					"longName": "Orkney Islands"
 				}
@@ -1266,12 +1890,20 @@
 				"en_GB": {
 					"shortName": "OXF",
 					"longName": "Oxfordshire"
+				},
+				"en_US": {
+					"shortName": "OXF",
+					"longName": "Oxfordshire"
 				}
 			}
 		},
 		"PEM": {
 			"locales": {
 				"en_GB": {
+					"shortName": "PEM",
+					"longName": "Pembrokeshire"
+				},
+				"en_US": {
 					"shortName": "PEM",
 					"longName": "Pembrokeshire"
 				}
@@ -1282,12 +1914,20 @@
 				"en_GB": {
 					"shortName": "PKN",
 					"longName": "Perth and Kinross"
+				},
+				"en_US": {
+					"shortName": "PKN",
+					"longName": "Perth and Kinross"
 				}
 			}
 		},
 		"PLY": {
 			"locales": {
 				"en_GB": {
+					"shortName": "PLY",
+					"longName": "Plymouth"
+				},
+				"en_US": {
 					"shortName": "PLY",
 					"longName": "Plymouth"
 				}
@@ -1298,12 +1938,20 @@
 				"en_GB": {
 					"shortName": "POL",
 					"longName": "Poole"
+				},
+				"en_US": {
+					"shortName": "POL",
+					"longName": "Poole"
 				}
 			}
 		},
 		"POR": {
 			"locales": {
 				"en_GB": {
+					"shortName": "POR",
+					"longName": "Portsmouth"
+				},
+				"en_US": {
 					"shortName": "POR",
 					"longName": "Portsmouth"
 				}
@@ -1314,12 +1962,20 @@
 				"en_GB": {
 					"shortName": "POW",
 					"longName": "Powys"
+				},
+				"en_US": {
+					"shortName": "POW",
+					"longName": "Powys"
 				}
 			}
 		},
 		"PTE": {
 			"locales": {
 				"en_GB": {
+					"shortName": "PTE",
+					"longName": "Peterborough"
+				},
+				"en_US": {
 					"shortName": "PTE",
 					"longName": "Peterborough"
 				}
@@ -1330,12 +1986,20 @@
 				"en_GB": {
 					"shortName": "RCC",
 					"longName": "Redcar and Cleveland"
+				},
+				"en_US": {
+					"shortName": "RCC",
+					"longName": "Redcar and Cleveland"
 				}
 			}
 		},
 		"RCH": {
 			"locales": {
 				"en_GB": {
+					"shortName": "RCH",
+					"longName": "Rochdale"
+				},
+				"en_US": {
 					"shortName": "RCH",
 					"longName": "Rochdale"
 				}
@@ -1346,12 +2010,20 @@
 				"en_GB": {
 					"shortName": "RCT",
 					"longName": "Rhondda, Cynon, Taff"
+				},
+				"en_US": {
+					"shortName": "RCT",
+					"longName": "Rhondda, Cynon, Taff"
 				}
 			}
 		},
 		"RDB": {
 			"locales": {
 				"en_GB": {
+					"shortName": "RDB",
+					"longName": "Redbridge"
+				},
+				"en_US": {
 					"shortName": "RDB",
 					"longName": "Redbridge"
 				}
@@ -1362,12 +2034,20 @@
 				"en_GB": {
 					"shortName": "RDG",
 					"longName": "Reading"
+				},
+				"en_US": {
+					"shortName": "RDG",
+					"longName": "Reading"
 				}
 			}
 		},
 		"RFW": {
 			"locales": {
 				"en_GB": {
+					"shortName": "RFW",
+					"longName": "Renfrewshire"
+				},
+				"en_US": {
 					"shortName": "RFW",
 					"longName": "Renfrewshire"
 				}
@@ -1378,12 +2058,20 @@
 				"en_GB": {
 					"shortName": "RIC",
 					"longName": "Richmond upon Thames"
+				},
+				"en_US": {
+					"shortName": "RIC",
+					"longName": "Richmond upon Thames"
 				}
 			}
 		},
 		"ROT": {
 			"locales": {
 				"en_GB": {
+					"shortName": "ROT",
+					"longName": "Rotherham"
+				},
+				"en_US": {
 					"shortName": "ROT",
 					"longName": "Rotherham"
 				}
@@ -1394,12 +2082,20 @@
 				"en_GB": {
 					"shortName": "RUT",
 					"longName": "Rutland"
+				},
+				"en_US": {
+					"shortName": "RUT",
+					"longName": "Rutland"
 				}
 			}
 		},
 		"SAW": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SAW",
+					"longName": "Sandwell"
+				},
+				"en_US": {
 					"shortName": "SAW",
 					"longName": "Sandwell"
 				}
@@ -1410,12 +2106,20 @@
 				"en_GB": {
 					"shortName": "SAY",
 					"longName": "South Ayrshire"
+				},
+				"en_US": {
+					"shortName": "SAY",
+					"longName": "South Ayrshire"
 				}
 			}
 		},
 		"SCB": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SCB",
+					"longName": "Scottish Borders, The"
+				},
+				"en_US": {
 					"shortName": "SCB",
 					"longName": "Scottish Borders, The"
 				}
@@ -1426,12 +2130,20 @@
 				"en_GB": {
 					"shortName": "SFK",
 					"longName": "Suffolk"
+				},
+				"en_US": {
+					"shortName": "SFK",
+					"longName": "Suffolk"
 				}
 			}
 		},
 		"SFT": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SFT",
+					"longName": "Sefton"
+				},
+				"en_US": {
 					"shortName": "SFT",
 					"longName": "Sefton"
 				}
@@ -1442,12 +2154,20 @@
 				"en_GB": {
 					"shortName": "SGC",
 					"longName": "South Gloucestershire"
+				},
+				"en_US": {
+					"shortName": "SGC",
+					"longName": "South Gloucestershire"
 				}
 			}
 		},
 		"SHF": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SHF",
+					"longName": "Sheffield"
+				},
+				"en_US": {
 					"shortName": "SHF",
 					"longName": "Sheffield"
 				}
@@ -1458,12 +2178,20 @@
 				"en_GB": {
 					"shortName": "SHN",
 					"longName": "Saint Helens !St. Helens"
+				},
+				"en_US": {
+					"shortName": "SHN",
+					"longName": "Saint Helens !St. Helens"
 				}
 			}
 		},
 		"SHR": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SHR",
+					"longName": "Shropshire"
+				},
+				"en_US": {
 					"shortName": "SHR",
 					"longName": "Shropshire"
 				}
@@ -1474,12 +2202,20 @@
 				"en_GB": {
 					"shortName": "SKP",
 					"longName": "Stockport"
+				},
+				"en_US": {
+					"shortName": "SKP",
+					"longName": "Stockport"
 				}
 			}
 		},
 		"SLF": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SLF",
+					"longName": "Salford"
+				},
+				"en_US": {
 					"shortName": "SLF",
 					"longName": "Salford"
 				}
@@ -1490,12 +2226,20 @@
 				"en_GB": {
 					"shortName": "SLG",
 					"longName": "Slough"
+				},
+				"en_US": {
+					"shortName": "SLG",
+					"longName": "Slough"
 				}
 			}
 		},
 		"SLK": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SLK",
+					"longName": "South Lanarkshire"
+				},
+				"en_US": {
 					"shortName": "SLK",
 					"longName": "South Lanarkshire"
 				}
@@ -1506,12 +2250,20 @@
 				"en_GB": {
 					"shortName": "SND",
 					"longName": "Sunderland"
+				},
+				"en_US": {
+					"shortName": "SND",
+					"longName": "Sunderland"
 				}
 			}
 		},
 		"SOL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SOL",
+					"longName": "Solihull"
+				},
+				"en_US": {
 					"shortName": "SOL",
 					"longName": "Solihull"
 				}
@@ -1522,12 +2274,20 @@
 				"en_GB": {
 					"shortName": "SOM",
 					"longName": "Somerset"
+				},
+				"en_US": {
+					"shortName": "SOM",
+					"longName": "Somerset"
 				}
 			}
 		},
 		"SOS": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SOS",
+					"longName": "Southend-on-Sea"
+				},
+				"en_US": {
 					"shortName": "SOS",
 					"longName": "Southend-on-Sea"
 				}
@@ -1538,12 +2298,20 @@
 				"en_GB": {
 					"shortName": "SRY",
 					"longName": "Surrey"
+				},
+				"en_US": {
+					"shortName": "SRY",
+					"longName": "Surrey"
 				}
 			}
 		},
 		"STB": {
 			"locales": {
 				"en_GB": {
+					"shortName": "STB",
+					"longName": "Strabane"
+				},
+				"en_US": {
 					"shortName": "STB",
 					"longName": "Strabane"
 				}
@@ -1554,12 +2322,20 @@
 				"en_GB": {
 					"shortName": "STE",
 					"longName": "Stoke-on-Trent"
+				},
+				"en_US": {
+					"shortName": "STE",
+					"longName": "Stoke-on-Trent"
 				}
 			}
 		},
 		"STG": {
 			"locales": {
 				"en_GB": {
+					"shortName": "STG",
+					"longName": "Stirling"
+				},
+				"en_US": {
 					"shortName": "STG",
 					"longName": "Stirling"
 				}
@@ -1570,12 +2346,20 @@
 				"en_GB": {
 					"shortName": "STH",
 					"longName": "Southampton"
+				},
+				"en_US": {
+					"shortName": "STH",
+					"longName": "Southampton"
 				}
 			}
 		},
 		"STN": {
 			"locales": {
 				"en_GB": {
+					"shortName": "STN",
+					"longName": "Sutton"
+				},
+				"en_US": {
 					"shortName": "STN",
 					"longName": "Sutton"
 				}
@@ -1586,12 +2370,20 @@
 				"en_GB": {
 					"shortName": "STS",
 					"longName": "Staffordshire"
+				},
+				"en_US": {
+					"shortName": "STS",
+					"longName": "Staffordshire"
 				}
 			}
 		},
 		"STT": {
 			"locales": {
 				"en_GB": {
+					"shortName": "STT",
+					"longName": "Stockton-on-Tees"
+				},
+				"en_US": {
 					"shortName": "STT",
 					"longName": "Stockton-on-Tees"
 				}
@@ -1602,12 +2394,20 @@
 				"en_GB": {
 					"shortName": "STY",
 					"longName": "South Tyneside"
+				},
+				"en_US": {
+					"shortName": "STY",
+					"longName": "South Tyneside"
 				}
 			}
 		},
 		"SWA": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SWA",
+					"longName": "Swansea"
+				},
+				"en_US": {
 					"shortName": "SWA",
 					"longName": "Swansea"
 				}
@@ -1618,12 +2418,20 @@
 				"en_GB": {
 					"shortName": "SWD",
 					"longName": "Swindon"
+				},
+				"en_US": {
+					"shortName": "SWD",
+					"longName": "Swindon"
 				}
 			}
 		},
 		"SWK": {
 			"locales": {
 				"en_GB": {
+					"shortName": "SWK",
+					"longName": "Southwark"
+				},
+				"en_US": {
 					"shortName": "SWK",
 					"longName": "Southwark"
 				}
@@ -1634,12 +2442,20 @@
 				"en_GB": {
 					"shortName": "TAM",
 					"longName": "Tameside"
+				},
+				"en_US": {
+					"shortName": "TAM",
+					"longName": "Tameside"
 				}
 			}
 		},
 		"TFW": {
 			"locales": {
 				"en_GB": {
+					"shortName": "TFW",
+					"longName": "Telford and Wrekin"
+				},
+				"en_US": {
 					"shortName": "TFW",
 					"longName": "Telford and Wrekin"
 				}
@@ -1650,12 +2466,20 @@
 				"en_GB": {
 					"shortName": "THR",
 					"longName": "Thurrock"
+				},
+				"en_US": {
+					"shortName": "THR",
+					"longName": "Thurrock"
 				}
 			}
 		},
 		"TOB": {
 			"locales": {
 				"en_GB": {
+					"shortName": "TOB",
+					"longName": "Torbay"
+				},
+				"en_US": {
 					"shortName": "TOB",
 					"longName": "Torbay"
 				}
@@ -1666,12 +2490,20 @@
 				"en_GB": {
 					"shortName": "TOF",
 					"longName": "Torfaen"
+				},
+				"en_US": {
+					"shortName": "TOF",
+					"longName": "Torfaen"
 				}
 			}
 		},
 		"TRF": {
 			"locales": {
 				"en_GB": {
+					"shortName": "TRF",
+					"longName": "Trafford"
+				},
+				"en_US": {
 					"shortName": "TRF",
 					"longName": "Trafford"
 				}
@@ -1682,12 +2514,20 @@
 				"en_GB": {
 					"shortName": "TWH",
 					"longName": "Tower Hamlets"
+				},
+				"en_US": {
+					"shortName": "TWH",
+					"longName": "Tower Hamlets"
 				}
 			}
 		},
 		"VGL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "VGL",
+					"longName": "Vale of Glamorgan"
+				},
+				"en_US": {
 					"shortName": "VGL",
 					"longName": "Vale of Glamorgan"
 				}
@@ -1698,12 +2538,20 @@
 				"en_GB": {
 					"shortName": "WAR",
 					"longName": "Warwickshire"
+				},
+				"en_US": {
+					"shortName": "WAR",
+					"longName": "Warwickshire"
 				}
 			}
 		},
 		"WBK": {
 			"locales": {
 				"en_GB": {
+					"shortName": "WBK",
+					"longName": "West Berkshire"
+				},
+				"en_US": {
 					"shortName": "WBK",
 					"longName": "West Berkshire"
 				}
@@ -1714,12 +2562,20 @@
 				"en_GB": {
 					"shortName": "WDU",
 					"longName": "West Dunbartonshire"
+				},
+				"en_US": {
+					"shortName": "WDU",
+					"longName": "West Dunbartonshire"
 				}
 			}
 		},
 		"WFT": {
 			"locales": {
 				"en_GB": {
+					"shortName": "WFT",
+					"longName": "Waltham Forest"
+				},
+				"en_US": {
 					"shortName": "WFT",
 					"longName": "Waltham Forest"
 				}
@@ -1730,12 +2586,20 @@
 				"en_GB": {
 					"shortName": "WGN",
 					"longName": "Wigan"
+				},
+				"en_US": {
+					"shortName": "WGN",
+					"longName": "Wigan"
 				}
 			}
 		},
 		"WIL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "WIL",
+					"longName": "Wiltshire"
+				},
+				"en_US": {
 					"shortName": "WIL",
 					"longName": "Wiltshire"
 				}
@@ -1746,12 +2610,20 @@
 				"en_GB": {
 					"shortName": "WKF",
 					"longName": "Wakefield"
+				},
+				"en_US": {
+					"shortName": "WKF",
+					"longName": "Wakefield"
 				}
 			}
 		},
 		"WLL": {
 			"locales": {
 				"en_GB": {
+					"shortName": "WLL",
+					"longName": "Walsall"
+				},
+				"en_US": {
 					"shortName": "WLL",
 					"longName": "Walsall"
 				}
@@ -1762,12 +2634,20 @@
 				"en_GB": {
 					"shortName": "WLN",
 					"longName": "West Lothian"
+				},
+				"en_US": {
+					"shortName": "WLN",
+					"longName": "West Lothian"
 				}
 			}
 		},
 		"WLV": {
 			"locales": {
 				"en_GB": {
+					"shortName": "WLV",
+					"longName": "Wolverhampton"
+				},
+				"en_US": {
 					"shortName": "WLV",
 					"longName": "Wolverhampton"
 				}
@@ -1778,12 +2658,20 @@
 				"en_GB": {
 					"shortName": "WND",
 					"longName": "Wandsworth"
+				},
+				"en_US": {
+					"shortName": "WND",
+					"longName": "Wandsworth"
 				}
 			}
 		},
 		"WNM": {
 			"locales": {
 				"en_GB": {
+					"shortName": "WNM",
+					"longName": "Windsor and Maidenhead"
+				},
+				"en_US": {
 					"shortName": "WNM",
 					"longName": "Windsor and Maidenhead"
 				}
@@ -1794,12 +2682,20 @@
 				"en_GB": {
 					"shortName": "WOK",
 					"longName": "Wokingham"
+				},
+				"en_US": {
+					"shortName": "WOK",
+					"longName": "Wokingham"
 				}
 			}
 		},
 		"WOR": {
 			"locales": {
 				"en_GB": {
+					"shortName": "WOR",
+					"longName": "Worcestershire"
+				},
+				"en_US": {
 					"shortName": "WOR",
 					"longName": "Worcestershire"
 				}
@@ -1810,12 +2706,20 @@
 				"en_GB": {
 					"shortName": "WRL",
 					"longName": "Wirral"
+				},
+				"en_US": {
+					"shortName": "WRL",
+					"longName": "Wirral"
 				}
 			}
 		},
 		"WRT": {
 			"locales": {
 				"en_GB": {
+					"shortName": "WRT",
+					"longName": "Warrington"
+				},
+				"en_US": {
 					"shortName": "WRT",
 					"longName": "Warrington"
 				}
@@ -1826,12 +2730,20 @@
 				"en_GB": {
 					"shortName": "WRX",
 					"longName": "Wrexham"
+				},
+				"en_US": {
+					"shortName": "WRX",
+					"longName": "Wrexham"
 				}
 			}
 		},
 		"WSM": {
 			"locales": {
 				"en_GB": {
+					"shortName": "WSM",
+					"longName": "Westminster"
+				},
+				"en_US": {
 					"shortName": "WSM",
 					"longName": "Westminster"
 				}
@@ -1842,12 +2754,20 @@
 				"en_GB": {
 					"shortName": "WSX",
 					"longName": "West Sussex"
+				},
+				"en_US": {
+					"shortName": "WSX",
+					"longName": "West Sussex"
 				}
 			}
 		},
 		"YOR": {
 			"locales": {
 				"en_GB": {
+					"shortName": "YOR",
+					"longName": "York"
+				},
+				"en_US": {
 					"shortName": "YOR",
 					"longName": "York"
 				}
@@ -1858,6 +2778,10 @@
 				"en_GB": {
 					"shortName": "ZET",
 					"longName": "Shetland Islands"
+				},
+				"en_US": {
+					"shortName": "ZET",
+					"longName": "Shetland Islands"
 				}
 			}
 		}
@@ -1865,7 +2789,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/en_GB",
 		"id": "en_GB"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "United Kingdom",

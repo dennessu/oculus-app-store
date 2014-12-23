@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component
 
 import javax.ws.rs.BeanParam
 import javax.ws.rs.PathParam
+import javax.ws.rs.core.Response
+
 /**
  * Created by LinYi on 14-2-25.
  */
@@ -40,11 +42,6 @@ class MockIdentityResource implements UserResource {
     }
 
     @Override
-    Promise<User> patch(@PathParam('userId') UserId userId, User user) {
-        return null
-    }
-
-    @Override
     Promise<User> get(@PathParam('userId') UserId userId, @BeanParam UserGetOptions getOptions) {
         return generateUser()
     }
@@ -55,7 +52,7 @@ class MockIdentityResource implements UserResource {
     }
 
     @Override
-    Promise<Void> delete(@PathParam("userId") UserId userId) {
+    Promise<Response> delete(@PathParam("userId") UserId userId) {
         return null
     }
 
@@ -72,5 +69,15 @@ class MockIdentityResource implements UserResource {
     @Override
     Promise<User> silentPut(UserId userId, User user) {
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Boolean> checkUsernameEmailBlocker(String username, String email) {
+        return null
+    }
+
+    @Override
+    Promise<String> getUsernameEmailOccupyState(String username, String email) {
+        return null
     }
 }

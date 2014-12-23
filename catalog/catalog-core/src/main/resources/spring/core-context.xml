@@ -38,15 +38,18 @@
         <property name="itemRepo" ref="itemCloudantRepo"/>
         <property name="itemRevisionRepo" ref="itemRevisionCloudantRepo"/>
         <property name="priceTierRepo" ref="priceTierCloudantRepo"/>
+        <property name="organizationFacade" ref="catalogOrganizationFacade"/>
     </bean>
     <bean id="offerRevisionValidator" class="com.junbo.catalog.core.validators.OfferRevisionValidator">
         <property name="itemRepo" ref="itemCloudantRepo"/>
         <property name="offerRepo" ref="offerCloudantRepo"/>
         <property name="priceTierRepo" ref="priceTierCloudantRepo"/>
+        <property name="organizationFacade" ref="catalogOrganizationFacade"/>
     </bean>
 
     <bean id="itemAttributeService" class="com.junbo.catalog.core.service.ItemAttributeServiceImpl">
         <property name="attributeRepo" ref="itemAttributeCloudantRepo"/>
+        <property name="itemRepo" ref="itemCloudantRepo"/>
     </bean>
     <bean id="offerAttributeService" class="com.junbo.catalog.core.service.OfferAttributeServiceImpl">
         <property name="attributeRepo" ref="offerAttributeCloudantRepo"/>
@@ -56,7 +59,10 @@
         <property name="offerRepo" ref="offerCloudantRepo"/>
         <property name="itemAttributeRepo" ref="itemAttributeCloudantRepo"/>
         <property name="itemRevisionRepo" ref="itemRevisionCloudantRepo"/>
+        <property name="offerAttributeRepo" ref="offerAttributeCloudantRepo"/>
         <property name="revisionValidator" ref="itemRevisionValidator"/>
+        <property name="organizationFacade" ref="catalogOrganizationFacade"/>
+        <property name="offerRevisionRepo" ref="offerRevisionCloudantRepo"/>
     </bean>
     <bean id="offerService" class="com.junbo.catalog.core.service.OfferServiceImpl">
         <property name="itemRepo" ref="itemCloudantRepo"/>
@@ -64,6 +70,7 @@
         <property name="offerRevisionRepo" ref="offerRevisionCloudantRepo"/>
         <property name="offerAttributeRepo" ref="offerAttributeCloudantRepo"/>
         <property name="revisionValidator" ref="offerRevisionValidator"/>
+        <property name="organizationFacade" ref="catalogOrganizationFacade"/>
     </bean>
     <bean id="priceTierService" class="com.junbo.catalog.core.service.PriceTierServiceImpl">
         <property name="priceTierRepo" ref="priceTierCloudantRepo"/>

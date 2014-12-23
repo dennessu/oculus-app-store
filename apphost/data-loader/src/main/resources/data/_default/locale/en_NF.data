@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_NF",
+   "shortName" : "English (NF)",
+   "longName" : "English (Norfolk Island)",
+   "localeName" : "English (NF)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

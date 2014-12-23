@@ -14,7 +14,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.repo.ClientRepository
@@ -28,9 +28,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
-import org.springframework.web.util.UriComponentsBuilder
-
-import javax.ws.rs.core.UriBuilder
 
 /**
  * Logout.

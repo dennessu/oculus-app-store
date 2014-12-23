@@ -3,7 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.core.service.validator.DeviceTypeValidator
-import com.junbo.identity.data.repository.DeviceTypeRepository
+import com.junbo.identity.service.DeviceTypeService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.DeviceSoftware
 import com.junbo.identity.spec.v1.model.DeviceType
@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class DeviceTypeValidatorImpl implements DeviceTypeValidator {
 
-    private DeviceTypeRepository deviceTypeRepository
+    private DeviceTypeService deviceTypeService
 
     private List<String> allowedDeviceTypeCodeList
 
@@ -37,8 +37,8 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
     private Integer maxSoftwareObjectHrefLength
 
     @Required
-    void setDeviceTypeRepository(DeviceTypeRepository deviceTypeRepository) {
-        this.deviceTypeRepository = deviceTypeRepository
+    void setDeviceTypeService(DeviceTypeService deviceTypeService) {
+        this.deviceTypeService = deviceTypeService
     }
 
     @Required
@@ -92,7 +92,7 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
             throw new IllegalArgumentException('deviceTypeId is null')
         }
 
-        return deviceTypeRepository.get(deviceTypeId).then { DeviceType deviceType ->
+        return deviceTypeService.get(deviceTypeId).then { DeviceType deviceType ->
             if (deviceType == null) {
                 throw AppErrors.INSTANCE.deviceTypeNotFound(deviceTypeId).exception()
             }
@@ -117,7 +117,7 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
         }
 
         return checkBasicDeviceType(deviceType).then {
-            return deviceTypeRepository.searchByDeviceTypeCode(deviceType.typeCode, Integer.MAX_VALUE, 0).then {
+            return deviceTypeService.searchByDeviceTypeCode(deviceType.typeCode, 1, 0).then {
                 List<DeviceType> deviceTypeList ->
                     if (!CollectionUtils.isEmpty(deviceTypeList)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('typeCode').exception()
@@ -148,7 +148,7 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
 
         return checkBasicDeviceType(deviceType).then {
             if (deviceType.typeCode != oldDeviceType.typeCode) {
-                return deviceTypeRepository.searchByDeviceTypeCode(deviceType.typeCode, Integer.MAX_VALUE, 0).then {
+                return deviceTypeService.searchByDeviceTypeCode(deviceType.typeCode, Integer.MAX_VALUE, 0).then {
                     List<DeviceType> deviceTypeList ->
                         if (!CollectionUtils.isEmpty(deviceTypeList)) {
                             throw AppCommonErrors.INSTANCE.fieldDuplicate('typeCode').exception()
@@ -182,7 +182,7 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
 
         if (!CollectionUtils.isEmpty(deviceType.componentTypes)) {
             return Promise.each(deviceType.componentTypes) { DeviceTypeId iter ->
-                return deviceTypeRepository.get(iter).then { DeviceType existing ->
+                return deviceTypeService.get(iter).then { DeviceType existing ->
                     if (existing == null) {
                         throw AppErrors.INSTANCE.deviceTypeNotFound(iter).exception()
                     }

@@ -1,10 +1,8 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile junboProject(':common-lib')
-    compile junboProject(':common-sharding')
     compile junboProject(':oom-core')
-    compile junboProject(':common-configuration')
+    compile junboProject(':silkcloud-core')
 
     compile (libraries.validation_api)
 
@@ -26,10 +24,15 @@ dependencies {
     compile (libraries.HikariCP)
     compile (libraries.rs_api)
 
+    compile (libraries.gson)
+    compile (libraries.common_codec)
+    compile (libraries.hamcrest_core)
+
     compile (libraries.querydsl_jpa)
     compile (libraries.querydsl_collections)
     compile (libraries.ehcache)
     compile (libraries.spring_context_support)
+    testCompile (libraries.gson)
 
     processor (libraries.querydsl_apt)
     processor (libraries.persistence_api)

@@ -2,6 +2,12 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/../util/common.sh
 
+#check running under specified account
+checkAccount $DEPLOYMENT_ACCOUNT
+
+# check running on specified server
+checkServerRole "MASTER"
+
 echo "[FAILBACK][MASTER] stop traffic for failback"
 
 echo "[FAILBACK][MASTER] stop primary pgbouncer proxy"
@@ -28,8 +34,10 @@ xlog_location=`psql postgres -h $BCP_HOST -p $BCP_DB_PORT -c "SELECT pg_current_
 echo "[FAILBACK][MASTER] current xlog location is [$xlog_location]"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
     echo "[FAILBACK][BCP] gracefully shutdown bcp database"
-    $PGBIN_PATH/pg_ctl stop -m fast -D $BCP_DATA_PATH
+    stopDB $BCP_DATA_PATH
 ENDSSH
 
 echo "[FAILBACK][MASTER] copy unarchived log files"
@@ -58,6 +66,8 @@ done
 echo "[FAILBACK][MASTER] master can be written"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
     echo "[BCP] configure recovery.conf for bcp"
     cat > $BCP_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
@@ -68,7 +78,7 @@ trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
     echo "[FAILBACK][BCP] start bcp database"
-    $PGBIN_PATH/pg_ctl -D $BCP_DATA_PATH -l "${BCP_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
+    startDB $BCP_DATA_PATH $BCP_LOG_PATH
 
     while ! echo exit | nc $BCP_HOST $BCP_DB_PORT;
     do
@@ -108,4 +118,11 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
 
     echo "[FAILBACK][REPLICA] start pgqd deamon"
 	$DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
+ENDSSH
+
+echo "[FAILOVER][MASTER] point pgbouncer to master"
+$DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 ENDSSH

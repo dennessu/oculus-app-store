@@ -7,8 +7,8 @@ import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.validator.UserSecurityQuestionValidator
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserSecurityQuestionRepository
+import com.junbo.identity.service.UserSecurityQuestionService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
@@ -24,8 +24,8 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
 class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator {
-    private UserRepository userRepository
-    private UserSecurityQuestionRepository userSecurityQuestionRepository
+    private UserService userService
+    private UserSecurityQuestionService userSecurityQuestionService
 
     private Integer minSecurityQuestionLength
     private Integer maxSecurityQuestionLength
@@ -35,6 +35,8 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
 
     private Integer minAnswerLength
     private Integer maxAnswerLength
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     @Override
     Promise<UserSecurityQuestion> validateForGet(UserId userId, UserSecurityQuestionId userSecurityQuestionId) {
@@ -47,7 +49,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
             throw AppCommonErrors.INSTANCE.parameterRequired('userSecurityQuestionId').exception()
         }
 
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -60,8 +62,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userSecurityQuestionRepository.get(userSecurityQuestionId).
-                    then { UserSecurityQuestion userSecurityQuestion ->
+            return userSecurityQuestionService.get(userSecurityQuestionId).then { UserSecurityQuestion userSecurityQuestion ->
                 if (userSecurityQuestion == null) {
                     throw AppErrors.INSTANCE.userSecurityQuestionNotFound(userSecurityQuestionId).exception()
                 }
@@ -103,7 +104,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         }
 
         // Check whether this security question is used before
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -113,7 +114,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
             }
             return Promise.pure(null)
         }.then {
-            return userSecurityQuestionRepository.searchByUserId(userId, Integer.MAX_VALUE, 0).then {
+            return userSecurityQuestionService.searchByUserId(userId, maximumFetchSize, 0).then {
                 List<UserSecurityQuestion> userSecurityQuestionList ->
                     if (!CollectionUtils.isEmpty(userSecurityQuestionList)) {
                         boolean exists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
@@ -178,7 +179,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
             }
 
             if (userSecurityQuestion.securityQuestion != oldUserSecurityQuestion.securityQuestion) {
-                return userSecurityQuestionRepository.searchByUserId(userId, Integer.MAX_VALUE, 0).then {
+                return userSecurityQuestionService.searchByUserId(userId, maximumFetchSize, 0).then {
                     List<UserSecurityQuestion> userSecurityQuestionList ->
                     boolean securityQuestionExists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
                         return (existing.securityQuestion == userSecurityQuestion.securityQuestion)
@@ -221,13 +222,13 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserSecurityQuestionRepository(UserSecurityQuestionRepository userSecurityQuestionRepository) {
-        this.userSecurityQuestionRepository = userSecurityQuestionRepository
+    void setUserSecurityQuestionService(UserSecurityQuestionService userSecurityQuestionService) {
+        this.userSecurityQuestionService = userSecurityQuestionService
     }
 
     @Required
@@ -258,5 +259,10 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
     @Required
     void setMaxAnswerLength(Integer maxAnswerLength) {
         this.maxAnswerLength = maxAnswerLength
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }

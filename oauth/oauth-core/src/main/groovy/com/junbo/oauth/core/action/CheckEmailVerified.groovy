@@ -16,7 +16,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -83,13 +83,14 @@ class CheckEmailVerified implements Action {
                     return Promise.pure(new ActionResult('error'))
                 }
 
-                // the pii data has been validated if lastValidateTime is not null
-                if (personalInfo.lastValidateTime != null) {
-                    return Promise.pure(new ActionResult('success'))
-                }
-
                 def email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)
                 contextWrapper.userDefaultEmail = email.info
+
+                // the pii data has been validated if lastValidateTime is not null
+                if (personalInfo.lastValidateTime != null) {
+                    // can't return success ActionResult, there is another check on changeAtNextLogin in CheckChangePassword
+                    return Promise.pure(null)
+                }
 
                 return Promise.pure(new ActionResult('emailVerifyRequired'))
             }

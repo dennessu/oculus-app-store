@@ -17,7 +17,13 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class RegisterView extends AbstractView {
+    private boolean captchaEnabled
     private String recaptchaPublicKey
+
+    @Required
+    void setCaptchaEnabled(boolean captchaEnabled) {
+        this.captchaEnabled = captchaEnabled
+    }
 
     @Required
     void setRecaptchaPublicKey(String recaptchaPublicKey) {
@@ -27,12 +33,19 @@ class RegisterView extends AbstractView {
     @Override
     protected Promise<ViewModel> buildViewModel(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-        def modelMap = [
-                'clientId'          : contextWrapper.client.clientId,
-                'captchaRequired'   : true,
-                'recaptchaPublicKey': recaptchaPublicKey,
-                'locale'            : contextWrapper.viewLocale
-        ]
+        def modelMap = new HashMap<String, Object>()
+        modelMap['clientId'] = contextWrapper.client.clientId
+        modelMap['locale'] = contextWrapper.viewLocale
+        
+        if (captchaEnabled) {
+            modelMap['captchaRequired'] = true
+            modelMap['recaptchaPublicKey'] = recaptchaPublicKey
+        }
+        
+        if (contextWrapper.client.requiredTos != null) {
+            modelMap['tosRequired'] = contextWrapper.client.requiredTos
+        }
+        
         modelMap.putAll(contextWrapper.extraParameterMap)
 
         def model = new ViewModel(

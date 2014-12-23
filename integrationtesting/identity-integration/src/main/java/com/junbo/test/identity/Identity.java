@@ -4,6 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.test.identity;
+// CHECKSTYLE:OFF
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.*;
@@ -13,15 +14,20 @@ import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.IdConverter;
+import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +52,11 @@ public class Identity {
     public static final String IdentityV1UserCredentialAttemptsURI = IdentityEndPointV1 + "/credential-attempts";
     public static final String IdentityV1UserGroupMemberURI = IdentityEndPointV1 + "/user-group-memberships";
     public static final String IdentityV1UserPersonalInfoURI = IdentityEndPointV1 + "/personal-info";
+    public static final String IdentityV1UsernameMailBlockerURI = IdentityEndPointV1 + "/imports/username-email-block";
+    public static final String IdentityV1TosURI = IdentityEndPointV1 + "/tos";
+    public static final String IdentityV1UserAuthenticatorURI = IdentityEndPointV1 + "/authenticators";
+    public static final String IdentityV1UserAttributeURI = IdentityEndPointV1 + "/user-attributes";
+    public static final String IdentityV1UserAttributeDefinitionURI = IdentityEndPointV1 + "/user-attribute-definitions";
 
     public static String httpAuthorizationHeader = "";
 
@@ -55,32 +66,32 @@ public class Identity {
 
     public static <T> T IdentityPost(String requestURI, String objJson, Class<T> cls) throws Exception {
         HttpPost httpPost = new HttpPost(requestURI);
-        httpPost.addHeader("Content-Type", "application/json");
+        httpPost.addHeader("Content-Type", "application/json; charset=utf-8");
         httpPost.addHeader("Authorization", httpAuthorizationHeader);
-        httpPost.setEntity(new StringEntity(objJson));
-        return HttpclientHelper.SimpleHttpPost(httpPost, cls);
+        httpPost.setEntity(new StringEntity(objJson, "utf-8"));
+        return HttpclientHelper.Execute(httpPost, cls);
     }
 
     public static <T> T IdentityPut(String requestURI, String objJson, Class<T> cls) throws Exception {
         HttpPut httpPut = new HttpPut(requestURI);
-        httpPut.addHeader("Content-Type", "application/json");
+        httpPut.addHeader("Content-Type", "application/json; charset=utf-8");
         httpPut.addHeader("Authorization", httpAuthorizationHeader);
-        httpPut.setEntity(new StringEntity(objJson));
-        return HttpclientHelper.SimpleHttpPut(httpPut, cls);
+        httpPut.setEntity(new StringEntity(objJson, "utf-8"));
+        return HttpclientHelper.Execute(httpPut, cls);
     }
 
     public static <T> T IdentityGet(String requestURI, Class<T> cls) throws Exception {
         HttpGet httpGet = new HttpGet(requestURI);
         httpGet.addHeader("Content-Type", "application/json");
         httpGet.addHeader("Authorization", httpAuthorizationHeader);
-        return HttpclientHelper.SimpleHttpGet(httpGet, cls);
+        return HttpclientHelper.Execute(httpGet, cls);
     }
 
     public static void IdentityDelete(String requestURI) throws Exception {
         HttpDelete httpDelete = new HttpDelete(requestURI);
         httpDelete.addHeader("Content-Type", "application/json");
         httpDelete.addHeader("Authorization", httpAuthorizationHeader);
-        HttpclientHelper.SimpleHttpDelete(httpDelete);
+        HttpclientHelper.Execute(httpDelete);
     }
 
     public static void GetHttpAuthorizationHeaderForMigration() throws Exception {
@@ -89,8 +100,13 @@ public class Identity {
         nvps.add(new BasicNameValuePair("client_id", "migration"));
         nvps.add(new BasicNameValuePair("client_secret", "secret"));
         nvps.add(new BasicNameValuePair("scope", "identity.service identity.migration"));
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(
-                ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token", nvps);
+
+        HttpPost httpPost = new HttpPost(ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token");
+        httpPost.addHeader("oculus-internal", String.valueOf(true));
+        httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(true).build());
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+        CloseableHttpResponse response = HttpclientHelper.Execute(httpPost);
+
         String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
         for (String s : results) {
             if (s.contains("access_token")) {
@@ -106,8 +122,13 @@ public class Identity {
         nvps.add(new BasicNameValuePair("client_id", "service"));
         nvps.add(new BasicNameValuePair("client_secret", "secret"));
         nvps.add(new BasicNameValuePair("scope", "identity.service identity.admin"));
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(
-                ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token", nvps);
+
+        HttpPost httpPost = new HttpPost(ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token");
+        httpPost.addHeader("oculus-internal", String.valueOf(true));
+        httpPost.setConfig(RequestConfig.custom().setRedirectsEnabled(true).build());
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+        CloseableHttpResponse response = HttpclientHelper.Execute(httpPost);
+
         String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
         for (String s : results) {
             if (s.contains("access_token")) {
@@ -147,6 +168,25 @@ public class Identity {
             countries.add((Country) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
                             Country.class)
             );
+        }
+        return countries;
+    }
+
+    public static List<Country> CountriesSearch(String locale, String sortBy) throws Exception {
+        String url = "";
+        if (StringUtils.isEmpty(locale) && StringUtils.isEmpty(sortBy)) {
+            url = IdentityV1CountryURI;
+        } else if (!StringUtils.isEmpty(locale)) {
+            url = IdentityV1CountryURI + "?locale=" + locale;
+        } else if (!StringUtils.isEmpty(sortBy)) {
+            url = IdentityV1CountryURI + "?sortBy=" + sortBy;
+        } else {
+            url = IdentityV1CountryURI + "?locale=" + locale + "&sortBy=" + sortBy;
+        }
+
+        List<Country> countries = new ArrayList<>();
+        for (Object obj : IdentityGet(url, (Results.class)).getItems()) {
+            countries.add((Country) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Country.class));
         }
         return countries;
     }
@@ -291,13 +331,75 @@ public class Identity {
         return (User) IdentityPost(IdentityV1UserURI, JsonHelper.JsonSerializer(user), User.class);
     }
 
+    public static Tos TosPostDefault(Tos tos) throws Exception {
+        return IdentityPost(IdentityV1TosURI, JsonHelper.JsonSerializer(tos), Tos.class);
+    }
+
+    public static Tos TosGet(TosId tosId) throws Exception {
+        return IdentityGet(IdentityV1TosURI + "/" + tosId.getValue(), Tos.class);
+    }
+
+    public static List<Tos> TosSearch(String title, String type, String state, String country) throws Exception {
+        List<Tos> tosList = new ArrayList<Tos>();
+        List<Tos> tosResults = IdentityGet(buildTosSearchURI(title, state, type, country), Results.class).getItems();
+        for (Object obj : tosResults) {
+            tosList.add((Tos) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class));
+        }
+        return tosList;
+    }
+
+    private static String buildTosSearchURI(String title, String state, String type, String country) {
+        if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type + "&country" + country;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&type=" + type;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state + "&country" + country;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&type=" + type + "&country" + country;
+        } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?state=" + state + "&type=" + type + "&country" + country;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(state)) {
+            return IdentityV1TosURI + "?title=" + title + "&state=" + state;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?title=" + title + "&type=" + type;
+        } else if (!StringUtils.isEmpty(title) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?title=" + title + "&country=" + country;
+        } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?state=" + state + "&type=" + type;
+        } else if (!StringUtils.isEmpty(state) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?state=" + state + "&country=" + country;
+        } else if (!StringUtils.isEmpty(type) && !StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?type=" + type + "&country=" + country;
+        } else if (!StringUtils.isEmpty(title)) {
+            return IdentityV1TosURI + "?title=" + title;
+        } else if (!StringUtils.isEmpty(state)) {
+            return IdentityV1TosURI + "?state=" + state;
+        } else if (!StringUtils.isEmpty(type)) {
+            return IdentityV1TosURI + "?type=" + type;
+        } else if (!StringUtils.isEmpty(country)) {
+            return IdentityV1TosURI + "?country=" + country;
+        } else {
+            return IdentityV1TosURI;
+        }
+    }
+
     public static User UserPut(User user) throws Exception {
         return (User) IdentityPut(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()),
                 JsonHelper.JsonSerializer(user), User.class);
     }
 
+    public static User UserPartialPost(User user) throws Exception {
+        return IdentityPost(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()),
+                JsonHelper.JsonSerializer(user), User.class);
+    }
+
     public static void UserDelete(User user) throws Exception {
         IdentityDelete(IdentityV1UserURI + "/" + IdFormatter.encodeId(user.getId()));
+    }
+
+    public static void UsernameMailBlockerPost(UsernameMailBlocker usernameMailBlocker) throws Exception {
+        IdentityPost(IdentityV1UsernameMailBlockerURI, JsonHelper.JsonSerializer(usernameMailBlocker), null);
     }
 
     public static List<User> UserSearchByUsername(String username) throws Exception {
@@ -311,14 +413,25 @@ public class Identity {
         return userList;
     }
 
+    public static List<User> UserSearchByEmail(String email) throws Exception {
+        List<User> userList = new ArrayList<User>();
+        for (Object obj : IdentityGet(
+                IdentityV1UserURI + "?primaryMail=" + URLEncoder.encode(email, "UTF-8"),
+                (Results.class)).getItems()) {
+            userList.add((User) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), User.class)
+            );
+        }
+        return userList;
+    }
+
     public static User UserGetByUserId(UserId userId) throws Exception {
         return (User) IdentityGet(IdentityV1UserURI + "/" + IdFormatter.encodeId(userId), User.class);
     }
 
-    public static CloseableHttpResponse UserPersonalInfoPost(UserId userId, UserPersonalInfo upi, boolean validResponse) throws Exception {
+    public static CloseableHttpResponse UserPersonalInfoPost(UserPersonalInfo upi, boolean validResponse) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserPersonalInfoURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UserPersonalInfoURI,
                 JsonHelper.JsonSerializer(upi), HttpclientHelper.HttpRequestType.post, nvps);
         if (validResponse) {
             Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
@@ -329,6 +442,11 @@ public class Identity {
     public static UserPersonalInfo UserPersonalInfoPost(UserId userId, UserPersonalInfo upi) throws Exception {
         upi.setUserId(userId);
         return (UserPersonalInfo) IdentityPost(IdentityV1UserPersonalInfoURI,
+                JsonHelper.JsonSerializer(upi), UserPersonalInfo.class);
+    }
+
+    public static UserPersonalInfo UserPersonalInfoPatch(UserPersonalInfoId userPersonalInfoId, UserPersonalInfo upi) throws Exception {
+        return IdentityPost(IdentityV1UserPersonalInfoURI + "/" + IdConverter.idToHexString(userPersonalInfoId),
                 JsonHelper.JsonSerializer(upi), UserPersonalInfo.class);
     }
 
@@ -381,6 +499,40 @@ public class Identity {
                 OculusOutput.class);
     }
 
+    public static Boolean UserHtmlUpdate(UserId userId) throws Exception {
+        return IdentityPost(IdentityV1ImportsURI + "/update-html/" + IdConverter.idToHexString(userId),
+                "", Boolean.class);
+    }
+
+    public static Boolean GetUsernameEmailBlocker(String username, String email) throws Exception {
+        return IdentityGet(IdentityV1UserURI + "/check-legacy-username-email?username=" + username + "&email=" + URLEncoder.encode(email, "UTF-8"),
+                Boolean.class);
+    }
+
+    public static void ImportUsernameMailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UsernameMailBlockerURI,
+                JsonHelper.JsonSerializer(usernameMailBlocker), HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("validate response code", 200, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    public static com.junbo.common.error.Error ImportUsernameMailBlockerError(String username, String email) throws Exception {
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setUsername(username);
+        usernameMailBlocker.setEmail(email);
+
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UsernameMailBlockerURI,
+                JsonHelper.JsonSerializer(usernameMailBlocker), HttpclientHelper.HttpRequestType.post, nvps);
+        com.junbo.common.error.Error error = JsonHelper.JsonDeserializer(new InputStreamReader(response.getEntity().getContent()),
+                com.junbo.common.error.Error.class);
+        response.close();
+        return error;
+    }
+
     public static UserCredential CredentialsGetByUserId(UserId userId) throws Exception {
         JsonNode jsonNode = JsonHelper.ObjectToJsonNode((IdentityGet(IdentityV1UserURI
                         + "/" + IdFormatter.encodeId(userId) + "/credentials?credentialType=PASSWORD",
@@ -388,25 +540,111 @@ public class Identity {
         return (UserCredential) JsonHelper.JsonNodeToObject(jsonNode, UserCredential.class);
     }
 
-    public static Group SearchOrganizationGroup(OrganizationId organizationId, String groupName) throws Exception {
-        String requestURI = IdentityV1GroupURI + "?organizationId=" + IdFormatter.encodeId(organizationId)
-                + "&name=" + groupName;
-        JsonNode jsonNode = JsonHelper.ObjectToJsonNode(
-                (IdentityGet(requestURI, (Results.class)).getItems().get(0)));
-        return ((Group) JsonHelper.JsonNodeToObject(jsonNode, Group.class));
+    public static Results<UserGroup> UserGroupSearch(GroupId groupId, UserId userId, Integer limit) throws Exception {
+        String url = "";
+        if (userId != null && groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId) + "&groupId=" + IdConverter.idToHexString(groupId);
+        } else if (groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?groupId=" + IdConverter.idToHexString(groupId);
+        } else if (userId != null) {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId);
+        }
+
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+        Results<UserGroup> userGroups = IdentityGet(url, Results.class);
+        List<UserGroup> userGroupList = new ArrayList<>();
+        for (Object obj : userGroups.getItems()) {
+            userGroupList.add((UserGroup) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
+        }
+
+        userGroups.setItems(userGroupList);
+        return userGroups;
     }
 
-    public static UserGroup SearchUserGroup(GroupId groupId, Boolean emptyResult) throws Exception {
-        String requestURI = IdentityV1UserGroupMemberURI + "?groupId=" + groupId;
-        if (emptyResult) {
-            Validator.Validate("validate result is empty", true,
-                    IdentityGet(requestURI, (Results.class)).getItems().isEmpty());
-            return null;
-        } else {
-            JsonNode jsonNode = JsonHelper.ObjectToJsonNode(
-                    (IdentityGet(requestURI, (Results.class)).getItems().get(0)));
-            return ((UserGroup) JsonHelper.JsonNodeToObject(jsonNode, UserGroup.class));
+    public static Results<UserGroup> UserGroupSearch(GroupId groupId, UserId userId) throws Exception {
+        String url = "";
+        if (userId != null && groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId) + "&groupId=" + IdConverter.idToHexString(groupId);
+        } else if (groupId != null) {
+            url = IdentityV1UserGroupMemberURI + "?groupId=" + IdConverter.idToHexString(groupId);
+        } else if (userId != null) {
+            url = IdentityV1UserGroupMemberURI + "?userId=" + IdConverter.idToHexString(userId);
         }
+
+        Results<UserGroup> userGroups = IdentityGet(url, Results.class);
+        List<UserGroup> userGroupList = new ArrayList<>();
+        for (Object obj : userGroups.getItems()) {
+            userGroupList.add((UserGroup) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserGroup.class));
+        }
+
+        userGroups.setItems(userGroupList);
+        return userGroups;
+    }
+
+    public static UserGroup UserGroupPost(UserId userId, GroupId groupId) throws Exception {
+        UserGroup userGroup = new UserGroup();
+        userGroup.setUserId(userId);
+        userGroup.setGroupId(groupId);
+        return IdentityPost(IdentityV1UserGroupMemberURI, JsonHelper.JsonSerializer(userGroup), UserGroup.class);
+    }
+
+    public static UserGroup UserGroupPut(UserGroup userGroup) throws Exception {
+        return IdentityPut(IdentityV1UserGroupMemberURI + "/" + userGroup.getId().getValue(),
+                JsonHelper.JsonSerializer(userGroup), UserGroup.class);
+    }
+
+    public static UserAuthenticator UserAuthenticatorPost(UserId userId, String externalRefId) throws Exception {
+        UserAuthenticator userAuthenticator = new UserAuthenticator();
+        userAuthenticator.setUserId(userId);
+        userAuthenticator.setType("GOOGLE");
+        userAuthenticator.setExternalId(externalRefId);
+        return IdentityPost(IdentityV1UserAuthenticatorURI, JsonHelper.JsonSerializer(userAuthenticator), UserAuthenticator.class);
+    }
+
+    public static UserAuthenticator UserAuthenticatorPost(UserId userId) throws Exception {
+        return UserAuthenticatorPost(userId, RandomHelper.randomAlphabetic(15));
+    }
+
+    public static UserAuthenticator UserAuthenticatorGet(UserAuthenticatorId userAuthenticatorId) throws Exception {
+        return IdentityGet(IdentityV1UserAuthenticatorURI + "/" + userAuthenticatorId.toString(), UserAuthenticator.class);
+    }
+
+    public static UserAuthenticator UserAuthenticatorPut(UserAuthenticator userAuthenticator) throws Exception {
+        return IdentityPut(IdentityV1UserAuthenticatorURI + "/" + userAuthenticator.getId().getValue(), JsonHelper.JsonSerializer(userAuthenticator), UserAuthenticator.class);
+    }
+
+    public static Results<UserAuthenticator> UserAuthenticatorSearch(UserId userId, String type, String externalId, Integer limit) throws Exception {
+        String url = IdentityV1UserAuthenticatorURI;
+        if (userId != null && type != null && externalId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId) + "&type=" + type + "&externalId=" + externalId;
+        } else if (userId != null && type != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId) + "&type=" + type;
+        } else if (userId != null && externalId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId) + "&externalId=" + externalId;
+        } else if (type != null && externalId != null) {
+            url = url + "?type=" + type + "&externalId=" + externalId;
+        } else if (userId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId);
+        } else if (type != null) {
+            url = url + "?type=" + type;
+        } else if (externalId != null) {
+            url = url + "?externalId=" + externalId;
+        }
+
+        if (limit != null) {
+            url = url + "&count=" + limit;
+        }
+
+        Results<UserAuthenticator> userAuthenticatorResults = IdentityGet(url, Results.class);
+        List<UserAuthenticator> userAuthenticators = new ArrayList<>();
+        for (Object obj : userAuthenticatorResults.getItems()) {
+            userAuthenticators.add((UserAuthenticator) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserAuthenticator.class));
+        }
+
+        userAuthenticatorResults.setItems(userAuthenticators);
+        return userAuthenticatorResults;
     }
 
     public static Organization OrganizationPostDefault(Organization organization) throws Exception {
@@ -424,6 +662,34 @@ public class Identity {
     public static Results<Organization> OrganizationByName(String name, Integer limit, Integer offset) throws Exception {
         return IdentityGet(
                 IdentityV1OrganizationURI + "?name=" + name.toLowerCase() + buildIdentityCount(limit) + buildIdentityCursor(offset), Results.class);
+    }
+
+    public static void OrganizationDelete(OrganizationId organizationId) throws Exception {
+        IdentityDelete(IdentityV1OrganizationURI + "/" + IdFormatter.encodeId(organizationId));
+    }
+
+    public static Results<Organization> OrganizationGetAll(Integer limit, Integer offset) throws Exception {
+        String queryStr = "";
+        if (limit == null && offset == null) {
+            // do nothing
+        } else if (limit != null && offset == null) {
+            queryStr = "?count=" + limit.toString();
+        } else if (limit == null && offset != null) {
+            queryStr = "?cursor=" + offset.toString();
+        } else {
+            queryStr = "?count=" + limit.toString() + "&cursor=" + offset.toString();
+        }
+
+        return IdentityGet(
+                IdentityV1OrganizationURI + queryStr, Results.class);
+    }
+
+    public static Group GroupPostDefault(Group group) throws Exception {
+        return IdentityPost(IdentityV1GroupURI, JsonHelper.JsonSerializer(group), Group.class);
+    }
+
+    public static void GroupDelete(Group group) throws Exception {
+        IdentityDelete(IdentityV1GroupURI + "/" + group.getId());
     }
 
     public static DeviceType DeviceTypeDefault(DeviceType deviceType) throws Exception {
@@ -501,10 +767,10 @@ public class Identity {
         return IdentityGet(IdentityV1CommunicationURI + "/" + communicationId + buildCommunicationLocale(locale), Communication.class);
     }
 
-    public static Results<Communication> CommunicationSearch(String region, String translation) throws Exception {
+    public static Results<Communication> CommunicationSearch(String region, String translation, Integer limit) throws Exception {
         Results<Communication> results = new Results<>();
         results.setItems(new ArrayList<Communication>());
-        Results res = IdentityGet(IdentityV1CommunicationURI + buildCommunicationQueryUrl(region, translation), Results.class);
+        Results res = IdentityGet(IdentityV1CommunicationURI + buildCommunicationQueryUrl(region, translation, limit), Results.class);
         for (Object obj : res.getItems()) {
             results.getItems().add((Communication) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
                     Communication.class));
@@ -524,16 +790,23 @@ public class Identity {
         }
     }
 
-    public static String buildCommunicationQueryUrl(String region, String translation) {
+    public static String buildCommunicationQueryUrl(String region, String translation, Integer limit) {
+        String url = "";
         if (StringUtils.isEmpty(region) && StringUtils.isEmpty(translation)) {
-            return "";
+            url = "";
         } else if (!StringUtils.isEmpty(region) && !StringUtils.isEmpty(translation)) {
-            return "?region=" + region + "&translation=" + translation;
+            url = "?region=" + region + "&translation=" + translation;
         } else if (!StringUtils.isEmpty(region)) {
-            return "?region=" + region;
+            url = "?region=" + region;
         } else {
-            return "?translation=" + translation;
+            url = "?translation=" + translation;
         }
+
+        if (limit != null) {
+            url = !StringUtils.isEmpty(url) ? (url + "&count=" + limit) : ("count=" + limit);
+        }
+
+        return url;
     }
 
     public static List<UserCredentialVerifyAttempt> UserCredentialAttemptList(UserId userId, String credentialType) throws Exception {
@@ -541,7 +814,7 @@ public class Identity {
         for (Object obj : IdentityGet(
                 IdentityV1UserCredentialAttemptsURI + "?userId=" + GetHexLongId(userId.getValue()) + "&credentialType=" + credentialType, (Results.class)).getItems()) {
             attempts.add((UserCredentialVerifyAttempt) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
-                    UserCredentialVerifyAttempt.class)
+                            UserCredentialVerifyAttempt.class)
             );
         }
         return attempts;
@@ -566,7 +839,7 @@ public class Identity {
         UserCredential uc = IdentityModel.DefaultUserCredential(userId, oldPassword, password);
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 IdentityV1UserURI + "/" + GetHexLongId(userId.getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
         if (validResponse) {
@@ -580,7 +853,7 @@ public class Identity {
         UserCredential pinCredential = IdentityModel.DefaultUserPin(userId, oldPassword, pin);
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 IdentityV1UserURI + "/" + GetHexLongId(userId.getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(pinCredential), HttpclientHelper.HttpRequestType.post, nvps);
         if (validReponse) {
@@ -617,7 +890,7 @@ public class Identity {
         }
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserCredentialAttemptsURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
         if (validResponse) {
             Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
@@ -633,7 +906,7 @@ public class Identity {
         }
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserCredentialAttemptsURI,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
         if (validResponse) {
             Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
@@ -667,16 +940,100 @@ public class Identity {
                 JsonHelper.JsonSerializer(attempt), UserSecurityQuestionVerifyAttempt.class);
     }
 
-    public static String GetHexLongId(Long userId) throws Exception {
-        return IdConverter.idToUrlString(UserId.class, userId);
+    public static UserAttributeDefinition UserAttributeDefinitionPost(UserAttributeDefinition userAttributeDefinition) throws Exception {
+        return IdentityPost(
+                IdentityV1UserAttributeDefinitionURI, JsonHelper.JsonSerializer(userAttributeDefinition), UserAttributeDefinition.class);
     }
 
-    // ****** start API sample logging ******
-    public static final String MessageDefaultPostUser = "[Include In Sample][1] Description: Post_User_Default";
-    public static final String MessageGetUserByUserId = "[Include In Sample][1] Description: Get_User_By_UserId";
+    public static UserAttributeDefinition UserAttributeDefinitionPut(UserAttributeDefinition userAttributeDefinition) throws Exception {
+        return IdentityPut(
+                IdentityV1UserAttributeDefinitionURI + "/" + userAttributeDefinition.getId().toString(),
+                JsonHelper.JsonSerializer(userAttributeDefinition), UserAttributeDefinition.class);
+    }
 
-    public static void StartLoggingAPISample(String message) {
-        System.out.println(message);
+    public static UserAttributeDefinition UserAttributeDefinitionGet(UserAttributeDefinitionId userAttributeDefinitionId) throws Exception {
+        return IdentityGet(IdentityV1UserAttributeDefinitionURI + "/" + userAttributeDefinitionId.toString(),UserAttributeDefinition.class);
+    }
+
+    public static void UserAttributeDefinitionDelete(UserAttributeDefinitionId userAttributeDefinitionId) throws Exception {
+        IdentityDelete(IdentityV1UserAttributeDefinitionURI + "/" + userAttributeDefinitionId.toString());
+    }
+
+    public static Results<UserAttributeDefinition> UserAttributeDefinitionSearch(Integer limit, Integer offset) throws Exception {
+        String url = IdentityV1UserAttributeDefinitionURI;
+        if (limit != null && offset != null) {
+            url = url + "?cursor=" + offset + "&count=" + limit;
+        } else if (limit != null) {
+            url = url + "?count=" + limit;
+        } else if (offset != null) {
+            url = url + "?cursor=" + offset;
+        }
+        Results<UserAttributeDefinition> results = new Results<>();
+        Results res = IdentityGet(url, Results.class);
+        results.setItems(new ArrayList<UserAttributeDefinition>());
+        for (Object obj : res.getItems()) {
+            results.getItems().add((UserAttributeDefinition) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                            UserAttributeDefinition.class)
+            );
+        }
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+
+        return results;
+    }
+
+    public static UserAttribute UserAttributePost(UserAttribute userAttribute) throws Exception {
+        return IdentityPost(IdentityV1UserAttributeURI, JsonHelper.JsonSerializer(userAttribute), UserAttribute.class);
+    }
+
+    public static UserAttribute UserAttributePut(UserAttribute userAttribute) throws Exception {
+        return IdentityPut(IdentityV1UserAttributeURI + "/" + userAttribute.getId().toString(),
+                JsonHelper.JsonSerializer(userAttribute), UserAttribute.class);
+    }
+
+    public static UserAttribute UserAttributeGet(UserAttributeId userAttributeId) throws Exception {
+        return IdentityGet(IdentityV1UserAttributeURI + "/" + userAttributeId.toString(), UserAttribute.class);
+    }
+
+    public static void UserAttributeDelete(UserAttributeId userAttributeId) throws Exception {
+        IdentityDelete(IdentityV1UserAttributeURI + "/" + userAttributeId.toString());
+    }
+
+    public static Results<UserAttribute> UserAttributeSearch(UserId userId, UserAttributeDefinitionId userAttributeDefinitionId,
+                                                             Integer limit, Integer offset) throws Exception {
+        String url = IdentityV1UserAttributeURI;
+        if (userId != null && userAttributeDefinitionId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId) + "&userAttributeDefinitionId=" + IdConverter.idToHexString(userAttributeDefinitionId);
+        } else if (userId != null) {
+            url = url + "?userId=" + IdConverter.idToHexString(userId);
+        } else if (userAttributeDefinitionId != null) {
+            url = url + "?userAttributeDefinitionId=" + IdConverter.idToHexString(userAttributeDefinitionId);
+        }
+
+        if (limit != null) {
+            url = url + "&cursor=" + limit;
+        }
+        if (offset != null) {
+            url = url + "&count=" + offset;
+        }
+
+        Results res = IdentityGet(url, Results.class);
+        Results<UserAttribute> results = new Results<>();
+        results.setItems(new ArrayList<UserAttribute>());
+        for (Object obj : res.getItems()) {
+            results.getItems().add((UserAttribute) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), UserAttribute.class)
+            );
+        }
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+
+        return results;
+    }
+
+    public static String GetHexLongId(Long userId) throws Exception {
+        return IdConverter.idToUrlString(UserId.class, userId);
     }
 
     public static String buildIdentityCount(Integer count) {

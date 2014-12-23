@@ -144,7 +144,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         String order_Insufficient = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, ewalletId, true, offerList);
 
-        testDataProvider.updateOrderTentative(order_Insufficient, false, 409);
+        testDataProvider.updateOrderTentative(order_Insufficient, false, 412);
         expectedOrderStatus.put(order_Insufficient, OrderStatus.OPEN);
 
         testDataProvider.creditWallet(uid, new BigDecimal(100));
@@ -284,14 +284,15 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         testDataProvider.postOrderEvent(orderId, EventStatus.COMPLETED, OrderActionType.FULFILL);
         expectedEventStatus.add(new OrderEventInfo(OrderActionType.FULFILL, EventStatus.COMPLETED));
-        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.OPEN));
-        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.COMPLETED));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CAPTURE, EventStatus.OPEN));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CAPTURE, EventStatus.COMPLETED));
 
         validationHelper.validateOrderEvents(orderId, expectedEventStatus);
 
         testDataProvider.getOrder(orderId);
         expectedEventStatus.clear();
-        expectedOrderStatus.put(orderId,OrderStatus.COMPLETED);
+        // pending on shipment
+        expectedOrderStatus.put(orderId,OrderStatus.PENDING);
 
         validationHelper.validateOrderStatus(expectedOrderStatus);
     }
@@ -322,7 +323,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         Map<String, Integer> offerList = new HashedMap();
 
         offerList.put(offer_digital_normal1, 1);
-        offerList.put(offer_digital_normal2, 2);
+        offerList.put(offer_digital_normal2, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -332,7 +333,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         String orderId = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
 
-        testDataProvider.updateOrderTentative(orderId, false);
+        testDataProvider.updateOrderTentative(orderId, false, 412);
         //TODO Since credit card is unable to cause order failure
         //TODO we need checkout with paypal to cover these scenarios
     }
@@ -363,7 +364,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         Map<String, Integer> offerList = new HashedMap();
 
-        offerList.put(offer_inApp_consumable2, 1);
+        offerList.put(offer_physical_normal1, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -372,10 +373,10 @@ public class OrderStatusTesting extends BaseOrderTestClass {
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
 
         testDataProvider.updateOrderTentative(orderId, false);
-        testDataProvider.postOrderEvent(orderId, EventStatus.FAILED, OrderActionType.FULFILL);
+        testDataProvider.postOrderEvent(orderId, EventStatus.FAILED, OrderActionType.FULFILL, 412);
 
         testDataProvider.getOrder(orderId);
-        expectedOrderStatus.put(orderId, OrderStatus.OPEN);
+        expectedOrderStatus.put(orderId, OrderStatus.PENDING);
 
         validationHelper.validateOrderStatus(expectedOrderStatus);
     }

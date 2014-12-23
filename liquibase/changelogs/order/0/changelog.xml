@@ -395,4 +395,42 @@
                 ]]>
         </sql>
     </changeSet>
+
+    <changeSet author="chriszhu" id = "1.5" context="PREDEPLOY">
+        <sql><![CDATA[
+                drop index user_order_index;
+                drop index user_order_time_index;
+                create index user_order_time_index on user_order (user_id, updated_time);
+                drop index item_order_time_index;
+                create index item_order_time_index on order_item (order_id, updated_time);
+                drop index discount_order_index;
+                create index discount_order_index on order_discount_info (order_id);
+                drop index history_order_balance_time_index;
+                create index history_order_balance_time_index on order_billing_history (order_id, balance_id, updated_time);
+                drop index fulfillment_history_order_item_time_index;
+                create index fulfillment_history_order_item_time_index on order_item_fulfillment_history (order_item_id, updated_time);
+                drop index fulfillment_history_tracking_uuid_index;
+                create index fulfillment_history_tracking_uuid_index on order_item_fulfillment_history (tracking_uuid);
+                drop index preorder_info_order_item_time_index;
+                create index preorder_info_order_item_time_index on order_item_preorder_info (order_item_id, billing_time, pre_notification_time, release_time);
+                drop index preorder_info_time_index;
+                create index preorder_info_time_index on order_item_preorder_info (updated_time);
+                drop index event_order_item_time_index;
+                create index event_order_item_time_index on order_item_preorder_event (order_item_id, updated_time);
+                drop index history_order_item_time_index;
+                create index history_order_item_time_index on order_item_preorder_update_history (order_item_id, updated_time);
+                drop index tax_item_time_index;
+                create index tax_item_time_index on order_item_tax_info (order_item_id, updated_time);
+                drop index payment_order_index;
+                create index payment_order_index on order_payment_info (order_id, payment_method_id);
+                drop index payment_time_index;
+                create index payment_time_index on order_payment_info (updated_time);
+                drop index offer_snapshot_index;
+                create index offer_snapshot_index on order_offer_snapshot (order_id);
+                drop index item_snapshot_index;
+                create index item_snapshot_index on order_offer_item_snapshot (offer_snapshot_id);
+                ]]>
+        </sql>
+    </changeSet>
+    <include file="../../common/ping.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

@@ -1,0 +1,105 @@
+{
+	"countryCode": "ML",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_ML",
+		"id": "fr_ML"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XOF",
+		"id": "XOF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"1": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kayes",
+					"longName": "Kayes"
+				}
+			}
+		},
+		"2": {
+			"locales": {
+				"en_US": {
+					"shortName": "Koulikoro",
+					"longName": "Koulikoro"
+				}
+			}
+		},
+		"3": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sikasso",
+					"longName": "Sikasso"
+				}
+			}
+		},
+		"4": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ségou",
+					"longName": "Ségou"
+				}
+			}
+		},
+		"5": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mopti",
+					"longName": "Mopti"
+				}
+			}
+		},
+		"6": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tombouctou",
+					"longName": "Tombouctou"
+				}
+			}
+		},
+		"7": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gao",
+					"longName": "Gao"
+				}
+			}
+		},
+		"8": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kidal",
+					"longName": "Kidal"
+				}
+			}
+		},
+		"BKO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bamako",
+					"longName": "Bamako"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_ML",
+		"id": "fr_ML"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Mali",
+			"longName": "Republic of Mali",
+			"postalCode": "Postal Code"
+		},
+		"fr_ML": {
+			"shortName": "Mali",
+			"longName": "Republic of Mali",
+			"postalCode": "code postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

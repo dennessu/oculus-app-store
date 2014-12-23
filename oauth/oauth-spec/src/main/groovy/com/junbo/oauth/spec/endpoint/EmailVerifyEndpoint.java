@@ -38,6 +38,12 @@ public interface EmailVerifyEndpoint {
                                       @FormParam("userId") UserId userId,
                                       @FormParam("tml") UserPersonalInfoId targetMail);
 
+    @POST
+    @Path("/welcome")
+    Promise<Response> sendWelcomeEmail(@FormParam("locale") String locale,
+                                       @FormParam("country") String country,
+                                       @FormParam("userId") UserId userId);
+
     @GET
     @Path("/test")
     Promise<List<String>> getVerifyEmailLink(@QueryParam("userId") UserId userId,

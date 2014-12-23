@@ -173,7 +173,25 @@ public interface AppErrors {
             field = "errorIdentifier", reason = "ErrorInfo with ID {0} is not found")
     AppError errorInfoNotFound(ErrorIdentifier errorIdentifier);
 
-    @ErrorDef(httpStatusCode = 429, code = "139", message = "User reaches maximum login attempt",
-            field = "username", reason = "User reaches maximum login attempt")
+    @ErrorDef(httpStatusCode = 429, code = "139", message = "User reaches maximum login attempts",
+            field = "username", reason = "User reaches maximum login attempts")
     AppError maximumLoginAttempt();
+
+    @ErrorDef(httpStatusCode = 412, code = "140", message = "Age restriction error",
+            field = "dob", reason = "Age restriction error")
+    AppError ageRestrictionError();
+
+    @ErrorDef(httpStatusCode = 412, code = "141", message = "User reaches maximum same user attempt retry count")
+    AppError maximumSameUserAttempt();
+
+    @ErrorDef(httpStatusCode = 412, code = "142", message = "User reaches maximum same IP attempt retry count")
+    AppError maximumSameIPAttempt();
+
+    @ErrorDef(httpStatusCode = 404, code = "143", message = "UserAttribute not found", field = "id",
+            reason = "UserAttribute with ID {0} is not found")
+    AppError userAttributeNotFound(UserAttributeId userAttributeId);
+
+    @ErrorDef(httpStatusCode = 404, code = "144", message = "UserAttributeDefinition not found", field = "id",
+            reason = "UserAttributeDefinition with ID {0} is not found")
+    AppError userAttributeDefinitionNotFound(UserAttributeDefinitionId userAttributeDefinitionId);
 }

@@ -18,7 +18,7 @@ import com.junbo.test.billing.enums.BalanceStatus;
 import com.junbo.test.billing.enums.BalanceType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
-import com.junbo.test.common.Utility.BaseValidationHelper;
+import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 /**
  * Created by Yunlong on 4/9/14.
  */
-public class BillingValidationHelper extends BaseValidationHelper {
+public class BillingValidationHelper extends ValidationHelper {
     BillingTestDataProvider testDataProvider = new BillingTestDataProvider();
 
     public BillingValidationHelper() {

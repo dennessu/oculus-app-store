@@ -98,7 +98,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/es_CR",
 		"id": "es_CR"
-	}],
+	},
+    {
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Costa Rica",

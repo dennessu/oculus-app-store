@@ -7,32 +7,36 @@
 package com.junbo.test.store.utility;
 
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.common.id.ItemId;
 import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.Entitlement;
-import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfile;
 import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.browse.LibraryResponse;
 import com.junbo.store.spec.model.browse.TocResponse;
 import com.junbo.store.spec.model.identity.StoreUserProfile;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
-import com.junbo.test.common.Utility.BaseValidationHelper;
-import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import org.testng.Assert;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
  * Created by weiyu_000 on 8/6/14.
  */
-public class StoreValidationHelper extends BaseValidationHelper {
+public class StoreValidationHelper extends ValidationHelper {
 
     private static final TreeMap<Integer, String> lengthToImageSizeGroup = new TreeMap<>();
 
@@ -65,21 +69,40 @@ public class StoreValidationHelper extends BaseValidationHelper {
     }
 
     public void verifyPreparePurchase(PreparePurchaseResponse response) {
-        verifyEqual(response.getFormattedTotalPrice(), String.format("10.0$"), "verify formatted total price");
+        verifyEqual(response.getFormattedTotalPrice(), String.format("10.00$"), "verify formatted total price");
         if (response.getPurchaseToken() == null || response.getPurchaseToken().isEmpty()) {
             throw new TestException("missing purchase token in prepare purchase response");
         }
     }
 
-    public void verifyEntitlementResponse(EntitlementsGetResponse entitlementsGetResponse, String offerId){
-        OfferRevision offerRevision = Master.getInstance().getOfferRevision(Master.getInstance().getOffer(offerId).getCurrentRevisionId());
-        Item item =  Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
-        Entitlement entitlement = entitlementsGetResponse.getEntitlements().get(0);
+    public void verifyLibraryResponse(LibraryResponse response, ItemId itemId) throws Exception {
+        Item item =  storeTestDataProvider.getItemByItemId(itemId.getValue());
+        ItemRevision itemRevision = storeTestDataProvider.getItemRevision(item.getCurrentRevisionId());
+        com.junbo.store.spec.model.browse.document.Item responseItem = null;
+        for (com.junbo.store.spec.model.browse.document.Item e : response.getItems()) {
+            if (e.getSelf().equals(itemId)) {
+                responseItem = e;
+                break;
+            }
+        }
 
-        verifyEqual(entitlement.getItemType(), item.getType(), "verify item type");
-        verifyEqual(entitlement.getEntitlementType(), "DOWNLOAD","verify entitlement type");
-        verifyEqual(entitlement.getItem().getValue(), item.getId(), "verify item id");
+        Assert.assertNotNull(responseItem);
+        verifyEqual(responseItem.getItemType(), item.getType(), "verify item type");
+        verifyEqual(responseItem.getTitle(), itemRevision.getLocales().get("en_US").getName(),"verify entitlement type");
+        verifyEqual(responseItem.getOwnedByCurrentUser(), Boolean.valueOf(true),"verify owned by current user");
+    }
 
+    public void verifyItemsInLibrary(LibraryResponse response, List<String> itemNames) throws Exception {
+        Set<ItemId> itemIdSet = new HashSet<>();
+        for (String itemName: itemNames) {
+            itemIdSet.add(new ItemId(storeTestDataProvider.getItemByName(itemName).getId()));
+        }
+        Set<ItemId> actual = new HashSet<>();
+        for (com.junbo.store.spec.model.browse.document.Item item : response.getItems()) {
+            Assert.assertTrue(!actual.contains(item.getSelf()), "duplicate item found in library");
+            actual.add(item.getSelf());
+        }
+        Assert.assertEquals(actual, itemIdSet);
     }
 
     public void verifyCommitPurchase(CommitPurchaseResponse response, String offerId) throws Exception {
@@ -94,8 +117,13 @@ public class StoreValidationHelper extends BaseValidationHelper {
 
     public void verifySignInResponse(AuthTokenResponse createResponse, AuthTokenResponse signInResponse) {
         verifyEqual(signInResponse.getUsername(), createResponse.getUsername(), "verify user name");
-        verifyEqual(signInResponse.getExpiresIn(), createResponse.getExpiresIn(), "verify expires in");
+        assert signInResponse.getExpiresIn() > 3500;
         verifyEqual(signInResponse.getUserId().getValue(), createResponse.getUserId().getValue(), "verify user id");
+    }
+
+    public void verifyEmailInAuthResponse(AuthTokenResponse authTokenResponse, String email, boolean isValidated) {
+        Assert.assertEquals(authTokenResponse.getEmail().getValue(), email);
+        Assert.assertEquals(authTokenResponse.getEmail().getIsValidated().booleanValue(), isValidated);
     }
 
     public void verifyUserProfile(UserProfileGetResponse userProfileGetResponse, AuthTokenResponse createResponse) {
@@ -131,5 +159,6 @@ public class StoreValidationHelper extends BaseValidationHelper {
         Assert.assertNull(tocResponse.getChallenge());
         Assert.assertEquals(tocResponse.getSections().size(), 4); // current 3 sections will be returned.
     }
+
 }
 

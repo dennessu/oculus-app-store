@@ -61,11 +61,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     git clone -q https://github.com/phacility/arcanist.git /home/vagrant/arc/arcanist
     echo 'export PATH=$PATH:/home/vagrant/arc/arcanist/bin' >> /home/vagrant/.bashrc
 
-    # Install docker and docker-tools
+    # Install docker
     curl -s https://get.docker.io/ubuntu/ | sudo sh
-    wget -q -O /tmp/dockertools.tar.gz https://github.com/phusion/baseimage-docker/archive/master.tar.gz
-    tar xzf /tmp/dockertools.tar.gz -C /tmp
-    /tmp/baseimage-docker-master/install-tools.sh
 
     # cleanup
     apt-get autoclean -y --force-yes

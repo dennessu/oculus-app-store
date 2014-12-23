@@ -21,8 +21,11 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.hibernate.StaleObjectStateException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 /**
@@ -73,13 +76,23 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     @Qualifier('oculus48IdGenerator')
     private IdGenerator idGenerator
 
+    @Value('${order.store.offer.snapshot}')
+    Boolean storeSnapshot
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderRepositoryFacadeImpl)
+
+
     @Override
     Order createOrder(Order order) {
+        LOGGER.info('name=repo.createOrder')
         return ((Promise<Order>) orderRepository.create(order).then { Order savedOrder ->
             return saveOrderItems(savedOrder.getId(), order.orderItems, false, null).then {
-                return saveDiscounts(savedOrder.getId(), order.discounts);
+                return saveDiscounts(savedOrder.getId(), order.discounts).then {
+                    return saveSnapshot(savedOrder.getId(), order.orderSnapshot)
+                }
             };
         }.then {
+            LOGGER.info('name=repo.createOrder_done')
             return Promise.pure(order);
         }).get();
     }
@@ -88,6 +101,7 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     Order updateOrder(Order order, Boolean updateOnlyOrder,
                       Boolean saveRevision, OrderItemRevisionType revisionType) {
         try {
+            LOGGER.info('name=repo.updateOrder')
             def existingOrder = orderRepository.get(order.getId()).get()
             if (existingOrder == null) {
                 throw AppErrors.INSTANCE.orderNotFound().exception()
@@ -116,6 +130,9 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                     } else {
                         return Promise.pure(order)
                     }
+                }.then { Order o ->
+                    LOGGER.info('name=repo.createOrder_done')
+                    return Promise.pure(o)
                 }).get()
         } catch (StaleObjectStateException ex) {
             throw AppErrors.INSTANCE.orderConcurrentUpdate().exception()
@@ -124,6 +141,7 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
 
     @Override
     Order getOrder(Long orderId) {
+        LOGGER.info('name=repo.getOrder')
         def order = orderRepository.get(new OrderId(orderId)).get()
         if (order == null) {
             return (Order) null
@@ -141,6 +159,7 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
 
     @Override
     List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
+        LOGGER.info('name=repo.getOrdersByUserId')
         List<Order> orders = orderRepository.getByUserId(userId, orderQueryParam, pageParam).get()
         if (orders == null) {
             return []
@@ -154,39 +173,47 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 fillOrderWithRevision(order, latestRevision)
             }
         }
+        LOGGER.info('name=repo.getOrdersByUserId_done')
+        return orders
     }
 
     @Override
     List<Order> getOrdersByStatus(Integer dataCenterId, Object shardKey, List<String> statusList,
                                   boolean updatedByAscending, PageParam pageParam) {
+        LOGGER.info('name=repo.getOrdersByStatus')
         return orderRepository.getByStatus(dataCenterId, shardKey, statusList, updatedByAscending, pageParam).get();
     }
 
     @Override
     List<Order> getOrdersByTaxStatus(Integer dataCenterId, Object shardKey, List<String> statusList, boolean isAudited,
                                   boolean updatedByAscending, PageParam pageParam) {
+        LOGGER.info('name=repo.getOrdersByTaxStatus')
         return orderRepository.getByTaxStatus(dataCenterId, shardKey,
                 statusList, isAudited, updatedByAscending, pageParam).get();
     }
 
     @Override
     OrderEvent createOrderEvent(OrderEvent event) {
+        LOGGER.info('name=repo.createOrderEvent')
         return orderEventRepository.create(event).get();
     }
 
     @Override
     FulfillmentHistory createFulfillmentHistory(FulfillmentHistory event) {
+        LOGGER.info('name=repo.createFulfillmentHistory')
         return fulfillmentHistoryRepository.create(event).get();
     }
 
     @Override
     BillingHistory createBillingHistory(Long orderId, BillingHistory history) {
+        LOGGER.info('name=repo.createBillingHistory')
         history.setOrderId(orderId);
         return billingHistoryRepository.create(history).get();
     }
 
     @Override
     List<OrderItem> getOrderItems(Long orderId) {
+        LOGGER.info('name=repo.getOrderItems')
         def orderItems = orderItemRepository.getByOrderId(orderId).get()
         orderItems?.collect() { OrderItem item ->
             if (!CollectionUtils.isEmpty(item.orderItemRevisions)) {
@@ -197,11 +224,13 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 fillOrderItemWithRevision(item, latestItemRevision)
             }
         }
+        LOGGER.info('name=repo.getOrderItems_done')
         return orderItems
     }
 
     @Override
     OrderItem getOrderItem(Long orderItemId) {
+        LOGGER.info('name=repo.getOrderItem')
         def item = orderItemRepository.get(new OrderItemId(orderItemId)).get()
         if (!CollectionUtils.isEmpty(item.orderItemRevisions)) {
             def latestItemRevision = item.orderItemRevisions.find() { OrderItemRevision itemRevision ->
@@ -210,36 +239,43 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
             assert (latestItemRevision != null)
             fillOrderItemWithRevision(item, latestItemRevision)
         }
+        LOGGER.info('name=repo.getOrderItem_done')
         return item
     }
 
     @Override
     List<Discount> getDiscounts(Long orderId) {
+        LOGGER.info('name=repo.getDiscounts')
         return discountRepository.getByOrderId(orderId).get();
     }
 
     @Override
     List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam) {
+        LOGGER.info('name=repo.getOrderEvents')
         return orderEventRepository.getByOrderId(orderId, pageParam).get();
     }
 
     @Override
     List<PreorderInfo> getPreorderInfo(Long orderItemId) {
+        LOGGER.info('name=repo.getPreorderInfo')
         return preorderInfoRepository.getByOrderItemId(orderItemId).get();
     }
 
     @Override
     List<BillingHistory> getBillingHistories(Long orderId) {
+        LOGGER.info('name=repo.getBillingHistories')
         return billingHistoryRepository.getByOrderId(orderId).get();
     }
 
     @Override
     List<FulfillmentHistory> getFulfillmentHistories(Long orderItemId) {
+        LOGGER.info('name=repo.getFulfillmentHistories')
         return fulfillmentHistoryRepository.getByOrderItemId(orderItemId).get();
     }
 
     @Override
     OfferSnapshot createOfferSnapshot(OfferSnapshot offerSnapshot) {
+        LOGGER.info('name=repo.createOfferSnapshot')
         OfferSnapshot savedOfferSnapshot = offerSnapshotRepository.create(offerSnapshot).get()
         def itemSnapshots = []
         offerSnapshot.itemSnapshots.each { ItemSnapshot itemSnapshot ->
@@ -248,20 +284,24 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
             itemSnapshots << savedItemSnapshot
         }
         savedOfferSnapshot.itemSnapshots = itemSnapshots
+        LOGGER.info('name=repo.createOfferSnapshot_done')
         return savedOfferSnapshot
     }
 
     @Override
     List<OfferSnapshot> getSnapshot(Long orderId) {
+        LOGGER.info('name=repo.getSnapshot')
         def orderSnapshot = offerSnapshotRepository.getByOrderId(orderId).get()
         orderSnapshot.each { OfferSnapshot offerSnapshot ->
             offerSnapshot.itemSnapshots = itemSnapshotRepository.getByOfferSnapshotId(offerSnapshot.getId()).get()
         }
+        LOGGER.info('name=repo.getSnapshot_done')
         return orderSnapshot
     }
 
     private Promise<Void> saveOrderItems(OrderId orderId, List<OrderItem> orderItems,
                                          Boolean nonTentative, OrderItemRevisionType revisionType) {
+        LOGGER.info('name=repo.saveOrderItems')
         def repositoryFuncSet = new RepositoryFuncSet()
         orderItems.each { OrderItem item ->
             item.orderId = orderId
@@ -292,11 +332,12 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
             return item.offer
         }
         Utils.updateListTypeField(orderItems, getOrderItems(orderId.value), repositoryFuncSet, keyFunc, 'orderItems')
-
+        LOGGER.info('name=repo.saveOrderItems_done')
         return Promise.pure(null)
     }
 
     Promise<Void> saveDiscounts(OrderId orderId, List<Discount> discounts) {
+        LOGGER.info('name=repo.saveDiscounts')
         def repositoryFuncSet = new RepositoryFuncSet()
         discounts.each { Discount discount ->
             discount.orderId = orderId
@@ -321,7 +362,18 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
             return [discount.orderId, discount.orderItemId]
         }
         Utils.updateListTypeField(discounts, getDiscounts(orderId.value), repositoryFuncSet, keyFunc, 'discounts')
+        LOGGER.info('name=repo.saveDiscounts_done')
+        return Promise.pure(null)
+    }
 
+    Promise<Void> saveSnapshot(OrderId orderId, List<OfferSnapshot> snapshots) {
+        if (!storeSnapshot || CollectionUtils.isEmpty(snapshots)) {
+            return Promise.pure(null)
+        }
+        snapshots.each { OfferSnapshot snapshot ->
+            snapshot.orderId = orderId.value
+            createOfferSnapshot(snapshot)
+        }
         return Promise.pure(null)
     }
 

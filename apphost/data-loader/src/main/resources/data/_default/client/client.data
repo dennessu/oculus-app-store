@@ -1,6 +1,6 @@
 {
   "scopes" : [ "identity", "identity.pii", "scope.manage", "catalog", "catalog.developer", "openid", "scope.info",
-  "client.info", "commerce", "offline", "consent.manage", "api.info", "drm", "token", "storeapi", "entitlement" ],
+  "client.info", "commerce", "offline", "consent.manage", "api.info", "drm", "token", "storeapi", "entitlement", "cms.admin" ],
   "client_id" : "client",
   "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
   "client_name" : "client",
@@ -15,5 +15,11 @@
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "CLIENT_CREDENTIALS", "PASSWORD", "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
   "id_token_issuer" : "www.junbo.com",
-  "need_consent" : false
+  "need_consent" : false,
+  "required_tos" : [
+    {
+      "type": "TOS",
+      "title": "end user tos"
+    }
+  ]
 }

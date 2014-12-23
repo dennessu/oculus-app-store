@@ -5,7 +5,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <import resource="classpath*:spring/*-context.xml"/>
-    <import resource="classpath*:spring/transaction.xml"/>
 
     <!-- fusion mock -->
     <bean id="mockUserResource" class="com.junbo.payment.core.mock.MockUserResource"/>
@@ -41,6 +40,30 @@
     <bean id="mockPersonalInfo" class="com.junbo.payment.core.mock.MockPersonalInfo"/>
     <bean id="mockAdyenCCProviderService" class="com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl" parent="adyenProviderService">
         <property name="personalInfoFacade" ref="mockPersonalInfo"/>
+    </bean>
+
+    <!-- mock fb -->
+    <bean id="mockFBPaymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl">
+        <property name="providerRoutingService" ref="mockFBProviderRoutingService"  />
+        <property name="userInfoFacade" ref="mockUserResource"/>
+    </bean>
+
+    <bean id="mockFacebookCCProviderService" class="com.junbo.payment.core.provider.facebook.FacebookCCProviderServiceImpl">
+        <property name="facebookPaymentUtils" ref="facebookPaymentUtil"/>
+        <property name="oculusAppId" value="${payment.provider.facebook.appid}"/>
+        <property name="env" value="${payment.provider.facebook.env}"/>
+        <property name="facebookGatewayService" ref="facebookGatewayService"/>
+        <property name="personalInfoFacade" ref="personalInfoFacade"/>
+        <property name="piRepository" ref="paymentInstrumentRepositoryFacade"/>
+    </bean>
+
+    <bean id="mockFBProviderRoutingService" class="com.junbo.payment.core.mock.MockFBProviderRoutingServiceImpl">
+        <property name="facebookCCProviderService" ref="mockFacebookCCProviderService" />
+    </bean>
+
+    <bean id="mockFBPaymentService" class="com.junbo.payment.core.impl.PaymentTransactionServiceImpl">
+        <property name="providerRoutingService" ref="mockFBProviderRoutingService"  />
+        <property name="userInfoFacade" ref="mockUserResource"/>
     </bean>
 
 </beans>

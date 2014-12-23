@@ -1,21 +1,19 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
-import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
-
 /**
  * Created by xmchen on 14-7-4.
  */
@@ -35,7 +33,8 @@ class WebPaymentCallbackAction extends BaseOrderEventAwareAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebPaymentCallbackAction)
 
     @Override
-    Promise<ActionResult> execute(ActionContext actionContext) {
+    @Transactional
+    Promise<ActionResult> doExecute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         def orderEvent = context.orderServiceContext.orderEvent
@@ -57,7 +56,7 @@ class WebPaymentCallbackAction extends BaseOrderEventAwareAction {
                     return facadeContainer.paymentFacade.postPaymentProperties(data).recover {
                         Throwable throwable ->
                             LOGGER.error('name=Post_Payment_Callback_Error', throwable)
-                            throw AppErrors.INSTANCE.paymentConnectionError().exception()
+                            throw throwable
                     }.then {
                         LOGGER.info('name=Post_Payment_Callback, order event map=' + eventMap)
                         return Promise.pure(null)

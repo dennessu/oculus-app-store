@@ -5,7 +5,7 @@
  */
 package com.junbo.oauth.core.util
 
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.spec.model.TokenType
 import groovy.transform.CompileStatic
 import org.apache.commons.codec.binary.Base64

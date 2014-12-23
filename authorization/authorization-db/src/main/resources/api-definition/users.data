@@ -11,10 +11,27 @@
             "rights": ["read", "create", "update", "search", "delete"],
             "scriptType": "SPEL"
         }],
+        "identity.search": [{
+            "precondition": "true",
+            "rights": ["read", "search"],
+            "scriptType": "SPEL"
+        }],
         "csr": [{
             "precondition": "true",
             "rights": ["read", "update", "search", "delete"],
             "scriptType": "SPEL"
-        }]
+        }],
+        "organization.group.admin" : [{
+            "precondition": "true",
+            "rights": [ "read", "search" ],
+            "scriptType": "SPEL"
+        }],
+        "readonly.service": [
+            {
+                "precondition": "true",
+                "rights": [ "read" ],
+                "scriptType": "SPEL"
+            }
+        ]
     }
 }

@@ -32,11 +32,7 @@ class ItemAttributeDataHandler extends BaseAttributeDataHandler {
         String name = attributeData.locales.get(nameLocale).name
         ItemAttribute existing = catalogUtils.getItemAttributeByName(name)
         if (existing != null) {
-            logger.debug("update existing item attribute, id={}", existing.getId())
-            existing.type = attributeData.type
-            existing.parentId = parentId
-            existing.locales = attributeData.locales
-            itemAttributeResource.update(existing.getId(), existing).get()
+            logger.debug("item attribute exists, id={}, name={}, skip", existing.getId(), name)
         } else {
             logger.debug("create offer attribute, name={}", name)
             itemAttributeResource.createAttribute(new ItemAttribute(

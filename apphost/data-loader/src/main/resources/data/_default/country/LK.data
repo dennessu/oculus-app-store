@@ -314,7 +314,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/si_LK",
 		"id": "si_LK"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Sri Lanka",

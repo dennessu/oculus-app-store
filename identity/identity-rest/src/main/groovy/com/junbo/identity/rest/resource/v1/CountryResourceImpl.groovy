@@ -2,13 +2,14 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CountryFilter
 import com.junbo.identity.core.service.validator.CountryValidator
 import com.junbo.identity.data.identifiable.LocaleAccuracy
-import com.junbo.identity.data.repository.CountryRepository
-import com.junbo.identity.data.repository.LocaleRepository
+import com.junbo.identity.service.CountryService
+import com.junbo.identity.service.LocaleService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.CountryLocaleKey
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.Response
 import java.lang.reflect.Field
 
 /**
@@ -32,12 +34,13 @@ import java.lang.reflect.Field
 @CompileStatic
 class CountryResourceImpl implements CountryResource {
     private static Map<String, Field> fieldMap = new HashMap<String, Field>()
+    private static final String SORT_BY_SHORT_NAME = 'shortName'
 
     @Autowired
-    private CountryRepository countryRepository
+    private CountryService countryService
 
     @Autowired
-    private LocaleRepository localeRepository
+    private LocaleService localeService
 
     @Autowired
     private CountryFilter countryFilter
@@ -48,13 +51,13 @@ class CountryResourceImpl implements CountryResource {
     @Override
     Promise<Country> create(Country country) {
         if (country == null) {
-            throw new IllegalArgumentException('country is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         country = countryFilter.filterForCreate(country)
 
         return countryValidator.validateForCreate(country).then {
-            return countryRepository.create(country).then { Country newCountry ->
+            return countryService.create(country).then { Country newCountry ->
                 Created201Marker.mark(newCountry.id)
 
                 newCountry = countryFilter.filterForGet(newCountry, null)
@@ -66,14 +69,14 @@ class CountryResourceImpl implements CountryResource {
     @Override
     Promise<Country> put(CountryId countryId, Country country) {
         if (countryId == null) {
-            throw new IllegalArgumentException('countryId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (country == null) {
-            throw new IllegalArgumentException('country is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return countryRepository.get(countryId).then { Country oldCountry ->
+        return countryService.get(countryId).then { Country oldCountry ->
             if (oldCountry == null) {
                 throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
             }
@@ -81,34 +84,7 @@ class CountryResourceImpl implements CountryResource {
             country = countryFilter.filterForPut(country, oldCountry)
 
             return countryValidator.validateForUpdate(countryId, country, oldCountry).then {
-                return countryRepository.update(country, oldCountry).then { Country newCountry ->
-                    newCountry = countryFilter.filterForGet(newCountry, null)
-                    return Promise.pure(newCountry)
-                }
-            }
-        }
-    }
-
-    @Override
-    Promise<Country> patch(CountryId countryId, Country country) {
-        if (countryId == null) {
-            throw new IllegalArgumentException('countryId is null')
-        }
-
-        if (country == null) {
-            throw new IllegalArgumentException('country is null')
-        }
-
-        return countryRepository.get(countryId).then { Country oldCountry ->
-            if (oldCountry == null) {
-                throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
-            }
-
-            country = countryFilter.filterForPatch(country, oldCountry)
-
-            return countryValidator.validateForUpdate(
-                    countryId, country, oldCountry).then {
-                return countryRepository.update(country, oldCountry).then { Country newCountry ->
+                return countryService.update(country, oldCountry).then { Country newCountry ->
                     newCountry = countryFilter.filterForGet(newCountry, null)
                     return Promise.pure(newCountry)
                 }
@@ -122,16 +98,10 @@ class CountryResourceImpl implements CountryResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return countryValidator.validateForGet(countryId).then {
-            return countryRepository.get(countryId).then { Country newCountry ->
-                if (newCountry == null) {
-                    throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
-                }
-
-                return filterCountry(newCountry, getOptions).then { Country filterCountry ->
-                    filterCountry = countryFilter.filterForGet(filterCountry, getOptions.properties?.split(',') as List<String>)
-                    return Promise.pure(filterCountry)
-                }
+        return countryValidator.validateForGet(countryId).then { Country country ->
+            return filterCountry(country, getOptions.locale).then { Country filterCountry ->
+                filterCountry = countryFilter.filterForGet(filterCountry, getOptions.properties?.split(',') as List<String>)
+                return Promise.pure(filterCountry)
             }
         }
     }
@@ -146,67 +116,83 @@ class CountryResourceImpl implements CountryResource {
             return search(listOptions).then { List<Country> countryList ->
                 def result = new Results<Country>(items: [])
 
-                countryList.each { Country newCountry ->
-                    newCountry = countryFilter.filterForGet(newCountry, null)
+                return Promise.each(countryList) { Country newCountry ->
+                    return filterCountry(newCountry, listOptions.returnLocale?.toString()).then { Country filterCountry ->
+                        if (filterCountry != null) {
+                            filterCountry = countryFilter.filterForGet(filterCountry, listOptions.properties?.split(',') as List<String>)
+                            result.items.add(filterCountry)
+                        }
 
-                    if (newCountry != null) {
-                        result.items.add(newCountry)
+                        return Promise.pure(null)
                     }
-                }
+                }.then {
+                    if (listOptions.returnLocale != null && !StringUtils.isEmpty(listOptions.sortBy)) {
+                        result.items.sort { Country temp ->
+                            CountryLocaleKey countryLocaleKey = temp.locales?.get(listOptions.getReturnLocale().toString())
 
-                return Promise.pure(result)
+                            if (listOptions.sortBy.equalsIgnoreCase(SORT_BY_SHORT_NAME)) {
+                                return countryLocaleKey?.shortName == null ? "" : countryLocaleKey?.shortName
+                            } else {
+                                return ''
+                            }
+                        }
+                    }
+                    return Promise.pure(result)
+                }
             }
         }
     }
 
     @Override
-    Promise<Void> delete(CountryId countryId) {
+    Promise<Response> delete(CountryId countryId) {
         if (countryId == null) {
-            throw new IllegalArgumentException('countryId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return countryValidator.validateForGet(countryId).then {
-            return countryRepository.delete(countryId)
+            return countryService.delete(countryId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 
     private Promise<List<Country>> search(CountryListOptions countryListOptions) {
         if (countryListOptions.currencyId != null && countryListOptions.localeId != null) {
-            return countryRepository.searchByDefaultCurrencyIdAndLocaleId(countryListOptions.currencyId,
+            return countryService.searchByDefaultCurrencyIdAndLocaleId(countryListOptions.currencyId,
                     countryListOptions.localeId, countryListOptions.limit, countryListOptions.offset)
         } else if (countryListOptions.currencyId != null) {
-            return countryRepository.searchByDefaultCurrencyId(countryListOptions.currencyId, countryListOptions.limit,
+            return countryService.searchByDefaultCurrencyId(countryListOptions.currencyId, countryListOptions.limit,
                     countryListOptions.offset)
         } else if (countryListOptions.localeId != null) {
-            return countryRepository.searchByDefaultLocaleId(countryListOptions.localeId, countryListOptions.limit,
+            return countryService.searchByDefaultLocaleId(countryListOptions.localeId, countryListOptions.limit,
                     countryListOptions.offset)
         } else {
-            return countryRepository.searchAll(countryListOptions.limit, countryListOptions.offset)
+            return countryService.searchAll(countryListOptions.limit, countryListOptions.offset)
         }
     }
 
-    private Promise<Country> filterCountry(Country country, CountryGetOptions getOptions) {
-        if (StringUtils.isEmpty(getOptions.locale)) {
+    private Promise<Country> filterCountry(Country country, String locale) {
+        if (StringUtils.isEmpty(locale) || country == null) {
             return Promise.pure(country)
         }
 
-        return filterSubCountries(country, getOptions).then { Country newCountry ->
-            CountryLocaleKey localeKey = country.locales.get(getOptions.locale)
-            return filterCountryLocaleKeys(newCountry.locales, getOptions.locale).then { Map<String, CountryLocaleKey> map ->
+        return filterSubCountries(country, locale).then { Country newCountry ->
+            CountryLocaleKey localeKey = country.locales.get(locale)
+            return filterCountryLocaleKeys(newCountry.locales, locale).then { Map<String, CountryLocaleKey> map ->
                 newCountry.locales = map
-                newCountry.localeAccuracy = calcCountryLocaleKeyAccuracy(localeKey, map.get(getOptions.locale))
+                newCountry.localeAccuracy = calcCountryLocaleKeyAccuracy(localeKey, map.get(locale))
                 return Promise.pure(newCountry)
             }
         }
     }
 
-    private Promise<Country> filterSubCountries(Country country, CountryGetOptions getOptions) {
+    private Promise<Country> filterSubCountries(Country country, String locale) {
         if (country.subCountries == null || country.subCountries.isEmpty()) {
             return Promise.pure(country)
         }
 
         return Promise.each(country.subCountries.entrySet()) { Map.Entry<String, SubCountryLocaleKeys> entry ->
-            return filterSubCountryLocaleKeys(entry.value, getOptions).then { SubCountryLocaleKeys keys ->
+            return filterSubCountryLocaleKeys(entry.value, locale).then { SubCountryLocaleKeys keys ->
                 entry.value = keys
                 return Promise.pure(null)
             }
@@ -215,11 +201,11 @@ class CountryResourceImpl implements CountryResource {
         }
     }
 
-    private Promise<SubCountryLocaleKeys> filterSubCountryLocaleKeys(SubCountryLocaleKeys keys, CountryGetOptions getOptions) {
-        SubCountryLocaleKey subCountryLocaleKey = keys.locales.get(getOptions.locale)
-        return filterSubCountryLocaleKeys(keys.locales, getOptions.locale).then { Map<String, SubCountryLocaleKey> map ->
+    private Promise<SubCountryLocaleKeys> filterSubCountryLocaleKeys(SubCountryLocaleKeys keys, String locale) {
+        SubCountryLocaleKey subCountryLocaleKey = keys.locales.get(locale)
+        return filterSubCountryLocaleKeys(keys.locales, locale).then { Map<String, SubCountryLocaleKey> map ->
             keys.locales = map
-            keys.localeAccuracy = calcSubCountryLocaleAccuracy(subCountryLocaleKey, map.get(getOptions.locale))
+            keys.localeAccuracy = calcSubCountryLocaleAccuracy(subCountryLocaleKey, map.get(locale))
             return Promise.pure(keys)
         }
     }
@@ -342,7 +328,7 @@ class CountryResourceImpl implements CountryResource {
             }
         }
 
-        return localeRepository.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
+        return localeService.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
             if (locale1 == null || locale1.fallbackLocale == null) {
                 return Promise.pure(null)
             }
@@ -366,7 +352,7 @@ class CountryResourceImpl implements CountryResource {
             }
         }
 
-        return localeRepository.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
+        return localeService.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
             if (locale1 == null || locale1.fallbackLocale == null) {
                 return Promise.pure(null)
             }

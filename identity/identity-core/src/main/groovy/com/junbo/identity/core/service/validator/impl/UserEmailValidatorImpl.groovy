@@ -8,9 +8,8 @@ import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.EmailValidator
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
-import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.UserPersonalInfoRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.UserPersonalInfoService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -28,8 +27,10 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class UserEmailValidatorImpl implements PiiValidator {
     private EmailValidator emailValidator
-    private UserPersonalInfoRepository userPersonalInfoRepository
-    private UserRepository userRepository
+    private UserPersonalInfoService userPersonalInfoService
+    private UserService userService
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     @Override
     boolean handles(String type) {
@@ -78,15 +79,15 @@ class UserEmailValidatorImpl implements PiiValidator {
     private Promise<Void> checkAdvanceUserEmail(Email email) {
         // 2.	User’s default email is required to be globally unique - no two users can use the same email as their default email.
         //      The first user set this email to default will get this email.
-        return userPersonalInfoRepository.searchByEmail(email.info.toLowerCase(Locale.ENGLISH), null, Integer.MAX_VALUE, 0).then {
+        return userPersonalInfoService.searchByEmail(email.info.toLowerCase(Locale.ENGLISH), null, maximumFetchSize, 0).then {
             List<UserPersonalInfo> existing ->
             if (CollectionUtils.isEmpty(existing)) {
                 return Promise.pure(null)
             }
 
             return Promise.each(existing) { UserPersonalInfo info ->
-                return userRepository.get(info.userId).then { User user ->
-                    if (user == null || CollectionUtils.isEmpty(user.emails) || user.status == UserStatus.DELETED.toString()) {
+                return userService.getNonDeletedUser(info.userId).then { User user ->
+                    if (user == null || CollectionUtils.isEmpty(user.emails)) {
                         return Promise.pure(null)
                     }
 
@@ -95,11 +96,11 @@ class UserEmailValidatorImpl implements PiiValidator {
                     }
 
                     if (link != null) {
-                        return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
+                        return userPersonalInfoService.get(link.value).then { UserPersonalInfo userPersonalInfo ->
                             Email existingEmail = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
 
                             if (existingEmail.info.toLowerCase(Locale.ENGLISH) == email.info.toLowerCase(Locale.ENGLISH)) {
-                                throw AppCommonErrors.INSTANCE.fieldInvalid('value.info', 'Mail is already used.').exception()
+                                throw AppCommonErrors.INSTANCE.fieldInvalid('email', 'Mail is already used.').exception()
                             }
 
                             return Promise.pure(null)
@@ -123,12 +124,17 @@ class UserEmailValidatorImpl implements PiiValidator {
     }
 
     @Required
-    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
-        this.userPersonalInfoRepository = userPersonalInfoRepository
+    void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
+        this.userPersonalInfoService = userPersonalInfoService
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }

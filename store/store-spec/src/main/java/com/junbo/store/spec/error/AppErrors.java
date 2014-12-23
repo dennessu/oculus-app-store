@@ -18,7 +18,7 @@ public interface AppErrors {
 
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 412, code = "101", message = "Unknown Error.")
+    @ErrorDef(httpStatusCode = 500, code = "101", message = "Unknown Error.")
     AppError unknownError();
 
     @ErrorDef(httpStatusCode = 412, code = "102", message = "Entitlement Not Consumable.",
@@ -82,4 +82,31 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "118", message = "Item Version Code Not Found.")
     AppError itemVersionCodeNotFound();
+
+    @ErrorDef(httpStatusCode = 412, code = "119", message = "Review already exists.")
+    AppError reviewAlreadyExists();
+
+    @ErrorDef(httpStatusCode = 412, code = "120", message = "item not purchased.")
+    AppError itemNotPurchased();
+
+    @ErrorDef(httpStatusCode = 412, code = "121", message = "Sentry block register access.")
+    AppError sentryBlockRegisterAccess();
+
+    @ErrorDef(httpStatusCode = 412, code = "122", message = "Sentry block login access.")
+    AppError sentryBlockLoginAccess();
+
+    @ErrorDef(httpStatusCode = 412, code = "123", message = "Register TOS Not Found.")
+    AppError RegisterTosNotFound();
+
+    @ErrorDef(httpStatusCode = 412, code = "124", message = "Error occurs, please retry again.")
+    AppError retryableError();
+
+    @ErrorDef(httpStatusCode = 412, code = "125", message = "Sentry block check email.")
+    AppError sentryBlockCheckEmail();
+
+    @ErrorDef(httpStatusCode = 412, code = "126", message = "Sentry block check username.")
+    AppError sentryBlockCheckUsername();
+
+    @ErrorDef(httpStatusCode = 404, code = "127", message = "Unsupported Country.")
+    AppError unsupportedCountry();
 }

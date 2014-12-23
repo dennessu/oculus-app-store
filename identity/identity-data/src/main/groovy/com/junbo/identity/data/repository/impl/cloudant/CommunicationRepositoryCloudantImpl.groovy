@@ -1,13 +1,14 @@
 package com.junbo.identity.data.repository.impl.cloudant
+
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.CommunicationId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.CommunicationRepository
 import com.junbo.identity.spec.v1.model.Communication
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.apache.commons.lang3.ArrayUtils
 
 /**
  * Created by liangfu on 4/24/14.
@@ -36,24 +37,52 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
     }
 
     @Override
-    Promise<List<Communication>> searchByTranslation(LocaleId translation, Integer limit, Integer offset) {
-        return queryView('by_translation', translation.toString(), limit, offset, false)
+    Promise<Results<Communication>> searchByTranslation(LocaleId translation, Integer limit, Integer offset) {
+        Results<Communication> results = new Results<>()
+        return queryView('by_translation', translation.toString(), limit, offset, false).then { List<Communication> communicationList ->
+            results.items = communicationList
+
+            return queryViewTotal('by_translation', translation.toString()).then { Integer total ->
+                results.total = total
+
+                return Promise.pure(results)
+            }
+        }
     }
 
     @Override
-    Promise<List<Communication>> searchByRegion(CountryId region, Integer limit, Integer offset) {
-        return queryView('by_region', region.toString(), limit, offset, false)
+    Promise<Results<Communication>> searchByRegion(CountryId region, Integer limit, Integer offset) {
+        Results<Communication> results = new Results<>()
+        return queryView('by_region', region.toString(), limit, offset, false).then { List<Communication> communicationList ->
+            results.items = communicationList
+
+            return queryViewTotal('by_region', region.toString()).then { Integer total ->
+                results.total = total
+
+                return Promise.pure(results)
+            }
+        }
     }
 
     @Override
-    Promise<List<Communication>> searchByRegionAndTranslation(CountryId region, LocaleId translation, Integer limit, Integer offset) {
+    Promise<Results<Communication>> searchByRegionAndTranslation(CountryId region, LocaleId translation, Integer limit, Integer offset) {
+        Results<Communication> results = new Results<>()
         def startKey = [region.toString(), translation.toString()]
         def endKey = [region.toString(), translation.toString()]
-        return super.queryView('by_region_and_translation', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
+        return super.queryView('by_region_and_translation', startKey.toArray(new String()), endKey.toArray(new String()),
+                false, limit, offset, false).then { List<Communication> communicationList ->
+            results.items = communicationList
+
+            return queryViewTotal('by_region_and_translation', startKey.toArray(new String()), endKey.toArray(new String()), false, false).then { Integer total ->
+                results.total = total
+
+                return Promise.pure(results)
+            }
+        }
     }
 
     @Override
-    Promise<List<Communication>> searchAll(Integer limit, Integer offset) {
-        return cloudantGetAll(limit, offset, false)
+    Promise<Results<Communication>> searchAll(Integer limit, Integer offset) {
+        return cloudantGetAll(limit, offset, false, true)
     }
 }

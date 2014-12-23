@@ -20,7 +20,7 @@ public class AdyenInfo extends PaymentInstrumentBase {
     public static AdyenInfo getAdyenInfo(Country country) {
         AdyenInfo adyenInfo = new AdyenInfo();
         adyenInfo.setAccountNum("zwh@123.com");
-        adyenInfo.setPhone(Phone.getRandomPhone());
+        //adyenInfo.setPhone(Phone.getRandomPhone());
         adyenInfo.setAddress(Address.getRandomAddress(country));
         adyenInfo.setValidated(false);
         adyenInfo.setDefault(true);

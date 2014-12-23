@@ -35,7 +35,7 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
     }
 
     @Override
-    ResetPasswordCode getByHash(String hash) {
+    ResetPasswordCode getByHash(String hash, Integer dc) {
         throw new NotSupportedException()
     }
 
@@ -66,6 +66,11 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
 
     }
 
+    @Override
+    List<ResetPasswordCode> getByUserIdEmail(Long userId, String email) {
+        return null
+    }
+
     private static ResetPasswordCode wrap(ResetPasswordCodeEntity entity) {
         if (entity == null) {
             return null
@@ -74,7 +79,8 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
         return new ResetPasswordCode(
             code: entity.id,
             userId: entity.userId,
-            email: entity.email
+            email: entity.email,
+            expiredBy: entity.expiredBy
         )
     }
 
@@ -86,7 +92,8 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
         return new ResetPasswordCodeEntity(
             id: entity.code,
             userId: entity.userId,
-            email: entity.email
+            email: entity.email,
+            expiredBy: entity.expiredBy
         )
     }
 }

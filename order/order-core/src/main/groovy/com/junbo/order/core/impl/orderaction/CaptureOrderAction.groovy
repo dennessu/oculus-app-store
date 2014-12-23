@@ -1,10 +1,7 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.core.annotation.OrderEventAwareAfter
-import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
@@ -15,7 +12,6 @@ import groovy.transform.TypeChecked
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
-
 /**
  * Capture action.
  */
@@ -26,10 +22,8 @@ class CaptureOrderAction extends BaseOrderEventAwareAction {
     OrderInternalService orderInternalService
 
     @Override
-    @OrderEventAwareBefore(action = 'CaptureOrderAction')
-    @OrderEventAwareAfter(action = 'CaptureOrderAction')
     @Transactional
-    Promise<ActionResult> execute(ActionContext actionContext) {
+    Promise<ActionResult> doExecute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         assert(order != null)

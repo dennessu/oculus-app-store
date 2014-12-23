@@ -33,5 +33,6 @@
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "CLIENT_CREDENTIALS" ],
   "id_token_issuer" : "www.junbo.com",
-  "need_consent" : false
+  "need_consent" : false,
+  "internal" : true
 }

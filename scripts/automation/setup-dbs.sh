@@ -71,7 +71,7 @@ EOF
 set -e
 cd /var/silkcloud/pgha
 ./setup/setup_slave.sh
-./util/base.sh
+./util/safe.sh
 nc -zv localhost 113 5432 6543
 EOF
 
@@ -79,7 +79,7 @@ EOF
 set -e
 cd /var/silkcloud/pgha
 ./setup/setup_bcp.sh
-./util/base.sh
+./util/safe.sh
 nc -zv localhost 113 5432 6543
 EOF
 
@@ -87,7 +87,7 @@ EOF
 set -e
 cd /var/silkcloud/pgha
 ./setup/setup_replica.sh
-./util/bash.sh
+./util/safe.sh
 nc -zv localhost 113 5432
 EOF
 

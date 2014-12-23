@@ -10,11 +10,18 @@ import com.junbo.oauth.db.repo.ScopeRepository
 import com.junbo.oauth.spec.model.Scope
 import groovy.transform.CompileStatic
 
+import javax.ws.rs.NotSupportedException
+
 /**
  * CloudantScopeRepositoryImpl.
  */
 @CompileStatic
 class CloudantScopeRepositoryImpl extends CloudantClient<Scope> implements ScopeRepository {
+    @Override
+    List<Scope> getScopes() {
+        throw new NotSupportedException()
+    }
+
     @Override
     Scope getScope(String name) {
         return cloudantGetSync(name)

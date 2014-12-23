@@ -9,7 +9,6 @@ import com.junbo.fulfilment.clientproxy.BillingGateway;
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.clientproxy.EntitlementGateway;
 import com.junbo.fulfilment.clientproxy.WalletGateway;
-import com.junbo.fulfilment.common.util.Callback;
 import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.core.FulfilmentHandler;
 import com.junbo.fulfilment.core.context.FulfilmentContext;
@@ -30,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class HandlerSupport<T extends FulfilmentContext>
         extends TransactionSupport
         implements FulfilmentHandler<T> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FulfilmentHandler.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(FulfilmentHandler.class);
 
     @Autowired
     protected CatalogGateway catalogGateway;
@@ -47,13 +46,6 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
     @Autowired
     protected FulfilmentActionRepository actionRepo;
 
-    protected void updateAction(final Long actionId, final String status, final String result) {
-        executeInNewTransaction(new Callback() {
-            public void apply() {
-                actionRepo.update(actionId, status, result);
-            }
-        });
-    }
 
     public void process(T context) {
         for (final FulfilmentAction action : context.getActions()) {
@@ -69,11 +61,11 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
                 action.setStatus(FulfilmentStatus.FAILED);
             }
 
-            executeInNewTransaction(new Callback() {
-                public void apply() {
-                    updateAction(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
-                }
-            });
+            try {
+                actionRepo.update(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
+            } catch (Exception e) {
+                LOGGER.error("Error occurred during updating action.", e);
+            }
         }
     }
 

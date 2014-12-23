@@ -5,7 +5,6 @@
  */
 package com.junbo.store.spec.model.browse;
 
-import com.junbo.store.spec.model.browse.document.Item;
 import com.junbo.store.spec.model.browse.document.SectionInfo;
 
 import java.util.List;
@@ -21,11 +20,11 @@ public class SectionLayoutResponse {
 
     private String name;
 
+    private String category;
+
+    private String criteria;
+
     private Boolean ordered;
-
-    private List<Item> items;
-
-    private ListResponse.NextOption next;
 
     public List<SectionInfo> getBreadcrumbs() {
         return breadcrumbs;
@@ -51,6 +50,22 @@ public class SectionLayoutResponse {
         this.name = name;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(String criteria) {
+        this.criteria = criteria;
+    }
+
     public Boolean getOrdered() {
         return ordered;
     }
@@ -58,20 +73,5 @@ public class SectionLayoutResponse {
     public void setOrdered(Boolean ordered) {
         this.ordered = ordered;
     }
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
-
-    public ListResponse.NextOption getNext() {
-        return next;
-    }
-
-    public void setNext(ListResponse.NextOption next) {
-        this.next = next;
-    }
 }
+

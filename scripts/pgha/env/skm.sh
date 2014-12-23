@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export MASTER_HOST=54.179.137.100
+export SLAVE_HOST=54.179.144.132
+export BCP_HOST=54.179.142.106
+export REPLICA_HOST=54.179.136.34
+
+export REPLICA_DATABASES=('postgres')

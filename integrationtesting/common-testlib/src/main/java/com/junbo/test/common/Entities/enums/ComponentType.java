@@ -31,10 +31,12 @@ public enum ComponentType {
     OAUTH("oauth"),
     PAYMENT("payment"),
     ORDER("order"),
-    CSR("testcase"),
+    CSR("csr"),
     DRM("drm"),
     CRYPTO("crypto"),
     SUBSCRIPTION("subscription"),
+    IDENTITY_MIGRATION("migration"),
+    IDENTITY_ADMIN("identityAdmin"),
     SMOKETEST("smoketest");
 
     private String name;

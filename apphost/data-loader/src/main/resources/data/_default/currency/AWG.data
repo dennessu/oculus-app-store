@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "florin",
+			"longName": "Aruban florin"
+		},
+		"nl_AW": {
+			"shortName": "florijn",
+			"longName": "Arubaanse florijn"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=AWG",
+		"id": null
+	},
+	"currencyCode": "AWG",
+	"symbol": "Afl.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

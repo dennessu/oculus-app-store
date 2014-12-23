@@ -21,5 +21,9 @@ interface RefreshTokenRepository {
 
     RefreshToken getAndRemove(String tokenValue)
 
+    RefreshToken update(RefreshToken refreshToken, RefreshToken oldRefreshToken)
+
+    void removeByUserId(Long userId)
+
     boolean isValidRefreshToken(String tokenValue)
 }

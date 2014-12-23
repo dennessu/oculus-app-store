@@ -24,7 +24,7 @@ function cleanupTrap {
 }
 
 trap cleanupTrap EXIT INT TERM
-
+. ./setupproxy.sh
 ./startup.sh
 
 # make sure the error code of python will be returned

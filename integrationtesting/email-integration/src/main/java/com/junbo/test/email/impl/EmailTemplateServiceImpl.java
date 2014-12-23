@@ -66,8 +66,13 @@ public class EmailTemplateServiceImpl extends HttpClientBase implements EmailTem
             this.componentType = ComponentType.EMAILADMIN;
         }
         String emailTemplateGetUrl = emailTemplateUrl + "/" + id.toString();
-        String responseBody = restApiCall(HTTPMethod.GET, emailTemplateGetUrl, expectedResponseCode, isServiceScope);
-        return new JsonMessageTranscoder().decode(new TypeReference<EmailTemplate>() {}, responseBody);
+        String responseBody = restApiCall(HTTPMethod.GET, emailTemplateGetUrl, "", expectedResponseCode, isServiceScope);
+        if (expectedResponseCode == 200) {
+            return new JsonMessageTranscoder().decode(new TypeReference<EmailTemplate>() {
+            }, responseBody);
+        } else {
+            return null;
+        }
     }
 
     public EmailTemplate putEmailTemplate(EmailTemplateId id, EmailTemplate template, boolean isAdminScope) throws Exception {

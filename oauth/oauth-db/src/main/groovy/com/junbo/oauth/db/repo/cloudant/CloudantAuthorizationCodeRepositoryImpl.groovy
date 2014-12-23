@@ -4,32 +4,22 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.db.repo.cloudant
-import com.junbo.common.cloudant.CloudantClient
-import com.junbo.oauth.db.generator.TokenGenerator
+
 import com.junbo.oauth.db.repo.AuthorizationCodeRepository
 import com.junbo.oauth.spec.model.AuthorizationCode
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
-
 /**
  * CloudantAuthorizationCodeRepositoryImpl.
  */
 @CompileStatic
-class CloudantAuthorizationCodeRepositoryImpl extends CloudantClient<AuthorizationCode>
-        implements AuthorizationCodeRepository {
-
-    private TokenGenerator tokenGenerator
-
-    @Required
-    void setTokenGenerator(TokenGenerator tokenGenerator) {
-        this.tokenGenerator = tokenGenerator
-    }
+class CloudantAuthorizationCodeRepositoryImpl
+        extends CloudantTokenRepositoryBase<AuthorizationCode> implements AuthorizationCodeRepository {
 
     @Override
     void save(AuthorizationCode code) {
         if (code.code == null) {
-            code.code = tokenGenerator.generateAuthorizationCode()
+            code.code = tokenGenerator.generateAuthorizationCode(code.userId)
             code.hashedCode = tokenGenerator.hashKey(code.code)
         }
 
@@ -42,13 +32,13 @@ class CloudantAuthorizationCodeRepositoryImpl extends CloudantClient<Authorizati
             return null
         }
 
-        String hashedKey = tokenGenerator.hashKey(code)
-        AuthorizationCode entity = cloudantGetSync(hashedKey)
+        String tokenHash = tokenGenerator.hashKey(code)
+        AuthorizationCode entity = cloudantGetSyncWithFallback(code, tokenHash)
         if (entity != null) {
             entity.code = code
         }
 
-        cloudantDeleteSync(hashedKey)
+        cloudantDeleteSync(tokenHash)
         return entity
     }
 }

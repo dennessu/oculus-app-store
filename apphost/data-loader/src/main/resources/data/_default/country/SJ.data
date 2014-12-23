@@ -1,0 +1,29 @@
+{
+	"countryCode": "SJ",
+	"defaultLocale": {
+		"href": "/v1/locales/no_SJ",
+		"id": "no_SJ"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/NOK",
+		"id": "NOK"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/no_SJ",
+		"id": "no_SJ"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Svalbard and Jan Mayen",
+			"longName": "Svalbard and Jan Mayen",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

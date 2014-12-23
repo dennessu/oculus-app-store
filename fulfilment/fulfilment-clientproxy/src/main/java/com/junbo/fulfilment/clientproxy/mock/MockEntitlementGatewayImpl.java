@@ -8,12 +8,16 @@ package com.junbo.fulfilment.clientproxy.mock;
 import com.junbo.fulfilment.clientproxy.EntitlementGateway;
 import com.junbo.fulfilment.spec.fusion.Entitlement;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 /**
  * MockEntitlementGatewayImpl.
  */
 public class MockEntitlementGatewayImpl implements EntitlementGateway {
     @Override
-    public String grant(Entitlement entitlement) {
-        return "12345L";
+    public Map<Long, List<String>> grant(Map<Long, List<Entitlement>> entitlement) {
+        return null;
     }
 }

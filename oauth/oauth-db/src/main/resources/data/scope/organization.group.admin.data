@@ -1,0 +1,5 @@
+{
+    "name": "organization.group.admin",
+    "description": "Admin scope to manage the organization/group information.",
+    "tfaRequired": false
+}

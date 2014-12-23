@@ -1,8 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-BOX_NAME = ENV['BOX_NAME'] || "sc-localdev-base-20140911"
-BOX_URI = ENV['BOX_URI'] || "http://arti.silkcloud.info/sc-localdev-base-20140911.box"
+BOX_NAME = ENV['BOX_NAME'] || "sc-localdev-base-20141020"
+BOX_URI = ENV['BOX_URI'] || "http://arti.silkcloud.info/sc-localdev-base-20141020.box"
 BOX_MEM = ENV['BOX_MEM'] || 2048
 
 VAGRANTFILE_API_VERSION = "2"

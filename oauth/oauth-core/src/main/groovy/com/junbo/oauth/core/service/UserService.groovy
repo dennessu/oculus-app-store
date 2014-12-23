@@ -7,6 +7,7 @@ package com.junbo.oauth.core.service
 
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
@@ -46,4 +47,8 @@ interface UserService {
     Promise<String> sendResetPassword(UserId userId, String locale, String country)
 
     Promise<String> buildResponseLink(EmailVerifyCode emailVerifyCode)
+
+    Promise<List<String>> getResetPasswordLinks(String username, String email, String locale, String country)
+
+    Promise<User> getUser(UserId userId)
 }

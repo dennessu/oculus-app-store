@@ -1,0 +1,100 @@
+{
+	"countryCode": "UM",
+	"defaultLocale": {
+		"href": "/v1/locales/en_UM",
+		"id": "en_UM"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"67": {
+			"locales": {
+				"en_US": {
+					"shortName": "Johnston Atoll",
+					"longName": "Johnston Atoll"
+				}
+			}
+		},
+		"71": {
+			"locales": {
+				"en_US": {
+					"shortName": "Midway Islands",
+					"longName": "Midway Islands"
+				}
+			}
+		},
+		"76": {
+			"locales": {
+				"en_US": {
+					"shortName": "Navassa Island",
+					"longName": "Navassa Island"
+				}
+			}
+		},
+		"79": {
+			"locales": {
+				"en_US": {
+					"shortName": "Wake Island",
+					"longName": "Wake Island"
+				}
+			}
+		},
+		"81": {
+			"locales": {
+				"en_US": {
+					"shortName": "Baker Island",
+					"longName": "Baker Island"
+				}
+			}
+		},
+		"84": {
+			"locales": {
+				"en_US": {
+					"shortName": "Howland Island",
+					"longName": "Howland Island"
+				}
+			}
+		},
+		"86": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jarvis Island",
+					"longName": "Jarvis Island"
+				}
+			}
+		},
+		"89": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kingman Reef",
+					"longName": "Kingman Reef"
+				}
+			}
+		},
+		"95": {
+			"locales": {
+				"en_US": {
+					"shortName": "Palmyra Atoll",
+					"longName": "Palmyra Atoll"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_UM",
+		"id": "en_UM"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "United States Minor Outlying Islands",
+			"longName": "United States Minor Outlying Islands",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -6,7 +6,7 @@
 package com.junbo.oauth.core.service.impl
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.ClientService
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.service.ScopeService
@@ -15,6 +15,7 @@ import com.junbo.oauth.db.exception.DBUpdateConflictException
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
+import com.junbo.oauth.spec.option.PageableGetOptions
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
@@ -51,6 +52,11 @@ class ClientServiceImpl implements ClientService {
     @Required
     void setScopeService(ScopeService scopeService) {
         this.scopeService = scopeService
+    }
+
+    @Override
+    List<Client> getAllClients(PageableGetOptions options) {
+        return clientRepository.getAllClients(options)
     }
 
     @Override
@@ -119,11 +125,15 @@ class ClientServiceImpl implements ClientService {
         }
 
         if (client.idTokenIssuer == null || existingClient.idTokenIssuer != client.idTokenIssuer) {
-            throw AppErrors.INSTANCE.cantUpdateFields('id_token_issuer').exception()
+            if (existingClient.idTokenIssuer != null) {
+                throw AppErrors.INSTANCE.cantUpdateFields('id_token_issuer').exception()
+            }
         }
 
         if (client.needConsent == null || existingClient.needConsent != client.needConsent) {
-            throw AppErrors.INSTANCE.cantUpdateFields('need_consent').exception()
+            if (existingClient.needConsent != null) {
+                throw AppErrors.INSTANCE.cantUpdateFields('need_consent').exception()
+            }
         }
 
         validateClient(client)

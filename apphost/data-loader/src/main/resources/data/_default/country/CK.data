@@ -1,0 +1,41 @@
+{
+	"countryCode": "CK",
+	"defaultLocale": {
+		"href": "/v1/locales/en_NZ",
+		"id": "en_NZ"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/NZD",
+		"id": "NZD"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/OFLC",
+		"id": "OFLC"
+	}],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_NZ",
+		"id": "en_NZ"
+	},
+	{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Cook Islands",
+			"longName": "Cook Islands",
+			"postalCode": "Postal Code"
+		},
+		"en_NZ": {
+			"shortName": "Cook Islands",
+			"longName": "Cook Islands",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

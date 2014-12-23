@@ -8,6 +8,7 @@ package com.junbo.oauth.db.repo.cloudant
 import com.junbo.configuration.crypto.CipherService
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
+import com.junbo.oauth.spec.option.PageableGetOptions
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -28,6 +29,16 @@ class EncryptedClientRepositoryImpl implements ClientRepository {
     @Required
     void setCipherService(CipherService cipherService) {
         this.cipherService = cipherService
+    }
+
+    @Override
+    List<Client> getAllClients(PageableGetOptions options) {
+        List<Client> clients = clientRepository.getAllClients(options)
+        return clients.collect { Client client ->
+            assert client.clientSecret != null
+            client.clientSecret = cipherService.decrypt(client.clientSecret)
+            return client
+        }
     }
 
     @Override

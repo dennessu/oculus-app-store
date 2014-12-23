@@ -1,0 +1,43 @@
+{
+	"countryCode": "EH",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_EH",
+		"id": "ar_EH"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/MAD",
+		"id": "MAD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_EH",
+		"id": "ar_EH"
+	},
+	{
+		"href": "/v1/locales/es_EH",
+		"id": "es_EH"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Western Sahara",
+			"longName": "Western Sahara",
+			"postalCode": "Postal Code"
+		},
+		"ar_EH": {
+			"shortName": "الصحراء الغربية‎",
+			"longName": "الصحراء الغربية‎",
+			"postalCode": "الرمز البريدي"
+		},
+		"es_EH": {
+			"shortName": "Sahara Occidental",
+			"longName": "Sahara Occidental",
+			"postalCode": "Código Postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

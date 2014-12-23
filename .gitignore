@@ -2,6 +2,7 @@
 .*
 !.gitignore
 !.gitkeep
+!.ssh
 
 # Build outputs
 **/build/**
@@ -9,6 +10,7 @@
 build/
 target/
 /build.log
+/out/**
 
 # OS files
 Thumbs.db
@@ -57,3 +59,5 @@ activemq-data/
 
 # ignore the personal configuration file
 common/configuration-data/src/main/resources/junbo/conf/onebox/common/personal.properties
+apphost/config-data/src/main/resources/junbo/conf/onebox/personal.properties
+apphost/apphost-cli/logs/*

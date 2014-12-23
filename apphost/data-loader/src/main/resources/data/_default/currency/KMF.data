@@ -1,0 +1,28 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Comorian franc",
+			"longName": "Comorian franc"
+		},
+		"fr_KM": {
+			"shortName": "franc comorien",
+			"longName": "franc comorien"
+		},
+		"ar_KM": {
+			"shortName": "فرنك قمري",
+			"longName": "فرنك قمري"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=KMF",
+		"id": null
+	},
+	"currencyCode": "KMF",
+	"symbol": "CF",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

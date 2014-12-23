@@ -3,18 +3,23 @@
   "client_secret" : "7E522B23C48613D003594F40492D6DE2#3F8AB71C7C08A55A6DABAF2F7E907CA8095371AC1208853D4E837256DA2DEC8C76DC8D1FEB4D105179164CA529FC0EBD",
   "client_name" : "curationTool",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
-  "default_redirect_uri" : "http://localhost",
+  "redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*" ],
+  "default_redirect_uri" : "https://id.oculus.com",
 
-  "logout_redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
-  "default_logout_redirect_uri" : "http://localhost",
+  "logout_redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*" ],
+  "default_logout_redirect_uri" : "https://id.oculus.com",
 
-  "scopes" : [ "everyone", "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline", "item-binaries.manage", "cms.admin" ],
-  "default_scopes" : [ "everyone", "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline", "item-binaries.manage", "cms.admin" ],
+  "scopes" : [ "everyone", "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline",
+   "item-binaries.manage", "cms.admin", "organization.group.admin", "client.register", "scope.manage" ],
+  "default_scopes" : [ "everyone", "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline",
+   "item-binaries.manage", "cms.admin", "organization.group.admin", "client.register", "scope.manage" ],
 
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN", "PASSWORD" ],
 
   "id_token_issuer" : "api.oculus.com",
-  "need_consent" : false
+  "need_consent" : false,
+  "allowed_groups" : [ "Oculus.CatalogAdmin", "Oculus.IdentityAdmin" ],
+  "allow_partial_scopes" : true,
+  "internal" : true
 }

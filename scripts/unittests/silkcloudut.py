@@ -34,6 +34,8 @@ class TestBase(unittest.TestCase):
 def setUpModule():
     global opts
     global test_uri
+    global test_remote_uri
+    global test_health_uri
     global test_client_id
     global test_client_secret
     global test_service_client_id
@@ -42,20 +44,26 @@ def setUpModule():
     global test_logout_redirect_uri
     global test_wildcard_logout_redirect_uri
     global test_sleep
+    global test_profile_enabled
     global cookies
 
     if opts is not None:
         test_uri = opts.uri
+        test_remote_uri = opts.remoteuri
+        test_health_uri = opts.healthuri
         test_client_id = opts.client
         test_client_secret = opts.secret
         test_service_client_id = opts.sclient
         test_service_client_secret = opts.ssecret
-        test_redirect_uri = 'http://localhost'
-        test_logout_redirect_uri = 'http://localhost'
+        test_redirect_uri = opts.redirecturi
+        test_logout_redirect_uri = opts.redirecturi
         test_wildcard_logout_redirect_uri = 'https://www.oculus.com/'
+        test_profile_enabled=opts.profile
         test_sleep = opts.sleep
     else:
-        test_uri = 'http://localhost:8080/'
+        test_uri = 'http://127.0.0.1:8080/'
+        test_remote_uri = 'http://127.0.0.1:8080/'
+        test_health_uri = 'http://127.0.0.1:8081/'
         test_client_id = 'smoketest'
         test_client_secret = 'secret'
         test_service_client_id = 'service'
@@ -63,6 +71,7 @@ def setUpModule():
         test_redirect_uri = 'http://localhost'
         test_logout_redirect_uri = 'http://localhost'
         test_wildcard_logout_redirect_uri = 'https://www.oculus.com/'
+        test_profile_enabled='0'
         test_sleep = None
 
     cookies = CookieJar()
@@ -81,11 +90,15 @@ def silkcloud_utmain(suite = None):
         error(e + "\nUnable to change current directory to : " + currentDir + ". Aborting...")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://localhost:8080/')
+    parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://127.0.0.1:8080/')
+    parser.add_argument("-remoteuri", nargs = '?', help = "The URI to the silkcloud service in remote dc.", default = 'http://127.0.0.1:8080/')
+    parser.add_argument("-healthuri", nargs = '?', help = "The URI to the silkcloud health check port.", default = 'http://127.0.0.1:8081/')
     parser.add_argument("-client", nargs = '?', help = "The client ID used in test cases.", default = 'smoketest')
     parser.add_argument("-secret", nargs = '?', help = "The client secret used in the test cases.", default = 'secret')
     parser.add_argument("-sclient", nargs = '?', help = "The service client ID used in test cases.", default = 'service')
     parser.add_argument("-ssecret", nargs = '?', help = "The service client secret used in the test cases.", default = 'secret')
+    parser.add_argument("-redirecturi", nargs = '?', help = "The redirect URI for the test cases.", default = 'http://localhost')
+    parser.add_argument("-profile", nargs = '?', help = "The profile setting.", default = '1')
     parser.add_argument("-sleep", nargs = '?', help = "The sleep between API calls.")
     parser.add_argument('tests', metavar='test', nargs='*', help='The test cases to run.')
 
@@ -100,8 +113,8 @@ def silkcloud_utmain(suite = None):
         if not result.wasSuccessful():
             error("Errors found in test result.")
 
-def curlRedirect(method, baseUrl, url = None, query = None, headers = None, body = None, raiseOnError = True):
-    body, resp = curlRaw(method, baseUrl, url, query, headers, body, raiseOnError)
+def curlRedirect(method, baseUrl, url = None, query = None, headers = None, body = None, proxy = None, raiseOnError = True):
+    body, resp = curlRaw(method, baseUrl, url, query, headers, body, proxy, raiseOnError)
     if resp.status < 300:
         raise Exception('Expected redirect. Actual: %s %s in %s %s\n%s' % (resp.status, resp.reason, method, url, body))
     locations = [v for k, v in resp.getheaders() if k.lower() == 'location']
@@ -109,11 +122,20 @@ def curlRedirect(method, baseUrl, url = None, query = None, headers = None, body
         raise Exception('Unexpected location header count: %s, locations: %s' % (len(locations), locations))
     return locations[0]
 
-def curlForm(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
-    resp = curlFormRaw(method, baseUrl, url, query, headers, data, raiseOnError)
-    return json.loads(resp)
+def curlForm(method, baseUrl, url = None, query= None, headers = None, data = None, proxy = None, raiseOnError = True):
+    body, resp = curlFormRaw(method, baseUrl, url, query, headers, data, proxy, raiseOnError)
+    return json.loads(body)
 
-def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
+def curlFormRedirect(method, baseUrl, url = None, query= None, headers = None, data = None, proxy = None, raiseOnError = True):
+    body, resp = curlFormRaw(method, baseUrl, url, query, headers, data, proxy, raiseOnError)
+    if resp.status < 300:
+        raise Exception('Expected redirect. Actual: %s %s in %s %s\n%s' % (resp.status, resp.reason, method, url, body))
+    locations = [v for k, v in resp.getheaders() if k.lower() == 'location']
+    if len(locations) != 1:
+        raise Exception('Unexpected location header count: %s, locations: %s' % (len(locations), locations))
+    return locations[0]
+
+def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data = None, proxy = None, raiseOnError = True):
     if data is None: data = {}
     if headers is None:
         headers = {
@@ -123,9 +145,9 @@ def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data =
         headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
 
     body = urlencode(data)
-    return curl(method, baseUrl, url, query, headers, body, raiseOnError)
+    return curlRaw(method, baseUrl, url, query, headers, body, proxy, raiseOnError)
 
-def curlJson(method, baseUrl, url = None, query= None, headers = None, data = None, raiseOnError = True):
+def curlJson(method, baseUrl, url = None, query= None, headers = None, data = None, proxy = None, raiseOnError = True):
     if headers is None:
         headers = {
             'Content-Type': 'application/json'
@@ -136,17 +158,23 @@ def curlJson(method, baseUrl, url = None, query= None, headers = None, data = No
     body = None
     if data is not None:
         body = json.dumps(data)
-    response = curl(method, baseUrl, url, query, headers, body, raiseOnError)
+    response = curl(method, baseUrl, url, query, headers, body, proxy, raiseOnError)
     return json.loads(response)
 
-def curl(method, baseUrl, url = None, query= None, headers = None, body = None, raiseOnError = True):
+def curl(method, baseUrl, url = None, query= None, headers = None, body = None, proxy = None, raiseOnError = True):
     if headers is None: headers = {}
 
-    body, resp = curlRaw(method, baseUrl, url, query, headers, body, raiseOnError)
+    body, resp = curlRaw(method, baseUrl, url, query, headers, body, proxy, raiseOnError)
     return body
 
-connCache = {}
-def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = None, raiseOnError = True):
+def getConnection(protocol, host, port):
+    if protocol == "https://":
+        conn = httplib.HTTPSConnection(host, port)
+    else:
+        conn = httplib.HTTPConnection(host, port)
+    return conn
+
+def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = None, proxy = None, raiseOnError = True):
     global cookies
 
     url = combineUrl(baseUrl, url, query)
@@ -155,7 +183,7 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
     conn = None
     start_time = time.time()
     try:
-        urlRegex = r'^(?P<protocol>http[s]?://)?((?P<userpass>([^/@:]*):([^/@:]*))@)?(?P<host>[^/:]+)(:(?P<port>\d+))?(?P<path>(/|\?).*)$'
+        urlRegex = r'^(?P<protocol>http[s]?://)?((?P<userpass>([^/@:]*):([^/@:]*))@)?(?P<host>[^/:]+)(:(?P<port>\d+))?(?P<path>(/|\?).*)?$'
         m = re.match(urlRegex, url)
         if m is None:
             raise Exception('Invalid url: ' + url)
@@ -163,23 +191,34 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
         protocol = m.group('protocol')
         host = m.group('host')
         port = m.group('port')
-        path = m.group('path')
+        path = xstr(m.group('path'))
 
         userpass = m.group('userpass')
 
         if port:
             port = int(port)
 
-        global connCache
-        cacheKey = protocol + host + ":" + str(port)
-        if connCache.has_key(cacheKey):
-            conn = connCache[cacheKey]
+        if proxy:
+            m = re.match(urlRegex, proxy)
+            if m is None:
+                raise Exception('Invalid proxy: ' + proxy)
+
+            proxyHost = m.group('host')
+            proxyPort = m.group('port')
+
+            proxyUserpass = m.group('userpass')
+
+            conn = getConnection(protocol, proxyHost, proxyPort)
+            proxyHeaders = {}
+            if proxyUserpass:
+                import base64
+                base64String = base64.encodestring(proxyUserpass).strip()
+                authheader = "Basic %s" % base64String
+                proxyHeaders['Proxy-Authorization'] = authheader
+            conn.set_tunnel(host, port, proxyHeaders)
+            conn.connect()
         else:
-            if protocol == "https://":
-                conn = httplib.HTTPSConnection(host, port)
-            else:
-                conn = httplib.HTTPConnection(host, port)
-            connCache[cacheKey] = conn
+            conn = getConnection(protocol, host, port)
 
         if userpass:
             import base64
@@ -188,7 +227,8 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
             headers['Authorization'] = authheader
 
         # enable profiling
-        headers['X-Enable-Profiling'] = 'true'
+        if test_profile_enabled != 'False':
+            headers['X-Enable-Profiling'] = test_profile_enabled
 
         # process cookies
         request = HttpRequest(protocol, host, port, path, headers)
@@ -225,7 +265,7 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
                 verbose("[resp][profile] " + (" " * indent * 4) + p)
                 if p == "[": indent += 1
             verbose("")
-        
+
         if resp.status >= 400 and raiseOnError:
             raise Exception('%s %s in %s %s\n%s' % (resp.status, resp.reason, method, url, body))
 
@@ -277,7 +317,7 @@ class HttpRequest:
         full_url = self._protocol + self._host
         if self._port is not None:
             full_url += ":" + str(self._port)
-        full_url + self._url
+        full_url += self._url
         return full_url
 
     def get_header(self, header_name, default = None):

@@ -26,7 +26,8 @@ import com.junbo.test.payment.apihelper.clientencryption.EncrypterException;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Yunlong on 4/4/14.
@@ -108,7 +109,9 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                paymentInstrument.setPhoneNumber(creditCardInfo.getPhone());
+                paymentInstrument.setEmail(creditCardInfo.getEmail());
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
                 return paymentInfo.getPid();
 
             case EWALLET:
@@ -121,7 +124,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setBillingAddressId(billingAddressId);
                 paymentInstrument.setBillingAddressId(ewalletInfo.getBillingAddressId());
 
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
                 return paymentInfo.getPid();
 
             case PAYPAL:
@@ -132,7 +135,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setType(payPalInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(payPalInfo.getBillingAddressId());
 
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
                 return paymentInfo.getPid();
 
             case OTHERS:
@@ -143,6 +146,16 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setType(adyenInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(adyenInfo.getBillingAddressId());
 
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
+                return paymentInfo.getPid();
+
+            case FAKE:
+                CreditCardInfo creditCardInfo2 = (CreditCardInfo) paymentInfo;
+                paymentInstrument.setAccountName(creditCardInfo2.getAccountName());
+                paymentInstrument.setAccountNumber(encryptCreditCardInfo(creditCardInfo2));
+                paymentInstrument.setIsValidated(creditCardInfo2.isValidated());
+                paymentInstrument.setType(creditCardInfo2.getType().getValue());
+                paymentInstrument.setBillingAddressId(creditCardInfo2.getBillingAddressId());
                 paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
                 return paymentInfo.getPid();
 
@@ -161,15 +174,18 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
     public String updatePaymentInstrument(String uid, String paymentId,
                                           PaymentInstrumentBase paymentInfo) throws Exception {
+        return updatePaymentInstrument(uid, paymentId, paymentInfo, 200);
+    }
+
+    public String updatePaymentInstrument(String uid, String paymentId,
+                                          PaymentInstrumentBase paymentInfo, int expectedResponseCode) throws Exception {
         PaymentInstrument paymentInstrument = Master.getInstance().getPaymentInstrument(paymentId);
         switch (paymentInfo.getType()) {
             case CREDITCARD:
-                /*
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
-                */
-                return paymentClient.updatePaymentInstrument(uid, paymentId, paymentInstrument);
+                paymentInfo.setPid(paymentClient.updatePaymentInstrument(uid, paymentId, paymentInstrument, expectedResponseCode));
+                return paymentInfo.getPid();
             default:
                 throw new TestException(String.format("%s is not supported", paymentInfo.getType().toString()));
         }
@@ -186,6 +202,14 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
     public List<String> getPaymentInstruments(String uid) throws Exception {
         return paymentClient.getPaymentInstrumentsByUserId(uid);
+    }
+
+    public List<String> getPaymentInstruments(String uid, int expectedResponseCode) throws Exception {
+        return paymentClient.getPaymentInstrumentsByUserId(uid, expectedResponseCode);
+    }
+
+    public List<String> getPaymentInstruments(String uid, String paymentType, int expectedResponseCode) throws Exception {
+        return paymentClient.getPaymentInstrumentsByUserId(uid, paymentType, expectedResponseCode);
     }
 
     public void deletePaymentInstruments(String uid, String paymentId) throws Exception {
@@ -210,42 +234,6 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
     /*
     public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) {
 
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("javascript");
-
-        Map params = new HashMap();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        String dateFormatted = simpleDateFormat.format(new Date());
-
-        params.put("generationtime", dateFormatted);
-        params.put("expiryYear", "2016");
-        params.put("expiryMonth", "06");
-        params.put("cvc", "737");
-        params.put("holderName", "John");
-        params.put("number", "5555444433331111");
-
-        String json = JSONObject.toJSONString(params);
-
-        String jsFileName = "AdyenEncryptScript";
-
-        try {
-            String script = readFileContent(jsFileName);
-            engine.eval(script);
-            if (engine instanceof Invocable) {
-                Invocable invoke = (Invocable) engine;
-                Double c = (Double) invoke.invokeFunction("encrypt", json);
-            }
-        } catch (Exception e) {
-            e.toString();
-        }
-
-        return null;
-    }
-    */
-
-    public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) throws EncrypterException {
-        Encrypter e = new Encrypter(pubKey);
-
         Card card = new Card.Builder(new Date())
                 .number(creditCardInfo.getAccountNum())
                 .cvc(creditCardInfo.getEncryptedCVMCode())
@@ -254,9 +242,43 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 .holderName(creditCardInfo.getAccountNum())
                 .build();
 
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("javascript");
+
+        String jsFileName = "AdyenEncrypt.js";
+
+        try {
+            String script = readFileContent(jsFileName);
+            engine.eval(script);
+            if (engine instanceof Invocable) {
+                Invocable invoke = (Invocable) engine;
+                return (String) invoke.invokeFunction("encryptcc", card.toString());
+            }
+        } catch (Exception e) {
+            throw new TestException(e.getMessage());
+        }
+
+        return null;
+    }
+    */
+
+
+    public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) throws EncrypterException {
+        Encrypter e = new Encrypter(pubKey);
+
+        Card card = new Card.Builder(new Date())
+                .number(creditCardInfo.getAccountNum())
+                .cvc(creditCardInfo.getEncryptedCVMCode())
+                .expiryMonth(creditCardInfo.getExpireDate().substring(5,7))
+                .expiryYear(creditCardInfo.getExpireDate().substring(0,4))
+                .holderName(creditCardInfo.getAccountNum())
+                .build();
+
         return e.encrypt(card.toString());
 
     }
+
+
 
     String pubKey = "10001|9699D59B070DBA71B53A696C67B8FB8538C5C9B73D2BF485104858"
             + "DD12BC7D706A096DE6D8508175311A5B15EABE829C51DF269228EC75C8B3"

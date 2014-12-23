@@ -14,9 +14,8 @@ import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserCredentialValidator
 import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.mapper.ModelMapper
-import com.junbo.identity.data.repository.UserPasswordRepository
-import com.junbo.identity.data.repository.UserPinRepository
-import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.service.UserPasswordService
+import com.junbo.identity.service.UserPinService
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.RateUserCredentialRequest
@@ -39,10 +38,10 @@ import org.springframework.transaction.annotation.Transactional
 class UserCredentialResourceImpl implements UserCredentialResource {
 
     @Autowired
-    private UserPasswordRepository userPasswordRepository
+    private UserPasswordService userPasswordService
 
     @Autowired
-    private UserPinRepository userPinRepository
+    private UserPinService userPinService
 
     @Autowired
     private ModelMapper modelMapper
@@ -62,14 +61,14 @@ class UserCredentialResourceImpl implements UserCredentialResource {
     @Override
     Promise<UserCredential> create(UserId userId, UserCredential userCredential) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userCredential == null) {
-            throw new IllegalArgumentException('userCredential is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        def callback = authorizeCallbackFactory.create(userCredential.userId)
+        def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
@@ -86,14 +85,14 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     throw new IllegalArgumentException('userCredential mapping exception')
                 }
                 if (obj instanceof UserPassword) {
-                    return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+                    return userPasswordService.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
                         List<UserPassword> passwordList ->
                             return Promise.each(passwordList) { UserPassword userPassword ->
                                 userPassword.active = false
-                                return userPasswordRepository.update(userPassword, userPassword)
+                                return userPasswordService.update(userPassword, userPassword)
                             }
                     }.then {
-                        return userPasswordRepository.create((UserPassword) obj).then { UserPassword userPassword ->
+                        return userPasswordService.create((UserPassword) obj).then { UserPassword userPassword ->
                             if (userPassword == null) {
                                 throw new RuntimeException('Create Password exception')
                             }
@@ -108,14 +107,14 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                         }
                     }
                 } else if (obj instanceof UserPin) {
-                    return userPinRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+                    return userPinService.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
                         List<UserPin> pinList ->
                             return Promise.each(pinList) { UserPin userPin ->
                                 userPin.active = false
-                                return userPinRepository.update(userPin, userPin)
+                                return userPinService.update(userPin, userPin)
                             }
                     }.then {
-                        return userPinRepository.create((UserPin) obj).then { UserPin userPin ->
+                        return userPinService.create((UserPin) obj).then { UserPin userPin ->
                             if (userPin == null) {
                                 throw new RuntimeException()
                             }
@@ -142,19 +141,19 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         return userCredentialValidator.validateForSearch(userId, listOptions).then {
             if (listOptions.type == CredentialType.PASSWORD.toString()) {
                 if (listOptions.active != null) {
-                    return userPasswordRepository.searchByUserIdAndActiveStatus(listOptions.userId, listOptions.active,
+                    return userPasswordService.searchByUserIdAndActiveStatus(listOptions.userId, listOptions.active,
                             listOptions.limit, listOptions.offset).then { List<UserPassword> userPasswordList ->
                         return wrappUserCredential(userPasswordList, resultList, listOptions)
                     }
                 }
                 else {
-                    return userPasswordRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                    return userPasswordService.searchByUserId(listOptions.userId, listOptions.limit,
                             listOptions.offset).then { List<UserPassword> userPasswordList ->
                         return wrappUserCredential(userPasswordList, resultList, listOptions)
                     }
                 }
             } else if (listOptions.type == CredentialType.PIN.toString()) {
-                return userPinRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                return userPinService.searchByUserId(listOptions.userId, listOptions.limit,
                         listOptions.offset).then { List<UserPin> userPinList ->
                     if (userPinList == null) {
                         return Promise.pure(userPinList)

@@ -14,7 +14,8 @@ import groovy.transform.CompileStatic
 enum Prompt {
     LOGIN,
     NONE,
-    CONSENT
+    CONSENT,
+    TOS
 
     static boolean isValid(String value) {
         try {

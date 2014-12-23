@@ -6,7 +6,10 @@
 
 package com.junbo.entitlement.db.repository;
 
+import com.junbo.common.cloudant.CloudantClientBase;
+import com.junbo.common.cloudant.client.CloudantClientBulk;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.Context;
 import com.junbo.entitlement.db.dao.EntitlementDao;
 import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementEntity;
@@ -15,8 +18,9 @@ import com.junbo.entitlement.db.mapper.EntitlementMapper;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
+import com.junbo.langur.core.promise.Promise;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Repository of Entitlement.
@@ -47,15 +51,62 @@ public class EntitlementRepository {
     }
 
     public Entitlement insert(Entitlement entitlement) {
-        EntitlementEntity result = entitlementDao.insert(entitlementMapper.toEntitlementEntity(entitlement));
-        entitlementHistoryDao.insert(new EntitlementHistoryEntity(CREATE, result));
+        final EntitlementEntity result = entitlementDao.insert(entitlementMapper.toEntitlementEntity(entitlement));
+        entitlementHistoryDao.insertAsync(new EntitlementHistoryEntity(CREATE, result));
         return entitlementMapper.toEntitlement(result);
     }
 
+    public Map<Long, List<Entitlement>> bulkInsert(final Map<Long, List<Entitlement>> entitlements) {
+        final Map<Long, List<Entitlement>> resultEntitlements = new HashMap<>();
+        try {
+            CloudantClientBase.setUseBulk(true);
+            for (Long actionId : entitlements.keySet()) {
+                List<Entitlement> result = new ArrayList<>();
+                for (Entitlement e : entitlements.get(actionId)) {
+                    result.add(entitlementMapper.toEntitlement(
+                            entitlementDao.insert(entitlementMapper.toEntitlementEntity(e))));
+                }
+                resultEntitlements.put(actionId, result);
+            }
+        }
+        finally {
+            CloudantClientBulk.commit().get();
+            CloudantClientBase.setUseBulk(false);
+        }
+        Context.get().registerAsyncTask(new Promise.Func0<Promise>() {
+            @Override
+            public Promise apply() {
+                Promise result = Promise.pure();
+                try {
+                    CloudantClientBase.setUseBulk(true);
+                    for (List<Entitlement> es : resultEntitlements.values()) {
+                        final List<Entitlement> localEs = es;
+                        result = result.then(new Promise.Func<Entitlement, Promise<Void>>() {
+                            @Override
+                            public Promise<Void> apply(Entitlement entitlement) {
+                                return Promise.each(localEs.iterator(), new Promise.Func<Entitlement, Promise>() {
+                                    @Override
+                                    public Promise apply(Entitlement entitlement) {
+                                        return entitlementHistoryDao.insertSync(new EntitlementHistoryEntity(CREATE, entitlementMapper.toEntitlementEntity(entitlement)));
+                                    }
+                                });
+                            }
+                        });
+                    }
+                } finally {
+                    result = CloudantClientBulk.commit();
+                    CloudantClientBase.setUseBulk(false);
+                }
+                return result;
+            }
+        });
+        return resultEntitlements;
+    }
+
     public Entitlement update(Entitlement entitlement, Entitlement oldEntitlement) {
-        EntitlementEntity result = entitlementDao.update(entitlementMapper.toEntitlementEntity(entitlement),
+        final EntitlementEntity result = entitlementDao.update(entitlementMapper.toEntitlementEntity(entitlement),
                 entitlementMapper.toEntitlementEntity(oldEntitlement));
-        entitlementHistoryDao.insert(new EntitlementHistoryEntity(UPDATE, result));
+        entitlementHistoryDao.insertAsync(new EntitlementHistoryEntity(UPDATE, result));
         return entitlementMapper.toEntitlement(result);
     }
 
@@ -66,9 +117,9 @@ public class EntitlementRepository {
     }
 
     public void delete(String entitlementId) {
-        EntitlementEntity entitlementEntity = entitlementDao.get(entitlementId);
+        final EntitlementEntity entitlementEntity = entitlementDao.get(entitlementId);
         entitlementEntity.setIsDeleted(true);
-        entitlementHistoryDao.insert(new EntitlementHistoryEntity(DELETE, entitlementEntity));
+        entitlementHistoryDao.insertAsync(new EntitlementHistoryEntity(DELETE, entitlementEntity));
         entitlementDao.update(entitlementEntity, entitlementEntity);
     }
 

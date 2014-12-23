@@ -27,14 +27,18 @@ import com.junbo.common.model.Results
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.normalize.NormalizeService
+import com.junbo.identity.data.hash.PiiHash
+import com.junbo.identity.data.hash.PiiHashFactory
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.*
+import com.junbo.identity.service.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.model.migration.OculusInput
 import com.junbo.identity.spec.v1.model.migration.OculusOutput
+import com.junbo.identity.spec.v1.model.migration.UpdateHtmlOutput
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker
 import com.junbo.identity.spec.v1.resource.MigrationResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
@@ -46,6 +50,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
+
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 6/6/14.
  */
@@ -62,13 +69,13 @@ class MigrationResourceImpl implements MigrationResource {
     private static final String ORGANIZATION_FILTER_TYPE = 'SINGLEINSTANCEFILTER'
 
     @Autowired
-    private OrganizationRepository organizationRepository
+    private OrganizationService organizationService
 
     @Autowired
-    private GroupRepository groupRepository
+    private GroupService groupService
 
     @Autowired
-    private UserGroupRepository userGroupRepository
+    private UserGroupService userGroupService
 
     @Autowired
     @Qualifier('identityRoleResource')
@@ -79,22 +86,39 @@ class MigrationResourceImpl implements MigrationResource {
     private RoleAssignmentResource roleAssignmentResource
 
     @Autowired
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private UserPersonalInfoService userPersonalInfoService
 
     @Autowired
-    private UserPasswordRepository userPasswordRepository
+    private UserPasswordService userPasswordService
 
     @Autowired
-    private UserRepository userRepository
+    private UserService userService
 
     @Autowired
-    private CommunicationRepository communicationRepository
+    private CommunicationService communicationService
 
     @Autowired
-    private UserCommunicationRepository userCommunicationRepository
+    private UserCommunicationService userCommunicationService
 
     @Autowired
     private NormalizeService normalizeService
+
+    @Autowired
+    private UsernameEmailBlockerService usernameEmailBlockerService
+
+    @Autowired
+    private PiiHashFactory piiHashFactory
+
+    private static Map htmlEncode = new HashMap<String, String>()
+
+    static {
+        htmlEncode.put('lt', '<')
+        htmlEncode.put('LT', '<')
+        htmlEncode.put('gt', '>')
+        htmlEncode.put('GT', '>')
+        htmlEncode.put('amp', '&')
+        htmlEncode.put('AMP', '&')
+    }
 
     @Override
     @Transactional
@@ -177,6 +201,287 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
+    @Override
+    Promise<Response> usernameMailBlock(UsernameMailBlocker usernameMailBlocker) {
+        return validateBlockerValid(usernameMailBlocker).then { Boolean existing ->
+            if (existing) {
+                // do nothing
+                return Promise.pure(Response.status(200).build())
+            }
+
+            // create the username mail blocker history
+            return usernameEmailBlockerService.create(usernameMailBlocker).then {
+                return Promise.pure(Response.status(200).build())
+            }
+        }
+    }
+
+    @Override
+    Promise<UpdateHtmlOutput> updateUserHtmlCode(UserId userId) {
+        def changed = false
+        return userService.get(userId).then { User existing ->
+            return updateUserLoginName(existing).then { Boolean isChanged ->
+                changed = changed || isChanged
+                return Promise.pure(null)
+            }.then {
+                return updateUserName(existing).then { Boolean isChanged ->
+                    changed = changed || isChanged
+                    return Promise.pure(null)
+                }
+            }.then {
+                return updateUserEmail(existing).then { Boolean isChanged ->
+                    changed = changed || isChanged
+                    return Promise.pure(null)
+                }
+            }.then {
+                return updateUserProfile(existing).then { Boolean isChanged ->
+                    changed = changed || isChanged
+                    return Promise.pure(changed)
+                }
+            }.then {
+                if (changed) {
+                    return userService.update(existing, existing).then {
+                        return Promise.pure(changed)
+                    }
+                }
+
+                return Promise.pure(changed)
+            }
+        }.recover { Throwable ex ->
+            logger.error('fail to update user: ' + userId.toString(), ex)
+            return Promise.pure(false)
+        }.then { Boolean updated ->
+            UpdateHtmlOutput updateHtmlOutput = new UpdateHtmlOutput()
+            updateHtmlOutput.updated = updated
+            updateHtmlOutput.userId = userId
+
+            return Promise.pure(updateHtmlOutput)
+        }
+    }
+
+    Promise<Boolean> updateUserLoginName(User existing) {
+        def changed = false
+        if (existing.username != null) {
+            return userPersonalInfoService.get(existing.username).then { UserPersonalInfo usernamePii ->
+                if (usernamePii == null || usernamePii.value == null) {
+                    changed = true
+                    existing.username = null
+                    return Promise.pure(changed)
+                }
+                UserLoginName userLoginName = (UserLoginName)JsonHelper.jsonNodeToObj(usernamePii.value, UserLoginName)
+                String updatedHtml = replaceHtmlCode(userLoginName.userName);
+                if (userLoginName.userName == updatedHtml) {
+                    return Promise.pure(changed)
+                }
+                changed = true;
+                userLoginName.setUserName(updatedHtml);
+                userLoginName.setCanonicalUsername(replaceHtmlCode(userLoginName.canonicalUsername))
+                usernamePii.value = JsonHelper.objToJsonNode(userLoginName)
+                return userPersonalInfoService.update(usernamePii, usernamePii).then {
+                    return Promise.pure(changed)
+                }
+            }
+        } else {
+            return Promise.pure(changed)
+        }
+    }
+
+    Promise<Boolean> updateUserName(User existing) {
+        def changed = false
+        if (existing.name != null) {
+            return userPersonalInfoService.get(existing.name).then { UserPersonalInfo name ->
+                if (name == null || name.value == null) {
+                    changed = true
+                    existing.name = null
+                    return Promise.pure(changed)
+                }
+                UserName userName = (UserName)JsonHelper.jsonNodeToObj(name.value, UserName)
+                String formattedGivenName = replaceHtmlCode(userName.givenName)
+                String formattedMiddleName = replaceHtmlCode(userName.middleName)
+                String formattedFamilyName = replaceHtmlCode(userName.familyName)
+                String formattedFullName = replaceHtmlCode(userName.fullName)
+
+                if (formattedGivenName == userName.givenName
+                 && formattedMiddleName == userName.middleName
+                 && formattedFamilyName == userName.familyName
+                 && formattedFullName == userName.fullName) {
+                    return Promise.pure(changed)
+                }
+                changed = true
+                userName.setGivenName(formattedGivenName)
+                userName.setMiddleName(formattedMiddleName)
+                userName.setFamilyName(formattedFamilyName)
+                userName.setFullName(formattedFullName)
+                name.value = JsonHelper.objToJsonNode(userName)
+                return userPersonalInfoService.update(name, name).then {
+                    return Promise.pure(changed)
+                }
+            }
+        } else {
+            return Promise.pure(changed)
+        }
+    }
+
+    Promise<Boolean> updateUserEmail(User existing) {
+        def changed = false
+        if (!CollectionUtils.isEmpty(existing.emails)) {
+            return Promise.each(existing.emails) { UserPersonalInfoLink userPersonalInfoLink ->
+                if (userPersonalInfoLink.value == null) {
+                    return Promise.pure(null)
+                }
+                return userPersonalInfoService.get(userPersonalInfoLink.value).then { UserPersonalInfo email ->
+                    if (email == null || email.value == null) {
+                        changed = true
+                        email.value = null
+                        return Promise.pure(null)
+                    }
+                    Email emailObj = (Email)JsonHelper.jsonNodeToObj(email.value, Email)
+                    String formattedEmailInfo = replaceHtmlCode(emailObj.info)
+                    if (formattedEmailInfo == emailObj.info) {
+                        return Promise.pure(null)
+                    }
+                    changed = true
+                    emailObj.info = formattedEmailInfo
+                    email.value = JsonHelper.objToJsonNode(emailObj)
+                    return userPersonalInfoService.update(email, email).then {
+                        return Promise.pure(null)
+                    }
+                }
+            }.then {
+                return Promise.pure(changed)
+            }
+        } else {
+            return Promise.pure(changed)
+        }
+    }
+
+    Promise<Boolean> updateUserProfile(User existing) {
+        def changed = false
+        if (existing.profile == null) {
+            return Promise.pure(changed)
+        }
+
+        String formattedHeadLine = replaceHtmlCode(existing.profile.headline);
+        String formattedSummary = replaceHtmlCode(existing.profile.summary);
+        String formattedWebpage = replaceHtmlCode(existing.profile.webpage);
+        String formattedHref = replaceHtmlCode(existing.profile.avatar?.href);
+
+        if (formattedHeadLine == existing.profile.headline
+         && formattedSummary == existing.profile.summary
+         && formattedWebpage == existing.profile.webpage
+         && formattedHref == existing.profile.avatar?.href) {
+            return Promise.pure(changed)
+        }
+
+        changed = true
+        existing.profile.headline = formattedHeadLine
+        existing.profile.summary = formattedSummary
+        existing.profile.webpage = formattedWebpage
+        if (existing.profile.avatar?.href != null) {
+            existing.profile.avatar.href = formattedHref
+        }
+        return Promise.pure(changed)
+    }
+
+    Promise<Boolean> validateBlockerValid(UsernameMailBlocker usernameMailBlocker) {
+        if (usernameMailBlocker == null) {
+            throw new IllegalArgumentException('usernameMailBlocker')
+        }
+
+        if (StringUtils.isEmpty(usernameMailBlocker.username)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
+        }
+
+        if (StringUtils.isEmpty(usernameMailBlocker.email)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
+        }
+
+        if (!StringUtils.isEmpty(usernameMailBlocker.canonicalUsername)) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('canonicalUsername').exception()
+        }
+
+        if (!StringUtils.isEmpty(usernameMailBlocker.hashEmail)) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('hashEmail').exception()
+        }
+
+        if (!StringUtils.isEmpty(usernameMailBlocker.hashUsername)) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('hashUsername').exception()
+        }
+
+        usernameMailBlocker.canonicalUsername = normalizeService.normalize(usernameMailBlocker.username)
+
+        // Check whether username and email is already imported, if yes, do nothing;
+        // if username and email exists, but it didn't match current value, throw exception
+        return validateBlockUsernameExists(usernameMailBlocker).then { Boolean existing ->
+            if (existing) {
+                return Promise.pure(existing)
+            }
+
+            return validateBlockEmailExists(usernameMailBlocker)
+        }
+    }
+
+    Promise<Boolean> validateBlockUsernameExists(UsernameMailBlocker usernameMailBlocker) {
+        return usernameEmailBlockerService.searchByUsername(usernameMailBlocker.canonicalUsername, Integer.MAX_VALUE, 0).then {
+            List<UsernameMailBlocker> usernameMailBlockerList ->
+                if (CollectionUtils.isEmpty(usernameMailBlockerList)) {
+                    return Promise.pure(false)
+                }
+
+                if (usernameMailBlockerList.size() > 1) {
+                    throw new IllegalStateException('username ' + usernameMailBlocker.canonicalUsername + ' have more than one same username')
+                }
+
+                if (StringUtils.isEmpty(usernameMailBlockerList.get(0).getHashEmail())) {
+                    throw new IllegalStateException('email with username ' + usernameMailBlocker.canonicalUsername + ' is missing')
+                }
+
+                PiiHash piiHash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
+                String hashedMail = piiHash.generateHash(usernameMailBlocker.email.toLowerCase(java.util.Locale.ENGLISH))
+                if (!hashedMail.equalsIgnoreCase(usernameMailBlockerList.get(0).getHashEmail())) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email do not match').exception()
+                }
+
+                return Promise.pure(true)
+        }
+    }
+
+    Promise<Boolean> validateBlockEmailExists(UsernameMailBlocker usernameMailBlocker) {
+        return usernameEmailBlockerService.searchByEmail(usernameMailBlocker.email, Integer.MAX_VALUE, 0).then { List<UsernameMailBlocker> usernameMailBlockerList ->
+            if (CollectionUtils.isEmpty(usernameMailBlockerList)) {
+                return Promise.pure(false)
+            }
+
+            if (usernameMailBlockerList.size() > 1) {
+                throw new IllegalStateException('email ' + usernameMailBlocker.email + ' has more than one same mail')
+            }
+
+            if (StringUtils.isEmpty(usernameMailBlockerList.get(0).getHashUsername())) {
+                throw new IllegalStateException('username with email ' + usernameMailBlocker.email + ' is missing')
+            }
+
+            PiiHash piiHash = getPiiHash(UserPersonalInfoType.USERNAME.toString())
+            String hashedUsername = piiHash.generateHash(usernameMailBlocker.canonicalUsername)
+            if (!hashedUsername.equalsIgnoreCase(usernameMailBlockerList.get(0).getHashUsername())) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username and email do not match').exception()
+            }
+
+            return Promise.pure(true)
+        }
+        return Promise.pure(true)
+    }
+
+    private PiiHash getPiiHash(String type) {
+        PiiHash hash = piiHashFactory.getAllPiiHashes().find { PiiHash piiHash ->
+            return piiHash.handles(type)
+        }
+        if (hash == null) {
+            throw new IllegalStateException('No hash implementation for type ' + type)
+        }
+
+        return hash
+    }
+
     Promise<Boolean> saveOrUpdateUserName(OculusInput oculusInput, User user) {
         UserName userName = new UserName(
                 givenName: oculusInput.firstName,
@@ -191,9 +496,9 @@ class MigrationResourceImpl implements MigrationResource {
         )
 
         if (user.name != null) {
-            return userPersonalInfoRepository.get(user.name).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(user.name).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
-                    return userPersonalInfoRepository.create(name).then { UserPersonalInfo userNamePII ->
+                    return userPersonalInfoService.create(name).then { UserPersonalInfo userNamePII ->
                         user.name = (UserPersonalInfoId)userNamePII.id
                         return Promise.pure(true)
                     }
@@ -202,7 +507,7 @@ class MigrationResourceImpl implements MigrationResource {
                     if (userName.givenName == existingUserName.givenName && userName.familyName == existingUserName.familyName) {
                         return Promise.pure(false)
                     } else {
-                        return userPersonalInfoRepository.create(name).then { UserPersonalInfo userNamePII ->
+                        return userPersonalInfoService.create(name).then { UserPersonalInfo userNamePII ->
                             user.name = (UserPersonalInfoId)userNamePII.id
                             return Promise.pure(true)
                         }
@@ -210,7 +515,7 @@ class MigrationResourceImpl implements MigrationResource {
                 }
             }
         } else {
-            return userPersonalInfoRepository.create(name).then { UserPersonalInfo userNamePII ->
+            return userPersonalInfoService.create(name).then { UserPersonalInfo userNamePII ->
                 user.name = (UserPersonalInfoId)userNamePII.id
                 return Promise.pure(true)
             }
@@ -232,9 +537,9 @@ class MigrationResourceImpl implements MigrationResource {
 
         if (!CollectionUtils.isEmpty(user.emails)) {
             UserPersonalInfoLink userPersonalInfoLink = user.emails.get(0)
-            return userPersonalInfoRepository.get(userPersonalInfoLink.value).then { UserPersonalInfo emailPII ->
+            return userPersonalInfoService.get(userPersonalInfoLink.value).then { UserPersonalInfo emailPII ->
                 if (emailPII == null) {
-                    return userPersonalInfoRepository.create(email).then { UserPersonalInfo userPersonalInfo ->
+                    return userPersonalInfoService.create(email).then { UserPersonalInfo userPersonalInfo ->
                         user.emails = new ArrayList<>()
                         UserPersonalInfoLink emailLink = new UserPersonalInfoLink(
                                 isDefault: true,
@@ -250,12 +555,12 @@ class MigrationResourceImpl implements MigrationResource {
                             return Promise.pure(false)
                         } else {
                             emailPII.lastValidateTime = email.lastValidateTime
-                            return userPersonalInfoRepository.update(emailPII, emailPII).then {
+                            return userPersonalInfoService.update(emailPII, emailPII).then {
                                 return Promise.pure(false)
                             }
                         }
                     } else {
-                        return userPersonalInfoRepository.create(email).then { UserPersonalInfo userPersonalInfo ->
+                        return userPersonalInfoService.create(email).then { UserPersonalInfo userPersonalInfo ->
                             user.emails = new ArrayList<>()
                             UserPersonalInfoLink emailLink = new UserPersonalInfoLink(
                                     isDefault: true,
@@ -268,7 +573,7 @@ class MigrationResourceImpl implements MigrationResource {
                 }
             }
         } else {
-            return userPersonalInfoRepository.create(email).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.create(email).then { UserPersonalInfo userPersonalInfo ->
                 user.emails = new ArrayList<>()
                 UserPersonalInfoLink emailLink = new UserPersonalInfoLink(
                         isDefault: true,
@@ -293,9 +598,9 @@ class MigrationResourceImpl implements MigrationResource {
         )
 
         if (user.gender != null) {
-            return userPersonalInfoRepository.get(user.gender).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(user.gender).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
-                    return userPersonalInfoRepository.create(gender).then { UserPersonalInfo genderPII ->
+                    return userPersonalInfoService.create(gender).then { UserPersonalInfo genderPII ->
                         user.gender = (UserPersonalInfoId)genderPII.id
                         return Promise.pure(true)
                     }
@@ -304,7 +609,7 @@ class MigrationResourceImpl implements MigrationResource {
                     if (userGender.info == existingGender.info) {
                         return Promise.pure(false)
                     } else {
-                        return userPersonalInfoRepository.create(gender).then { UserPersonalInfo genderPII ->
+                        return userPersonalInfoService.create(gender).then { UserPersonalInfo genderPII ->
                             user.gender = (UserPersonalInfoId)genderPII.id
                             return Promise.pure(false)
                         }
@@ -312,7 +617,7 @@ class MigrationResourceImpl implements MigrationResource {
                 }
             }
         } else {
-            return userPersonalInfoRepository.create(gender).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.create(gender).then { UserPersonalInfo userPersonalInfo ->
                 user.gender = (UserPersonalInfoId)userPersonalInfo.id
                 return Promise.pure(true)
             }
@@ -332,9 +637,9 @@ class MigrationResourceImpl implements MigrationResource {
         )
 
         if (user.dob != null) {
-            return userPersonalInfoRepository.get(user.dob).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(user.dob).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
-                    return userPersonalInfoRepository.create(dob).then { UserPersonalInfo dobPII ->
+                    return userPersonalInfoService.create(dob).then { UserPersonalInfo dobPII ->
                         user.dob = (UserPersonalInfoId)dobPII.id
                         return Promise.pure(true)
                     }
@@ -343,7 +648,7 @@ class MigrationResourceImpl implements MigrationResource {
                     if (existingDob.info == userDOB.info) {
                         return Promise.pure(false)
                     } else {
-                        return userPersonalInfoRepository.create(dob).then { UserPersonalInfo dobPII ->
+                        return userPersonalInfoService.create(dob).then { UserPersonalInfo dobPII ->
                             user.dob = (UserPersonalInfoId)dobPII.id
                             return Promise.pure(true)
                         }
@@ -351,7 +656,7 @@ class MigrationResourceImpl implements MigrationResource {
                 }
             }
         } else {
-            return userPersonalInfoRepository.create(dob).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.create(dob).then { UserPersonalInfo userPersonalInfo ->
                 user.dob = (UserPersonalInfoId)userPersonalInfo.id
                 return Promise.pure(true)
             }
@@ -388,7 +693,7 @@ class MigrationResourceImpl implements MigrationResource {
             }
         }.then { User createdUser ->
             if (flag) {
-                return userRepository.update(createdUser, createdUser)
+                return userService.update(createdUser, createdUser)
             } else {
                 return Promise.pure(createdUser)
             }
@@ -415,7 +720,7 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     Promise<UserPassword> saveOrUpdatePassword(OculusInput oculusInput, User user) {
-        return userPasswordRepository.searchByUserId(user.getId(), Integer.MAX_VALUE, 0).then { List<UserPassword> userPasswordList ->
+        return userPasswordService.searchByUserId(user.getId(), Integer.MAX_VALUE, 0).then { List<UserPassword> userPasswordList ->
             if (CollectionUtils.isEmpty(userPasswordList)) {
                 UserPassword userPassword = new UserPassword(
                         changeAtNextLogin: oculusInput.forceResetPassword,
@@ -424,7 +729,7 @@ class MigrationResourceImpl implements MigrationResource {
                         passwordHash: oculusInput.password
                 )
                 // create password
-                return userPasswordRepository.create(userPassword)
+                return userPasswordService.create(userPassword)
             } else {
                 UserPassword activePassword = userPasswordList.find { UserPassword userPassword ->
                     return userPassword.active
@@ -437,7 +742,7 @@ class MigrationResourceImpl implements MigrationResource {
                     activePassword.changeAtNextLogin = oculusInput.forceResetPassword
                     activePassword.passwordHash = oculusInput.password
 
-                    return userPasswordRepository.update(activePassword, activePassword)
+                    return userPasswordService.update(activePassword, activePassword)
                 }
             }
         }
@@ -456,11 +761,11 @@ class MigrationResourceImpl implements MigrationResource {
                 if (entry == null) {
                     return Promise.pure(null)
                 }
-                return userCommunicationRepository.searchByUserIdAndCommunicationId(user.getId(), new CommunicationId(entry.key),
+                return userCommunicationService.searchByUserIdAndCommunicationId(user.getId(), new CommunicationId(entry.key),
                         Integer.MAX_VALUE, 0).then { List<UserCommunication> userCommunicationList ->
                     if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && entry.value) {
                         // create
-                        return userCommunicationRepository.create(new UserCommunication(
+                        return userCommunicationService.create(new UserCommunication(
                                 userId: user.getId(),
                                 communicationId: new CommunicationId(entry.key)
                         ))
@@ -474,12 +779,12 @@ class MigrationResourceImpl implements MigrationResource {
                             if (userCommunication.userId != user.getId() || userCommunication.communicationId != new CommunicationId(entry.key)) {
                                 userCommunication.setUserId(user.getId())
                                 userCommunication.setCommunicationId(new CommunicationId(entry.key))
-                                return userCommunicationRepository.update(userCommunication, userCommunication)
+                                return userCommunicationService.update(userCommunication, userCommunication)
                             }
                             return Promise.pure(null)
                         } else {
                             // delete
-                            return userCommunicationRepository.delete(userCommunication.getId())
+                            return userCommunicationService.delete(userCommunication.getId())
                         }
                     }
                 }
@@ -504,9 +809,9 @@ class MigrationResourceImpl implements MigrationResource {
                 updatedTime: oculusInput.updateDate
         )
 
-        return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existing ->
+        return userService.getActiveUsersByMigrateId(oculusInput.currentId).then { User existing ->
             if (existing == null) {
-                return userRepository.create(user).then { User createdUser ->
+                return userService.create(user).then { User createdUser ->
                     UserLoginName loginName = new UserLoginName(
                             userName: oculusInput.username,
                             canonicalUsername: normalizeService.normalize(oculusInput.username)
@@ -519,9 +824,9 @@ class MigrationResourceImpl implements MigrationResource {
                             updatedTime: oculusInput.updateDate
                     )
 
-                    return userPersonalInfoRepository.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
+                    return userPersonalInfoService.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
                         createdUser.username = createdUserPersonalInfo.getId()
-                        return userRepository.update(createdUser, createdUser)
+                        return userService.update(createdUser, createdUser)
                     }
                 }
             } else {
@@ -556,17 +861,17 @@ class MigrationResourceImpl implements MigrationResource {
                             updatedTime: oculusInput.updateDate
                     )
 
-                    return userPersonalInfoRepository.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
+                    return userPersonalInfoService.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
                         existing.username = createdUserPersonalInfo.getId()
-                        return userRepository.update(existing, existing)
+                        return userService.update(existing, existing)
                     }
                 } else {
-                    return userPersonalInfoRepository.get(existing.username).then { UserPersonalInfo userPersonalInfo ->
+                    return userPersonalInfoService.get(existing.username).then { UserPersonalInfo userPersonalInfo ->
                         UserLoginName loginName = (UserLoginName) JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
                         if (loginName.userName == oculusInput.username) {
                             // Do nothing
                             if (!flag) {
-                                return userRepository.update(existing, existing)
+                                return userService.update(existing, existing)
                             } else {
                                 return Promise.pure(existing)
                             }
@@ -583,9 +888,9 @@ class MigrationResourceImpl implements MigrationResource {
                                     createdTime: oculusInput.createdDate,
                                     updatedTime: oculusInput.updateDate
                             )
-                            return userPersonalInfoRepository.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
+                            return userPersonalInfoService.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
                                 existing.username = createdUserPersonalInfo.getId()
-                                return userRepository.update(existing, existing)
+                                return userService.update(existing, existing)
                             }
                         }
                     }
@@ -595,8 +900,8 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     Promise<User> checkEmailValid(OculusInput oculusInput) {
-        return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existing ->
-            return userPersonalInfoRepository.searchByEmail(oculusInput.email.toLowerCase(java.util.Locale.ENGLISH),null,
+        return userService.getActiveUsersByMigrateId(oculusInput.currentId).then { User existing ->
+            return userPersonalInfoService.searchByEmail(oculusInput.email.toLowerCase(java.util.Locale.ENGLISH),null,
                     Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> emails ->
                 if (CollectionUtils.isEmpty(emails)) {
                     return Promise.pure(null)
@@ -647,7 +952,7 @@ class MigrationResourceImpl implements MigrationResource {
                 if (entry.value == null) {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('communications').exception()
                 }
-                return communicationRepository.get(new CommunicationId(entry.key)).then { Communication communication ->
+                return communicationService.get(new CommunicationId(entry.key)).then { Communication communication ->
                     if (communication == null) {
                         throw AppErrors.INSTANCE.communicationNotFound(new CommunicationId(entry.key)).exception()
                     }
@@ -697,9 +1002,9 @@ class MigrationResourceImpl implements MigrationResource {
         }
 
         return checkMigrateIdAndUserId(oculusInput).then {
-            return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existingUser ->
+            return userService.getActiveUsersByMigrateId(oculusInput.currentId).then { User existingUser ->
                 if (existingUser != null && existingUser.username != null) {
-                    return userPersonalInfoRepository.get(existingUser.username).then { UserPersonalInfo userPersonalInfo ->
+                    return userPersonalInfoService.get(existingUser.username).then { UserPersonalInfo userPersonalInfo ->
                         if (userPersonalInfo == null) {
                             return Promise.pure(null)
                         }
@@ -720,7 +1025,7 @@ class MigrationResourceImpl implements MigrationResource {
 
     Promise<Void> checkMigrateIdAndUserId(OculusInput oculusInput) {
         if (oculusInput.userId != null) {
-            return userRepository.get(oculusInput.userId).then { User existingUser ->
+            return userService.getActiveUser(oculusInput.userId).then { User existingUser ->
                 if (existingUser == null) {
                     return Promise.pure(null)
                 } else {
@@ -737,7 +1042,7 @@ class MigrationResourceImpl implements MigrationResource {
                     } else if (existingUser.migratedUserId == null && oculusInput.currentId != null) {
                         // assign to existing migratedUserId
                         existingUser.migratedUserId = oculusInput.currentId
-                        return userRepository.update(existingUser, existingUser).then {
+                        return userService.update(existingUser, existingUser).then {
                             List<Integer> list = new ArrayList<>()
                             list.add(1)
                             list.add(2)
@@ -745,7 +1050,7 @@ class MigrationResourceImpl implements MigrationResource {
                             list.add(4)
                             list.add(5)
                             return Promise.each(list.iterator()) { Integer integer ->
-                                return userRepository.searchUserByMigrateId(existingUser.migratedUserId).then { User migratedUser ->
+                                return userService.getActiveUsersByMigrateId(existingUser.migratedUserId).then { User migratedUser ->
                                     if (migratedUser != null) {
                                         return Promise.pure(Promise.BREAK)
                                     }
@@ -766,13 +1071,13 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     Promise<Void> checkCanonicalUsernameNotExists(String inputUserName) {
-        return userPersonalInfoRepository.searchByCanonicalUsername(normalizeService.normalize(inputUserName), Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+        return userPersonalInfoService.searchByCanonicalUsername(normalizeService.normalize(inputUserName), Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
             if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                 return Promise.pure(null)
             }
 
             return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
-                return userRepository.get(userPersonalInfo.getUserId()).then { User existing ->
+                return userService.getActiveUser(userPersonalInfo.getUserId()).then { User existing ->
                     if (existing.username == userPersonalInfo.getId()) {
                         throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username is already used by others').exception()
                     }
@@ -806,11 +1111,12 @@ class MigrationResourceImpl implements MigrationResource {
         if (StringUtils.isEmpty(oculusInput.password)) {
             throw new IllegalArgumentException('password is null or empty with currentId: ' + oculusInput.currentId)
         }
+        /*
         String[] passwords = oculusInput.password.split(":")
         if (passwords.length != 4 && passwords[0] != "1") {
             throw new IllegalArgumentException('password only accept version 1 with currentId: ' + oculusInput.currentId)
         }
-
+        */
         return Promise.pure(null)
     }
 
@@ -873,13 +1179,13 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Promise<Void> deleteAllUserGroup(User createdUser) {
-        return userGroupRepository.searchByUserId(createdUser.getId(), Integer.MAX_VALUE, 0).then { List<UserGroup> userGroupList ->
-            if (CollectionUtils.isEmpty(userGroupList)) {
+        return userGroupService.searchByUserId(createdUser.getId(), Integer.MAX_VALUE, 0).then { Results<UserGroup> userGroupList ->
+            if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
                 return Promise.pure(null)
             }
 
-            return Promise.each(userGroupList) { UserGroup userGroup ->
-                return userGroupRepository.delete(userGroup.getId()).then {
+            return Promise.each(userGroupList.items) { UserGroup userGroup ->
+                return userGroupService.delete(userGroup.getId()).then {
                     return Promise.pure(null)
                 }
             }
@@ -902,7 +1208,7 @@ class MigrationResourceImpl implements MigrationResource {
     // if organization.name doesn't exists, then
     //          i.  create organization, create group with "Organization Admin" role and "Developer Admin" role;
     Promise<Organization> saveOrUpdateOrganization(OculusInput oculusInput, User createdUser) {
-        return organizationRepository.searchByMigrateCompanyId(oculusInput.company.companyId).then { Organization organization ->
+        return organizationService.searchByMigrateCompanyId(oculusInput.company.companyId).then { Organization organization ->
             if (organization == null) {
                 // create organization, create role, create group
                 return createOrReturnOrgRole(oculusInput, organization, createdUser)
@@ -958,7 +1264,7 @@ class MigrationResourceImpl implements MigrationResource {
         if (oculusInput.company.isAdmin) {
             // Add to ADMIN group
             return removeUserGroupMemberShip(oculusInput, createdUser, existingOrganization, DEVELOPER_ROLE).then {
-                return groupRepository.searchByOrganizationIdAndName(existingOrganization.getId(), ADMIN_ROLE, Integer.MAX_VALUE, null).then { Group group ->
+                return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), ADMIN_ROLE, Integer.MAX_VALUE, null).then { Group group ->
                     if (group == null) {
                         return saveOrReturnGroup(existingOrganization, ADMIN_ROLE).then { Group newGroup ->
                             return saveOrReturnUserGroup(createdUser, newGroup).then {
@@ -974,7 +1280,7 @@ class MigrationResourceImpl implements MigrationResource {
         } else {
             // Add to DEVELOPER group
             return removeUserGroupMemberShip(oculusInput, createdUser, existingOrganization, ADMIN_ROLE).then {
-                return groupRepository.searchByOrganizationIdAndName(existingOrganization.getId(), DEVELOPER_ROLE, Integer.MAX_VALUE, null).then { Group group ->
+                return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), DEVELOPER_ROLE, Integer.MAX_VALUE, null).then { Group group ->
                     if (group == null) {
                         return saveOrReturnGroup(existingOrganization, DEVELOPER_ROLE).then { Group newGroup ->
                             return saveOrReturnUserGroup(createdUser, newGroup).then {
@@ -994,18 +1300,18 @@ class MigrationResourceImpl implements MigrationResource {
 
     private Promise<Void> removeUserGroupMemberShip(OculusInput oculusInput, User createdUser, Organization existingOrganization, String roleName) {
         // remove from developer group
-        return groupRepository.searchByOrganizationIdAndName(existingOrganization.getId(), roleName, Integer.MAX_VALUE, null).then { Group group ->
+        return groupService.searchByOrganizationIdAndName(existingOrganization.getId(), roleName, Integer.MAX_VALUE, null).then { Group group ->
             if (group == null) {
                 return Promise.pure(null)
             }
 
-            return userGroupRepository.searchByUserIdAndGroupId(createdUser.getId(), group.getId(), Integer.MAX_VALUE, null).then { List<UserGroup> userGroupList ->
-                if (CollectionUtils.isEmpty(userGroupList)) {
+            return userGroupService.searchByUserIdAndGroupId(createdUser.getId(), group.getId(), Integer.MAX_VALUE, null).then { Results<UserGroup> userGroupList ->
+                if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
                     return Promise.pure(null)
                 }
 
-                return Promise.each(userGroupList) { UserGroup userGroup ->
-                    return userGroupRepository.delete(userGroup.getId()).then {
+                return Promise.each(userGroupList.items) { UserGroup userGroup ->
+                    return userGroupService.delete(userGroup.getId()).then {
                         return Promise.pure(null)
                     }
                 }.then {
@@ -1027,7 +1333,7 @@ class MigrationResourceImpl implements MigrationResource {
             org.createdTime = oculusInput.createdDate
             org.updatedTime = oculusInput.updateDate
 
-            return organizationRepository.create(org).then { Organization createdOrg ->
+            return organizationService.create(org).then { Organization createdOrg ->
                 return getOrgShippingAddressId(oculusInput, createdOrg).then { UserPersonalInfoId orgShippingAddressId ->
                     org.shippingAddress = orgShippingAddressId
                     return Promise.pure(createdOrg)
@@ -1063,38 +1369,38 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Promise<Organization> retryOrganizationUpdate(Organization existingOrg) {
-        return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+        return organizationService.get(existingOrg.getId()).then { Organization organization ->
             if (existingOrg == organization) {
                 return Promise.pure(existingOrg)
             }
             existingOrg.rev = organization.rev
-            return organizationRepository.update(existingOrg, organization)
+            return organizationService.update(existingOrg, organization)
         }.recover { Throwable e ->
             // retry here
-            return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+            return organizationService.get(existingOrg.getId()).then { Organization organization ->
                 if (existingOrg == organization) {
                     return Promise.pure(existingOrg)
                 }
                 existingOrg.rev = organization.rev
-                return organizationRepository.update(existingOrg, organization)
+                return organizationService.update(existingOrg, organization)
             }
         }.recover { Throwable e ->
             // retry here
-            return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+            return organizationService.get(existingOrg.getId()).then { Organization organization ->
                 if (existingOrg == organization) {
                     return Promise.pure(existingOrg)
                 }
                 existingOrg.rev = organization.rev
-                return organizationRepository.update(existingOrg, organization)
+                return organizationService.update(existingOrg, organization)
             }
         }.recover { Throwable e ->
             // retry here
-            return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+            return organizationService.get(existingOrg.getId()).then { Organization organization ->
                 if (existingOrg == organization) {
                     return Promise.pure(existingOrg)
                 }
                 existingOrg.rev = organization.rev
-                return organizationRepository.update(existingOrg, organization)
+                return organizationService.update(existingOrg, organization)
             }
         }.recover { Throwable e ->
             return Promise.pure(null)
@@ -1133,7 +1439,7 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Promise<Group> saveOrReturnGroup(Organization org, String roleName) {
-        return groupRepository.searchByOrganizationId(org.getId(), Integer.MAX_VALUE, 0).then { List<Group> groupList ->
+        return groupService.searchByOrganizationId(org.getId(), Integer.MAX_VALUE, 0).then { List<Group> groupList ->
             if (CollectionUtils.isEmpty(groupList)) {
                 Group newGroup = new Group(
                         name: roleName,
@@ -1141,9 +1447,9 @@ class MigrationResourceImpl implements MigrationResource {
                         organizationId: org.getId()
                 )
 
-                return groupRepository.create(newGroup)
+                return groupService.create(newGroup)
             } else {
-                return groupRepository.searchByOrganizationIdAndName(org.getId(), roleName, Integer.MAX_VALUE, 0).then { Group existingGroup ->
+                return groupService.searchByOrganizationIdAndName(org.getId(), roleName, Integer.MAX_VALUE, 0).then { Group existingGroup ->
                     if (existingGroup == null) {
                         Group newGroup = new Group(
                             name: roleName,
@@ -1151,7 +1457,7 @@ class MigrationResourceImpl implements MigrationResource {
                             organizationId: org.getId()
                         )
 
-                        return groupRepository.create(newGroup)
+                        return groupService.create(newGroup)
                     }
 
                     return Promise.pure(existingGroup)
@@ -1161,17 +1467,17 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Promise<UserGroup> saveOrReturnUserGroup(User user, Group group) {
-        return userGroupRepository.searchByUserIdAndGroupId(user.getId(), group.getId(), Integer.MAX_VALUE, 0).then { List<UserGroup> userGroupList ->
-            if (CollectionUtils.isEmpty(userGroupList)) {
+        return userGroupService.searchByUserIdAndGroupId(user.getId(), group.getId(), Integer.MAX_VALUE, 0).then { Results<UserGroup> userGroupList ->
+            if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
                 UserGroup userGroup = new UserGroup(
                         userId: user.getId(),
                         groupId: group.getId()
                 )
 
-                return userGroupRepository.create(userGroup)
+                return userGroupService.create(userGroup)
             }
 
-            return Promise.pure(userGroupList.get(0))
+            return Promise.pure(userGroupList.items.get(0))
         }
     }
 
@@ -1221,7 +1527,7 @@ class MigrationResourceImpl implements MigrationResource {
             orgShippingAddress.createdTime = oculusInput.createdDate
             orgShippingAddress.updatedTime = oculusInput.updateDate
 
-            return userPersonalInfoRepository.create(orgShippingAddress).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.create(orgShippingAddress).then { UserPersonalInfo userPersonalInfo ->
                 return Promise.pure(userPersonalInfo.getId())
             }
         }
@@ -1232,7 +1538,7 @@ class MigrationResourceImpl implements MigrationResource {
             return Promise.pure(false)
         }
 
-        return userPersonalInfoRepository.get(createdOrg.shippingAddress).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(createdOrg.shippingAddress).then { UserPersonalInfo userPersonalInfo ->
             if (userPersonalInfo == null || userPersonalInfo.value == null) {
                 return Promise.pure(false)
             }
@@ -1264,7 +1570,7 @@ class MigrationResourceImpl implements MigrationResource {
             orgPhone.createdTime = oculusInput.createdDate
             orgPhone.updatedTime = oculusInput.updateDate
 
-            return userPersonalInfoRepository.create(orgPhone).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.create(orgPhone).then { UserPersonalInfo userPersonalInfo ->
                 return Promise.pure(userPersonalInfo.getId())
             }
         }
@@ -1275,7 +1581,7 @@ class MigrationResourceImpl implements MigrationResource {
             return Promise.pure(false)
         }
 
-        return userPersonalInfoRepository.get(createdOrg.shippingPhone).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(createdOrg.shippingPhone).then { UserPersonalInfo userPersonalInfo ->
             PhoneNumber existingPhoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
 
             if (existingPhoneNumber != phoneNumber) {
@@ -1443,5 +1749,21 @@ class MigrationResourceImpl implements MigrationResource {
                 }
             }
         }
+    }
+
+    private String replaceHtmlCode(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return str
+        }
+
+        String temp = str;
+        Iterator iterator = htmlEncode.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> entry = (Map.Entry<String, String>)iterator.next()
+            String key = '&' + entry.key + ';'
+            String value = entry.value
+            temp = temp.replaceAll(key, value)
+        }
+        return temp
     }
 }

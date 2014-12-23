@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.junbo.common.job"/>
+
+    <!-- Common Scheduler -->
+    <bean id="commonSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          parent="baseJobScheduler">
+        <property name="schedulerName" value="commonScheduler"/>
+        <property name="autoStartup" value="${common.jobs.scheduler.start}"/>
+        <property name="triggers">
+            <list>
+                <ref bean="commonJobTrigger"/>
+                <ref bean="snifferJobTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- common Job Trigger -->
+    <bean id="commonJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="commonJobDetail"/>
+        <property name="cronExpression" value="${common.jobs.job.cronexpression}"/>
+    </bean>
+
+    <!-- Common Job -->
+    <bean id="commonJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="commonJob"/>
+                </property>
+            </bean>
+        </property>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="commonJob" class="com.junbo.common.job.CommonJob">
+        <property name="threadPoolTaskExecutor" ref="commonJobAsyncTaskExecutor"/>
+        <property name="limit" value="${common.jobs.pagesize}"/>
+        <property name="maxThreadPoolSize" value="${common.jobs.processor.poolsize}"/>
+        <property name="dualWriteProcessor" ref="dualWriteProcessor" />
+        <property name="pendingActionRepository" ref="pendingActionSqlRepo" />
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="timeOffsetMillionSec" value="${common.sharding.pendingAction.timeOffsetMillionSec}" />
+    </bean>
+
+    <bean id="dualWriteProcessor" class="com.junbo.common.job.DualWriteProcessor">
+        <constructor-arg ref="transactionManager" />
+        <constructor-arg ref="pendingActionSqlRepo" />
+        <constructor-arg>
+            <map>
+                <entry key="com.junbo.billing.spec.model.Balance" value-ref="cloudantBalanceRepository"/>
+                <entry key="com.junbo.billing.spec.model.BalanceItem" value-ref="cloudantBalanceItemRepository" />
+                <entry key="com.junbo.billing.spec.model.BalanceEvent" value-ref="cloudantBalanceEventRepository" />
+                <entry key="com.junbo.billing.spec.model.BalanceItemEvent" value-ref="cloudantBalanceItemEventRepository" />
+                <entry key="com.junbo.billing.spec.model.DiscountItem" value-ref="cloudantDiscountItemRepository" />
+                <entry key="com.junbo.billing.spec.model.OrderBalanceLink" value-ref="cloudantOrderBalanceLinkRepository" />
+                <entry key="com.junbo.billing.spec.model.TaxItem" value-ref="cloudantTaxItemRepository" />
+                <entry key="com.junbo.billing.spec.model.Transaction" value-ref="cloudantBillingTransactionRepository" />
+                <entry key="com.junbo.ewallet.spec.model.LotTransaction" value-ref="cloudantLotTransactionRepository" />
+                <entry key="com.junbo.ewallet.spec.model.Transaction" value-ref="cloudantWalletTransactionRepository" />
+                <entry key="com.junbo.ewallet.spec.model.WalletLot" value-ref="cloudantWalletLotRepository" />
+                <entry key="com.junbo.ewallet.spec.model.Wallet" value-ref="cloudantWalletRepository" />
+                <entry key="com.junbo.order.spec.model.BillingHistory" value-ref="cloudantBillingHistoryRepository" />
+                <entry key="com.junbo.order.spec.model.Discount" value-ref="cloudantDiscountRepository" />
+                <entry key="com.junbo.order.spec.model.FulfillmentHistory" value-ref="cloudantFulfillmentHistoryRepository" />
+                <entry key="com.junbo.order.spec.model.OrderEvent" value-ref="cloudantOrderEventRepository" />
+                <entry key="com.junbo.order.spec.model.OrderItem" value-ref="cloudantOrderItemRepository" />
+                <entry key="com.junbo.order.spec.model.OfferSnapshot" value-ref="cloudantOfferSnapshotRepository"/>
+                <entry key="com.junbo.order.spec.model.ItemSnapshot" value-ref="cloudantItemSnapshotRepository"/>
+                <entry key="com.junbo.order.spec.model.Order" value-ref="cloudantOrderRepository" />
+                <entry key="com.junbo.order.spec.model.PreorderInfo" value-ref="cloudantPreorderInfoRepository" />
+                <entry key="com.junbo.order.spec.model.SubledgerItem" value-ref="cloudantSubledgerItemRepository" />
+                <entry key="com.junbo.order.spec.model.Subledger" value-ref="cloudantSubledgerRepository" />
+                <entry key="com.junbo.payment.spec.model.CreditCardDetail" value-ref="cloudantCreditCardDetailRepository" />
+                <entry key="com.junbo.payment.spec.model.PaymentEvent" value-ref="cloudantPaymentEventRepository" />
+                <entry key="com.junbo.payment.spec.model.PaymentInstrument" value-ref="cloudantPaymentInstrumentRepository" />
+                <entry key="com.junbo.payment.spec.model.PaymentProperty" value-ref="cloudantPaymentPropertyRepository" />
+                <entry key="com.junbo.payment.spec.model.PaymentTransaction" value-ref="cloudantPaymentTransactionRepository" />
+                <entry key="com.junbo.payment.spec.model.TrackingUuid" value-ref="cloudantTrackingUuidRepository" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="commonJobAsyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="${common.jobs.thread.poolsize}"/>
+        <property name="maxPoolSize" value="${common.jobs.thread.poolsize}"/>
+        <property name="queueCapacity" value="1000"/>
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
+        </property>
+    </bean>
+
+    <!-- memcached sniffer job -->
+    <bean id="snifferJob" class="com.junbo.common.job.cache.CacheSnifferJob"/>
+
+    <bean id="snifferJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="snifferJobDetail" />
+        <property name="startDelay" value="2000" />
+        <property name="repeatCount" value="0" />
+    </bean>
+
+    <bean id="snifferJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="snifferJob"/>
+                </property>
+            </bean>
+        </property>
+        <property name="targetMethod" value="listen" />
+        <property name="concurrent" value="false"/>
+    </bean>
+</beans>

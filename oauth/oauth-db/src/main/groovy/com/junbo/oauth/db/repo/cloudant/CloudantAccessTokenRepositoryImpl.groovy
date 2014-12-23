@@ -5,33 +5,18 @@
  */
 package com.junbo.oauth.db.repo.cloudant
 
-import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.client.CloudantDbUri
-import com.junbo.common.cloudant.client.CloudantUri
-import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.util.Context
-import com.junbo.oauth.db.generator.TokenGenerator
+import com.junbo.common.cloudant.client.CloudantClientBulk
 import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.spec.model.AccessToken
 import groovy.transform.CompileStatic
-import org.apache.commons.codec.binary.Base64
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
  * CloudantAccessTokenRepositoryImpl.
  */
 @CompileStatic
-class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> implements AccessTokenRepository {
-    private static Logger logger = LoggerFactory.getLogger(AccessTokenRepository.class)
-    private TokenGenerator tokenGenerator
-
-    @Required
-    void setTokenGenerator(TokenGenerator tokenGenerator) {
-        this.tokenGenerator = tokenGenerator
-    }
+class CloudantAccessTokenRepositoryImpl
+        extends CloudantTokenRepositoryBase<AccessToken> implements AccessTokenRepository {
 
     @Override
     AccessToken save(AccessToken accessToken) {
@@ -48,41 +33,14 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
         if (StringUtils.isEmpty(tokenValue)) {
             return null
         }
-        
+
         String tokenHash = tokenGenerator.hashKey(tokenValue)
-        AccessToken token = cloudantGetSync(tokenHash)
-        if (token == null) {
-            int accessTokenDc = Context.get().dataCenterId
-            try {
-                accessTokenDc = getDcFromAccessToken(tokenValue)
-            } catch (Exception e) {
-                logger.error("Error occurred while parsing DC id from accessToken $tokenValue", e)
-                return null
-            }
-            if (Context.get().dataCenterId == accessTokenDc) {
-                return null
-            }
-            token = (AccessToken) getEffective().cloudantGet(getDbUri(accessTokenDc, tokenValue), entityClass, tokenHash).get()
-        }
+        AccessToken token = cloudantGetSyncWithFallback(tokenValue, tokenHash)
         if (token != null) {
             token.tokenValue = tokenValue
         }
+
         return token
-    }
-
-    private int getDcFromAccessToken(String accessToken) {
-        byte[] originalBytes = Base64.decodeBase64(accessToken.replace("~", "_"))
-        byte dcByte = originalBytes[tokenGenerator.accessTokenLength]
-        return dcByte >> 4
-    }
-
-    private CloudantDbUri getDbUri(int dc, String accessToken) {
-        CloudantUri uri = cloudantGlobalUri.getUri(dc)
-        if (uri == null) {
-            logger.error("Cloudant URI not found for datacenter: $dc accessToken: $accessToken")
-            throw AppCommonErrors.INSTANCE.invalidId("accessToken", accessToken).exception()
-        }
-        return new CloudantDbUri(cloudantUri: uri, dbName: dbName, fullDbName: cloudantDbUri.fullDbName)
     }
 
     @Override
@@ -110,6 +68,42 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
     @Override
     void removeByHash(String hash) {
         cloudantDeleteSync(hash)
+    }
+
+    @Override
+    void removeByUserId(Long userId) {
+        def startKey = [userId.toString(), System.currentTimeMillis()]
+        def endKey = [userId.toString()]
+        List<AccessToken> tokens = queryViewSync('by_user_id_expired_by', startKey.toArray(new String()), endKey.toArray(new String()), true, null, null, true)
+
+        try {
+            setStrongUseBulk(true)
+            for (AccessToken token : tokens) {
+                cloudantDeleteSync(token)
+            }
+            CloudantClientBulk.commit().get()
+        } finally {
+            setStrongUseBulk(false)
+        }
+    }
+
+    @Override
+    void removeByLoginStateHash(String loginStateHash) {
+        assert StringUtils.hasText(loginStateHash) : 'loginStateHash is empty'
+        def startKey = [loginStateHash, System.currentTimeMillis()]
+        def endKey = [loginStateHash]
+
+        List<AccessToken> tokens = queryViewSync('by_login_state_hash_expired_by', startKey.toArray(new String()), endKey.toArray(new String()), true, null, null, true)
+
+        try {
+            setStrongUseBulk(true)
+            for (AccessToken token : tokens) {
+                cloudantDeleteSync(token)
+            }
+            CloudantClientBulk.commit().get()
+        } finally {
+            setStrongUseBulk(false)
+        }
     }
 
     @Override

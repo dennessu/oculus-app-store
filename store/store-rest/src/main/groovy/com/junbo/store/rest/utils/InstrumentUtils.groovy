@@ -79,7 +79,7 @@ class InstrumentUtils {
                 return Promise.pure(null)
             }
             changed = true
-            return resourceContainer.userPersonalInfoResource.create(
+            return resourceContainer.userUserPersonalInfoResource.create(
                     new UserPersonalInfo(userId: user.getId(), type: 'ADDRESS', value: ObjectMapperProvider.instance().valueToTree(dataConvertor.toIdentityAddress(instrument.billingAddress, new Address())))
             ).then { UserPersonalInfo info ->
                 oldPaymentInstrument.billingAddressId = info.getId().value
@@ -97,7 +97,7 @@ class InstrumentUtils {
         }.then {
             if (instrument.isDefault && user.defaultPI != instrument.self) {
                 user.defaultPI = instrument.self
-                return resourceContainer.userResource.put(user.getId(), user)
+                return resourceContainer.userUserResource.put(user.getId(), user)
             }
             return Promise.pure(null)
         }.then { // update the pi
@@ -120,7 +120,7 @@ class InstrumentUtils {
         // create address
         promise = promise.then {
             if (instrument.billingAddress != null) {
-                return resourceContainer.userPersonalInfoResource.create(
+                return resourceContainer.userUserPersonalInfoResource.create(
                         new UserPersonalInfo(userId: user.getId(), type: 'ADDRESS', value: ObjectMapperProvider.instance().valueToTree(dataConvertor.toIdentityAddress(instrument.billingAddress, new Address())))
                 ).syncThen { UserPersonalInfo info ->
                     paymentInstrument.billingAddressId = info.getId().value
@@ -159,7 +159,7 @@ class InstrumentUtils {
             instrument.self = new PaymentInstrumentId(pi.getId())
             if (instrument.isDefault || (user.defaultPI == null)) {
                 user.defaultPI = new PaymentInstrumentId(pi.getId())
-                return resourceContainer.userResource.put(user.getId(), user).then {
+                return resourceContainer.userUserResource.put(user.getId(), user).then {
                     return Promise.pure(instrument.self)
                 }
             }
@@ -228,8 +228,8 @@ class InstrumentUtils {
         Promise promise = Promise.pure(null)
 
         promise = promise.then {
-            if (paymentInstrument.billingAddressId != null) {
-                return resourceContainer.userPersonalInfoResource.get(new UserPersonalInfoId(paymentInstrument.billingAddressId), new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
+            if (paymentInstrument.billingAddressId != null && paymentInstrument.billingAddressId != 0) {
+                return resourceContainer.userUserPersonalInfoResource.get(new UserPersonalInfoId(paymentInstrument.billingAddressId), new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
                     instrument.billingAddress = new com.junbo.store.spec.model.Address()
                     dataConvertor.toAddress(ObjectMapperProvider.instance().treeToValue(info.value, Address), instrument.billingAddress)
                 }
@@ -238,8 +238,8 @@ class InstrumentUtils {
         }
 
         return promise.then {
-            if (paymentInstrument.phoneNumber != null) {
-                return resourceContainer.userPersonalInfoResource.get(new UserPersonalInfoId(paymentInstrument.phoneNumber), new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
+            if (paymentInstrument.phoneNumber != null && paymentInstrument.phoneNumber != 0) {
+                return resourceContainer.userUserPersonalInfoResource.get(new UserPersonalInfoId(paymentInstrument.phoneNumber), new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
                     instrument.phoneNumber = ObjectMapperProvider.instance().treeToValue(info.value, PhoneNumber).info
                 }
             }

@@ -43,13 +43,13 @@ class GrantRefreshToken implements Action {
         Assert.notNull(client, 'client is null')
 
         if (accessToken.scopes.contains(OAuthInfoUtil.OFFLINE_SCOPE)) {
-            String salt = parameterMap.getFirst(OAuthParameters.SALT)
-            RefreshToken refreshToken = tokenService.generateRefreshToken(client, accessToken, salt)
+            if (contextWrapper.refreshToken == null) {
+                String salt = parameterMap.getFirst(OAuthParameters.SALT)
+                contextWrapper.refreshToken = tokenService.generateRefreshToken(client, accessToken, salt)
+            }
 
-            accessToken.refreshTokenValue = refreshToken.tokenValue
+            accessToken.refreshTokenValue = contextWrapper.refreshToken.tokenValue
             tokenService.updateAccessToken(accessToken)
-
-            contextWrapper.refreshToken = refreshToken
         }
 
         return Promise.pure(null)

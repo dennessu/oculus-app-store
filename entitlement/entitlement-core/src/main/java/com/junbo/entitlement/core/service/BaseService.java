@@ -234,4 +234,10 @@ public class BaseService {
         }
         return null;
     }
+
+    protected Boolean isConsumable(Entitlement entitlement) {
+        ItemRevision item = getItem(entitlement.getItemId());
+        EntitlementDef def = filter(item.getEntitlementDefs(), entitlement.getType());
+        return def.getConsumable();
+    }
 }

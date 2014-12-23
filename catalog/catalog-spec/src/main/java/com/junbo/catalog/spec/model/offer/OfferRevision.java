@@ -77,6 +77,10 @@ public class OfferRevision extends BaseRevisionModel {
             allowableValues = "HIGH, MEDIUM, LOW")
     private String localeAccuracy;
 
+    @ApiModelProperty(position = 36, required = true,
+            value = "The display rank for the offer, used in sorting when showing a list of offers, expect to be float number")
+    private Double rank;
+
     public String getRevisionId() {
         return revisionId;
     }
@@ -203,6 +207,14 @@ public class OfferRevision extends BaseRevisionModel {
 
     public void setLocaleAccuracy(String localeAccuracy) {
         this.localeAccuracy = localeAccuracy;
+    }
+
+    public Double getRank() {
+        return rank;
+    }
+
+    public void setRank(Double rank) {
+        this.rank = rank;
     }
 
     @Override

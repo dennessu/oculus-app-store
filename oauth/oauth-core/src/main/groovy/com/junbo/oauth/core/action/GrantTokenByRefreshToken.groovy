@@ -11,7 +11,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.db.repo.ScopeRepository
 import com.junbo.oauth.spec.model.AccessToken
@@ -58,12 +58,13 @@ class GrantTokenByRefreshToken implements Action {
             throw AppCommonErrors.INSTANCE.parameterRequired('refresh_token').exception()
         }
 
-        RefreshToken refreshToken = tokenService.getAndRemoveRefreshToken(token)
+        RefreshToken refreshToken = tokenService.getRefreshToken(token)
         if (refreshToken == null) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('refresh_token', token).exception()
         }
 
         if (refreshToken.isExpired()) {
+            tokenService.getAndRemoveRefreshToken(token)
             throw AppErrors.INSTANCE.expiredRefreshToken(token).exception()
         }
 

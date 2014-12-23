@@ -11,7 +11,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserSecurityQuestionFilter
 import com.junbo.identity.core.service.validator.UserSecurityQuestionValidator
-import com.junbo.identity.data.repository.UserSecurityQuestionRepository
+import com.junbo.identity.service.UserSecurityQuestionService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionListOptions
@@ -22,6 +22,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 4/11/14.
  */
@@ -30,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional
 class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
     @Autowired
-    private UserSecurityQuestionRepository userSecurityQuestionRepository
+    private UserSecurityQuestionService userSecurityQuestionService
 
     @Autowired
     private UserSecurityQuestionFilter userSecurityQuestionFilter
@@ -46,8 +48,11 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
     @Override
     Promise<UserSecurityQuestion> create(UserId userId, UserSecurityQuestion userSecurityQuestion) {
+        if (userId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
         if (userSecurityQuestion == null) {
-            throw new IllegalArgumentException('userSecurityQuestion is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
@@ -59,7 +64,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             userSecurityQuestion = userSecurityQuestionFilter.filterForCreate(userSecurityQuestion)
 
             return userSecurityQuestionValidator.validateForCreate(userId, userSecurityQuestion).then {
-                return userSecurityQuestionRepository.create(userSecurityQuestion).
+                return userSecurityQuestionService.create(userSecurityQuestion).
                         then { UserSecurityQuestion newUserSecurityQuestion ->
                             Created201Marker.mark(newUserSecurityQuestion.getId())
 
@@ -73,6 +78,14 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     @Override
     Promise<UserSecurityQuestion> get(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
                                       UserSecurityQuestionGetOptions getOptions) {
+        if (userId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+
+        if (userSecurityQuestionId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userSecurityQuestionId').exception()
+        }
+
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -94,53 +107,18 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     }
 
     @Override
-    Promise<UserSecurityQuestion> patch(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
-                                        UserSecurityQuestion userSecurityQuestion) {
-        if (userSecurityQuestionId == null) {
-            throw new IllegalArgumentException('userSecurityQuestionId is null')
-        }
-
-        if (userSecurityQuestion == null) {
-            throw new IllegalArgumentException('userSecurityQuestion is null')
-        }
-
-        return userSecurityQuestionRepository.get(userSecurityQuestionId).then {
-            UserSecurityQuestion oldUserSecurityQuestion ->
-            def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception()
-                }
-
-                if (oldUserSecurityQuestion == null) {
-                    throw AppErrors.INSTANCE.userSecurityQuestionNotFound(userSecurityQuestionId).exception()
-                }
-
-                userSecurityQuestion = userSecurityQuestionFilter.
-                        filterForPatch(userSecurityQuestion, oldUserSecurityQuestion)
-
-                return userSecurityQuestionValidator.validateForUpdate(
-                        userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
-
-                    return userSecurityQuestionRepository.update(userSecurityQuestion, oldUserSecurityQuestion).
-                            then { UserSecurityQuestion newUserSecurityQuestion ->
-                        newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
-                        return Promise.pure(newUserSecurityQuestion)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserSecurityQuestion> put(UserId userId, UserSecurityQuestionId userSecurityQuestionId,
                                       UserSecurityQuestion userSecurityQuestion) {
         if (userSecurityQuestionId == null) {
-            throw new IllegalArgumentException('userSecurityQuestionId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userSecurityQuestionId').exception()
+        }
+
+        if (userId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userSecurityQuestion == null) {
-            throw new IllegalArgumentException('userSecurityQuestion is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
@@ -149,7 +127,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
-            return userSecurityQuestionRepository.get(userSecurityQuestionId).then {
+            return userSecurityQuestionService.get(userSecurityQuestionId).then {
                 UserSecurityQuestion oldUserSecurityQuestion ->
                 if (oldUserSecurityQuestion == null) {
                     throw AppErrors.INSTANCE.userSecurityQuestionNotFound(userSecurityQuestionId).exception()
@@ -160,7 +138,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
                 return userSecurityQuestionValidator.validateForUpdate(
                         userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
-                    return userSecurityQuestionRepository.update(userSecurityQuestion, oldUserSecurityQuestion).
+                    return userSecurityQuestionService.update(userSecurityQuestion, oldUserSecurityQuestion).
                             then { UserSecurityQuestion newUserSecurityQuestion ->
                         newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
                         return Promise.pure(newUserSecurityQuestion)
@@ -180,7 +158,9 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return userSecurityQuestionRepository.delete(userSecurityQuestionId)
+                return userSecurityQuestionService.delete(userSecurityQuestionId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }
@@ -188,7 +168,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
     @Override
     Promise<Results<UserSecurityQuestion>> list(UserId userId, UserSecurityQuestionListOptions listOptions) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
@@ -229,10 +209,10 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
     private Promise<List<UserSecurityQuestion>> search(UserSecurityQuestionListOptions listOptions) {
         if (listOptions.userId != null) {
-            return userSecurityQuestionRepository.searchByUserId(listOptions.userId, listOptions.limit,
+            return userSecurityQuestionService.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)
         } else {
-            throw new IllegalArgumentException("Unsupported search operation.")
+            throw AppCommonErrors.INSTANCE.invalidOperation("Unsupported search operation.").exception()
         }
     }
 }

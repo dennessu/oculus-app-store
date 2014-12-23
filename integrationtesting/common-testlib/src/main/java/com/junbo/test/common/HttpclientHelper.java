@@ -5,25 +5,21 @@
  */
 package com.junbo.test.common;
 
-//import java.io.BufferedReader;
-
-import org.apache.http.Consts;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
-import org.testng.Assert;
 
 import java.io.InputStreamReader;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,214 +41,67 @@ public class HttpclientHelper {
         httpclient.close();
     }
 
+    public static void SetHttpClientRuntimeCookie(String name, String value) throws Exception {
+        CookieStore cookieStore = new BasicCookieStore();
+        BasicClientCookie cookie = new BasicClientCookie(name, value);
+        Calendar ca = Calendar.getInstance();
+        String domain = ConfigHelper.getSetting("defaultOauthEndpoint");
+        cookie.setVersion(1);
+        cookie.setSecure(false);
+        cookie.setExpiryDate(new Date(ca.getTime().getYear() + 50, ca.getTime().getMonth(), ca.getTime().getDay()));
+        cookie.setDomain(domain.replace("http://", "").replace("/v1", "").split(":")[0]);
+        cookie.setPath("/v1/oauth2");
+        cookieStore.addCookie(cookie);
+        httpclient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
+    }
+
     public static void main(String[] args) throws Exception {
-//        SimpleGet("http://localhost:8081/rest/users");
 
-//        String userName = RandomHelper.randomAlphabetic(12);
-//        String objJson = "{\"userName\": \"" + userName
-//                + "\",\"password\": \"dummypassword\",\"status\": \"ACTIVE\"}";
-//        SimpleJsonPost("http://localhost:8081/rest/users", objJson);
     }
 
-    public static CloseableHttpResponse SimpleGet(String requestURI) throws Exception {
-        return SimpleGet(requestURI, null, true);
-    }
+    public static CloseableHttpResponse Execute(HttpRequestBase method) throws Exception {
+        CloseableHttpResponse response = httpclient.execute(method);
 
-    public static CloseableHttpResponse SimpleGet(String requestURI, Boolean enableRedirect)
-            throws Exception {
-        return SimpleGet(requestURI, null, enableRedirect);
-    }
-
-    public static CloseableHttpResponse SimpleGet(
-            String requestURI, List<NameValuePair> nvpHeaders, Boolean enableRedirect)
-            throws Exception {
-        HttpGet httpGet = new HttpGet(requestURI);
-        httpGet.addHeader("Content-Type", "application/json");
-        if (nvpHeaders != null && !nvpHeaders.isEmpty()) {
-            for (NameValuePair nvp : nvpHeaders) {
-                httpGet.addHeader(nvp.getName(), nvp.getValue());
+        if (method.getURI().getPath().contains("oauth2") &&
+                ConfigHelper.getSetting("defaultOauthEndpoint").startsWith("http://")) {
+            Header[] headers = response.getAllHeaders();
+            for (Header header : headers) {
+                if (header.getName().equals("Set-Cookie")) {
+                    String[] parts = header.getValue().split(";");
+                    for (String s : parts) {
+                        if (s.trim().startsWith("cvc=") && s.length() > 4) {
+                            String[] results = s.trim().split("=");
+                            SetHttpClientRuntimeCookie(results[0], results[1]);
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
         }
-        httpGet.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
-        return httpclient.execute(httpGet);
-    }
-
-    public static <T> T SimpleGet(String requestURI, Class<T> cls) throws Exception {
-        HttpGet httpGet = new HttpGet(requestURI);
-        httpGet.addHeader("Content-Type", "application/json");
-        CloseableHttpResponse response = httpclient.execute(httpGet);
-
-        try {
-            System.out.println(response.getStatusLine());
-            HttpEntity entity = response.getEntity();
-
-//                BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
-//                String readLine;
-//                while (((readLine = br.readLine()) != null)) {
-//                    System.err.println(readLine);
-//                }
-            T type = JsonHelper.JsonDeserializer(new InputStreamReader(entity.getContent()), cls);
-            EntityUtils.consume(entity);
-            return type;
-        } finally {
-            response.close();
-        }
-    }
-
-    public static <T> T SimpleHttpGet(HttpGet httpGet, Class<T> cls) throws Exception {
-        CloseableHttpResponse response = httpclient.execute(httpGet);
-
-        try {
-            System.out.println(response.getStatusLine());
-            HttpEntity entity = response.getEntity();
-            T type = JsonHelper.JsonDeserializer(new InputStreamReader(entity.getContent()), cls);
-            EntityUtils.consume(entity);
-            return type;
-        } finally {
-            response.close();
-        }
-    }
-
-    public static CloseableHttpResponse SimplePost(String requestURI, List<NameValuePair> nvps) throws Exception {
-        return SimplePost(requestURI, nvps, true);
-    }
-
-    public static CloseableHttpResponse SimplePost(String requestURI, List<NameValuePair> nvps, Boolean enableRedirect)
-            throws Exception {
-        HttpPost httpost = new HttpPost(requestURI);
-        httpost.setConfig(RequestConfig.custom().setRedirectsEnabled(enableRedirect).build());
-        httpost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
-        CloseableHttpResponse response = httpclient.execute(httpost);
-
-        System.out.println("Response Status line :" + response.getStatusLine());
         return response;
     }
 
-    public static String SimplePostWithRedirect(String requestURI, List<NameValuePair> nvps) throws Exception {
-        HttpPost httpost = new HttpPost(requestURI);
-        httpost.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
-
-        HttpContext context = new BasicHttpContext();
-        CloseableHttpResponse response = httpclient.execute(httpost, context);
-        try {
-            HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
-            HttpHost currentHost = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-            String currentUrl = (currentReq.getURI().isAbsolute()) ?
-                    currentReq.getURI().toString() : (currentHost.toURI() + currentReq.getURI());
-            return currentUrl;
-        } finally {
-            response.close();
-        }
-    }
-
-    public static <T> T SimpleJsonPost(String requestURI, String objJson, Class<T> cls) throws Exception {
-        StringEntity se = new StringEntity(objJson);
-        se.setContentType("application/json");
-        return SimpleJsonPost(requestURI, se, cls);
-    }
-
-    public static <T> T SimpleJsonPost(String requestURI, HttpEntity entity, Class<T> cls) throws Exception {
-        HttpPost httpPost = new HttpPost(requestURI);
-        httpPost.addHeader("Content-Type", "application/json");
-        httpPost.setEntity(entity);
-        CloseableHttpResponse response = httpclient.execute(httpPost);
+    public static <T> T Execute(HttpRequestBase method, Class<T> cls) throws Exception {
+        CloseableHttpResponse response = httpclient.execute(method);
 
         try {
             System.out.println(response.getStatusLine());
             HttpEntity responseEntity = response.getEntity();
-
-//                BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
-//                String readLine;
-//                while (((readLine = br.readLine()) != null)) {
-//                    System.err.println(readLine);
-//                }
-//                Object obj = GsonHelper.GsonDeserializer(
-//                        new InputStreamReader(entity.getContent()), cls);
-            T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
-            EntityUtils.consume(responseEntity);
-            return type;
+            if (cls != null) {
+                T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
+                EntityUtils.consume(responseEntity);
+                return type;
+            } else {
+                EntityUtils.consume(responseEntity);
+                return null;
+            }
         } finally {
             response.close();
         }
     }
 
-    public static <T> T SimpleHttpPost(HttpPost httpPost, Class<T> cls) throws Exception {
-        CloseableHttpResponse response = httpclient.execute(httpPost);
-
-        try {
-            System.out.println(response.getStatusLine());
-            HttpEntity responseEntity = response.getEntity();
-            T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
-            EntityUtils.consume(responseEntity);
-            return type;
-        } finally {
-            response.close();
-        }
-    }
-
-    public static <T> T SimpleJsonPut(String requestURI, String objJson, Class<T> cls) throws Exception {
-        HttpPut httpPut = new HttpPut(requestURI);
-        httpPut.addHeader("Content-Type", "application/json");
-        httpPut.setEntity(new StringEntity(objJson));
-        CloseableHttpResponse response = httpclient.execute(httpPut);
-
-        try {
-            System.out.println(response.getStatusLine());
-            HttpEntity responseEntity = response.getEntity();
-            T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
-            EntityUtils.consume(responseEntity);
-            return type;
-        } finally {
-            response.close();
-        }
-    }
-
-    public static <T> T SimpleHttpPut(HttpPut httpPut, Class<T> cls) throws Exception {
-        CloseableHttpResponse response = httpclient.execute(httpPut);
-
-        try {
-            System.out.println(response.getStatusLine());
-            HttpEntity responseEntity = response.getEntity();
-            T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
-            EntityUtils.consume(responseEntity);
-            return type;
-        } finally {
-            response.close();
-        }
-    }
-
-    public static void SimpleDelete(String requestURI) throws Exception {
-        HttpDelete httpDelete = new HttpDelete(requestURI);
-        httpDelete.addHeader("Content-Type", "application/json");
-        CloseableHttpResponse response = httpclient.execute(httpDelete);
-        try {
-            Assert.assertEquals(
-                    true,
-                    (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 412),
-                    "validate HttpDelete response is 200 or 412 (when item not found)");
-        } finally {
-            response.close();
-        }
-    }
-
-    public static void SimpleHttpDelete(HttpDelete httpDelete) throws Exception {
-        CloseableHttpResponse response = httpclient.execute(httpDelete);
-        try {
-            Assert.assertEquals(
-                    true,
-                    (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 412),
-                    "validate HttpDelete response is 200 or 412 (when item not found)");
-        } finally {
-            response.close();
-        }
-    }
-
-    public static CloseableHttpResponse PureHttpResponse(String requestURI, String objJson, HttpRequestType type)
-            throws Exception {
-        return PureHttpResponse(requestURI, objJson, type, null);
-    }
-
-    public static CloseableHttpResponse PureHttpResponse(
+    public static CloseableHttpResponse GetHttpResponse(
             String requestURI, String objJson, HttpRequestType type, List<NameValuePair> additionalHeaders)
             throws Exception {
         switch (type) {
@@ -264,7 +113,7 @@ public class HttpclientHelper {
                         httpGet.addHeader(nvp.getName(), nvp.getValue());
                     }
                 }
-                return httpclient.execute(httpGet);
+                return Execute(httpGet);
             case post:
                 HttpPost httpPost = new HttpPost(requestURI);
                 httpPost.addHeader("Content-Type", "application/json");
@@ -273,8 +122,8 @@ public class HttpclientHelper {
                         httpPost.addHeader(nvp.getName(), nvp.getValue());
                     }
                 }
-                httpPost.setEntity(new StringEntity(objJson));
-                return httpclient.execute(httpPost);
+                httpPost.setEntity(new StringEntity(objJson, "utf-8"));
+                return Execute(httpPost);
             case put:
                 HttpPut httpPut = new HttpPut(requestURI);
                 httpPut.addHeader("Content-Type", "application/json");
@@ -283,8 +132,8 @@ public class HttpclientHelper {
                         httpPut.addHeader(nvp.getName(), nvp.getValue());
                     }
                 }
-                httpPut.setEntity(new StringEntity(objJson));
-                return httpclient.execute(httpPut);
+                httpPut.setEntity(new StringEntity(objJson, "utf-8"));
+                return Execute(httpPut);
             case delete:
                 HttpDelete httpDelete = new HttpDelete(requestURI);
                 httpDelete.addHeader("Content-Type", "application/json");
@@ -293,7 +142,7 @@ public class HttpclientHelper {
                         httpDelete.addHeader(nvp.getName(), nvp.getValue());
                     }
                 }
-                return httpclient.execute(httpDelete);
+                return Execute(httpDelete);
             default:
                 throw new Exception("unexpected httpRequest: " + type);
         }

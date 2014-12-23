@@ -61,8 +61,7 @@ class OrderServiceContextBuilder {
             return facadeContainer.paymentFacade.
                     getPaymentInstrument(paymentInfo.paymentInstrument.value).syncRecover { Throwable throwable ->
                 LOGGER.error('name=Order_GetPaymentInstrument_Error', throwable)
-                // TODO read the payment error
-                throw AppErrors.INSTANCE.paymentConnectionError().exception()
+                throw throwable
             }.syncThen { PaymentInstrument pi ->
                 pis << pi
             }
@@ -184,6 +183,7 @@ class OrderServiceContextBuilder {
     }
 
     Promise<List<Offer>> getOffers(OrderServiceContext context) {
+        LOGGER.info("name=OrderServiceContextBuilder_getOffers")
 
         assert (context != null && context.order != null)
 
@@ -197,7 +197,7 @@ class OrderServiceContextBuilder {
 
         List<Offer> offers = []
         return Promise.each(context.order.orderItems) { OrderItem oi ->
-            return facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).then { Offer of ->
+            return facadeContainer.catalogFacade.getLatestOfferRevision(oi.offer.value).then { Offer of ->
                 offers << of
                 return Promise.pure(null)
             }
@@ -208,6 +208,7 @@ class OrderServiceContextBuilder {
             }
             context.offersMap = offerMap
             context.offers = offers
+            LOGGER.info("name=OrderServiceContextBuilder_getOffers_Completed")
             return offers
         }
     }

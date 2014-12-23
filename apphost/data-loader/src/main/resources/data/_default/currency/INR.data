@@ -1,5 +1,9 @@
 {
 	"locales": {
+		"en_US": {
+			"shortName": "INR",
+			"longName": "Indian rupee"
+		},
 		"en_IN": {
 			"shortName": "INR",
 			"longName": "Indian rupee"

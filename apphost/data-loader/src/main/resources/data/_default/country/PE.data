@@ -326,7 +326,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/es_PE",
 		"id": "es_PE"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Peru",

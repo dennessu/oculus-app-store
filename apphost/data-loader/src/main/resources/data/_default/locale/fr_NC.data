@@ -1,0 +1,11 @@
+{
+  "localeCode": "fr_NC",
+  "shortName": "French (NC)",
+  "longName": "New Caledonia (NC)",
+  "localeName": "French (NC)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

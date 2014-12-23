@@ -5,8 +5,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.core.annotation.OrderEventAwareAfter
-import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
@@ -20,6 +18,7 @@ import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
 /**
@@ -43,9 +42,8 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfirmBalanceAction)
 
     @Override
-    @OrderEventAwareBefore(action = 'ConfirmBalanceAction')
-    @OrderEventAwareAfter(action = 'ConfirmBalanceAction')
-    Promise<ActionResult> execute(ActionContext actionContext) {
+    @Transactional
+    Promise<ActionResult> doExecute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         return orderServiceContextBuilder.getBalances(context.orderServiceContext).syncRecover { Throwable throwable ->

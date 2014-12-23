@@ -19,7 +19,8 @@ import java.util.List;
 public interface PriceTierService {
 
     PriceTier getPriceTier(String priceTierId) throws Exception;
-    PriceTier getPriceTier(String priceTierId, int expectedResponseCode) throws Exception;
+    PriceTier getPriceTier(String priceTierId, String locale) throws Exception;
+    PriceTier getPriceTier(String priceTierId, String locale, int expectedResponseCode) throws Exception;
 
     Results<PriceTier> getPriceTiers(HashMap<String, List<String>> httpPara) throws Exception;
     Results<PriceTier> getPriceTiers(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;

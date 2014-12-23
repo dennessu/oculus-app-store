@@ -7,7 +7,6 @@ package com.junbo.oauth.api.endpoint
 
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.endpoint.RefreshTokenResource
 import com.junbo.oauth.spec.model.RefreshToken

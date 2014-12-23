@@ -8,11 +8,15 @@ package com.junbo.test.common.apihelper;
 // CHECKSTYLE:OFF
 
 import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RandomFactory;
 import com.ning.http.client.*;
+import com.ning.http.client.cookie.Cookie;
+import com.ning.http.client.providers.netty.NettyAsyncHttpProviderConfig;
 import com.ning.http.client.providers.netty.NettyResponse;
 import org.apache.http.client.HttpResponseException;
 import org.testng.Assert;
@@ -21,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -36,7 +41,12 @@ public abstract class HttpClientBase {
 
     protected ComponentType componentType;
 
+    protected Master.EndPointType currentEndPointType;
+
+    protected String endPointUrlSuffix = "";
+
     protected String uid = "";
+
 
     /**
      * Enum for http method.
@@ -66,20 +76,45 @@ public abstract class HttpClientBase {
     }
 
     protected AsyncHttpClient getAsyncHttpClient() {
-        return new AsyncHttpClient(new AsyncHttpClientConfig.Builder().setMaxRequestRetry(3).build());
+
+        AsyncHttpClientConfigBean config = new AsyncHttpClientConfigBean();
+        NettyAsyncHttpProviderConfig nettyConfig = new NettyAsyncHttpProviderConfig();
+        int maxHeadersSize = 65536;
+        nettyConfig.addProperty(NettyAsyncHttpProviderConfig.HTTP_CLIENT_CODEC_MAX_HEADER_SIZE, maxHeadersSize);
+        nettyConfig.addProperty(NettyAsyncHttpProviderConfig.HTTPS_CLIENT_CODEC_MAX_HEADER_SIZE, maxHeadersSize);
+        config.setProviderConfig(nettyConfig);
+        config.setMaxRequestRetry(3);
+
+        return new AsyncHttpClient(config);
     }
 
-    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope, List<String> headersToRemove) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
         headers.add(Header.CONTENT_TYPE, contentType);
+        headers.add(Header.OCULUS_INTERNAL, String.valueOf(true));
         String uid = Master.getInstance().getCurrentUid();
+        if (ConfigHelper.getSetting("testClientEncrypted") != null &&
+                ConfigHelper.getSetting("testClientEncrypted").equals(String.valueOf(true))) {
+            headers.add(Header.X_ENABLE_PROFILING, "10");
+        }
         if (isServiceScope) {
             headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getServiceAccessToken(componentType));
         } else if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
             headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getUserAccessToken(uid));
         }
 
+        if (currentEndPointType != null && currentEndPointType.equals(Master.EndPointType.Secondary)) {
+            headers.put("Cache-Control", Collections.singletonList("no-cache"));
+        }
+
+        if (headersToRemove != null && !headersToRemove.isEmpty()) {
+            for (String headerToRemove : headersToRemove) {
+                headers.remove(headerToRemove);
+            }
+        }
+
         //for further header, we can set dynamic value from properties here
+        headers.add(Header.USER_IP, RandomFactory.getRandomIp());
         return headers;
     }
 
@@ -138,6 +173,11 @@ public abstract class HttpClientBase {
         return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, null, isServiceScope);
     }
 
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody, int expectedResponseCode,
+                                 boolean isServiceScope, List<String> headersToRemove) throws Exception {
+        return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, null, isServiceScope, headersToRemove);
+    }
+
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, int expectedResponseCode) throws Exception {
         return restApiCall(httpMethod, restUrl, null, expectedResponseCode, null);
     }
@@ -145,16 +185,33 @@ public abstract class HttpClientBase {
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
                                  int expectedResponseCode, HashMap<String, List<String>> httpParameters,
                                  boolean isServiceScope) throws Exception {
+        return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, httpParameters, isServiceScope, null);
+    }
+
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
+                                 int expectedResponseCode, HashMap<String, List<String>> httpParameters,
+                                 boolean isServiceScope, List<String> headersToRemove) throws Exception {
         switch (httpMethod) {
             case PUT:
             case POST: {
                 try {
-                    asyncClient = new AsyncHttpClient();
-                    Request req = new RequestBuilder(httpMethod.getHttpMethod())
-                            .setUrl(restUrl)
-                            .setHeaders(getHeader(isServiceScope))
-                            .setBody(requestBody)
-                            .build();
+                    Request req;
+                    if (Master.getInstance().getCookies().size() > 0) {
+                        req = new RequestBuilder(httpMethod.getHttpMethod())
+                                .setUrl(restUrl)
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
+                                .setBodyEncoding("UTF-8")
+                                .setBody(requestBody)
+                                .addCookie(Master.getInstance().getCookies().get(0))
+                                .build();
+                    } else {
+                        req = new RequestBuilder(httpMethod.getHttpMethod())
+                                .setUrl(restUrl)
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
+                                .setBodyEncoding("UTF-8")
+                                .setBody(requestBody)
+                                .build();
+                    }
 
                     logger.LogRequest(req);
 
@@ -169,16 +226,13 @@ public abstract class HttpClientBase {
                     if (expectedResponseCode != 200) {
                         Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
                     }
-                    return nettyResponse.getResponseBody();
+                    return nettyResponse.getResponseBody("UTF-8");
                 } catch (HttpResponseException ex) {
                     throw new TestException(ex.getMessage().toString());
-                } finally {
-                    asyncClient.close();
                 }
             }
             case GET: {
                 try {
-                    asyncClient = new AsyncHttpClient();
                     if (httpParameters != null && !httpParameters.isEmpty()) {
                         restUrl = restUrl.concat("?");
                         for (String key : httpParameters.keySet()) {
@@ -191,11 +245,19 @@ public abstract class HttpClientBase {
                         //Remove the last "&" character
                         restUrl = restUrl.substring(0, restUrl.length() - 1);
                     }
-
-                    Request req = new RequestBuilder("GET")
-                            .setUrl(restUrl)
-                            .setHeaders(getHeader(isServiceScope))
-                            .build();
+                    Request req;
+                    if (Master.getInstance().getCookies().size() > 0) {
+                        req = new RequestBuilder("GET")
+                                .setUrl(restUrl)
+                                .addCookie(Master.getInstance().getCookies().get(0))
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
+                                .build();
+                    } else {
+                        req = new RequestBuilder("GET")
+                                .setUrl(restUrl)
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
+                                .build();
+                    }
 
                     logger.LogRequest(req);
 
@@ -206,12 +268,20 @@ public abstract class HttpClientBase {
                         logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
 
                         String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
-                        if (redirectUrl.contains("cid") || redirectUrl.contains("email-verify") ) {
+                        if (redirectUrl.contains("cid")) {
+                            List<Cookie> cookies = nettyResponse.getCookies();
+                            if (cookies != null && cookies.size() > 0) {
+                                Master.getInstance().addCookie(cookies.get(0));
+                            }
+                            return redirectUrl;
+                        }
+
+                        if (redirectUrl.contains("email-verify")) {
                             return redirectUrl;
                         }
                         req = new RequestBuilder("GET")
                                 .setUrl(redirectUrl)
-                                .setHeaders(getHeader(isServiceScope))
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
                                 .build();
 
                         logger.LogRequest(req);
@@ -230,20 +300,17 @@ public abstract class HttpClientBase {
                         Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
                     }
 
-                    return nettyResponse.getResponseBody();
+                    return nettyResponse.getResponseBody("UTF-8");
                 } catch (HttpResponseException ex) {
                     throw new TestException(ex.getMessage().toString());
-                } finally {
-                    asyncClient.close();
                 }
 
             }
             case DELETE: {
                 try {
-                    asyncClient = new AsyncHttpClient();
                     Request req = new RequestBuilder(httpMethod.getHttpMethod())
                             .setUrl(restUrl)
-                            .setHeaders(getHeader(isServiceScope))
+                            .setHeaders(getHeader(isServiceScope, headersToRemove))
                             .build();
 
                     logger.LogRequest(req);
@@ -260,11 +327,9 @@ public abstract class HttpClientBase {
                         Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
                     }
 
-                    return nettyResponse.getResponseBody();
+                    return nettyResponse.getResponseBody("UTF-8");
                 } catch (HttpResponseException ex) {
                     throw new TestException(ex.getMessage().toString());
-                } finally {
-                    asyncClient.close();
                 }
             }
             case OPTIONS:
@@ -272,9 +337,7 @@ public abstract class HttpClientBase {
             default:
                 throw new TestException(String.format("Unsupported http method found: %s", httpMethod.getHttpMethod()));
         }
-
     }
-
 
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
                                  int expectedResponseCode, HashMap<String, List<String>> httpParameters)
@@ -313,5 +376,18 @@ public abstract class HttpClientBase {
 
     protected boolean isServiceTokenExist() {
         return Master.getInstance().getServiceAccessToken(componentType) != null;
+    }
+
+    protected String getEndPointUrl() {
+        switch (Master.getInstance().getEndPointType()) {
+            case Primary:
+                currentEndPointType = Master.EndPointType.Primary;
+                return Master.getInstance().getPrimaryCommerceEndPointUrl() + endPointUrlSuffix;
+            case Secondary:
+                currentEndPointType = Master.EndPointType.Secondary;
+                return Master.getInstance().getSecondaryCommerceEndPointUrl() + endPointUrlSuffix;
+            default:
+                throw new TestException("No such endpoint type");
+        }
     }
 }

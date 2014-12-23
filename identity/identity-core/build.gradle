@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile junboProject(':identity-common')
-    compile junboProject(':identity-data')
+    compile junboProject(':identity-service')
 
     compile (libraries.spring_security)
 
@@ -15,6 +15,7 @@ dependencies {
     compile junboProject(':billing-spec')
     compile junboProject(':payment-spec')
     compile junboProject(':email-spec')
+    compile junboProject(':catalog-spec')
 }
 
 ext {

@@ -10,7 +10,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserTosFilter
 import com.junbo.identity.core.service.validator.UserTosValidator
-import com.junbo.identity.data.repository.UserTosRepository
+import com.junbo.identity.service.UserTosService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional
 class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
     @Autowired
-    private UserTosRepository userTosRepository
+    private UserTosService userTosService
 
     @Autowired
     private UserTosFilter userTosFilter
@@ -46,9 +46,8 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     @Override
     Promise<UserTosAgreement> create(UserTosAgreement userTos) {
         if (userTos == null) {
-            throw new IllegalArgumentException('userTos is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-
 
         userTos = userTosFilter.filterForCreate(userTos)
 
@@ -59,7 +58,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return userTosRepository.create(userTos).then { UserTosAgreement newUserTos ->
+                return userTosService.create(userTos).then { UserTosAgreement newUserTos ->
                     Created201Marker.mark(newUserTos.getId())
 
                     newUserTos = userTosFilter.filterForGet(newUserTos, null)
@@ -73,6 +72,10 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
     Promise<UserTosAgreement> get(UserTosAgreementId userTosAgreementId, UserTosAgreementGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
+        }
+
+        if (userTosAgreementId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTosAgreementId').exception()
         }
 
         return userTosValidator.validateForGet(userTosAgreementId).then { UserTosAgreement newUserTos ->
@@ -92,14 +95,14 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
     Promise<UserTosAgreement> patch(UserTosAgreementId userTosAgreementId, UserTosAgreement userTos) {
         if (userTosAgreementId == null) {
-            throw new IllegalArgumentException('userTosId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTosAgreementId').exception()
         }
 
         if (userTos == null) {
-            throw new IllegalArgumentException('userTos is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return userTosRepository.get(userTosAgreementId).then { UserTosAgreement oldUserTos ->
+        return userTosService.get(userTosAgreementId).then { UserTosAgreement oldUserTos ->
             if (oldUserTos == null) {
                 throw AppErrors.INSTANCE.userTosAgreementNotFound(userTosAgreementId).exception()
             }
@@ -114,7 +117,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
                 return userTosValidator.validateForUpdate(userTosAgreementId, userTos, oldUserTos).then {
 
-                    return userTosRepository.update(userTos, oldUserTos).then { UserTosAgreement newUserTos ->
+                    return userTosService.update(userTos, oldUserTos).then { UserTosAgreement newUserTos ->
                         newUserTos = userTosFilter.filterForGet(newUserTos, null)
                         return Promise.pure(newUserTos)
                     }
@@ -125,14 +128,14 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
     Promise<UserTosAgreement> put(UserTosAgreementId userTosAgreementId, UserTosAgreement userTos) {
         if (userTosAgreementId == null) {
-            throw new IllegalArgumentException('userTosId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTosAgreementId').exception()
         }
 
         if (userTos == null) {
-            throw new IllegalArgumentException('userTos is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return userTosRepository.get(userTosAgreementId).then { UserTosAgreement oldUserTos ->
+        return userTosService.get(userTosAgreementId).then { UserTosAgreement oldUserTos ->
             if (oldUserTos == null) {
                 throw AppErrors.INSTANCE.userTosAgreementNotFound(userTosAgreementId).exception()
             }
@@ -146,7 +149,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
                 userTos = userTosFilter.filterForPut(userTos, oldUserTos)
 
                 return userTosValidator.validateForUpdate(userTosAgreementId, userTos, oldUserTos).then {
-                    return userTosRepository.update(userTos, oldUserTos).then { UserTosAgreement newUserTos ->
+                    return userTosService.update(userTos, oldUserTos).then { UserTosAgreement newUserTos ->
                         newUserTos = userTosFilter.filterForGet(newUserTos, null)
                         return Promise.pure(newUserTos)
                     }
@@ -163,7 +166,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                return userTosRepository.delete(userTosAgreementId)
+                return userTosService.delete(userTosAgreementId)
             }
         }
     }
@@ -202,11 +205,13 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
     Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions listOptions) {
         if (listOptions.userId != null && listOptions.tosId != null) {
-            return userTosRepository.searchByUserIdAndTosId(listOptions.userId, listOptions.tosId, listOptions.limit, listOptions.offset)
+            return userTosService.searchByUserIdAndTosId(listOptions.userId, listOptions.tosId, listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
-            return userTosRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+            return userTosService.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else if (listOptions.tosId != null) {
-            return userTosRepository.searchByTosId(listOptions.tosId, listOptions.limit, listOptions.offset)
+            return userTosService.searchByTosId(listOptions.tosId, listOptions.limit, listOptions.offset)
+        } else {
+            throw AppCommonErrors.INSTANCE.invalidOperation('unsupported search operation').exception()
         }
     }
 }

@@ -66,22 +66,25 @@
                 <entry key="CurrencyResource" value="identity.admin"/>
                 <entry key="DeviceTypeResource" value="identity.admin"/>
                 <entry key="ErrorInfoResource" value="identity.admin"/>
-                <entry key="GroupResource" value="identity identity.service csr group.readonly.service"/>
+                <entry key="GroupResource" value="identity identity.service csr group.readonly.service organization.group.admin"/>
                 <entry key="LocaleResource" value="identity.admin"/>
                 <entry key="MigrationResource" value="identity.migration"/>
-                <entry key="OrganizationResource" value="identity identity.service csr"/>
+                <entry key="OrganizationResource" value="identity identity.service csr organization.group.admin"/>
                 <entry key="PITypeResource" value="identity.admin"/>
                 <entry key="TosResource" value="identity.admin"/>
+                <entry key="UserAttributeDefinitionResource" value="identity.admin" />
                 <entry key="UserCommunicationResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserCredentialResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserCredentialVerifyAttemptResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserCredentialVerifyAttemptResource.create" value="identity.service"/>
                 <entry key="UserGroupMembershipResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserLogResource" value="identity.service csr"/>
-                <entry key="UserPersonalInfoResource" value="identity identity.service identity.pii csr"/>
-                <entry key="UserResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserPersonalInfoResource" value="identity identity.service identity.pii csr organization.group.admin"/>
+                <entry key="UserResource" value="identity identity.service identity.pii csr organization.group.admin identity.search"/>
                 <entry key="UserResource.checkUsername" value="*" />
                 <entry key="UserResource.checkEmail" value="*" />
+                <!-- This checkUsernameEmailBlocker API will be used only by oauth -->
+                <entry key="UserResource.checkUsernameEmailBlocker" value="identity.service csr" />
                 <entry key="UserSecurityQuestionResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserSecurityQuestionVerifyAttemptResource.create" value="identity.service"/>
                 <entry key="UserSecurityQuestionVerifyAttemptResource" value="identity.service identity.pii csr"/>
@@ -92,14 +95,15 @@
                 <entry key="UserTFABackupCodeResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFAResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTosAgreementResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserAttributeResource" value="identity identity.service identity.pii csr" />
                 <!-- oauth -->
                 <entry key="ClientEndpoint" value="client.register"/>
                 <entry key="ClientEndpoint.getInfoByClientId" value="client.info"/>
                 <entry key="ScopeEndpoint" value="scope.manage"/>
-                <entry key="ScopeEndpoint.getScope" value="scope.info"/>
-                <entry key="ScopeEndpoint.getByScopeNames" value="scope.info"/>
                 <entry key="EmailVerifyEndpoint.sendVerifyEmail" value="csr identity.service"/>
+                <entry key="EmailVerifyEndpoint.sendWelcomeEmail" value="identity.service" />
                 <entry key="EmailVerifyEndpoint.getVerifyEmailLink" value="smoketest" />
+                <entry key="ResetPasswordEndpoint.getResetPasswordLink" value="smoketest" />
                 <!-- order -->
                 <entry key="OrderEventResource" value="commerce order.service csr"/>
                 <entry key="OrderResource" value="commerce order.service csr"/>

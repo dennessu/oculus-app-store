@@ -1,19 +1,21 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile junboProject(':langur-core')
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
 
     compile(libraries.spring_context)
     compile(libraries.spring_beans)
+
+    compile junboProject(':authorization-lib')
 
     compile junboProject(':oauth-spec')
     compile junboProject(':identity-spec')
     compile junboProject(':email-spec')
     compile junboProject(':payment-spec')
     compile junboProject(':csr-spec')
+    compile junboProject(':store-spec')
 
-    processor junboProject(':langur-processor')
+    processor junboProject(':silkcloud-processor')
     processor (libraries.log4j)
 }
 

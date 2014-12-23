@@ -21,7 +21,7 @@
           parent="baseListenerContainer">
         <property name="destination" ref="emailQueue"/>
         <property name="messageListener">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="emailListener"/>
                 </property>

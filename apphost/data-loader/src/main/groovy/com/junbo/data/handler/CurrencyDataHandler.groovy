@@ -45,18 +45,7 @@ class CurrencyDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            if (alwaysOverwrite) {
-                logger.debug("Overwrite Currency $currency.currencyCode with this content.")
-                currency.id = (CurrencyId) existing.id
-                currency.rev = existing.rev
-                try {
-                    currencyResource.patch(new CurrencyId(currency.currencyCode), currency).get()
-                } catch (Exception e) {
-                    logger.error("Error updating currency $currency.currencyCode.", e)
-                }
-            } else {
-                logger.debug("$currency.currencyCode already exists, skipped!")
-            }
+            logger.debug("$currency.currencyCode already exists, skipped!")
         } else {
             logger.debug('Create new currency with this content')
             try {

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "XPF",
+			"longName": "CFP franc"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=XPF",
+		"id": null
+	},
+	"currencyCode": "XPF",
+	"symbol": "F",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

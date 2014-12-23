@@ -12,7 +12,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserTFAAttemptFilter
 import com.junbo.identity.core.service.validator.UserTFAAttemptValidator
-import com.junbo.identity.data.repository.UserTFAAttemptRepository
+import com.junbo.identity.service.UserTFAAttemptService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserTFAAttempt
 import com.junbo.identity.spec.v1.option.list.UserTFAAttemptListOptions
@@ -36,7 +36,7 @@ import javax.transaction.Transactional
 @Transactional
 class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
     @Autowired
-    private UserTFAAttemptRepository userTFAAttemptRepository
+    private UserTFAAttemptService userTFAAttemptService
 
     @Autowired
     private UserTFAAttemptFilter userTFAAttemptFilter
@@ -56,11 +56,11 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
     @Override
     Promise<UserTFAAttempt> create(UserId userId, UserTFAAttempt userTeleAttempt) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTeleAttempt == null) {
-            throw new IllegalArgumentException('userTeleAttempt is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userTeleAttempt = userTFAAttemptFilter.filterForCreate(userTeleAttempt)
@@ -96,7 +96,11 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+
+        if (userTFAAttemptId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAAttemptId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -116,7 +120,11 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
     @Override
     Promise<Results<UserTFAAttempt>> list(UserId userId, UserTFAAttemptListOptions listOptions) {
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+
+        if (listOptions == null) {
+            throw new IllegalArgumentException('listOptions is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -147,7 +155,7 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return template.execute(new TransactionCallback<Promise<UserTFAAttempt>>() {
             Promise<UserTFAAttempt> doInTransaction(TransactionStatus txnStatus) {
-                return userTFAAttemptRepository.create(attempt)
+                return userTFAAttemptService.create(attempt)
             }
         }
         )
@@ -155,12 +163,12 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
 
     private Promise<List<UserTFAAttempt>> search(UserTFAAttemptListOptions listOptions) {
         if (listOptions.userId != null && listOptions.userTFAId != null) {
-            return userTFAAttemptRepository.searchByUserIdAndUserTFAId(listOptions.userId, listOptions.userTFAId,
+            return userTFAAttemptService.searchByUserIdAndUserTFAId(listOptions.userId, listOptions.userTFAId,
                     listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
-            return userTFAAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+            return userTFAAttemptService.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Nosupported search operation.')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Nosupported search operation').exception()
         }
     }
 }

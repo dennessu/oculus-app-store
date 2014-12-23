@@ -1,0 +1,11 @@
+{
+  "localeCode": "fr_PF",
+  "shortName": "French (PF)",
+  "longName": "French (French Polynesia)",
+  "localeName": "French (PF)",
+  "fallbackLocale": {
+    "href": "/v1/locales/fr_FR",
+    "id": "fr_FR"
+  },
+  "futureExpansion": {}
+}

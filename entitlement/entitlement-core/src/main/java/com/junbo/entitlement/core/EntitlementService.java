@@ -11,7 +11,8 @@ import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 
-import java.util.UUID;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Interface of Entitlement Service.
@@ -21,14 +22,14 @@ public interface EntitlementService {
 
     Entitlement addEntitlement(Entitlement entitlement);
 
+    Map<Long, List<Entitlement>> addEntitlements(Map<Long, List<Entitlement>> entitlements);
+
     Entitlement updateEntitlement(String entitlementId, Entitlement entitlement);
 
     void deleteEntitlement(String entitlementId);
 
     Results<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                            PageMetadata pageMetadata);
-
-    Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
 
     String getDownloadUrl(String itemId, DownloadUrlGetOptions options);
 }

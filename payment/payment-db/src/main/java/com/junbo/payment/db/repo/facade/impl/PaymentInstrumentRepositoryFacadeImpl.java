@@ -9,8 +9,10 @@ import com.junbo.common.id.PIType;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.db.mapper.PaymentMapperExtension;
 import com.junbo.payment.db.repo.CreditCardDetailRepository;
+import com.junbo.payment.db.repo.FacebookPaymentAccountRepository;
 import com.junbo.payment.db.repo.PaymentInstrumentRepository;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
+import com.junbo.payment.spec.internal.FacebookPaymentAccountMapping;
 import com.junbo.payment.spec.model.CreditCardDetail;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
@@ -27,6 +29,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
     private PaymentInstrumentRepository paymentInstrumentRepository;
     private CreditCardDetailRepository creditCardDetailRepository;
     private PaymentMapperExtension paymentMapperExtension;
+    private FacebookPaymentAccountRepository fbPaymentAccountRepository;
 
     @Required
     public void setPaymentInstrumentRepository(PaymentInstrumentRepository paymentInstrumentRepository) {
@@ -41,6 +44,11 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
     @Required
     public void setPaymentMapperExtension(PaymentMapperExtension paymentMapperExtension) {
         this.paymentMapperExtension = paymentMapperExtension;
+    }
+
+    @Required
+    public void setFbPaymentAccountRepository(FacebookPaymentAccountRepository fbPaymentAccountRepository) {
+        this.fbPaymentAccountRepository = fbPaymentAccountRepository;
     }
 
     public void save(PaymentInstrument paymentInstrument){
@@ -100,7 +108,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
 
     public PaymentInstrument getByPIId(Long piId){
         PaymentInstrument pi = paymentInstrumentRepository.get(piId).get();
-        if (pi == null) {
+        if (pi == null || (pi.getIsDeleted() != null && pi.getIsDeleted()) ) {
             return null;
         }
 
@@ -130,8 +138,31 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
         return result;
     }
 
+    @Override
+    public String getFacebookPaymentAccount(Long userId) {
+        if(userId == null){
+            return null;
+        }
+        List<FacebookPaymentAccountMapping> results = fbPaymentAccountRepository.getByUserId(userId).get();
+        if(results != null && results.size() > 0){
+            return results.get(0).getFbPaymentAccountId();
+        }
+        return null;
+    }
+
+    @Override
+    public String createFBPaymentAccountIfNotExist(FacebookPaymentAccountMapping model) {
+        String existingAccount = getFacebookPaymentAccount(model.getUserId());
+        if(CommonUtil.isNullOrEmpty(existingAccount)){
+            FacebookPaymentAccountMapping result = fbPaymentAccountRepository.create(model).get();
+            return result.getFbPaymentAccountId();
+        }else{
+            return existingAccount;
+        }
+    }
+
     private void setAdditionalInfo(PaymentInstrument pi) {
-        if (PIType.CREDITCARD.getId().equals(pi.getType())) {
+        if (pi != null && PIType.CREDITCARD.getId().equals(pi.getType())) {
             CreditCardDetail ccDetail = creditCardDetailRepository.get(pi.getId()).get();
             pi.setTypeSpecificDetails(paymentMapperExtension.toTypeSpecificDetails(ccDetail));
         }

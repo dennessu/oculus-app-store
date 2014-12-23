@@ -31,9 +31,9 @@ class ValidatePaymentInstrumentsAction implements com.junbo.langur.core.webflow.
 
         // validate payments
         return orderServiceContextBuilder.getPaymentInstruments(
-                context.orderServiceContext).syncRecover {
+                context.orderServiceContext).syncRecover { Throwable ex ->
             LOGGER.error('name=Validate_Payment_Instrument_Fail')
-            throw AppErrors.INSTANCE.paymentConnectionError().exception()
+            throw ex
         }.syncThen { List<PaymentInstrument> pis ->
             if (CollectionUtils.isEmpty(pis)) {
                 LOGGER.info('name=Validate_Payment_Instrument_Not_Found')

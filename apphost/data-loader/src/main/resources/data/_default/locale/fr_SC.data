@@ -1,0 +1,11 @@
+{
+  "localeCode": "fr_SC",
+  "shortName": "French (SC)",
+  "longName": "French (Seychelles)",
+  "localeName": "French (SC)",
+  "fallbackLocale": {
+    "href": "/v1/locales/fr_FR",
+    "id": "fr_FR"
+  },
+  "futureExpansion": {}
+}

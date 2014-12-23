@@ -7,21 +7,18 @@
 package com.junbo.catalog.core.service;
 
 import com.google.common.base.Joiner;
+import com.junbo.catalog.clientproxy.OrganizationFacade;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.core.validators.ItemRevisionValidator;
-import com.junbo.catalog.db.repo.ItemAttributeRepository;
-import com.junbo.catalog.db.repo.ItemRepository;
-import com.junbo.catalog.db.repo.ItemRevisionRepository;
-import com.junbo.catalog.db.repo.OfferRepository;
-import com.junbo.catalog.spec.enums.EntitlementType;
-import com.junbo.catalog.spec.enums.ItemAttributeType;
-import com.junbo.catalog.spec.enums.ItemType;
-import com.junbo.catalog.spec.enums.Status;
+import com.junbo.catalog.db.repo.*;
+import com.junbo.catalog.spec.enums.*;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
@@ -42,8 +39,11 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     private ItemRepository itemRepo;
     private ItemRevisionRepository itemRevisionRepo;
     private ItemAttributeRepository itemAttributeRepo;
+    private OfferAttributeRepository offerAttributeRepo;
     private OfferRepository offerRepo;
     private ItemRevisionValidator revisionValidator;
+    private OrganizationFacade organizationFacade;
+    private OfferRevisionRepository offerRevisionRepo;
 
     @Required
     public void setItemRevisionRepo(ItemRevisionRepository itemRevisionRepo) {
@@ -68,6 +68,21 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     @Required
     public void setRevisionValidator(ItemRevisionValidator revisionValidator) {
         this.revisionValidator = revisionValidator;
+    }
+
+    @Required
+    public void setOrganizationFacade(OrganizationFacade organizationFacade) {
+        this.organizationFacade = organizationFacade;
+    }
+
+    @Required
+    public void setOfferAttributeRepo(OfferAttributeRepository offerAttributeRepo) {
+        this.offerAttributeRepo = offerAttributeRepo;
+    }
+
+    @Required
+    public void setOfferRevisionRepo(OfferRevisionRepository offerRevisionRepo) {
+        this.offerRevisionRepo = offerRevisionRepo;
     }
 
     @Override
@@ -99,6 +114,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
         revisionValidator.validateCreationBasic(revision);
+        normalizeRequiredSpace(revision);
         return itemRevisionRepo.create(revision);
     }
 
@@ -130,11 +146,21 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         } else {
             revisionValidator.validateUpdateBasic(revision, oldRevision);
         }
+        normalizeRequiredSpace(revision);
         return itemRevisionRepo.update(revision, oldRevision);
     }
 
     @Override
+    public ItemRevision getRevision(String revisionId) {
+        ItemRevision revision = getRevisionRepo().get(revisionId);
+        checkEntityNotNull(revisionId, revision, getRevisionType());
+        normalizeRequiredSpace(revision);
+        return revision;
+    }
+
+    @Override
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
+        List<ItemRevision> revisions;
         if (options.getTimestamp() != null) {
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 AppErrorException exception =
@@ -142,12 +168,26 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                 LOGGER.error("Error getting item-revisions. ", exception);
                 throw exception;
             }
-            List<ItemRevision> revisions = itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
+            revisions = itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
             options.setTotal(Long.valueOf(revisions.size()));
-            return revisions;
         } else {
-            return itemRevisionRepo.getRevisions(options);
+            revisions = itemRevisionRepo.getRevisions(options);
         }
+
+        for (ItemRevision revision : revisions) {
+            normalizeRequiredSpace(revision);
+        }
+
+        return revisions;
+    }
+
+    @Override
+    public void deleteEntity(String entityId) {
+        List<OfferRevision> offerRevisions = offerRevisionRepo.getRevisions(entityId);
+        if (offerRevisions.size() > 0) {
+            throw AppErrors.INSTANCE.itemReferenced(getEntityType(), entityId, (long)(offerRevisions.size()), "offer-revisions").exception();
+        }
+        super.deleteEntity(entityId);
     }
 
     @Override
@@ -218,6 +258,8 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         }
         if (item.getOwnerId() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("developer"));
+        } else if (organizationFacade.getOrganization(item.getOwnerId()) == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("developer", "Cannot find organization " + Utils.encodeId(item.getOwnerId())));
         }
 
         validateItemCommon(item, errors);
@@ -246,6 +288,8 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         }
         if (!oldItem.getOwnerId().equals(item.getOwnerId())) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("developer", Utils.encodeId(item.getOwnerId()), Utils.encodeId(oldItem.getOwnerId())));
+        } else if (organizationFacade.getOrganization(item.getOwnerId()) == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("developer", "Cannot find organization " + Utils.encodeId(item.getOwnerId())));
         }
 
         validateItemCommon(item, errors);
@@ -277,6 +321,32 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                         errors.add(AppErrors.INSTANCE.genreNotFound("genres", genreId));
                     }
                 }
+            }
+        }
+        if (!CollectionUtils.isEmpty(item.getCategories())) {
+            for (String categoryId : item.getCategories()) {
+                if (categoryId == null) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("categories"));
+                } else {
+                    OfferAttribute attribute = offerAttributeRepo.get(categoryId);
+                    if (attribute == null || !OfferAttributeType.CATEGORY.is(attribute.getType())) {
+                        errors.add(AppErrors.INSTANCE.categoryNotFound("categories", categoryId));
+                    }
+                }
+            }
+        }
+    }
+
+    private void normalizeRequiredSpace(ItemRevision revision) {
+        if (revision.getBinaries() == null) {
+            return;
+        }
+        for (Binary binary : revision.getBinaries().values()) {
+            if (binary.getSize() == null) {
+                binary.setSize(0L);
+            }
+            if (binary.getRequiredSpace() == null) {
+                binary.setRequiredSpace(binary.getSize() * 2);
             }
         }
     }

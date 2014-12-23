@@ -4,6 +4,7 @@ import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.model.ResourceMetaBase
 import com.junbo.common.model.Results
@@ -12,7 +13,7 @@ import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserCredentialVerifyAttemptFilter
 import com.junbo.identity.core.service.validator.UserCredentialVerifyAttemptValidator
 import com.junbo.identity.data.identifiable.CredentialType
-import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
+import com.junbo.identity.service.UserCredentialVerifyAttemptService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
@@ -34,8 +35,11 @@ import org.springframework.transaction.support.TransactionCallback
 @Transactional
 @CompileStatic
 class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAttemptResource {
+    private static final String MAXIMUM_SAME_IP_RETRY_COUNT = "131.142"
+    private static final String MAXIMUM_SAME_USER_RETRY_COUNT = "131.141"
+
     @Autowired
-    private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
+    private UserCredentialVerifyAttemptService userCredentialVerifyAttemptService
 
     @Autowired
     private UserCredentialVerifyAttemptFilter userCredentialVerifyAttemptFilter
@@ -55,18 +59,28 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     @Override
     Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt userCredentialAttempt) {
         if (userCredentialAttempt == null) {
-            throw new IllegalArgumentException('userLoginAttempt is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userCredentialAttempt = userCredentialVerifyAttemptFilter.filterForCreate(userCredentialAttempt)
 
         return credentialVerifyAttemptValidator.validateForCreate(userCredentialAttempt).recover { Throwable e ->
+            if (isAppError(e, MAXIMUM_SAME_IP_RETRY_COUNT, MAXIMUM_SAME_USER_RETRY_COUNT)) {
+                throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+            }
             userCredentialAttempt.succeeded = false
             return createInNewTran(userCredentialAttempt).then {
                 throw e
             }
         }.then {
+            // For any period login, will always mark it as failure
+            if (userCredentialAttempt.isLockDownPeriodAttempt) {
+                userCredentialAttempt.succeeded = false
+            }
             return createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
+                if (attempt.isLockDownPeriodAttempt) {
+                    throw AppErrors.INSTANCE.maximumLoginAttempt().exception()
+                }
                 if (attempt.succeeded) {
                     if (attempt.id != null) {
                         Created201Marker.mark(attempt.getId())
@@ -76,7 +90,6 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
                     attempt = RightsScope.filterForAdminInfo(attempt as ResourceMetaBase) as UserCredentialVerifyAttempt
                     return Promise.pure(attempt)
                 }
-
                 if (userCredentialAttempt.type == CredentialType.PASSWORD.toString()) {
                     throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
                 } else if (userCredentialAttempt.type == CredentialType.PIN.toString()) {
@@ -150,20 +163,31 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return template.execute(new TransactionCallback<Promise<UserCredentialVerifyAttempt>>() {
             Promise<UserCredentialVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
-                return userCredentialVerifyAttemptRepository.create(userLoginAttempt)
+                return userCredentialVerifyAttemptService.create(userLoginAttempt)
             }
         })
     }
 
     private Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions listOptions) {
         if (listOptions.userId != null && listOptions.type != null) {
-            return userCredentialVerifyAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(listOptions.userId,
+            return userCredentialVerifyAttemptService.searchByUserIdAndCredentialTypeAndInterval(listOptions.userId,
                     listOptions.type, 0L, listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
-            return userCredentialVerifyAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
+            return userCredentialVerifyAttemptService.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)
         } else {
             throw new IllegalArgumentException('Unsupported search operation')
         }
+    }
+
+    public boolean isAppError(Throwable ex, String... codes) {
+        if (!(ex instanceof AppErrorException)) {
+            return false
+        }
+        String code = ((AppErrorException)ex).error?.error()?.code
+        if (code == null) {
+            return false
+        }
+        return codes.any {String c -> c == code}
     }
 }

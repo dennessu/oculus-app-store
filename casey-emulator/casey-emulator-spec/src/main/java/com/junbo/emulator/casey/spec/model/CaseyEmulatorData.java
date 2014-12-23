@@ -6,9 +6,11 @@
 package com.junbo.emulator.casey.spec.model;
 
 import com.junbo.common.id.OfferId;
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
-import com.junbo.store.spec.model.external.casey.CaseyReview;
-import com.junbo.store.spec.model.external.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsCampaign;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsSchedule;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,10 @@ public class CaseyEmulatorData {
     private List<CaseyReview> caseyReviews;
 
     private List<CmsPage> cmsPages;
+
+    private List<CmsCampaign> cmsCampaigns;
+
+    private List<CmsSchedule> cmsSchedules;
 
     private Map<String, List<OfferId>> cmsPageOffers; // ($pageName + "-" + $slotName) -> list of OfferId
 
@@ -56,5 +62,21 @@ public class CaseyEmulatorData {
 
     public void setCmsPageOffers(Map<String, List<OfferId>> cmsPageOffers) {
         this.cmsPageOffers = cmsPageOffers;
+    }
+
+    public List<CmsCampaign> getCmsCampaigns() {
+        return cmsCampaigns;
+    }
+
+    public void setCmsCampaigns(List<CmsCampaign> cmsCampaigns) {
+        this.cmsCampaigns = cmsCampaigns;
+    }
+
+    public List<CmsSchedule> getCmsSchedules() {
+        return cmsSchedules;
+    }
+
+    public void setCmsSchedules(List<CmsSchedule> cmsSchedules) {
+        this.cmsSchedules = cmsSchedules;
     }
 }

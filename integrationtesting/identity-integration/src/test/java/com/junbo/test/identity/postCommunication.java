@@ -28,10 +28,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by liangfu on 8/12/14.
@@ -76,7 +73,7 @@ public class postCommunication {
 
         Communication gotten = Identity.CommunicationGet(posted.getId().toString(), null);
         gotten = Identity.CommunicationPut(gotten);
-        Results<Communication> results = Identity.CommunicationSearch(null, null);
+        Results<Communication> results = Identity.CommunicationSearch(null, null, null);
         assert results.getItems().size() != 0;
     }
 
@@ -97,12 +94,12 @@ public class postCommunication {
         CommunicationLocale communicationLocale = new CommunicationLocale();
         communicationLocale.setDescription(RandomHelper.randomAlphabetic(100));
         communicationLocale.setName(RandomHelper.randomAlphabetic(100));
-        String randomLocale = RandomHelper.randomAlphabetic(2) + "_" + RandomHelper.randomAlphabetic(2);
+        String randomLocale = RandomHelper.randomAlphabetic(2) + "_" + "XX";
         communication.getLocales().put(randomLocale, JsonHelper.ObjectToJsonNode(communicationLocale));
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
 
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1CommunicationURI, JsonHelper.JsonSerializer(communication), HttpclientHelper.HttpRequestType.post, nvps);
 
         Validator.Validate("validate response code", 400, response.getStatusLine().getStatusCode());
@@ -142,12 +139,12 @@ public class postCommunication {
         communication.setTranslations(translations);
 
         CommunicationLocale enUSCommunicationLocale = new CommunicationLocale();
-        enUSCommunicationLocale.setDescription("SilkCloudTest_Description_enUS");
-        enUSCommunicationLocale.setName("SilkCloudTest_Name_enUS");
+        enUSCommunicationLocale.setDescription("SilkCloudTest_Description_enUS" + RandomHelper.randomAlphabetic(15));
+        enUSCommunicationLocale.setName("SilkCloudTest_Name_enUS" + RandomHelper.randomAlphabetic(15));
 
         CommunicationLocale zhCNCommunicationLocale = new CommunicationLocale();
-        zhCNCommunicationLocale.setDescription("SilkCloudTest_Description_zhCN");
-        zhCNCommunicationLocale.setName("SilkCloudTest_Name_zhCN");
+        zhCNCommunicationLocale.setDescription("SilkCloudTest_Description_zhCN" + RandomHelper.randomAlphabetic(15));
+        zhCNCommunicationLocale.setName("SilkCloudTest_Name_zhCN" + RandomHelper.randomAlphabetic(15));
 
         Map<String, JsonNode> locales = new HashMap<>();
         locales.put("en_US", JsonHelper.ObjectToJsonNode(enUSCommunicationLocale));
@@ -162,8 +159,8 @@ public class postCommunication {
         Validator.Validate("Validate Locale Accuracy", gotten.getLocaleAccuracy(), "HIGH");
         CommunicationLocale communicationLocale = (CommunicationLocale) JsonHelper.JsonNodeToObject(gotten.getLocales().get("en_US"),
                 CommunicationLocale.class);
-        Validator.Validate("Validate locale description value", communicationLocale.getDescription(), "SilkCloudTest_Description_enUS");
-        Validator.Validate("Validate Locale name value", communicationLocale.getName(), "SilkCloudTest_Name_enUS");
+        Validator.Validate("Validate locale description value", communicationLocale.getDescription().contains("SilkCloudTest_Description_enUS"), true);
+        Validator.Validate("Validate Locale name value", communicationLocale.getName().contains("SilkCloudTest_Name_enUS"), true);
 
         gotten = Identity.CommunicationGet(posted.getId().toString(), "zh_CN");
         assert gotten.getLocales().get("zh_CN") != null;
@@ -171,8 +168,8 @@ public class postCommunication {
         Validator.Validate("Validate Locale Accuracy", gotten.getLocaleAccuracy(), "HIGH");
         communicationLocale = (CommunicationLocale) JsonHelper.JsonNodeToObject(gotten.getLocales().get("zh_CN"),
                 CommunicationLocale.class);
-        Validator.Validate("Validate locale description value", communicationLocale.getDescription(), "SilkCloudTest_Description_zhCN");
-        Validator.Validate("Validate Locale name value", communicationLocale.getName(), "SilkCloudTest_Name_zhCN");
+        Validator.Validate("Validate locale description value", communicationLocale.getDescription().contains("SilkCloudTest_Description_zhCN"), true);
+        Validator.Validate("Validate Locale name value", communicationLocale.getName().contains("SilkCloudTest_Name_zhCN"), true);
 
         gotten = Identity.CommunicationGet(posted.getId().toString(), "ja_JP");
         assert gotten.getLocales().get("zh_CN") == null;
@@ -181,8 +178,8 @@ public class postCommunication {
         Validator.Validate("Validate Locale Accuracy", gotten.getLocaleAccuracy(), "LOW");
         communicationLocale = (CommunicationLocale) JsonHelper.JsonNodeToObject(gotten.getLocales().get("ja_JP"),
                 CommunicationLocale.class);
-        Validator.Validate("Validate locale description value", communicationLocale.getDescription(), "SilkCloudTest_Description_enUS");
-        Validator.Validate("Validate Locale name value", communicationLocale.getName(), "SilkCloudTest_Name_enUS");
+        Validator.Validate("Validate locale description value", communicationLocale.getDescription().contains("SilkCloudTest_Description_enUS"), true);
+        Validator.Validate("Validate Locale name value", communicationLocale.getName().contains("SilkCloudTest_Name_enUS"), true);
     }
 
     @Property(
@@ -202,10 +199,11 @@ public class postCommunication {
         Communication communication = IdentityModel.DefaultCommunication();
         Communication posted = Identity.CommunicationDefault(communication);
 
-        Results<Communication> communications = Identity.CommunicationSearch(null, null);
+        Results<Communication> communications = Identity.CommunicationSearch(null, null, null);
+        assert communications.getTotal() > 0;
         assert communications.getItems().size() != 0;
 
-        communications = Identity.CommunicationSearch("US", null);
+        communications = Identity.CommunicationSearch("US", null, null);
         assert communications.getItems().size() != 0;
         for (int index = 0; index < communications.getItems().size(); index++) {
             Communication gotten = communications.getItems().get(index);
@@ -220,7 +218,8 @@ public class postCommunication {
             assert regionIndex != gotten.getRegions().size();
         }
 
-        communications = Identity.CommunicationSearch("US", "en_US");
+        communications = Identity.CommunicationSearch("US", "en_US", null);
+        assert communications.getTotal() != 0;
         assert communications.getItems().size() != 0;
         for (int index = 0; index < communications.getItems().size(); index++) {
             Communication gotten = communications.getItems().get(index);
@@ -240,7 +239,78 @@ public class postCommunication {
             assert regionIndex != gotten.getTranslations().size();
         }
 
-        communications = Identity.CommunicationSearch("US", "ja_JP");
+        communications = Identity.CommunicationSearch("US", "ja_JP", null);
         assert communications.getItems().size() == 0;
+
+        communications = Identity.CommunicationSearch("US", "en_US", 0);
+        assert communications.getTotal() != 0;
+        assert communications.getItems().size() == 0;
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            component = Component.Identity,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "Test communication Create And Update",
+            environment = "onebox",
+            steps = {
+                    "1. post a communication" +
+                    "2. update the communication"
+            }
+    )
+    @Test(groups = "dailies")
+    public void testCommunicationUpdate() throws Exception {
+        String communicationTitle = RandomHelper.randomAlphabetic(16);
+        Communication communication1 = IdentityModel.DefaultCommunication();
+        JsonNode jsonNode = communication1.getLocales().get("en_US");
+        CommunicationLocale communicationLocale = (CommunicationLocale)JsonHelper.JsonNodeToObject(jsonNode, CommunicationLocale.class);
+        communicationLocale.setName(communicationTitle);
+        communicationLocale.setDescription(communicationLocale.getDescription());
+        communication1.getLocales().put("en_US", JsonHelper.ObjectToJsonNode(communicationLocale));
+        Communication communication2 = IdentityModel.DefaultCommunication();
+        jsonNode = communication2.getLocales().get("en_US");
+        communicationLocale = (CommunicationLocale)JsonHelper.JsonNodeToObject(jsonNode, CommunicationLocale.class);
+        communicationLocale.setName(communicationTitle);
+        communicationLocale.setDescription(communicationLocale.getDescription());
+        communication2.getLocales().put("en_US", JsonHelper.ObjectToJsonNode(communicationLocale));
+
+        Communication communication = Identity.CommunicationDefault(communication1);
+        assert communication != null;
+        assert communication.getLocales().get("en_US") != null;
+        jsonNode = communication2.getLocales().get("en_US");
+        communicationLocale = (CommunicationLocale)JsonHelper.JsonNodeToObject(jsonNode, CommunicationLocale.class);
+        assert communicationLocale.getName().equalsIgnoreCase(communicationTitle);
+
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1CommunicationURI,
+                JsonHelper.JsonSerializer(communication2), HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
+        String errorMessage = "communication have overlap region support for same title";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        communication2.getRegions().clear();
+        communication2.getRegions().add(new CountryId("GB"));
+        communication = Identity.CommunicationDefault(communication2);
+        assert communication != null;
+        assert communication.getRegions().contains(new CountryId("GB"));
+
+        communication.getRegions().add(new CountryId("US"));
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1CommunicationURI + "/" + communication.getId().toString(),
+                JsonHelper.JsonSerializer(communication), HttpclientHelper.HttpRequestType.put, nvps);
+        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        communication.getRegions().remove(new CountryId("US"));
+        communication.getRegions().add(new CountryId("FR"));
+        communication = Identity.CommunicationPut(communication);
+        assert communication != null;
+        assert communication.getRegions().contains(new CountryId("GB"));
+        assert communication.getRegions().contains(new CountryId("FR"));
     }
 }

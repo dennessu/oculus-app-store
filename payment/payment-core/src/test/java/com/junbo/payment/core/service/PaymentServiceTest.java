@@ -7,13 +7,15 @@ import com.junbo.payment.core.mock.MockPaymentProviderServiceImpl;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl;
 import com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl;
+import com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl;
 import com.junbo.payment.core.provider.ewallet.EWalletProviderServiceImpl;
 import com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl;
+import com.junbo.payment.db.dao.payment.PaymentProviderDao;
+import com.junbo.payment.db.entity.payment.PaymentProviderEntity;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.model.ChargeInfo;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.payment.spec.model.TypeSpecificDetails;
+import com.junbo.payment.spec.internal.ProviderCriteria;
+import com.junbo.payment.spec.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -21,10 +23,15 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class PaymentServiceTest extends BaseTest {
     private final String BILLING_REF_ID = "123";
+
+    @Autowired
+    private PaymentProviderDao providerDao;
 
     @Test
     public void testAddPI() throws ExecutionException, InterruptedException {
@@ -41,8 +48,10 @@ public class PaymentServiceTest extends BaseTest {
     @Test
     public void testRemovePI() throws ExecutionException, InterruptedException {
         PaymentInstrument request = buildPIRequest();
-        PaymentInstrument result = piService.add(request).get();
+        PaymentInstrument result = addPI(request);
         piService.delete(result.getId());
+        List<PaymentInstrument> results = piService.searchPi(result.getUserId(), new PaymentInstrumentSearchParam()).get();
+        Assert.assertEquals(results.size(), 0);
     }
 
     @Test
@@ -67,7 +76,7 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(captureResult.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(null);
-        paymentService.reverse(result.getId(), payment);
+        paymentService.reverse(result.getId(), payment).get();
         PaymentTransaction getResult = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
     }
@@ -92,7 +101,7 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.chargeExternalToken);
         Assert.assertEquals(result.getStatus().toString(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         payment.setChargeInfo(null);
-        paymentService.reverse(result.getId(), payment);
+        paymentService.reverse(result.getId(), payment).get();
         PaymentTransaction getResult = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.chargeExternalToken);
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());
@@ -119,16 +128,55 @@ public class PaymentServiceTest extends BaseTest {
         Assert.assertNotNull(result.getExternalToken());
     }
 
-    @Test
+    private PaymentProviderEntity addOrDeleteProvider(final PaymentProviderEntity entity, final boolean isAdd){
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<PaymentProviderEntity>() {
+            public PaymentProviderEntity doInTransaction(TransactionStatus txnStatus) {
+                if(isAdd){
+                    providerDao.save(entity);
+                }else{
+                    providerDao.delete(entity);
+                }
+                return entity;
+            }
+        });
+    }
+
+
+    @Test(enabled = false)
     public void testRoutingService() throws ExecutionException, InterruptedException {
-        PaymentProviderService service = providerRoutingService.getPaymentProvider(PIType.CREDITCARD);
-        Assert.assertEquals(true, service instanceof AdyenCCProivderServiceImpl);
-        service = providerRoutingService.getPaymentProvider(PIType.PAYPAL);
-        Assert.assertEquals(true, service instanceof PayPalProviderServiceImpl);
-        service = providerRoutingService.getPaymentProvider(PIType.STOREDVALUE);
-        Assert.assertEquals(true, service instanceof EWalletProviderServiceImpl);
-        service = providerRoutingService.getPaymentProvider(PIType.OTHERS);
-        Assert.assertEquals(true, service instanceof AdyenProviderServiceImpl);
+        PaymentProviderEntity entity = null;
+        try{
+            entity = new PaymentProviderEntity();
+            entity.setId(100);
+            entity.setCountryCode("CN");
+            entity.setPiType(0L);
+            entity.setProviderName("BrainTree");
+            entity.setCreatedTime(new Date());
+            entity.setCreatedBy("ut");
+            addOrDeleteProvider(entity, true);
+
+            ProviderCriteria ccCriteria = new ProviderCriteria(PIType.CREDITCARD);
+            PaymentProviderService service = providerRoutingService.getPaymentProvider(ccCriteria);
+            Assert.assertEquals(true, service instanceof AdyenCCProivderServiceImpl);
+
+            ccCriteria.setCountry("CN");
+            service = providerRoutingService.getPaymentProvider(ccCriteria);
+            Assert.assertEquals(true, service instanceof BrainTreePaymentProviderServiceImpl);
+
+            service = providerRoutingService.getPaymentProvider(new ProviderCriteria(PIType.PAYPAL));
+            Assert.assertEquals(true, service instanceof PayPalProviderServiceImpl);
+            service = providerRoutingService.getPaymentProvider(new ProviderCriteria(PIType.STOREDVALUE));
+            Assert.assertEquals(true, service instanceof EWalletProviderServiceImpl);
+            service = providerRoutingService.getPaymentProvider(new ProviderCriteria(PIType.OTHERS));
+            Assert.assertEquals(true, service instanceof AdyenProviderServiceImpl);
+        }finally {
+            if(entity != null){
+                addOrDeleteProvider(entity, false);
+            }
+        }
+
     }
 
     private PaymentInstrument buildWalletPIRequest() {

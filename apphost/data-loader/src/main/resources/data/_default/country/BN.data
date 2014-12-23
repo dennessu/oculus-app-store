@@ -1,0 +1,60 @@
+{
+	"countryCode": "BN",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/BND",
+		"id": "BND"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Belait",
+					"longName": "Belait"
+				}
+			}
+		},
+		"BM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Brunei-Muara",
+					"longName": "Brunei-Muara"
+				}
+			}
+		},
+		"TE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Temburong",
+					"longName": "Temburong"
+				}
+			}
+		},
+		"TU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tutong",
+					"longName": "Tutong"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Brunei",
+			"longName": "Nation of Brunei, the Abode of Peace",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

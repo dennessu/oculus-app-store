@@ -15,7 +15,6 @@ import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.clientproxy.adyen.AdyenApi;
-import com.junbo.payment.clientproxy.adyen.proxy.AdyenApiClientProxy;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -32,8 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
@@ -66,6 +63,9 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
             @Override
             public PaymentInstrument call() throws Exception {
+                if(request.getBillingAddressId() == null){
+                    throw AppClientExceptions.INSTANCE.billingAddressNotFound("billing address required").exception();
+                }
                 Address addressDetail = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
                 if(addressDetail == null){
                     throw AppClientExceptions.INSTANCE.billingAddressNotFound(request.getBillingAddressId().toString()).exception();
@@ -114,13 +114,9 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                     //TODO: enable SDK if Adyen fixed
                     //result = service.authorise(adyenRequest);
                     //Rest call
-                    MultivaluedMap<String, String> headers = new MultivaluedHashMap<String, String>();
                     String authCode = Base64.encodeBase64String((getAuthUser() + ":" + getAuthPassword()).getBytes());
-                    headers.putSingle("Authorization", "Basic " + authCode);
-                    headers.putSingle("Accept", "text/html");
-                    ((AdyenApiClientProxy)adyenRestClient).setHeaders(headers);
                     StringBuffer sbReq = getRawRequest(defaultCurrency, minAuthAmount, piId, request, address);
-                    String restResponse = adyenRestClient.authorise(sbReq.toString()).get();
+                    String restResponse = adyenRestClient.authorise("Basic " + authCode, sbReq.toString()).get();
                     if(CommonUtil.isNullOrEmpty(restResponse)){
                         LOGGER.error("empty response from Adyen.");
                         throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "no response").exception();

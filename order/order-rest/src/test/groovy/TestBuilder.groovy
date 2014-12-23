@@ -18,7 +18,6 @@ import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.DiscountType
 import com.junbo.order.spec.model.enums.EventStatus
-import com.junbo.order.spec.model.enums.ItemType
 import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.rating.spec.model.priceRating.RatingItem
@@ -28,7 +27,6 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 
 import java.text.SimpleDateFormat
-
 /**
  * Created by chriszhu on 2/14/14.
  */
@@ -99,7 +97,6 @@ class TestBuilder {
     static OrderItem buildOrderItem() {
         def orderItem = new OrderItem()
         orderItem.setId(new OrderItemId(generateLong()))
-        orderItem.setType(ItemType.DIGITAL.toString())
         orderItem.setOffer(new OfferId(generateString()))
         orderItem.quantity = 1
         orderItem.unitPrice = 99.99G

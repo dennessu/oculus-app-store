@@ -43,11 +43,32 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
     }
 
     @Override
+    Promise<List<UserCredentialVerifyAttempt>> searchNonLockPeriodHistory(UserId userId, String type, Long fromTimeStamp, Integer limit, Integer offset) {
+        def startKey = [userId.toString(), type, fromTimeStamp]
+        def endKey = [userId.toString(), type]
+        return queryView('by_user_id_credential_type_time_no_lockdown', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
+    }
+
+    @Override
     Promise<List<UserCredentialVerifyAttempt>> searchByIPAddressAndCredentialTypeAndInterval(String ipAddress, String type, Long fromTimeStamp,
                                                                                   Integer limit, Integer offset) {
         def startKey = [ipAddress, type, fromTimeStamp]
         def endKey = [ipAddress, type]
         return queryView('by_ip_address_credential_type_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
+    }
+
+    @Override
+    Promise<Integer> searchByUserIdAndCredentialTypeAndIntervalCount(UserId userId, String type, Long fromTimeStamp, Integer limit, Integer skip) {
+        def startKey = [userId, type, fromTimeStamp]
+        def endKey = [userId, type]
+        return queryViewCount('by_user_id_credential_type_time', startKey.toArray(new String()), endKey.toArray(new String()), true, true, limit, skip)
+    }
+
+    @Override
+    Promise<Integer> searchByIPAddressAndCredentialTypeAndIntervalCount(String ipAddress, String type, Long fromTimeStamp, Integer limit, Integer skip) {
+        def startKey = [ipAddress, type, fromTimeStamp]
+        def endKey = [ipAddress, type]
+        return queryViewCount('by_ip_address_credential_type_time', startKey.toArray(new String()), endKey.toArray(new String()), true, true, limit, skip)
     }
 
     @Override

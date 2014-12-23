@@ -138,7 +138,6 @@ public class OfferSearch extends BaseTestClass {
         offerRevisionLocaleProperties.setShortDescription("offerRevisionShortDescription_" +
                 RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
 
-        locales.put("default", offerRevisionLocaleProperties);
         locales.put(defaultLocale, offerRevisionLocaleProperties);
         offerRevisionPrepared.setLocales(locales);
 
@@ -309,6 +308,13 @@ public class OfferSearch extends BaseTestClass {
         String offerId1 = ConfigHelper.getSetting("testdata.offer.digital.free");
         String offerId2 = ConfigHelper.getSetting("testdata.offer.iap.free");
 
+        if (offerId1.contains("testOffer")) {
+            offerId1 = offerService.getOfferIdByName(offerId1);
+        }
+        if (offerId2.contains("testOffer")) {
+            offerId2 = offerService.getOfferIdByName(offerId2);
+        }
+
         Offer offer1 = offerService.getOffer(offerId1);
         Offer offer2 = offerService.getOffer(offerId2);
         Assert.assertNotNull(offer1);
@@ -357,6 +363,13 @@ public class OfferSearch extends BaseTestClass {
         String offerId1 = ConfigHelper.getSetting("testdata.offer.digital.free");
         String offerId2 = ConfigHelper.getSetting("testdata.offer.iap.free");
 
+        if (offerId1.contains("testOffer")) {
+            offerId1 = offerService.getOfferIdByName(offerId1);
+        }
+        if (offerId2.contains("testOffer")) {
+            offerId2 = offerService.getOfferIdByName(offerId2);
+        }
+
         Offer offer1 = offerService.getOffer(offerId1);
         Offer offer2 = offerService.getOffer(offerId2);
 
@@ -389,6 +402,8 @@ public class OfferSearch extends BaseTestClass {
         ItemRevision itemRevision1 = itemRevisionService.getItemRevision(item1.getCurrentRevisionId());
 
         paraMap.clear();
+        publisherIds.clear();
+        publisherIds.add(IdConverter.idToHexString(item1.getOwnerId()));
         paraMap.put("developerId", publisherIds);
 
         itemIds.add(item1.getItemId());

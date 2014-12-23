@@ -41,7 +41,7 @@ class GrantImplicitAccessToken implements Action {
             Assert.notNull(loginState, 'loginState is null')
 
             def accessToken = tokenService.generateAccessToken(client, loginState.userId,
-                    oauthInfo.scopes, contextWrapper.overrideExpiration)
+                    oauthInfo.scopes, contextWrapper.overrideExpiration, loginState.hashedId)
 
             contextWrapper.accessToken = accessToken
         }

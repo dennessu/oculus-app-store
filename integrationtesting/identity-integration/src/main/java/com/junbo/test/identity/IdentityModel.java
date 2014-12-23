@@ -1,25 +1,24 @@
-// CHECKSTYLE:OFF
-
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.test.identity;
+// CHECKSTYLE:OFF
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.*;
+import com.junbo.common.id.OrganizationId;
+import com.junbo.common.id.UserAttributeDefinitionId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.Locale;
-import com.junbo.identity.spec.v1.model.migration.Company;
-import com.junbo.identity.spec.v1.model.migration.OculusInput;
-import com.junbo.identity.spec.v1.model.migration.ShareProfile;
-import com.junbo.identity.spec.v1.model.migration.ShareProfileAvatar;
+import com.junbo.identity.spec.v1.model.migration.*;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
+import org.apache.commons.lang.time.DateUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -46,6 +45,17 @@ public class IdentityModel {
         address.setCountryId(countryId);
         address.setPostalCode("92612");
         address.setStreet1("19800 MacArthur Blvd");
+        return address;
+    }
+
+    public static Address DefaultUnicodeAddress() throws Exception {
+        Address address = new Address();
+        CountryId countryId = new CountryId("US");
+        address.setSubCountry("上海");
+        address.setCity("黄埔区");
+        address.setCountryId(countryId);
+        address.setPostalCode("200023");
+        address.setStreet1("打浦路1号");
         return address;
     }
 
@@ -154,6 +164,14 @@ public class IdentityModel {
         return user;
     }
 
+    public static UsernameMailBlocker DefaultUsernameMailBlocker() throws Exception {
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setUsername(RandomHelper.randomAlphabetic(15));
+        usernameMailBlocker.setEmail(RandomHelper.randomEmail());
+
+        return usernameMailBlocker;
+    }
+
     public static OculusInput DefaultOculusInput() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         OculusInput input = new OculusInput();
@@ -204,10 +222,20 @@ public class IdentityModel {
         return shareProfile;
     }
 
+    public static UserPersonalInfo DefaultUserPersonalInfoUnicodeAddress() throws Exception {
+        Address address = DefaultUnicodeAddress();
+        return DefaultUserPersonalInfoAddress(address);
+    }
+
     public static UserPersonalInfo DefaultUserPersonalInfoAddress() throws Exception {
+        Address address = DefaultAddress();
+        return DefaultUserPersonalInfoAddress(address);
+    }
+
+    public static UserPersonalInfo DefaultUserPersonalInfoAddress(Address address) throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType(UserPersonalInfoType.ADDRESS.name());
-        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultAddress()));
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(address != null ? address : DefaultAddress()));
         return userPersonalInfo;
     }
 
@@ -241,6 +269,16 @@ public class IdentityModel {
         return userPersonalInfo;
     }
 
+    public static UserPersonalInfo DefaultUnicodeUserPersonalInfoName() throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        UserName userName = new UserName();
+        userName.setFamilyName("赵");
+        userName.setGivenName("云龙");
+        userPersonalInfo.setType(UserPersonalInfoType.NAME.toString());
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(userName));
+        return userPersonalInfo;
+    }
+
     public static UserPersonalInfo DefaultUserPersonalInfoUsername() throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         UserLoginName loginName = new UserLoginName();
@@ -248,6 +286,14 @@ public class IdentityModel {
         userPersonalInfo.setType(UserPersonalInfoType.USERNAME.toString());
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(loginName));
         return userPersonalInfo;
+    }
+
+    public static Group DefaultGroup(OrganizationId organizationId) throws Exception {
+        Group group = new Group();
+        group.setName(RandomHelper.randomAlphabetic(15));
+        group.setActive(true);
+        group.setOrganizationId(organizationId);
+        return group;
     }
 
     public static Organization DefaultOrganization() throws Exception {
@@ -261,7 +307,8 @@ public class IdentityModel {
         return DefaultUserCredential(userId, null, password);
     }
 
-    public static UserCredential DefaultUserCredential(UserId userId, String oldPassword, String password) throws Exception {
+    public static UserCredential DefaultUserCredential(UserId userId, String oldPassword, String password)
+            throws Exception {
         UserCredential userCredential = new UserCredential();
         userCredential.setUserId(userId);
         userCredential.setCurrentPassword(oldPassword);
@@ -279,6 +326,29 @@ public class IdentityModel {
         userCredential.setType("PIN");
         userCredential.setChangeAtNextLogin(false);
         return userCredential;
+    }
+
+    public static Tos DefaultTos() throws Exception {
+        List<String> supportedCountries = new ArrayList<>();
+        supportedCountries.add("US");
+        return DefaultTos(RandomHelper.randomAlphabetic(15), "TOS", "APPROVED", supportedCountries);
+    }
+
+    public static Tos DefaultTos(String title, String type, String state, List<String> supportedCountries)
+            throws Exception {
+        Tos tos = new Tos();
+        tos.setContent(RandomHelper.randomAlphabetic(1000));
+        tos.setType(type);
+        tos.setVersion(RandomHelper.randomAlphabetic(15));
+        tos.setTitle(title);
+        tos.setState(state);
+        List<CountryId> supportedCountryIds = new ArrayList<>();
+        for (String supportedCountry : supportedCountries) {
+            supportedCountryIds.add(new CountryId(supportedCountry));
+        }
+        tos.setCountries(supportedCountryIds);
+
+        return tos;
     }
 
     public static UserCredentialVerifyAttempt DefaultUserCredentialAttempts(String userName, String password)
@@ -307,8 +377,8 @@ public class IdentityModel {
         return usq;
     }
 
-    public static UserSecurityQuestionVerifyAttempt DefaultUserSecurityQuestionVerifyAttempt(UserId userId,
-                                                                                             UserSecurityQuestionId securityQuestionId, String value) throws Exception {
+    public static UserSecurityQuestionVerifyAttempt DefaultUserSecurityQuestionVerifyAttempt(
+            UserId userId, UserSecurityQuestionId securityQuestionId, String value) throws Exception {
         UserSecurityQuestionVerifyAttempt attempt = new UserSecurityQuestionVerifyAttempt();
         attempt.setUserId(userId);
         attempt.setUserSecurityQuestionId(securityQuestionId);
@@ -319,10 +389,7 @@ public class IdentityModel {
     public static UserTFA DefaultUserTFA() throws Exception {
         UserTFA userTFA = new UserTFA();
         userTFA.setVerifyType(RandomTFAVerifyType());
-        //userTFA.setVerifyType(TFAVerifyType.CALL.name());
-        if (!userTFA.getVerifyType().equals(TFAVerifyType.EMAIL.name())) {
-            userTFA.setTemplate(RandomHelper.randomAlphabetic(100));
-        }
+        userTFA.setTemplate(RandomHelper.randomAlphabetic(100));
         return userTFA;
     }
 
@@ -388,7 +455,11 @@ public class IdentityModel {
 
         Map<String, JsonNode> locales = new HashMap<>();
         locales.put("en_US", JsonHelper.ObjectToJsonNode(communicationLocale));
-        locales.put("zh_CN", JsonHelper.ObjectToJsonNode(communicationLocale));
+
+        CommunicationLocale communicationLocale2 = new CommunicationLocale();
+        communicationLocale2.setDescription(RandomHelper.randomAlphabetic(100));
+        communicationLocale2.setName(RandomHelper.randomAlphabetic(100));
+        locales.put("zh_CN", JsonHelper.ObjectToJsonNode(communicationLocale2));
         communication.setLocales(locales);
 
         return communication;
@@ -437,6 +508,39 @@ public class IdentityModel {
         array.add(TFAVerifyType.EMAIL.name());
         array.add(TFAVerifyType.SMS.name());
         return RandomHelper.randomValueFromList(array).toString();
+    }
+
+    public static UserAttribute DefaultUserAttribute(UserId userId, UserAttributeDefinitionId userAttributeDefinitionId) {
+        UserAttribute userAttribute = new UserAttribute();
+        userAttribute.setUserId(userId);
+        userAttribute.setUserAttributeDefinitionId(userAttributeDefinitionId);
+        userAttribute.setExpirationTime(DateUtils.addDays(new Date(), 2));
+        userAttribute.setGrantTime(DateUtils.addDays(new Date(), -1));
+        userAttribute.setUseCount(Math.abs(RandomHelper.randomInt()));
+
+        return userAttribute;
+    }
+
+    public static UserAttributeDefinition DefaultUserAttributeDefinition() {
+        UserAttributeDefinition userAttributeDefinition = new UserAttributeDefinition();
+        userAttributeDefinition.setType(RandomUserAttributeDefinitionType());
+        userAttributeDefinition.setDescription(RandomHelper.randomAlphabetic(15));
+
+        return userAttributeDefinition;
+    }
+
+    public static String RandomUserAttributeDefinitionType() {
+        List<Object> array = new ArrayList<>();
+        array.add(UserAttributeDefinitionType.CATEGORY.name());
+        array.add(UserAttributeDefinitionType.TUTORIAL.name());
+        array.add(UserAttributeDefinitionType.ACHIEVEMENT.name());
+        return RandomHelper.randomValueFromList(array).toString();
+    }
+
+    public static enum UserAttributeDefinitionType {
+        CATEGORY,
+        TUTORIAL,
+        ACHIEVEMENT
     }
 
     /**

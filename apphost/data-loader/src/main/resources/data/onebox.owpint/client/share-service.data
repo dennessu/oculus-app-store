@@ -7,5 +7,6 @@
   "default_scopes" : [ "identity.service" ],
 
   "response_types" : [ ],
-  "grant_types" : [ "CLIENT_CREDENTIALS" ]
+  "grant_types" : [ "CLIENT_CREDENTIALS" ],
+  "internal" : true
 }

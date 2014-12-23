@@ -13,11 +13,21 @@ import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.apache.commons.validator.routines.UrlValidator
+import org.springframework.beans.factory.annotation.Required
+
 /**
  * ValidateRedirectUri.
  */
 @CompileStatic
 class ValidateRedirectUri implements Action {
+    private Boolean strongValidate
+
+    @Required
+    void setStrongValidate(Boolean strongValidate) {
+        this.strongValidate = strongValidate
+    }
+
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
@@ -35,12 +45,19 @@ class ValidateRedirectUri implements Action {
             throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri', redirectUri).exception()
         }
 
+        if (strongValidate) {
+            UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS)
+            if (!urlValidator.isValid(redirectUri)) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri', redirectUri).exception()
+            }
+        }
+
         boolean allowed = client.redirectUris.any {
             String allowedRedirectUri -> UriUtil.match(redirectUri, allowedRedirectUri)
         }
 
         if (!allowed) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri', redirectUri).exception()
         }
 
         def oauthInfo = contextWrapper.oauthInfo

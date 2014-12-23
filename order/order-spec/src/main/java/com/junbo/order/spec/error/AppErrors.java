@@ -7,6 +7,7 @@ package com.junbo.order.spec.error;
 
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
+import com.junbo.common.error.ErrorDetail;
 import com.junbo.common.error.ErrorProxy;
 
 /**
@@ -172,4 +173,19 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "146", message = "Duplicate Purchase.")
     AppError duplicatePurchase();
+
+    @ErrorDef(httpStatusCode = 412, code = "147", message = "Rating result error.")
+    AppError ratingResultError(ErrorDetail[] errorDetails);
+
+    @ErrorDef(httpStatusCode = 412, code = "148", message = "Free Offer Required")
+    AppError notFreeOrder();
+
+    @ErrorDef(httpStatusCode = 412, code = "149", message = "Too Many Order Items", reason = "The number of items can not exceed: {0}")
+    AppError tooManyItems(int count);
+
+    @ErrorDef(httpStatusCode = 412, code = "150", message = "Too Many Offers", reason = "The number of offers can not exceed: {0}")
+    AppError tooManyOffers(int count);
+
+    @ErrorDef(httpStatusCode = 412, code = "151", message = "Offer Not Purchasable", reason = "Order contains offers that not purchasable.")
+    AppError offerNotPurchasable();
 }

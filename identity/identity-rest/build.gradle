@@ -13,7 +13,7 @@ dependencies {
     compile (libraries.spring_expression)
     compile (libraries.spring_tx)
     compile (libraries.spring_web)
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
 
     compile (libraries.asyncclient)
     processor junboProject(':oom-processor')
@@ -28,7 +28,7 @@ dependencies {
     compile junboProject(':identity-core')
     compile junboProject(':identity-spec')
     compile junboProject(':identity-common')
-    compile junboProject(':identity-data')
     compile junboProject(':identity-auth')
     compile junboProject(':identity-clientproxy')
+    compile junboProject(':identity-service')
 }

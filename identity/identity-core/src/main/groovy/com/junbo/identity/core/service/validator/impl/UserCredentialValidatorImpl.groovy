@@ -9,8 +9,8 @@ import com.junbo.identity.core.service.validator.UserPinValidator
 import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.mapper.ModelMapper
-import com.junbo.identity.data.repository.UserPersonalInfoRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.UserPersonalInfoService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
@@ -36,9 +36,9 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
 
     private UserPinValidator userPinValidator
 
-    private UserRepository userRepository
+    private UserService userService
 
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private UserPersonalInfoService userPersonalInfoService
 
     private ModelMapper modelMapper
 
@@ -47,7 +47,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
     @Override
     Promise<Void> validateForSearch(UserId userId, UserCredentialListOptions options) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
         if (options == null) {
             throw new IllegalArgumentException('options is null')
@@ -67,8 +67,11 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
 
     @Override
     Promise<Object> validateForCreate(UserId userId, UserCredential userCredential) {
+        if (userId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
         if (userCredential == null) {
-            throw new IllegalArgumentException('userCredential is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         userCredential.userId = userId
 
@@ -79,7 +82,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
             throw AppCommonErrors.INSTANCE.fieldInvalidEnum('type', allowedTypes.join(',')).exception()
         }
 
-        return userRepository.get(userId).then { User user ->
+        return userService.getNonDeletedUser(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -97,7 +100,7 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
                         throw new IllegalArgumentException('mapping to password exception')
                     }
 
-                    return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+                    return userPersonalInfoService.get(user.username).then { UserPersonalInfo userPersonalInfo ->
                         if (userPersonalInfo == null) {
                             throw AppCommonErrors.INSTANCE.fieldInvalid('username').exception()
                         }
@@ -137,13 +140,13 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
-        this.userPersonalInfoRepository = userPersonalInfoRepository
+    void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
+        this.userPersonalInfoService = userPersonalInfoService
     }
 
     @Required

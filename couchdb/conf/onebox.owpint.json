@@ -1,13 +1,16 @@
 {
     "dbs": {
         "couchdb": "https://silkcloudtest1:#Bugsfor$@silkcloudtest1.cloudant.com",
-        "pii": "https://silkcloudtest1:#Bugsfor$@silkcloudtest1.cloudant.com",
         "cloudant": "https://silkcloudtest1:#Bugsfor$@silkcloudtest1.cloudant.com"
     },
     "apikeys": [
         {
             "roles": ["_reader", "_writer", "_design"],
             "key": "yedifiretheneasequesmarb"
+        },
+        {
+            "roles": ["_reader"],
+            "key": "andaysedisheorniansheenc"
         }
     ]
 }

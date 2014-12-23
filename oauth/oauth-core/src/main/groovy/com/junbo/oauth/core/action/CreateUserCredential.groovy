@@ -14,7 +14,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
 import com.junbo.oauth.spec.model.ResetPasswordCode
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -63,7 +63,7 @@ class CreateUserCredential implements Action {
         )
         ResetPasswordCode resetPasswordCode = contextWrapper.resetPasswordCode
         if (resetPasswordCode != null) {
-            def code = resetPasswordCodeRepository.getByHash(resetPasswordCode.hashedCode)
+            def code = resetPasswordCodeRepository.getByHash(resetPasswordCode.hashedCode, resetPasswordCode.dc)
             if (code == null)  {
                 contextWrapper.errors.add(AppErrors.INSTANCE.resetPasswordCodeAlreadyUsed().error())
                 return Promise.pure(new ActionResult('error'))

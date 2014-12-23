@@ -1,5 +1,18 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.catalog.spec.model.item.Item
+import com.junbo.catalog.spec.model.item.ItemRevision
+import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
+import com.junbo.catalog.spec.model.item.ItemsGetOptions
+import com.junbo.catalog.spec.model.offer.Offer
+import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions
+import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.catalog.spec.resource.ItemResource
+import com.junbo.catalog.spec.resource.ItemRevisionResource
+import com.junbo.catalog.spec.resource.OfferResource
+import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
@@ -11,9 +24,9 @@ import com.junbo.identity.data.identifiable.OrganizationTaxType
 import com.junbo.identity.data.identifiable.OrganizationType
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.OrganizationRepository
-import com.junbo.identity.data.repository.UserPersonalInfoRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.OrganizationService
+import com.junbo.identity.service.UserPersonalInfoService
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
@@ -31,18 +44,23 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class OrganizationValidatorImpl implements OrganizationValidator {
+    private static String ORGANIZATION_GROUP_ADMIN = 'organization.group.admin'
 
-    private OrganizationRepository organizationRepository
-    private UserRepository userRepository
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private OrganizationService organizationService
+    private UserService userService
+    private UserPersonalInfoService userPersonalInfoService
     private NormalizeService normalizeService
+    private ItemResource itemResource
+    private ItemRevisionResource itemRevisionResource
+    private OfferResource offerResource
+    private OfferRevisionResource offerRevisionResource
 
     @Override
     Promise<Organization> validateForGet(OrganizationId organizationId) {
         if (organizationId == null) {
             throw new IllegalArgumentException('organizationId is null')
         }
-        return organizationRepository.get(organizationId).then { Organization organization ->
+        return organizationService.get(organizationId).then { Organization organization ->
             if (organization == null) {
                 throw AppErrors.INSTANCE.organizationNotFound(organizationId).exception()
             }
@@ -57,7 +75,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.ownerId == null && StringUtils.isEmpty(options.name)) {
+        if ((options.ownerId == null && StringUtils.isEmpty(options.name)) && !AuthorizeContext.hasScopes(ORGANIZATION_GROUP_ADMIN)) {
             throw AppCommonErrors.INSTANCE.parameterRequired('ownerId or name').exception()
         }
 
@@ -97,6 +115,58 @@ class OrganizationValidatorImpl implements OrganizationValidator {
         }
 
         return checkBasicOrganizationInfo(organization)
+    }
+
+    @Override
+    Promise<Void> validateForDelete(OrganizationId organizationId) {
+        Organization organization = null
+        return validateForGet(organizationId).then { Organization existing ->
+            organization = existing
+
+            return itemResource.getItems(new ItemsGetOptions(
+                    ownerId: existing.getId(),
+                    size: 1
+            )).then { Results<Item> itemResults ->
+                if(itemResults != null && !CollectionUtils.isEmpty(itemResults.items)) {
+                    throw AppCommonErrors.INSTANCE.forbiddenWithMessage('organization is used by item').exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return itemRevisionResource.getItemRevisions(new ItemRevisionsGetOptions(
+                    developerId: organization.getId(),
+                    size: 1
+            )).then { Results<ItemRevision> itemRevisionResults ->
+                if (itemRevisionResults != null && !CollectionUtils.isEmpty(itemRevisionResults.items)) {
+                    throw AppCommonErrors.INSTANCE.forbiddenWithMessage('organization is used by itemRevision').exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return offerResource.getOffers(new OffersGetOptions(
+                    ownerId: organization.getId(),
+                    size: 1
+            )).then { Results<Offer> offerResults ->
+                if (offerResults != null && !CollectionUtils.isEmpty(offerResults.items)) {
+                    throw AppCommonErrors.INSTANCE.forbiddenWithMessage('organization is used by offer').exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return offerRevisionResource.getOfferRevisions(new OfferRevisionsGetOptions(
+                    publisherId: organization.getId(),
+                    size: 1
+            )).then { Results<OfferRevision> offerRevisionResults ->
+                if (offerRevisionResults != null && !CollectionUtils.isEmpty(offerRevisionResults.items)) {
+                    throw AppCommonErrors.INSTANCE.forbiddenWithMessage('organization is used by offerRevision').exception()
+                }
+
+                return Promise.pure(organization)
+            }
+        }
     }
 
     Promise<Void> checkBasicOrganizationInfo(Organization organization) {
@@ -165,12 +235,12 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             if (organization.ownerId == null) {
                 return Promise.pure(null)
             }
-            return userRepository.get(organization.ownerId).then { User user ->
+            return userService.getNonDeletedUser(organization.ownerId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(organization.ownerId).exception()
                 }
 
-                if (user.isAnonymous == null || user.status != UserStatus.ACTIVE.toString()) {
+                if (user.isAnonymous == null || user.isAnonymous || user.status != UserStatus.ACTIVE.toString()) {
                     throw AppErrors.INSTANCE.userInInvalidStatus(organization.ownerId).exception()
                 }
 
@@ -181,7 +251,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
 
     private Promise<Void> checkValidOrganizationNameUnique(Organization organization) {
 
-        return organizationRepository.searchByCanonicalName(organization.canonicalName, Integer.MAX_VALUE, 0).then { Results<Organization> results ->
+        return organizationService.searchByCanonicalName(organization.canonicalName, Integer.MAX_VALUE, 0).then { Results<Organization> results ->
             if (results == null || CollectionUtils.isEmpty(results.items)) {
                 return Promise.pure(null)
             }
@@ -201,7 +271,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     }
 
     private Promise<UserPersonalInfo> checkPersonalInfoIdOwner(UserPersonalInfoId userPersonalInfoId, UserId ownerId, String expectedType) {
-        return userPersonalInfoRepository.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
             if (userPersonalInfo == null) {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoId).exception()
             }
@@ -219,22 +289,42 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     }
 
     @Required
-    void setOrganizationRepository(OrganizationRepository organizationRepository) {
-        this.organizationRepository = organizationRepository
+    void setOrganizationService(OrganizationService organizationService) {
+        this.organizationService = organizationService
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
-        this.userPersonalInfoRepository = userPersonalInfoRepository
+    void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
+        this.userPersonalInfoService = userPersonalInfoService
     }
 
     @Required
     void setNormalizeService(NormalizeService normalizeService) {
         this.normalizeService = normalizeService
+    }
+
+    @Required
+    void setItemResource(ItemResource itemResource) {
+        this.itemResource = itemResource
+    }
+
+    @Required
+    void setItemRevisionResource(ItemRevisionResource itemRevisionResource) {
+        this.itemRevisionResource = itemRevisionResource
+    }
+
+    @Required
+    void setOfferResource(OfferResource offerResource) {
+        this.offerResource = offerResource
+    }
+
+    @Required
+    void setOfferRevisionResource(OfferRevisionResource offerRevisionResource) {
+        this.offerRevisionResource = offerRevisionResource
     }
 }

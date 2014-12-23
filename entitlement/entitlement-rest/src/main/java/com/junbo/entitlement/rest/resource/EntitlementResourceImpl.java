@@ -27,7 +27,8 @@ import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.util.UUID;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Impl of EntitlementResource.
@@ -46,6 +47,12 @@ public class EntitlementResourceImpl implements EntitlementResource {
     public Promise<Entitlement> postEntitlement(Entitlement entitlement) {
         checkBodyNotNull(entitlement);
         return Promise.pure(entitlementService.addEntitlement(entitlement));
+    }
+
+    @Override
+    public Promise<Map<Long, List<Entitlement>>> postEntitlements(Map<Long, List<Entitlement>> entitlements) {
+        checkBodyNotNull(entitlements);
+        return Promise.pure(entitlementService.addEntitlements(entitlements));
     }
 
     @Override
@@ -100,15 +107,6 @@ public class EntitlementResourceImpl implements EntitlementResource {
         builder = CommonUtils.buildPageParams(builder,
                 pageMetadata.getStart(), pageMetadata.getCount(), next == null ? null : next.getHref());
         return builder.toTemplate();
-    }
-
-    private Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
-        if (trackingUuid != null) {
-            Entitlement existingEntitlement
-                    = entitlementService.getByTrackingUuid(shardMasterId, trackingUuid);
-            return existingEntitlement;
-        }
-        return null;
     }
 
     private void checkBodyNotNull(Object value) {

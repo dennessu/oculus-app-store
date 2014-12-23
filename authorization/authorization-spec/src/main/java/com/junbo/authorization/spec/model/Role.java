@@ -19,7 +19,7 @@ public class Role extends ResourceMeta<RoleId> {
     @JsonProperty("self")
     private RoleId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The name of the role resource.")
+    @ApiModelProperty(position = 2, required = true, value = "The name of the role resource, must be Admin, Developer, Publisher.")
     private String name;
 
     @ApiModelProperty(position = 3, required = true, value = "The role target.")

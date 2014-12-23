@@ -1,0 +1,108 @@
+{
+	"countryCode": "SS",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Northern Bahr el-Ghazal",
+					"longName": "Northern Bahr el-Ghazal"
+				}
+			}
+		},
+		"BW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Western Bahr el-Ghazal",
+					"longName": "Western Bahr el-Ghazal"
+				}
+			}
+		},
+		"EC": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central Equatoria",
+					"longName": "Central Equatoria"
+				}
+			}
+		},
+		"EE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Eastern Equatoria",
+					"longName": "Eastern Equatoria"
+				}
+			}
+		},
+		"EW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Western Equatoria",
+					"longName": "Western Equatoria"
+				}
+			}
+		},
+		"JG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jonglei",
+					"longName": "Jonglei"
+				}
+			}
+		},
+		"LK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lakes",
+					"longName": "Lakes"
+				}
+			}
+		},
+		"NU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Upper Nile",
+					"longName": "Upper Nile"
+				}
+			}
+		},
+		"UY": {
+			"locales": {
+				"en_US": {
+					"shortName": "Unity",
+					"longName": "Unity"
+				}
+			}
+		},
+		"WR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Warrap",
+					"longName": "Warrap"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "South Sudan",
+			"longName": "Republic of South Sudan",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

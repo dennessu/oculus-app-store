@@ -4,8 +4,8 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.TosId
 import com.junbo.identity.core.service.validator.TosValidator
-import com.junbo.identity.data.repository.CountryRepository
-import com.junbo.identity.data.repository.TosRepository
+import com.junbo.identity.service.CountryService
+import com.junbo.identity.service.TosService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.Tos
@@ -21,8 +21,8 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class TosValidatorImpl implements TosValidator {
 
-    private TosRepository tosRepository
-    private CountryRepository countryRepository
+    private TosService tosService
+    private CountryService countryService
 
     private List<String> allowedTosTypes
     private List<String> tosStatus
@@ -42,7 +42,7 @@ class TosValidatorImpl implements TosValidator {
             throw new IllegalArgumentException('tosId is null')
         }
 
-        return tosRepository.get(tosId).then { Tos tos ->
+        return tosService.get(tosId).then { Tos tos ->
             if (tos == null) {
                 throw AppErrors.INSTANCE.tosNotFound(tosId).exception()
             }
@@ -66,6 +66,7 @@ class TosValidatorImpl implements TosValidator {
             if (tos.id != null) {
                 throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
+
             return Promise.pure(null)
         }
     }
@@ -78,6 +79,10 @@ class TosValidatorImpl implements TosValidator {
 
         if (tosId != tos.id) {
             throw AppCommonErrors.INSTANCE.fieldNotWritable('id', tos.id, tosId.toString()).exception()
+        }
+
+        if (tos.title != oldTos.title) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('title').exception()
         }
 
         return checkBasicTosInfo(tos).then {
@@ -105,6 +110,12 @@ class TosValidatorImpl implements TosValidator {
         }
         if (tos.version.length() > maxVersionLength) {
             throw AppCommonErrors.INSTANCE.fieldTooLong('version', maxVersionLength).exception()
+        }
+
+        try {
+            Double.parseDouble(tos.version)
+        } catch (NumberFormatException ){
+            throw AppCommonErrors.INSTANCE.fieldInvalid('version', "The version should be a number").exception()
         }
 
         if (tos.title == null) {
@@ -136,7 +147,7 @@ class TosValidatorImpl implements TosValidator {
         }
 
         return Promise.each(tos.countries) { CountryId countryId ->
-            return countryRepository.get(countryId).then { Country country ->
+            return countryService.get(countryId).then { Country country ->
                 if (country == null) {
                     throw AppErrors.INSTANCE.countryNotFound(countryId).exception()
                 }
@@ -149,8 +160,8 @@ class TosValidatorImpl implements TosValidator {
     }
 
     @Required
-    void setTosRepository(TosRepository tosRepository) {
-        this.tosRepository = tosRepository
+    void setTosService(TosService tosService) {
+        this.tosService = tosService
     }
 
     @Required
@@ -174,8 +185,8 @@ class TosValidatorImpl implements TosValidator {
     }
 
     @Required
-    void setCountryRepository(CountryRepository countryRepository) {
-        this.countryRepository = countryRepository
+    void setCountryService(CountryService countryService) {
+        this.countryService = countryService
     }
 
     @Required

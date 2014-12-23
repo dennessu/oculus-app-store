@@ -138,7 +138,7 @@ class BillingFacadeImpl implements BillingFacade {
             return AppErrors.INSTANCE.billingInsufficientFund()
         }
         if (e != null) {
-            return AppErrors.INSTANCE.billingConnectionError(e)
+            return AppErrors.INSTANCE.billingChargeFailed()
         }
         return AppErrors.INSTANCE.billingConnectionError(error.message)
     }

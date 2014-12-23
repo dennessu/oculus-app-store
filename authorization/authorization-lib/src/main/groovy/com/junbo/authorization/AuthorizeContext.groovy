@@ -42,6 +42,11 @@ class AuthorizeContext {
         return CURRENT_TOKEN_INFO.get()
     }
 
+    static String getCurrentAccessToken() {
+        TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
+        return tokenInfo == null ? null : tokenInfo.tokenValue
+    }
+
     static UserId getCurrentUserId() {
         TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
         return tokenInfo == null ? null : tokenInfo.sub

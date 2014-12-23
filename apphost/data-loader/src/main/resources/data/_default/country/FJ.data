@@ -1,0 +1,68 @@
+{
+	"countryCode": "FJ",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/FJD",
+		"id": "FJD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"C": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central Division",
+					"longName": "Central Division"
+				}
+			}
+		},
+		"E": {
+			"locales": {
+				"en_US": {
+					"shortName": "Eastern Division",
+					"longName": "Eastern Division"
+				}
+			}
+		},
+		"N": {
+			"locales": {
+				"en_US": {
+					"shortName": "Northern Division",
+					"longName": "Northern Division"
+				}
+			}
+		},
+		"R": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rotuma",
+					"longName": "Rotuma Island"
+				}
+			}
+		},
+		"W": {
+			"locales": {
+				"en_US": {
+					"shortName": "Western Division",
+					"longName": "Western Division"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Fiji",
+			"longName": "Republic of Fiji",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

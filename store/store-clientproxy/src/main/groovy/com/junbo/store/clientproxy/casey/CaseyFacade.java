@@ -9,27 +9,47 @@ import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.ApiContext;
+import com.junbo.store.spec.model.browse.AddReviewRequest;
+import com.junbo.store.spec.model.browse.Images;
+import com.junbo.store.spec.model.browse.InitialDownloadItemsResponse;
 import com.junbo.store.spec.model.browse.ReviewsResponse;
 import com.junbo.store.spec.model.browse.document.AggregatedRatings;
 import com.junbo.store.spec.model.browse.document.Item;
+import com.junbo.store.spec.model.browse.document.Review;
 import com.junbo.store.spec.model.browse.document.SectionInfoNode;
-import com.junbo.store.spec.model.external.casey.CaseyResults;
-import com.junbo.store.spec.model.external.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The CaseyFacade interface.
  */
 public interface CaseyFacade {
 
-    Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, ApiContext apiContext);
+    Promise<CaseyResults<Item>> search(SectionInfoNode sectionInfoNode, String cursor, Integer count, Images.BuildType imageBuildType,
+                                       boolean includeOrganization, ApiContext apiContext);
 
-    Promise<List<AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext);
+    Promise<CaseyResults<Item>> search(String cmsPage, String cmsSlot, String cursor, Integer count, Images.BuildType imageBuildType,
+                                       boolean includeOrganization, ApiContext apiContext);
+
+    Promise<CaseyResults<CaseyOffer>> searchRaw(String cmsPage, String cmsSlot, String cursor, Integer count, ApiContext apiContext);
+
+    Promise<CaseyResults<Item>> search(ItemId itemId, Images.BuildType imageBuildType, boolean includeOrganization,
+                                       ApiContext apiContext);
+
+    Promise<Map<String, AggregatedRatings>> getAggregatedRatings(ItemId itemId, ApiContext apiContext);
 
     Promise<ReviewsResponse> getReviews(String itemId, UserId userId, String cursor, Integer count);
 
-    Promise<Boolean> itemAvailable(ItemId itemId, ApiContext apiContext);
+    Promise<CmsPage> getCmsPage(String path, String label, String country, String locale);
 
-    Promise<CmsPage> getCmsPage(String pageName);
+    Promise<CmsPage> getCmsPage(String cmsPageId, String country, String locale);
+
+    Promise<Review> addReview(AddReviewRequest request, ApiContext apiContext);
+
+    Promise<List<InitialDownloadItemsResponse.InitialDownloadItemEntry>> getInitialDownloadItemsFromCmsPage(
+            String pagePath, String pageSlot, String contentName, ApiContext apiContext);
 }

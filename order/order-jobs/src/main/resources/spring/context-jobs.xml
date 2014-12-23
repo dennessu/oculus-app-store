@@ -15,7 +15,7 @@
             <list>
                 <!-- <ref bean="orderJobTrigger"/>  no functions needs order job, disable for now-->
                 <ref bean="subledgerJobTrigger"/>
-                <!--<ref bean="orderAuditTaxJobTrigger"/>-->
+                <ref bean="orderAuditTaxJobTrigger"/>
             </list>
         </property>
         <property name="quartzProperties">
@@ -39,7 +39,7 @@
     <!-- Order Job -->
     <bean id="orderJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="orderJob"/>
                 </property>
@@ -51,7 +51,7 @@
 
     <bean id="orderAuditTaxJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="orderAuditTaxJob"/>
                 </property>
@@ -69,7 +69,7 @@
 
     <bean id="subledgerJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
-            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
                     <idref bean="subledgerAggregator"/>
                 </property>
@@ -94,6 +94,7 @@
     </bean>
 
     <bean id="orderAuditTaxJob" class="com.junbo.order.jobs.tax.TaxAuditor" >
+        <property name="isEnabled" value="${sabrix.tax.audit.enabled}"/>
         <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
         <property name="orderRepository" ref="orderRepositoryFacade"/>
         <property name="statusToProcess">

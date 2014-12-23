@@ -1,0 +1,49 @@
+{
+	"countryCode": "ST",
+	"defaultLocale": {
+		"href": "/v1/locales/pt_ST",
+		"id": "pt_ST"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/STD",
+		"id": "STD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"P": {
+			"locales": {
+				"en_US": {
+					"shortName": "Príncipe",
+					"longName": "Príncipe"
+				}
+			}
+		},
+		"S": {
+			"locales": {
+				"en_US": {
+					"shortName": "São Tomé",
+					"longName": "São Tomé"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/pt_ST",
+		"id": "pt_ST"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "São Tomé and Príncipe",
+			"longName": "Democratic Republic ofnSão Tomé and Príncipe",
+			"postalCode": "Postal Code"
+		},
+		"pt_ST": {
+			"shortName": "São Tomé e Príncipe",
+			"longName": "República Democrática de São Tomé e Príncipe",
+			"postalCode": "código postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -22,4 +22,9 @@
         <property name="kountKeyFileName" value="${order.risk.kount.keyFileName}" />
         <property name="kountKeyFilePass" value="${order.risk.kount.keyFilePass}" />
     </bean>
+    
+    <bean id="orderService" class="com.junbo.order.core.impl.order.OrderServiceImpl">
+       <property name="itemCountLimitation" value="${order.core.itemcount}" />
+       <property name="offerCountLimitation" value="${order.core.offercount}" />
+    </bean>
 </beans>

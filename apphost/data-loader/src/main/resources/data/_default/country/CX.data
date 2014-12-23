@@ -1,0 +1,34 @@
+{
+	"countryCode": "CX",
+	"defaultLocale": {
+		"href": "/v1/locales/en_AU",
+		"id": "en_AU"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AUD",
+		"id": "AUD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_AU",
+		"id": "en_AU"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Christmas Island",
+			"longName": "Territory of Christmas Island",
+			"postalCode": "Postal Code"
+		},
+		"en_AU": {
+			"shortName": "Christmas Island",
+			"longName": "Territory of Christmas Island",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

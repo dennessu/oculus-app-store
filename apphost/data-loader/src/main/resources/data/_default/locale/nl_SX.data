@@ -1,0 +1,11 @@
+{
+  "localeCode": "nl_SX",
+  "shortName": "Dutch (SX)",
+  "longName": "Dutch (Sint Maarten)",
+  "localeName": "Dutch (SX)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

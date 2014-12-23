@@ -1,0 +1,14 @@
+{
+   "localeCode" : "de_LI",
+   "shortName" : "German (LI)",
+   "longName" : "German (Liechtenstein)",
+   "localeName" : "German (LI)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/de_DE",
+         "id" : "de_DE"
+      },
+   "futureExpansion" :
+      {
+      }
+}

@@ -9,5 +9,5 @@ dependencies {
     compile (libraries.fastjson)
     compile (libraries.common_codec)
 
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
 }

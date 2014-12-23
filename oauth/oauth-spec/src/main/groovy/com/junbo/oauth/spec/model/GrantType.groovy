@@ -16,7 +16,8 @@ enum GrantType {
     REFRESH_TOKEN,
     CLIENT_CREDENTIALS,
     CLIENT_CREDENTIALS_WITH_USER_ID,
-    PASSWORD
+    PASSWORD,
+    EXCHANGE
 
     static boolean isValid(String value) {
         try {

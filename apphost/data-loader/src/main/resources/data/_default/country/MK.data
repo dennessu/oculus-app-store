@@ -686,7 +686,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/mk_MK",
 		"id": "mk_MK"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Macedonia",

@@ -192,7 +192,7 @@ class CheckoutTests(ut.TestBase):
         piTypes = curlJson('GET', ut.test_uri, '/v1/payment-instrument-types')
         ccPiType = [ piType for piType in piTypes['results'] if piType['typeCode'] == 'CREDITCARD' ][0]
 
-        cardInfo = self.getEncryptedCardInfo()
+        cardInfo = self.getFBEncryptedCardInfo()
         pi = curlJson('POST', ut.test_uri, '/v1/payment-instruments', headers = {
             "Authorization": "Bearer " + user.access_token
         }, data = {
@@ -202,6 +202,9 @@ class CheckoutTests(ut.TestBase):
             "label": "my credit card",
             "user": user.json['self'],
             "billingAddress": address['self'],
+            "typeSpecificDetails":{
+                "expireDate":"2025-11"
+            },
             "futureExpansion": { }
         })
 
@@ -312,7 +315,7 @@ class CheckoutTests(ut.TestBase):
                         }
                     },
                     "legalInformation": "legalInformation",
-                    "name": "testItem_CartCheckout_Consumable1",
+                    "name": "utItem_CartCheckout_Consumable1",
                     "copyright": "copyright",
                     "knownBugs": "knownBugs",
                     "color": "black",
@@ -436,7 +439,7 @@ class CheckoutTests(ut.TestBase):
                         }
                     },
                     "shortDescription": "short description",
-                    "name": "testOffer_CartCheckout_Consumable1",
+                    "name": "utOffer_CartCheckout_Consumable1",
                     "videos": [
                         {
                             "id": "id of the video",
@@ -459,6 +462,29 @@ class CheckoutTests(ut.TestBase):
                  }]
             }
         }
+
+    def getFBDefaultCardInfo(self):
+        return {
+            "number": "4111117711552927",
+            "holderName": "John Doe",
+            "cvc": "123",
+            "expiryMonth": "06",
+            "expiryYear": str(datetime.utcnow().year + 2)
+        }
+
+    def getFBEncryptedCardInfo(self, cardInfo = None):
+        if cardInfo is None:
+            cardInfo = self.getFBDefaultCardInfo()
+
+        tokenResult = curl('POST', 'https://www.facebook.com', '/payments/generate_token', headers = {
+            'User-Agent': 'curl/7.30.0'
+        }, body = "creditCardNumber=4111117711552927&csc=123", proxy = os.getenv('facebookProxy'))
+
+        jsonResult = json.loads(tokenResult)
+
+        cardInfo['encryptedCardInfo'] = jsonResult['token']
+        return cardInfo
+
 
     def getDefaultCardInfo(self):
         return {

@@ -110,12 +110,14 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Override
     @Transactional
     public Entitlement addEntitlement(final Entitlement entitlement) {
-        if (entitlement.getTrackingUuid() != null) {
-            Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "create");
-            if (existing != null) {
-                return existing;
-            }
-        }
+        /**  remove byTrackingUuid to save time
+         if (entitlement.getTrackingUuid() != null) {
+         Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "create");
+         if (existing != null) {
+         return existing;
+         }
+         }
+         **/
 
         fillCreate(entitlement);
         validateCreate(entitlement);
@@ -132,6 +134,58 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 return merge(entitlement);
             }
         });
+    }
+
+    @Override
+    public Map<Long, List<Entitlement>> addEntitlements(final Map<Long, List<Entitlement>> entitlements) {
+        if (CollectionUtils.isEmpty(entitlements)) {
+            return entitlements;
+        }
+        boolean empty = true;
+        Entitlement authorizeSample = null;
+        for (List<Entitlement> es : entitlements.values()) {
+            if (!CollectionUtils.isEmpty(es)) {
+                empty = false;
+                authorizeSample = es.get(0);
+                break;
+            }
+        }
+        if (empty) {
+            return entitlements;
+        }
+
+        boolean hasConsumable = false;
+        for (List<Entitlement> actionEntitlements : entitlements.values()) {
+            for (Entitlement entitlement : actionEntitlements) {
+                if (isConsumable(entitlement)) {
+                    hasConsumable = true;
+                }
+                fillCreate(entitlement);
+                validateCreate(entitlement);
+            }
+        }
+
+        if (hasConsumable) {
+            for (Long actionId : entitlements.keySet()) {
+                List<Entitlement> result = new ArrayList<>(entitlements.size());
+                for (Entitlement entitlement : entitlements.get(actionId)) {
+                    result.add(addEntitlement(entitlement));
+                }
+                entitlements.put(actionId, result);
+            }
+            return entitlements;
+        } else {
+            AuthorizeCallback callback = authorizeCallbackFactory.create(authorizeSample);
+            return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Map<Long, List<Entitlement>>>() {
+                @Override
+                public Map<Long, List<Entitlement>> apply() {
+                    if (!AuthorizeContext.hasRights("create")) {
+                        throw AppCommonErrors.INSTANCE.forbidden().exception();
+                    }
+                    return entitlementRepository.bulkInsert(entitlements);
+                }
+            });
+        }
     }
 
     private Entitlement merge(Entitlement entitlement) {
@@ -155,12 +209,14 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public Entitlement updateEntitlement(final String entitlementId, final Entitlement entitlement) {
         validateUpdateId(entitlementId, entitlement);
-        if (entitlement.getTrackingUuid() != null) {
-            Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "update");
-            if (existing != null) {
-                return existing;
-            }
-        }
+        /**  remove byTrackingUuid to save time
+         if (entitlement.getTrackingUuid() != null) {
+         Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "update");
+         if (existing != null) {
+         return existing;
+         }
+         }
+         **/
 
         final Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
@@ -274,12 +330,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
-        return entitlementRepository.getByTrackingUuid(shardMasterId, trackingUuid);
-    }
-
-    @Override
-    @Transactional
     public String getDownloadUrl(String itemId, DownloadUrlGetOptions options) {
         String platform = options.getPlatform();
         if (StringUtils.isEmpty(platform)) {
@@ -378,7 +428,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 return generateS3Url(bucketName, objectKey,
                         generateFilename(objectKey, filename, version, platform), generateExpirationDate());
             }
-        } else if (isCloudFront(urlString)){
+        } else if (isCloudFront(urlString)) {
             //TODO: work around for cloudfront
             URL url = new URL(urlString);
             bucketName = bucketMap.get(url.getHost());

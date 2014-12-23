@@ -14,7 +14,7 @@ import com.junbo.oauth.clientproxy.google.GoogleAccount
 import com.junbo.oauth.clientproxy.google.GoogleApi
 import com.junbo.oauth.clientproxy.google.GoogleException
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.spec.model.ThirdPartyAccount
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic

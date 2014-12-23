@@ -546,8 +546,8 @@ class CoreUtils {
     }
 
     static Boolean isBalanceSettled(Balance balance) {
-        return balance.status == BalanceStatus.COMPLETED.name() ||
-                balance.status == BalanceStatus.AWAITING_PAYMENT.name()
+        return BalanceStatus.COMPLETED.name() == balance.status ||
+                BalanceStatus.AWAITING_PAYMENT.name() == balance.status
     }
 
     static Order refreshFulfillmentHistories(Order order, FulfilmentRequest fr) {

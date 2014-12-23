@@ -5,7 +5,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <import resource="classpath*:spring/*-context.xml"/>
-    <import resource="classpath*:spring/transaction.xml"/>
 
     <context:component-scan base-package="com.junbo.billing.db"/>
     <context:component-scan base-package="com.junbo.billing.core"/>
@@ -14,7 +13,6 @@
     <bean id="mockTaxFacade" class="com.junbo.billing.core.mock.MockTaxFacade" />
     <bean id="mockCurrencyFacade" class="com.junbo.billing.core.mock.MockCurrencyFacade" />
     <bean id="mockCountryFacade" class="com.junbo.billing.core.mock.MockCountryFacade" />
-    <bean id="mockCatalogFacade" class="com.junbo.billing.core.mock.MockCatalogFacade" />
 
     <bean id="mockBalanceValidator" class="com.junbo.billing.core.validator.BalanceValidator">
         <property name="identityFacade" ref="mockIdentityFacade" />
@@ -36,7 +34,6 @@
         <constructor-arg name="providerName" value="MOCK"/>
         <property name="identityFacade" ref="mockIdentityFacade" />
         <property name="paymentFacade" ref="mockPaymentFacade" />
-        <property name="catalogFacade" ref="mockCatalogFacade" />
     </bean>
 
     <bean id="mockBalanceService" class="com.junbo.billing.core.service.BalanceServiceImpl">

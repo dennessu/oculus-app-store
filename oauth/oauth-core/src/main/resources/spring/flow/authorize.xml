@@ -31,11 +31,14 @@
             <wf:transition on="loginRequired" to="REDIRECT_TO_LOGIN"/>
             <wf:transition on="loginRequiredError" to="LOGIN_REQUIRED"/>
             <wf:transition on="register" to="REDIRECT_TO_REGISTER" />
+            <wf:transition on="tosChallenge" to="REDIRECT_TO_TOS_CHALLENGE" />
+            <wf:transition on="tosChallengeRequired" to="TOS_CHALLENGE_REQUIRED" />
             <wf:transition on="*" to="CHECK_SCOPE_AFTER_LOGIN"/>
         </wf:action-state>
 
         <wf:view-state id="REDIRECT_TO_LOGIN">
             <wf:on-render>
+                <wf:action ref="generateConversationVerifyCode"/>
                 <wf:action ref="redirectToLogin"/>
             </wf:on-render>
             <wf:transition on="*" to="LOGIN_VIEW"/>
@@ -43,6 +46,7 @@
 
         <wf:view-state id="REDIRECT_TO_REGISTER">
             <wf:on-render>
+                <wf:action ref="generateConversationVerifyCode"/>
                 <wf:action ref="redirectToRegister"/>
             </wf:on-render>
             <wf:transition on="*" to="REGISTER_VIEW"/>
@@ -54,6 +58,7 @@
             </wf:on-render>
             <wf:transition on="next" to="PRE_LOGIN_SUCCESS">
                 <wf:action ref="validateCaptcha"/>
+                <wf:action ref="sentryLoginValidate"/>
                 <wf:action ref="authenticateUserAuthorize"/>
             </wf:transition>
             <wf:transition on="register" to="REGISTER_VIEW"/>
@@ -71,29 +76,53 @@
             <wf:action ref="checkChangePassword" />
             <wf:transition on="emailVerifyRequired" to="EMAIL_VERIFY_REQUIRED_VIEW" />
             <wf:transition on="changePasswordRequired"  to="CHANGE_CREDENTIAL_REQUIRED_VIEW" />
-            <wf:transition on="success" to="LOGIN_SUCCESS"/>
+            <wf:transition on="success" to="CHECK_TOS"/>
             <wf:transition on="*" to="LOGIN_REQUIRED" />
         </wf:action-state>
 
+        <wf:action-state id="CHECK_TOS">
+            <wf:action ref="validateTos"/>
+            <wf:transition on="tosChallenge" to="TOS_CHALLENGE_VIEW"/>
+            <wf:transition on="*" to="LOGIN_SUCCESS"/>
+        </wf:action-state>
+
+        <wf:view-state id="REDIRECT_TO_TOS_CHALLENGE">
+            <wf:on-render>
+                <wf:action ref="generateConversationVerifyCode"/>
+                <wf:action ref="redirectToTosChallenge"/>
+            </wf:on-render>
+            <wf:transition on="*" to="TOS_CHALLENGE_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="TOS_CHALLENGE_VIEW">
+            <wf:on-render>
+                <wf:action ref="tosChallengeView"/>
+            </wf:on-render>
+            <wf:transition on="next" to="LOGIN_SUCCESS">
+                <wf:action ref="createUserTosAgreement"/>
+            </wf:transition>
+        </wf:view-state>
+
         <wf:view-state id="LOGIN_SUCCESS">
             <wf:on-render>
-                <wf:action ref="redirectToAuth"/>
-            </wf:on-render>
-            <wf:transition on="*" to="CHECK_SCOPE_AFTER_LOGIN">
                 <wf:action ref="saveLoginState"/>
                 <wf:action ref="grantRememberMeToken"/>
-            </wf:transition>
+                <wf:action ref="redirectToAuth"/>
+            </wf:on-render>
+            <wf:transition on="*" to="CHECK_SCOPE_AFTER_LOGIN"/>
         </wf:view-state>
 
         <wf:action-state id="CHECK_SCOPE_AFTER_LOGIN">
             <wf:action ref="validateScopeAfterLogin"/>
+            <wf:action ref="validateClientAfterLoginAuthorize"/>
             <wf:transition on="tfaRequired" to="REDIRECT_TO_TFA_REQUIRED_VIEW"/>
             <wf:transition on="forbidden" to="ACCESS_DENIED"/>
-            <wf:transition on="success" to="CHECK_CONSENT"/>
+            <wf:transition on="success" to="END"/>
         </wf:action-state>
 
         <wf:view-state id="REDIRECT_TO_TFA_REQUIRED_VIEW">
             <wf:on-render>
+                <wf:action ref="generateConversationVerifyCode"/>
                 <wf:action ref="redirectToTFARequired"/>
             </wf:on-render>
             <wf:transition on="*" to="TFA_REQUIRED_VIEW"/>
@@ -109,10 +138,10 @@
             <wf:transition on="sendEMAIL" to="TFA_REQUIRED_VIEW">
                 <wf:action ref="sendTFA"/>
             </wf:transition>
-            <wf:transition on="verifySMS" to="CHECK_CONSENT">
+            <wf:transition on="verifySMS" to="END">
                 <wf:action ref="verifyTFA"/>
             </wf:transition>
-            <wf:transition on="verifyEMAIL" to="CHECK_CONSENT">
+            <wf:transition on="verifyEMAIL" to="END">
                 <wf:action ref="verifyTFA"/>
             </wf:transition>
         </wf:view-state>
@@ -124,20 +153,24 @@
             <wf:transition on="next" to="PAYMENT_METHOD_VIEW">
                 <wf:action ref="validateRegister"/>
                 <wf:action ref="validateCaptcha"/>
+                <wf:action ref="sentryRegisterValidate" />
                 <wf:action ref="createUser"/>
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
                 <wf:action ref="createUserTosAgreement"/>
+                <wf:action ref="createUserCommunication" />
                 <wf:action ref="sendWelcomeEmail"/>
             </wf:transition>
             <wf:transition on="next2" to="EMAIL_VERIFY_REQUIRED_VIEW">
                 <wf:action ref="validateRegister"/>
                 <wf:action ref="validateCaptcha"/>
+                <wf:action ref="sentryRegisterValidate" />
                 <wf:action ref="createUser"/>
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
                 <wf:action ref="createUserTosAgreement"/>
-                <wf:action ref="sendAccountVerifyEmail"/>
+                <wf:action ref="createUserCommunication" />
+                <wf:action ref="sendWelcomeEmail"/>
             </wf:transition>
             <wf:transition on="login" to="LOGIN_VIEW" />
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
@@ -151,6 +184,7 @@
 
         <wf:view-state id="REDIRECT_TO_THIRD_PARTY_UPGRADE">
             <wf:on-render>
+                <wf:action ref="generateConversationVerifyCode"/>
                 <wf:action ref="redirectToThirdPartyUpgrade"/>
             </wf:on-render>
             <wf:transition on="*" to="THIRD_PARTY_UPGRADE_VIEW"/>
@@ -170,35 +204,7 @@
             </wf:transition>
         </wf:view-state>
 
-        <wf:action-state id="CHECK_CONSENT">
-            <wf:action ref="validateConsent"/>
-            <wf:transition on="consentRequired" to="REDIRECT_TO_CONSENT"/>
-            <wf:transition on="*" to="END"/>
-        </wf:action-state>
 
-        <wf:view-state id="REDIRECT_TO_CONSENT">
-            <wf:on-render>
-                <wf:action ref="redirectToConsent"/>
-            </wf:on-render>
-            <wf:transition on="*" to="CONSENT_VIEW"/>
-        </wf:view-state>
-
-        <wf:view-state id="CONSENT_VIEW">
-            <wf:on-render>
-                <wf:action ref="consentView"/>
-            </wf:on-render>
-            <wf:transition on="next" to="CONSENT_SUCCESS">
-                <wf:action ref="saveConsent"/>
-            </wf:transition>
-            <wf:transition on="cancel" to="CANCEL_VIEW"/>
-        </wf:view-state>
-
-        <wf:view-state id="CONSENT_SUCCESS">
-            <wf:on-render>
-                <wf:action ref="redirectToAuth"/>
-            </wf:on-render>
-            <wf:transition on="*" to="END"/>
-        </wf:view-state>
 
         <!--wf:view-state id="REDIRECT_TO_PAYMENT_METHOD">
             <wf:on-render>
@@ -248,12 +254,14 @@
                 <wf:action ref="grantAuthorizationCode"/>
                 <wf:action ref="grantImplicitAccessToken"/>
                 <wf:action ref="grantIdToken"/>
+                <wf:action ref="clearConversationVerifyCode"/>
                 <wf:action ref="redirectToClient"/>
             </wf:on-entry>
         </wf:end-state>
 
         <wf:view-state id="CANCEL_VIEW">
             <wf:on-render>
+                <wf:action ref="clearConversationVerifyCode"/>
                 <wf:action ref="redirectToAuth"/>
             </wf:on-render>
             <wf:transition on="*" to="ACCESS_DENIED"/>
@@ -261,18 +269,28 @@
 
         <wf:end-state id="ACCESS_DENIED">
             <wf:on-entry>
+                <wf:action ref="clearConversationVerifyCode"/>
                 <wf:action ref="accessDenied"/>
             </wf:on-entry>
         </wf:end-state>
 
         <wf:end-state id="LOGIN_REQUIRED">
             <wf:on-entry>
+                <wf:action ref="clearConversationVerifyCode"/>
                 <wf:action ref="loginRequired"/>
+            </wf:on-entry>
+        </wf:end-state>
+
+        <wf:end-state id="TOS_CHALLENGE_REQUIRED">
+            <wf:on-entry>
+                <wf:action ref="clearConversationVerifyCode"/>
+                <wf:action ref="tosChallengeRequired"/>
             </wf:on-entry>
         </wf:end-state>
 
         <wf:end-state id="CONSENT_REQUIRED">
             <wf:on-entry>
+                <wf:action ref="clearConversationVerifyCode"/>
                 <wf:action ref="consentRequired"/>
             </wf:on-entry>
         </wf:end-state>
@@ -281,11 +299,14 @@
     <!-- actions -->
     <bean id="validateClient" class="com.junbo.oauth.core.action.ValidateClient">
         <property name="clientRepository" ref="encryptedClientRepository"/>
+        <property name="enableInternalCheck" value="${oauth.internalCheck.enabled}"/>
     </bean>
 
     <bean id="validateScope" class="com.junbo.oauth.core.action.ValidateScope"/>
 
-    <bean id="validateRedirectUri" class="com.junbo.oauth.core.action.ValidateRedirectUri"/>
+    <bean id="validateRedirectUri" class="com.junbo.oauth.core.action.ValidateRedirectUri">
+        <property name="strongValidate" value="${oauth.core.redirectUri.strongValidate}"/>
+    </bean>
 
     <bean id="validateResponseType" class="com.junbo.oauth.core.action.ValidateResponseType"/>
 
@@ -301,17 +322,21 @@
 
     <bean id="loadIdTokenHint" class="com.junbo.oauth.core.action.LoadIdTokenHint">
         <property name="tokenService" ref="tokenService"/>
+        <property name="userService" ref="userService"/>
     </bean>
 
     <bean id="loadLoginState" class="com.junbo.oauth.core.action.LoadLoginState">
         <property name="loginStateRepository" ref="loginStateRepository"/>
+        <property name="userService" ref="userService"/>
     </bean>
 
     <bean id="loadRememberMeToken" class="com.junbo.oauth.core.action.LoadRememberMeToken">
         <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
+        <property name="userService" ref="userService"/>
     </bean>
 
     <bean id="validateLoginState" class="com.junbo.oauth.core.action.ValidateLoginState">
+        <property name="tosUtil" ref="tosUtil"/>
     </bean>
 
     <bean id="redirectToLogin" class="com.junbo.oauth.core.view.RedirectToPage">
@@ -335,13 +360,8 @@
         <property name="loginStateRepository" ref="loginStateRepository"/>
     </bean>
 
-    <bean id="validateConsent" class="com.junbo.oauth.core.action.ValidateConsent">
-        <property name="consentRepository" ref="consentRepository"/>
-        <property name="consentUri" value="${oauth.core.portal.consentUri}"/>
-    </bean>
-
-    <bean id="redirectToConsent" class="com.junbo.oauth.core.view.RedirectToPage">
-        <property name="pageUrl" value="${oauth.core.portal.consentUri}"/>
+    <bean id="redirectToTosChallenge" class="com.junbo.oauth.core.view.RedirectToPage">
+        <property name="pageUrl" value="${oauth.core.portal.tosChallengeUri}"/>
     </bean>
 
     <bean id="consentView" class="com.junbo.oauth.core.view.ConsentView">
@@ -358,10 +378,15 @@
 
     <bean id="accessDenied" class="com.junbo.oauth.core.view.RedirectToClientError">
         <property name="errorMessage" value="access_denied"/>
+        <property name="pageUrl" value="${oauth.core.portal.accessDeniedUri}" />
     </bean>
 
     <bean id="loginRequired" class="com.junbo.oauth.core.view.RedirectToClientError">
         <property name="errorMessage" value="login_required"/>
+    </bean>
+
+    <bean id="tosChallengeRequired" class="com.junbo.oauth.core.view.RedirectToClientError">
+        <property name="errorMessage" value="tos_challenge_required"/>
     </bean>
 
     <bean id="consentRequired" class="com.junbo.oauth.core.view.RedirectToClientError">
@@ -373,12 +398,14 @@
     </bean>
 
     <bean id="registerView" class="com.junbo.oauth.core.view.RegisterView">
+        <property name="captchaEnabled" value="${oauth.core.recaptcha.enabled}"/>
         <property name="recaptchaPublicKey" value="${oauth.core.recaptcha.public.key}"/>
     </bean>
 
     <bean id="createUser" class="com.junbo.oauth.core.action.CreateUser">
         <property name="userResource" ref="oauth_userResource"/>
         <property name="userPersonalInfoResource" ref="oauth_userPersonalInfoResource" />
+        <property name="countryResource" ref="oauth_countryResource" />
     </bean>
 
     <bean id="createUserCredential" class="com.junbo.oauth.core.action.CreateUserCredential">
@@ -391,7 +418,9 @@
         <property name="userPersonalInfoResource" ref="oauth_userPersonalInfoResource"/>
     </bean>
 
-    <bean id="validateRegister" class="com.junbo.oauth.core.action.ValidateRegister"/>
+    <bean id="validateRegister" class="com.junbo.oauth.core.action.ValidateRegister">
+        <property name="userService" ref="userService" />
+    </bean>
 
     <bean id="validateCaptcha" class="com.junbo.oauth.core.action.ValidateCaptcha">
         <property name="enabled" value="${oauth.core.recaptcha.enabled}"/>
@@ -401,8 +430,17 @@
         <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
     </bean>
 
+    <bean id="sentryRegisterValidate" class="com.junbo.oauth.core.action.SentryRegisterValidate">
+        <property name="sentryFacade" ref="oauth_sentryFacade" />
+    </bean>
+
+    <bean id="sentryLoginValidate" class="com.junbo.oauth.core.action.SentryLoginValidate">
+        <property name="sentryFacade" ref="oauth_sentryFacade" />
+    </bean>
+
     <bean id="sendAccountVerifyEmail" class="com.junbo.oauth.core.action.SendAccountVerifyEmail">
         <property name="userService" ref="userService" />
+        <property name="sentryFacade" ref="oauth_sentryFacade"/>
     </bean>
 
     <bean id="sendWelcomeEmail" class="com.junbo.oauth.core.action.SendWelcomeEmail">
@@ -494,6 +532,11 @@
         <property name="userTosAgreementResource" ref="oauth_userTosAgreementResource"/>
     </bean>
 
+    <bean id="createUserCommunication" class="com.junbo.oauth.core.action.CreateUserCommunication">
+        <property name="communicationResource" ref="oauth_communicationResource"/>
+        <property name="userCommunicationResource" ref="oauth_userCommunicationResource"/>
+    </bean>
+
     <bean id="redirectToTFARequired" class="com.junbo.oauth.core.view.RedirectToPage">
         <property name="pageUrl" value="${oauth.core.portal.loginUri}"/>
     </bean>
@@ -517,4 +560,23 @@
     <bean id="tfaRequiredView" class="com.junbo.oauth.core.view.TFARequiredView">
         <property name="debugEnabled" value="${common.conf.debugMode}"/>
     </bean>
+
+    <bean id="validateClientAfterLoginAuthorize" class="com.junbo.oauth.core.action.ValidateClientAfterLogin">
+        <property name="groupUtil" ref="groupUtil"/>
+        <property name="isAuthorizeFlow" value="true"/>
+    </bean>
+
+    <bean id="generateConversationVerifyCode" class="com.junbo.oauth.core.action.GenerateConversationVerifyCode">
+        <property name="expiration" value="${oauth.conversation.verify.code.expiration}"/>
+        <property name="verifyEnabled" value="${oauth.flow.verify.enabled}"/>
+    </bean>
+
+    <bean id="clearConversationVerifyCode" class="com.junbo.oauth.core.action.ClearConversationVerifyCode"/>
+
+    <bean id="validateTos" class="com.junbo.oauth.core.action.ValidateTos">
+        <property name="tosUtil" ref="tosUtil"/>
+    </bean>
+
+    <bean id="tosChallengeView" class="com.junbo.oauth.core.view.TosChallengeView"/>
+
 </beans>

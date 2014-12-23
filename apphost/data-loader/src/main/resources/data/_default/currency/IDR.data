@@ -1,5 +1,9 @@
 {
 	"locales": {
+		"en_US": {
+			"shortName": "IDR",
+			"longName": "Indonesian rupiah"
+		},
 		"en_SG": {
 			"shortName": "IDR",
 			"longName": "Indonesian rupiah"

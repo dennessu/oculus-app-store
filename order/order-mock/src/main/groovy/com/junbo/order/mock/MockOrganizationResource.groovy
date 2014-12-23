@@ -11,6 +11,8 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 
+import javax.ws.rs.core.Response
+
 /**
  * Implementation of mock organization resource.
  */
@@ -44,13 +46,7 @@ class MockOrganizationResource extends BaseMock implements OrganizationResource 
     }
 
     @Override
-    Promise<Void> delete(OrganizationId organizationIdId) {
-        return null
-    }
-
-
-    @Override
-    Promise<Organization> patch(OrganizationId organizationId, Organization organization) {
+    Promise<Response> delete(OrganizationId organizationIdId) {
         return null
     }
 }

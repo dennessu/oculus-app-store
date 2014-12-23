@@ -5,7 +5,7 @@ source ${DIR}/../util/common.sh
 $PGBIN_PATH/psql postgres -h $BCP_HOST -p $BCP_DB_PORT -c "DELETE FROM msx;"
 
 # insert against BCP server
-echo 'insert 9 records to postgres.msx table on bcp'
+echo 'insert 9 records to msx table on bcp'
 for k in $(seq 1 9)
 do
     $PGBIN_PATH/psql postgres -h $BCP_HOST -p $BCP_DB_PORT -c "INSERT INTO msx (id) VALUES ($k);"

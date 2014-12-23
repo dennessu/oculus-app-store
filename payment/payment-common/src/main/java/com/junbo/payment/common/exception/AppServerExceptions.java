@@ -69,4 +69,10 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = "518", message = "Error download file", reason = "error download file: {0}")
     AppError errorDownloadFile(String filePath);
+
+    @ErrorDef(httpStatusCode = 500, code = "519", message = "invalid provider account", reason = "invalid provider account: {0}")
+    AppError invalidProviderAccount(String account);
+
+    @ErrorDef(httpStatusCode = 500, code = "520", message = "Error serialize parameter", reason = "error serialize: {0}")
+    AppError errorSerialize(String para);
 }

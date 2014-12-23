@@ -9,6 +9,7 @@ import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
+import com.junbo.common.model.Results
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.UserPassword
@@ -113,7 +114,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     private PITypeRepository piTypeRepository
 
 
-    @Test
+    @Test(enabled = false)
     public void testCountryRepository() {
         countryRepository.delete(new CountryId('US')).get()
 
@@ -126,7 +127,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         assert  country.countryCode == newCountry.countryCode
     }
 
-    @Test
+    @Test(enabled = false)
     public void testCurrencyRepository() {
         currencyRepository.delete(new CurrencyId('USD')).get()
 
@@ -138,7 +139,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         assert  currency.currencyCode == newCurrency.currencyCode
     }
 
-    @Test
+    @Test(enabled = false)
     public void testLocaleRepository() {
         localeRepository.delete(new LocaleId('en_US')).get()
 
@@ -300,9 +301,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         AuthenticatorListOptions getOption = new AuthenticatorListOptions()
         getOption.setExternalId(newValue)
-        List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
+        Results<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
                 null).get()
-        assert userAuthenticators.size() != 0
+        assert userAuthenticators != null
+        assert userAuthenticators.items.size() != 0
     }
 
     @Test
@@ -311,7 +313,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setUserId(new UserId(userId))
         userLoginAttempt.setType('pin')
         userLoginAttempt.setValue(UUID.randomUUID().toString())
-        userLoginAttempt.setClientId(new ClientId(234L))
+        userLoginAttempt.setClientId(new ClientId(UUID.randomUUID().toString()))
         userLoginAttempt.setIpAddress(UUID.randomUUID().toString())
         userLoginAttempt.setUserAgent(UUID.randomUUID().toString())
         userLoginAttempt.setSucceeded(true)
@@ -343,18 +345,21 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         UserGroupListOptions getOption = new UserGroupListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setGroupId(new GroupId("1493188608L"))
-        List<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
+        Results<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
                 new GroupId("1493188608L"), Integer.MAX_VALUE, 0).get()
-        assert userGroups.size() != 0
+        assert userGroups != null
+        assert userGroups.items.size() != 0
 
         getOption.setGroupId(newUserGroup.groupId)
         userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId), newUserGroup.groupId,
                 Integer.MAX_VALUE, 0).get()
-        assert userGroups.size() != 0
+        assert userGroups != null
+        assert userGroups.items.size() != 0
 
         getOption.setUserId(null)
         userGroups = userGroupRepository.searchByGroupId(newUserGroup.groupId, Integer.MAX_VALUE, 0).get()
-        assert userGroups.size() != 0
+        assert userGroups != null
+        assert userGroups.items.size() != 0
     }
 
     @Test
@@ -410,7 +415,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setUserId(new UserId(userId))
         attempt.setSucceeded(true)
         attempt.setValue(UUID.randomUUID().toString())
-        attempt.setClientId(new ClientId(idGenerator.nextId()))
+        attempt.setClientId(new ClientId(UUID.randomUUID().toString()))
         attempt.setIpAddress(UUID.randomUUID().toString())
         attempt.setUserSecurityQuestionId(new UserSecurityQuestionId("123L"))
         attempt.setUserAgent(UUID.randomUUID().toString())

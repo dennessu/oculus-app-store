@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Vanuatu vatu",
+			"longName": "Vanuatu vatu"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=VUV",
+		"id": null
+	},
+	"currencyCode": "VUV",
+	"symbol": "VT",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

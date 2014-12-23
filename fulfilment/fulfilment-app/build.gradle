@@ -4,8 +4,8 @@ apply plugin: 'application'
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
-    runtime junboProject(':apphost-core')
-    runtime junboProject(':configuration-data')
+    runtime junboProject(':silkcloud-apphost')
+    runtime junboProject(':config-data')
 
     compile junboProject(':fulfilment-rest')
     compile junboProject(':entitlement-rest')

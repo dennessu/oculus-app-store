@@ -4,8 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="userAuthenticatorValidator" class="com.junbo.identity.core.service.validator.impl.UserAuthenticatorValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userAuthenticatorRepository" ref="userAuthenticatorRepository"/>
+        <property name="userService" ref="identityUserService" />
+        <property name="userAuthenticatorService" ref="userAuthenticatorService"/>
         <property name="allowedTypes">
             <list>
                 <value>GOOGLE</value>
@@ -18,24 +18,26 @@
     </bean>
 
     <bean id="userCommunicationValidator" class="com.junbo.identity.core.service.validator.impl.UserCommunicationValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userCommunicationRepository" ref="userCommunicationRepository"/>
-        <property name="communicationRepository" ref="communicationRepository" />
+        <property name="userService" ref="identityUserService" />
+        <property name="userCommunicationService" ref="userCommunicationService"/>
+        <property name="communicationService" ref="communicationService" />
     </bean>
 
     <bean id="userPasswordValidator" class="com.junbo.identity.core.service.validator.impl.UserPasswordValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userPasswordRepository" ref="userPasswordRepository"/>
+        <property name="userService" ref="identityUserService" />
+        <property name="userPasswordService" ref="userPasswordService"/>
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
+        <property name="credentialHelper" ref="credentialHelper" />
     </bean>
 
     <bean id="userPinValidator" class="com.junbo.identity.core.service.validator.impl.UserPinValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userPinRepository" ref="userPinRepository"/>
+        <property name="userService" ref="identityUserService" />
+        <property name="userPinService" ref="userPinService"/>
         <property name="allowedPattern" value="[0-9]{4}" />
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userCredentialValidator"
@@ -51,17 +53,17 @@
         </property>
         <property name="userPinValidator" ref="userPinValidator"/>
         <property name="userPasswordValidator" ref="userPasswordValidator"/>
-        <property name="userRepository" ref="userRepository" />
-        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+        <property name="userService" ref="identityUserService" />
+        <property name="userPersonalInfoService" ref="userPersonalInfoService" />
     </bean>
 
     <bean id="userCredentialVerifyAttemptValidator"
           class="com.junbo.identity.core.service.validator.impl.UserCredentialVerifyAttemptValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userLoginAttemptRepository" ref="userCredentialVerifyAttemptRepository"/>
-        <property name="userPasswordRepository" ref="userPasswordRepository"/>
-        <property name="userPinRepository" ref="userPinRepository"/>
-        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+        <property name="userService" ref="identityUserService" />
+        <property name="userCredentialVerifyAttemptService" ref="userCredentialVerifyAttemptService"/>
+        <property name="userPasswordService" ref="userPasswordService"/>
+        <property name="userPinService" ref="userPinService"/>
+        <property name="userPersonalInfoService" ref="userPersonalInfoService" />
         <property name="normalizeService" ref="normalizeService" />
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="allowedIpAddressPatterns">
@@ -78,70 +80,85 @@
         </property>
         <property name="userAgentMinLength" value="1"/>
         <property name="userAgentMaxLength" value="255"/>
-        <property name="maxRetryCount" value="${identity.conf.maxCredentialRetryCount}" />
-        <property name="retryInterval" value="${identity.conf.maxCredentialInterval}" />
-        <property name="maxAttemptCount" value="${identity.conf.maxCredentialSameUserRetryCount}" />
-        <property name="attemptRetryInterval" value="${identity.conf.maxCredentialSameUserInterval}" />
-        <property name="maxSameIPRetryCount" value="${identity.conf.maxCredentialSameIPRetryCount}" />
-        <property name="sameIPRetryInterval" value="${identity.conf.maxCredentialSameIPInterval}" />
         <property name="emailResource" ref="identityEmailResource" />
         <property name="emailTemplateResource" ref="identityEmailTemplateResource" />
         <property name="transactionManager" ref="transactionManager" />
         <property name="ip4WhiteList" value="${identity.conf.ipWhiteList}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
+        <property name="enableMailSend" value="${identity.conf.mailEnable}" />
+        <property name="maxRetryInterval" value="${identity.conf.maxSameUserInterval}" />
+        <property name="maxLockDownTime" value="${identity.conf.maxSameUserLockDown}" />
+        <property name="maxSameIPIntervalMap" value="${identity.conf.maxCredentialSameIPRetryCountMap}" />
+        <property name="maxSameUserAttemptIntervalMap" value="${identity.conf.maxCredentialSameUserRetryCountMap}" />
+        <property name="maxLockDownMail" value="${identity.conf.maxSameUserLockDownMail}" />
+        <property name="maxRetryCountEnable" value="${identity.conf.maxRetryCountEnable}" />
+        <property name="maxSameIPAttemptsEnable" value="${identity.conf.maxSameIPAttemptsEnable}" />
+        <property name="maxSameUserAttemptsEnable" value="${identity.conf.maxSameUserAttemptsEnable}" />
+        <property name="credentialHelper" ref="credentialHelper" />
     </bean>
 
     <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">
-        <property name="groupRepository" ref="groupRepository"/>
-        <property name="userGroupRepository" ref="userGroupRepository"/>
-        <property name="userRepository" ref="userRepository"/>
+        <property name="groupService" ref="groupService"/>
+        <property name="userGroupService" ref="userGroupService"/>
+        <property name="userService" ref="identityUserService" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="usernameValidator" class="com.junbo.identity.core.service.validator.impl.UsernameValidatorImpl">
-        <property name="minLength" value="4"/>
-        <property name="maxLength" value="30"/>
+        <property name="minLength" value="2"/>
+        <property name="maxLength" value="20"/>
         <property name="disallowedPatterns">
             <list>
+                <value>[a-zA-Z0-9\. _-]*[ ]{2,}[a-zA-Z0-9\. _-]*</value>
+                <value>[a-zA-Z0-9\. _-]*[_]{2,}[a-zA-Z0-9\. _-]*</value>
+                <value>[a-zA-Z0-9\. _-]*[\.]{2,}[a-zA-Z0-9\. _-]*</value>
+                <value>[a-zA-Z0-9\. _-]*[-]{2,}[a-zA-Z0-9\. _-]*</value>
+                <value>[a-zA-Z0-9\. _-]*[ ]{1,}[a-zA-Z0-9\. _-]*</value>
             </list>
         </property>
         <property name="allowedPatterns">
             <list>
-                <value>[a-zA-Z]+[a-zA-Z0-9]*</value>
+                <value>^[a-zA-Z0-9][a-zA-Z0-9 \. _-]{1,19}$</value>
             </list>
         </property>
     </bean>
 
     <bean id="userValidator" class="com.junbo.identity.core.service.validator.impl.UserValidatorImpl">
-        <property name="userRepository" ref="userRepository" />
+        <property name="userService" ref="identityUserService" />
         <property name="normalizeService" ref="normalizeService" />
-        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+        <property name="userPersonalInfoService" ref="userPersonalInfoService" />
         <property name="emailValidator" ref="identityEmailValidator" />
-        <property name="localeRepository" ref="localeRepository" />
+        <property name="localeService" ref="localeService" />
         <property name="timezoneValidator" ref="timezoneValidator" />
         <property name="usernameValidator" ref="usernameValidator" />
-        <property name="countryRepository" ref="countryRepository" />
+        <property name="countryService" ref="countryService" />
         <property name="vatResource" ref="identityVatResource" />
-        <property name="piTypeRepository" ref="piTypeRepository" />
+        <property name="piTypeService" ref="piTypeService" />
+        <property name="piiHashFactory" ref="piiHashFactory" />
+        <property name="usernameEmailBlockerService" ref="usernameEmailBlockerService" />
         <property name="paymentInstrumentResource" ref="identityPaymentInstrumentResource" />
         <property name="enableVatValidation" value="${identity.conf.enableVatValidation}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userSecurityQuestionValidator"
           class="com.junbo.identity.core.service.validator.impl.UserSecurityQuestionValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userSecurityQuestionRepository" ref="userSecurityQuestionRepository"/>
+        <property name="userService" ref="identityUserService" />
+        <property name="userSecurityQuestionService" ref="userSecurityQuestionService"/>
         <property name="minAnswerLength" value="10" />
         <property name="maxAnswerLength" value="255" />
         <property name="minSecurityQuestionLength" value="10" />
         <property name="maxSecurityQuestionLength" value="255" />
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userSecurityQuestionAttemptValidator"
           class="com.junbo.identity.core.service.validator.impl.UserSecurityQuestionAttemptValidatorImpl">
-        <property name="attemptRepository" ref="userSecurityQuestionAttemptRepository"/>
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userSecurityQuestionRepository" ref="userSecurityQuestionRepository"/>
+        <property name="userSecurityQuestionAttemptService" ref="userSecurityQuestionAttemptService"/>
+        <property name="userService" ref="identityUserService" />
+        <property name="userSecurityQuestionService" ref="userSecurityQuestionService"/>
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="allowedIPPatterns">
             <list>
@@ -165,13 +182,13 @@
     </bean>
 
     <bean id="userTosValidator" class="com.junbo.identity.core.service.validator.impl.UserTosValidatorImpl">
-        <property name="userRepository" ref="userRepository"/>
-        <property name="userTosRepository" ref="userTosRepository"/>
-        <property name="tosRepository" ref="tosRepository" />
+        <property name="userService" ref="identityUserService" />
+        <property name="userTosService" ref="userTosService"/>
+        <property name="tosService" ref="tosService" />
     </bean>
 
     <bean id="addressValidator" class="com.junbo.identity.core.service.validator.impl.AddressValidatorImpl">
-        <property name="countryRepository" ref="countryRepository" />
+        <property name="countryService" ref="countryService" />
         <property name="addressValidatorResource" ref="identityAddressValidatorResource" />
         <property name="externalValidatorEnabled" value="${identity.conf.externalAddressValidator}" />
     </bean>
@@ -212,7 +229,7 @@
         <property name="maxGivenNameLength" value="255" />
         <property name="minMiddleNameLength" value="1" />
         <property name="maxMiddleNameLength" value="255" />
-        <property name="userRepository" ref="userRepository" />
+        <property name="userService" ref="identityUserService" />
         <property name="minFullNameLength" value="1" />
         <property name="maxFullNameLength" value="255" />
     </bean>
@@ -244,8 +261,9 @@
 
     <bean id="userEmailValidator" class="com.junbo.identity.core.service.validator.impl.UserEmailValidatorImpl">
         <property name="emailValidator" ref="identityEmailValidator" />
-        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
-        <property name="userRepository" ref="userRepository" />
+        <property name="userPersonalInfoService" ref="userPersonalInfoService" />
+        <property name="userService" ref="identityUserService" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userSSNValidator" class="com.junbo.identity.core.service.validator.impl.UserSSNValidatorImpl">
@@ -281,7 +299,8 @@
         <property name="maxValueLength" value="255" />
         <property name="maxUserNumberPerPhone" value="${identity.conf.maxUsersPerPhoneNumber}" />
         <property name="maxNewPhoneNumberPerMonth" value="${identity.conf.maxNewPhoneNumberPerMonth}" />
-        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+        <property name="userPersonalInfoService" ref="userPersonalInfoService" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="userWhatsAppValidator" class="com.junbo.identity.core.service.validator.impl.UserWhatsAppValidatorImpl">
@@ -290,9 +309,9 @@
     </bean>
 
     <bean id="userPersonalInfoValidator" class="com.junbo.identity.core.service.validator.impl.UserPersonalInfoValidatorImpl">
-        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
-        <property name="userRepository" ref="userRepository" />
-        <property name="organizationRepository" ref="organizationRepository" />
+        <property name="userPersonalInfoService" ref="userPersonalInfoService" />
+        <property name="userService" ref="identityUserService" />
+        <property name="organizationService" ref="organizationService" />
         <property name="piiValidatorFactory" ref="piiValidatorFactory" />
     </bean>
 
@@ -339,9 +358,9 @@
     </bean>
 
     <bean id="communicationValidator" class="com.junbo.identity.core.service.validator.impl.CommunicationValidatorImpl">
-        <property name="communicationRepository" ref="communicationRepository"/>
-        <property name="localeRepository" ref="localeRepository" />
-        <property name="countryRepository" ref="countryRepository" />
+        <property name="communicationService" ref="communicationService"/>
+        <property name="localeService" ref="localeService" />
+        <property name="countryService" ref="countryService" />
         <property name="minCommunicationLocaleDescription" value="1" />
         <property name="maxCommunicationLocaleDescription" value="255" />
         <property name="minCommunicationLocaleName" value="1" />
@@ -349,9 +368,9 @@
     </bean>
 
     <bean id="countryValidator" class="com.junbo.identity.core.service.validator.impl.CountryValidatorImpl">
-        <property name="countryRepository" ref="countryRepository"/>
-        <property name="localeRepository" ref="localeRepository" />
-        <property name="currencyRepository" ref="currencyRepository" />
+        <property name="countryService" ref="countryService"/>
+        <property name="localeService" ref="localeService" />
+        <property name="currencyService" ref="currencyService" />
         <property name="minSubCountryShortNameLength" value="1" />
         <property name="maxSubCountryShortNameLength" value="255" />
         <property name="minSubCountryLongNameLength" value="1" />
@@ -363,7 +382,7 @@
     </bean>
 
     <bean id="currencyValidator" class="com.junbo.identity.core.service.validator.impl.CurrencyValidatorImpl">
-        <property name="currencyRepository" ref="currencyRepository"/>
+        <property name="currencyService" ref="currencyService"/>
         <property name="minNumberAfterDecimalLength" value="0" />
         <property name="maxNumberAfterDecimalLength" value="3" />
         <property name="minSymbolLength" value="1" />
@@ -377,7 +396,7 @@
     </bean>
 
     <bean id="localeValidator" class="com.junbo.identity.core.service.validator.impl.LocaleValidatorImpl">
-        <property name="localeRepository" ref="localeRepository"/>
+        <property name="localeService" ref="localeService"/>
         <property name="minShortNameLength" value="1" />
         <property name="maxShortNameLength" value="255" />
         <property name="minLongNameLength" value="1" />
@@ -387,20 +406,20 @@
     </bean>
 
     <bean id="piTypeValidator" class="com.junbo.identity.core.service.validator.impl.PITypeValidatorImpl">
-        <property name="piTypeRepository" ref="piTypeRepository"/>
+        <property name="piTypeService" ref="piTypeService"/>
         <property name="minLocaleNameLength" value="1" />
         <property name="maxLocaleNameLength" value="255" />
     </bean>
 
     <bean id="groupValidator" class="com.junbo.identity.core.service.validator.impl.GroupValidatorImpl">
-        <property name="groupRepository" ref="groupRepository"/>
-        <property name="organizationRepository" ref="organizationRepository"/>
+        <property name="groupService" ref="groupService"/>
+        <property name="organizationService" ref="organizationService"/>
         <property name="groupValueMaxLength" value="255"/>
         <property name="groupValueMinLength" value="1"/>
     </bean>
 
     <bean id="deviceValidator" class="com.junbo.identity.core.service.validator.impl.DeviceValidatorImpl">
-        <property name="deviceRepository" ref="deviceRepository"/>
+        <property name="deviceService" ref="deviceService"/>
         <property name="deviceDescriptionMinLength" value="1"/>
         <property name="deviceDescriptionMaxLength" value="255"/>
         <property name="deviceExternalRefMinLength" value="1"/>
@@ -408,7 +427,7 @@
     </bean>
 
     <bean id="deviceTypeValidator" class="com.junbo.identity.core.service.validator.impl.DeviceTypeValidatorImpl">
-        <property name="deviceTypeRepository" ref="deviceTypeRepository"/>
+        <property name="deviceTypeService" ref="deviceTypeService"/>
         <property name="allowedDeviceTypeCodeList">
             <list>
                 <value>DK1</value>
@@ -431,8 +450,8 @@
     </bean>
 
     <bean id="tosValidator" class="com.junbo.identity.core.service.validator.impl.TosValidatorImpl">
-        <property name="tosRepository" ref="tosRepository"/>
-        <property name="countryRepository" ref="countryRepository" />
+        <property name="tosService" ref="tosService"/>
+        <property name="countryService" ref="countryService" />
         <property name="titleMinLength" value="1"/>
         <property name="titleMaxLength" value="255"/>
         <property name="contentMinLength" value="1"/>
@@ -521,11 +540,11 @@
     </bean>
 
     <bean id="userTFAValidator" class="com.junbo.identity.core.service.validator.impl.UserTFAValidatorImpl">
-        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
-        <property name="userRepository" ref="userRepository" />
-        <property name="userTFAPhoneRepository" ref="userTFAPhoneRepository" />
-        <property name="userTFAMailRepository" ref="userTFAMailRepository" />
-        <property name="localeRepository" ref="localeRepository" />
+        <property name="userPersonalInfoService" ref="userPersonalInfoService" />
+        <property name="userService" ref="identityUserService" />
+        <property name="userTFAPhoneService" ref="userTFAPhoneService" />
+        <property name="userTFAMailService" ref="userTFAMailService" />
+        <property name="localeService" ref="localeService" />
         <property name="maxSMSRequestsPerHour" value="${identity.conf.maxSMSRequestsPerHour}" />
         <property name="maxTFACodeExpireTime" value="${identity.conf.maxTeleCodeExpireTime}" />
         <property name="minTemplateLength" value="1" />
@@ -535,8 +554,8 @@
     </bean>
 
     <bean id="userTFAAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTFAAttemptValidatorImpl">
-        <property name="userRepository" ref="userRepository" />
-        <property name="userTFAAttemptRepository" ref="userTFAAttemptRepository" />
+        <property name="userService" ref="identityUserService" />
+        <property name="userTFAAttemptService" ref="userTFAAttemptService" />
         <property name="minVerifyCodeLength" value="1" />
         <property name="maxVerifyCodeLength" value="255" />
         <property name="allowedIPPatterns">
@@ -555,21 +574,21 @@
         <property name="maxClientIdLength" value="255" />
         <property name="minUserAgentLength" value="1" />
         <property name="maxUserAgentLength" value="255" />
-        <property name="userTFAMailRepository" ref="userTFAMailRepository" />
-        <property name="userTFAPhoneRepository" ref="userTFAPhoneRepository" />
+        <property name="userTFAMailService" ref="userTFAMailService" />
+        <property name="userTFAPhoneService" ref="userTFAPhoneService" />
         <property name="maxTeleCodeAttemptNumber" value="${identity.conf.maxTeleCodeAttemptNumber}" />
     </bean>
 
     <bean id="userTeleBackupCodeValidator" class="com.junbo.identity.core.service.validator.impl.UserTFABackupCodeValidatorImpl">
-        <property name="userRepository" ref="userRepository" />
-        <property name="userTFABackupCodeRepository" ref="userTFAPhoneBackupCodeRepository" />
+        <property name="userService" ref="identityUserService" />
+        <property name="userTFAPhoneBackupCodeService" ref="userTFAPhoneBackupCodeService" />
         <property name="codeGenerator" ref="teleBackupCodeGenerator" />
     </bean>
 
     <bean id="userTeleBackupCodeAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTFABackupCodeAttemptValidatorImpl">
-        <property name="userRepository" ref="userRepository" />
-        <property name="userTFABackupCodeRepository" ref="userTFAPhoneBackupCodeRepository" />
-        <property name="userTFABackupCodeAttemptRepository" ref="userTFAPhoneBackupCodeAttemptRepository" />
+        <property name="userService" ref="identityUserService" />
+        <property name="userTFAPhoneBackupCodeService" ref="userTFAPhoneBackupCodeService" />
+        <property name="userTFAPhoneBackupCodeAttemptService" ref="userTFAPhoneBackupCodeAttemptService" />
         <property name="allowedIPPatterns">
             <list>
                 <!-- IPv4Pattern -->
@@ -589,21 +608,38 @@
         <property name="minVerifyCodeLength" value="1" />
         <property name="maxVerifyCodeLength" value="255" />
         <property name="maxRetryCount" value="${identity.conf.maxTeleCodeAttemptNumber}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
     </bean>
 
     <bean id="organizationValidator" class="com.junbo.identity.core.service.validator.impl.OrganizationValidatorImpl">
-        <property name="organizationRepository" ref="organizationRepository" />
-        <property name="userRepository" ref="userRepository" />
-        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+        <property name="organizationService" ref="organizationService" />
+        <property name="userService" ref="identityUserService" />
+        <property name="userPersonalInfoService" ref="userPersonalInfoService" />
         <property name="normalizeService" ref="normalizeService" />
+        <property name="itemResource" ref="identityItemResource" />
+        <property name="itemRevisionResource" ref="identityItemRevisionResource" />
+        <property name="offerResource" ref="identityOfferResource" />
+        <property name="offerRevisionResource" ref="identityOfferRevisionResource" />
     </bean>
 
     <bean id="errorInfoValidator" class="com.junbo.identity.core.service.validator.impl.ErrorInfoValidatorImpl">
-        <property name="errorInfoRepository" ref="errorInfoRepository" />
+        <property name="errorInfoService" ref="errorInfoService" />
     </bean>
 
     <bean id="bcryptCredentialHash" class="com.junbo.identity.core.service.credential.impl.BcryptCredentialHash">
         <property name="generator" ref="bCryptSaltGenerator" />
+    </bean>
+
+    <bean id="nonhtmlBcryptCredentialHash" class="com.junbo.identity.core.service.credential.impl.NonHtmlBcryptCredentialHash">
+        <property name="generator" ref="bCryptSaltGenerator" />
+    </bean>
+
+    <bean id="credentialHelper" class="com.junbo.identity.core.service.credential.impl.CredentialHelperImpl">
+        <property name="credentialHashFactory" ref="credentialHashFactory" />
+        <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
+        <property name="maximumFetchSize" value="${common.maximum.fetch.size}" />
+        <property name="userPasswordService" ref="userPasswordService" />
+        <property name="updateHtml" value="${common.updateHtml.enable}" />
     </bean>
 
     <bean id="oculusCredentialHash" class="com.junbo.identity.core.service.credential.impl.OculusCredentialHash">
@@ -615,6 +651,7 @@
             <list>
                 <ref bean="bcryptCredentialHash" />
                 <ref bean="oculusCredentialHash" />
+                <ref bean="nonhtmlBcryptCredentialHash" />
             </list>
         </constructor-arg>
     </bean>
@@ -637,4 +674,20 @@
         <property name="logRound" value="${identity.conf.bcryptLogRound}" />
     </bean>
 
+    <bean id="userAttributeValidator" class="com.junbo.identity.core.service.validator.impl.UserAttributeValidatorImpl">
+        <property name="userAttributeDefinitionService" ref="userAttributeDefinitionService" />
+        <property name="userAttributeService" ref="userAttributeService" />
+        <property name="userService" ref="identityUserService" />
+    </bean>
+
+    <bean id="userAttributeDefinitionValidator" class="com.junbo.identity.core.service.validator.impl.UserAttributeDefinitionValidatorImpl">
+        <property name="userAttributeDefinitionService" ref="userAttributeDefinitionService" />
+        <property name="allowedTypes">
+            <list>
+                <value>CATEGORY</value>
+                <value>TUTORIAL</value>
+                <value>ACHIEVEMENT</value>
+            </list>
+        </property>
+    </bean>
 </beans>

@@ -38,13 +38,21 @@ cat > $REPLICA_DATA_PATH/pg_hba.conf <<EOF
 
 # "local" is for Unix domain socket connections only
 local   all             ${PGUSER}                               ident
+local   all             ${NEWRELIC_PGUSER}                      ident
+local   all             ${ZABBIX_PGUSER}                        ident
 # IPv4 local connections:
 host    all             ${PGUSER}       127.0.0.1/32            ident
 host    all             ${PGUSER}       ${MASTER_HOST}/32       ident
 host    all             ${PGUSER}       ${SLAVE_HOST}/32        ident
 host    all             ${PGUSER}       ${REPLICA_HOST}/32      ident
+host    all             ${READONLY_PGUSER}  127.0.0.1/0         ident
+host    all             ${NEWRELIC_PGUSER}  127.0.0.1/0         ident
+host    all             ${ZABBIX_PGUSER}  127.0.0.1/0           ident
 # IPv6 local connections:
 host    all             ${PGUSER}       ::1/128                 ident
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+host    replication     ${PGUSER}       ${REPLICA_HOST:-127.0.0.1}/32   ident
 EOF
 
 echo "[SETUP][REPLICA] configure postgres.conf"
@@ -54,7 +62,7 @@ port = $REPLICA_DB_PORT
 EOF
 
 echo "[SETUP][REPLICA] start replica database"
-$PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH -l "${REPLICA_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log"  start > /dev/null 2>&1 &
+startDB $REPLICA_DATA_PATH $REPLICA_LOG_PATH
 
 while ! echo exit | nc $REPLICA_HOST $REPLICA_DB_PORT;
 do
@@ -67,3 +75,6 @@ $DEPLOYMENT_PATH/londiste/londiste_leaf.sh
 
 echo "[SETUP][REPLICA] start pgbouncer proxy and connect to replica server"
 $DEPLOYMENT_PATH/pgbouncer/pgbouncer_replica.sh
+
+echo "[SETUP][REPLICA] create readonly user"
+$DEPLOYMENT_PATH/util/create_user.sh $READONLY_PGUSER $REPLICA_HOST $REPLICA_DB_PORT

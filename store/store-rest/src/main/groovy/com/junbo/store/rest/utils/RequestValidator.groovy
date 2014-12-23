@@ -1,18 +1,16 @@
 package com.junbo.store.rest.utils
+
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppErrorException
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.OrderId
-import com.junbo.common.id.PIType
-import com.junbo.common.id.UserId
+import com.junbo.common.id.*
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
+import com.junbo.identity.spec.v1.option.model.TosGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
@@ -20,13 +18,21 @@ import com.junbo.order.spec.model.Order
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
 import com.junbo.store.clientproxy.FacadeContainer
+import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.StoreApiHeader
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
-import com.junbo.store.spec.model.browse.*
+import com.junbo.store.spec.model.browse.AcceptTosRequest
+import com.junbo.store.spec.model.browse.DeliveryRequest
+import com.junbo.store.spec.model.browse.DetailsRequest
+import com.junbo.store.spec.model.browse.ReviewsRequest
+import com.junbo.store.spec.model.iap.IAPConsumeItemRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
 import com.junbo.store.spec.model.login.*
@@ -38,10 +44,8 @@ import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
-import com.junbo.store.clientproxy.ResourceContainer
 
 import javax.annotation.Resource
-import java.util.regex.Pattern
 
 /**
  * The RequestValidator class.
@@ -71,29 +75,36 @@ class RequestValidator {
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
 
-    private final Pattern androidIdPattern = Pattern.compile('[a-fA-F\\d]{16}')
-
     RequestValidator validateRequiredApiHeaders() {
         validateHeader(StoreApiHeader.ANDROID_ID, StoreApiHeader.USER_AGENT, StoreApiHeader.ACCEPT_LANGUAGE)
-        String androidId = JunboHttpContext.requestHeaders.getFirst(StoreApiHeader.ANDROID_ID.value)
-        if (!androidIdPattern.matcher(androidId).matches()) {
-            throw AppCommonErrors.INSTANCE.headerInvalid(StoreApiHeader.ANDROID_ID.value).exception()
-        }
         return this
     }
 
-    RequestValidator validateUserNameCheckRequest(UserNameCheckRequest request) {
+    RequestValidator validateEmailCheckRequest(EmailCheckRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        if (StringUtils.isEmpty(request.email) && StringUtils.isEmpty(request.username)) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('email or username').exception()
+        if (StringUtils.isEmpty(request.email)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
         }
 
-        if (!StringUtils.isEmpty(request.email) && !StringUtils.isEmpty(request.username)) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('email or username', 'only one of the fields [email, username] could be specified at a time').exception()
+        return this
+    }
+
+    RequestValidator validateUsernameAvailableCheckRequest(UserNameCheckRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
+
+        if (StringUtils.isEmpty(request.email)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
+        }
+
+        if (StringUtils.isEmpty(request.username)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
+        }
+
         return this
     }
 
@@ -121,13 +132,16 @@ class RequestValidator {
         notEmpty(request.password, 'password')
         notEmpty(request.cor, 'cor')
         notEmpty(request.preferredLocale, 'preferredLocale')
+        notEmpty(request.tosAgreed, 'tosAgreed')
 
         if (requireDetailsForCreate) {
-            notEmpty(request.pin, 'pin')
             notEmpty(request.dob, 'dob')
             notEmpty(request.firstName, 'firstName')
             notEmpty(request.lastName, 'lastName')
         }
+
+        // Bug https://oculus.atlassian.net/browse/SER-693, it will always set nickName to username
+        request.nickName = request.username
         return this
     }
 
@@ -136,13 +150,16 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        notEmpty(request.username, 'username')
+        notEmpty(request.email, 'email')
         notEmpty(request.userCredential, 'userCredential')
         notEmpty(request.userCredential.type, 'userCredential.type')
         notEmpty(request.userCredential.value, 'userCredential.value')
 
         if (!'PASSWORD'.equalsIgnoreCase(request.userCredential.type)) { //
             throw AppCommonErrors.INSTANCE.fieldInvalid('userCredential.type', 'type must be PASSWORD ').exception()
+        }
+        if (!request.email.contains('@')) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('email', 'email is incorrect format').exception()
         }
         return this
     }
@@ -168,19 +185,22 @@ class RequestValidator {
         return null
     }
 
-    Promise<UserProfileUpdateResponse> validateUserProfileUpdateRequest(UserProfileUpdateRequest request) {
+    Promise<UserProfileUpdateResponse> validateUserProfileUpdateRequest(UserProfileUpdateRequest request, ApiContext apiContext) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         notEmpty(request.userProfile, 'userProfile')
+        // https://oculus.atlassian.net/browse/SER-693
+        // Will disable nickname update, nickname should be the username, if user want to update nickname, he should update username
+        request.userProfile.nickName = request.userProfile.username
 
         return getUserProfileUpdatePasswordChallenge(request).then { UserProfileUpdateResponse response ->
             if (response != null) {
                 return Promise.pure(response)
             }
 
-            return userProfileUpdateEmailVerification(request).then {
+            return userProfileUpdateEmailVerification(request, apiContext).then {
                 return Promise.pure(null)
             }
         }
@@ -205,7 +225,7 @@ class RequestValidator {
                 }
 
                 if (request?.challengeAnswer?.password != null && request?.challengeAnswer?.type == Constants.ChallengeType.PASSWORD) {
-                    return getUsername(user).then { String username ->
+                    return identityUtils.getVerifiedUserPrimaryMail(user).then { String username ->
                         return resourceContainer.userCredentialVerifyAttemptResource.create(new UserCredentialVerifyAttempt(
                                 username: username,
                                 value: request.challengeAnswer.password,
@@ -214,13 +234,8 @@ class RequestValidator {
                             if (appErrorUtils.isAppError(t, ErrorCodes.Identity.UserPasswordIncorrect)) {
                                throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                             }
-                            if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
-                                AppErrorException appError = (AppErrorException)t
-                                if (!CollectionUtils.isEmpty(appError.error.error().getDetails())
-                                 && !StringUtils.isEmpty(appError.error.error().getDetails().get(0).getReason())
-                                 && appError.error.error().getDetails().get(0).getReason().contains('User reaches maximum allowed retry count')) {
-                                    throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-                                }
+                            if (appErrorUtils.isAppError(t, ErrorCodes.Identity.MaximumLoginAttempt)) {
+                                throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
                             }
 
                             appErrorUtils.throwUnknownError('updateUserProfile', t)
@@ -235,8 +250,10 @@ class RequestValidator {
         }
     }
 
-    Promise<Void> userProfileUpdateEmailVerification(UserProfileUpdateRequest request) {
+    Promise<Void> userProfileUpdateEmailVerification(UserProfileUpdateRequest request, ApiContext apiContext) {
         return identityUtils.getVerifiedUserFromToken().then { User user ->
+            LocaleId locale = user.preferredLocale != null ? user.preferredLocale : apiContext.locale.getId()
+            CountryId country = user.countryOfResidence != null ? user.countryOfResidence : apiContext.country.getId()
             return isMailChanged(request, user).then { Boolean mailChanged ->
                 if (mailChanged) {
                     Email email = new Email(
@@ -247,8 +264,8 @@ class RequestValidator {
                             type: 'EMAIL',
                             value: ObjectMapperProvider.instance().valueToTree(email)
                     )
-                    return resourceContainer.userPersonalInfoResource.create(emailPii).then { UserPersonalInfo userPersonalInfo ->
-                        return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId(), userPersonalInfo.getId()).then {
+                    return resourceContainer.userUserPersonalInfoResource.create(emailPii).then { UserPersonalInfo userPersonalInfo ->
+                        return facadeContainer.oAuthFacade.sendVerifyEmail(locale.value, country.value, user.getId(), userPersonalInfo.getId()).then {
                             return Promise.pure(null)
                         }
                     }
@@ -272,6 +289,16 @@ class RequestValidator {
 
     Promise<com.junbo.identity.spec.v1.model.Locale> validateAndGetLocale(LocaleId locale) {
         return resourceContainer.localeResource.get(locale, new LocaleGetOptions())
+    }
+
+    Promise<Tos> validateTosExists(TosId tosId) {
+        return resourceContainer.tosResource.get(tosId, new TosGetOptions()).then { Tos tos ->
+            if (tos == null || tos.state != 'APPROVED') {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('tosAgreed', 'Tos with Id ' + tos.id.toString() + ' not exists').exception()
+            }
+
+            return Promise.pure(tos)
+        }
     }
 
     Promise validateOffer(OfferId offer) {
@@ -322,11 +349,6 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         notEmpty(request.offer, 'offerId')
-        if (request.iapParams != null) {
-            notEmpty(request.iapParams.packageName, 'iapParams.packageName')
-            notEmpty(request.iapParams.packageSignatureHash, 'iapParams.packageSignatureHash')
-            notEmpty(request.iapParams.packageVersion, 'iapParams.packageVersion')
-        }
         if (request.challengeAnswer != null) {
             if (request.challengeAnswer.type == Constants.ChallengeType.PIN) {
                 notEmpty(request.challengeAnswer.pin, 'challengeAnswer.pin')
@@ -412,6 +434,13 @@ class RequestValidator {
         notEmpty(request.tosId, 'tosId')
     }
 
+    public RequestValidator validateRequestBody(Object request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+        return this
+    }
+
     public void validateDetailsRequest(DetailsRequest request) {
         if (request == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
@@ -432,13 +461,18 @@ class RequestValidator {
         notEmpty(request.itemId, 'itemId')
     }
 
-    public void validateAddReviewRequest(AddReviewRequest request) {
-        notEmpty(request.itemId, 'itemId')
-        notEmpty(request.title, 'title')
-    }
-
     public void validateReviewsRequest(ReviewsRequest request) {
         notEmpty(request.itemId, 'itemId')
+    }
+
+    public void validateConfirmEmailRequest(ConfirmEmailRequest request) {
+        notEmpty(request.evc, 'evc')
+    }
+
+    public void validateIAPConsumeItemRequest(IAPConsumeItemRequest iapConsumeItemRequest) {
+        notEmpty(iapConsumeItemRequest.sku, 'sku')
+        notEmpty(iapConsumeItemRequest.trackingGuid, 'trackingGuid')
+        notEmpty(iapConsumeItemRequest.useCountConsumed, 'useCountConsumed')
     }
 
     private Promise<Boolean> isMailChanged(UserProfileUpdateRequest request, User currentUser) {
@@ -467,21 +501,6 @@ class RequestValidator {
             }
 
             return Promise.pure(true)
-        }
-    }
-
-    private Promise<String> getUsername(User user) {
-        if (user.username == null) {
-            return Promise.pure('')
-        }
-
-        return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
-            if (userPersonalInfo == null) {
-                return Promise.pure('')
-            }
-
-            UserLoginName loginName = (UserLoginName)ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, UserLoginName)
-            return Promise.pure(loginName.userName)
         }
     }
 

@@ -14,6 +14,16 @@ if [[ -z "$ENVIRONMENT" ]]; then
         exit 1
     fi
 fi
+
+# parameters overridable by env file
+# pgsql conf
+export MAX_CONNECTIONS=1200
+export SHARED_BUFFERS='128MB'
+export MAINTENANCE_WORK_MEM='16MB'
+export EFFECTIVE_CACHE_SIZE='128MB'
+export CHECKPOINT_SEGMENTS='3'
+export CHECKPOINT_COMPLETION_TARGET='0.5'
+
 ENVIRONMENT_FILE=$DIR/../env/${ENVIRONMENT}.sh
 if [[ -f $ENVIRONMENT_FILE ]]; then
     source $ENVIRONMENT_FILE
@@ -23,6 +33,7 @@ export DEVOPS_ACCOUNT='devops'
 export DEPLOYMENT_ACCOUNT='silkcloud'
 
 export SILKCLOUD_BASE='/var/silkcloud'
+export SILKCLOUD_OPS='/var/ops'
 
 export DEPLOYMENT_PATH=$SILKCLOUD_BASE/pgha
 export PGHA_BASE=$SILKCLOUD_BASE/postgresql
@@ -42,8 +53,10 @@ export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'
 export PROMOTE_TRIGGER_FILE=$PGHA_BASE/bring_me_up
 export PGUSER='silkcloud'
+export READONLY_PGUSER='scro'
+export NEWRELIC_PGUSER='newrelic'
+export ZABBIX_PGUSER='zabbix'
 export DB_PORT=5432
-export MAX_CONNECTIONS=500
 
 #master info
 export MASTER_DB_PORT=$DB_PORT
@@ -76,7 +89,6 @@ export PGBOUNCER_PORT=6543
 
 export PGBOUNCER_BIN=/usr/sbin
 export PGBOUNCER_BASE=$PGHA_BASE/pgbouncer
-export PGBOUNCER_CONF=$PGBOUNCER_BASE/pgbouncer.conf
 export PGBOUNCER_PID=$PGBOUNCER_BASE/pgbouncer.pid
 export PGBOUNCER_AUTH_FILE=~/.pgbouncer_auth
 export PGBOUNCER_SOCKET_PATH='/tmp'
@@ -133,12 +145,33 @@ function createDir {
     chmod 700 $1
 }
 
-# get current date time
-function now {
-    return $(date +"%Y.%m.%d.%S.%N")
-}
-
 # get server role
 function getServerRole {
     echo `cat $PGHA_BASE/role.conf`
+}
+
+# check server role
+function checkServerRole {
+    role=`getServerRole`
+    echo "The server is [$role]"
+
+    if [[ $role != "$1" ]] ; then
+        echo "the script should be executed on [$1] server"
+        exit 1
+    fi
+}
+
+# start database
+function startDB {
+    echo "database data file path [$1]"
+    echo "database log file path [$2]"
+
+    rm -f $1/postmaster.pid
+    $PGBIN_PATH/pg_ctl -D $1 -l "$2/postgresql-$(date +%Y-%m-%d:%H:%M:%S.%N).log" start > /dev/null 2>&1 &
+}
+
+# shutdown database
+function stopDB {
+    echo "database data file path [$1]"
+    $PGBIN_PATH/pg_ctl stop -m fast -D $1
 }

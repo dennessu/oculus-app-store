@@ -3,8 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <import resource="classpath*:spring/common-lib-context.xml"/>
-    <import resource="classpath*:spring/common-context.xml"/>
+    <import resource="classpath*:spring/silkcloud-context.xml"/>
+    <import resource="classpath*:spring/config-context.xml"/>
 
     <bean id="storeRestTestUtils" class="com.junbo.store.rest.test.TestUtils">
     </bean>

@@ -9,12 +9,13 @@
     <context:component-scan base-package="com.junbo.payment.db"/>
 
     <!--Data source has the database information -->
-    <bean id="paymentDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="paymentDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${payment.db.jdbcUrls}"/>
         <property name="uniqueName" value="jdbc/payment"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${payment.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${payment.db.maxConnectionsPerPartition}"/>
+        <property name="className" value="${payment.db.driverClassName}"/>
+        <property name="minPoolSize" value="${payment.db.minPoolSize}"/>
+        <property name="maxPoolSize" value="${payment.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${payment.db.username}</prop>
@@ -49,67 +50,77 @@
                 <value>com.junbo.payment.db.entity.payment</value>
                 <value>com.junbo.payment.db.dao.paymentinstrument</value>
                 <value>com.junbo.payment.db.entity.paymentinstrument</value>
+                <value>com.junbo.common.health.ping</value>
             </list>
         </property>
+    </bean>
+
+    <bean id="paymentPingSqlRepo" class="com.junbo.common.health.ping.PingSqlRepo">
+        <property name="sessionFactory" ref="paymentSessionFactory" />
+        <property name="shardAlgorithm" ref="userShardAlgorithm"/>
+        <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="dbName" value="payment" />
     </bean>
 
     <!--mapper-->
     <bean id="paymentCommonMapper" class="com.junbo.payment.db.mapper.CommonMapper" />
     <bean id="paymentMapperExtension" class="com.junbo.payment.db.mapper.PaymentMapperExtension" />
 
-    <!-- Dao -->
-    <bean id="paymentGenericDao"
-          class="com.junbo.payment.db.dao.GenericDAOImpl" abstract="true">
-    </bean>
+    <!-- Dao -->    
 
     <bean id="PaymentInstrumentDao"
-          class="com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao" parent="paymentGenericDao">
+          class="com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao" >
         <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity"/>
     </bean>
 
     <bean id="ccPaymentInstrumentDao"
-          class="com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao" parent="paymentGenericDao">
+          class="com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao" >
         <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.CreditCardPaymentInstrumentEntity"/>
     </bean>
 
     <bean id="paymentTransactionDao"
-          class="com.junbo.payment.db.dao.payment.PaymentTransactionDao" parent="paymentGenericDao">
+          class="com.junbo.payment.db.dao.payment.PaymentTransactionDao" >
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.PaymentTransactionEntity"/>
     </bean>
 
     <bean id="paymentEventDao"
-          class="com.junbo.payment.db.dao.payment.PaymentEventDao" parent="paymentGenericDao">
+          class="com.junbo.payment.db.dao.payment.PaymentEventDao" >
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.PaymentEventEntity"/>
     </bean>
 
     <bean id="merchantAccountDao"
-          class="com.junbo.payment.db.dao.payment.MerchantAccountDao" parent="paymentGenericDao">
+          class="com.junbo.payment.db.dao.payment.MerchantAccountDao" >
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.MerchantAccountEntity"/>
     </bean>
 
     <bean id="paymentProviderDao"
-          class="com.junbo.payment.db.dao.payment.PaymentProviderDao" parent="paymentGenericDao">
+          class="com.junbo.payment.db.dao.payment.PaymentProviderDao" >
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.PaymentProviderEntity"/>
     </bean>
 
     <bean id="paymentPropertyDao"
-          class="com.junbo.payment.db.dao.payment.PaymentPropertyDao" parent="paymentGenericDao">
+          class="com.junbo.payment.db.dao.payment.PaymentPropertyDao" >
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.PaymentPropertyEntity"/>
     </bean>
 
     <bean id="paymentInstrumentTypeDao"
-          class="com.junbo.payment.db.dao.PaymentInstrumentTypeDao" parent="paymentGenericDao">
+          class="com.junbo.payment.db.dao.PaymentInstrumentTypeDao" >
         <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentTypeEntity"/>
     </bean>
 
     <bean id="trackingUuidDao"
-          class="com.junbo.payment.db.dao.payment.TrackingUuidDao" parent="paymentGenericDao">
+          class="com.junbo.payment.db.dao.payment.TrackingUuidDao" >
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.TrackingUuidEntity"/>
     </bean>
 
     <bean id="settlementDetailDao"
-          class="com.junbo.payment.db.dao.payment.SettlementDetailDao" parent="paymentGenericDao">
+          class="com.junbo.payment.db.dao.payment.SettlementDetailDao" >
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.SettlementDetailEntity"/>
+    </bean>
+
+    <bean id="facebookPaymentAccountDao"
+          class="com.junbo.payment.db.dao.paymentinstrument.FacebookPaymentAccountDao" >
+        <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.FacebookPaymentAccountMappingEntity"/>
     </bean>
 
     <!-- sql repositories -->
@@ -148,6 +159,12 @@
         <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
     </bean>
 
+    <bean id="facebookPaymentAccountRepositorySql" class="com.junbo.payment.db.repo.sql.FacebookPaymentAccountRepositorySqlImpl">
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+        <property name="fbPaymentAccountDao" ref="facebookPaymentAccountDao"/>
+        <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
+    </bean>
+
     <!-- cloudant repositories -->
     <bean id="cloudantCreditCardDetailRepository" class="com.junbo.payment.db.repo.cloudant.CreditCardDetailRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="creditcard_detail"/>
@@ -171,6 +188,10 @@
 
     <bean id="cloudantTrackingUuidRepository" class="com.junbo.payment.db.repo.cloudant.TrackingUuidRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="payment_tracking_uuid" />
+    </bean>
+
+    <bean id="cloudantFacebookPaymentAccountRepository" class="com.junbo.payment.db.repo.cloudant.FacebookPaymentAccountRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="facebook_payment_account_mapping" />
     </bean>
 
     <!-- dual write repositories -->
@@ -210,16 +231,24 @@
         <property name="cloudantRepositoryImpl" ref="cloudantTrackingUuidRepository" />
     </bean>
 
+    <bean id="fbPaymentAccountRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.payment.db.repo.FacebookPaymentAccountRepository"/>
+        <property name="sqlRepositoryImpl" ref="facebookPaymentAccountRepositorySql" />
+        <property name="cloudantRepositoryImpl" ref="cloudantFacebookPaymentAccountRepository" />
+    </bean>
+
     <!-- sql only repositories -->
     <bean id="paymentDomainDataRepository" class="com.junbo.payment.db.repository.DomainDataRepository" abstract="true">
     </bean>
 
     <bean id="merchantAccountRepository" class="com.junbo.payment.db.repository.MerchantAccountRepository" parent="paymentDomainDataRepository">
         <property name="dao" ref="merchantAccountDao"/>
+        <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
     </bean>
 
     <bean id="paymentProviderRepository" class="com.junbo.payment.db.repository.PaymentProviderRepository" parent="paymentDomainDataRepository">
         <property name="dao" ref="paymentProviderDao"/>
+        <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
     </bean>
 
     <bean id="paymentPiTypeRepository" class="com.junbo.payment.db.repository.PITypeRepository" parent="paymentDomainDataRepository">
@@ -236,6 +265,7 @@
         <property name="paymentInstrumentRepository" ref="paymentInstrumentRepository"/>
         <property name="creditCardDetailRepository" ref="creditCardDetailRepository"/>
         <property name="paymentMapperExtension" ref="paymentMapperExtension"/>
+        <property name="fbPaymentAccountRepository" ref="fbPaymentAccountRepository"/>
     </bean>
 
     <bean id="paymentRepositoryFacade" class="com.junbo.payment.db.repo.facade.impl.PaymentRepositoryFacadeImpl">

@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_MP",
+   "shortName" : "English (MP)",
+   "longName" : "English (Northern Mariana Islands)",
+   "localeName" : "English (MP)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

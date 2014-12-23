@@ -182,7 +182,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ne_NP",
 		"id": "ne_NP"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Nepal",

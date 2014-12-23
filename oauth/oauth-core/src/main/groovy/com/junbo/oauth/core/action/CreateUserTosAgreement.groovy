@@ -22,7 +22,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -55,47 +55,48 @@ class CreateUserTosAgreement implements Action {
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
         def parameterMap = contextWrapper.parameterMap
-        def tosIdStr = parameterMap.getFirst(OAuthParameters.TOS)
+        def tosIdStrs = parameterMap.get(OAuthParameters.TOS)
         def user = contextWrapper.user
 
         Assert.notNull(user, 'user is null')
 
-        if (StringUtils.isEmpty(tosIdStr)) {
+        if (tosIdStrs == null || tosIdStrs.isEmpty()) {
             return Promise.pure(new ActionResult('success'))
         }
 
-        UniversalId tosId = IdUtil.fromLink(new Link(href: tosIdStr))
-        if (tosId == null || !(tosId instanceof TosId)) {
-            contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterInvalid('tos').error())
-            return Promise.pure(new ActionResult('error'))
-        }
-
-        return tosResource.get(tosId as TosId, new TosGetOptions()).recover { Throwable e ->
-            handleException(e, contextWrapper)
-            return Promise.pure(null)
-        }.then { Tos tos ->
-            if (tos == null) {
+        for (String tosIdStr : tosIdStrs) {
+            UniversalId tosId = IdUtil.fromLink(new Link(href: tosIdStr))
+            if (tosId == null || !(tosId instanceof TosId)) {
                 contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterInvalid('tos').error())
                 return Promise.pure(new ActionResult('error'))
             }
 
-            UserTosAgreement userTosAgreement = new UserTosAgreement(
-                    userId: user.id as UserId,
-                    tosId: tosId as TosId,
-                    agreementTime: new Date()
-            )
+            try {
+                Tos tos = tosResource.get(tosId as TosId, new TosGetOptions()).get()
 
-            return userTosAgreementResource.create(userTosAgreement).recover { Throwable e ->
-                handleException(e, contextWrapper)
-                return Promise.pure(null)
-            }.then { UserTosAgreement newUserTosAgreement ->
-                if (newUserTosAgreement == null) {
-                    return Promise.pure(new ActionResult('error'))
+                UserTosAgreement userTosAgreement = new UserTosAgreement(
+                        userId: user.id as UserId,
+                        tosId: tos.getId(),
+                        agreementTime: new Date()
+                )
+
+                userTosAgreementResource.create(userTosAgreement).get()
+
+                if (contextWrapper.tosChallenge != null) {
+                    contextWrapper.tosChallenge.remove(tos.getId().value)
                 }
-
-                return Promise.pure(new ActionResult('success'))
+            } catch (Throwable e) {
+                handleException(e, contextWrapper)
+                return Promise.pure(new ActionResult('error'))
             }
         }
+
+        if (contextWrapper.tosChallenge != null && !contextWrapper.tosChallenge.isEmpty()) {
+            contextWrapper.errors.add(AppErrors.INSTANCE.tosChallenge().error())
+            return Promise.pure(new ActionResult('error'))
+        }
+
+        return Promise.pure(new ActionResult('success'))
     }
 
     private static void handleException(Throwable throwable, ActionContextWrapper contextWrapper) {

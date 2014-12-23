@@ -1,0 +1,92 @@
+{
+	"countryCode": "TV",
+	"defaultLocale": {
+		"href": "/v1/locales/en_TV",
+		"id": "en_TV"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AUD",
+		"id": "AUD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"FUN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Funafuti",
+					"longName": "Funafuti"
+				}
+			}
+		},
+		"NIT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Niutao",
+					"longName": "Niutao"
+				}
+			}
+		},
+		"NKF": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nukufetau",
+					"longName": "Nukufetau"
+				}
+			}
+		},
+		"NKL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nukulaelae",
+					"longName": "Nukulaelae"
+				}
+			}
+		},
+		"NMA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nanumea",
+					"longName": "Nanumea"
+				}
+			}
+		},
+		"NMG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nanumanga",
+					"longName": "Nanumanga"
+				}
+			}
+		},
+		"NUI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nui",
+					"longName": "Nui"
+				}
+			}
+		},
+		"VAI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vaitupu",
+					"longName": "Vaitupu"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_TV",
+		"id": "en_TV"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Tuvalu",
+			"longName": "Tuvalu",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

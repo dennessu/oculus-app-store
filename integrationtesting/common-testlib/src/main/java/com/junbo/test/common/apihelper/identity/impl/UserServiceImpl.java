@@ -8,19 +8,19 @@ package com.junbo.test.common.apihelper.identity.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junbo.common.error.*;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.*;
-import com.junbo.identity.spec.v1.model.Address;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.Identity.AddressInfo;
 import com.junbo.test.common.Entities.Identity.UserInfo;
-import com.junbo.test.common.Entities.enums.*;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
@@ -29,9 +29,9 @@ import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
-import com.junbo.test.common.JsonHelper;
 import org.springframework.util.StringUtils;
 
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -41,7 +41,6 @@ import java.util.*;
  */
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
-    private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/users";
     private final String identityPiiURL = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/personal-info";
     private static UserService instance;
     private String userPassword = "Test1234";
@@ -57,6 +56,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     private UserServiceImpl() {
         componentType = ComponentType.IDENTITY;
+        endPointUrlSuffix = "/users";
     }
 
 
@@ -79,7 +79,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             userForPost.setVat(vats);
         }
 
-        String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201, true);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl(), userForPost, 201, true);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
@@ -183,18 +183,33 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     @Override
     public String PostUser(UserInfo userInfo, int expectedResponseCode) throws Exception {
+        String cid = RegisterUser(userInfo, expectedResponseCode);
+        String emailVerifyLink = GetEmailVerificationLinks(cid);
+        if (emailVerifyLink != null && !emailVerifyLink.isEmpty()) {
+            oAuthClient.accessEmailVerifyLink(emailVerifyLink);
+        }
+        Master.getInstance().getCookies().clear();
+        return BindUserPersonalInfos(userInfo);
+
+    }
+
+    @Override
+    public String RegisterUser(UserInfo userInfo, int expectedResponseCode) throws Exception {
         String cid = oAuthClient.getCid();
         oAuthClient.authorizeLoginView(cid);
         oAuthClient.authorizeRegister(cid);
         oAuthClient.registerUser(userInfo, cid);
+        return cid;
+    }
 
-        String emailVerifyLink  = oAuthClient.getEmailVerifyLink(cid);
-        if(emailVerifyLink != null && !emailVerifyLink.isEmpty()){
-            oAuthClient.accessEmailVerifyLink(emailVerifyLink);
-        }
+    @Override
+    public String GetEmailVerificationLinks(String cid) throws Exception {
+        return oAuthClient.getEmailVerifyLink(cid);
+    }
 
-
-        String accessToken = oAuthClient.postUserAccessToken(userInfo.getUserName(), userInfo.getPassword());
+    @Override
+    public String BindUserPersonalInfos(UserInfo userInfo) throws Exception {
+        String accessToken = oAuthClient.postUserAccessToken(userInfo.getEncodedEmails().get(0), userInfo.getPassword());
         TokenInfo tokenInfo = oAuthClient.getTokenInfo(accessToken);
         String uid = IdConverter.idToHexString(tokenInfo.getSub());
         Master.getInstance().addUserAccessToken(uid, accessToken);
@@ -235,7 +250,6 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String PostUser() throws Exception {
         return PostUser(UserInfo.getRandomUserInfo(), 200);
     }
-
 
     private UserPersonalInfo postBillingAddress(UserId userId, Address address) throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
@@ -349,7 +363,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         params.put("type", "PASSWORD");
         params.put("value", password);
         String requestBody = JSONObject.toJSONString(params);
-        restApiCall(HTTPMethod.POST, identityServerURL + "/" + uid + "/" + "change-credentials",
+        restApiCall(HTTPMethod.POST, getEndPointUrl() + "/" + uid + "/" + "change-credentials",
                 requestBody, 201, true);
 
         return password;
@@ -361,7 +375,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     public String PostUser(User user, int expectedResponseCode) throws Exception {
 
-        String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, user, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl(), user, expectedResponseCode);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
@@ -377,7 +391,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         userForPost.setIsAnonymous(true);
         userForPost.setStatus("ACTIVE");
 
-        String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201);
+        String responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl(), userForPost, 201);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
@@ -427,9 +441,9 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     public String GetUserByUserId(String userId, int expectedResponseCode) throws Exception {
 
-        String url = identityServerURL;
+        String url = getEndPointUrl();
         if (userId != null && !userId.isEmpty()) {
-            url = identityServerURL + "/" + userId;
+            url = getEndPointUrl() + "/" + userId;
         }
 
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
@@ -464,7 +478,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         listUsername.add(userName);
 
         paraMap.put("username", listUsername);
-        String responseBody = restApiCall(HTTPMethod.GET, identityServerURL, null, expectedResponseCode, paraMap, false);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl(), null, expectedResponseCode, paraMap, false);
 
         if (expectedResponseCode != 200) {
             return null;
@@ -500,7 +514,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         listUsername.add(userName);
 
         paraMap.put("username", listUsername);
-        String responseBody = restApiCall(HTTPMethod.GET, identityServerURL, null, expectedResponseCode, paraMap, true);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl(), null, expectedResponseCode, paraMap, true);
 
         Results<User> userGet = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<User>>() {
@@ -531,11 +545,15 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     public String PutUser(String userId, User user, int expectedResponseCode) throws Exception {
+        return PutUser(userId, user, expectedResponseCode, false);
+    }
 
-        String putUrl = identityServerURL + "/" + userId;
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode);
+    @Override
+    public String PutUser(String userId, User user, int expectedResponseCode, boolean serviceScope) throws Exception {
+        String putUrl = getEndPointUrl() + "/" + userId;
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode, serviceScope);
         User userPut = new JsonMessageTranscoder().decode(new TypeReference<User>() {
-        },
+                                                          },
                 responseBody);
         String userRtnId = IdConverter.idToHexString(userPut.getId());
         Master.getInstance().addUser(userRtnId, userPut);
@@ -545,7 +563,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     public com.junbo.common.error.Error PutUserWithError(String userId, User user, int expectedResponseCode, String errorCode) throws Exception {
 
-        String putUrl = identityServerURL + "/" + userId;
+        String putUrl = getEndPointUrl() + "/" + userId;
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode);
         Error error = new JsonMessageTranscoder().decode(new TypeReference<Error>() {
         }, responseBody);
@@ -608,4 +626,45 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         return userId;
     }
 
+    @Override
+    public void postUsernameEmailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception {
+        componentType = ComponentType.IDENTITY_MIGRATION;
+        String url = String.format(getEndPointUrl().replace("/users", "") + "/imports/username-email-block");
+        restApiCall(HTTPMethod.POST, url, usernameMailBlocker, true);
+    }
+
+    @Override
+    public void updateTos(String title, String status) throws Exception {
+        componentType = ComponentType.IDENTITY_ADMIN;
+        String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
+
+        String queryUrl = url + "?title=" + URLEncoder.encode(title, "UTF-8");
+        String tosResponse = restApiCall(HTTPMethod.GET, queryUrl, null, true);
+        Results<Tos> tosResults = new JsonMessageTranscoder().decode(new TypeReference<Results>() {
+        }, tosResponse);
+
+        List<Tos> tosList = new ArrayList<>();
+        for (Object obj : tosResults.getItems()) {
+            Tos tos = (Tos) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class);
+            tosList.add(tos);
+        }
+
+        Collections.sort(tosList, new Comparator<Tos>() {
+            @Override
+            public int compare(Tos o1, Tos o2) {
+                return o2.getVersion().compareTo(o1.getVersion());
+            }
+        });
+
+        Tos tos = tosList.get(0);
+        String putUrl = url;
+        Tos newTos = new Tos();
+        newTos.setTitle(tos.getTitle());
+        newTos.setState(status);
+        newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
+        newTos.setCountries(tos.getCountries());
+        newTos.setType(tos.getType());
+        newTos.setContent(tos.getContent());
+        restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
+    }
 }

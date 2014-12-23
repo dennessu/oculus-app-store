@@ -1,11 +1,9 @@
 package com.junbo.store.clientproxy
-
 import com.junbo.catalog.spec.resource.*
 import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.crypto.spec.resource.ItemCryptoResource
 import com.junbo.entitlement.spec.resource.DownloadUrlResource
 import com.junbo.entitlement.spec.resource.EntitlementResource
-import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.identity.spec.v1.resource.*
 import com.junbo.oauth.spec.endpoint.EmailVerifyEndpoint
 import com.junbo.oauth.spec.endpoint.TokenEndpoint
@@ -13,13 +11,16 @@ import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.order.spec.resource.OrderResource
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import com.junbo.rating.spec.resource.RatingResource
+import com.junbo.store.clientproxy.oauth.OAuthEmailVerifyEndpoint
+import com.junbo.store.clientproxy.sewer.SewerEntitlementResource
+import com.junbo.store.clientproxy.sewer.SewerItemResource
 import com.junbo.store.spec.resource.external.CaseyResource
 import com.junbo.store.spec.resource.external.CaseyReviewResource
+import com.junbo.store.spec.resource.external.SentryResource
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Class to hold all the other sources IAP depends on.
  */
@@ -29,6 +30,9 @@ class ResourceContainer {
 
     @Resource(name='store.offerItemClient')
     ItemResource itemResource
+
+    @Resource(name='store.sewerOfferItemClient')
+    SewerItemResource sewerItemResource
 
     @Resource(name='store.offerClient')
     OfferResource offerResource
@@ -42,11 +46,11 @@ class ResourceContainer {
     @Resource(name='store.entitlementClient')
     EntitlementResource entitlementResource
 
+    @Resource(name='store.sewerEntitlementResource')
+    SewerEntitlementResource sewerEntitlementResource
+
     @Resource(name='store.downloadUrlClient')
     DownloadUrlResource downloadUrlResource
-
-    @Resource(name='store.fulfilmentClient')
-    FulfilmentResource fulfilmentResource
 
     @Resource(name='store.orderClient')
     OrderResource orderResource
@@ -63,11 +67,20 @@ class ResourceContainer {
     @Resource(name='store.userResourceClient')
     UserResource userResource
 
+    @Resource(name='store.user.userResourceClient')
+    UserResource userUserResource
+
     @Resource(name='store.userCredentialResourceClient')
     UserCredentialResource userCredentialResource
 
+    @Resource(name='store.user.userCredentialResourceClient')
+    UserCredentialResource userUserCredentialResource
+
     @Resource(name='store.userPersonalInfoResourceClient')
     UserPersonalInfoResource userPersonalInfoResource
+
+    @Resource(name='store.userPersonalInfoResourceClient')
+    UserPersonalInfoResource userUserPersonalInfoResource
 
     @Resource(name='store.userCredentialVerifyAttemptResourceClient')
     UserCredentialVerifyAttemptResource userCredentialVerifyAttemptResource
@@ -85,7 +98,10 @@ class ResourceContainer {
     CurrencyResource currencyResource
 
     @Resource(name='store.emailVerifyEndpointClientProxy')
-    EmailVerifyEndpoint emailVerifyEndpoint
+    OAuthEmailVerifyEndpoint emailVerifyEndpoint
+
+    @Resource(name='store.emailVerifyEndpointClientProxyInProc')
+    EmailVerifyEndpoint emailVerifyEndpointInProc
 
     @Resource(name='store.countryClientProxy')
     CountryResource countryResource
@@ -98,6 +114,12 @@ class ResourceContainer {
 
     @Resource(name = 'store.userTosAgreementResourceClientProxy')
     UserTosAgreementResource userTosAgreementResource
+
+    @Resource(name = 'store.communicationResourceClientProxy')
+    CommunicationResource communicationResource
+
+    @Resource(name = 'store.userCommunicationResourceClientProxy')
+    UserCommunicationResource userCommunicationResource
 
     @Resource(name='store.organizationClientProxy')
     OrganizationResource organizationResource
@@ -119,4 +141,7 @@ class ResourceContainer {
 
     @Resource(name='store.caseyReviewClientProxy')
     CaseyReviewResource caseyReviewResource
+
+    @Resource(name = 'store.sentryClientProxy')
+    SentryResource sentryResource
 }

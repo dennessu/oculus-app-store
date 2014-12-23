@@ -5,9 +5,7 @@
 
     <bean id="orderFlowDefLoader" class="com.junbo.langur.core.webflow.definition.FlowDefLoaderImpl"/>
 
-    <bean id="orderStateRepository" class="com.junbo.common.webflow.CloudantStateRepositoryImpl" parent="cloudantClient">
-        <property name="dbName" value="oauth_flow_state"/>
-    </bean>
+    <bean id="orderStateRepository" class="com.junbo.langur.core.webflow.state.DummyStateRepository"/>
 
     <bean id="orderStateExecutorFactory" class="com.junbo.langur.core.webflow.executor.StateExecutorFactoryImpl"/>
 

@@ -17,11 +17,11 @@ public abstract class CommonDbEntityDeletable extends CommonDbEntityWithDate {
     private boolean deleted;
 
     @Column(name = "IS_DELETED")
-    public boolean isDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
 }

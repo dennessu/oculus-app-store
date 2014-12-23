@@ -19,4 +19,10 @@ class CatalogFacadeTest extends BaseTest {
         def offer = catalogFacade.getOfferRevision(String.valueOf(new Random().nextLong()), new Date()).get()
         assert (offer != null)
     }
+
+    @Test
+    void testGetLatestOffer() {
+        def offer = catalogFacade.getLatestOfferRevision(String.valueOf(new Random().nextLong())).get()
+        assert (offer != null)
+    }
 }

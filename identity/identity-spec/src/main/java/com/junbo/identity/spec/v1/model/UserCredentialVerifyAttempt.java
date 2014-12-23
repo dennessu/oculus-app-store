@@ -64,6 +64,8 @@ public class UserCredentialVerifyAttempt extends PropertyAssignedAwareResourceMe
     @JsonProperty("wasSuccessful")
     private Boolean succeeded;
 
+    private Boolean isLockDownPeriodAttempt;
+
     public UserCredentialVerifyAttemptId getId() {
         return id;
     }
@@ -146,5 +148,14 @@ public class UserCredentialVerifyAttempt extends PropertyAssignedAwareResourceMe
         this.succeeded = succeeded;
         support.setPropertyAssigned("succeeded");
         support.setPropertyAssigned("wasSuccessful");
+    }
+
+    public Boolean getIsLockDownPeriodAttempt() {
+        return isLockDownPeriodAttempt;
+    }
+
+    public void setIsLockDownPeriodAttempt(Boolean isLockDownPeriodAttempt) {
+        this.isLockDownPeriodAttempt = isLockDownPeriodAttempt;
+        support.setPropertyAssigned("isLockDownPeriodAttempt");
     }
 }

@@ -1,11 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile junboProject(':common-lib')
-    compile junboProject(':langur-core')
-
-    compile junboProject(':common-sharding')
-    compile junboProject(':common-configuration')
+    compile junboProject(':silkcloud-core')
 
     compile (libraries.persistence_api)
     compile (libraries.validation_api)
@@ -24,6 +20,5 @@ dependencies {
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
 
-    compile junboProject(':csr-common')
     compile junboProject(':csr-spec')
 }

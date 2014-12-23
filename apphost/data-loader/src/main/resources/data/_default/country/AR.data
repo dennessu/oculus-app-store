@@ -300,9 +300,13 @@
 		}
 	},
 	"supportedLocales": [{
-		"href": "/v1/locales/es_AR",
-		"id": "es_AR"
-	}],
+        "href": "/v1/locales/es_AR",
+        "id": "es_AR"
+    },
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Argentina",

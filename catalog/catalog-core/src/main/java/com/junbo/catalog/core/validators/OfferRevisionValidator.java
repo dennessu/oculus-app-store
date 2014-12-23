@@ -7,6 +7,7 @@
 package com.junbo.catalog.core.validators;
 
 import com.google.common.base.Joiner;
+import com.junbo.catalog.clientproxy.OrganizationFacade;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
@@ -24,7 +25,10 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * OfferRevisionValidator.
@@ -33,6 +37,7 @@ public class OfferRevisionValidator extends ValidationSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationSupport.class);
     private OfferRepository offerRepo;
     private ItemRepository itemRepo;
+    private OrganizationFacade organizationFacade;
     private static final Map<String, String> PRODUCT_CODE_MAP = new HashMap<>();
     static {
         PRODUCT_CODE_MAP.put(ItemType.PHYSICAL.name(), "PHYSICAL_GOODS");
@@ -54,6 +59,11 @@ public class OfferRevisionValidator extends ValidationSupport {
         this.itemRepo = itemRepo;
     }
 
+    @Required
+    public void setOrganizationFacade(OrganizationFacade organizationFacade) {
+        this.organizationFacade = organizationFacade;
+    }
+
     public void validateFull(OfferRevision revision, OfferRevision oldRevision) {
         validateRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
@@ -71,8 +81,17 @@ public class OfferRevisionValidator extends ValidationSupport {
         validateSubOffers(revision, errors);
         validateItems(revision, errors);
         validateCountries("regions", revision.getCountries(), revision.getPrice(), errors);
+        if (Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus())) {
+            if (revision.getStartTime() != null && revision.getEndTime() != null && revision.getStartTime().after(revision.getEndTime())) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("endTime", "endTime should be after startTime"));
+            }
+        }
 
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
+
+        if (revision.getRank() != null && revision.getRank() < 0) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("rank", "Should not be negative."));
+        }
 
         if (!errors.isEmpty()) {
             AppErrorException exception = Utils.invalidFields(errors).exception();
@@ -86,7 +105,11 @@ public class OfferRevisionValidator extends ValidationSupport {
         List<AppError> errors = new ArrayList<>();
         validateFieldNull("self", revision.getRevisionId(), errors);
         validateFieldNull("rev", revision.getRev(), errors);
-        validateFieldNotNull("publisher", revision.getOwnerId(), errors);
+        if(validateFieldNotNull("publisher", revision.getOwnerId(), errors)) {
+            if (organizationFacade.getOrganization(revision.getOwnerId()) == null) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(revision.getOwnerId())));
+            }
+        }
         validateFieldNull("createdTime", revision.getCreatedTime(), errors);
         validateFieldNull("updatedTime", revision.getUpdatedTime(), errors);
         validateFieldMatch("status", revision.getStatus(), Status.DRAFT.name(), errors);
@@ -106,7 +129,11 @@ public class OfferRevisionValidator extends ValidationSupport {
         validateNotWritable("self", revision.getRevisionId(), oldRevision.getRevisionId(), errors);
         validateNotWritable("rev", revision.getRev(), oldRevision.getRev(), errors);
         validateStatus(revision.getStatus(), errors);
-        validateNotWritable("publisher", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors);
+        if (validateNotWritable("publisher", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors)) {
+            if (organizationFacade.getOrganization(revision.getOwnerId()) == null) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("publisher", "Cannot find organization " + Utils.encodeId(revision.getOwnerId())));
+            }
+        }
         validateOffer(revision, errors);
         validateLocales(revision.getLocales(), errors);
 
@@ -124,14 +151,21 @@ public class OfferRevisionValidator extends ValidationSupport {
             return;
         }
         for (String countryCode : countries.keySet()) {
-            if (!COUNTRY_CODES.containsAll(Arrays.asList(countryCode))) {
+            if (!COUNTRY_CODES.contains(countryCode)) {
                 errors.add(AppCommonErrors.INSTANCE.fieldInvalid(fieldName, countryCode + " is not a valid country code"));
+            }
+            if (countries.get(countryCode) == null) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid(fieldName, "regions " + countryCode + " should not be null"));
+                continue;
+            }
+            if (countries.get(countryCode).getIsPurchasable() == null) {
+                countries.get(countryCode).setIsPurchasable(Boolean.FALSE);
             }
             if (countries.get(countryCode).getIsPurchasable() != Boolean.TRUE || price == null
                     || !PriceType.CUSTOM.is(price.getPriceType()) || price.getPrices() == null) {
                 continue;
             }
-            if (!price.getPrices().containsKey(countryCode)) {
+            if (price != null && price.getPrices() != null && !price.getPrices().containsKey(countryCode)) {
                 errors.add(AppCommonErrors.INSTANCE.fieldInvalid("regions",
                         "offer is purchasable in " + countryCode + ", but no price defined for that country."));
             }
@@ -178,7 +212,7 @@ public class OfferRevisionValidator extends ValidationSupport {
         if (distributedChannels != null) {
             for (String channel : distributedChannels) {
                 if (channel==null || !DistributionChannel.contains(channel)) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributedChannel", Joiner.on(',').join(distributedChannels)));
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributionChannel", Joiner.on(',').join(distributedChannels)));
                     return false;
                 }
             }

@@ -8,8 +8,8 @@ package com.junbo.identity.spec.v1.resource;
 import com.junbo.common.id.DeviceId;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Device;
-import com.junbo.identity.spec.v1.option.model.DeviceGetOptions;
 import com.junbo.identity.spec.v1.option.list.DeviceListOptions;
+import com.junbo.identity.spec.v1.option.model.DeviceGetOptions;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -18,6 +18,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -39,10 +40,6 @@ public interface DeviceResource {
     @Path("/{deviceId}")
     Promise<Device> put(@PathParam("deviceId") DeviceId deviceId, Device device);
 
-    @POST
-    @Path("/{deviceId}")
-    Promise<Device> patch(@PathParam("deviceId") DeviceId deviceId, Device device);
-
     @ApiOperation("Get a device info")
     @GET
     @Path("/{deviceId}")
@@ -55,5 +52,5 @@ public interface DeviceResource {
     @ApiOperation("Delete a device")
     @DELETE
     @Path("/{deviceId}")
-    Promise<Void> delete(@PathParam("deviceId") DeviceId deviceId);
+    Promise<Response> delete(@PathParam("deviceId") DeviceId deviceId);
 }

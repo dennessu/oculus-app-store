@@ -75,6 +75,22 @@ class Client extends ResourceMeta<String> {
     @JsonProperty('access_token_expiration')
     Long accessTokenExpiration
 
+    @JsonProperty('allowed_groups')
+    Set<String> allowedGroups
+
+    Boolean internal
+
+    @JsonProperty('allow_partial_scopes')
+    Boolean allowPartialScopes = false
+
+    @JsonProperty('required_tos')
+    List<RequiredTos> requiredTos
+
+    public static class RequiredTos {
+        String type
+        String title
+    }
+
     @Override
     String getId() {
         return clientId

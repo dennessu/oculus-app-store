@@ -3,17 +3,19 @@ package com.junbo.store.rest.utils
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.clientproxy.FacadeContainer
+import com.junbo.store.clientproxy.ResourceContainer
+import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.StoreApiHeader
-import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+import java.util.regex.Pattern
 
 /**
  * The ApiContextBuilder class.
@@ -35,10 +38,22 @@ class ApiContextBuilder {
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
+    @Resource(name = 'storeFacadeContainer')
+    private FacadeContainer facadeContainer
+
     @Resource(name = 'storeIdentityUtils')
     private IdentityUtils identityUtils
 
+    @Resource(name = 'storeAppErrorUtils')
+    private AppErrorUtils appErrorUtils
+
     private String defaultCountry = 'US'
+
+    private String defaultLocale = 'en_US'
+
+    private String localeWildCard = '*'
+
+    private final Pattern androidIdPattern = Pattern.compile('[a-fA-F\\d]{1,16}')
 
     Promise<ApiContext> buildApiContext() {
         ApiContext result = new ApiContext()
@@ -48,6 +63,10 @@ class ApiContextBuilder {
         result.androidId = getHeader(StoreApiHeader.ANDROID_ID)
         result.user = (AuthorizeContext.currentUserId?.value == null || AuthorizeContext.currentUserId?.value == 0) ? null : AuthorizeContext.currentUserId
         String countryCode = getHeader(StoreApiHeader.IP_COUNTRY)
+
+        if (!androidIdPattern.matcher(result.androidId).matches()) {
+            LOGGER.warn('name=Invalid_AndroidId_Pattern, androidId={}', result.androidId)
+        }
         Promise.pure().then { // get country.
             if (StringUtils.isEmpty(countryCode)) {
                 countryCode = defaultCountry
@@ -80,17 +99,51 @@ class ApiContextBuilder {
     }
 
     private Promise<com.junbo.identity.spec.v1.model.Locale> getLocale() {
+        String localeId
         if (CollectionUtils.isEmpty(JunboHttpContext.acceptableLanguages)) {
-            throw AppCommonErrors.INSTANCE.headerInvalid(StoreApiHeader.ACCEPT_LANGUAGE.value).exception()
+            localeId = defaultCountry
+        } else {
+            Locale requestLocale = JunboHttpContext.acceptableLanguages.get(0)
+            if (requestLocale.toString() == localeWildCard) {
+                localeId = defaultLocale
+            } else {
+                localeId = requestLocale.language
+                if (!StringUtils.isEmpty(requestLocale.country)) {
+                    localeId += "_${requestLocale.country}"
+                }
+            }
         }
 
-        Locale requestLocale = JunboHttpContext.acceptableLanguages.get(0)
-        String localeId = requestLocale.language
-        if (!StringUtils.isEmpty(requestLocale.country)) {
-            localeId += "_${requestLocale.country}"
-        }
-        resourceContainer.localeResource.get(new LocaleId(localeId), new LocaleGetOptions()).then { com.junbo.identity.spec.v1.model.Locale e ->
-            return Promise.pure(e)
+        resourceContainer.localeResource.get(new LocaleId(localeId), new LocaleGetOptions()).recover { Throwable ex ->
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.LocaleNotFound)) {
+                LOGGER.warn('name=Store_Locale_Not_Found, locale={}, fallback to default', localeId)
+                String[] locales = localeId.toString().split('_')
+                if (locales.size() != 2) {
+                    return resourceContainer.localeResource.get(new LocaleId(defaultLocale), new LocaleGetOptions())
+                }
+                CountryId countryId = new CountryId(locales[1])
+                return resourceContainer.countryResource.get(countryId, new CountryGetOptions()).recover { Throwable t ->
+                    if (appErrorUtils.isAppError(t, ErrorCodes.Identity.CountryNotFound)) {
+                        LOGGER.warn('name=Store_Locale_Country_Not_Found, country={}, fallback to default', countryId)
+                        return Promise.pure(null)
+                    }
+                    throw t
+                }.then { Country country ->
+                    if (country == null || country.defaultLocale == null) {
+                        return resourceContainer.localeResource.get(new LocaleId(defaultLocale), new LocaleGetOptions())
+                    }
+
+                    // If the default locale isn't exist, fall back to default
+                    return resourceContainer.localeResource.get(country.defaultLocale, new LocaleGetOptions()).recover { Throwable ex2 ->
+                        if (appErrorUtils.isAppError(ex2, ErrorCodes.Identity.LocaleNotFound)) {
+                            LOGGER.warn('name=Store_Locale_Not_Found_Again, locale={}, fallback to default', country.defaultLocale)
+                            return resourceContainer.localeResource.get(new LocaleId(defaultLocale), new LocaleGetOptions())
+                        }
+                        throw ex2
+                    }
+                }
+            }
+            throw ex
         }
     }
 }

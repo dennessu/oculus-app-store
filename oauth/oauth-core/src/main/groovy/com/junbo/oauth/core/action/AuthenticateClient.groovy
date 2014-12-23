@@ -28,12 +28,15 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class AuthenticateClient implements Action {
+    private static final String INTERNAL_HEADER_NAME = 'oculus-internal'
     /**
      * The clientRepository to handle the client related logic.
      */
     private ClientRepository clientRepository
 
     private PasswordEncoder passwordEncoder
+
+    private boolean enableInternalCheck
 
     @Required
     void setClientRepository(ClientRepository clientRepository) {
@@ -43,6 +46,11 @@ class AuthenticateClient implements Action {
     @Required
     void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder
+    }
+
+    @Required
+    void setEnableInternalCheck(boolean enableInternalCheck) {
+        this.enableInternalCheck = enableInternalCheck
     }
 
     /**
@@ -96,10 +104,17 @@ class AuthenticateClient implements Action {
         }
 
         // Validate the client secret in the parameter with the client secret in the configuration.
-        if (passwordEncoder.matches(passwordEncoder.encode(appClient.clientSecret), passwordEncoder.encode(clientSecret))) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('client_secret', clientSecret).exception()
+        if (!passwordEncoder.matches(appClient.clientSecret, passwordEncoder.encode(clientSecret))) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('client_secret', "*****").exception()
         }
 
+        if (enableInternalCheck && Boolean.TRUE.equals(appClient.internal)) {
+            String internal = headerMap.getFirst(INTERNAL_HEADER_NAME)
+            if (!Boolean.TRUE.equals(Boolean.parseBoolean(internal))) {
+                throw AppCommonErrors.INSTANCE
+                        .forbiddenWithMessage('This client is for internal use only').exception()
+            }
+        }
         // Validation passed, save the client in the actionContext.
         contextWrapper.client = appClient
 

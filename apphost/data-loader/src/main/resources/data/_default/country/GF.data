@@ -1,0 +1,37 @@
+{
+	"countryCode": "GF",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_FR",
+		"id": "fr_FR"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/PEGI",
+		"id": "PEGI"
+	}],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_FR",
+		"id": "fr_FR"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "French Guiana",
+			"longName": "French Guiana",
+			"postalCode": "Postal Code"
+		},
+		"fr_FR": {
+			"shortName": "Guyane française",
+			"longName": "Guyane française",
+			"postalCode": "code postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

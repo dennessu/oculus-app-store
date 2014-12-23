@@ -2,6 +2,7 @@ package com.junbo.identity.rest.resource.v1
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ErrorIdentifier
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
@@ -10,8 +11,8 @@ import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.filter.ErrorInfoFilter
 import com.junbo.identity.core.service.validator.ErrorInfoValidator
 import com.junbo.identity.data.identifiable.LocaleAccuracy
-import com.junbo.identity.data.repository.ErrorInfoRepository
-import com.junbo.identity.data.repository.LocaleRepository
+import com.junbo.identity.service.ErrorInfoService
+import com.junbo.identity.service.LocaleService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.ErrorDetail
 import com.junbo.identity.spec.v1.model.ErrorInfo
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.Response
 import java.lang.reflect.Field
 
 /**
@@ -35,7 +37,7 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
     private static Map<String, Field> fieldMap = new HashMap<String, Field>()
 
     @Autowired
-    private ErrorInfoRepository errorInfoRepository
+    private ErrorInfoService errorInfoService
 
     @Autowired
     private ErrorInfoFilter errorInfoFilter
@@ -44,18 +46,18 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
     private ErrorInfoValidator errorInfoValidator
 
     @Autowired
-    private LocaleRepository localeRepository
+    private LocaleService localeService
 
     @Override
     Promise<ErrorInfo> create(ErrorInfo errorInfo) {
         if (errorInfo == null) {
-            throw new IllegalArgumentException('errorInfo is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         errorInfo = errorInfoFilter.filterForCreate(errorInfo)
 
         return errorInfoValidator.validateForCreate(errorInfo).then {
-            return errorInfoRepository.create(errorInfo).then { ErrorInfo newErrorInfo ->
+            return errorInfoService.create(errorInfo).then { ErrorInfo newErrorInfo ->
                 Created201Marker.mark(newErrorInfo.id)
                 newErrorInfo = errorInfoFilter.filterForGet(newErrorInfo, null)
 
@@ -67,14 +69,14 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
     @Override
     Promise<ErrorInfo> put(ErrorIdentifier errorIdentifier, ErrorInfo errorInfo) {
         if (errorIdentifier == null) {
-            throw new IllegalArgumentException('errorIdentifier is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (errorInfo == null) {
-            throw new IllegalArgumentException('errorInfo is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return errorInfoRepository.get(errorIdentifier).then { ErrorInfo oldErrorInfo ->
+        return errorInfoService.get(errorIdentifier).then { ErrorInfo oldErrorInfo ->
             if (oldErrorInfo == null) {
                 throw AppErrors.INSTANCE.errorInfoNotFound(errorIdentifier).exception()
             }
@@ -82,33 +84,7 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
             errorInfo = errorInfoFilter.filterForPut(errorInfo, oldErrorInfo)
 
             return errorInfoValidator.validateForUpdate(errorIdentifier, errorInfo, oldErrorInfo).then {
-                return errorInfoRepository.update(errorInfo, oldErrorInfo).then { ErrorInfo newErrorInfo ->
-                    newErrorInfo = errorInfoFilter.filterForGet(newErrorInfo, null)
-                    return Promise.pure(newErrorInfo)
-                }
-            }
-        }
-    }
-
-    @Override
-    Promise<ErrorInfo> patch(ErrorIdentifier errorIdentifier, ErrorInfo errorInfo) {
-        if (errorIdentifier == null) {
-            throw new IllegalArgumentException('errorIdentifier is null')
-        }
-
-        if (errorInfo == null) {
-            throw new IllegalArgumentException('errorInfo is null')
-        }
-
-        return errorInfoRepository.get(errorIdentifier).then { ErrorInfo oldErrorInfo ->
-            if (oldErrorInfo == null) {
-                throw AppErrors.INSTANCE.errorInfoNotFound(errorIdentifier).exception()
-            }
-
-            errorInfo = errorInfoFilter.filterForPatch(errorInfo, oldErrorInfo)
-
-            return errorInfoValidator.validateForUpdate(errorIdentifier, errorInfo, oldErrorInfo).then {
-                return errorInfoRepository.update(errorInfo, oldErrorInfo).then { ErrorInfo newErrorInfo ->
+                return errorInfoService.update(errorInfo, oldErrorInfo).then { ErrorInfo newErrorInfo ->
                     newErrorInfo = errorInfoFilter.filterForGet(newErrorInfo, null)
                     return Promise.pure(newErrorInfo)
                 }
@@ -118,12 +94,15 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
 
     @Override
     Promise<ErrorInfo> get(ErrorIdentifier errorIdentifier, ErrorInfoGetOptions getOptions) {
+        if (errorIdentifier == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
 
         return errorInfoValidator.validateForGet(errorIdentifier).then {
-            return errorInfoRepository.get(errorIdentifier).then { ErrorInfo newErrorInfo ->
+            return errorInfoService.get(errorIdentifier).then { ErrorInfo newErrorInfo ->
                 if (newErrorInfo == null) {
                     throw AppErrors.INSTANCE.errorInfoNotFound(errorIdentifier).exception()
                 }
@@ -142,7 +121,7 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
         }
 
         return errorInfoValidator.validateForSearch(listOptions).then {
-            return errorInfoRepository.searchAll(listOptions.limit, listOptions.offset).then { List<ErrorInfo> errorInfoList ->
+            return errorInfoService.searchAll(listOptions.limit, listOptions.offset).then { List<ErrorInfo> errorInfoList ->
                 def result = new Results<ErrorInfo>(items: [])
 
                 errorInfoList.each { ErrorInfo newErrorInfo ->
@@ -159,7 +138,7 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
     }
 
     @Override
-    Promise<Void> delete(ErrorIdentifier errorIdentifier) {
+    Promise<Response> delete(ErrorIdentifier errorIdentifier) {
         throw new IllegalStateException('Unsupported operation')
     }
 
@@ -223,7 +202,7 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
             }
         }
 
-        return localeRepository.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
+        return localeService.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
             if (locale1 == null || locale1.fallbackLocale == null) {
                 return Promise.pure(null)
             }

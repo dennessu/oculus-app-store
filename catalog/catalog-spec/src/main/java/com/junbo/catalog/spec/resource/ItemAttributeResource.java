@@ -47,7 +47,7 @@ public interface ItemAttributeResource {
     @AuthorizationNotRequired
     Promise<Results<ItemAttribute>> getAttributes(@BeanParam ItemAttributesGetOptions options);
 
-    @ApiOperation("Create an item attribute")
+    @ApiOperation("Create an item attribut?e")
     @POST
     @Path("/")
     Promise<ItemAttribute> createAttribute(ItemAttribute attribute);

@@ -1,3 +1,4 @@
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.langur.core.context.JunboHttpContext
@@ -56,6 +57,33 @@ class OrderE2ETest extends BaseTest {
     }
 
     @Test(enabled = true)
+    void testPostFreeOrder() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
+            @Override
+            Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return Promise.pure('MOCK_FREE_ORDER')
+            }
+        }
+        def order = TestBuilder.buildOrderRequest()
+        order.orderItems.add(TestBuilder.buildOrderItem())
+        order.user = new UserId(idGenerator.nextId(UserId))
+        order.tentative = false
+        order.shippingMethod = 'free'
+        order.shippingAddress = null
+        order.shippingToName = null
+        order.shippingToPhone = null
+
+        def orderResult = orderResource.createOrder(order).get()
+        def orderGet = orderResource.getOrderByOrderId(orderResult.getId()).get()
+
+        assert orderResult.status == OrderStatus.COMPLETED.name()
+        assert !orderResult.tentative
+        assert orderGet.status == OrderStatus.COMPLETED.name()
+        assert !orderGet.tentative
+        assert order.getId() != null
+    }
+
+    @Test(enabled = true)
     Order testPutTentativeOrder() {
         def tentativeOrder = testPostTentativeOrder()
         orderServiceImpl.flowSelector = new FlowSelector() {
@@ -95,5 +123,64 @@ class OrderE2ETest extends BaseTest {
         assert !orderResult.tentative
         assert orderGet.status == OrderStatus.REFUNDED.name()
         assert !orderGet.tentative
+    }
+
+    @Test(enabled = true)
+    void testPostTooManyItems() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
+            @Override
+            Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return Promise.pure('MOCK_FREE_ORDER')
+            }
+        }
+        def order = TestBuilder.buildOrderRequest()
+        for(i in 0..<6) {
+            order.orderItems.add(TestBuilder.buildOrderItem())
+        }
+
+        order.user = new UserId(idGenerator.nextId(UserId))
+        order.tentative = false
+        order.shippingMethod = 'free'
+        order.shippingAddress = null
+        order.shippingToName = null
+        order.shippingToPhone = null
+
+        try {
+            def orderResult = orderResource.createOrder(order).get()
+        } catch(e) {
+            assert ((AppErrorException)e).error.error().code == '199.149'
+            return
+        }
+        assert false
+    }
+
+    @Test(enabled = true)
+    void testPostTooManyOffers() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
+            @Override
+            Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return Promise.pure('MOCK_FREE_ORDER')
+            }
+        }
+        def order = TestBuilder.buildOrderRequest()
+        for(i in 0..<4) {
+            order.orderItems.add(TestBuilder.buildOrderItem())
+        }
+        order.orderItems.addAll(order.orderItems)
+
+        order.user = new UserId(idGenerator.nextId(UserId))
+        order.tentative = false
+        order.shippingMethod = 'free'
+        order.shippingAddress = null
+        order.shippingToName = null
+        order.shippingToPhone = null
+
+        try {
+            def orderResult = orderResource.createOrder(order).get()
+        } catch(e) {
+            assert ((AppErrorException)e).error.error().code == '199.150'
+            return
+        }
+        assert false
     }
 }

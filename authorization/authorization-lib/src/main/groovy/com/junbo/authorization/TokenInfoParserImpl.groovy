@@ -73,6 +73,10 @@ public class TokenInfoParserImpl implements TokenInfoParser {
             }
         }
 
+        return parseTokenInfo(accessToken)
+    }
+
+    private TokenInfo parseTokenInfo(String accessToken) {
         Element cachedElement = tokenInfoCache.get(accessToken)
         if (cachedElement != null) {
             return (TokenInfo) cachedElement.objectValue

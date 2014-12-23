@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by haomin on 14-4-25.
@@ -39,10 +40,6 @@ public interface PITypeResource {
     @Path("/{piTypeId}")
     Promise<PIType> put(@PathParam("piTypeId") PITypeId piTypeId, PIType piType);
 
-    @POST
-    @Path("/{piTypeId}")
-    Promise<PIType> patch(@PathParam("piTypeId") PITypeId piTypeId, PIType piType);
-
     @ApiOperation("Get a payment instrument type")
     @GET
     @Path("/{piTypeId}")
@@ -57,5 +54,5 @@ public interface PITypeResource {
     @ApiOperation("Delete a payment instrument type")
     @DELETE
     @Path("/{piTypeId}")
-    Promise<Void> delete(@PathParam("piTypeId") PITypeId piTypeId);
+    Promise<Response> delete(@PathParam("piTypeId") PITypeId piTypeId);
 }

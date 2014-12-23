@@ -115,7 +115,7 @@ class TestBuilder {
 
     static PaymentInstrument buildCreditCartPI() {
         def pi = new PaymentInstrument()
-        pi.type = generateLong()
+        pi.type = PIType.CREDITCARD.id
         return pi
     }
 

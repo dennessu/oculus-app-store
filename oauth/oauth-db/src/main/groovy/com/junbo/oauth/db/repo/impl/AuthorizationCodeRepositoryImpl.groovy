@@ -35,7 +35,7 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
     @Override
     void save(AuthorizationCode code) {
         if (code.code == null) {
-            code.code = tokenGenerator.generateAuthorizationCode()
+            code.code = tokenGenerator.generateAuthorizationCode(code.userId)
         }
 
         authorizationCodeDAO.save(unwrap(code))

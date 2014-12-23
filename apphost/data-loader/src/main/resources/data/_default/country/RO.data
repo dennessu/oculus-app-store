@@ -518,7 +518,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ro_RO",
 		"id": "ro_RO"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Romania",

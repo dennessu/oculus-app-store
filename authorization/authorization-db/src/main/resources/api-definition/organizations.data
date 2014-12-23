@@ -39,6 +39,40 @@
                 ],
                 "scriptType": "SPEL"
             }
+        ],
+        "catalog.admin": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "catalog.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "organization.group.admin": [
+             {
+                 "precondition": "true",
+                 "rights": [
+                     "create", "update", "read", "delete"
+                 ],
+                 "scriptType": "SPEL"
+             }
+        ],
+        "readonly.service": [
+            {
+                "precondition": "true",
+                "rights": [ "read" ],
+                "scriptType": "SPEL"
+            }
         ]
     }
 }

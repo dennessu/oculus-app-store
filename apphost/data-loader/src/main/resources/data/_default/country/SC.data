@@ -1,0 +1,337 @@
+{
+	"countryCode": "SC",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_SC",
+		"id": "fr_SC"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/SCR",
+		"id": "SCR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Anse aux Pins",
+					"longName": "Anse aux Pins"
+				},
+				"en_US": {
+					"shortName": "Anse aux Pins",
+					"longName": "Anse aux Pins"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Anse Boileau",
+					"longName": "Anse Boileau"
+				},
+				"fr_SC": {
+					"shortName": "Anse Boileau",
+					"longName": "Anse Boileau"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Anse Étoile",
+					"longName": "Anse Étoile"
+				},
+				"en_US": {
+					"shortName": "Anse Etoile",
+					"longName": "Anse Etoile"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Au Cap",
+					"longName": "Au Cap"
+				},
+				"fr_SC": {
+					"shortName": "Au Cap",
+					"longName": "Au Cap"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Anse Royale",
+					"longName": "Anse Royale"
+				},
+				"fr_SC": {
+					"shortName": "Anse Royale",
+					"longName": "Anse Royale"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Baie Lazare",
+					"longName": "Baie Lazare"
+				},
+				"en_US": {
+					"shortName": "Baie Lazare",
+					"longName": "Baie Lazare"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Baie Sainte Anne",
+					"longName": "Baie Sainte Anne"
+				},
+				"fr_SC": {
+					"shortName": "Baie Sainte-Anne",
+					"longName": "Baie Sainte-Anne"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Beau Vallon",
+					"longName": "Beau Vallon"
+				},
+				"en_US": {
+					"shortName": "Beau Vallon",
+					"longName": "Beau Vallon"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Bel Air",
+					"longName": "Bel Air"
+				},
+				"en_US": {
+					"shortName": "Bel Air",
+					"longName": "Bel Air"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bel Ombre",
+					"longName": "Bel Ombre"
+				},
+				"fr_SC": {
+					"shortName": "Bel Ombre",
+					"longName": "Bel Ombre"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cascade",
+					"longName": "Cascade"
+				},
+				"fr_SC": {
+					"shortName": "Cascade",
+					"longName": "Cascade"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Glacis",
+					"longName": "Glacis"
+				},
+				"en_US": {
+					"shortName": "Glacis",
+					"longName": "Glacis"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_US": {
+					"shortName": "Grand Anse Mahe",
+					"longName": "Grand Anse Mahe"
+				},
+				"fr_SC": {
+					"shortName": "Grand'Anse Mahé",
+					"longName": "Grand'Anse Mahé"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"en_US": {
+					"shortName": "Grand Anse Praslin",
+					"longName": "Grand Anse Praslin"
+				},
+				"fr_SC": {
+					"shortName": "Grand'Anse Praslin",
+					"longName": "Grand'Anse Praslin"
+				}
+			}
+		},
+		"15": {
+			"locales": {
+				"en_US": {
+					"shortName": "La Digue",
+					"longName": "La Digue"
+				},
+				"fr_SC": {
+					"shortName": "La Digue",
+					"longName": "La Digue"
+				}
+			}
+		},
+		"16": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "La Rivière Anglaise",
+					"longName": "La Rivière Anglaise"
+				},
+				"en_US": {
+					"shortName": "English River",
+					"longName": "English River"
+				}
+			}
+		},
+		"17": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Mont Buxton",
+					"longName": "Mont Buxton"
+				},
+				"en_US": {
+					"shortName": "Mont Buxton",
+					"longName": "Mont Buxton"
+				}
+			}
+		},
+		"18": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Mont Fleuri",
+					"longName": "Mont Fleuri"
+				},
+				"en_US": {
+					"shortName": "Mont Fleuri",
+					"longName": "Mont Fleuri"
+				}
+			}
+		},
+		"19": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Plaisance",
+					"longName": "Plaisance"
+				},
+				"en_US": {
+					"shortName": "Plaisance",
+					"longName": "Plaisance"
+				}
+			}
+		},
+		"20": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Pointe La Rue",
+					"longName": "Pointe La Rue"
+				},
+				"en_US": {
+					"shortName": "Pointe Larue",
+					"longName": "Pointe Larue"
+				}
+			}
+		},
+		"21": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Port Glaud",
+					"longName": "Port Glaud"
+				},
+				"en_US": {
+					"shortName": "Port Glaud",
+					"longName": "Port Glaud"
+				}
+			}
+		},
+		"22": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Saint-Louis",
+					"longName": "Saint-Louis"
+				},
+				"en_US": {
+					"shortName": "Saint Louis",
+					"longName": "Saint Louis"
+				}
+			}
+		},
+		"23": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Takamaka",
+					"longName": "Takamaka"
+				},
+				"en_US": {
+					"shortName": "Takamaka",
+					"longName": "Takamaka"
+				}
+			}
+		},
+		"24": {
+			"locales": {
+				"en_US": {
+					"shortName": "Les Mamelles",
+					"longName": "Les Mamelles"
+				},
+				"fr_SC": {
+					"shortName": "Les Mamelles",
+					"longName": "Les Mamelles"
+				}
+			}
+		},
+		"25": {
+			"locales": {
+				"fr_SC": {
+					"shortName": "Roche Caïman",
+					"longName": "Roche Caïman"
+				},
+				"en_US": {
+					"shortName": "Roche Caiman",
+					"longName": "Roche Caiman"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_SC",
+		"id": "fr_SC"
+	},
+	{
+		"href": "/v1/locales/en_SC",
+		"id": "en_SC"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Seychelles",
+			"longName": "Republic of Seychelles",
+			"postalCode": "Postal Code"
+		},
+		"fr_SC": {
+			"shortName": "Seychelles",
+			"longName": "République des Seychelles",
+			"postalCode": "code postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

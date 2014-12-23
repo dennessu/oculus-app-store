@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by xiali_000 on 4/21/2014.
@@ -40,10 +41,6 @@ public interface CountryResource {
     @Path("/{countryId}")
     Promise<Country> put(@PathParam("countryId") CountryId countryId, Country country);
 
-    @POST
-    @Path("/{countryId}")
-    Promise<Country> patch(@PathParam("countryId") CountryId countryId, Country country);
-
     @ApiOperation("Get a country info")
     @GET
     @Path("/{countryId}")
@@ -58,5 +55,5 @@ public interface CountryResource {
     @ApiOperation("Delete a country")
     @DELETE
     @Path("/{countryId}")
-    Promise<Void> delete(@PathParam("countryId") CountryId countryId);
+    Promise<Response> delete(@PathParam("countryId") CountryId countryId);
 }

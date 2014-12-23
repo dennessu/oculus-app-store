@@ -46,10 +46,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,6 +73,22 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
         Assert.assertEquals(addedEntitlement.getUseCount(), entitlement.getUseCount());
+    }
+
+    @Test
+    public void testAddEntitlements() {
+        Entitlement entitlement = buildAnEntitlement();
+        List<Entitlement> entitlements = new ArrayList<>(10);
+        for (int i = 0; i < 10; i++) {
+            entitlements.add(entitlement);
+        }
+        Map<Long, List<Entitlement>> en = new HashMap<>();
+        en.put(1L, entitlements);
+        Map<Long, List<Entitlement>> addedEntitlements = entitlementService.addEntitlements(en);
+        Assert.assertEquals(addedEntitlements.get(1L).size(), 10);
+        for (Entitlement e : addedEntitlements.get(1L)) {
+            Assert.assertNotNull(e.getId());
+        }
     }
 
     @Test(expectedExceptions = AppErrorException.class)
@@ -178,8 +191,8 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     //make sure the url and key info are valid and just check whether the url generated is valid
     public void testGenerateUrl() throws IOException, URISyntaxException, InvalidKeySpecException {
 //           String url = "http://static.oculusvr.com/uploads%2F14013776640911fhvo9od2t9-pc.zip";
-//        String url = "https://d1aifagf6hhneo.cloudfront.net/binaries%2Fsr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
-        String url = "https://s3.amazonaws.com/ovr_ink_uploader/binaries/NmOPHrojTKjt0rTm2vCQ_SpotifyInstaller.zip";
+        String url = "https://d1aifagf6hhneo.cloudfront.net/binaries%2Fsr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
+//        String url = "https://s3.amazonaws.com/ovr_ink_uploader/binaries/NmOPHrojTKjt0rTm2vCQ_SpotifyInstaller.zip";
         String result = generatePreSignedDownloadUrl(url, "xx", "1.0", "PC");
         System.out.println(result);
     }
@@ -199,13 +212,14 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
                 return generateS3Url(bucketName, objectKey,
                         generateFilename(objectKey, filename, version, platform), generateExpirationDate());
             }
-        } else if (isCloudFront(urlString)){
+        } else if (isCloudFront(urlString)) {
             //TODO: work around for cloudfront
             URL url = new URL(urlString);
             bucketName = EntitlementServiceImpl.getBucketMap().get(url.getHost());
             String objectKey = url.getPath().substring(1);
-            return generateS3Url(bucketName, objectKey,
-                    generateFilename(objectKey, filename, version, platform), generateExpirationDate());
+//            return generateS3Url(bucketName, objectKey,
+//                    generateFilename(objectKey, filename, version, platform), generateExpirationDate());
+            return generateCloudantFrontUrl(urlString, generateFilename(objectKey, filename, version, platform), generateExpirationDate());
         }
 
         return urlString;

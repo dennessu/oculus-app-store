@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ListeningExecutorService
 import com.google.common.util.concurrent.MoreExecutors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.promise.ThreadLocalRequireNew
 import com.junbo.order.clientproxy.billing.impl.BillingFacadeAsyncImpl
 import com.junbo.order.mock.MockBalanceResource
 import org.testng.annotations.AfterMethod
@@ -52,7 +53,13 @@ class BillingFacadeAsyncTest extends BaseTest {
     void testCreateBalance() {
         List<Promise<Balance>> balanceList = []
         for (int i = 0; i < 15; ++i) {
-            balanceList.add(billingFacadeAsync.createBalance(new Balance(), null))
+            ThreadLocalRequireNew scope = new ThreadLocalRequireNew()
+            try {
+                balanceList.add(billingFacadeAsync.createBalance(new Balance(), null))
+            }
+            finally {
+                scope.close()
+            }
         }
 
         semaphore.release(15)

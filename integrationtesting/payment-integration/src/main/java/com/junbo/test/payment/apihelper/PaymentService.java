@@ -17,7 +17,7 @@ public interface PaymentService {
     String postPaymentInstrument(PaymentInstrument paymentInstrument) throws Exception;
 
     String postPaymentInstrument(PaymentInstrument paymentInstrument,
-                                       int expectedResponseCode) throws Exception;
+                                 int expectedResponseCode) throws Exception;
 
     String getPaymentInstrumentByPaymentId(String paymentInstrumentId) throws Exception;
 
@@ -37,6 +37,10 @@ public interface PaymentService {
     List<String> getPaymentInstrumentsByUserId(String uid) throws Exception;
 
     List<String> getPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception;
+
+    List<String> getPaymentInstrumentsByUserId(String uid, String piType) throws Exception;
+
+    List<String> getPaymentInstrumentsByUserId(String uid, String piType, int expectedResponseCode) throws Exception;
 
     void creditWallet(CreditRequest creditRequest) throws Exception;
 

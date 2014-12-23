@@ -7,12 +7,11 @@ package com.junbo.store.spec.model.browse.document;
 
 import com.junbo.catalog.spec.model.item.SupportedLocale;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.ItemRevisionId;
 import com.junbo.store.spec.model.browse.Images;
 import com.junbo.store.spec.model.browse.ReviewsResponse;
 
 import java.util.Map;
-
-import java.util.List;
 
 /**
  * The Item class.
@@ -27,11 +26,15 @@ public class Item {
 
     private String descriptionHtml;
 
-    private List<AggregatedRatings> aggregatedRatings;
+    private Double rank;
+
+    private Map<String, AggregatedRatings> aggregatedRatings;
 
     private String creator;
 
     private Images images;
+
+    private IAPDetails iapDetails;
 
     private AppDetails appDetails;
 
@@ -39,11 +42,19 @@ public class Item {
 
     private Offer offer;
 
+    private Integer useCount;
+
     private Boolean ownedByCurrentUser;
+
+    private String payload;
+
+    private String signature;
 
     private Review currentUserReview; // only appears in getLibrary response, or in getDetails response.
 
     private Map<String, SupportedLocale> supportedLocales;
+
+    private ItemRevisionId currentRevision;
 
     public ItemId getSelf() {
         return self;
@@ -77,11 +88,19 @@ public class Item {
         this.descriptionHtml = descriptionHtml;
     }
 
-    public List<AggregatedRatings> getAggregatedRatings() {
+    public Double getRank() {
+        return rank;
+    }
+
+    public void setRank(Double rank) {
+        this.rank = rank;
+    }
+
+    public Map<String, AggregatedRatings>  getAggregatedRatings() {
         return aggregatedRatings;
     }
 
-    public void setAggregatedRatings(List<AggregatedRatings> aggregatedRatings) {
+    public void setAggregatedRatings(Map<String, AggregatedRatings>  aggregatedRatings) {
         this.aggregatedRatings = aggregatedRatings;
     }
 
@@ -91,6 +110,14 @@ public class Item {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public IAPDetails getIapDetails() {
+        return iapDetails;
+    }
+
+    public void setIapDetails(IAPDetails iapDetails) {
+        this.iapDetails = iapDetails;
     }
 
     public Images getImages() {
@@ -107,6 +134,30 @@ public class Item {
 
     public void setAppDetails(AppDetails appDetails) {
         this.appDetails = appDetails;
+    }
+
+    public Integer getUseCount() {
+        return useCount;
+    }
+
+    public void setUseCount(Integer useCount) {
+        this.useCount = useCount;
+    }
+
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     public Review getCurrentUserReview() {
@@ -147,5 +198,13 @@ public class Item {
 
     public void setSupportedLocales(Map<String, SupportedLocale> supportedLocales) {
         this.supportedLocales = supportedLocales;
+    }
+
+    public ItemRevisionId getCurrentRevision() {
+        return currentRevision;
+    }
+
+    public void setCurrentRevision(ItemRevisionId currentRevision) {
+        this.currentRevision = currentRevision;
     }
 }

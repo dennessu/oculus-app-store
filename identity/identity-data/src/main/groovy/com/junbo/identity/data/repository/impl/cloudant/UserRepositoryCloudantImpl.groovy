@@ -56,4 +56,9 @@ class UserRepositoryCloudantImpl extends CloudantClient<User> implements UserRep
     Promise<List<User>> searchInvalidVatUser(Integer limit, Integer offset) {
         return super.queryView('by_non_validate_vat', null, limit, offset, false)
     }
+
+    @Override
+    Promise<List<User>> searchAll(Integer limit, Integer offset) {
+        return super.cloudantGetAll(limit, offset, false)
+    }
 }

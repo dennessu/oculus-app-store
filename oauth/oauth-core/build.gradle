@@ -11,15 +11,17 @@ dependencies {
     compile(libraries.spring_beans)
     compile(libraries.spring_web)
     compile(libraries.spring_security)
+    compile(libraries.kryo)
 
     compile(libraries.jersey_server)
 
-    compile junboProject(':common-lib')
+    compile junboProject(':silkcloud-core')
     compile junboProject(':authorization-lib')
 
     compile ("com.nimbusds:nimbus-jose-jwt:2.22.1")
 
     compile junboProject(':oauth-spec')
+    compile junboProject(':store-spec')
     compile junboProject(':oauth-db')
     compile junboProject(':oauth-clientproxy')
 }

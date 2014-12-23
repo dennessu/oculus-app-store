@@ -13,6 +13,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface ScopeRepository {
+    List<Scope> getScopes();
+
     Scope getScope(String name)
 
     Scope saveScope(Scope scope)

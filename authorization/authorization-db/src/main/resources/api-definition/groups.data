@@ -48,6 +48,22 @@
                  ],
                  "scriptType": "SPEL"
              }
+        ],
+        "organization.group.admin": [
+             {
+                 "precondition": "true",
+                 "rights": [
+                     "create", "update", "read", "delete"
+                 ],
+                 "scriptType": "SPEL"
+             }
+        ],
+        "readonly.service": [
+            {
+                "precondition": "true",
+                "rights": [ "read" ],
+                "scriptType": "SPEL"
+            }
         ]
     }
 }

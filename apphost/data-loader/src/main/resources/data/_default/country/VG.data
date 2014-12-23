@@ -1,0 +1,29 @@
+{
+	"countryCode": "VG",
+	"defaultLocale": {
+		"href": "/v1/locales/en_VG",
+		"id": "en_VG"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_VG",
+		"id": "en_VG"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Virgin Islands",
+			"longName": "British Virgin Islands",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

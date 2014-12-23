@@ -46,11 +46,18 @@ public class PriceTierServiceImpl extends HttpClientBase implements PriceTierSer
     }
 
     public PriceTier getPriceTier(String priceTierId) throws Exception {
-        return getPriceTier(priceTierId, 200);
+        return getPriceTier(priceTierId, null);
     }
 
-    public PriceTier getPriceTier(String priceTierId, int expectedResponseCode) throws Exception {
+    public PriceTier getPriceTier(String priceTierId, String locale) throws Exception {
+        return getPriceTier(priceTierId, locale, 200);
+    }
+
+    public PriceTier getPriceTier(String priceTierId, String locale, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + priceTierId;
+        if (locale != null && locale.length() > 0) {
+            url = url.concat(String.format("?locale=%s", locale));
+        }
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<PriceTier>() {}, responseBody);
     }

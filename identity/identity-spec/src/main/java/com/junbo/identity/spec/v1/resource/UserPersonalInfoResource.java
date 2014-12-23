@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -32,37 +33,31 @@ import javax.ws.rs.core.MediaType;
 public interface UserPersonalInfoResource {
     @ApiOperation("Create user's personalInfo information")
     @POST
-    @RouteBy("userPii.getUserId()")
+    @RouteBy(value = "userPii.getUserId()", switchable = true)
     Promise<UserPersonalInfo> create(UserPersonalInfo userPii);
 
     @ApiOperation("Get user's personalInfo information")
     @GET
     @Path("/{userPiiId}")
-    @RouteBy("userPiiId")
+    @RouteBy(value = "userPiiId", switchable = true)
     Promise<UserPersonalInfo> get(@PathParam("userPiiId") UserPersonalInfoId userPiiId,
                          @BeanParam  UserPersonalInfoGetOptions getOptions);
-
-    @POST
-    @Path("/{userPiiId}")
-    @RouteBy("userPiiId")
-    Promise<UserPersonalInfo> patch(@PathParam("userPiiId") UserPersonalInfoId userPiiId,
-                             UserPersonalInfo userPersonalInfo);
 
     @ApiOperation("Update user's personalInfo information")
     @PUT
     @Path("/{userPiiId}")
-    @RouteBy("userPiiId")
+    @RouteBy(value = "userPiiId", switchable = true)
     Promise<UserPersonalInfo> put(@PathParam("userPiiId") UserPersonalInfoId userPiiId,
                          UserPersonalInfo userPersonalInfo);
 
     @ApiOperation("Delete user's personalInfo information")
     @DELETE
     @Path("/{userPiiId}")
-    @RouteBy("userPiiId")
-    Promise<Void> delete(@PathParam("userPiiId") UserPersonalInfoId userPiiId);
+    @RouteBy(value = "userPiiId", switchable = true)
+    Promise<Response> delete(@PathParam("userPiiId") UserPersonalInfoId userPiiId);
 
     @ApiOperation("Search user person information.")
     @GET
-    @RouteBy("listOptions.getUserId()")
+    @RouteBy(value = "listOptions.getUserId()", switchable = true)
     Promise<Results<UserPersonalInfo>> list(@BeanParam UserPersonalInfoListOptions listOptions);
 }

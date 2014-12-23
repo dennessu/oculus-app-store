@@ -21,7 +21,6 @@
 
     <bean id="baseDataHandler" class="com.junbo.data.handler.BaseDataHandler" abstract="true">
         <property name="transcoder" ref="commonTranscoder"/>
-        <property name="alwaysOverwrite" value="${data.loader.alwaysOverwrite}"/>
     </bean>
 
     <bean id="clientDataHandler" class="com.junbo.data.handler.ClientDataHandler" parent="baseDataHandler">
@@ -104,8 +103,20 @@
         <property name="offerAttributeResource" ref="defaultOfferAttributeResource"/>
     </bean>
 
+    <bean id="paymentProviderDataHandler" class="com.junbo.data.handler.PaymentProviderDataHandler" parent="baseDataHandler">
+        <property name="paymentProvideRepository" ref="paymentProviderRepository"/>
+    </bean>
+
+    <bean id="merchantAccountDataHandler" class="com.junbo.data.handler.MerchantAccountDataHandler" parent="baseDataHandler">
+        <property name="merchantAccountRepository" ref="merchantAccountRepository"/>
+    </bean>
+
     <bean id="tosDataHandler" class="com.junbo.data.handler.TosDataHandler" parent="baseDataHandler">
         <property name="tosResource" ref="defaultTosResource" />
+    </bean>
+
+    <bean id="communicationDataHandler" class="com.junbo.data.handler.CommunicationDataHandler" parent="baseDataHandler">
+        <property name="communicationResource" ref="defaultCommunicationResource" />
     </bean>
 
     <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
@@ -126,6 +137,9 @@
                 <entry key="item-attribute" value-ref="itemAttributeDataHandler" />
                 <entry key="catalog" value-ref="catalogDataHandler" />
                 <entry key="tos" value-ref="tosDataHandler" />
+                <entry key="communication" value-ref="communicationDataHandler" />
+                <entry key="paymentprovider" value-ref="paymentProviderDataHandler" />
+                <entry key="merchantaccount" value-ref="merchantAccountDataHandler" />
             </map>
         </property>
         <property name="dataList">
@@ -145,6 +159,9 @@
                 <value>item-attribute</value>
                 <value>catalog</value>
                 <value>tos</value>
+                <value>communication</value>
+                <value>paymentprovider</value>
+                <value>merchantaccount</value>
             </list>
         </property>
         <property name="serialDataList">
@@ -152,6 +169,7 @@
                 <value>locale</value>
                 <value>offer-attribute</value>
                 <value>item-attribute</value>
+                <value>catalog</value>
             </set>
         </property>
     </bean>

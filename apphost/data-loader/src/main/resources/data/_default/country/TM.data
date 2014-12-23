@@ -93,7 +93,11 @@
 	{
 		"href": "/v1/locales/ru_RU",
 		"id": "ru_RU"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Turkmenistan",

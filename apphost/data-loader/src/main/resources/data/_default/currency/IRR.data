@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Iranian rial",
+			"longName": "Iranian rial"
+		},
+		"fa_IR": {
+			"shortName": "ریال ایران",
+			"longName": "ریال ایران"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=IRR",
+		"id": null
+	},
+	"currencyCode": "IRR",
+	"symbol": "ریال",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

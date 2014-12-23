@@ -51,5 +51,5 @@ public interface OrderInternalService {
 
     Promise<UserPersonalInfo> validateUserPersonalInfo(OrderServiceContext context);
 
-    Promise<Order> validateDuplicatePurchase(Order order, Offer offer);
+    Promise<Order> validateDuplicatePurchase(Order order, Offer offer, int quantity);
 }

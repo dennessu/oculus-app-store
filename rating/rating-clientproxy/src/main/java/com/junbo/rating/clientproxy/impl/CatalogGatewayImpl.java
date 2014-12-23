@@ -82,7 +82,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
                 : getOfferRevisionByTimestamp(offerId, Utils.parseDateTime(timestamp));
 
         RatingOffer result = wash(offerRevision);
-        result.setDeveloperRatio(offer.getDeveloperRatio() == null ? BigDecimal.ZERO : offer.getDeveloperRatio());
+        result.setOrganizationId(offer.getOwnerId());
         result.setId(offerId);
         if (offer.getCategories() != null) {
             result.getCategories().addAll(offer.getCategories());
@@ -218,7 +218,9 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
         for (String country : offerRevision.getCountries().keySet()) {
             CountryProperties properties = offerRevision.getCountries().get(country);
-            offer.getCountries().put(country, new Properties(properties.getIsPurchasable(), properties.getReleaseDate()));
+            if (properties != null) {
+                offer.getCountries().put(country, new Properties(properties.getIsPurchasable(), properties.getReleaseDate()));
+            }
         }
 
         if (offerRevision.getItems() != null) {

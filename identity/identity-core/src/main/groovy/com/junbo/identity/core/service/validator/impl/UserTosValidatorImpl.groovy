@@ -4,9 +4,9 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.identity.core.service.validator.UserTosValidator
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.TosRepository
-import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTosRepository
+import com.junbo.identity.service.TosService
+import com.junbo.identity.service.UserService
+import com.junbo.identity.service.UserTosService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.model.User
@@ -23,11 +23,9 @@ import org.springframework.util.CollectionUtils
 @CompileStatic
 class UserTosValidatorImpl implements UserTosValidator {
 
-    private UserRepository userRepository
-
-    private UserTosRepository userTosRepository
-
-    private TosRepository tosRepository
+    private UserService userService
+    private UserTosService userTosService
+    private TosService tosService
 
     @Override
     Promise<UserTosAgreement> validateForGet(UserTosAgreementId userTosId) {
@@ -36,7 +34,7 @@ class UserTosValidatorImpl implements UserTosValidator {
             throw AppCommonErrors.INSTANCE.parameterRequired('userTosId').exception()
         }
 
-        return userTosRepository.get(userTosId).then { UserTosAgreement userTos ->
+        return userTosService.get(userTosId).then { UserTosAgreement userTos ->
             if (userTos == null) {
                 throw AppErrors.INSTANCE.userTosAgreementNotFound(userTosId).exception()
             }
@@ -64,7 +62,7 @@ class UserTosValidatorImpl implements UserTosValidator {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
         return checkBasicUserTosInfo(userTos).then {
-            return userTosRepository.searchByUserIdAndTosId(userTos.userId, userTos.tosId, Integer.MAX_VALUE, 0).then {
+            return userTosService.searchByUserIdAndTosId(userTos.userId, userTos.tosId, 1, 0).then {
                 List<UserTosAgreement> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('tosId').exception()
@@ -93,7 +91,7 @@ class UserTosValidatorImpl implements UserTosValidator {
             }
 
             if (userTos.tosId != oldUserTos.tosId) {
-                return userTosRepository.searchByUserIdAndTosId(userTos.userId, userTos.tosId, Integer.MAX_VALUE, 0).then {
+                return userTosService.searchByUserIdAndTosId(userTos.userId, userTos.tosId, 1, 0).then {
                     List<UserTosAgreement> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
                         throw AppCommonErrors.INSTANCE.fieldDuplicate('tosId').exception()
@@ -128,12 +126,12 @@ class UserTosValidatorImpl implements UserTosValidator {
             throw AppCommonErrors.INSTANCE.fieldInvalid('agreementTime').exception()
         }
 
-        return tosRepository.get(userTos.tosId).then { Tos tos ->
+        return tosService.get(userTos.tosId).then { Tos tos ->
             if (tos == null) {
                 throw AppErrors.INSTANCE.tosNotFound(userTos.tosId).exception()
             }
 
-            return userRepository.get(userTos.userId).then { User user ->
+            return userService.getNonDeletedUser(userTos.userId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userTos.userId).exception()
                 }
@@ -148,17 +146,17 @@ class UserTosValidatorImpl implements UserTosValidator {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required
-    void setUserTosRepository(UserTosRepository userTosRepository) {
-        this.userTosRepository = userTosRepository
+    void setUserTosService(UserTosService userTosService) {
+        this.userTosService = userTosService
     }
 
     @Required
-    void setTosRepository(TosRepository tosRepository) {
-        this.tosRepository = tosRepository
+    void setTosService(TosService tosService) {
+        this.tosService = tosService
     }
 }

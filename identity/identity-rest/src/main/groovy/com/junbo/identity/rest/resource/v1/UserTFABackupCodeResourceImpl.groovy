@@ -11,7 +11,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserTFABackupCodeFilter
 import com.junbo.identity.core.service.validator.UserTFABackupCodeValidator
-import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeRepository
+import com.junbo.identity.service.UserTFAPhoneBackupCodeService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserTFABackupCode
 import com.junbo.identity.spec.v1.option.list.UserTFABackupCodeListOptions
@@ -22,6 +22,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 
 import javax.transaction.Transactional
+import javax.ws.rs.core.Response
 
 /**
  * Created by liangfu on 4/24/14.
@@ -31,7 +32,7 @@ import javax.transaction.Transactional
 class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
 
     @Autowired
-    private UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository
+    private UserTFAPhoneBackupCodeService userTFAPhoneBackupCodeService
 
     @Autowired
     private UserTFABackupCodeFilter userTFABackupCodeFilter
@@ -48,11 +49,11 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     @Override
     Promise<UserTFABackupCode> create(UserId userId, UserTFABackupCode userTFABackupCode) {
         if (userTFABackupCode == null) {
-            throw new IllegalArgumentException('userTFABackupCode is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -64,7 +65,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
             userTFABackupCode = userTFABackupCodeFilter.filterForCreate(userTFABackupCode)
 
             return userTFABackupCodeValidator.validateForCreate(userId, userTFABackupCode).then {
-                return userTFABackupCodeRepository.create(userTFABackupCode).then { UserTFABackupCode newBackupCode ->
+                return userTFAPhoneBackupCodeService.create(userTFABackupCode).then { UserTFABackupCode newBackupCode ->
                     Created201Marker.mark(newBackupCode.getId())
 
                     newBackupCode = userTFABackupCodeFilter.filterForGet(newBackupCode, null)
@@ -82,7 +83,10 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+        if (userTFABackupCodeId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFABackupCodeId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -102,58 +106,18 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     }
 
     @Override
-    Promise<UserTFABackupCode> patch(UserId userId, UserTFABackupCodeId userTFABackupCodeId,
-                                      UserTFABackupCode userTFABackupCode) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
-        if (userTFABackupCodeId == null) {
-            throw new IllegalArgumentException('userTFABackupCodeId is null')
-        }
-
-        if (userTFABackupCode == null) {
-            throw new IllegalArgumentException('userTFABackupCode is null')
-        }
-
-        def callback = authorizeCallbackFactory.create(userId)
-        return RightsScope.with(authorizeService.authorize(callback)) {
-            if (!AuthorizeContext.hasRights('update')) {
-                throw AppCommonErrors.INSTANCE.forbidden().exception()
-            }
-
-            return userTFABackupCodeRepository.get(userTFABackupCodeId).then { UserTFABackupCode oldBackupCode ->
-                if (oldBackupCode == null) {
-                    throw AppErrors.INSTANCE.userTFABackupCodeNotFound(userTFABackupCodeId).exception()
-                }
-
-                userTFABackupCode = userTFABackupCodeFilter.filterForPatch(userTFABackupCode, oldBackupCode)
-
-                return userTFABackupCodeValidator.
-                        validateForUpdate(userId, userTFABackupCodeId, userTFABackupCode, oldBackupCode).then {
-
-                    return userTFABackupCodeRepository.update(userTFABackupCode, oldBackupCode).then { UserTFABackupCode newCode ->
-                        newCode = userTFABackupCodeFilter.filterForGet(newCode, null)
-                        return Promise.pure(newCode)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserTFABackupCode> put(UserId userId, UserTFABackupCodeId userTFABackupCodeId,
                                     UserTFABackupCode userTFABackupCode) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFABackupCodeId == null) {
-            throw new IllegalArgumentException('userTFABackupCodeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFABackupCodeId').exception()
         }
 
         if (userTFABackupCode == null) {
-            throw new IllegalArgumentException('userTFABackupCode is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -162,7 +126,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
-            return userTFABackupCodeRepository.get(userTFABackupCodeId).then { UserTFABackupCode oldBackupCode ->
+            return userTFAPhoneBackupCodeService.get(userTFABackupCodeId).then { UserTFABackupCode oldBackupCode ->
                 if (oldBackupCode == null) {
                     throw AppErrors.INSTANCE.userTFABackupCodeNotFound(userTFABackupCodeId).exception()
                 }
@@ -171,7 +135,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
 
                 return userTFABackupCodeValidator.
                         validateForUpdate(userId, userTFABackupCodeId, userTFABackupCode, oldBackupCode).then {
-                    return userTFABackupCodeRepository.update(userTFABackupCode, oldBackupCode).then { UserTFABackupCode newCode ->
+                    return userTFAPhoneBackupCodeService.update(userTFABackupCode, oldBackupCode).then { UserTFABackupCode newCode ->
                         newCode = userTFABackupCodeFilter.filterForGet(newCode, null)
                         return Promise.pure(newCode)
                     }
@@ -183,7 +147,11 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     @Override
     Promise<Void> delete(UserId userId, UserTFABackupCodeId userTFABackupCodeId) {
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+
+        if (userTFABackupCodeId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFABackupCodeId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -193,7 +161,9 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
             }
 
             return userTFABackupCodeValidator.validateForGet(userId, userTFABackupCodeId).then {
-                return userTFABackupCodeRepository.delete(userTFABackupCodeId)
+                return userTFAPhoneBackupCodeService.delete(userTFABackupCodeId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
             }
         }
     }
@@ -201,7 +171,11 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     @Override
     Promise<Results<UserTFABackupCode>> list(UserId userId, UserTFABackupCodeListOptions listOptions) {
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+
+        if (listOptions == null) {
+            throw new IllegalArgumentException('listOptions is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -230,12 +204,12 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
 
     private Promise<List<UserTFABackupCode>> search(UserTFABackupCodeListOptions listOptions) {
         if (listOptions.userId != null && listOptions.active != null) {
-            return userTFABackupCodeRepository.searchByUserIdAndActiveStatus(listOptions.userId, listOptions.active,
+            return userTFAPhoneBackupCodeService.searchByUserIdAndActiveStatus(listOptions.userId, listOptions.active,
                     listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
-            return userTFABackupCodeRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+            return userTFAPhoneBackupCodeService.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Unsupported search operation')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()
         }
     }
 }

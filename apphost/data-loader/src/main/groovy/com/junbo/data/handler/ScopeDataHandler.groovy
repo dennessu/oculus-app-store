@@ -48,17 +48,7 @@ class ScopeDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            if (alwaysOverwrite) {
-                logger.debug("Overwrite Scope $existing.name with this content")
-                scope.rev = existing.rev
-                try {
-                    scopeEndpoint.putScope(scope.name, scope).get()
-                } catch (Exception e) {
-                    logger.error("Error updating scope $scope.name", e)
-                }
-            } else {
-                logger.debug("The Scope $scope.name exists, skip this content")
-            }
+            logger.debug("The Scope $scope.name exists, skip this content")
         } else {
             logger.debug("Create new Scope $scope.name with this content")
             try {

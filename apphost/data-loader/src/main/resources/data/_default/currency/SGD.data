@@ -1,5 +1,9 @@
 {
 	"locales": {
+		"en_US": {
+			"shortName": "SGD",
+			"longName": "Singapore dollar"
+		},
 		"en_SG": {
 			"shortName": "SGD",
 			"longName": "Singapore dollar"

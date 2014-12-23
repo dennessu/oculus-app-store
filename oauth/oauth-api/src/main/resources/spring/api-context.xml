@@ -70,8 +70,10 @@
         <property name="loginStateRepository" ref="loginStateRepository"/>
         <property name="userService" ref="userService"/>
         <property name="csrLogResource" ref="oauth_csrLogResource" />
+        <property name="localeResource" ref="oauth_localeResource" />
         <property name="successRedirectUri" value="${oauth.core.portal.emailVerifySuccessUri}" />
         <property name="failedRedirectUri" value="${oauth.core.portal.emailVerifyFailUri}" />
+        <property name="verifyEmailAutoLogin" value="${oauth.core.verifyEmailAutoLogin}" />
     </bean>
 
     <bean id="defaultEmailVerifyEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.EmailVerifyEndpointClientProxyFactory"/>
@@ -83,6 +85,7 @@
         <property name="userService" ref="userService"/>
         <property name="csrLogResource" ref="oauth_csrLogResource" />
         <property name="debugEnabled" value="${common.conf.debugMode}"/>
+        <property name="sentryFacade" ref="oauth_sentryFacade" />
     </bean>
 
     <bean id="defaultResetPasswordEndpointClientFactory" class="com.junbo.oauth.spec.endpoint.proxy.ResetPasswordEndpointClientProxyFactory"/>

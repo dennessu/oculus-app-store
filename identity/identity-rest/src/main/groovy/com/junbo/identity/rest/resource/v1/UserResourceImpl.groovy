@@ -23,7 +23,7 @@ import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.*
+import com.junbo.identity.service.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
@@ -43,6 +43,8 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 4/10/14.
  */
@@ -50,26 +52,27 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class UserResourceImpl implements UserResource {
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String EMAIL_DEACTIVATE_ACCOUNT_ACTION = 'DeactivateAccount'
-    private static final String EMAIL_REACTIVATE_ACCOUNT_ACTION = 'ReactivateAccount'
-    private static final String EMAIL_PII_CHANGE_ACTION = 'UserPersonalInfoChange'
+    private static final String EMAIL_DEACTIVATE_ACCOUNT_ACTION = 'DeactivateAccount_V1'
+    private static final String EMAIL_REACTIVATE_ACCOUNT_ACTION = 'ReactivateAccount_V1'
+    private static final String EMAIL_DELETE_ACCOUNT_ACTION = 'DeleteAccount_V1'
+    private static final String EMAIL_PII_CHANGE_ACTION = 'UserPersonalInfoChange_V1'
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserResource)
 
     @Autowired
-    private UserRepository userRepository
+    private UserService userService
 
     @Autowired
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private UserPersonalInfoService userPersonalInfoService
 
     @Autowired
-    private UserGroupRepository userGroupRepository
+    private UserGroupService userGroupService
 
     @Autowired
-    private UserPasswordRepository userPasswordRepository
+    private UserPasswordService userPasswordService
 
     @Autowired
-    private UserPinRepository userPinRepository
+    private UserPinService userPinService
 
     @Autowired
     private UserValidator userValidator
@@ -102,6 +105,10 @@ class UserResourceImpl implements UserResource {
     @Value('${identity.conf.mailEnable}')
     private Boolean identityMailSentEnable
 
+    // Any data that will use this data should be data issue, we may need to fix this.
+    @Value('${common.maximum.fetch.size}')
+    private Integer maximumFetchSize
+
     void setIdentityMailSentEnable(Boolean identityMailSentEnable) {
         this.identityMailSentEnable = identityMailSentEnable
     }
@@ -121,7 +128,7 @@ class UserResourceImpl implements UserResource {
             user = userFilter.filterForCreate(user)
 
             return userValidator.validateForCreate(user).then {
-                return userRepository.create(user).then { User newUser ->
+                return userService.create(user).then { User newUser ->
                     Created201Marker.mark(newUser.getId())
 
                     newUser = userFilter.filterForGet(newUser, null)
@@ -134,14 +141,14 @@ class UserResourceImpl implements UserResource {
     @Override
     Promise<User> put(UserId userId, User user) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (user == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return userRepository.get(userId).then { User oldUser ->
+        return userService.get(userId).then { User oldUser ->
             return silentPut(userId, user).then { User newUser ->
                 return isMailSentRequired(oldUser, newUser).then { Boolean aBoolean ->
                     //todo: Need to discuss with Hao to move all those mail trigger to service layer.
@@ -162,14 +169,14 @@ class UserResourceImpl implements UserResource {
     @Override
     public Promise<User> silentPut(UserId userId, User user) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (user == null) {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return userRepository.get(userId).then { User oldUser ->
+        return userService.get(userId).then { User oldUser ->
             if (oldUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -185,7 +192,7 @@ class UserResourceImpl implements UserResource {
                 auditCSR(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
-                    return userRepository.update(user, oldUser).then { User newUser ->
+                    return userService.update(user, oldUser).then { User newUser ->
                         return updateCredential(user.getId(), oldUser.username, newUser.username).then {
                             newUser = userFilter.filterForGet(newUser, null)
                             return Promise.pure(newUser)
@@ -197,58 +204,9 @@ class UserResourceImpl implements UserResource {
     }
 
     @Override
-    Promise<User> patch(UserId userId, User user) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
-
-        if (user == null) {
-            throw new IllegalArgumentException('user is null')
-        }
-
-        return userRepository.get(userId).then { User oldUser ->
-            if (oldUser == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
-            }
-
-            def callback = userAuthorizeCallbackFactory.create(oldUser)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception()
-                }
-
-                user = userFilter.filterForPatch(user, oldUser)
-
-                auditCSR(user, oldUser)
-
-                return userValidator.validateForUpdate(user, oldUser).then {
-                    return userRepository.update(user, oldUser).then { User newUser ->
-                        return updateCredential(user.getId(), oldUser.username, newUser.username).then {
-                            newUser = userFilter.filterForGet(newUser, null)
-
-                            return isMailSentRequired(oldUser, newUser).then { Boolean aBoolean ->
-                                if (!aBoolean) {
-                                    return Promise.pure(newUser)
-                                }
-
-                                // send email
-                                return triggerCsrUserUpdateEmail(newUser, oldUser).then {
-                                    return sendPIIChangeNotification(newUser, oldUser).then {
-                                        return Promise.pure(newUser)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<User> get(UserId userId, UserGetOptions getOptions) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (getOptions == null) {
@@ -305,14 +263,61 @@ class UserResourceImpl implements UserResource {
                 }
             }
 
-            if (listOptions.username != null) {
+            if (!StringUtils.isEmpty(listOptions.username)) {
                 String canonicalUsername = normalizeService.normalize(listOptions.username)
-                return userPersonalInfoRepository.searchByCanonicalUsername(canonicalUsername, Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                return userPersonalInfoService.searchByCanonicalUsername(canonicalUsername, maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
                     User user = null
                     return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
-                        return userRepository.get(userPersonalInfo.userId).then { User existing ->
-                            if (existing.username == userPersonalInfo.getId()
-                             && (existing.status != UserStatus.DELETED.toString() || AuthorizeContext.hasScopes('csr'))) {
+                        if (AuthorizeContext.hasScopes('csr')) {
+                            return userService.get(userPersonalInfo.userId).then { User existing ->
+                                if (existing.username == userPersonalInfo.getId()) {
+                                    user = existing
+                                    return Promise.pure(Promise.BREAK)
+                                }
+                                return Promise.pure(null)
+                            }
+                        } else {
+                            return userService.getNonDeletedUser(userPersonalInfo.userId).then { User existing ->
+                                if (existing != null && existing.username == userPersonalInfo.getId()) {
+                                    user = existing
+                                    return Promise.pure(Promise.BREAK)
+                                }
+                                return Promise.pure(null)
+                            }
+                        }
+                    }.then {
+                        if (user == null) {
+                            return Promise.pure(resultList)
+                        } else {
+                            filterUser(user).then {
+                                return Promise.pure(resultList)
+                            }
+                        }
+                    }
+                }
+            } else if (listOptions.groupId != null) {
+                return userGroupService.searchByGroupId(listOptions.groupId, listOptions.limit,
+                        listOptions.offset).then { Results<UserGroup> userGroupList ->
+                    if (userGroupList == null || CollectionUtils.isEmpty(userGroupList.items)) {
+                        return Promise.pure(resultList)
+                    }
+                    return Promise.each(userGroupList.items) { UserGroup userGroup ->
+                        return userValidator.validateForGet(userGroup.userId).then(filterUser)
+                    }.then {
+                        return Promise.pure(resultList)
+                    }
+                }
+            } else if (listOptions.email != null) {
+                return userPersonalInfoService.searchByEmail(listOptions.email.toLowerCase(java.util.Locale.ENGLISH), null, maximumFetchSize,
+                        0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                    User user = null
+                    return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
+                        return userService.getNonDeletedUser(userPersonalInfo.userId).then { User existing ->
+                            UserPersonalInfoLink link = existing?.emails?.find { UserPersonalInfoLink userPersonalInfoLink ->
+                                    return userPersonalInfoLink.isDefault && userPersonalInfoLink.value == userPersonalInfo.getId()
+                            }
+
+                            if (link != null) {
                                 user = existing
                                 return Promise.pure(Promise.BREAK)
                             }
@@ -330,34 +335,35 @@ class UserResourceImpl implements UserResource {
                     }
                 }
             } else {
-                return userGroupRepository.searchByGroupId(listOptions.groupId, listOptions.limit,
-                        listOptions.offset).then { List<UserGroup> userGroupList ->
-                    return Promise.each(userGroupList) { UserGroup userGroup ->
-                        return userValidator.validateForGet(userGroup.userId).then(filterUser)
-                    }.then {
-                        return Promise.pure(resultList)
-                    }
+                return userService.getAllUsers(listOptions.limit, listOptions.offset).then { List<User> userList ->
+                    return Promise.pure(new Results(
+                            items: userList
+                    ))
                 }
             }
         }
     }
 
     @Override
-    Promise<Void> delete(UserId userId) {
+    Promise<Response> delete(UserId userId) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return userValidator.validateForGet(userId).then { User user ->
             def callback = userAuthorizeCallbackFactory.create(user)
             return RightsScope.with(authorizeService.authorize(callback)) {
+
                 if (!AuthorizeContext.hasRights('delete') || !AuthorizeContext.hasScopes('csr')) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
-
                 user.setStatus(UserStatus.DELETED.toString())
-                return userRepository.update(user, user).then {
-                    return Promise.pure(null)
+                return userService.update(user, user).then {
+                    return sendAccountDeleteEmail(user).recover {
+                        LOGGER.error("Send delete account mail failure")
+                    }.then {
+                        return Promise.pure(Response.status(204).build())
+                    }
                 }
             }
         }
@@ -381,12 +387,32 @@ class UserResourceImpl implements UserResource {
         return userValidator.validateEmail(email)
     }
 
+    @Override
+    Promise<Boolean> checkUsernameEmailBlocker(String username, String email) {
+        return userValidator.validateUsernameEmailBlocker(username, email).then { String blockerState ->
+            if (StringUtils.isEmpty(blockerState)) {
+                return Promise.pure(true)
+            }
+
+            if ('ERROR'.equalsIgnoreCase(blockerState)) {
+                return Promise.pure(true)
+            }
+
+            return Promise.pure(false)
+        }
+    }
+
+    @Override
+    Promise<String> getUsernameEmailOccupyState(String username, String email) {
+        return userValidator.validateUsernameEmailBlocker(username, email)
+    }
+
     Promise<Void> updateCredential(UserId userId, UserPersonalInfoId oldUsername, UserPersonalInfoId newUsername) {
         if (oldUsername == newUsername) {
             return Promise.pure(null)
         } else {
             // if username changes, will disable all passwords and pins. User needs to reset this.
-            return userPasswordRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+            return userPasswordService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
                 List<UserPassword> userPasswordList ->
                     if (CollectionUtils.isEmpty(userPasswordList)) {
                         return Promise.pure(null)
@@ -394,12 +420,12 @@ class UserResourceImpl implements UserResource {
 
                     return Promise.each(userPasswordList.iterator()) { UserPassword userPassword ->
                         userPassword.active = false
-                        return userPasswordRepository.update(userPassword, userPassword)
+                        return userPasswordService.update(userPassword, userPassword)
                     }.then {
                         return Promise.pure(null)
                     }
             }.then {
-                return userPinRepository.searchByUserIdAndActiveStatus(userId, true, Integer.MAX_VALUE, 0).then {
+                return userPinService.searchByUserIdAndActiveStatus(userId, true, maximumFetchSize, 0).then {
                     List<UserPin> userPinList ->
                         if (CollectionUtils.isEmpty(userPinList)) {
                             return Promise.pure(null)
@@ -407,7 +433,7 @@ class UserResourceImpl implements UserResource {
 
                         return Promise.each(userPinList.iterator()) { UserPin userPin ->
                             userPin.active = false
-                            return userPinRepository.update(userPin, userPin)
+                            return userPinService.update(userPin, userPin)
                         }.then {
                             return Promise.pure(null)
                         }
@@ -420,7 +446,7 @@ class UserResourceImpl implements UserResource {
         if (user.name == null) {
             return Promise.pure('')
         } else {
-            return userPersonalInfoRepository.get(user.name).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(user.name).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
                     return Promise.pure('')
                 }
@@ -441,7 +467,7 @@ class UserResourceImpl implements UserResource {
         if (user.username == null) {
             return Promise.pure('')
         } else {
-            return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+            return userPersonalInfoService.get(user.username).then { UserPersonalInfo userPersonalInfo ->
                 if (userPersonalInfo == null) {
                     return Promise.pure('')
                 }
@@ -462,7 +488,7 @@ class UserResourceImpl implements UserResource {
         }
 
         link = link == null ? user.emails.get(0) : link;
-        return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(link.value).then { UserPersonalInfo userPersonalInfo ->
             Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
             return Promise.pure(email.info)
         }
@@ -498,9 +524,9 @@ class UserResourceImpl implements UserResource {
     }
 
     private Promise<Void> triggerCsrUserUpdateEmail(User user, User oldUser) {
-        // check x-send-email header
-        if (JunboHttpContext.getRequestHeaders() == null
-                || CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_TRIGGER_EMAIL))) {
+        // check x-disable-email header
+        if (JunboHttpContext.getRequestHeaders() != null
+                && !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_DISABLE_EMAIL))) {
             return Promise.pure(null)
         }
 
@@ -684,7 +710,7 @@ class UserResourceImpl implements UserResource {
         }
 
         link = link == null ? user.emails.get(0) : link;
-        return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
+        return userPersonalInfoService.get(link.value).then { UserPersonalInfo userPersonalInfo ->
             if (userPersonalInfo.lastValidateTime != null) {
                 return Promise.pure(true)
             }
@@ -748,6 +774,50 @@ class UserResourceImpl implements UserResource {
         if (!flag) return true
     }
 
+    private Promise<Void> sendAccountDeleteEmail(User user) {
+        QueryParam queryParam = new QueryParam(
+                source: EMAIL_SOURCE,
+                action: EMAIL_DELETE_ACCOUNT_ACTION,
+                locale: 'en_US'
+        )
+
+        if (CollectionUtils.isEmpty(user.emails) || user.username == null) {
+            return Promise.pure(null)
+        }
+
+        return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
+            if (results.items.isEmpty()) {
+                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(EMAIL_DELETE_ACCOUNT_ACTION + ' with locale: en_US template not found')).exception()
+            }
+            EmailTemplate template = results.items.get(0)
+
+            return getUserNameStr(user).then { String displayUsername ->
+                return getEmailStr(user).then { String userMail ->
+                    if (StringUtils.isEmpty(userMail)) {
+                        throw AppErrors.INSTANCE.userInInvalidStatus(user.getId()).exception()
+                    }
+
+                    com.junbo.email.spec.model.Email emailToSend = new com.junbo.email.spec.model.Email(
+                            userId: user.getId(),
+                            templateId: template.getId(),
+                            recipients: [userMail].asList(),
+                            replacements: [
+                                    'name': displayUsername,
+                                    'username': getUserLoginNameStr(user).get()
+                            ]
+                    )
+
+                    return emailResource.postEmail(emailToSend).then { Email emailSent ->
+                        if (emailSent == null) {
+                            throw AppCommonErrors.INSTANCE.internalServerError(new Exception('Failed to send mail')).exception()
+                        }
+                        return Promise.pure(null)
+                    }
+                }
+            }
+        }
+    }
+
     private Promise<Void> sendPIIChangeEmail(User user, String piiType) {
         QueryParam queryParam = new QueryParam(
                 source: EMAIL_SOURCE,
@@ -755,12 +825,8 @@ class UserResourceImpl implements UserResource {
                 locale: 'en_US'
         )
 
-        if (CollectionUtils.isEmpty(user.emails)) {
+        if (CollectionUtils.isEmpty(user.emails) || user.username == null) {
             return Promise.pure(null)
-        }
-
-        if (user.username == null) {
-            throw AppCommonErrors.INSTANCE.internalServerError(new Exception('username is missing')).exception()
         }
 
         return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->

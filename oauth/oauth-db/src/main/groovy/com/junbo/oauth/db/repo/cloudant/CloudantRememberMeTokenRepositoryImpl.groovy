@@ -5,27 +5,17 @@
  */
 package com.junbo.oauth.db.repo.cloudant
 
-import com.junbo.common.cloudant.CloudantClient
-import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.RememberMeTokenRepository
 import com.junbo.oauth.spec.model.RememberMeToken
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
-
 /**
  * CloudantRememberMeTokenRepositoryImpl.
  */
 @CompileStatic
-class CloudantRememberMeTokenRepositoryImpl extends CloudantClient<RememberMeToken>
-        implements RememberMeTokenRepository {
-    private TokenGenerator tokenGenerator
-
-    @Required
-    void setTokenGenerator(TokenGenerator tokenGenerator) {
-        this.tokenGenerator = tokenGenerator
-    }
+class CloudantRememberMeTokenRepositoryImpl
+        extends CloudantTokenRepositoryBase<RememberMeToken> implements RememberMeTokenRepository {
 
     @Override
     RememberMeToken save(RememberMeToken rememberMeToken) {
@@ -50,7 +40,7 @@ class CloudantRememberMeTokenRepositoryImpl extends CloudantClient<RememberMeTok
             return null
         }
 
-        RememberMeToken token = cloudantGetSync(tokenGenerator.hashKey(tokenValue))
+        RememberMeToken token = cloudantGetSyncWithFallback(tokenValue, tokenGenerator.hashKey(tokenValue))
         if (token != null) {
             token.tokenValue = tokenValue
         }
@@ -65,7 +55,7 @@ class CloudantRememberMeTokenRepositoryImpl extends CloudantClient<RememberMeTok
         }
 
         String hashed = tokenGenerator.hashKey(tokenValue)
-        RememberMeToken entity = cloudantGetSync(hashed)
+        RememberMeToken entity = cloudantGetSyncWithFallback(tokenValue, hashed)
         if (entity != null) {
             entity.tokenValue = tokenValue
         }

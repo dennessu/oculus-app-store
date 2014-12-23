@@ -8,6 +8,7 @@ package com.junbo.test.order;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
@@ -48,9 +49,37 @@ public class OrderTesting extends BaseOrderTestClass {
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 400);
 
-        //TODO verify response
+        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Post /orders",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test Post Order with rating error",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new credit card to user",
+                    "3. Post order with XXX currency code and non-free offer",
+                    "4. Verify the rating error returns and its details are included"
+            }
+    )
+    @Test
+    public void testPostOrderRatingError() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        Map<String, Integer> offerList = new HashedMap();
+        offerList.put(offer_digital_normal1, 1);
+
+        testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.FREE, null, false, offerList, 412);
+
+        assert Master.getInstance().getApiErrorMsg().contains("price is not configured in offer.");
+        assert Master.getInstance().getApiErrorMsg().contains("133.147");
     }
 
     @Property(
@@ -79,9 +108,9 @@ public class OrderTesting extends BaseOrderTestClass {
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 400);
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 412);
 
-        //TODO verfiy response
+        assert Master.getInstance().getApiErrorMsg().contains("Offer Not Found");
     }
 
     @Property(

@@ -4,9 +4,16 @@ source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is n
 t0=`date +%s`
 cipherKey=D58BA755FF96B35A6DABA7298F7A8CE2
 
-dbPrefixDir=common/configuration-data/src/main/resources/junbo/conf/onebox/common
+dbPrefixFileOld=common/configuration-data/src/main/resources/junbo/conf/onebox/common/personal.properties
+dbPrefixDir=apphost/config-data/src/main/resources/junbo/conf/onebox
 dbPrefixFile=$dbPrefixDir/personal.properties
+
 mkdir -p $dbPrefixDir
+
+if [[ -f "$dbPrefixFileOld" && ! -f "$dbPrefixFile" ]]; then
+    mv "$dbPrefixFileOld" "$dbPrefixFile"
+fi
+
 dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
 if [[ -z "$dbPrefix" ]]; then
     echo common.cloudant.dbNamePrefix=p`./scripts/AESCipher.py genkey | cut -c1-7 | tr '[:upper:]' '[:lower:]'`_ >> $dbPrefixFile

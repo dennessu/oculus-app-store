@@ -10,11 +10,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
 import com.junbo.common.id.OrganizationId;
-import com.junbo.common.jackson.annotation.*;
+import com.junbo.common.jackson.annotation.HateoasLink;
+import com.junbo.common.jackson.annotation.OfferAttributeId;
+import com.junbo.common.jackson.annotation.OfferId;
+import com.junbo.common.jackson.annotation.OfferRevisionId;
 import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -50,10 +52,6 @@ public class Offer extends BaseEntityModel {
 
     @ApiModelProperty(position = 26, required = true, value = "Environment", allowableValues = "DEV, STAGING, PROD")
     private String environment;
-
-    @JsonProperty("publisherRevenueRatio")
-    @ApiModelProperty(position = 27, required = true, value = "Revenue ratio to developer")
-    private BigDecimal developerRatio;
 
     // current revision used for index & search, periodically updated by backend job
     @JsonIgnore
@@ -116,14 +114,6 @@ public class Offer extends BaseEntityModel {
 
     public void setEnvironment(String environment) {
         this.environment = environment;
-    }
-
-    public BigDecimal getDeveloperRatio() {
-        return developerRatio;
-    }
-
-    public void setDeveloperRatio(BigDecimal developerRatio) {
-        this.developerRatio = developerRatio;
     }
 
     public OfferRevision getActiveRevision() {

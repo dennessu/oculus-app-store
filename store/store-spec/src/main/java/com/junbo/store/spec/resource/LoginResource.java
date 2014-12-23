@@ -9,12 +9,10 @@ package com.junbo.store.spec.resource;
 import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.login.*;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -26,11 +24,17 @@ import javax.ws.rs.core.MediaType;
 @RestResource
 @AuthorizationNotRequired
 public interface LoginResource {
-
-    @POST
-    @Path("/name-check")
+    @GET
+    @Path("/check-email")
+    @Consumes()
     // This doesn't require email verification
-    Promise<UserNameCheckResponse> checkUserName(UserNameCheckRequest userNameCheckRequest);
+    Promise<EmailCheckResponse> checkEmail(@BeanParam EmailCheckRequest emailCheckRequest);
+
+    @GET
+    @Path("/check-username")
+    @Consumes()
+    // This doesn't require email verification
+    Promise<UserNameCheckResponse> checkUsernameAvailable(@BeanParam UserNameCheckRequest userNameCheckRequest);
 
     @POST
     @Path("/rate-credential")
@@ -38,17 +42,34 @@ public interface LoginResource {
     Promise<UserCredentialRateResponse> rateUserCredential(UserCredentialRateRequest userCredentialRateRequest);
 
     @POST
-    @Path("/create")
+    @Path("/register")
     // This doesn't require email verification
     Promise<AuthTokenResponse> createUser(CreateUserRequest createUserRequest);
 
     @POST
-    @Path("/sign-in")
+    @Path("/log-in")
     // This doesn't require email verification
     Promise<AuthTokenResponse> signIn(UserSignInRequest userSignInRequest);
 
     @POST
-    @Path("/token")
+    @Path("/refresh-token")
     // This doesn't require email verification
     Promise<AuthTokenResponse> getAuthToken(AuthTokenRequest tokenRequest);
+
+    @POST
+    @Path("/confirm-email")
+    // This doesn't require email verification
+    Promise<ConfirmEmailResponse> confirmEmail(ConfirmEmailRequest confirmEmailRequest);
+
+    @GET
+    @Path("/tos")
+    @Consumes()
+    // This doesn't require email verification
+    Promise<Tos> getRegisterTos();
+
+    @GET
+    @Path("/countries")
+    @Consumes()
+    // This doesn't require email verification
+    Promise<GetSupportedCountriesResponse> getSupportedCountries();
 }

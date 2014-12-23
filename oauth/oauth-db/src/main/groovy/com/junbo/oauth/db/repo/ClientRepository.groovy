@@ -6,6 +6,7 @@
 package com.junbo.oauth.db.repo
 
 import com.junbo.oauth.spec.model.Client
+import com.junbo.oauth.spec.option.PageableGetOptions
 import groovy.transform.CompileStatic
 
 /**
@@ -13,6 +14,8 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface ClientRepository {
+    List<Client> getAllClients(PageableGetOptions options)
+
     Client getClient(String clientId)
 
     Client saveClient(Client client)

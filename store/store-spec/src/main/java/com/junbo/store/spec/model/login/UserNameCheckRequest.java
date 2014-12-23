@@ -5,13 +5,17 @@
  */
 package com.junbo.store.spec.model.login;
 
+import javax.ws.rs.QueryParam;
+
 /**
  * The UserNameCheckRequest class.
  */
 public class UserNameCheckRequest {
 
+    @QueryParam("username")
     private String username;
 
+    @QueryParam("email")
     private String email;
 
     public String getEmail() {

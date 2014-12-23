@@ -64,4 +64,16 @@
         ]]>
         </sql>
     </changeSet>
+
+    <changeSet id="4" author='LiruiMao' context="PREDEPLOY">
+        <sql>
+        <![CDATA[
+                CREATE INDEX fulfilment_action_fulfilment_id ON fulfilment_action (fulfilment_id);
+                CREATE INDEX fulfilment_item_request_id ON fulfilment_item(request_id);
+                CREATE INDEX fulfilment_request_tracking_uuid ON fulfilment_request(tracking_uuid);
+                CREATE INDEX fulfilment_request_order_id ON fulfilment_request(order_id);
+        ]]>
+        </sql>
+    </changeSet>
+    <include file="../../common/ping.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

@@ -11,11 +11,11 @@ import com.junbo.billing.spec.model.Transaction;
 import com.junbo.common.model.Results;
 import com.junbo.order.spec.model.*;
 import com.junbo.test.billing.entities.TransactionInfo;
+import com.junbo.test.common.Utility.ValidationHelper;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.order.model.*;
 import com.junbo.test.order.model.enums.OrderStatus;
-import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Created by weiyu_000 on 5/19/14.
  */
-public class OrderValidationHelper extends BaseValidationHelper {
+public class OrderValidationHelper extends ValidationHelper {
     OrderTestDataProvider testDataProvider = new OrderTestDataProvider();
 
     public void validateOrderStatus(Map<String, OrderStatus> expectedOrderStatus) {
@@ -39,7 +39,7 @@ public class OrderValidationHelper extends BaseValidationHelper {
         }
     }
 
-    public void validateEwalletBalance(String uid, BigDecimal expectedBalance) throws Exception{
+    public void validateEwalletBalance(String uid, BigDecimal expectedBalance) throws Exception {
         verifyEqual(testDataProvider.paymentProvider.getEwalletBalanceFromDB(uid), expectedBalance.setScale(2).toString(), "verify ewallet balance");
     }
 
@@ -51,9 +51,9 @@ public class OrderValidationHelper extends BaseValidationHelper {
         verifyEqual(orderEvents.size(), expectedOrderEvents.size(), "verify order events size");
 
         for (int i = 0; i < expectedOrderEvents.size(); i++) {
-            verifyEqual(orderEvents.get(i).getAction().toString(), expectedOrderEvents.get(i).getOrderActionType().toString(),
+            verifyEqual(orderEvents.get(expectedOrderEvents.size() - 1 - i).getAction().toString(), expectedOrderEvents.get(i).getOrderActionType().toString(),
                     "verify order action type");
-            verifyEqual(orderEvents.get(i).getStatus(), expectedOrderEvents.get(i).getEventStatus().toString(), "verify event status");
+            verifyEqual(orderEvents.get(expectedOrderEvents.size() - 1 - i).getStatus(), expectedOrderEvents.get(i).getEventStatus().toString(), "verify event status");
         }
     }
 
@@ -105,51 +105,50 @@ public class OrderValidationHelper extends BaseValidationHelper {
         verifyEqual(order.getBillingHistories().size(), expectedOrderInfo.getBillingHistories().size(),
                 "verify billing history size");
 
-        for (BillingHistoryInfo billingHistoryInfo : expectedOrderInfo.getBillingHistories()) {
-            for (BillingHistory billingHistory : order.getBillingHistories()) {
-                if (billingHistory.getBillingEvent().equals(billingHistoryInfo.getBillingAction().toString())) {
-                    verifyEqual(billingHistory.getTotalAmount(), billingHistoryInfo.getTotalAmount(),
-                            "verify billing history total amount");
-                    verifyEqual(billingHistory.getPayments().size(), billingHistoryInfo.getPaymentInfos().size(),
-                            "verify billing history payment size");
-                    verifyEqual(billingHistory.getSuccess(), billingHistoryInfo.isSuccess(), "verify success or not");
-                    for (PaymentInstrumentInfo paymentInstrumentInfo : billingHistoryInfo.getPaymentInfos()) {
-                        for (BillingPaymentInfo billingPaymentInfo : billingHistory.getPayments()) {
-                            if (IdConverter.idToHexString(billingPaymentInfo.getPaymentInstrument()).
-                                    equals(paymentInstrumentInfo.getPaymentId())) {
-                                verifyEqual(billingPaymentInfo.getPaymentAmount(),
-                                        paymentInstrumentInfo.getPaymentAmount(),
-                                        "verify billing history payment amount");
-                            }
-                        }
-                    }
-
-                    if (billingHistoryInfo.getRefundOrderItemInfos().size() != 0) {
-                        verifyEqual(billingHistory.getRefundedOrderItems().size(),
-                                billingHistoryInfo.getRefundOrderItemInfos().size(), "verify refunded items count");
-                    }
-                    else {
-                        if(billingHistory.getRefundedOrderItems() != null){
-                            throw new TestException("verify refunded items is null");
-                        }
-                    }
-
-                    for (RefundOrderItemInfo refundOrderItemInfo : billingHistoryInfo.getRefundOrderItemInfos()) {
-                        for (RefundOrderItem refundOrderItem : billingHistory.getRefundedOrderItems()) {
-                            if (IdConverter.idToHexString(refundOrderItem.getOffer()).
-                                    equals(refundOrderItemInfo.getOfferId())) {
-                                verifyEqual(refundOrderItem.getQuantity(), refundOrderItemInfo.getQuantity(),
-                                        "verify refund quantity");
-                                verifyEqual(refundOrderItem.getRefundedAmount(), refundOrderItemInfo.getRefundAmount(),
-                                        "verify refund amount");
-                                verifyEqual(refundOrderItem.getRefundedTax(), refundOrderItemInfo.getRefundTax(),
-                                        "verify refund tax");
-                            }
+        for (int i = 0; i < expectedOrderInfo.getBillingHistories().size(); i++) {
+            BillingHistoryInfo billingHistoryInfo = expectedOrderInfo.getBillingHistories().get(i);
+            BillingHistory billingHistory = order.getBillingHistories().get(expectedOrderInfo.getBillingHistories().size() - 1 - i);
+            if (billingHistory.getBillingEvent().equals(billingHistoryInfo.getBillingAction().toString())) {
+                verifyEqual(billingHistory.getTotalAmount(), billingHistoryInfo.getTotalAmount(),
+                        "verify billing history total amount");
+                verifyEqual(billingHistory.getPayments().size(), billingHistoryInfo.getPaymentInfos().size(),
+                        "verify billing history payment size");
+                verifyEqual(billingHistory.getSuccess(), billingHistoryInfo.isSuccess(), "verify success or not");
+                for (PaymentInstrumentInfo paymentInstrumentInfo : billingHistoryInfo.getPaymentInfos()) {
+                    for (BillingPaymentInfo billingPaymentInfo : billingHistory.getPayments()) {
+                        if (IdConverter.idToHexString(billingPaymentInfo.getPaymentInstrument()).
+                                equals(paymentInstrumentInfo.getPaymentId())) {
+                            verifyEqual(billingPaymentInfo.getPaymentAmount(),
+                                    paymentInstrumentInfo.getPaymentAmount(),
+                                    "verify billing history payment amount");
                         }
                     }
                 }
-            }
 
+                if (billingHistoryInfo.getRefundOrderItemInfos().size() != 0) {
+                    verifyEqual(billingHistory.getRefundedOrderItems().size(),
+                            billingHistoryInfo.getRefundOrderItemInfos().size(), "verify refunded items count");
+                } else {
+                    if (billingHistory.getRefundedOrderItems() != null) {
+                        throw new TestException("verify refunded items is null");
+                    }
+                }
+
+                for (RefundOrderItemInfo refundOrderItemInfo : billingHistoryInfo.getRefundOrderItemInfos()) {
+                    for (RefundOrderItem refundOrderItem : billingHistory.getRefundedOrderItems()) {
+                        if (IdConverter.idToHexString(refundOrderItem.getOffer()).
+                                equals(refundOrderItemInfo.getOfferId())) {
+                            verifyEqual(refundOrderItem.getQuantity(), refundOrderItemInfo.getQuantity(),
+                                    "verify refund quantity");
+                            verifyEqual(refundOrderItem.getRefundedAmount(), refundOrderItemInfo.getRefundAmount(),
+                                    "verify refund amount");
+                            verifyEqual(refundOrderItem.getRefundedTax(), refundOrderItemInfo.getRefundTax(),
+                                    "verify refund tax");
+                        }
+                    }
+                }
+
+            }
         }
 
     }

@@ -1,13 +1,12 @@
 package com.junbo.identity.rest.resource.v1
 
-import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PITypeId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.PITypeFilter
 import com.junbo.identity.core.service.validator.PITypeValidator
-import com.junbo.identity.data.repository.PITypeRepository
+import com.junbo.identity.service.PITypeService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
@@ -18,6 +17,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by haomin on 14-4-25.
  */
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional
 @CompileStatic
 class PITypeResourceImpl implements PITypeResource {
     @Autowired
-    private PITypeRepository piTypeRepository
+    private PITypeService piTypeService
 
     @Autowired
     private PITypeFilter piTypeFilter
@@ -36,7 +37,7 @@ class PITypeResourceImpl implements PITypeResource {
     @Override
     Promise<PIType> create(PIType piType) {
         if (piType == null) {
-            throw new IllegalArgumentException('piType is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         piType = piTypeFilter.filterForCreate(piType)
@@ -47,7 +48,7 @@ class PITypeResourceImpl implements PITypeResource {
             com.junbo.common.id.PIType piTypeEnum = Enum.valueOf(com.junbo.common.id.PIType, piType.typeCode)
             piType.id = new PITypeId(piTypeEnum.id)
 
-            return piTypeRepository.create(piType).then { PIType newPIType ->
+            return piTypeService.create(piType).then { PIType newPIType ->
                 Created201Marker.mark(newPIType.id)
                 newPIType = piTypeFilter.filterForGet(newPIType, null)
                 return Promise.pure(newPIType)
@@ -58,14 +59,14 @@ class PITypeResourceImpl implements PITypeResource {
     @Override
     Promise<PIType> put(PITypeId piTypeId, PIType piType) {
         if (piTypeId == null) {
-            throw new IllegalArgumentException('piTypeId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (piType == null) {
-            throw new IllegalArgumentException('piType is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
+        return piTypeService.get(piTypeId).then { PIType oldPIType ->
             if (oldPIType == null) {
                 throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
             }
@@ -73,33 +74,7 @@ class PITypeResourceImpl implements PITypeResource {
             piType = piTypeFilter.filterForPut(piType, oldPIType)
 
             return piTypeValidator.validateForUpdate(piTypeId, piType, oldPIType).then {
-                return piTypeRepository.update(piType, oldPIType).then { PIType newPIType ->
-                    newPIType = piTypeFilter.filterForGet(newPIType, null)
-                    return Promise.pure(newPIType)
-                }
-            }
-        }
-    }
-
-    @Override
-    Promise<PIType> patch(PITypeId piTypeId, PIType piType) {
-        if (piTypeId == null) {
-            throw new IllegalArgumentException('piTypeId is null')
-        }
-
-        if (piType == null) {
-            throw new IllegalArgumentException('piType is null')
-        }
-
-        return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
-            if (oldPIType == null) {
-                throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
-            }
-
-            piType = piTypeFilter.filterForPatch(piType, oldPIType)
-
-            return piTypeValidator.validateForUpdate(piTypeId, piType, oldPIType).then {
-                return piTypeRepository.update(piType, oldPIType).then { PIType newPIType ->
+                return piTypeService.update(piType, oldPIType).then { PIType newPIType ->
                     newPIType = piTypeFilter.filterForGet(newPIType, null)
                     return Promise.pure(newPIType)
                 }
@@ -109,12 +84,16 @@ class PITypeResourceImpl implements PITypeResource {
 
     @Override
     Promise<PIType> get(PITypeId piTypeId, PITypeGetOptions getOptions) {
+        if (piTypeId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
+        }
+
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
 
         return piTypeValidator.validateForGet(piTypeId).then {
-            return piTypeRepository.get(piTypeId).then { PIType newPIType ->
+            return piTypeService.get(piTypeId).then { PIType newPIType ->
                 if (newPIType == null) {
                     throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
                 }
@@ -149,21 +128,23 @@ class PITypeResourceImpl implements PITypeResource {
     }
 
     @Override
-    Promise<Void> delete(PITypeId piTypeId) {
-        if (piTypeId != null) {
-            throw new IllegalArgumentException('piTypeId is null')
+    Promise<Response> delete(PITypeId piTypeId) {
+        if (piTypeId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         return piTypeValidator.validateForGet(piTypeId).then {
-            return piTypeRepository.delete(piTypeId)
+            return piTypeService.delete(piTypeId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 
     private Promise<List<PIType>> search(PITypeListOptions listOptions) {
         if (listOptions.typeCode != null) {
-            return piTypeRepository.searchByTypeCode(listOptions.typeCode, listOptions.limit, listOptions.offset)
+            return piTypeService.searchByTypeCode(listOptions.typeCode, listOptions.limit, listOptions.offset)
         } else {
-            return piTypeRepository.searchAll(listOptions.limit, listOptions.offset)
+            return piTypeService.searchAll(listOptions.limit, listOptions.offset)
         }
     }
 }

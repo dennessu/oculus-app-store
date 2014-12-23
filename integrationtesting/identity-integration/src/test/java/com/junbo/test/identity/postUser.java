@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.test.common.HttpclientHelper;
@@ -21,6 +22,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +55,8 @@ public class postUser {
         String username = RandomHelper.randomAlphabetic(15);
         String nickname = RandomHelper.randomAlphabetic(10);
         User posted = createUser(username, nickname);
-        Validator.Validate("validate user nick name", posted.getNickName(), nickname);
+        // https://oculus.atlassian.net/browse/SER-693
+        Validator.Validate("validate user nick name", posted.getNickName(), username);
 
         User stored = Identity.UserGetByUserId(posted.getId());
         Validator.Validate("validate user name", posted.getUsername(), stored.getUsername());
@@ -79,7 +83,7 @@ public class postUser {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
 
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()), null,
                 HttpclientHelper.HttpRequestType.delete, nvps);
 
@@ -180,7 +184,7 @@ public class postUser {
         Email mailPii = new Email();
         mailPii.setInfo(email);
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(mailPii));
-        response = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo, false);
+        response = Identity.UserPersonalInfoPost(userPersonalInfo, false);
         String message = "Mail is already used.";
         Validator.Validate("Validator userPersonalInfo with same email", 400, response.getStatusLine().getStatusCode());
         Validator.Validate("Validator mail is used", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(message));
@@ -191,9 +195,64 @@ public class postUser {
         assert userList.size() == 1;
     }
 
+    @Test(groups = "dailies", enabled = false)
+    public void testSearchUser() throws Exception {
+        String username = RandomHelper.randomAlphabetic(15);
+        String email = RandomHelper.randomEmail();
+        User user = Identity.UserPostDefaultWithMail(username, email);
+        assert user != null;
+        assert user.getNickName().equalsIgnoreCase(username);
+
+        // validate existing scenario
+        List<User> users = Identity.UserSearchByUsername(username);
+        assert users != null;
+        assert users.size() == 1;
+        assert users.get(0).getId().equals(user.getId());
+
+        users = Identity.UserSearchByEmail(email);
+        assert users != null;
+        assert users.size() == 1;
+        assert users.get(0).getId().equals(user.getId());
+
+        // validate random string
+        users = Identity.UserSearchByUsername(RandomHelper.randomAlphabetic(15));
+        assert users != null;
+        assert users.size() == 0;
+
+        users = Identity.UserSearchByEmail(RandomHelper.randomEmail());
+        assert users != null;
+        assert users.size() == 0;
+
+        // validate user delete
+        Identity.UserDelete(user);
+        users = Identity.UserSearchByUsername(username);
+        assert users != null;
+        assert users.size() == 0;
+
+        users = Identity.UserSearchByEmail(email);
+        assert users != null;
+        assert users.size() == 0;
+
+        // recreate user again
+        User newUser = Identity.UserPostDefaultWithMail(username, email);
+        assert newUser != null;
+        assert !user.getId().equals(newUser.getId());
+
+        users = Identity.UserSearchByUsername(username);
+        assert users != null;
+        assert users.size() == 1;
+        assert !users.get(0).getId().equals(user.getId());
+
+        users = Identity.UserSearchByEmail(email);
+        assert users != null;
+        assert users.size() == 1;
+        assert !users.get(0).getId().equals(user.getId());
+    }
+
     @Test(groups = "dailies")
     //https://oculus.atlassian.net/browse/SER-436
-    //Please insure users cannot have same username as nickname
+    //https://oculus.atlassian.net/browse/SER-639
+    //Please insure users can have same username as nickname
     public void testNickNameDifferentFromUsername() throws Exception {
         String username = RandomHelper.randomAlphabetic(15);
         String nickname = RandomHelper.randomAlphabetic(15);
@@ -203,57 +262,111 @@ public class postUser {
         String url = Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId());
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 url, JsonHelper.JsonSerializer(user),
                 HttpclientHelper.HttpRequestType.put, nvps);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "be the same as username";
-        Validator.Validate("validate response error message", true,
-                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        Validator.Validate("validate response error code", 200, response.getStatusLine().getStatusCode());
+        response.close();
 
+        user = Identity.UserGetByUserId(user.getId());
         UserPersonalInfo updatedPII = createUserNamePII(user.getNickName(), user.getId());
         user.setUsername(updatedPII.getId());
-        response = HttpclientHelper.PureHttpResponse(url, JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        Validator.Validate("validate response error message", true,
-                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response = HttpclientHelper.GetHttpResponse(url, JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
+        Validator.Validate("validate response error code", 200, response.getStatusLine().getStatusCode());
+        response.close();
 
+        user = Identity.UserGetByUserId(user.getId());
         updatedPII = createUserNamePII(RandomHelper.randomAlphabetic(15), user.getId());
         user.setUsername(updatedPII.getId());
         Identity.UserPut(user);
     }
 
     @Test(groups = "dailies")
+    // https://oculus.atlassian.net/browse/SER-692
     public void testCheckName() throws Exception {
         User user = Identity.UserPostDefault();
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(15) ,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(20),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
 
         UserPersonalInfo loginName = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
         UserLoginName userLoginName = (UserLoginName)JsonHelper.JsonNodeToObject(loginName.getValue(), UserLoginName.class);
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + userLoginName.getUserName() ,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + userLoginName.getUserName(),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator duplicate username", 409, response.getStatusLine().getStatusCode());
         response.close();
 
-        response =  HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(2) ,
+        response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(2),
+                "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validator username length", 200, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(1),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator username length", 400, response.getStatusLine().getStatusCode());
         response.close();
 
-        response =  HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(50) ,
+        response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(50),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator username length", 400, response.getStatusLine().getStatusCode());
         response.close();
 
-        response =  HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomNumeric(2) + RandomHelper.randomAlphabetic(10) ,
+        response =  HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomNumeric(2) + RandomHelper.randomAlphabetic(10),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
-        Validator.Validate("Validator username not start with string", 400, response.getStatusLine().getStatusCode());
+        Validator.Validate("Validator username not start with string", 200, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        RandomHelper.randomAlphabetic(1) + RandomHelper.randomNumeric(2) + "_" + "-." + RandomHelper.randomAlphabetic(1),
+                "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username can contain letters, numbers, spaces, dashes, underscores, and periods", 200, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        (RandomHelper.randomAlphabetic(5) + "%20%20" + RandomHelper.randomAlphabetic(1)), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username should not contain consecutive space", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        URLEncoder.encode(RandomHelper.randomAlphabetic(5) + "__" + RandomHelper.randomAlphabetic(1), "UTF-8"), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username should not contain consecutive underscore", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        URLEncoder.encode(RandomHelper.randomAlphabetic(5) + "--" + RandomHelper.randomAlphabetic(1), "UTF-8"), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username should not contain consecutive dashes", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        URLEncoder.encode(RandomHelper.randomAlphabetic(5) + ".." + RandomHelper.randomAlphabetic(1), "UTF-8"), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username should not contain consecutive periods", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        RandomHelper.randomAlphabetic(1) + RandomHelper.randomNumeric(2) + "%20" + "-." + RandomHelper.randomAlphabetic(1),
+                "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username can not contain single space", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        RandomHelper.randomAlphabetic(1), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username length should be larger than 2", 400, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = HttpclientHelper.GetHttpResponse(
+                Identity.IdentityV1UserURI + "/check-username/" +
+                        RandomHelper.randomAlphabetic(2), "", HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("Validate username length can equal to 2", 200, response.getStatusLine().getStatusCode());
         response.close();
     }
 
@@ -280,12 +393,12 @@ public class postUser {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
 
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + IdentityModel.DefaultEmail().getInfo(),
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + IdentityModel.DefaultEmail().getInfo(),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
 
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomNumeric(15),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomNumeric(15),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 400, response.getStatusLine().getStatusCode());
         response.close();
@@ -307,12 +420,12 @@ public class postUser {
         user.setEmails(links);
         user = Identity.UserPut(user);
 
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + IdentityModel.DefaultEmail().getInfo(),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + IdentityModel.DefaultEmail().getInfo(),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
 
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomNumeric(15),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomNumeric(15),
                 "", HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("Validator randomUsername valid", 400, response.getStatusLine().getStatusCode());
         response.close();
@@ -349,10 +462,23 @@ public class postUser {
 
         // todo:    Need to check mail is sent
         user.getAddresses().clear();
+        user = Identity.UserPut(user);
+
+        UserPersonalInfo unicodeAddressPII2 = IdentityModel.DefaultUserPersonalInfoUnicodeAddress();
+        unicodeAddressPII2 = Identity.UserPersonalInfoPost(user.getId(), unicodeAddressPII2);
+        Address getAddress = (Address)JsonHelper.JsonNodeToObject(unicodeAddressPII2.getValue(), Address.class);
+        assert getAddress.getCity().equalsIgnoreCase("黄埔区");
+        UserPersonalInfoLink link3 = new UserPersonalInfoLink();
+        link3.setIsDefault(true);
+        link3.setUserId(user.getId());
+        link3.setLabel(RandomHelper.randomAlphabetic(15));
+        link3.setValue(unicodeAddressPII2.getId());
+        user.getAddresses().add(link3);
         Identity.UserPut(user);
     }
 
     @Test(groups = "dailies")
+    // https://oculus.atlassian.net/browse/SER-645
     public void testUserPutUsername() throws Exception {
         User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
 
@@ -361,6 +487,13 @@ public class postUser {
         UserPersonalInfo usernameInfo = IdentityModel.DefaultUserPersonalInfoUsername();
         usernameInfo = Identity.UserPersonalInfoPost(user.getId(), usernameInfo);
         user.setUsername(usernameInfo.getId());
+        Identity.UserPut(user);
+
+        // todo:    Change username to new unicode value
+        user = Identity.UserGetByUserId(user.getId());
+        UserPersonalInfo nameInfo = IdentityModel.DefaultUnicodeUserPersonalInfoName();
+        nameInfo = Identity.UserPersonalInfoPost(user.getId(), nameInfo);
+        user.setName(nameInfo.getId());
         Identity.UserPut(user);
     }
 
@@ -408,7 +541,7 @@ public class postUser {
         nvps.add(new BasicNameValuePair("X-Email-Notification", "true"));
 
         // todo:    check mail is sent
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
@@ -416,7 +549,7 @@ public class postUser {
         // todo:    check mail is sent
         user = Identity.UserGetByUserId(user.getId());
         user.setStatus("ACTIVE");
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
         response.close();
@@ -424,19 +557,19 @@ public class postUser {
 
     @Test(groups = "dailies")
     public void testCheckUserNameAndEmail() throws Exception {
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomAlphabetic(15) + "@gmail.com",
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-email/" + RandomHelper.randomAlphabetic(15) + "@gmail.com",
                 "", HttpclientHelper.HttpRequestType.post, null);
         Validator.Validate("Validate email verification", response.getStatusLine().getStatusCode(), 200);
         response.close();
 
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(15),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/check-username/" + RandomHelper.randomAlphabetic(15),
                 "", HttpclientHelper.HttpRequestType.post, null);
         Validator.Validate("Validate usernmae verification", response.getStatusLine().getStatusCode(), 200);
         response.close();
 
         User user = Identity.UserPostDefault();
 
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 "", HttpclientHelper.HttpRequestType.get, null);
         Validator.Validate("Validate usernmae verification", response.getStatusLine().getStatusCode(), 403);
         response.close();
@@ -463,7 +596,7 @@ public class postUser {
 
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+        CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validate Response code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "Field value is invalid.";
@@ -475,18 +608,50 @@ public class postUser {
         user.getEmails().clear();
         user.getEmails().add(link);
         userPersonalInfo = Identity.UserPersonalInfoPut(user.getId(), userPersonalInfo);
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validate Response code", 200, response.getStatusLine().getStatusCode());
         response.close();
 
         user = Identity.UserGetByUserId(user.getId());
         user.getEmails().clear();
-        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+        response = HttpclientHelper.GetHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()),
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validate Response code", 400, response.getStatusLine().getStatusCode());
         Validator.Validate("Validate response error message", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testUserPartialUpdate() throws Exception {
+        User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
+
+        User partialUser = new User();
+        partialUser.setId(user.getId());
+        partialUser.setCountryOfResidence(new CountryId("US"));
+        user = Identity.UserPartialPost(partialUser);
+
+        assert user.getCountryOfResidence().getValue().equalsIgnoreCase("US");
+        assert user.getEmails().size() == 1;
+
+        User newPartialUser = new User();
+        newPartialUser.setId(user.getId());
+        newPartialUser.setEmails(user.getEmails());
+
+        String label = "testLabel";
+        for(UserPersonalInfoLink link : newPartialUser.getEmails()) {
+            link.setLabel(label);
+        }
+        user = Identity.UserPartialPost(newPartialUser);
+        assert user.getEmails().size() == 1;
+        assert user.getEmails().get(0).getLabel().equalsIgnoreCase(label);
+
+        for (UserPersonalInfoLink link : newPartialUser.getEmails()) {
+            link.setLabel(null);
+        }
+        user = Identity.UserPartialPost(newPartialUser);
+        assert user.getEmails().size() == 1;
+        assert user.getEmails().get(0).getLabel() == null;
     }
 
     protected static User createUser(String username, String nickName) throws Exception{

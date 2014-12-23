@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="ping-1" author='shuz' context="PREDEPLOY">
+        <sql><![CDATA[
+            CREATE TABLE ping (
+                id VARCHAR(64) NOT NULL,
+                version INT NOT NULL,
+                message VARCHAR(512) NOT NULL,
+
+                created_time TIMESTAMP NOT NULL,
+                created_by VARCHAR(64) NOT NULL,
+                modified_time TIMESTAMP,
+                modified_by VARCHAR(64),
+
+                PRIMARY KEY(id)
+            );
+            ]]>
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

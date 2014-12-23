@@ -3,21 +3,19 @@ import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.enums.OfferAttributeType
 import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.enums.Status
-import com.junbo.catalog.spec.model.attribute.ItemAttribute
-import com.junbo.catalog.spec.model.attribute.ItemAttributeGetOptions
-import com.junbo.catalog.spec.model.attribute.OfferAttribute
-import com.junbo.catalog.spec.model.attribute.OfferAttributeGetOptions
-import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
+import com.junbo.catalog.spec.model.attribute.*
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
+import com.junbo.catalog.spec.model.item.ItemsGetOptions
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.ItemId
+import com.junbo.common.id.ItemRevisionId
+import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Organization
@@ -25,17 +23,20 @@ import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.casey.CaseyFacade
+import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.utils.ItemBuilder
+import com.junbo.store.clientproxy.utils.ReviewBuilder
+import com.junbo.store.common.cache.Cache
 import com.junbo.store.common.utils.CommonUtils
+import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
-import com.junbo.store.spec.model.browse.document.AggregatedRatings
+import com.junbo.store.spec.model.browse.document.RevisionNote
 import com.junbo.store.spec.model.catalog.Offer
-import com.junbo.store.spec.model.catalog.data.CaseyData
-import com.junbo.store.spec.model.catalog.data.ItemData
-import com.junbo.store.spec.model.catalog.data.OfferData
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
@@ -50,6 +51,11 @@ class CatalogFacadeImpl implements CatalogFacade {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CatalogFacadeImpl)
 
+    private final int ITEM_REVISION_PAGE_SIZE = 100
+
+    @Value('${store.item.revisionNote.size}')
+    private int revisionNoteSize
+
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
@@ -59,62 +65,15 @@ class CatalogFacadeImpl implements CatalogFacade {
     @Resource(name = 'storeItemBuilder')
     private ItemBuilder itemBuilder
 
-    @Override
-    Promise<Item> getItem(ItemId itemId, ApiContext apiContext) {
-        ItemData itemData = new ItemData()
-        itemData.genres = []
-        Item catalogItem
-        Promise.pure().then {
-            resourceContainer.itemResource.getItem(itemId.value).then { Item e ->
-                catalogItem = e
-                itemData.item = e
-                return Promise.pure()
-            }
-        }.then { // get developer
-            getOrganization(itemData.item?.ownerId).then { Organization organization ->
-                itemData.developer = organization
-                return Promise.pure()
-            }
-        }.then {  // get genres
-            Promise.each(catalogItem.genres) { String genresId ->
-                getItemAttribute(genresId, apiContext).then { ItemAttribute itemAttribute ->
-                    if (itemAttribute != null) {
-                        itemData.genres << itemAttribute
-                    }
-                    return Promise.pure()
-                }
-            }
-        }.then {
-            if (catalogItem.currentRevisionId == null) {
-                return Promise.pure()
-            }
-            resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision e ->
-                itemData.currentRevision = e
-                return Promise.pure()
-            }
-        }.then {
-            // get offer
-            resourceContainer.offerResource.getOffers(new OffersGetOptions(itemId: catalogItem.itemId)).then { Results<com.junbo.catalog.spec.model.offer.Offer> offerResults ->
-                if (offerResults.items.size() > 1) {
-                    LOGGER.warn('name=Store_Multiple_Offers_Found, item={}, useOffer={}', catalogItem.itemId, offerResults.items[0].offerId)
-                }
-                if (CollectionUtils.isEmpty(offerResults.items)) {
-                    return Promise.pure()
-                }
-                getOfferData(offerResults.items[0], apiContext).then { OfferData offerData ->
-                    itemData.offer = offerData
-                    return Promise.pure()
-                }
-            }
-        }.then {
-            return getCaseyData(catalogItem.getId(), apiContext).then { CaseyData caseyData ->
-                itemData.caseyData = caseyData
-                return Promise.pure()
-            }
-        }.then {
-            return Promise.pure(itemBuilder.buildItem(itemData, apiContext))
-        }
-    }
+    @Resource(name = 'storeReviewBuilder')
+    private ReviewBuilder reviewBuilder
+
+    @Resource(name = 'storeAppErrorUtils')
+    private AppErrorUtils appErrorUtils
+
+    @Resource(name = 'storeItemLatestRevisionIdsCache')
+    private Cache<ItemId, List<ItemRevisionId>> itemRevisionIdCache
+
 
     @Override
     Promise<Offer> getOffer(String offerId, LocaleId locale) {
@@ -150,13 +109,15 @@ class CatalogFacadeImpl implements CatalogFacade {
     Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode, ApiContext apiContext) {
         if (versionCode == null) {
             return resourceContainer.itemResource.getItem(itemId.value).then { Item catalogItem ->
-                return resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
+                return resourceContainer.itemRevisionResource.getItemRevision(catalogItem.currentRevisionId,
+                        new ItemRevisionGetOptions(locale: apiContext.locale.getId().value)).then { ItemRevision itemRevision ->
                     return Promise.pure(itemRevision)
                 }
             }
         }
 
-        ItemRevisionsGetOptions options = new ItemRevisionsGetOptions(status: Status.APPROVED.name(), itemIds: [itemId.value] as Set)
+        ItemRevisionsGetOptions options = new ItemRevisionsGetOptions(status: Status.APPROVED.name(),
+                itemIds: [itemId.value] as Set, locale: apiContext.locale.getId().value)
         ItemRevision result
         CommonUtils.loop {
             resourceContainer.itemRevisionResource.getItemRevisions(options).then { Results<ItemRevision> itemRevisionResults ->
@@ -213,46 +174,35 @@ class CatalogFacadeImpl implements CatalogFacade {
         }
     }
 
-    private Promise<OfferData> getOfferData(com.junbo.catalog.spec.model.offer.Offer catalogOffer, ApiContext apiContext) {
-        OfferData result = new OfferData()
-        result.offer = catalogOffer
-        result.categories = []
-        Promise.pure().then { // get offer revision
-            if (catalogOffer.currentRevisionId == null) {
-                return Promise.pure()
+    @Override
+    Promise<Item> getCatalogItemByPackageName(String packageName, Integer versionCode, String signatureHash) {
+        ItemsGetOptions option = new ItemsGetOptions(packageName: packageName)
+        return resourceContainer.itemResource.getItems(option).then { Results<Item> itemResults ->
+            if (itemResults.items.isEmpty()) {
+                throw AppErrors.INSTANCE.itemNotFoundWithPackageName().exception()
             }
-            resourceContainer.offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions()).then { OfferRevision e ->
-                result.offerRevision = e
-                return Promise.pure()
-            }
-        }.then { // get categories
-            Promise.each(catalogOffer.categories) { String categoryId ->
-                getOfferAttribute(categoryId, apiContext).then { OfferAttribute offerAttribute ->
-                    if (offerAttribute != null) {
-                        result.categories << offerAttribute
-                    }
-                    return Promise.pure()
-                }
-            }
-        }.then { // get publisher
-            getOrganization(catalogOffer.ownerId).then { Organization organization->
-                result.publisher = organization
-                return Promise.pure()
-            }
-        }.then {
-            return Promise.pure(result)
-        }
+            return Promise.pure(itemResults.items[0])
+        } // todo verify the signatureHash if versionCode & signatureHash is provided
     }
 
-    private Promise<CaseyData> getCaseyData(String itemId, ApiContext apiContext) {
-        CaseyData result = new CaseyData()
-        caseyFacade.getAggregatedRatings(new ItemId(itemId), apiContext).then { List<AggregatedRatings> aggregatedRatings ->
-            result.aggregatedRatings = aggregatedRatings
-            return Promise.pure(result)
+    @Override
+    Promise<List<RevisionNote>> getRevisionNotes(ItemId itemId, ApiContext apiContext) {
+        getLatestItemRevisions(itemId, apiContext).then { List<ItemRevision> itemRevisionList ->
+            List<RevisionNote> revisionNoteList = itemRevisionList.collect { ItemRevision itemRevision ->
+                itemBuilder.buildRevisionNote(
+                        itemRevision.locales?.get(apiContext.locale.getId().value)?.releaseNotes,
+                        itemRevision.binaries?.get(apiContext.platform.value),
+                        itemRevision.updatedTime
+                )
+            }
+            return Promise.pure(revisionNoteList)
         }
     }
 
     private Promise<Organization> getOrganization(OrganizationId organizationId) {
+        if (organizationId == null) {
+            return Promise.pure()
+        }
         Promise.pure().then {
             resourceContainer.organizationResource.get(organizationId, new OrganizationGetOptions())
         }.recover { Throwable ex ->
@@ -286,6 +236,63 @@ class CatalogFacadeImpl implements CatalogFacade {
                 offer.isFree = false
                 break;
             // todo handle non-free prices
+        }
+    }
+
+    private Promise<List<ItemRevision>> getLatestItemRevisions(ItemId itemId, ApiContext apiContext) {
+        List<ItemRevisionId> cached = itemRevisionIdCache.get(itemId)
+
+        if (cached != null) { // direct get revision by revision ids
+            Set<String> revisionIdSet = new HashSet<>(cached.collect {ItemRevisionId itemRevisionId -> itemRevisionId.value})
+            return resourceContainer.itemRevisionResource.getItemRevisions(new ItemRevisionsGetOptions(locale: apiContext.locale.getId().value,
+                revisionIds: revisionIdSet)).then { Results<ItemRevision> itemRevisionResults ->
+                Map<ItemRevisionId, ItemRevision> idItemRevisionMap = [:] as Map
+                List<ItemRevision> result = [] as List
+
+                itemRevisionResults.items.each { ItemRevision itemRevision ->
+                    idItemRevisionMap[new ItemRevisionId(itemRevision.getId())] = itemRevision
+                }
+                cached.each { ItemRevisionId itemRevisionId ->
+                    result << idItemRevisionMap[itemRevisionId]
+                }
+
+                return Promise.pure(result)
+            }
+        }
+
+        String cursor = null
+        TreeMap<Integer, ItemRevision> versionCodeToItemRevision = [:] as TreeMap
+        CommonUtils.loop { // get top n item revision with highest version code, by getting all approved item revision.
+            resourceContainer.itemRevisionResource.getItemRevisions(
+                    new ItemRevisionsGetOptions(cursor: cursor, status: Status.APPROVED.name(), size: ITEM_REVISION_PAGE_SIZE,
+                            itemIds: [itemId.value] as Set, locale: apiContext.getLocale().getId().value)).then { Results<ItemRevision> itemRevisionResults ->
+
+                itemRevisionResults.items.each { ItemRevision itemRevision ->
+                    Integer integer = itemBuilder.getVersionCode(itemRevision?.getBinaries()?.get(apiContext.platform.value))
+                    if (integer != null) {
+                        ItemRevision exists = versionCodeToItemRevision[integer] as ItemRevision
+                        if (exists == null || exists.updatedTime.before(itemRevision.updatedTime)) {
+                            versionCodeToItemRevision[integer] = itemRevision
+                        }
+                        if (versionCodeToItemRevision.size() > revisionNoteSize) {
+                            versionCodeToItemRevision.pollFirstEntry()
+                        }
+                    }
+                }
+
+                cursor = CommonUtils.getQueryParam(itemRevisionResults.next?.href, 'cursor')
+                if (itemRevisionResults.items.isEmpty() || StringUtils.isEmpty(cursor)) {
+                    return Promise.pure(Promise.BREAK)
+                }
+                return Promise.pure()
+            }
+        }.then {
+            List<ItemRevision> result = [] as List
+            versionCodeToItemRevision.reverseEach { Map.Entry<Integer, ItemRevision> entry ->
+                result << entry.value
+            }
+            itemRevisionIdCache.put(itemId, result.collect {ItemRevision itemRevision -> new ItemRevisionId(itemRevision.getId())})
+            return Promise.pure(result)
         }
     }
 }

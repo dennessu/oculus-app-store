@@ -12,7 +12,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserTFABackupCodeAttemptFilter
 import com.junbo.identity.core.service.validator.UserTFABackupCodeAttemptValidator
-import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeAttemptRepository
+import com.junbo.identity.service.UserTFAPhoneBackupCodeAttemptService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserTFABackupCodeAttempt
 import com.junbo.identity.spec.v1.option.list.UserTFABackupCodeAttemptListOptions
@@ -36,7 +36,7 @@ import javax.transaction.Transactional
 @Transactional
 class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptResource {
     @Autowired
-    private UserTFAPhoneBackupCodeAttemptRepository userTFABackupCodeAttemptRepository
+    private UserTFAPhoneBackupCodeAttemptService userTFAPhoneBackupCodeAttemptService
 
     @Autowired
     private UserTFABackupCodeAttemptFilter userTFABackupCodeAttemptFilter
@@ -56,11 +56,11 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
     @Override
     Promise<UserTFABackupCodeAttempt> create(UserId userId, UserTFABackupCodeAttempt userTFABackupCodeAttempt) {
         if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFABackupCodeAttempt == null) {
-            throw new IllegalArgumentException('userTFABackupCodeAttempt is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         userTFABackupCodeAttempt = userTFABackupCodeAttemptFilter.filterForCreate(userTFABackupCodeAttempt)
@@ -94,7 +94,11 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
         }
 
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+
+        if (userTFABackupCodeAttemptId == null) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFABackupCodeAttemptId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -116,7 +120,10 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
     @Override
     Promise<Results<UserTFABackupCodeAttempt>> list(UserId userId, UserTFABackupCodeAttemptListOptions listOptions) {
         if (userId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
+        }
+        if (listOptions == null) {
+            throw new IllegalArgumentException('listOptions is null')
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -146,7 +153,7 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return template.execute(new TransactionCallback<Promise<UserTFABackupCodeAttempt>>() {
             Promise<UserTFABackupCodeAttempt> doInTransaction(TransactionStatus txnStatus) {
-                return userTFABackupCodeAttemptRepository.create(attempt)
+                return userTFAPhoneBackupCodeAttemptService.create(attempt)
             }
         }
         )
@@ -154,10 +161,10 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
 
     private Promise<List<UserTFABackupCodeAttempt>> search(UserTFABackupCodeAttemptListOptions listOptions) {
         if (listOptions.userId != null) {
-            return userTFABackupCodeAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
+            return userTFAPhoneBackupCodeAttemptService.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Nosupported search operation.')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Not Supported search operation').exception()
         }
     }
 }

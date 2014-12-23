@@ -8,6 +8,11 @@ package com.junbo.test.store.utility;
 // CHECKSTYLE:OFF
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
@@ -16,21 +21,29 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.emulator.casey.spec.model.CaseyEmulatorData;
 import com.junbo.identity.spec.v1.model.Organization;
+import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.order.spec.model.Order;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
-import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.*;
 import com.junbo.store.spec.model.browse.*;
-import com.junbo.store.spec.model.external.casey.CaseyAggregateRating;
-import com.junbo.store.spec.model.external.casey.CaseyReview;
-import com.junbo.store.spec.model.external.casey.cms.CmsPage;
-import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
-import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
+import com.junbo.store.spec.model.browse.document.Tos;
+import com.junbo.store.spec.model.external.sewer.SewerParam;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyLink;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsPage;
+import com.junbo.store.spec.model.external.sewer.casey.cms.CmsSchedule;
+import com.junbo.store.spec.model.iap.IAPConsumeItemRequest;
+import com.junbo.store.spec.model.iap.IAPConsumeItemResponse;
+import com.junbo.store.spec.model.iap.IAPParam;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
@@ -56,16 +69,19 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.payment.utility.PaymentTestDataProvider;
 import com.junbo.test.store.apihelper.CaseyEmulatorService;
+import com.junbo.test.store.apihelper.CaseyService;
 import com.junbo.test.store.apihelper.LoginService;
-import com.junbo.test.store.apihelper.StoreConfigService;
 import com.junbo.test.store.apihelper.StoreService;
 import com.junbo.test.store.apihelper.impl.CaseyEmulatorServiceImpl;
+import com.junbo.test.store.apihelper.impl.CaseyServiceImpl;
 import com.junbo.test.store.apihelper.impl.LoginServiceImpl;
-import com.junbo.test.store.apihelper.impl.StoreConfigServiceImpl;
 import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -75,7 +91,7 @@ import java.util.*;
 
 public class StoreTestDataProvider extends BaseTestDataProvider {
 
-
+    private static ObjectMapper caseyObjectMapper;
     LoginService loginClient = LoginServiceImpl.getInstance();
     StoreService storeClient = StoreServiceImpl.getInstance();
     OfferService offerClient = OfferServiceImpl.instance();
@@ -84,14 +100,20 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     ItemRevisionService itemRevisionClient = ItemRevisionServiceImpl.instance();
     OAuthService oAuthClient = OAuthServiceImpl.getInstance();
     CaseyEmulatorService caseyEmulatorClient = CaseyEmulatorServiceImpl.getInstance();
-    StoreConfigService storeConfigService = StoreConfigServiceImpl.getInstance();
     UserService identityClient = UserServiceImpl.instance();
     OfferAttributeService offerAttributeClient = OfferAttributeServiceImpl.instance();
     ItemAttributeService itemAttributeClient = ItemAttributeServiceImpl.instance();
     OrganizationService organizationClient = OrganizationServiceImpl.instance();
     OrderService orderClient = OrderServiceImpl.getInstance();
+    CaseyService caseyClient = CaseyServiceImpl.getInstance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
+
+    static {
+        caseyObjectMapper = ObjectMapperProvider.createObjectMapper();
+        caseyObjectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        caseyObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
 
     public CreateUserRequest CreateUserRequest() throws Exception {
         return CreateUserRequest(RandomFactory.getRandomStringOfAlphabet(6));
@@ -113,8 +135,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         createUserRequest.setPin("1234");
         createUserRequest.setCor(Country.DEFAULT.toString());
         createUserRequest.setPreferredLocale("en_US");
-
+        Tos tos = loginClient.GetRegisterTos();
+        createUserRequest.setTosAgreed(tos.getTosId());
+        createUserRequest.setNewsPromotionsAgreed(true);
         return createUserRequest;
+    }
+
+    public GetSupportedCountriesResponse GetSupportedCountries() throws Exception{
+        return loginClient.getSupportedCountryCodes();
     }
 
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail,
@@ -127,11 +155,43 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
                     createUserRequest.getEmail());
             assert links != null;
             for (String link : links) {
-                oAuthClient.accessEmailVerifyLink(link);
+                confirmEmail(link);
+                //oAuthClient.accessEmailVerifyLink(link);
             }
         }
 
         return response;
+    }
+
+    public AuthTokenResponse RegisterUser(CreateUserRequest createUserRequest,
+                                          int expectedResponseCode) throws Exception {
+        AuthTokenResponse response = loginClient.CreateUser(createUserRequest, expectedResponseCode);
+        return response;
+    }
+
+    public void verifyEmailLinks(CreateUserRequest createUserRequest, AuthTokenResponse response) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()),
+                createUserRequest.getEmail());
+        assert links != null;
+        Master.getInstance().setEndPointType(Master.EndPointType.Secondary);
+        for (String link : links) {
+            confirmEmail(link);
+            //oAuthClient.accessEmailVerifyLink(link);
+        }
+    }
+
+
+    public ConfirmEmailResponse confirmEmail(String link) throws Exception {
+        ConfirmEmailRequest request = new ConfirmEmailRequest();
+        request.setEvc(getEvcCode(link));
+        return loginClient.confirmEmail(request, 200);
+    }
+
+    private String getEvcCode(String link) {
+        int beginIndex = link.indexOf("?evc=") + "?evc=".length();
+        int endIndex = link.indexOf("&locale=");
+        return link.substring(beginIndex, endIndex);
     }
 
     public Error CreateUserWithError(CreateUserRequest createUserRequest, boolean needVerifyEmail, int expectedResponseCode, String errorCode) throws Exception {
@@ -147,33 +207,36 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return CreateUser(createUserRequest, needVerifyEmail, 200);
     }
 
-    public UserNameCheckResponse CheckUserName(String userName) throws Exception {
+    public UserNameCheckResponse CheckUserName(String userName, String email) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setUsername(userName);
+        request.setEmail(email);
         return loginClient.CheckUserName(request);
     }
 
-    public com.junbo.common.error.Error CheckUserNameWithError(String userName, int expectedResponseCode, String errorCode) throws Exception {
+    public com.junbo.common.error.Error CheckUserNameWithError(String userName, String email,
+                                                               int expectedResponseCode, String errorCode) throws Exception {
         UserNameCheckRequest request = new UserNameCheckRequest();
         request.setUsername(userName);
+        request.setEmail(email);
         return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
     }
 
-    public UserNameCheckResponse CheckEmail(String email) throws Exception {
-        UserNameCheckRequest request = new UserNameCheckRequest();
+    public EmailCheckResponse CheckEmail(String email) throws Exception {
+        EmailCheckRequest request = new EmailCheckRequest();
         request.setEmail(email);
-        return loginClient.CheckUserName(request);
+        return loginClient.CheckEmail(request);
     }
 
     public Error CheckEmailWithError(String email, int expectedResponseCode, String errorCode) throws Exception {
-        UserNameCheckRequest request = new UserNameCheckRequest();
+        EmailCheckRequest request = new EmailCheckRequest();
         request.setEmail(email);
-        return loginClient.CheckUserNameWithError(request, expectedResponseCode, errorCode);
+        return loginClient.CheckEmailWithError(request, expectedResponseCode, errorCode);
     }
 
     public Error SignInWithError(String username, String type, String password, int expectedCode, String errorCode) throws Exception {
         UserSignInRequest userSignInRequest = new UserSignInRequest();
-        userSignInRequest.setUsername(username);
+        userSignInRequest.setEmail(username);
         UserCredential userCredential = new UserCredential();
         userCredential.setType(type);
         userCredential.setValue(password);
@@ -183,7 +246,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public AuthTokenResponse SignIn(String username, String password, int expectedCode) throws Exception {
         UserSignInRequest userSignInRequest = new UserSignInRequest();
-        userSignInRequest.setUsername(username);
+        userSignInRequest.setEmail(username);
         UserCredential userCredential = new UserCredential();
         userCredential.setType("PASSWORD");
         userCredential.setValue(password);
@@ -325,6 +388,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         request.setPurchaseToken(token);
         request.setInstrument(pid);
         request.setOffer(new OfferId(offerId));
+        IAPParam params = null;
 
         if (!StringUtils.isEmpty(pin)) {
             ChallengeAnswer challengeAnswer = new ChallengeAnswer();
@@ -340,19 +404,19 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         }
         if (isIAP) {
             Offer offer = Master.getInstance().getOffer(offerId);
+            request.setIsIAP(true);
             OfferRevision offerRevision = Master.getInstance().getOfferRevision(offer.getCurrentRevisionId());
             Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
             ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
             Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
             ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
-            IAPParams params = new IAPParams();
+            params = new IAPParam();
             params.setPackageName(hostItemRevision.getPackageName());
             // Todo:    This value is workaround
             params.setPackageSignatureHash(UUID.randomUUID().toString());
-            params.setPackageVersion(UUID.randomUUID().toString());
-            request.setIapParams(params);
+            params.setPackageVersion(RandomFactory.getRandomInteger(0, 1000));
         }
-        return storeClient.preparePurchase(request, expectedCode);
+        return storeClient.preparePurchase(request, params, expectedCode);
     }
 
     public PreparePurchaseResponse preparePurchase(String token, String offerId, PaymentInstrumentId piid,
@@ -366,7 +430,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         request.setPurchaseToken(token);
         request.setInstrument(piid);
         request.setOffer(new OfferId(offerId));
-
+        IAPParam params = null;
         if (!StringUtils.isEmpty(pin)) {
             ChallengeAnswer challengeAnswer = new ChallengeAnswer();
             challengeAnswer.setType("PIN");
@@ -386,14 +450,13 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
             ItemRevision itemRevision = Master.getInstance().getItemRevision(item.getCurrentRevisionId());
             Item hostItem = itemClient.getItem(itemRevision.getIapHostItemIds().get(0));
             ItemRevision hostItemRevision = itemRevisionClient.getItemRevision(hostItem.getCurrentRevisionId());
-            IAPParams params = new IAPParams();
+            params = new IAPParam();
             params.setPackageName(hostItemRevision.getPackageName());
             // Todo:    This value is workaround
             params.setPackageSignatureHash(UUID.randomUUID().toString());
-            params.setPackageVersion(UUID.randomUUID().toString());
-            request.setIapParams(params);
+            params.setPackageVersion(RandomFactory.getRandomInteger(0, 1000));
         }
-        return storeClient.preparePurchaseWithException(request, expectedResponseCode, errorCode);
+        return storeClient.preparePurchaseWithException(request, params, expectedResponseCode, errorCode);
     }
 
     public String getOfferIdByName(String offerName) throws Exception {
@@ -416,14 +479,24 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     }
 
     public Offer getOfferByOfferId(String offerId) throws Exception {
+        return getOfferByOfferId(offerId, false);
+    }
+
+    public Offer getOfferByOfferId(String offerId, boolean ignoreError) throws Exception {
         Offer offer = Master.getInstance().getOffer(offerId);
         if (offer == null) {
-            offer = offerClient.getOffer(offerId);
+            try {
+                offer = offerClient.getOffer(offerId, ignoreError ? 0 : 200);
+            } catch (Exception ex) {
+                if (!ignoreError) {
+                    throw ex;
+                }
+            }
         }
         return offer;
     }
 
-    public OfferRevision getOfferRevision(String offerRevisionId) throws Exception{
+    public OfferRevision getOfferRevision(String offerRevisionId) throws Exception {
         OfferRevision offerRevision = Master.getInstance().getOfferRevision(offerRevisionId);
         if (offerRevision == null) {
             offerRevision = offerRevisionClient.getOfferRevision(offerRevisionId);
@@ -431,10 +504,20 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return offerRevision;
     }
 
-    public Item getItemByItemId(String itemId) throws Exception{
+    public Item getItemByItemId(String itemId) throws Exception {
+        return getItemByItemId(itemId, false);
+    }
+
+    public Item getItemByItemId(String itemId, boolean ignoreError) throws Exception {
         Item item = Master.getInstance().getItem(itemId);
         if (item == null) {
-            item = itemClient.getItem(itemId);
+            try {
+                item = itemClient.getItem(itemId, ignoreError ? 0 : 200);
+            } catch (Exception ex) {
+                if (!ignoreError) {
+                    throw ex;
+                }
+            }
         }
         return item;
     }
@@ -447,10 +530,55 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return itemRevision;
     }
 
+
+    public List<ItemRevision> getItemRevisions(ItemId itemId) throws Exception {
+        if (Master.getInstance().getItemRevisions(itemId.getValue()) != null) {
+            return Master.getInstance().getItemRevisions(itemId.getValue());
+        }
+
+        List<ItemRevision> revisionList = new ArrayList<>();
+        HashMap<String, List<String>> params = new HashMap<>();
+        params.put("itemId", Collections.singletonList(itemId.getValue()));
+        params.put("status", Collections.singletonList("APPROVED"));
+        params.put("count", Collections.singletonList(String.valueOf(100)));
+        params.put("locale", Collections.singletonList("en_US"));
+
+        while (true) {
+            Results<ItemRevision> revisionResults = itemRevisionClient.getItemRevisions(params);
+            revisionList.addAll(revisionResults.getItems());
+            String cursor = null;
+            if (revisionResults.getNext() != null && revisionResults.getNext().getHref() != null) {
+                for (NameValuePair nameValuePair : URLEncodedUtils.parse(new URI(revisionResults.getNext().getHref()), "UTF-8")) {
+                    if (nameValuePair.getName().equalsIgnoreCase("cursor")) {
+                        cursor = nameValuePair.getValue();
+                        break;
+                    }
+                }
+            }
+            if (StringUtils.isEmpty(cursor) || revisionResults.getItems().isEmpty()) {
+                break;
+            }
+            params.put("cursor", Collections.singletonList(cursor));
+        }
+
+        Master.getInstance().addItemIdToItemRevisions(itemId.getValue(), revisionList);
+        return revisionList;
+    }
+
+    public ItemRevision postItemRevision(ItemRevision itemRevision) throws Exception {
+        itemRevision.setId(null);
+        itemRevision.setRev(null);
+        itemRevision.setCreatedTime(null);
+        itemRevision.setUpdatedTime(null);
+        itemRevision.setLocaleAccuracy(null);
+        itemRevision.setStatus("DRAFT");
+        return itemRevisionClient.postItemRevision(itemRevision, 200, true);
+    }
+
     public ItemAttribute getItemAttribute(String itemAttributeId) throws Exception {
         ItemAttribute itemAttribute = Master.getInstance().getItemAttribute(itemAttributeId);
         if (itemAttribute == null) {
-            itemAttribute = itemAttributeClient.getItemAttribute(itemAttributeId);
+            itemAttribute = itemAttributeClient.getItemAttribute(itemAttributeId, 0, false);
         }
         return itemAttribute;
     }
@@ -458,7 +586,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public OfferAttribute getOfferAttribute(String offerAttributeId) throws Exception {
         OfferAttribute offerAttribute = Master.getInstance().getOfferAttribute(offerAttributeId);
         if (offerAttribute == null) {
-            offerAttribute = offerAttributeClient.getOfferAttribute(offerAttributeId);
+            offerAttribute = offerAttributeClient.getOfferAttribute(offerAttributeId, 0, false);
         }
         return offerAttribute;
     }
@@ -474,19 +602,18 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.commitPurchase(commitPurchaseRequest, expectedResponseCode);
     }
 
-    public IAPEntitlementConsumeResponse iapConsumeEntitlement(EntitlementId entitlementId, String offerId)
+    public IAPConsumeItemResponse iapConsumeEntitlement(String sku, String offerId, IAPParam iapParam)
             throws Exception {
-        IAPEntitlementConsumeRequest request = new IAPEntitlementConsumeRequest();
+        IAPConsumeItemRequest request = new IAPConsumeItemRequest();
         request.setTrackingGuid(UUID.randomUUID().toString());
-        request.setEntitlement(entitlementId);
+        request.setSku(sku);
         request.setUseCountConsumed(1);
         Offer offer = offerClient.getOffer(offerId);
         OfferRevision offerRevision = offerRevisionClient.getOfferRevision(offer.getCurrentRevisionId());
         Item item = itemClient.getItem(offerRevision.getItems().get(0).getItemId());
         ItemRevision itemRevision = itemRevisionClient.getItemRevision(item.getCurrentRevisionId());
         String packageName = itemRevision.getPackageName();
-        request.setPackageName(packageName);
-        return storeClient.iapConsumeEntitlement(request);
+        return storeClient.iapConsumeEntitlement(request, iapParam);
     }
 
     private Address getBillingAddress() throws Exception {
@@ -537,11 +664,26 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     public AuthTokenResponse signIn(String userName) throws Exception {
         UserSignInRequest request = new UserSignInRequest();
-        request.setUsername(userName);
+        request.setEmail(userName);
         UserCredential userCredential = new UserCredential();
         userCredential.setType("password");
         userCredential.setValue("Test1234");
         request.setUserCredential(userCredential);
+        return loginClient.signIn(request);
+    }
+
+    public AuthTokenResponse signInWithLogin(String username, String chanllengeType, TosId tosId) throws Exception {
+        UserSignInRequest request = new UserSignInRequest();
+        request.setEmail(username);
+        UserCredential userCredential = new UserCredential();
+        userCredential.setType("password");
+        userCredential.setValue("Test1234");
+        request.setUserCredential(userCredential);
+
+        ChallengeAnswer challengeAnswer = new ChallengeAnswer();
+        challengeAnswer.setType(chanllengeType);
+        challengeAnswer.setAcceptedTos(tosId);
+        request.setChallengeAnswer(challengeAnswer);
         return loginClient.signIn(request);
     }
 
@@ -580,10 +722,6 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.verifyEmail(verifyEmailRequest, exceptedResponseCode);
     }
 
-    public EntitlementsGetResponse getEntitlement() throws Exception {
-        return storeClient.getEntitlement();
-    }
-
     public Error getTokenWithError(String refreshToken, int expectedCode, String errorCode) throws Exception {
         AuthTokenRequest request = new AuthTokenRequest();
         request.setRefreshToken(refreshToken);
@@ -619,6 +757,10 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getTOC();
     }
 
+    public TocResponse getToc(int expectedCode) throws Exception {
+        return storeClient.getTOC(expectedCode);
+    }
+
     public ListResponse getList(ListRequest request) throws Exception {
         return storeClient.getList(request);
     }
@@ -644,6 +786,12 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         AcceptTosRequest request = new AcceptTosRequest();
         request.setTosId(tosId);
         return storeClient.acceptTos(request);
+    }
+
+    public AcceptTosResponse acceptTos(TosId tosId, int expectedCode) throws Exception {
+        AcceptTosRequest request = new AcceptTosRequest();
+        request.setTosId(tosId);
+        return storeClient.acceptTos(request, expectedCode);
     }
 
     public DeliveryResponse getDelivery(ItemId itemId) throws Exception {
@@ -691,8 +839,28 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return caseyEmulatorClient.postEmulatorData(data);
     }
 
-    public void clearCache() throws Exception {
-        storeConfigService.clearCache();
+    public void PrepareUsernameEmailBlocker(String username, String email) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_MIGRATION);
+        UsernameMailBlocker usernameMailBlocker = new UsernameMailBlocker();
+        usernameMailBlocker.setEmail(email);
+        usernameMailBlocker.setUsername(username);
+
+        identityClient.postUsernameEmailBlocker(usernameMailBlocker);
+    }
+
+    public void UpdateTos(String title, String status) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
+        identityClient.updateTos(title, status);
+    }
+
+    public CaseyEmulatorData postCaseyEmulatorData(List<CmsSchedule> cmsSchedule, List<CmsPage> pages, Map<String, List<OfferId>> offerIds) throws Exception {
+        CaseyEmulatorData data = new CaseyEmulatorData();
+        data.setCaseyAggregateRatings(new ArrayList<CaseyAggregateRating>());
+        data.setCaseyReviews(new ArrayList<CaseyReview>());
+        data.setCmsSchedules(cmsSchedule);
+        data.setCmsPages(pages);
+        data.setCmsPageOffers(offerIds);
+        return caseyEmulatorClient.postEmulatorData(data);
     }
 
     public DeliveryResponse getDeliveryByOfferId(String offerId) throws Exception {
@@ -725,4 +893,70 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return Master.getInstance().getOrder(IdFormatter.encodeId(orderId));
     }
 
+    public AddReviewResponse addReview(AddReviewRequest request, int expectedCode) throws Exception {
+        return storeClient.addReview(request, expectedCode);
+    }
+
+    public CaseyResults<CmsPage> getCmsPage(String path, String label, int expectedCode) throws Exception {
+        return caseyEmulatorClient.getCmsPages(path, label, expectedCode);
+    }
+
+    public void setupCmsOffers(String cmsPageName, List<String> slots, List<List<OfferId>> offers) throws Exception {
+        Map<String, List<OfferId>> cmsOffers = new HashMap<>();
+        for (int i = 0; i < slots.size(); ++i) {
+            cmsOffers.put(cmsPageName + "-" + slots.get(i), offers.get(i));
+        }
+        postCaseyEmulatorData(null, null, cmsOffers);
+    }
+
+    public void resetEmulatorData() throws Exception {
+        caseyEmulatorClient.resetEmulatorData();
+    }
+
+    public Set<String> getInitialItems(String pageName, String slot) throws Exception {
+        SewerParam sewerParam = new SewerParam();
+        sewerParam.setCountry("US");
+        sewerParam.setLocale("en_US");
+        CaseyResults<JsonNode> results = caseyClient.searchCmsOffers(pageName, slot, "ANDROID", sewerParam);
+        Set<String> itemIds = new HashSet<>();
+        for (JsonNode result : results.getItems()) {
+            if (result.get("items") != null) {
+                for (int i =0;i < result.get("items").size();++i) {
+                    itemIds.add(result.get("items").get(i).get("self").get("id").asText());
+                }
+            }
+        }
+        return itemIds;
+    }
+
+    public List<String> getExpectedInitialDownloadItemIds(String path, String slot, String contentName) throws Exception {
+        SewerParam sewerParam = new SewerParam();
+        sewerParam.setCountry("US");
+        sewerParam.setLocale("en_US");
+        sewerParam.setExpand("(results(schedule))");
+        CaseyResults<JsonNode> results = caseyClient.getCmsPage(path, null, sewerParam);
+        Set<String> added = new HashSet<>();
+        List<String> itemIds = new ArrayList<>();
+        for (JsonNode result : results.getItems()) {
+            CmsPage cmsPage = caseyObjectMapper.readValue(result.traverse(), new TypeReference<CmsPage>() {});
+            for (CaseyLink link : cmsPage.getSchedule().getSlots().get(slot).getContent().getContents().get(contentName).getLinks()) {
+                if (!added.contains(link.getId())) {
+                    itemIds.add(link.getId());
+                    added.add(link.getId());
+                }
+            }
+        }
+        return itemIds;
+    }
+
+    public InitialDownloadItemsResponse getInitialDownloadItems() throws Exception {
+        return storeClient.getInitialDownloadItemsResponse();
+    }
+
+    public void clearUserPreferLocalAndCountry(UserId userId) throws Exception {
+        User user = Master.getInstance().getUser(identityClient.GetUserByUserId(IdFormatter.encodeId(userId)));
+        user.setCountryOfResidence(null);
+        user.setPreferredLocale(null);
+        identityClient.PutUser(IdFormatter.encodeId(user.getId()), user, 200, true);
+    }
 }

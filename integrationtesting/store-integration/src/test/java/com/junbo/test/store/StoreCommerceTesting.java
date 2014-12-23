@@ -7,10 +7,10 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.order.spec.model.Order;
-import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.browse.LibraryResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
@@ -33,6 +33,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -102,7 +103,7 @@ public class StoreCommerceTesting extends BaseTestClass {
             features = "Store commerce",
             component = Component.STORE,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test add new credit card with invalid billing address",
             steps = {
                     "1. Create user",
@@ -168,10 +169,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
 
-        testDataProvider.CreateStoredValue("###123", null, 400);
+        testDataProvider.CreateStoredValue("###123", null, 412);
 
-        assert Master.getInstance().getApiErrorMsg().contains("Field value is invalid");
-        assert Master.getInstance().getApiErrorMsg().contains("130.001");
+        assert Master.getInstance().getApiErrorMsg().contains("Currency Not Found");
+        assert Master.getInstance().getApiErrorMsg().contains("131.123");
 
         testDataProvider.CreateStoredValue(null, null, 400);
 
@@ -309,9 +310,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+        if (preparePurchaseResponse.getChallenge() != null) {
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId());
-
+        }
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
@@ -359,7 +361,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
 
-        AuthTokenResponse signInResponse = testDataProvider.signIn(userName);
+        AuthTokenResponse signInResponse = testDataProvider.signIn(createUserRequest.getEmail());
 
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
 
@@ -381,6 +383,44 @@ public class StoreCommerceTesting extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store commerce",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test free purchase with offer not purchasable in country",
+            steps = {
+                    "1. Create user",
+                    "2. Make free purchase with invalid offer id",
+                    "3. Verify error response"
+            }
+    )
+    @Test
+    public void testFreePurchaseNotPurchasableInCountry() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        String offerId;
+        if (offer_digital_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
+
+        // isPurchasable is false for PL in offer
+        TestContext.getData().putHeader("oculus-geoip-country-code", "PL");
+        testDataProvider.makeFreePurchase(offerId, null, 412);
+        assert Master.getInstance().getApiErrorMsg().contains("Offer Not Purchasable");
+        assert Master.getInstance().getApiErrorMsg().contains("133.151");
+
+        // isPurchasable is missing for IN in offer
+        TestContext.getData().putHeader("oculus-geoip-country-code", "IN");
+        testDataProvider.makeFreePurchase(offerId, null, 412);
+        assert Master.getInstance().getApiErrorMsg().contains("Offer Not Purchasable");
+        assert Master.getInstance().getApiErrorMsg().contains("133.151");
+
+    }
 
     @Property(
             priority = Priority.Dailies,
@@ -475,10 +515,10 @@ public class StoreCommerceTesting extends BaseTestClass {
                 offerId, paymentId, "1234", null);
 
         testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
+                preparePurchaseResponse.getChallenge() != null ? preparePurchaseResponse.getChallenge().getTos().getTosId() : null);
 
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId2, null,
-                preparePurchaseResponse.getChallenge().getTos().getTosId());
+                preparePurchaseResponse.getChallenge() != null ? preparePurchaseResponse.getChallenge().getTos().getTosId(): null);
 
         //verify formatted price
         validationHelper.verifyPreparePurchase(preparePurchaseResponse);
@@ -522,7 +562,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         assert preparePurchaseResponse.getChallenge() != null;
         assert preparePurchaseResponse.getChallenge().getType().equalsIgnoreCase("PIN");
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false, 412);
+        preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, paymentId, null, null, false, 400);
         assert preparePurchaseResponse == null;
     }
 
@@ -605,9 +645,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+        if (preparePurchaseResponse.getChallenge() != null) {
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId());
-
+        }
         String purchaseToken = preparePurchaseResponse.getPurchaseToken();
 
         CreateUserRequest createUserRequest2 = testDataProvider.CreateUserRequest();
@@ -711,9 +752,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(),
                 offerId, paymentId, "1234", null);
 
-        preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
+        if (preparePurchaseResponse.getChallenge() != null) {
+            preparePurchaseResponse = testDataProvider.preparePurchase(preparePurchaseResponse.getPurchaseToken(), offerId, paymentId, null,
                 preparePurchaseResponse.getChallenge().getTos().getTosId());
-
+        }
         String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
 
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken, 412);
@@ -742,7 +784,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
 
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
         String offerId;
         if (offer_iap_free.toLowerCase().contains("test")) {
@@ -753,17 +795,16 @@ public class StoreCommerceTesting extends BaseTestClass {
 
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, null);
 
-        testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
-
+        if (freePurchaseResponse.getChallenge() != null) {
+            testDataProvider.makeFreePurchase(offerId, freePurchaseResponse.getChallenge().getTos().getTosId());
+        }
         testDataProvider.makeFreePurchase(offerId, null, 412);
-
         assert Master.getInstance().getApiErrorMsg().contains("Duplicate Purchase.");
         assert Master.getInstance().getApiErrorMsg().contains("133.146");
 
-        //EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
-       // assert entitlementsResponse.getEntitlements().size() == 1;
-
-       // validationHelper.verifyEntitlementResponse(entitlementsResponse, offerId);
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
+        assert libraryResponse.getItems().size() == 1;
+        validationHelper.verifyLibraryResponse(libraryResponse, freePurchaseResponse.getEntitlements().get(0).getItem());
 
     }
 
@@ -787,7 +828,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
 
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
         String offerId;
         if (offer_iap_free.toLowerCase().contains("test")) {
@@ -809,7 +850,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
         String country = "JP";
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
         TestContext.getData().putHeader("oculus-geoip-country-code", "JP");
 
         String offerId;
@@ -825,7 +866,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         }
 
         Master.getInstance().setCurrentUid(IdFormatter.encodeId(authTokenResponse.getUserId()));
-        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()), testDataProvider.getUserAccessToken(createUserRequest.getUsername(), createUserRequest.getPassword()));
+        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()),
+                testDataProvider.getUserAccessToken(URLEncoder.encode(createUserRequest.getEmail(), "UTF-8"), createUserRequest.getPassword()));
 
         Order order = testDataProvider.getOrder(response.getOrder());
         Assert.assertEquals(order.getCountry(), new CountryId(country));
@@ -836,7 +878,7 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
         TestContext.getData().putHeader("oculus-geoip-country-code", "JPA");
 
         String offerId;
@@ -852,7 +894,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         }
 
         Master.getInstance().setCurrentUid(IdFormatter.encodeId(authTokenResponse.getUserId()));
-        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()), testDataProvider.getUserAccessToken(createUserRequest.getUsername(), createUserRequest.getPassword()));
+        Master.getInstance().addUserAccessToken(IdFormatter.encodeId(authTokenResponse.getUserId()),
+                testDataProvider.getUserAccessToken(URLEncoder.encode(createUserRequest.getEmail(), "UTF-8"), createUserRequest.getPassword()));
 
         Order order = testDataProvider.getOrder(response.getOrder());
         Assert.assertEquals(order.getCountry(), new CountryId("US"));
@@ -913,7 +956,8 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         testDataProvider.postPayment(uid, creditCardInfo);
 
-        testDataProvider.signIn(userName);
+        AuthTokenResponse authTokenResponse = testDataProvider.signIn(userInfo.getEmails().get(0));
+        testDataProvider.signInWithLogin(userInfo.getEmails().get(0), authTokenResponse.getChallenge().getType(), authTokenResponse.getChallenge().getTos().getTosId());
         BillingProfileGetResponse response = testDataProvider.getBillingProfile(null);
 
         assert response.getBillingProfile().getInstruments().size() == 1;
@@ -927,11 +971,11 @@ public class StoreCommerceTesting extends BaseTestClass {
             component = Component.STORE,
             owner = "ZhaoYunlong",
             status = Status.Enable,
-            description = "Test get new user's entitlement",
+            description = "Test get new user's library",
             steps = {
                     "1. Create new user and sign in",
-                    "2. Get entitlements",
-                    "3. Verify no entitlements",
+                    "2. Get library",
+                    "3. Verify no libraries",
             }
     )
     @Test
@@ -939,10 +983,10 @@ public class StoreCommerceTesting extends BaseTestClass {
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
-        testDataProvider.signIn(userName);
+        testDataProvider.signIn(createUserRequest.getEmail());
 
-        //EntitlementsGetResponse response = testDataProvider.getEntitlement();
-        //assert response.getEntitlements().size() == 0;
+        LibraryResponse libraryResponse = testDataProvider.getLibrary();
+        assert libraryResponse.getItems().size() == 0;
     }
 
 }

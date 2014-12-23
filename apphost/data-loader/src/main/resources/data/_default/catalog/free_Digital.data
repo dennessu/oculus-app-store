@@ -1,5 +1,6 @@
 {
    "item": {
+        "categories": [{"id" : "Game"}],
         "genres": [{"id" : "Shooter"}],
         "defaultOffer": null, 
         "rev": null,
@@ -29,7 +30,11 @@
         "supportedInputDevices": [
             "KEYBOARD", 
             "MOUSE"
-        ], 
+        ],
+        "requiredInputDevices": [
+                    "KEYBOARD",
+                    "MOUSE"
+                ],
         "locales": {
             "en_US": {
                 "minimumSystemRequirements": {
@@ -113,8 +118,16 @@
                 "href": "http://static.oculusvr.com/apk-tests/VRArcade.apk",
                 "version": "1.1",
                 "size": 1024,
+                "requiredSpace": "4096",
                 "metadata": {
-                    "versionCode": 1
+                    "versionCode": 1,
+                    "permissions": [
+                        "android.permission.CAMERA",
+                        "android.permission.WRITE_EXTERNAL_STORAGE",
+                        "android.permission.RECORD_AUDIO",
+                        "android.permission.MODIFY_AUDIO_SETTINGS",
+                        "android.permission.INTERNET"
+                    ]
                 }
             }
         }, 
@@ -169,6 +182,7 @@
                     "quantity": 1
                 }
             ],
+            "rank": 9.0,
             "restrictions": {
                 "preconditionItems": [
                     {
@@ -224,6 +238,10 @@
                 "MX": {
                     "releaseDate": "2013-06-10T09:05:58Z",
                     "isPurchasable": true
+                },
+                "PL": {
+                    "releaseDate": "2013-06-10T09:05:58Z",
+                    "isPurchasable": false
                 }
             },
             "futureExpansion": {},
@@ -233,14 +251,111 @@
             "locales": {
                 "en_US": {
                     "images": {
-                        "main": {},
+                        "main": {
+                            "15x20":{
+                                "y": 10,
+                                "x": 20,
+                                "href": "http://www.google.com/main_tiny.png",
+                                "id": "id of image",
+                                "size": 200
+                            },
+                            "1440x1000":{
+                                "y": 10,
+                                "x": 20,
+                                "href": "http://www.google.com/main_medium.png",
+                                "id": "id of image",
+                                "size": 200
+                            },
+                            "25600x1000":{
+                                "y": 10,
+                                "x": 20,
+                                "href": "http://www.google.com/main_large.png",
+                                "id": "id of image",
+                                "size": 200
+                            }
+                        },
                         "thumbnail": {"15x20":{
                             "y": 10,
                             "x": 20,
-                            "href": "http://www.google.com",
+                            "href": "http://www.google.com/thumbnail_tiny.png",
                             "id": "id of image",
                             "size": 200
-                        }}
+                        },"690x20":{
+                              "y": 10,
+                              "x": 20,
+                              "href": "http://www.google.com/thumbnail_small.png",
+                              "id": "id of image",
+                              "size": 200
+                        }},
+                        "gallery": [
+                            {
+                                "thumbnail": {"15x20":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery0_thumbnail_tiny.png",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                },
+                                "690x20":{
+                                      "y": 10,
+                                      "x": 20,
+                                      "href": "http://www.google.com/gallery0_thumbnail_small.png",
+                                      "id": "id of image",
+                                      "size": 200
+                                }},
+                                "full": {"1440x1000":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery0_full_medium.png",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                },
+                                "15x20":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery0_full_tiny.jpg",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                }
+                                }
+                            },
+                            {
+                                "thumbnail": {"15x20":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery1_thumbnail_tiny.png",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                },
+                                "690x20":{
+                                      "y": 10,
+                                      "x": 20,
+                                      "href": "http://www.google.com/gallery1_thumbnail_small.png",
+                                      "id": "id of image",
+                                      "size": 200
+                                }},
+                                "full": {"1440x1000":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery1_full_medium.png",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                },
+                                "15x20":{
+                                    "id": null,
+                                    "href": "http://www.google.com/gallery1_full_tiny.jpg",
+                                    "size": 337686,
+                                    "altText": null,
+                                    "x": 700,
+                                    "y": 394
+                                }
+                                }
+                            }]
                     },
                     "shortDescription": "short description",
                     "name": "testOffer_Free_Digital",

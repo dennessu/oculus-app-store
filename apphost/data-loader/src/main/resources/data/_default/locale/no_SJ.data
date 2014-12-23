@@ -1,0 +1,11 @@
+{
+  "localeCode": "no_SJ",
+  "shortName": "Norwegian (SJ)",
+  "longName": "Norwegian (Svalbard and Jan Mayen)",
+  "localeName": "Norwegian (SJ)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

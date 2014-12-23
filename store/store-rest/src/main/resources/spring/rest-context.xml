@@ -11,7 +11,7 @@
     <context:component-scan base-package="com.junbo.store.rest" />
     <bean id="defaultLoginResourceClientFactory" class="com.junbo.store.spec.resource.proxy.LoginResourceClientProxyFactory"/>
     <bean id="defaultStoreResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreResourceClientProxyFactory"/>
-    <bean id="defaultStoreConfigResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreConfigResourceClientProxyFactory"/>
+    <bean id="defaultIAPResourceClient" class="com.junbo.store.spec.resource.proxy.IAPResourceClientProxyFactory"/>
 
     <bean id="storeCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation">
@@ -22,42 +22,21 @@
         <property name="cacheManager" ref="storeCacheManagerFactory"/>
     </bean>
 
-    <bean id="storeItemDataCache" class="com.junbo.store.common.cache.impl.SimpleCache">
+    <bean id="storeSectionInfoCache" class="com.junbo.store.common.cache.impl.SimpleCache">
         <property name="cacheEnabled" value="${store.cache.enabled}"/>
         <property name="cacheManager" ref="storeCacheManager"/>
-        <property name="cacheName" value="store.itemdata.cache"/>
+        <property name="cacheName" value="store.item.sectionInfo"/>
     </bean>
 
-    <bean id="storeItemPriceCache" class="com.junbo.store.common.cache.impl.SimpleCache">
+    <bean id="storeInitialOfferCache" class="com.junbo.store.common.cache.impl.SimpleCache">
         <property name="cacheEnabled" value="${store.cache.enabled}"/>
         <property name="cacheManager" ref="storeCacheManager"/>
-        <property name="cacheName" value="store.item.price.cache"/>
+        <property name="cacheName" value="store.initial.offer"/>
     </bean>
 
-    <bean id="storeOfferToItemCache" class="com.junbo.store.common.cache.impl.SimpleCache">
+    <bean id="storeItemLatestRevisionIdsCache" class="com.junbo.store.common.cache.impl.SimpleCache">
         <property name="cacheEnabled" value="${store.cache.enabled}"/>
         <property name="cacheManager" ref="storeCacheManager"/>
-        <property name="cacheName" value="store.item.offerlookup"/>
+        <property name="cacheName" value="store.item.latestRevisionIds"/>
     </bean>
-
-    <util:list id="storeSectionInfoNodePrototype" value-type="com.junbo.store.spec.model.browse.document.SectionInfoNode">
-        <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
-            <property name="criteria" value="${store.browse.featured.rootCriteria}"/>
-            <property name="cmsPage" value="${store.browse.featured.page}"/>
-            <property name="name" value="${store.browse.featured.name}"/>
-            <property name="sectionType" value="CmsSection"/>
-        </bean>
-        <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
-            <property name="category" value="${store.browse.categories.game}"/>
-            <property name="sectionType" value="CategorySection"/>
-        </bean>
-        <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
-            <property name="category" value="${store.browse.categories.app}"/>
-            <property name="sectionType" value="CategorySection"/>
-        </bean>
-        <bean class="com.junbo.store.spec.model.browse.document.SectionInfoNode">
-            <property name="category" value="${store.browse.categories.exp}"/>
-            <property name="sectionType" value="CategorySection"/>
-        </bean>
-    </util:list>
 </beans>

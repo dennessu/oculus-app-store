@@ -1,0 +1,38 @@
+{
+	"countryCode": "JE",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/GBP",
+		"id": "GBP"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	{
+		"href": "/v1/locales/fr_JE",
+		"id": "fr_JE"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Jersey",
+			"longName": "Bailiwick of Jersey",
+			"postalCode": "Postal Code"
+		},
+		"fr_JE": {
+			"shortName": "Jersey",
+			"longName": "Bailliage de Jersey",
+			"postalCode": "code postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

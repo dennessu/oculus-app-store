@@ -10,7 +10,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserCommunicationFilter
 import com.junbo.identity.core.service.validator.UserCommunicationValidator
-import com.junbo.identity.data.repository.UserCommunicationRepository
+import com.junbo.identity.service.UserCommunicationService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserCommunication
 import com.junbo.identity.spec.v1.option.list.UserOptinListOptions
@@ -21,6 +21,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by liangfu on 4/11/14.
  */
@@ -29,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional
 class UserCommunicationResourceImpl implements UserCommunicationResource {
 
     @Autowired
-    private UserCommunicationRepository userCommunicationRepository
+    private UserCommunicationService userCommunicationService
 
     @Autowired
     private UserCommunicationFilter userCommunicationFilter
@@ -46,7 +48,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     @Override
     Promise<UserCommunication> create(UserCommunication userCommunication) {
         if (userCommunication == null) {
-            throw new IllegalArgumentException('userCommunication is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = authorizeCallbackFactory.create(userCommunication.userId)
@@ -58,7 +60,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
             userCommunication = userCommunicationFilter.filterForCreate(userCommunication)
 
             return userCommunicationValidator.validateForCreate(userCommunication).then {
-                return userCommunicationRepository.create(userCommunication).then {
+                return userCommunicationService.create(userCommunication).then {
                     UserCommunication newUserCommunication ->
                     Created201Marker.mark(newUserCommunication.getId())
 
@@ -93,51 +95,16 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     }
 
     @Override
-    Promise<UserCommunication> patch(UserCommunicationId userCommunicationId, UserCommunication userCommunication) {
-        if (userCommunicationId == null) {
-            throw new IllegalArgumentException('userCommunicationId is null')
-        }
-
-        if (userCommunication == null) {
-            throw new IllegalArgumentException('userCommunication is null')
-        }
-
-        return userCommunicationRepository.get(userCommunicationId).then { UserCommunication oldUserOptin ->
-            if (oldUserOptin == null) {
-                throw AppErrors.INSTANCE.userOptinNotFound(userCommunicationId).exception()
-            }
-
-            def callback = authorizeCallbackFactory.create(oldUserOptin.userId)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception()
-                }
-
-                userCommunication = userCommunicationFilter.filterForPatch(userCommunication, oldUserOptin)
-
-                return userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication,
-                        oldUserOptin).then {
-                    return userCommunicationRepository.update(userCommunication, oldUserOptin).then {
-                        UserCommunication newUserCommunication ->
-                            newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
-                            return Promise.pure(newUserCommunication)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserCommunication> put(UserCommunicationId userCommunicationId, UserCommunication userCommunication) {
         if (userCommunicationId == null) {
-            throw new IllegalArgumentException('userCommunicationId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (userCommunication == null) {
-            throw new IllegalArgumentException('userCommunication is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return userCommunicationRepository.get(userCommunicationId).then { UserCommunication oldUserOptin ->
+        return userCommunicationService.get(userCommunicationId).then { UserCommunication oldUserOptin ->
             if (oldUserOptin == null) {
                 throw AppErrors.INSTANCE.userOptinNotFound(userCommunicationId).exception()
             }
@@ -152,7 +119,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
 
                 return userCommunicationValidator.validateForUpdate(userCommunicationId, userCommunication, oldUserOptin)
                         .then {
-                    return userCommunicationRepository.update(userCommunication, oldUserOptin).then { UserCommunication newUserCommunication ->
+                    return userCommunicationService.update(userCommunication, oldUserOptin).then { UserCommunication newUserCommunication ->
                         newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
                         return Promise.pure(newUserCommunication)
                     }
@@ -162,9 +129,17 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
     }
 
     @Override
-    Promise<Void> delete(UserCommunicationId userCommunicationId) {
-        return userCommunicationValidator.validateForGet(userCommunicationId).then {
-            return userCommunicationRepository.delete(userCommunicationId)
+    Promise<Response> delete(UserCommunicationId userCommunicationId) {
+        return userCommunicationValidator.validateForGet(userCommunicationId).then { UserCommunication existing ->
+            def callback = authorizeCallbackFactory.create(existing.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete')) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
+                return userCommunicationService.delete(userCommunicationId).then {
+                    return Promise.pure(Response.status(204).build())
+                }
+            }
         }
     }
 
@@ -198,12 +173,12 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
 
     private Promise<List<UserCommunication>> search(UserOptinListOptions listOptions) {
         if (listOptions.userId != null && listOptions.communicationId != null) {
-            return userCommunicationRepository.searchByUserIdAndCommunicationId(listOptions.userId,
+            return userCommunicationService.searchByUserIdAndCommunicationId(listOptions.userId,
                     listOptions.communicationId, listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
-            return userCommunicationRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
+            return userCommunicationService.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset)
         } else {
-            throw new IllegalArgumentException('Unsupported search operation.')
+            throw AppCommonErrors.INSTANCE.invalidOperation('Unsupported search operation').exception()
         }
     }
 }

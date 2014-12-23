@@ -89,23 +89,8 @@ class OrganizationDataHandler extends BaseDataHandler {
             } catch (Exception e) {
                 logger.error("Error creating organization $orgName.", e)
             }
-        } else if (!existing.isValidated) {
-            logger.debug("update invalid organizaiton with name: $orgName")
-            try {
-                existing.isValidated = true
-                organizationResource.put(existing.getId(), existing).get()
-            } catch (Exception e) {
-                logger.error("Error updating organization $orgName.", e)
-            }
-        } else if (existing.isValidated && existing.ownerId != orgOwnerUser.getId()) {
-            logger.debug("update orgnization with ownerId")
-
-            try {
-                existing.ownerId = orgOwnerUser.getId()
-                organizationResource.put(existing.getId(), existing).get()
-            } catch (Exception e) {
-                logger.error("Error updating validate organization ", e)
-            }
+        } else {
+            logger.debug("organization $existing.name exists, skip")
         }
     }
 

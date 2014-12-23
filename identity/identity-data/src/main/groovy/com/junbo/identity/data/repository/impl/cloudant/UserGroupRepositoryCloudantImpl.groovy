@@ -3,6 +3,7 @@ import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.UserGroupId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.UserGroupRepository
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.langur.core.promise.Promise
@@ -29,20 +30,51 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
     }
 
     @Override
-    Promise<List<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return queryView('by_user_id', userId.toString(), limit, offset, false)
+    Promise<Results<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset) {
+        Results<UserGroup> results = new Results<>();
+        return queryView('by_user_id', userId.toString(), limit, offset, false).then { List<UserGroup> userGroupList ->
+            results.items = userGroupList
+
+            return queryViewTotal('by_user_id', userId.toString()).then { Integer total ->
+                results.total = total
+
+                return Promise.pure(results)
+            }
+        }
     }
 
     @Override
-    Promise<List<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset) {
-        return queryView('by_group_id', groupId.toString(), limit, offset, false)
+    Promise<Results<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset) {
+        Results<UserGroup> results = new Results<>();
+        return queryView('by_group_id', groupId.toString(), limit, offset, false).then { List<UserGroup> userGroupList ->
+            results.items = userGroupList
+
+            return queryViewTotal('by_group_id', groupId.toString()).then { Integer total ->
+                results.total = total
+
+                return Promise.pure(results)
+            }
+        }
     }
 
     @Override
-    Promise<List<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset) {
+    Promise<Results<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset) {
+        Results<UserGroup> results = new Results<>()
         def startKey = [userId.toString(), groupId.toString()]
         def endKey = [userId.toString(), groupId.toString()]
-        return queryView('by_user_id_group_id', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
+        // todo:    The reason why we add one new view here is because the query view doesn't have reduce=false
+        // To not break any code, we will add one new view
+        // After the deploy, we will remove the reduce one
+        return queryView('by_user_id_group_id_with_reduce', startKey.toArray(new String()), endKey.toArray(new String()),
+                false, limit, offset, false).then { List<UserGroup> userGroupList ->
+            results.items = userGroupList
+
+            return queryViewTotal('by_user_id_group_id_with_reduce', startKey.toArray(new String()), endKey.toArray(new String()), false, false).then { Integer total ->
+                results.total = total
+
+                return Promise.pure(results)
+            }
+        }
     }
 
     @Override

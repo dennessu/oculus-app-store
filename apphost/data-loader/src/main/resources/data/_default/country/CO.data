@@ -410,7 +410,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/es_CO",
 		"id": "es_CO"
-	}],
+	},
+    {
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Colombia",

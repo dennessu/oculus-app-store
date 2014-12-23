@@ -6,6 +6,13 @@
     <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
     <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
 
+    <bean id="teleSign" class="com.junbo.identity.data.telesign.impl.TeleSignImpl">
+        <constructor-arg><value>${identity.conf.teleSign.customerId}</value></constructor-arg>
+        <constructor-arg><value>${identity.conf.teleSign.secretKey}</value></constructor-arg>
+        <constructor-arg ref="userPersonalInfoRepository"></constructor-arg>
+        <constructor-arg ref="localeRepository"></constructor-arg>
+    </bean>
+
     <bean id="modelMapper" class="com.junbo.identity.data.mapper.ModelMapperImpl">
         <property name="__builtinMapper" ref="__builtinMapper" />
         <property name="__commonMapper" ref="__commonMapper" />
@@ -25,6 +32,14 @@
 
     <bean id="cloudantTosRepository" class="com.junbo.identity.data.repository.impl.cloudant.TosRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="tos"/>
+    </bean>
+
+    <bean id="cloudantUserAttributeRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserAttributeRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_attribute" />
+    </bean>
+
+    <bean id="cloudantUserAttributeDefinitionRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserAttributeDefinitionRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_attribute_definition" />
     </bean>
 
     <bean id="cloudantUserPasswordRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPasswordRepositoryCloudantImpl" parent="cloudantClient">
@@ -92,6 +107,8 @@
         <property name="dbName" value="non_exists" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
         <property name="piiHashFactory" ref="piiHashFactory" />
+        <property name="maxEntitySize" value="${common.cloudant.cache.maxentitysize}" />
+        <property name="expiration" value="${common.cloudant.cache.expiration}" />
     </bean>
 
     <bean id="cloudantCommunicationRepository" class="com.junbo.identity.data.repository.impl.cloudant.CommunicationRepositoryCloudantImpl" parent="cloudantClient">
@@ -104,10 +121,12 @@
 
     <bean id="cloudantCurrencyRepository" class="com.junbo.identity.data.repository.impl.cloudant.CurrencyRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="currency"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="cloudantLocaleRepository" class="com.junbo.identity.data.repository.impl.cloudant.LocaleRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="locale"/>
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="cloudantPITypeRepository" class="com.junbo.identity.data.repository.impl.cloudant.PITypeRepositoryCloudantImpl" parent="cloudantClient">
@@ -118,17 +137,20 @@
         <property name="dbName" value="device_type" />
     </bean>
 
+    <bean id="cloudantUsernameEmailBlockerRepository" class="com.junbo.identity.data.repository.impl.cloudant.migration.UsernameEmailBlockerRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="username_email_blocker" />
+        <property name="piiHashFactory" ref="piiHashFactory" />
+    </bean>
+
     <bean id="cloudantOrganizationRepository" class="com.junbo.identity.data.repository.impl.cloudant.OrganizationRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="organization" />
         <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
-    <bean id="encryptUserPersonalInfocloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
-        <property name="cloudantDbUri" value="${encrypt.user.personalinfo.cloudant.url}" />
-    </bean>
-
-    <bean id="cloudantEncryptUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.EncryptUserPersonalInfoRepositoryImpl" parent="encryptUserPersonalInfocloudantClient">
+    <bean id="cloudantEncryptUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.EncryptUserPersonalInfoRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="encrypt_user_personal_info" />
+        <property name="forceRoute" value="${common.routing.forceRoute}" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 
     <bean id="cloudantHashUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.HashUserPersonalInfoRepositoryImpl" parent="cloudantClient">
@@ -141,5 +163,6 @@
 
     <bean id="cloudantErrorInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.ErrorInfoRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="error_info" />
+        <property name="noOverrideWrites" value="true" />
     </bean>
 </beans>

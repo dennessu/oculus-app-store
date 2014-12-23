@@ -4,29 +4,18 @@ import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OfferId
-import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.identity.spec.v1.model.Email
 import com.junbo.store.rest.test.Generator
-import com.junbo.store.rest.test.TestAccessTokenProvider
-import com.junbo.store.rest.test.TestUtils
 import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest
 import com.junbo.store.spec.model.billing.Instrument
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
-import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest
-import com.junbo.store.spec.model.identity.PersonalInfo
+import com.junbo.store.spec.model.iap.IAPConsumeItemRequest
 import com.junbo.store.spec.model.identity.StoreUserProfile
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.login.UserCredential
 import com.junbo.store.spec.model.login.UserSignInRequest
 import com.junbo.store.spec.model.purchase.*
-import com.junbo.store.spec.resource.LoginResource
-import com.junbo.store.spec.resource.proxy.StoreResourceClientProxy
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
 import org.testng.annotations.Test
 /**
  * The StoreApiTest class.
@@ -194,7 +183,7 @@ class StoreApiTest extends TestBase {
         OfferId offerId = testUtils.getByName('10_Birds')
 
         result = storeResource.preparePurchase(new PreparePurchaseRequest(userId: userId, offerId: offerId, country: new CountryId('US'), locale: locale, currency: new CurrencyId('USD'),
-                iapParams: new IAPParams(packageName: packageName, packageVersion: '1.0', packageSignatureHash: 'abc'))).get()
+               )).get()
         assert result.purchaseToken != null
 
         storeResource.selectInstrumentForPurchase(new SelectInstrumentRequest(purchaseToken: result.purchaseToken, userId: userId, instrumentId: billingProfile.instruments[0].instrumentId)).get()
@@ -204,7 +193,7 @@ class StoreApiTest extends TestBase {
         assert result.entitlements[0].iapSignature != null
         assert result.entitlements[0].signatureTimestamp != null
 
-        result = storeResource.iapConsumeEntitlement(new IAPEntitlementConsumeRequest(
+        result = storeResource.iapConsumeEntitlement(new IAPConsumeItemRequest(
                 userId: userId,
                 entitlementId: result.entitlements[0].entitlementId,
                 useCountConsumed: result.entitlements[0].useCount,

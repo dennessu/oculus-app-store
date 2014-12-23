@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * EntitlementGatewayImpl.
@@ -28,16 +28,33 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
     private EntitlementResource entitlementResource;
 
     @Override
-    public String grant(com.junbo.fulfilment.spec.fusion.Entitlement input) {
-        try {
-            Entitlement entitlement = Utils.map(input, Entitlement.class);
-            entitlement.setTrackingUuid(UUID.randomUUID());
+    public Map<Long, List<String>> grant(Map<Long, List<com.junbo.fulfilment.spec.fusion.Entitlement>> input) {
+        Map<Long, List<Entitlement>> entitlementResult = new HashMap<>();
+        for (Long actionId : input.keySet()) {
+            List<Entitlement> entitlements = new ArrayList<>(input.size());
+            for (com.junbo.fulfilment.spec.fusion.Entitlement e : input.get(actionId)) {
+                Entitlement mapped = Utils.map(e, Entitlement.class);
+                mapped.setTrackingUuid(UUID.randomUUID());
+                entitlements.add(mapped);
+            }
+            entitlementResult.put(actionId, entitlements);
+        }
 
-            Entitlement result = entitlementResource.postEntitlement(entitlement).get();
-            return result.getId();
+        try {
+            entitlementResult = entitlementResource.postEntitlements(entitlementResult).get();
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Entitlement] component.", e);
             throw AppErrors.INSTANCE.gatewayFailure("Entitlement").exception();
         }
+
+        Map<Long, List<String>> result = new HashMap<>();
+        for (Long actionId : entitlementResult.keySet()) {
+            List<String> entitlementIds = new LinkedList<>();
+            for (Entitlement entitlement : entitlementResult.get(actionId)) {
+                entitlementIds.add(entitlement.getId());
+            }
+            result.put(actionId, entitlementIds);
+        }
+        return result;
     }
 }

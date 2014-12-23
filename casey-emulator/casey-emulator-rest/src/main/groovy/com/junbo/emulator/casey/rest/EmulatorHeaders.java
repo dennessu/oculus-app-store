@@ -9,5 +9,8 @@ package com.junbo.emulator.casey.rest;
  * The EmulatorHeaders class.
  */
 public enum  EmulatorHeaders {
-    X_EMULATE_LATENCY
+    X_QA_CASEY_EMULATE_LATENCY,
+    X_QA_CASEY_REVIEW_USER_ID_LIST,
+    X_QA_CASEY_ERROR,
+    X_QA_CALLED_BY_TEST
 }

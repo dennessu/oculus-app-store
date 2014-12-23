@@ -31,8 +31,6 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     @Override
     public EntitlementEntity insert(EntitlementEntity entitlement) {
         entitlement.setIsDeleted(false);
-        entitlement.setUpdatedBy(123L);
-        entitlement.setUpdatedTime(new Date());
         return cloudantPostSync(entitlement);
     }
 
@@ -52,6 +50,9 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
 
     @Override
     public Results<EntitlementEntity> getBySearchParam(EntitlementSearchParam entitlementSearchParam, PageMetadata pageMetadata) {
+        if (shouldUseView(entitlementSearchParam)) {
+            return searchByView(entitlementSearchParam, pageMetadata);
+        }
         StringBuilder sb = new StringBuilder("userId:" + longToString(entitlementSearchParam.getUserId().getValue()));
         sb.append(" AND isDeleted:false");
         String query = null;
@@ -75,6 +76,62 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         results.setNext(next);
         results.setTotal(searchResult.getTotal());
         return results;
+    }
+
+    private Results<EntitlementEntity> searchByView(EntitlementSearchParam searchParam, PageMetadata pageMetadata) {
+        int size = pageMetadata.getCount() == null ||
+                pageMetadata.getCount() > EntitlementConsts.MAX_PAGE_SIZE
+                ? EntitlementConsts.DEFAULT_PAGE_SIZE : pageMetadata.getCount();
+        int start;
+        try {
+            start = pageMetadata.getBookmark() == null ? 0 : Integer.parseInt(pageMetadata.getBookmark());
+        } catch (Exception e) {
+            start = 0;
+        }
+
+        List<EntitlementEntity> list;
+        if (searchParam.getType() == null) {
+            list = getByUserId(searchParam.getUserId().getValue(), start, size);
+        } else {
+            list = getByUserIdAndType(searchParam.getUserId().getValue(), searchParam.getType(), start, size);
+        }
+        if (searchParam.getIsActive() != null) {
+            list = filterActive(list, searchParam.getIsActive());
+        }
+
+        Results<EntitlementEntity> results = new Results<>();
+        results.setItems(list);
+        //use next to store bookmark
+        Link next = new Link();
+        next.setHref(String.valueOf(start + size));
+        results.setNext(next);
+        return results;
+    }
+
+    private List<EntitlementEntity> getByUserId(Long userId, Integer start, Integer count) {
+        return super.queryViewSync("byUserId", userId.toString(), count, start, true);
+    }
+
+    private List<EntitlementEntity> getByUserIdAndType(Long userId, String type, Integer start, Integer count) {
+        return super.queryViewSync("byUserIdAndType", userId.toString() + ":" + (type == null ? EntitlementConsts.NO_TYPE : type.toUpperCase()), count, start, true);
+    }
+
+    private List<EntitlementEntity> filterActive(List<EntitlementEntity> list, Boolean isActive) {
+        List<EntitlementEntity> removeList = new ArrayList<>();
+        for (EntitlementEntity entity : list) {
+            if (Boolean.TRUE.equals(entity.getIsDeleted())) {
+                removeList.add(entity);
+                continue;
+            }
+            Boolean entityActive = isActive(entity);
+            if (isActive && (!entityActive)) {
+                removeList.add(entity);
+            } else if ((!isActive) && entityActive) {
+                removeList.add(entity);
+            }
+        }
+        list.removeAll(removeList);
+        return list;
     }
 
     private String addSearchParams(StringBuilder sb, EntitlementSearchParam entitlementSearchParam) throws ParseException {
@@ -168,7 +225,12 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     public EntitlementEntity get(Long userId, String itemId, String type) {
         String key = userId.toString() + ":" + itemId + ":" + (type == null ? EntitlementConsts.NO_TYPE : type.toUpperCase());
         List<EntitlementEntity> results = queryViewSync("byUserIdAndItemIdAndType", key);
-        return results.size() == 0 ? null : results.get(0);
+        if (results.size() == 0) {
+            return null;
+        } else {
+            EntitlementEntity result = results.get(0);
+            return Boolean.TRUE.equals(result.getIsDeleted()) ? null : result;
+        }
     }
 
     private Long parse(String date) throws ParseException {
@@ -178,4 +240,30 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     private String longToString(Long value) {
         return "'" + value + "'";
     }
+
+    private Boolean shouldUseView(EntitlementSearchParam searchParam) {
+        if (searchParam.getIsBanned() == null && searchParam.getHostItemId() == null &&
+                searchParam.getItemIds() == null && searchParam.getStartGrantTime() == null &&
+                searchParam.getEndGrantTime() == null && searchParam.getStartExpirationTime() == null &&
+                searchParam.getEndExpirationTime() == null && searchParam.getLastModifiedTime() == null) {
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean isActive(EntitlementEntity entitlementEntity) {
+        if (entitlementEntity.getIsBanned()) {
+            return false;
+        }
+        Date now = EntitlementContext.current().getNow();
+        Date expirationDate = entitlementEntity.getExpirationTime();
+        Integer useCount = entitlementEntity.getUseCount();
+        if (entitlementEntity.getGrantTime().getTime() - now.getTime() <= 60000L &&
+                (expirationDate == null || expirationDate.after(now)) &&
+                (useCount == null || useCount > 0)) {
+            return true;
+        }
+        return false;
+    }
+
 }

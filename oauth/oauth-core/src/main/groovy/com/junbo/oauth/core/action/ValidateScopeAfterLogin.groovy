@@ -15,6 +15,8 @@ import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.db.repo.ScopeRepository
 import com.junbo.oauth.spec.model.Scope
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
@@ -24,6 +26,8 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class ValidateScopeAfterLogin implements Action {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidateScopeAfterLogin)
+
     private ScopeRepository scopeRepository
 
     private boolean isAuthorizeFlow
@@ -95,31 +99,46 @@ class ValidateScopeAfterLogin implements Action {
         }
 
         if (validationConditionRequired) {
-            Boolean allowed = true
-            StringBuilder forbiddenScopes = new StringBuilder()
-            for (Scope scope : scopes) {
-                if (StringUtils.hasText(scope.validationCondition)) {
-                    def scopePrecondition = scopePreconditionFactory.create(contextWrapper)
-                    if (!conditionEvaluator.evaluate(scope.validationCondition, scopePrecondition)) {
-                        allowed = false
-                        forbiddenScopes.append(scope.name)
-                        forbiddenScopes.append(' ')
+            def client = contextWrapper.client
+            assert client != null : 'client is null'
+
+            if (client.allowPartialScopes) {
+                for (Scope scope : scopes) {
+                    if (StringUtils.hasText(scope.validationCondition)) {
+                        def scopePrecondition = scopePreconditionFactory.create(contextWrapper)
+                        if (!conditionEvaluator.evaluate(scope.validationCondition, scopePrecondition)) {
+                            LOGGER.info("Valiation of the pre-condition of scope $scope.name failed, removing it from scopes")
+                            oauthInfo.scopes.remove(scope.name)
+                        }
                     }
                 }
-            }
-
-            if (allowed) {
-                return Promise.pure(new ActionResult('success'))
             } else {
-                if (!isAuthorizeFlow) {
-                    throw AppCommonErrors.INSTANCE
-                            .forbiddenWithMessage("The user does not match the " +
-                            "pre-condition for scopes $forbiddenScopes").exception()
+                Boolean allowed = true
+                StringBuilder forbiddenScopes = new StringBuilder()
+                for (Scope scope : scopes) {
+                    if (StringUtils.hasText(scope.validationCondition)) {
+                        def scopePrecondition = scopePreconditionFactory.create(contextWrapper)
+                        if (!conditionEvaluator.evaluate(scope.validationCondition, scopePrecondition)) {
+                            allowed = false
+                            forbiddenScopes.append(scope.name)
+                            forbiddenScopes.append(' ')
+                        }
+                    }
+                }
+
+                if (allowed) {
+                    return Promise.pure(new ActionResult('next'))
                 } else {
-                    contextWrapper.errors.add(AppCommonErrors.INSTANCE.
-                            forbiddenWithMessage("The user does not match the " +
-                                    "pre-condition for scopes $forbiddenScopes").error())
-                    return Promise.pure(new ActionResult('forbidden'))
+                    if (!isAuthorizeFlow) {
+                        throw AppCommonErrors.INSTANCE
+                                .forbiddenWithMessage("The user does not match the " +
+                                "pre-condition for scopes $forbiddenScopes").exception()
+                    } else {
+                        contextWrapper.errors.add(AppCommonErrors.INSTANCE.
+                                forbiddenWithMessage("The user does not match the " +
+                                        "pre-condition for scopes $forbiddenScopes").error())
+                        return Promise.pure(new ActionResult('forbidden'))
+                    }
                 }
             }
         }
@@ -128,6 +147,6 @@ class ValidateScopeAfterLogin implements Action {
             return Promise.pure(new ActionResult('tfaRequired'))
         }
 
-        return Promise.pure(new ActionResult('success'))
+        return Promise.pure(new ActionResult('next'))
     }
 }

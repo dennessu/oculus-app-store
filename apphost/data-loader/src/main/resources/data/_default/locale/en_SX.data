@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_SX",
+   "shortName" : "English (SX)",
+   "longName" : "English (SX)",
+   "localeName" : "English (Sint Maarten)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "Fijian dollar",
+			"longName": "Fijian dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=FJD",
+		"id": null
+	},
+	"currencyCode": "FJD",
+	"symbol": "FJ$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

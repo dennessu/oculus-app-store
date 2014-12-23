@@ -55,7 +55,6 @@
     <bean id="billingPaymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl" />
     <bean id="billingCurrencyFacade" class="com.junbo.billing.clientproxy.impl.CurrencyFacadeImpl" />
     <bean id="billingCountryFacade" class="com.junbo.billing.clientproxy.impl.CountryFacadeImpl" />
-    <bean id="billingCatalogFacade" class="com.junbo.billing.clientproxy.impl.CatalogFacadeImpl" />
 
     <!--<bean id="identityFacade" class="com.junbo.billing.clientproxy.mock.MockIdentityFacadeImpl" />
     <bean id="paymentFacade" class="com.junbo.billing.clientproxy.mock.MockPaymentFacadeImpl" />-->
@@ -87,6 +86,7 @@
         <property name="shipFromPostalCode" value="${shipFrom.address.postal.code}"/>
         <property name="shipFromCountry" value="${shipFrom.address.country}"/>
         <property name="baseUrl" value="${sabrix.baseUrl}"/>
+        <property name="taxAuditUrl" value="${sabrix.tax.audit.Url}"/>
         <property name="taxExclusiveCountries" value="${sabrix.tax.exclusive.countries}"/>
     </bean>
 </beans>

@@ -20,6 +20,18 @@
             "precondition": "true",
             "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete", "admin"],
             "scriptType": "SPEL"
-        }]
+        }],
+        "organization.group.admin" : [{
+            "precondition": "true",
+            "rights": [ "read", "search", "pii.read" ],
+            "scriptType": "SPEL"
+        }],
+        "readonly.service": [
+            {
+                "precondition": "true",
+                "rights": [ "read" ],
+                "scriptType": "SPEL"
+            }
+        ]
     }
 }

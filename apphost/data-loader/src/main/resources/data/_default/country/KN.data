@@ -1,0 +1,145 @@
+{
+	"countryCode": "KN",
+	"defaultLocale": {
+		"href": "/v1/locales/en_KN",
+		"id": "en_KN"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XCD",
+		"id": "XCD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "CCN",
+					"longName": "Christ Church Nichola Town"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "ASP",
+					"longName": "Saint Anne Sandy Point"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "GBA",
+					"longName": "Saint George Basseterre"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "GGI",
+					"longName": "Saint George Gingerland"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "JWI",
+					"longName": "Saint James Windward"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "JCA",
+					"longName": "Saint John Capisterre"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "JFI",
+					"longName": "Saint John Figtree"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "MCA",
+					"longName": "Saint Mary Cayon"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "PCA",
+					"longName": "Saint Paul Capisterre"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "PCH",
+					"longName": "Saint Paul Charlestown"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "PBS",
+					"longName": "Saint Peter Basseterre"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_US": {
+					"shortName": "TLO",
+					"longName": "Saint Thomas Lowland"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_US": {
+					"shortName": "TMI",
+					"longName": "Saint Thomas Middle Island"
+				}
+			}
+		},
+		"15": {
+			"locales": {
+				"en_US": {
+					"shortName": "TPP",
+					"longName": "Trinity Palmetto Point"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Saint Kitts and Nevis",
+			"longName": "Federation of Saint Christopher and Nevisa",
+			"postalCode": "Postal Code"
+		},
+		"en_KN": {
+			"shortName": "Saint Kitts and Nevis",
+			"longName": "Federation of Saint Christopher and Nevisa",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

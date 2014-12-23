@@ -15,6 +15,7 @@
             <wf:transition on="REFRESH_TOKEN" to="refreshTokenBranch"/>
             <wf:transition on="CLIENT_CREDENTIALS" to="clientCredentialsBranch"/>
             <wf:transition on="CLIENT_CREDENTIALS_WITH_USER_ID" to="clientCredentialsWithUserIdBranch"/>
+            <wf:transition on="EXCHANGE" to="exchangeBranch"/>
         </wf:action-state>
 
         <wf:action-state id="authorizationCodeBranch">
@@ -25,8 +26,10 @@
 
         <wf:action-state id="passwordBranch">
             <wf:action ref="validateScope"/>
+            <wf:action ref="sentryPostTokenValidate"/>
             <wf:action ref="authenticateUserToken"/>
             <wf:action ref="validateScopeAfterLoginToken"/>
+            <wf:action ref="validateClientAfterLoginToken"/>
             <wf:action ref="grantTokenByPassword"/>
             <wf:transition on="grantRefreshToken" to="grantRefreshToken"/>
         </wf:action-state>
@@ -46,6 +49,12 @@
         <wf:action-state id="clientCredentialsWithUserIdBranch">
             <wf:action ref="validateScope"/>
             <wf:action ref="grantTokenByUserId"/>
+            <wf:transition on="*" to="grantRefreshToken"/>
+        </wf:action-state>
+
+        <wf:action-state id="exchangeBranch">
+            <wf:action ref="validateScope"/>
+            <wf:action ref="grantTokenByExchange"/>
             <wf:transition on="*" to="grantRefreshToken"/>
         </wf:action-state>
 
@@ -73,4 +82,12 @@
         <property name="isAuthorizeFlow" value="false"/>
     </bean>
 
+    <bean id="validateClientAfterLoginToken" class="com.junbo.oauth.core.action.ValidateClientAfterLogin">
+        <property name="groupUtil" ref="groupUtil"/>
+        <property name="isAuthorizeFlow" value="false"/>
+    </bean>
+
+    <bean id="sentryPostTokenValidate" class="com.junbo.oauth.core.action.SentryPostTokenValidate">
+        <property name="sentryFacade" ref="oauth_sentryFacade" />
+    </bean>
 </beans>

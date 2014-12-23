@@ -7,7 +7,7 @@ import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
-import com.junbo.identity.data.repository.UserPersonalInfoRepository
+import com.junbo.identity.service.UserPersonalInfoService
 import com.junbo.identity.spec.v1.model.PhoneNumber
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
@@ -31,9 +31,11 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     private Integer maxValueLength
     private List<Pattern> allowedValuePatterns
 
-    private UserPersonalInfoRepository userPersonalInfoRepository
+    private UserPersonalInfoService userPersonalInfoService
     private Integer maxUserNumberPerPhone
     private Integer maxNewPhoneNumberPerMonth
+    // Any data that will use this data should be data issue, we may need to fix this.
+    private Integer maximumFetchSize
 
     @Override
     boolean handles(String type) {
@@ -91,7 +93,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     }
 
     private Promise<Void> checkAdvanceUserPhone(PhoneNumber phoneNumber, UserId userId) {
-        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.info, null, Integer.MAX_VALUE, 0).then {
+        return userPersonalInfoService.searchByPhoneNumber(phoneNumber.info, null, maximumFetchSize, 0).then {
             List<UserPersonalInfo> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
                     // check this phone number is not used by this user
@@ -115,8 +117,8 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
                     }
                 }
 
-                return userPersonalInfoRepository.searchByUserIdAndType(userId, UserPersonalInfoType.PHONE.toString(),
-                        Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                return userPersonalInfoService.searchByUserIdAndType(userId, UserPersonalInfoType.PHONE.toString(),
+                        maximumFetchSize, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
 
                     if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                         return Promise.pure(null)
@@ -171,8 +173,8 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     }
 
     @Required
-    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
-        this.userPersonalInfoRepository = userPersonalInfoRepository
+    void setUserPersonalInfoService(UserPersonalInfoService userPersonalInfoService) {
+        this.userPersonalInfoService = userPersonalInfoService
     }
 
     @Required
@@ -183,5 +185,10 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     @Required
     void setMaxNewPhoneNumberPerMonth(Integer maxNewPhoneNumberPerMonth) {
         this.maxNewPhoneNumberPerMonth = maxNewPhoneNumberPerMonth
+    }
+
+    @Required
+    void setMaximumFetchSize(Integer maximumFetchSize) {
+        this.maximumFetchSize = maximumFetchSize
     }
 }

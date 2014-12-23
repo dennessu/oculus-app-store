@@ -17,6 +17,12 @@ public enum StoreApiHeader {
 
     USER_AGENT("User-Agent"),
 
+    PACKAGE_NAME("X-PACKAGE-NAME"),
+
+    PACKAGE_VERSION("X-PACKAGE-VERSION"),
+
+    PACKAGE_SIGNATURE_HASH("X-PACKAGE-SIGNATURE-HASH"),
+
     IP_COUNTRY("oculus-geoip-country-code");
 
     private final String value;

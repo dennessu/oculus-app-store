@@ -7,8 +7,10 @@
 package com.junbo.entitlement.db.dao.cloudant;
 
 import com.junbo.common.cloudant.CloudantClient;
+import com.junbo.common.util.Context;
 import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
+import com.junbo.langur.core.promise.Promise;
 
 /**
  * cloudantImpl of entitlementHistoryDao.
@@ -16,7 +18,17 @@ import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
 public class EntitlementHistoryDaoImpl extends CloudantClient<EntitlementHistoryEntity> implements EntitlementHistoryDao {
 
     @Override
-    public EntitlementHistoryEntity insert(EntitlementHistoryEntity entitlementHistory) {
-        return cloudantPostSync(entitlementHistory);
+    public void insertAsync(final EntitlementHistoryEntity entitlementHistory) {
+        Context.get().registerAsyncTask(new Promise.Func0<Promise>() {
+            @Override
+            public Promise apply() {
+                return cloudantPost(entitlementHistory);
+            }
+        });
+    }
+
+    @Override
+    public Promise<EntitlementHistoryEntity> insertSync(final EntitlementHistoryEntity entitlementHistory) {
+        return cloudantPost(entitlementHistory);
     }
 }

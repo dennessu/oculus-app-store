@@ -14,11 +14,13 @@ import com.junbo.identity.spec.v1.option.model.UserSecurityQuestionGetOptions;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -31,24 +33,21 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface UserSecurityQuestionResource {
     @ApiOperation("Create one user security question")
+    @RouteBy(value = "userId", switchable = true)
     @POST
     Promise<UserSecurityQuestion> create(@PathParam("userId") UserId userId,
                                          UserSecurityQuestion userSecurityQuestion);
 
     @ApiOperation("Get one user security question")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     @Path("/{userSecurityQuestionId}")
     Promise<UserSecurityQuestion> get(@PathParam("userId") UserId userId,
             @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
             @BeanParam UserSecurityQuestionGetOptions getOptions);
 
-    @POST
-    @Path("/{userSecurityQuestionId}")
-    Promise<UserSecurityQuestion> patch(@PathParam("userId") UserId userId,
-            @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId,
-            UserSecurityQuestion userSecurityQuestion);
-
     @ApiOperation("Update one user security question")
+    @RouteBy(value = "userId", switchable = true)
     @PUT
     @Path("/{userSecurityQuestionId}")
     Promise<UserSecurityQuestion> put(@PathParam("userId") UserId userId,
@@ -56,12 +55,14 @@ public interface UserSecurityQuestionResource {
             UserSecurityQuestion userSecurityQuestion);
 
     @ApiOperation("Delete one user security question")
+    @RouteBy(value = "userId", switchable = true)
     @DELETE
     @Path("/{userSecurityQuestionId}")
-    Promise<Void> delete(@PathParam("userId") UserId userId,
+    Promise<Response> delete(@PathParam("userId") UserId userId,
             @PathParam("userSecurityQuestionId") UserSecurityQuestionId userSecurityQuestionId);
 
     @ApiOperation("Search user security questions")
+    @RouteBy(value = "userId", switchable = true)
     @GET
     Promise<Results<UserSecurityQuestion>> list(@PathParam("userId") UserId userId,
             @BeanParam UserSecurityQuestionListOptions listOptions);

@@ -12,8 +12,12 @@ import com.junbo.oom.core.MappingContext;
 import com.junbo.oom.core.Mappings;
 import com.junbo.payment.db.entity.payment.*;
 import com.junbo.payment.db.entity.paymentinstrument.CreditCardPaymentInstrumentEntity;
+import com.junbo.payment.db.entity.paymentinstrument.FacebookPaymentAccountMappingEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentTypeEntity;
+import com.junbo.payment.spec.internal.FacebookPaymentAccountMapping;
+import com.junbo.payment.spec.internal.MerchantAccount;
+import com.junbo.payment.spec.internal.PaymentProviderModel;
 import com.junbo.payment.spec.internal.SettlementDetail;
 import com.junbo.payment.spec.model.*;
 
@@ -62,7 +66,13 @@ public interface PaymentMapper {
     })
     PaymentTransaction toPaymentRaw(PaymentTransactionEntity paymentTransactionEntity, MappingContext context);
 
+    @Mappings({@Mapping(source = "paymentProvider", target = "paymentProviderId",
+            explicitMethod = "toProviderId", bidirectional = false),
+    })
     PaymentInstrumentEntity toPIEntityRaw(PaymentInstrument piRequest, MappingContext context);
+    @Mappings({@Mapping(source = "paymentProviderId", target = "paymentProvider",
+            explicitMethod = "toProviderName", bidirectional = false),
+    })
     PaymentInstrument toPaymentInstrumentRaw(PaymentInstrumentEntity piEntity, MappingContext context);
 
     @Mappings({
@@ -86,4 +96,13 @@ public interface PaymentMapper {
     SettlementDetailEntity toSettlementDetailEntity(SettlementDetail settlementDetail, MappingContext context);
 
     SettlementDetail toSettlementDetail(SettlementDetailEntity entity, MappingContext context);
+
+    FacebookPaymentAccountMappingEntity toFacebookPaymentAccountEntity(FacebookPaymentAccountMapping model, MappingContext context);
+    FacebookPaymentAccountMapping toFacebookPaymentAccount(FacebookPaymentAccountMappingEntity entity, MappingContext context);
+
+    PaymentProviderModel toProviderModel(PaymentProviderEntity entity, MappingContext context);
+    PaymentProviderEntity toProviderEntity(PaymentProviderModel model, MappingContext context);
+
+    MerchantAccount toMerchantAccount(MerchantAccountEntity entity, MappingContext context);
+    MerchantAccountEntity toMerchantAccountEntity(MerchantAccount model, MappingContext context);
 }

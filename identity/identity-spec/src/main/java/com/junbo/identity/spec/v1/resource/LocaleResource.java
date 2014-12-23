@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by liangfu on 4/24/14.
@@ -39,10 +40,6 @@ public interface LocaleResource {
     @Path("/{localeId}")
     Promise<Locale> put(@PathParam("localeId") LocaleId localeId, Locale locale);
 
-    @POST
-    @Path("/{localeId}")
-    Promise<Locale> patch(@PathParam("localeId") LocaleId localeId, Locale locale);
-
     @ApiOperation("Get a locale info")
     @GET
     @Path("/{LocaleId}")
@@ -57,5 +54,5 @@ public interface LocaleResource {
     @ApiOperation("Delete a locale")
     @DELETE
     @Path("/{LocaleId}")
-    Promise<Void> delete(@PathParam("LocaleId") LocaleId localeId);
+    Promise<Response> delete(@PathParam("LocaleId") LocaleId localeId);
 }

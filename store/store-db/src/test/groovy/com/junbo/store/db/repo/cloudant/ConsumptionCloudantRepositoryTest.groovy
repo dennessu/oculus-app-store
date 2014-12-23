@@ -1,6 +1,7 @@
 package com.junbo.store.db.repo.cloudant
 
 import com.junbo.common.id.EntitlementId
+import com.junbo.common.id.ItemId
 import com.junbo.common.id.UserId
 import com.junbo.store.db.repo.ConsumptionRepository
 import com.junbo.store.spec.model.iap.Consumption
@@ -28,11 +29,10 @@ class ConsumptionCloudantRepositoryTest extends AbstractTestNGSpringContextTests
     public void testAddAndGet() {
         Consumption consumption = new Consumption(
                 user: new UserId(System.currentTimeMillis()),
-                entitlement: new EntitlementId(RandomStringUtils.randomAlphabetic(10)),
                 useCountConsumed: rand.nextInt(),
                 sku : RandomStringUtils.randomAlphabetic(10),
                 trackingGuid: UUID.randomUUID().toString(),
-                packageName: RandomStringUtils.randomAlphabetic(10),
+                hostItem: new ItemId(RandomStringUtils.randomAlphabetic(10)),
                 signatureTimestamp: System.currentTimeMillis(),
         )
 
@@ -47,8 +47,8 @@ class ConsumptionCloudantRepositoryTest extends AbstractTestNGSpringContextTests
 
     private static void validate(Consumption c1, Consumption c2) {
         assert c1.trackingGuid == c2.trackingGuid
-        assert c1.entitlement == c2.entitlement
-        assert c1.packageName == c2.packageName
+        assert c1.hostItem == c2.hostItem
+        assert c1.sku == c2.sku
         assert c1.useCountConsumed == c2.useCountConsumed
     }
 }

@@ -3,13 +3,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="teleSign" class="com.junbo.identity.clientproxy.impl.TeleSignImpl">
-        <constructor-arg><value>${identity.conf.teleSign.customerId}</value></constructor-arg>
-        <constructor-arg><value>${identity.conf.teleSign.secretKey}</value></constructor-arg>
-        <constructor-arg ref="userPersonalInfoRepository"></constructor-arg>
-        <constructor-arg ref="localeRepository"></constructor-arg>
-    </bean>
-
     <bean id="identityAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
         <property name="scope" value="crypto.service billing.service payment.service csr.service identity.service email.service"/>
         <property name="deflectionInSeconds" value="300"/>
@@ -61,5 +54,22 @@
 
     <bean id="identityOrganizationResource" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy" parent="organizationResourceClientProxy">
         <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="identityItemResource" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy" parent="itemResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider" />
+    </bean>
+
+    <bean id="identityItemRevisionResource" class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy"
+          parent="itemRevisionClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider" />
+    </bean>
+
+    <bean id="identityOfferResource" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy" parent="offerResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider" />
+    </bean>
+
+    <bean id="identityOfferRevisionResource" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy" parent="offerRevisionClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider" />
     </bean>
 </beans>

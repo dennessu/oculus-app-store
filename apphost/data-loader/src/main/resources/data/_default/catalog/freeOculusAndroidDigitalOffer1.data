@@ -1,5 +1,6 @@
 {
    "item": {
+        "categories": [{"id" : "Game"}],
         "type":"APP",
         "genres":[{"id" : "Shooter"}],
         "defaultOffer":null,
@@ -23,15 +24,26 @@
         },
         "supportedInputDevices": ["KEYBOARD",
         "CONTROLLER"],
+        "requiredInputDevices": [
+                    "KEYBOARD",
+                    "MOUSE"
+                ],
         "userInteractionModes": ["MULTI_USER"],
         "binaries": {
             "ANDROID": {
                 "href": "http://static.oculusvr.com/apk-tests/RocketToss.apk",
                 "size": 13937898,
+                "requiredSpace": "39937898",
                 "version": "1",
                 "md5": "eb8014a72ea56d6b308e35b9f0d36cd1",
                 "metadata": {
-                    "versionCode": 1
+                    "versionCode": 1,
+                    "permissions": [
+                        "android.permission.CAMERA",
+                        "android.permission.RECORD_AUDIO",
+                        "android.permission.MODIFY_AUDIO_SETTINGS",
+                        "android.permission.INTERNET"
+                    ]
                 }
             }
         },
@@ -218,7 +230,6 @@
             "id": "6354f5d1fcdf"
         },
         "isPublished": false,
-        "publisherRevenueRatio": 0.7,
         "rev": null,
         "currentRevision": null,
         "categories": [{"id" : "Game"}]
@@ -236,6 +247,7 @@
             "preconditionItems": [],
             "exclusionItems": []
         },
+        "rank": 9.0,
         "subOffers": [],
         "items": [{
             "quantity": 1,

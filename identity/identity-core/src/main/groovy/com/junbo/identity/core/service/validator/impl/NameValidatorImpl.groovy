@@ -7,7 +7,7 @@ import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.service.UserService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserName
@@ -37,7 +37,7 @@ class NameValidatorImpl implements PiiValidator {
     private Integer minFullNameLength
     private Integer maxFullNameLength
 
-    private UserRepository userRepository
+    private UserService userService
 
     @Override
     boolean handles(String type) {
@@ -52,7 +52,8 @@ class NameValidatorImpl implements PiiValidator {
         UserName name = (UserName)JsonHelper.jsonNodeToObj(value, UserName)
         checkName(name)
         if (userId != null && !StringUtils.isEmpty(name.fullName)) {
-            return userRepository.get(userId).then { User user ->
+            // If the user is deleted, no pii can be created. Only when the user is set to non-delete, he can add pii.
+            return userService.getNonDeletedUser(userId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userId).exception()
                 }
@@ -150,8 +151,8 @@ class NameValidatorImpl implements PiiValidator {
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Required

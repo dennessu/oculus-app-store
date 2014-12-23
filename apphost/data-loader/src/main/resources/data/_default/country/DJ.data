@@ -1,0 +1,138 @@
+{
+	"countryCode": "DJ",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_DJ",
+		"id": "ar_DJ"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/DJF",
+		"id": "DJF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AR": {
+			"locales": {
+				"ar_DJ": {
+					"shortName": " ‘Arta",
+					"longName": " ‘Arta"
+				},
+				"fr_DJ": {
+					"shortName": "Arta",
+					"longName": "Arta"
+				},
+				"en_US": {
+					"shortName": "Arta",
+					"longName": "Arta"
+				}
+			}
+		},
+		"AS": {
+			"locales": {
+				"ar_DJ": {
+					"shortName": "‘Alī Sābih",
+					"longName": "‘Alī Sābih"
+				},
+				"fr_DJ": {
+					"shortName": "Ali Sabieh",
+					"longName": "Ali Sabieh"
+				},
+				"en_US": {
+					"shortName": "Ali Sabieh",
+					"longName": "Ali Sabieh"
+				}
+			}
+		},
+		"DI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dikhil",
+					"longName": "Dikhil"
+				},
+				"ar_DJ": {
+					"shortName": "Dikhīl",
+					"longName": "Dikhīl"
+				},
+				"fr_DJ": {
+					"shortName": "Dikhil",
+					"longName": "Dikhil"
+				}
+			}
+		},
+		"DJ": {
+			"locales": {
+				"ar_DJ": {
+					"shortName": "Jībūti",
+					"longName": "Jībūti"
+				},
+				"en_US": {
+					"shortName": "Djibouti",
+					"longName": "Djibouti"
+				},
+				"fr_DJ": {
+					"shortName": "Djibouti",
+					"longName": "Djibouti"
+				}
+			}
+		},
+		"OB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Obock",
+					"longName": "Obock"
+				},
+				"fr_DJ": {
+					"shortName": "Obock",
+					"longName": "Obock"
+				},
+				"ar_DJ": {
+					"shortName": "Ūbūk",
+					"longName": "Ūbūk"
+				}
+			}
+		},
+		"TA": {
+			"locales": {
+				"fr_DJ": {
+					"shortName": "Tadjourah",
+					"longName": "Tadjourah"
+				},
+				"en_US": {
+					"shortName": "Tadjourah",
+					"longName": "Tadjourah"
+				},
+				"ar_DJ": {
+					"shortName": "Tājūrah",
+					"longName": "Tājūrah"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_DJ",
+		"id": "ar_DJ"
+	},
+	{
+		"href": "/v1/locales/fr_DJ",
+		"id": "fr_DJ"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Djibouti",
+			"longName": "Republic of Djibouti",
+			"postalCode": "Postal Code"
+		},
+		"ar_DJ": {
+			"shortName": "جيبوتي",
+			"longName": "جمهورية جيبوتي",
+			"postalCode": "الرمز البريدي"
+		},
+		"fr_DJ": {
+			"shortName": "Djibouti",
+			"longName": "République de Djibouti",
+			"postalCode": "code postal"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

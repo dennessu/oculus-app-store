@@ -5,15 +5,17 @@
  */
 package com.junbo.store.spec.resource.external;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.store.spec.model.external.casey.CaseyResults;
-import com.junbo.store.spec.model.external.casey.cms.CmsCampaign;
-import com.junbo.store.spec.model.external.casey.cms.CmsContent;
-import com.junbo.store.spec.model.external.casey.cms.CmsPage;
-import com.junbo.store.spec.model.external.casey.cms.CmsPageGetParams;
-import com.junbo.store.spec.model.external.casey.search.CaseyOffer;
-import com.junbo.store.spec.model.external.casey.search.OfferSearchParams;
+import com.junbo.store.spec.model.external.sewer.SewerParam;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyAggregateRating;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyResults;
+import com.junbo.store.spec.model.external.sewer.casey.CaseyReview;
+import com.junbo.store.spec.model.external.sewer.casey.ReviewSearchParams;
+import com.junbo.store.spec.model.external.sewer.casey.cms.*;
+import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer;
+import com.junbo.store.spec.model.external.sewer.casey.search.OfferSearchParams;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -33,13 +35,29 @@ public interface CaseyResource {
 
     @GET
     @Path("cms-campaigns")
-    Promise<CaseyResults<CmsCampaign>> getCmsCampaigns();
+    Promise<CaseyResults<CmsCampaign>> getCmsCampaigns(@BeanParam CmsCampaignGetParam campaignGetParam);
 
     @GET
     @Path("cms-pages")
-    Promise<CaseyResults<CmsPage>> getCmsPages(@BeanParam CmsPageGetParams pageGetParams);
+    Promise<CaseyResults<JsonNode>> getCmsPages(@BeanParam CmsPageGetParams pageGetParams, @BeanParam SewerParam sewerParam);
+
+    @GET
+    @Path("cms-pages/{pageId}")
+    Promise<JsonNode> getCmsPages(@PathParam("pageId") String pageId, @BeanParam SewerParam sewerParam);
+
+    @GET
+    @Path("cms-pages/{pageId}/cms-schedule")
+    Promise<CmsSchedule> getCmsSchedules(@PathParam("pageId") String pageId, @BeanParam CmsScheduleGetParams cmsScheduleGetParams);
 
     @GET
     @Path("cms-contents/{contentId}")
     Promise<CmsContent> getCmsContent(@PathParam("contentId") String contentId);
+
+    @GET
+    @Path("ratings/item/{itemId}")
+    Promise<CaseyResults<CaseyAggregateRating>> getRatingByItemId(@PathParam("itemId") String itemId);
+
+    @GET
+    @Path("reviews")
+    Promise<CaseyResults<CaseyReview>> getReviews(@BeanParam ReviewSearchParams params);
 }

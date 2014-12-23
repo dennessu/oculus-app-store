@@ -5,27 +5,19 @@
  */
 package com.junbo.oauth.db.repo.cloudant
 
-import com.junbo.common.cloudant.CloudantClient
-import com.junbo.oauth.db.generator.TokenGenerator
+import com.junbo.common.cloudant.client.CloudantClientBulk
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.spec.model.LoginState
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
-
 /**
  * CloudantLoginStateRepositoryImpl.
  */
 @CompileStatic
-class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implements LoginStateRepository {
-    private TokenGenerator tokenGenerator
+class CloudantLoginStateRepositoryImpl extends CloudantTokenRepositoryBase<LoginState> implements LoginStateRepository {
 
     private long defaultLoginStateExpiration
-
-    @Required
-    void setTokenGenerator(TokenGenerator tokenGenerator) {
-        this.tokenGenerator = tokenGenerator
-    }
 
     @Required
     void setDefaultLoginStateExpiration(long defaultLoginStateExpiration) {
@@ -38,7 +30,7 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
             return null
         }
 
-        LoginState loginState = cloudantGetSync(tokenGenerator.hashKey(id))
+        LoginState loginState = cloudantGetSyncUuidWithFallback(id, tokenGenerator.hashKey(id))
         if (loginState != null) {
             loginState.loginStateId = id
         }
@@ -74,5 +66,22 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
     @Override
     void removeByHash(String hash) {
         cloudantDeleteSync(hash)
+    }
+
+    @Override
+    void removeByUserId(Long userId) {
+        def startKey = [userId.toString(), System.currentTimeMillis()]
+        def endKey = [userId.toString()]
+        List<LoginState> loginStates = queryViewSync('by_user_id_expired_by', startKey.toArray(new String()), endKey.toArray(new String()), true, null, null, true)
+
+        try {
+            setStrongUseBulk(true)
+            for (LoginState loginState : loginStates) {
+                cloudantDeleteSync(loginState)
+            }
+            CloudantClientBulk.commit().get()
+        } finally {
+            setStrongUseBulk(false)
+        }
     }
 }

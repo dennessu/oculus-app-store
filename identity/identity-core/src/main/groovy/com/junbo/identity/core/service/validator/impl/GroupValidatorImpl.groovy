@@ -8,8 +8,8 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.GroupId
 import com.junbo.identity.core.service.validator.GroupValidator
-import com.junbo.identity.data.repository.GroupRepository
-import com.junbo.identity.data.repository.OrganizationRepository
+import com.junbo.identity.service.GroupService
+import com.junbo.identity.service.OrganizationService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Organization
@@ -24,17 +24,17 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class GroupValidatorImpl implements GroupValidator {
-    private GroupRepository groupRepository
-    
+    private GroupService groupService
+
     private Integer groupValueMinLength
 
     private Integer groupValueMaxLength
 
-    private OrganizationRepository organizationRepository
+    private OrganizationService organizationService
 
     @Required
-    void setGroupRepository(GroupRepository groupRepository) {
-        this.groupRepository = groupRepository
+    void setGroupService(GroupService groupService) {
+        this.groupService = groupService
     }
 
     @Required
@@ -48,8 +48,8 @@ class GroupValidatorImpl implements GroupValidator {
     }
 
     @Required
-    void setOrganizationRepository(OrganizationRepository organizationRepository) {
-        this.organizationRepository = organizationRepository
+    void setOrganizationService(OrganizationService organizationService) {
+        this.organizationService = organizationService
     }
 
     @Override
@@ -58,7 +58,7 @@ class GroupValidatorImpl implements GroupValidator {
             throw new IllegalArgumentException('groupId is null')
         }
 
-        return groupRepository.get(groupId).then { Group group ->
+        return groupService.get(groupId).then { Group group ->
             if (group == null) {
                 throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
             }
@@ -91,8 +91,8 @@ class GroupValidatorImpl implements GroupValidator {
     @Override
     Promise<Void> validateForCreate(Group group) {
         basicCheckForGroup(group)
-        if (group.active != null) {
-            throw AppCommonErrors.INSTANCE.fieldMustBeNull('active').exception()
+        if (group.active != null && !group.active) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('active', 'active must be true during group creation').exception()
         }
         if (group.id != null) {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
@@ -102,12 +102,12 @@ class GroupValidatorImpl implements GroupValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('organization').exception()
         }
 
-        return organizationRepository.get(group.organizationId).then { Organization organization ->
+        return organizationService.get(group.organizationId).then { Organization organization ->
             if (organization == null) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('organization').exception()
             }
 
-            return groupRepository.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Group existing ->
+            return groupService.searchByOrganizationIdAndName(group.organizationId, group.name, 1, 0).then { Group existing ->
                 if (existing != null) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
                 }
@@ -139,7 +139,7 @@ class GroupValidatorImpl implements GroupValidator {
         }
 
         if (group.name != oldGroup.name) {
-            return groupRepository.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Group existing ->
+            return groupService.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Group existing ->
                 if (existing != null) {
                     throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
                 }

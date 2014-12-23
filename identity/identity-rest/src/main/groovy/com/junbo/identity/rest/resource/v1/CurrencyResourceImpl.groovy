@@ -2,13 +2,14 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CurrencyFilter
 import com.junbo.identity.core.service.validator.CurrencyValidator
 import com.junbo.identity.data.identifiable.LocaleAccuracy
-import com.junbo.identity.data.repository.CurrencyRepository
-import com.junbo.identity.data.repository.LocaleRepository
+import com.junbo.identity.service.CurrencyService
+import com.junbo.identity.service.LocaleService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.identity.spec.v1.model.CurrencyLocaleKey
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.core.Response
 import java.lang.reflect.Field
 import java.util.concurrent.ConcurrentHashMap
 
@@ -34,10 +36,10 @@ class CurrencyResourceImpl implements CurrencyResource {
     private Map<String, Field> hashMap = new ConcurrentHashMap<String, Field>()
 
     @Autowired
-    private CurrencyRepository currencyRepository
+    private CurrencyService currencyService
 
     @Autowired
-    private LocaleRepository localeRepository
+    private LocaleService localeService
 
     @Autowired
     private CurrencyFilter currencyFilter
@@ -48,13 +50,13 @@ class CurrencyResourceImpl implements CurrencyResource {
     @Override
     Promise<Currency> create(Currency currency) {
         if (currency == null) {
-            throw new IllegalArgumentException('country is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         currency = currencyFilter.filterForCreate(currency)
 
         return currencyValidator.validateForCreate(currency).then {
-            return currencyRepository.create(currency).then { Currency newCurrency ->
+            return currencyService.create(currency).then { Currency newCurrency ->
                 Created201Marker.mark(newCurrency.id)
                 newCurrency = currencyFilter.filterForGet(newCurrency, null)
 
@@ -66,14 +68,14 @@ class CurrencyResourceImpl implements CurrencyResource {
     @Override
     Promise<Currency> put(CurrencyId currencyId, Currency currency) {
         if (currencyId == null) {
-            throw new IllegalArgumentException('currencyId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
 
         if (currency == null) {
-            throw new IllegalArgumentException('currency is null')
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        return currencyRepository.get(currencyId).then { Currency oldCurrency ->
+        return currencyService.get(currencyId).then { Currency oldCurrency ->
             if (oldCurrency == null) {
                 throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
             }
@@ -81,34 +83,7 @@ class CurrencyResourceImpl implements CurrencyResource {
             currency = currencyFilter.filterForPut(currency, oldCurrency)
 
             return currencyValidator.validateForUpdate(currencyId, currency, oldCurrency).then {
-                return currencyRepository.update(currency, oldCurrency).then { Currency newCurrency ->
-                    newCurrency = currencyFilter.filterForGet(newCurrency, null)
-                    return Promise.pure(newCurrency)
-                }
-            }
-        }
-    }
-
-    @Override
-    Promise<Currency> patch(CurrencyId currencyId, Currency currency) {
-        if (currencyId == null) {
-            throw new IllegalArgumentException('currencyId is null')
-        }
-
-        if (currency == null) {
-            throw new IllegalArgumentException('currency is null')
-        }
-
-        return currencyRepository.get(currencyId).then { Currency oldCurrency ->
-            if (oldCurrency == null) {
-                throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
-            }
-
-            currency = currencyFilter.filterForPatch(currency, oldCurrency)
-
-            return currencyValidator.validateForUpdate(
-                    currencyId, currency, oldCurrency).then {
-                return currencyRepository.update(currency, oldCurrency).then { Currency newCurrency ->
+                return currencyService.update(currency, oldCurrency).then { Currency newCurrency ->
                     newCurrency = currencyFilter.filterForGet(newCurrency, null)
                     return Promise.pure(newCurrency)
                 }
@@ -122,15 +97,10 @@ class CurrencyResourceImpl implements CurrencyResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return currencyValidator.validateForGet(currencyId).then {
-            return currencyRepository.get(currencyId).then { Currency newCurrency ->
-                if (newCurrency == null) {
-                    throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
-                }
-                return filterCurrency(newCurrency, getOptions).then { Currency filterCurrency ->
-                    filterCurrency = currencyFilter.filterForGet(filterCurrency, getOptions.properties?.split(',') as List<String>)
-                    return Promise.pure(filterCurrency)
-                }
+        return currencyValidator.validateForGet(currencyId).then { Currency newCurrency ->
+            return filterCurrency(newCurrency, getOptions).then { Currency filterCurrency ->
+                filterCurrency = currencyFilter.filterForGet(filterCurrency, getOptions.properties?.split(',') as List<String>)
+                return Promise.pure(filterCurrency)
             }
         }
     }
@@ -159,17 +129,19 @@ class CurrencyResourceImpl implements CurrencyResource {
     }
 
     @Override
-    Promise<Void> delete(CurrencyId currencyId) {
+    Promise<Response> delete(CurrencyId currencyId) {
         if (currencyId == null) {
-            throw new IllegalArgumentException('currencyId is null')
+            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
         }
         return currencyValidator.validateForGet(currencyId).then {
-            return currencyRepository.delete(currencyId)
+            return currencyService.delete(currencyId).then {
+                return Promise.pure(Response.status(204).build())
+            }
         }
     }
 
     private Promise<List<Currency>> search(CurrencyListOptions listOptions) {
-        return currencyRepository.searchAll(listOptions.limit, listOptions.offset)
+        return currencyService.searchAll(listOptions.limit, listOptions.offset)
     }
 
     private Promise<Currency> filterCurrency(Currency currency, CurrencyGetOptions getOptions) {
@@ -253,7 +225,7 @@ class CurrencyResourceImpl implements CurrencyResource {
             }
         }
 
-        return localeRepository.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
+        return localeService.get(new LocaleId(initLocale)).then { com.junbo.identity.spec.v1.model.Locale locale1 ->
             if (locale1 == null || locale1.fallbackLocale == null) {
                 return Promise.pure(null)
             }

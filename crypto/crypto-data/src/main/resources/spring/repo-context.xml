@@ -5,13 +5,14 @@
 
     <context:component-scan base-package="com.junbo.crypto.data" />
 
-    <bean id="cryptoDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+    <bean id="cryptoDataSource" class="com.junbo.sharding.pool.JunboShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${crypto.db.jdbcUrls}"/>
 
         <property name="uniqueName" value="jdbc/crypto"/>
         <property name="className" value="${crypto.db.driverClassName}"/>
         <property name="minPoolSize" value="${crypto.db.minPoolSize}"/>
         <property name="maxPoolSize" value="${crypto.db.maxPoolSize}"/>
+        <property name="connectionTimeout" value="${common.db.connectionTimeout}"/>
         <property name="driverProperties">
             <props>
                 <prop key="user">${crypto.db.username}</prop>

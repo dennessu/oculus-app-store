@@ -1,0 +1,14 @@
+{
+   "localeCode" : "en_PW",
+   "shortName" : "English (PW)",
+   "longName" : "English (Palau)",
+   "localeName" : "English (PW)",
+   "fallbackLocale" :
+      {
+         "href" : "/v1/locales/en_US",
+         "id" : "en_US"
+      },
+   "futureExpansion" :
+      {
+      }
+}

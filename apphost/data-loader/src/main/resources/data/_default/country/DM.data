@@ -1,0 +1,108 @@
+{
+	"countryCode": "DM",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XCD",
+		"id": "XCD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Andrew",
+					"longName": "Saint Andrew"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint David",
+					"longName": "Saint David"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint George",
+					"longName": "Saint George"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint John",
+					"longName": "Saint John"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Joseph",
+					"longName": "Saint Joseph"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Luke",
+					"longName": "Saint Luke"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Mark",
+					"longName": "Saint Mark"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Patrick",
+					"longName": "Saint Patrick"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Paul",
+					"longName": "Saint Paul"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Peter",
+					"longName": "Saint Peter"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Dominica",
+			"longName": "Commonwealth of Dominica",
+			"postalCode": "Postal Code"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

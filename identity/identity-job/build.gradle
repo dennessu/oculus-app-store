@@ -4,6 +4,6 @@ dependencies {
     compile (libraries.quartz_scheduler)
 
     compile junboProject(':identity-spec')
-    compile junboProject(':identity-data')
+    compile junboProject(':identity-service')
     compile junboProject(':billing-spec')
 }

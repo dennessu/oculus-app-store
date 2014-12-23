@@ -116,7 +116,7 @@ Name it INTERNAL_CLIENT_SECRET_ENCRYPTED
 
 ## Change Configuration
 
-1. Create new environments from existing environments. The configuration is defined in `common/configuration-data/src/main/resources/junbo/`
+1. Create new environments from existing environments. The configuration is defined in `apphost/config-data/src/main/resources/junbo/`
 1. Customize the configurations
   * Change the JDBC URLs
   * Change the topology settings
@@ -141,7 +141,6 @@ Name it INTERNAL_CLIENT_SECRET_ENCRYPTED
 | authorization.lib.service.clientSecret.encrypted | Set to `INTERNAL_CLIENT_SECRET`
 | authorization.lib.allowTestAccessToken           | Set to `false`
 | authorization.lib.service.disabled               | Set to `false`
-| encrypt.user.personalinfo.cloudant.url.encrypted | Set to `CLOUDANT_PII_URIS`
 | billing.db.username                              | Set to `silkcloud`
 | billing.db.password.encrypted                    | Set to `DATABASE_PASSWORD_ENCRYPTED`
 | crypto.db.username                               | Set to `silkcloud`

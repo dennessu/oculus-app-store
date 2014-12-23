@@ -616,4 +616,62 @@
         </sql>
     </changeSet>
 
+    <changeSet id="4" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                        create table facebook_payment_account_mapping(
+                                map_id 				  bigint 	      not null,
+                                user_id 			  bigint 	      not null,
+                                fb_payment_account_id 		  varchar(128)        not null,
+                                resource_age                      bigint              not null,
+                                created_time                      timestamp           not null,
+                                created_by                        varchar(64)             null,
+                                updated_time                      timestamp               null,
+                                updated_by                        varchar(64)             null,
+
+                                constraint facebook_payment_account_mapping_pk primary key (map_id)
+                                );
+                    ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="5" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                        ALTER TABLE payment_instrument ADD COLUMN payment_provider_id int;
+                    ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="6" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                        delete from payment_provider;
+                        delete from merchant_account;
+                    ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="7" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                        CREATE INDEX idx_facebook_payment_account_mapping ON facebook_payment_account_mapping (user_id);
+                        CREATE INDEX idx_payment_event ON payment_event (payment_id);
+                        CREATE INDEX idx_payment_instrument ON payment_instrument (user_id,deleted,payment_instrument_type_id);
+                        CREATE INDEX idx_payment_property ON payment_property (payment_id);
+                        CREATE INDEX idx_payment_tracking_uuid ON payment_tracking_uuid (user_id,tracking_uuid);
+                    ]]>
+        </sql>
+    </changeSet>
+    <include file="../../common/ping.xml" relativeToChangelogFile="true" />
+
+    <changeSet id="8" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                        ALTER TABLE payment_event ADD COLUMN external_token varchar(128);
+                    ]]>
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>

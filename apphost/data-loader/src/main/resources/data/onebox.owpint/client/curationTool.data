@@ -9,12 +9,17 @@
   "logout_redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.oculus.dev/*" ],
   "default_logout_redirect_uri" : "http://localhost",
 
-  "scopes" : [ "everyone", "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline", "item-binaries.manage", "cms.admin"  ],
-  "default_scopes" : [ "everyone", "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline", "item-binaries.manage", "cms.admin"  ],
+  "scopes" : [ "everyone", "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline",
+   "item-binaries.manage", "cms.admin", "organization.group.admin", "client.register", "scope.manage" ],
+  "default_scopes" : [ "everyone", "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline",
+   "item-binaries.manage", "cms.admin", "organization.group.admin", "client.register", "scope.manage" ],
 
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
-  "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
+  "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN", "PASSWORD" ],
 
   "id_token_issuer" : "api.oculus.com",
-  "need_consent" : false
+  "need_consent" : false,
+  "allowed_groups" : [ "Oculus.CatalogAdmin", "Oculus.IdentityAdmin" ],
+  "allow_partial_scopes" : true,
+  "internal" : true
 }

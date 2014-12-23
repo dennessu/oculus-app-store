@@ -40,13 +40,11 @@ public class SectionInfoNode {
     private Boolean ordered;
 
     @JsonIgnore
-    private String categoryId;
-
-    @JsonIgnore
-    private String cmsPage;
+    private String cmsPageSearch;
 
     @JsonIgnore
     private String cmsSlot;
+
 
     public SectionInfoNode() {
     }
@@ -113,20 +111,12 @@ public class SectionInfoNode {
         this.parent = parent;
     }
 
-    public String getCategoryId() {
-        return categoryId;
+    public String getCmsPageSearch() {
+        return cmsPageSearch;
     }
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getCmsPage() {
-        return cmsPage;
-    }
-
-    public void setCmsPage(String cmsPage) {
-        this.cmsPage = cmsPage;
+    public void setCmsPageSearch(String cmsPageSearch) {
+        this.cmsPageSearch = cmsPageSearch;
     }
 
     public String getCmsSlot() {

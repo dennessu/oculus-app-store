@@ -122,7 +122,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/is_IS",
 		"id": "is_IS"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Iceland",

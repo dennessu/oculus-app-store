@@ -45,13 +45,13 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
     protected void validateLineItems(PriceRatingContext context) {
         for (RatableItem item : context.getItems()) {
             Map<String, Properties> countries = item.getOffer().getCountries();
-            if (!countries.containsKey(context.getCountry())) {
-                throw AppErrors.INSTANCE.missingConfiguration("isPurchasable").exception();
-            }
 
-            if (Boolean.FALSE.equals(countries.get(context.getCountry()).isPurchasable())) {
-                throw AppErrors.INSTANCE.offerNotPurchasable(item.getOfferId(),
-                        context.getCountry()).exception();
+            if (countries.containsKey(context.getCountry())) {
+                if (!Boolean.TRUE.equals(countries.get(context.getCountry()).isPurchasable())) {
+                    throw AppErrors.INSTANCE.offerNotPurchasable(item.getOfferId(), context.getCountry()).exception();
+                }
+            } else {
+                throw AppErrors.INSTANCE.missingConfiguration("isPurchasable").exception();
             }
 
             if (item.getQuantity() > 1 && containsSpecificTypeGoods(item.getOffer(), context.getTimestamp(),
@@ -199,7 +199,11 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
         }
 
         Map<String, Properties> countries = offer.getCountries();
-        if (!countries.containsKey(country) || countries.get(country).getReleaseDate() == null) {
+        if (!countries.containsKey(country)) {
+            return BigDecimal.ZERO;
+        }
+
+        if (countries.get(country).getReleaseDate() == null) {
             return BigDecimal.ZERO;
         }
 

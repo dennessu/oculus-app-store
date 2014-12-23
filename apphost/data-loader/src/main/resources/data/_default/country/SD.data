@@ -218,7 +218,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/ar_SD",
 		"id": "ar_SD"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Sudan",

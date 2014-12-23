@@ -29,6 +29,9 @@ class MasterKeyDataHandler extends BaseDataHandler {
             if (content == "newkey") {
                 newKey = true
             }
+            if (!newKey) {
+                logger.debug('not newkey, skip')
+            }
             masterKeyResource.create(newKey).get()
         } catch (Exception e) {
             logger.error("Error creating masterKey", e)

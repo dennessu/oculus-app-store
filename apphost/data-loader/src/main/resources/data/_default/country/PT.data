@@ -257,7 +257,11 @@
 	"supportedLocales": [{
 		"href": "/v1/locales/pt_PT",
 		"id": "pt_PT"
-	}],
+	},
+    {
+        "href": "/v1/locales/en_US",
+        "id": "en_US"
+    }],
 	"locales": {
 		"en_US": {
 			"shortName": "Portugal",
