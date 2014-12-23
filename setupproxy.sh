@@ -35,6 +35,7 @@ if ! (curl -X HEAD --connect-timeout 3 www.facebook.com) >/dev/null 2>&1; then
     fi
     echo "facebook proxy is set to $facebookProxy"
     if (cat $personalConfigFile | grep '^[ \t]*[^ \t#].*127\.0\.0\.1:13128') >/dev/null 2>&1; then
+        `rootdir`/scripts/stop-proxy.sh || true
         `rootdir`/scripts/start-proxy.sh
     fi
 else
