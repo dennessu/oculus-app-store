@@ -264,6 +264,10 @@ public class OrderTestDataProvider {
         return orderClient.postOrder(order);
     }
 
+    public String postOrder(Order order, int expectedResponseCode) throws Exception {
+        return orderClient.postOrder(order, expectedResponseCode);
+    }
+
     public Results<Subledger> getSubledger(String offerName) throws Exception {
         String offerId = offerClient.getOfferIdByName(offerName);
         Offer offer = Master.getInstance().getOffer(offerId);

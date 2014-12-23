@@ -34,8 +34,8 @@ import java.util.concurrent.Future;
  * Created by Yunlong on 3/20/14.
  */
 public abstract class HttpClientBase {
-    private LogHelper logger = new LogHelper(HttpClientBase.class);
-    private AsyncHttpClient asyncClient;
+    protected LogHelper logger = new LogHelper(HttpClientBase.class);
+    protected AsyncHttpClient asyncClient;
 
     public String contentType = "application/json";
 

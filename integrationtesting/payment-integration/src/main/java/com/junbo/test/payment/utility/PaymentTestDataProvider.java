@@ -124,6 +124,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                     paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                     paymentInstrument.setAccountNumber(encryptCreditCardInfo(creditCardInfo.getAccountNum(), creditCardInfo.getEncryptedCVMCode()));
                     typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
+                    paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                     paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                     paymentInstrument.setType(creditCardInfo.getType().getValue());
                     paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());

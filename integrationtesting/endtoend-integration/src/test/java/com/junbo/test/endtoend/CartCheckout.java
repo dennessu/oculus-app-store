@@ -538,12 +538,10 @@ public class CartCheckout extends BaseTestClass {
         testDataProvider.deletePaymentInstrument(uid, creditCardId);
 
         String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, null);
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, 412);
 
-        orderId = testDataProvider.updateOrderTentative(orderId, false, 412);
-
+        assert Master.getInstance().getApiErrorMsg().contains("Payment Instrument Not Found");
     }
-
 
 
     @Property(

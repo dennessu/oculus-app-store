@@ -8,12 +8,14 @@ package com.junbo.test.payment.apihelper.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.test.common.apihelper.Header;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.exception.TestException;
 import com.junbo.test.payment.apihelper.PaymentProviderService;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.AsyncHttpClientConfigBean;
-import com.ning.http.client.FluentCaseInsensitiveStringsMap;
-import com.ning.http.client.ProxyServer;
+import com.ning.http.client.*;
 import com.ning.http.client.providers.netty.NettyAsyncHttpProviderConfig;
+import com.ning.http.client.providers.netty.NettyResponse;
+import org.apache.http.client.HttpResponseException;
+import org.testng.Assert;
 
 import javax.net.ssl.*;
 import java.io.BufferedReader;
@@ -23,7 +25,9 @@ import java.net.Proxy;
 import java.net.URL;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * Created by Cloud on 14-12-23.
@@ -69,7 +73,7 @@ public class PaymentProviderServiceImpl extends HttpClientBase implements Paymen
     @Override
     public String getToken(String cardNumber, String csc, int expectedResponseCode) throws Exception {
 
-        String responseBody = restApiCall(HTTPMethod.POST, requestUrl, String.format("creditCardNumber=%s&csc=%s", "4111117711552927", csc));
+        String responseBody = restApiCall(HTTPMethod.POST, requestUrl, String.format("creditCardNumber=%s&csc=%s", cardNumber, csc));
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readTree(responseBody).get("token").textValue();
     }
@@ -135,6 +139,58 @@ public class PaymentProviderServiceImpl extends HttpClientBase implements Paymen
             }
         }
         return result;
+    }
+
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
+                                 int expectedResponseCode, HashMap<String, List<String>> httpParameters,
+                                 boolean isServiceScope, List<String> headersToRemove) throws Exception {
+        switch (httpMethod) {
+            case PUT:
+            case POST: {
+                try {
+                    Request req;
+                    ProxyServer proxyServer = new ProxyServer(ProxyServer.Protocol.HTTP, "127.0.0.1", 13128, "silkcloud", "#Bugs4$1");
+                    if (Master.getInstance().getCookies().size() > 0) {
+                        req = new RequestBuilder(httpMethod.getHttpMethod())
+                                .setUrl(restUrl)
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
+                                .setBodyEncoding("UTF-8")
+                                .setBody(requestBody)
+                                .addCookie(Master.getInstance().getCookies().get(0))
+                                .build();
+                    } else {
+                        req = new RequestBuilder(httpMethod.getHttpMethod())
+                                .setUrl(restUrl)
+                                .setHeaders(getHeader(isServiceScope, headersToRemove))
+                                .setBodyEncoding("UTF-8")
+                                .setBody(requestBody).setProxyServer(proxyServer)
+                                .build();
+                    }
+
+                    logger.LogRequest(req);
+
+                    Future future = asyncClient.prepareRequest(req).execute();
+                    NettyResponse nettyResponse = (NettyResponse) future.get();
+
+                    logger.LogResponse(nettyResponse);
+                    if (expectedResponseCode != 0) {
+                        Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
+                    }
+
+                    if (expectedResponseCode != 200) {
+                        Master.getInstance().setApiErrorMsg(nettyResponse.getResponseBody());
+                    }
+                    return nettyResponse.getResponseBody("UTF-8");
+                } catch (HttpResponseException ex) {
+                    throw new TestException(ex.getMessage().toString());
+                }
+            }
+
+            case OPTIONS:
+                //TODO
+            default:
+                throw new TestException(String.format("Unsupported http method found: %s", httpMethod.getHttpMethod()));
+        }
     }
 
 

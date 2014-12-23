@@ -297,7 +297,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo.getAccountNum(),creditCardInfo.getEncryptedCVMCode());
+        instrument.setExpireDate(creditCardInfo.getExpireDate());
         instrument.setAccountName(creditCardInfo.getAccountName());
         instrument.setAccountNum(encryptedString);
         instrument.setBillingAddress(getBillingAddress());
@@ -339,7 +340,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo.getAccountNum(),creditCardInfo.getEncryptedCVMCode());
+        instrument.setExpireDate("2016-06");
         instrument.setAccountName(creditCardInfo.getAccountName());
         instrument.setAccountNum(encryptedString);
         instrument.setType("CREDITCARD");
