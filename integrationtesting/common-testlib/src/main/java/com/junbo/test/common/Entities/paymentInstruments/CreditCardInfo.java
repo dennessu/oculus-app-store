@@ -48,7 +48,7 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         randomCreditCard.setAccountNum(creditCardArray[RandomFactory.getRandomInteger(1)]);
         //randomCreditCard.setAccountNum(CreditCardGenerator.VISA.getRandomNumber());
         randomCreditCard.setEncryptedCVMCode(getCVMCode(CreditCardGenerator.VISA.toString(), true));
-        randomCreditCard.setExpireDate("2016-06-01");
+        randomCreditCard.setExpireDate("2016-06");
         //randomCreditCard.setPhone(Phone.getRandomPhone());
         randomCreditCard.setAddress(Address.getRandomAddress(country));
         randomCreditCard.setValidated(false);
