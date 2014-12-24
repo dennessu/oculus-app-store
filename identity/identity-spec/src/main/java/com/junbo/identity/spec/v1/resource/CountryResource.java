@@ -41,10 +41,6 @@ public interface CountryResource {
     @Path("/{countryId}")
     Promise<Country> put(@PathParam("countryId") CountryId countryId, Country country);
 
-    @POST
-    @Path("/{countryId}")
-    Promise<Country> patch(@PathParam("countryId") CountryId countryId, Country country);
-
     @ApiOperation("Get a country info")
     @GET
     @Path("/{countryId}")

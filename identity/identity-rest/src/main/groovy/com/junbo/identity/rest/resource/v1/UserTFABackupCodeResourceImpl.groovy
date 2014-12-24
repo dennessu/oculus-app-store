@@ -106,46 +106,6 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     }
 
     @Override
-    Promise<UserTFABackupCode> patch(UserId userId, UserTFABackupCodeId userTFABackupCodeId,
-                                      UserTFABackupCode userTFABackupCode) {
-        if (userId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
-        }
-
-        if (userTFABackupCodeId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('userTFABackupCodeId').exception()
-        }
-
-        if (userTFABackupCode == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        def callback = authorizeCallbackFactory.create(userId)
-        return RightsScope.with(authorizeService.authorize(callback)) {
-            if (!AuthorizeContext.hasRights('update')) {
-                throw AppCommonErrors.INSTANCE.forbidden().exception()
-            }
-
-            return userTFAPhoneBackupCodeService.get(userTFABackupCodeId).then { UserTFABackupCode oldBackupCode ->
-                if (oldBackupCode == null) {
-                    throw AppErrors.INSTANCE.userTFABackupCodeNotFound(userTFABackupCodeId).exception()
-                }
-
-                userTFABackupCode = userTFABackupCodeFilter.filterForPatch(userTFABackupCode, oldBackupCode)
-
-                return userTFABackupCodeValidator.
-                        validateForUpdate(userId, userTFABackupCodeId, userTFABackupCode, oldBackupCode).then {
-
-                    return userTFAPhoneBackupCodeService.update(userTFABackupCode, oldBackupCode).then { UserTFABackupCode newCode ->
-                        newCode = userTFABackupCodeFilter.filterForGet(newCode, null)
-                        return Promise.pure(newCode)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserTFABackupCode> put(UserId userId, UserTFABackupCodeId userTFABackupCodeId,
                                     UserTFABackupCode userTFABackupCode) {
         if (userId == null) {

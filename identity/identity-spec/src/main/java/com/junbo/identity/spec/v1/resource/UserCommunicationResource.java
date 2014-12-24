@@ -44,12 +44,6 @@ public interface UserCommunicationResource {
     Promise<UserCommunication> get(@PathParam("userOptinId") UserCommunicationId userOptinId,
                            @BeanParam UserOptinGetOptions getOptions);
 
-    @RouteByAccessToken(switchable = true)
-    @POST
-    @Path("/{userOptinId}")
-    Promise<UserCommunication> patch(@PathParam("userOptinId") UserCommunicationId userOptinId,
-                              UserCommunication userOptin);
-
     @ApiOperation("Update one user optin")
     @RouteBy(value = "userOptin.getUserId()", switchable = true)
     @PUT

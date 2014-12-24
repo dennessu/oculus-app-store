@@ -93,32 +93,6 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
     }
 
     @Override
-    Promise<ErrorInfo> patch(ErrorIdentifier errorIdentifier, ErrorInfo errorInfo) {
-        if (errorIdentifier == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (errorInfo == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return errorInfoService.get(errorIdentifier).then { ErrorInfo oldErrorInfo ->
-            if (oldErrorInfo == null) {
-                throw AppErrors.INSTANCE.errorInfoNotFound(errorIdentifier).exception()
-            }
-
-            errorInfo = errorInfoFilter.filterForPatch(errorInfo, oldErrorInfo)
-
-            return errorInfoValidator.validateForUpdate(errorIdentifier, errorInfo, oldErrorInfo).then {
-                return errorInfoService.update(errorInfo, oldErrorInfo).then { ErrorInfo newErrorInfo ->
-                    newErrorInfo = errorInfoFilter.filterForGet(newErrorInfo, null)
-                    return Promise.pure(newErrorInfo)
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<ErrorInfo> get(ErrorIdentifier errorIdentifier, ErrorInfoGetOptions getOptions) {
         if (errorIdentifier == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()

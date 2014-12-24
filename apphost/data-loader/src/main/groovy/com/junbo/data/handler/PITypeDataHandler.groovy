@@ -51,7 +51,7 @@ class PITypeDataHandler extends BaseDataHandler {
             piType.id = (PITypeId) existing.id
             piType.rev = existing.rev
             try {
-                piTypeResource.patch((PITypeId) existing.id, piType).get()
+                piTypeResource.put((PITypeId) existing.id, piType).get()
             } catch (Exception e) {
                 logger.error("Error updating piType $piType.typeCode", e)
             }

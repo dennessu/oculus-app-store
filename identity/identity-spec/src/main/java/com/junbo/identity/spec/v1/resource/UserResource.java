@@ -48,11 +48,6 @@ public interface UserResource {
     @RouteBy(value = "userId", switchable = true)
     Promise<User> silentPut(@PathParam("userId") UserId userId, User user);
 
-    @POST
-    @Path("/{userId}")
-    @RouteBy(value = "userId", switchable = true)
-    Promise<User> patch(@PathParam("userId") UserId userId, User user);
-
     @ApiOperation("Get one user")
     @GET
     @Path("/{userId}")

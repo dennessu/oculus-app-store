@@ -84,32 +84,6 @@ class LocaleResourceImpl implements LocaleResource {
     }
 
     @Override
-    Promise<Locale> patch(LocaleId localeId, Locale locale) {
-        if (localeId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (locale == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return localeService.get(localeId).then { Locale oldLocale ->
-            if (oldLocale == null) {
-                throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
-            }
-
-            locale = localeFilter.filterForPatch(locale, oldLocale)
-
-            return localeValidator.validateForUpdate(localeId, locale, oldLocale).then {
-                return localeService.update(locale, oldLocale).then { Locale newLocale ->
-                    newLocale = localeFilter.filterForGet(newLocale, null)
-                    return Promise.pure(newLocale)
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<Locale> get(LocaleId localeId, LocaleGetOptions getOptions) {
         if (localeId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()

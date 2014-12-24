@@ -72,6 +72,7 @@
                 <entry key="OrganizationResource" value="identity identity.service csr organization.group.admin"/>
                 <entry key="PITypeResource" value="identity.admin"/>
                 <entry key="TosResource" value="identity.admin"/>
+                <entry key="UserAttributeDefinitionResource" value="identity.admin" />
                 <entry key="UserCommunicationResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserCredentialResource" value="identity identity.service identity.pii csr"/>
                 <entry key="UserCredentialVerifyAttemptResource" value="identity identity.service identity.pii csr"/>
@@ -94,6 +95,7 @@
                 <entry key="UserTFABackupCodeResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTFAResource" value="identity.service identity.pii csr"/>
                 <entry key="UserTosAgreementResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserAttributeResource" value="identity identity.service identity.pii csr" />
                 <!-- oauth -->
                 <entry key="ClientEndpoint" value="client.register"/>
                 <entry key="ClientEndpoint.getInfoByClientId" value="client.info"/>

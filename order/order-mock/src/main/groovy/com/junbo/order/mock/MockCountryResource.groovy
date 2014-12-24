@@ -29,11 +29,6 @@ class MockCountryResource extends BaseMock implements CountryResource {
     }
 
     @Override
-    Promise<Country> patch(CountryId countryId, Country country) {
-        return null
-    }
-
-    @Override
     Promise<Country> get(CountryId countryId,CountryGetOptions getOptions) {
         Country country = new Country()
         country.setId(countryId)

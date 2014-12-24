@@ -8,6 +8,7 @@ package com.junbo.identity.spec.v1.resource;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
+import com.junbo.identity.spec.v1.model.migration.UpdateHtmlOutput;
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
@@ -48,5 +49,5 @@ public interface MigrationResource {
     @POST
     @Path("/update-html/{userId}")
     @RouteBy(value = "userId", switchable = true)
-    Promise<Boolean> updateUserHtmlCode(@PathParam("userId")UserId userId);
+    Promise<UpdateHtmlOutput> updateUserHtmlCode(@PathParam("userId")UserId userId);
 }

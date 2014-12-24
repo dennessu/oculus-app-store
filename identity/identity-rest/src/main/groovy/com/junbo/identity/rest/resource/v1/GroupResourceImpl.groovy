@@ -111,37 +111,6 @@ class GroupResourceImpl implements GroupResource {
     }
 
     @Override
-    Promise<Group> patch(GroupId groupId, Group group) {
-        if (groupId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-        if (group == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-        return groupValidator.validateForGet(groupId).then { Group oldGroup ->
-            if (oldGroup == null) {
-                throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
-            }
-
-            def callback = authorizeCallbackFactory.create(oldGroup)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception()
-                }
-
-                group = groupFilter.filterForPatch(group, oldGroup)
-
-                return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                    return groupService.update(group, oldGroup).then { Group newGroup ->
-                        newGroup = groupFilter.filterForGet(newGroup, null)
-                        return Promise.pure(newGroup)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<Group> get(GroupId groupId, GroupGetOptions getOptions) {
         if (groupId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()

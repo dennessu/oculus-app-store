@@ -41,10 +41,6 @@ public interface DeviceTypeResource {
     @Path("/{deviceTypeId}")
     Promise<DeviceType> put(@PathParam("deviceTypeId") DeviceTypeId deviceTypeId, DeviceType deviceType);
 
-    @POST
-    @Path("/{deviceTypeId}")
-    Promise<DeviceType> patch(@PathParam("deviceTypeId") DeviceTypeId deviceTypeId, DeviceType deviceType);
-
     @ApiOperation("Get one deviceType info")
     @GET
     @Path("/{deviceTypeId}")

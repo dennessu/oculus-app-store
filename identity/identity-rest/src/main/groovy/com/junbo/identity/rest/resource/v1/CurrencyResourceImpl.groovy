@@ -92,33 +92,6 @@ class CurrencyResourceImpl implements CurrencyResource {
     }
 
     @Override
-    Promise<Currency> patch(CurrencyId currencyId, Currency currency) {
-        if (currencyId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (currency == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return currencyService.get(currencyId).then { Currency oldCurrency ->
-            if (oldCurrency == null) {
-                throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
-            }
-
-            currency = currencyFilter.filterForPatch(currency, oldCurrency)
-
-            return currencyValidator.validateForUpdate(
-                    currencyId, currency, oldCurrency).then {
-                return currencyService.update(currency, oldCurrency).then { Currency newCurrency ->
-                    newCurrency = currencyFilter.filterForGet(newCurrency, null)
-                    return Promise.pure(newCurrency)
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<Currency> get(CurrencyId currencyId, CurrencyGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')

@@ -44,11 +44,6 @@ public interface OrganizationResource {
     @Path("/{organizationId}")
     Promise<Organization> put(@PathParam("organizationId") OrganizationId organizationId, Organization organization);
 
-    @RouteBy(value = "organizationId", switchable = true)
-    @POST
-    @Path("/{organizationId}")
-    Promise<Organization> patch(@PathParam("organizationId") OrganizationId organizationId, Organization organization);
-
     @ApiOperation("Get a organization info")
     @RouteBy(value = "organizationId", switchable = true)
     @GET

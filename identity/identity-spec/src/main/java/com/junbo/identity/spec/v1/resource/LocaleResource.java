@@ -40,10 +40,6 @@ public interface LocaleResource {
     @Path("/{localeId}")
     Promise<Locale> put(@PathParam("localeId") LocaleId localeId, Locale locale);
 
-    @POST
-    @Path("/{localeId}")
-    Promise<Locale> patch(@PathParam("localeId") LocaleId localeId, Locale locale);
-
     @ApiOperation("Get a locale info")
     @GET
     @Path("/{LocaleId}")

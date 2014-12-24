@@ -10,6 +10,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.paymentInstruments.*;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.identity.UserService;
@@ -19,10 +20,12 @@ import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.DBHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
+import com.junbo.test.payment.apihelper.PaymentProviderService;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.clientencryption.Card;
 import com.junbo.test.payment.apihelper.clientencryption.Encrypter;
 import com.junbo.test.payment.apihelper.clientencryption.EncrypterException;
+import com.junbo.test.payment.apihelper.impl.PaymentProviderServiceImpl;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
 import java.math.BigDecimal;
@@ -35,6 +38,7 @@ import java.util.List;
 public class PaymentTestDataProvider extends BaseTestDataProvider {
     private UserService identityClient = UserServiceImpl.instance();
     private PaymentService paymentClient = PaymentServiceImpl.getInstance();
+    private PaymentProviderService paymentProvider = PaymentProviderServiceImpl.getInstance();
 
     public PaymentTestDataProvider() {
         super();
@@ -103,16 +107,32 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         paymentInfo.setBillingAddressId(billingAddressId);
         switch (paymentInfo.getType()) {
             case CREDITCARD:
-                CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
-                paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                paymentInstrument.setAccountNumber(encryptCreditCardInfo(creditCardInfo));
-                paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                paymentInstrument.setType(creditCardInfo.getType().getValue());
-                paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
-                paymentInstrument.setPhoneNumber(creditCardInfo.getPhone());
-                paymentInstrument.setEmail(creditCardInfo.getEmail());
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
-                return paymentInfo.getPid();
+                if (ConfigHelper.getSetting("payment.provider.type") != null &&
+                        ConfigHelper.getSetting("payment.provider.type").equals("adyen")) {
+                    CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
+                    paymentInstrument.setAccountName(creditCardInfo.getAccountName());
+                    paymentInstrument.setAccountNumber(encryptCreditCardInfo(creditCardInfo));
+                    paymentInstrument.setIsValidated(creditCardInfo.isValidated());
+                    paymentInstrument.setType(creditCardInfo.getType().getValue());
+                    paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
+                    paymentInstrument.setPhoneNumber(creditCardInfo.getPhone());
+                    paymentInstrument.setEmail(creditCardInfo.getEmail());
+                    paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
+                    return paymentInfo.getPid();
+                } else {
+                    CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
+                    paymentInstrument.setAccountName(creditCardInfo.getAccountName());
+                    paymentInstrument.setAccountNumber(encryptCreditCardInfo(creditCardInfo.getAccountNum(), creditCardInfo.getEncryptedCVMCode()));
+                    typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
+                    paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
+                    paymentInstrument.setIsValidated(creditCardInfo.isValidated());
+                    paymentInstrument.setType(creditCardInfo.getType().getValue());
+                    paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
+                    paymentInstrument.setPhoneNumber(creditCardInfo.getPhone());
+                    paymentInstrument.setEmail(creditCardInfo.getEmail());
+                    paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
+                    return paymentInfo.getPid();
+                }
 
             case EWALLET:
                 EwalletInfo ewalletInfo = (EwalletInfo) paymentInfo;
@@ -269,8 +289,8 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         Card card = new Card.Builder(new Date())
                 .number(creditCardInfo.getAccountNum())
                 .cvc(creditCardInfo.getEncryptedCVMCode())
-                .expiryMonth(creditCardInfo.getExpireDate().substring(5,7))
-                .expiryYear(creditCardInfo.getExpireDate().substring(0,4))
+                .expiryMonth(creditCardInfo.getExpireDate().substring(5, 7))
+                .expiryYear(creditCardInfo.getExpireDate().substring(0, 4))
                 .holderName(creditCardInfo.getAccountNum())
                 .build();
 
@@ -278,9 +298,11 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
     }
 
+    public String encryptCreditCardInfo(String cardNum, String csc) throws Exception {
+        return paymentProvider.getToken(cardNum, csc);
+    }
 
-
-    String pubKey = "10001|9699D59B070DBA71B53A696C67B8FB8538C5C9B73D2BF485104858"
+    private static final String pubKey = "10001|9699D59B070DBA71B53A696C67B8FB8538C5C9B73D2BF485104858"
             + "DD12BC7D706A096DE6D8508175311A5B15EABE829C51DF269228EC75C8B3"
             + "35938C91A9E0B624A59734EBC77F97E22A3BA2A16FE9B185D9824EFC9597"
             + "AC3BE7E6D198E2A64D35FB2685EBA3B148C8CDD49B27BDF50AD7B65B4F20"
@@ -289,6 +311,5 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
             + "413848AE07DAEBB98EF714B2749A64E6F2B30F47E8731E9F6AB0618D65F0"
             + "014098FAE42F7E475BD6A7E23D33DC6F0D363DEBCA613007EE06C6B3371B"
             + "03E5FEB0745F31F5BBFD95D6E4ADC403E161BF";
-
 
 }

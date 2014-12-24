@@ -49,10 +49,4 @@ class MockOrganizationResource extends BaseMock implements OrganizationResource 
     Promise<Response> delete(OrganizationId organizationIdId) {
         return null
     }
-
-
-    @Override
-    Promise<Organization> patch(OrganizationId organizationId, Organization organization) {
-        return null
-    }
 }

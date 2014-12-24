@@ -82,31 +82,6 @@ class DeviceResourceImpl implements DeviceResource {
     }
 
     @Override
-    Promise<Device> patch(DeviceId deviceId, Device device) {
-        if (deviceId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-        if (device == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return deviceService.get(deviceId).then { Device oldDevice ->
-            if (oldDevice == null) {
-                throw AppErrors.INSTANCE.deviceNotFound(deviceId).exception()
-            }
-
-            device = deviceFilter.filterForPatch(device, oldDevice)
-
-            return deviceValidator.validateForUpdate(deviceId, device, oldDevice).then {
-                return deviceService.update(device, oldDevice).then { Device newDevice ->
-                    newDevice = deviceFilter.filterForGet(newDevice, null)
-                    return Promise.pure(newDevice)
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<Device> get(DeviceId deviceId, DeviceGetOptions getOptions) {
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')

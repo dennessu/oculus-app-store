@@ -44,11 +44,11 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         CreditCardInfo randomCreditCard = new CreditCardInfo();
         randomCreditCard.setAccountName(RandomFactory.getRandomStringOfAlphabet(5));
 
-        String[] creditCardArray = new String[]{"4111111111111111"};
+        String[] creditCardArray = new String[]{"4111117711552927"};
         randomCreditCard.setAccountNum(creditCardArray[RandomFactory.getRandomInteger(1)]);
         //randomCreditCard.setAccountNum(CreditCardGenerator.VISA.getRandomNumber());
         randomCreditCard.setEncryptedCVMCode(getCVMCode(CreditCardGenerator.VISA.toString(), true));
-        randomCreditCard.setExpireDate("2016-06-01");
+        randomCreditCard.setExpireDate("2016-06");
         //randomCreditCard.setPhone(Phone.getRandomPhone());
         randomCreditCard.setAddress(Address.getRandomAddress(country));
         randomCreditCard.setValidated(false);
@@ -60,7 +60,7 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         CreditCardInfo randomCreditCard = new CreditCardInfo();
         randomCreditCard.setAccountName(RandomFactory.getRandomStringOfAlphabet(5));
 
-        String[] creditCardArray = new String[]{"4111111111111111", "4012888888881881"};
+        String[] creditCardArray = new String[]{"4111117711552927", "4012888888881881"};
         randomCreditCard.setAccountNum(creditCardArray[RandomFactory.getRandomInteger(1)]);
         //randomCreditCard.setAccountNum(CreditCardGenerator.VISA.getRandomNumber());
         randomCreditCard.setEncryptedCVMCode(getCVMCode(CreditCardGenerator.VISA.toString(), true));
@@ -76,7 +76,7 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         CreditCardInfo randomCreditCard = new CreditCardInfo();
         randomCreditCard.setAccountName(RandomFactory.getRandomStringOfAlphabet(5));
 
-        String[] creditCardArray = new String[]{"4111111111111111", "4012888888881881"};
+        String[] creditCardArray = new String[]{"4111117711552927", "4012888888881881"};
         randomCreditCard.setAccountNum(creditCardArray[RandomFactory.getRandomInteger(1)]);
         //randomCreditCard.setAccountNum(CreditCardGenerator.VISA.getRandomNumber());
         randomCreditCard.setEncryptedCVMCode(getCVMCode(CreditCardGenerator.VISA.toString(), true));

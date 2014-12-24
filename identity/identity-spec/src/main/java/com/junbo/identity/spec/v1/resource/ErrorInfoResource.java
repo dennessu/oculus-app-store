@@ -40,10 +40,6 @@ public interface ErrorInfoResource {
     @Path("/{errorInfoId}")
     Promise<ErrorInfo> put(@PathParam("errorInfoId") ErrorIdentifier errorIdentifier, ErrorInfo errorInfo);
 
-    @POST
-    @Path("/{errorInfoId}")
-    Promise<ErrorInfo> patch(@PathParam("errorInfoId") ErrorIdentifier errorIdentifier, ErrorInfo errorInfo);
-
     @ApiOperation("Get one error info")
     @GET
     @Path("/{errorInfoId}")

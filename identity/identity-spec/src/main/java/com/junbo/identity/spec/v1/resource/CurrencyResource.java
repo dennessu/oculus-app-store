@@ -41,10 +41,6 @@ public interface CurrencyResource {
     @Path("/{currencyId}")
     Promise<Currency> put(@PathParam("currencyId") CurrencyId currencyId, Currency currency);
 
-    @POST
-    @Path("/{currencyId}")
-    Promise<Currency> patch(@PathParam("currencyId") CurrencyId currencyId, Currency currency);
-
     @ApiOperation("Get one currency info")
     @GET
     @Path("/{currencyId}")

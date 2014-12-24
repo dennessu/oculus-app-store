@@ -356,6 +356,20 @@
             }
         }
     },
+    "user_attribute": {
+      "views": {
+          "by_user_id" : {
+              "map": "function(doc) { emit(doc.userId.toString(), doc._id)}"
+          },
+          "by_user_attribute_definition_id": {
+              "map": "function(doc) { emit(doc.userAttributeDefinitionId.toString(), doc._id)}"
+          },
+          "by_user_id_attribute_definition_id": {
+              "map": "function(doc) { emit([doc.userId.toString(), doc.userAttributeDefinitionId.toString()], doc._id) }"
+          }
+      }
+    },
+    "user_attribute_definition" :{ },
     "unique": {
       "views": {
         "by_doc": {

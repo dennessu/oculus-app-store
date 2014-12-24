@@ -29,11 +29,6 @@ class MockCurrencyResource extends BaseMock implements CurrencyResource {
     }
 
     @Override
-    Promise<Currency> patch(CurrencyId currencyId, Currency currency) {
-        return null
-    }
-
-    @Override
     Promise<Currency> get(CurrencyId currencyId,CurrencyGetOptions getOptions) {
         Currency currency = new Currency()
         currency.setId(currencyId)

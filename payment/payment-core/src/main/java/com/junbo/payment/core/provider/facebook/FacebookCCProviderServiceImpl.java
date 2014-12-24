@@ -178,8 +178,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(pi.getId().toString()).exception();
         }
         if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getPaymentType())){
-            LOGGER.error("payment type needed for facebook.");
-            throw AppCommonErrors.INSTANCE.fieldRequired("payment_type").exception();
+            //TODO: should throw exception. Please uncommnt when billing finish the job
+            //LOGGER.error("payment type needed for facebook.");
+            //throw AppCommonErrors.INSTANCE.fieldRequired("payment_type").exception();
+            paymentRequest.getChargeInfo().setPaymentType(FacebookPaymentType.digital.toString());
         }
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override
@@ -256,8 +258,10 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
             throw AppServerExceptions.INSTANCE.noExternalTokenFoundForPayment(pi.getId().toString()).exception();
         }
         if(CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getPaymentType())){
-            LOGGER.error("payment type needed for facebook.");
-            throw AppCommonErrors.INSTANCE.fieldRequired("payment_type").exception();
+            //TODO: uncomment after billing finish the code
+            //LOGGER.error("payment type needed for facebook.");
+            //throw AppCommonErrors.INSTANCE.fieldRequired("payment_type").exception();
+            paymentRequest.getChargeInfo().setPaymentType(FacebookPaymentType.digital.toString());
         }
         return facebookPaymentUtils.getAccessToken().then(new Promise.Func<String, Promise<PaymentTransaction>>() {
             @Override

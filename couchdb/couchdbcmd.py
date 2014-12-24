@@ -9,6 +9,8 @@ import httplib
 import json
 import string
 import random
+import copy
+import time
 import AESCipher as cipher
 
 
@@ -43,7 +45,8 @@ def readParams():
         sys.stdout.flush()
 
     def printUsage():
-        error("Usage: python ./couchdbcmd.py <command> [<env>] [--yes] [--verbose] [--ignoreDiff] [--prefix={prefix}] [--key={key}]\n")
+        error(
+            "Usage: python ./couchdbcmd.py <command> [<env>] [--yes] [--verbose] [--ignoreDiff] [--prefix={prefix}] [--key={key}]\n")
 
     # Read input params
     sys.argv.pop(0)  # skip argv[0]
@@ -243,7 +246,7 @@ def diffViews(envConf, dbPrefix):
 def diffViewPerDb(url, fullDbName, views):
     existingResponse = curlJson(url + "/" + fullDbName + "/_design/views", raiseOnError=False)
     existing = {type: existingResponse[type]
-                if "error" not in existingResponse and type in existingResponse else {}
+    if "error" not in existingResponse and type in existingResponse else {}
                 for type in ["views", "indexes"]}
 
     result = {}
@@ -394,19 +397,71 @@ def createviews(dbDef, url, fullDbName):
             for key, value in viewDiff["delete"].items():
                 dbDef["views"][key] = value
         viewsRequest["views"] = dbDef["views"]
-        needPut = True
+        if len(viewDiff) != 0:
+            needPut = True
     if "indexes" in dbDef:
         indexDiff = diffView("indexes", viewsRequest, dbDef)
         if "delete" in indexDiff and not gIgnoreDiff:
             raise Exception("delete index:\n" + json.dumps(indexDiff, indent=2))
         viewsRequest["indexes"] = dbDef["indexes"]
-        needPut = True
+        if len(indexDiff) != 0:
+            needPut = True
 
     if needPut:
-
         info("Creating views for database: " + fullDbName)
-        viewsRequestStr = json.dumps(viewsRequest, indent=2)
-        curl(url + "/" + fullDbName + "/_design/views", "PUT", viewsRequestStr)
+        no_view = False
+        # if there is no view in current database, getting old views will get 404
+        try:
+            curl(url + "/" + fullDbName + "/_design/views", "COPY",
+                         headers={"Destination": "_design/views_old"})
+            views_old = curlJson(url + "/" + fullDbName + "/_design/views_old")
+        except Exception as e:
+            if e.message.find("404") != -1:
+                no_view = True
+                info("There is no view on server")
+            else:
+                raise e
+
+        # creating views_new
+        newView = copy.deepcopy(viewsRequest)
+        if "_rev" in newView:
+            del newView["_rev"]
+        curl(url + "/" + fullDbName + "/_design/views_new", "PUT", json.dumps(newView, indent=2))
+        views_new = curlJson(url + "/" + fullDbName + "/_design/views_new")
+
+        # # query view_new to trigger index
+        if "views" in viewsRequest:
+            curl(url + "/" + fullDbName + "/_design/views_new/_view/" + viewsRequest["views"].keys()[0], raiseOnError=False)
+        elif "indexes" in viewsRequest:
+            curl(url + "/" + fullDbName + "/_design/views_new/_search/search?q=1:1", raiseOnError=False)
+
+        # wait until there is no active tasks
+        indexCompleted = False
+        count = 0
+        while not indexCompleted:
+            active_tasks = curlJson(url + "/_active_tasks")
+            if len(active_tasks) == 0:
+                indexCompleted = True
+            if count > 2:
+                time.sleep(1)
+                info("Waiting for index to complete...")
+            count += 1
+        info("Index completed.")
+
+        # copy views_new to current view
+        if not no_view:
+            newView = copy.deepcopy(views_new)
+            newView["_rev"] = viewsRequest["_rev"]
+            curl(url + "/" + fullDbName + "/_design/views", "PUT", json.dumps(newView, indent=2))
+        else:
+            curl(url + "/" + fullDbName + "/_design/views_new", "COPY", headers={"Destination": "_design/views"})
+
+        # delete temp views
+        if not no_view:
+            views_old["_deleted"] = True
+            curl(url + "/" + fullDbName + "/_design/views_old", "PUT", json.dumps(views_old, indent=2))
+        views_new["_deleted"] = True
+        curl(url + "/" + fullDbName + "/_design/views_new", "PUT", json.dumps(views_new, indent=2))
 
 
 def dropdbs(envConf, dbPrefix):
@@ -613,13 +668,16 @@ def readJsonFile(filename):
 gIsVerbose = False
 gIgnoreDiff = False
 
+
 def setVerbose(isVerbose):
     global gIsVerbose
     gIsVerbose = isVerbose
 
+
 def setIgnoreDiff(ignoreDiff):
-    global  gIgnoreDiff
+    global gIgnoreDiff
     gIgnoreDiff = ignoreDiff
+
 
 def verbose(message):
     global gIsVerbose

@@ -107,4 +107,10 @@ public interface SelfMapper {
 
     ErrorInfo filterErrorInfo(ErrorInfo errorInfo, MappingContext context);
     ErrorInfo mergeErrorInfo(ErrorInfo source, ErrorInfo base, MappingContext context);
+
+    UserAttribute filterUserAttribute(UserAttribute userAttribute, MappingContext context);
+    UserAttribute mergeUserAttribute(UserAttribute source, UserAttribute base, MappingContext context);
+
+    UserAttributeDefinition filterUserAttributeDefinition(UserAttributeDefinition userAttributeDefinition, MappingContext context);
+    UserAttributeDefinition mergeUserAttributeDefinition(UserAttributeDefinition source, UserAttributeDefinition base, MappingContext context);
 }

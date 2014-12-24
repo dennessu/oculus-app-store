@@ -45,13 +45,6 @@ public interface UserTFAResource {
                           @PathParam("userTFAId") UserTFAId userTFAId,
                           @BeanParam UserTFAGetOptions getOptions);
 
-    @RouteBy(value = "userId", switchable = true)
-    @POST
-    @Path("/{userTFAId}")
-    Promise<UserTFA> patch(@PathParam("userId") UserId userId,
-                           @PathParam("userTFAId") UserTFAId userTFAId,
-                           UserTFA userTFA);
-
     @ApiOperation("Update one user TFA resource")
     @RouteBy(value = "userId", switchable = true)
     @PUT

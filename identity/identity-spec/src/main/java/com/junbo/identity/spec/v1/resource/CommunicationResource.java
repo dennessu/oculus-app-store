@@ -31,8 +31,6 @@ import javax.ws.rs.core.Response;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface CommunicationResource {
-
-
     @ApiOperation("Create one Communication info")
     @POST
     Promise<Communication> create(Communication communication);
@@ -42,11 +40,6 @@ public interface CommunicationResource {
     @Path("/{communicationId}")
     Promise<Communication> put(@PathParam("communicationId") CommunicationId communicationId,
                                Communication communication);
-
-    @POST
-    @Path("/{communicationId}")
-    Promise<Communication> patch(@PathParam("communicationId") CommunicationId communicationId,
-                                 Communication communication);
 
     @ApiOperation("Get one communication info")
     @GET

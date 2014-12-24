@@ -45,12 +45,6 @@ public interface AuthenticatorResource {
     Promise<UserAuthenticator> put(@PathParam("authenticatorId") UserAuthenticatorId userAuthenticatorId,
                                    UserAuthenticator userAuthenticator);
 
-    @RouteByAccessToken(switchable = true)
-    @POST
-    @Path("/{authenticatorId}")
-    Promise<UserAuthenticator> patch(@PathParam("authenticatorId") UserAuthenticatorId userAuthenticatorId,
-                                       UserAuthenticator userAuthenticator);
-
     @ApiOperation("Get an existing user authenticator")
     @RouteByAccessToken(switchable = true)
     @GET

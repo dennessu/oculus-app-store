@@ -5,7 +5,6 @@ t0=`date +%s`
 ./fullcycle.sh "-x build $@"
 
 # source setupproxy to get the exported proxy variables
-. ./setupproxy.sh
 ./test.sh
 
 t1=`date +%s`

@@ -204,55 +204,6 @@ class UserResourceImpl implements UserResource {
     }
 
     @Override
-    Promise<User> patch(UserId userId, User user) {
-        if (userId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (user == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return userService.get(userId).then { User oldUser ->
-            if (oldUser == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
-            }
-
-            def callback = userAuthorizeCallbackFactory.create(oldUser)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception()
-                }
-
-                user = userFilter.filterForPatch(user, oldUser)
-
-                auditCSR(user, oldUser)
-
-                return userValidator.validateForUpdate(user, oldUser).then {
-                    return userService.update(user, oldUser).then { User newUser ->
-                        return updateCredential(user.getId(), oldUser.username, newUser.username).then {
-                            newUser = userFilter.filterForGet(newUser, null)
-
-                            return isMailSentRequired(oldUser, newUser).then { Boolean aBoolean ->
-                                if (!aBoolean) {
-                                    return Promise.pure(newUser)
-                                }
-
-                                // send email
-                                return triggerCsrUserUpdateEmail(newUser, oldUser).then {
-                                    return sendPIIChangeNotification(newUser, oldUser).then {
-                                        return Promise.pure(newUser)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<User> get(UserId userId, UserGetOptions getOptions) {
         if (userId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
@@ -382,6 +333,12 @@ class UserResourceImpl implements UserResource {
                             }
                         }
                     }
+                }
+            } else {
+                return userService.getAllUsers(listOptions.limit, listOptions.offset).then { List<User> userList ->
+                    return Promise.pure(new Results(
+                            items: userList
+                    ))
                 }
             }
         }

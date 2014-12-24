@@ -186,4 +186,12 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "142", message = "User reaches maximum same IP attempt retry count")
     AppError maximumSameIPAttempt();
+
+    @ErrorDef(httpStatusCode = 404, code = "143", message = "UserAttribute not found", field = "id",
+            reason = "UserAttribute with ID {0} is not found")
+    AppError userAttributeNotFound(UserAttributeId userAttributeId);
+
+    @ErrorDef(httpStatusCode = 404, code = "144", message = "UserAttributeDefinition not found", field = "id",
+            reason = "UserAttributeDefinition with ID {0} is not found")
+    AppError userAttributeDefinitionNotFound(UserAttributeDefinitionId userAttributeDefinitionId);
 }

@@ -97,39 +97,6 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
     }
 
     @Override
-    Promise<UserGroup> patch(UserGroupId userGroupId, UserGroup userGroup) {
-        if (userGroupId == null) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
-        }
-
-        if (userGroup == null) {
-            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
-        }
-
-        return userGroupService.get(userGroupId).then { UserGroup oldUserGroup ->
-            if (oldUserGroup == null) {
-                throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
-            }
-
-            def callback = authorizeCallbackFactory.create(oldUserGroup.groupId)
-            return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception()
-                }
-
-                userGroup = userGroupFilter.filterForPatch(userGroup, oldUserGroup)
-
-                return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
-                    return userGroupService.update(userGroup, oldUserGroup).then { UserGroup newUserGroup ->
-                        newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
-                        return Promise.pure(newUserGroup)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     Promise<UserGroup> put(UserGroupId userGroupId, UserGroup userGroup) {
         if (userGroupId == null) {
             throw AppCommonErrors.INSTANCE.parameterRequired('id').exception()
