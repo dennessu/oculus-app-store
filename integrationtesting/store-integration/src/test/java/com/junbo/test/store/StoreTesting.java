@@ -38,6 +38,7 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -119,7 +120,12 @@ public class StoreTesting extends BaseTestClass {
 
         DeliveryResponse deliveryResponse = testDataProvider.getDeliveryByOfferId(offerId);
         String downloadLink = deliveryResponse.getDownloadUrl();
+        List<DeliveryResponse> deliveryResponseList = testDataProvider.getDeliveryListByOfferId(offerId);
+        Assert.assertEquals(deliveryResponseList.size(), 1);
+        Assert.assertEquals(deliveryResponse.getDownloadSize(), deliveryResponseList.get(0).getDownloadSize());
+        Assert.assertEquals(deliveryResponse.getSignature(), deliveryResponseList.get(0).getSignature());
 
+        HttpClientHelper.validateURLAccessibility(deliveryResponseList.get(0).getDownloadUrl(), 200);
         HttpClientHelper.validateURLAccessibility(downloadLink, 200);
     }
 
@@ -356,6 +362,16 @@ public class StoreTesting extends BaseTestClass {
 
         libraryResponse = testDataProvider.getLibrary();
         validationHelper.verifyLibraryResponse(libraryResponse, freePurchaseResponse.getEntitlements().get(0).getItem());
+
+        DeliveryResponse deliveryResponse = testDataProvider.getDeliveryByOfferId(offerId);
+        String downloadLink = deliveryResponse.getDownloadUrl();
+        List<DeliveryResponse> deliveryResponseList = testDataProvider.getDeliveryListByOfferId(offerId);
+        Assert.assertEquals(deliveryResponseList.size(), 1);
+        Assert.assertEquals(deliveryResponse.getDownloadSize(), deliveryResponseList.get(0).getDownloadSize());
+        Assert.assertEquals(deliveryResponse.getSignature(), deliveryResponseList.get(0).getSignature());
+
+        Assert.assertNotNull(deliveryResponseList.get(0).getDownloadUrl());
+        Assert.assertNotNull(downloadLink);
 
         Master.getInstance().setCurrentUid(null);
 

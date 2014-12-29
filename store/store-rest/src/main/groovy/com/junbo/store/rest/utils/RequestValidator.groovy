@@ -457,8 +457,13 @@ class RequestValidator {
         }
     }
 
-    public void validateDeliveryRequest(DeliveryRequest request) {
-        notEmpty(request.itemId, 'itemId')
+    public void validateDeliveryRequest(DeliveryRequest request, boolean fromOffer) {
+        if (!fromOffer) {
+            notEmpty(request.itemId, 'itemId')
+        } else {
+            notEmpty(request.offerId, 'offerId')
+        }
+
     }
 
     public void validateReviewsRequest(ReviewsRequest request) {

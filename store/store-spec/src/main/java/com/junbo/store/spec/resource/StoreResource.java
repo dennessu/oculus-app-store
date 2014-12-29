@@ -18,6 +18,7 @@ import com.junbo.store.spec.model.purchase.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * The wrapper api for store front.
@@ -136,5 +137,11 @@ public interface StoreResource {
     @RouteByAccessToken(switchable = true)
     @Consumes()
     Promise<DeliveryResponse> getDelivery(@BeanParam DeliveryRequest request);
+
+    @GET
+    @Path("/generate-download-list")
+    @RouteByAccessToken(switchable = true)
+    @Consumes()
+    Promise<List<DeliveryResponse>> getDeliveryFromOffer(@BeanParam DeliveryRequest request);
 
 }
