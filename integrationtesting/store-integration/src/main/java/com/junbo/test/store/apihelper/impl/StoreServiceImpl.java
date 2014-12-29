@@ -5,6 +5,7 @@
  */
 package com.junbo.test.store.apihelper.impl;
 
+import com.junbo.common.id.OfferId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
@@ -473,6 +474,18 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
             }, responseBody);
 
             return response;
+        }
+        return null;
+    }
+
+    @Override
+    public List<DeliveryResponse> getDeliveryList(OfferId offerId, int expectedResponseCode) throws Exception {
+        String url = getEndPointUrl() + "/generate-download-list?";
+        url = appendQuery(url, "offerId", offerId);
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
+        if (expectedResponseCode == 200) {
+            return new JsonMessageTranscoder().decode(new TypeReference<List<DeliveryResponse>>() {
+            }, responseBody);
         }
         return null;
     }

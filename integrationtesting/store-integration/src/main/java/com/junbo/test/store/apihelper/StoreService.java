@@ -5,6 +5,7 @@
  */
 package com.junbo.test.store.apihelper;
 
+import com.junbo.common.id.OfferId;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
@@ -108,6 +109,8 @@ public interface StoreService {
     DeliveryResponse getDelivery(DeliveryRequest request) throws Exception;
 
     DeliveryResponse getDelivery(DeliveryRequest request, int expectedResponseCode) throws Exception;
+
+    List<DeliveryResponse> getDeliveryList(OfferId offerId, int expectedResponseCode) throws Exception;
 
     InitialDownloadItemsResponse getInitialDownloadItemsResponse() throws Exception;
 

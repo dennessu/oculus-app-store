@@ -106,6 +106,21 @@ class CatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
+    Promise<List<ItemId>> getItemsInOffer(String offerId) {
+        List<ItemId> itemIds = [] as List<ItemId>
+        resourceContainer.offerResource.getOffer(offerId).then { com.junbo.catalog.spec.model.offer.Offer cof ->
+            resourceContainer.offerRevisionResource.getOfferRevision(cof.currentRevisionId, new OfferRevisionGetOptions()).then { OfferRevision it ->
+                if (!org.apache.commons.collections.CollectionUtils.isEmpty(it.items)) {
+                    it.items.each { ItemEntry itemEntry ->
+                        itemIds << new ItemId(itemEntry.itemId)
+                    }
+                }
+                return Promise.pure(itemIds)
+            }
+        }
+    }
+
+    @Override
     Promise<ItemRevision> getAppItemRevision(ItemId itemId, Integer versionCode, ApiContext apiContext) {
         if (versionCode == null) {
             return resourceContainer.itemResource.getItem(itemId.value).then { Item catalogItem ->

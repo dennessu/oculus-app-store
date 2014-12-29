@@ -298,6 +298,9 @@ public class StoreBrowseTesting extends BaseTestClass {
         // get delivery
         DeliveryResponse deliveryResponse = testDataProvider.getDelivery(itemId);
         Assert.assertTrue(deliveryResponse.getDownloadUrl() != null);
+        List<DeliveryResponse> deliveryResponseList = testDataProvider.getDeliveryListByOfferId(offerId);
+        Assert.assertEquals(deliveryResponseList.size(), 1);
+        Assert.assertTrue(deliveryResponseList.get(0).getDownloadUrl() != null);
 
         // switch to country that does not purchasable and get library, verify the offer is null
         TestContext.getData().putHeader("oculus-geoip-country-code", "CN");
@@ -332,6 +335,11 @@ public class StoreBrowseTesting extends BaseTestClass {
         // get the item details
         TestContext.getData().putHeader("Accept-Language", "zh-CN");
         DetailsResponse detailsResponse = testDataProvider.getItemDetails(itemId);
+        verifyItem(detailsResponse.getItem(), ApiEndPoint.Details, false);
+
+        // get the item details
+        TestContext.getData().putHeader("Accept-Language", "zh_CN");
+        detailsResponse = testDataProvider.getItemDetails(itemId);
         verifyItem(detailsResponse.getItem(), ApiEndPoint.Details, false);
     }
 
@@ -812,7 +820,7 @@ public class StoreBrowseTesting extends BaseTestClass {
         detailsResponse = testDataProvider.getItemDetails(itemId);
         verifyItem(detailsResponse.getItem(), ApiEndPoint.Details, false);
 
-        // invalid Accept-Language format, fall back to en_US
+        // valid Accept-Language format
         TestContext.getData().putHeader("Accept-Language", "en_US");
         detailsResponse = testDataProvider.getItemDetails(itemId);
         verifyItem(detailsResponse.getItem(), ApiEndPoint.Details, false);
@@ -837,6 +845,9 @@ public class StoreBrowseTesting extends BaseTestClass {
         testDataProvider.getDelivery(new ItemId(item.getItemId()), null, 412);
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.120"));
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("item not purchased."));
+
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_oculus_free1);
+        testDataProvider.getDeliveryListByOfferId(offerId, 412);
     }
 
     private void testGetCategorySection(final String category, final String sectionName, List<String> offerNames) throws Exception {

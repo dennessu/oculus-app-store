@@ -596,9 +596,28 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<DeliveryResponse> getDelivery(DeliveryRequest request) {
-        requestValidator.validateRequiredApiHeaders().validateDeliveryRequest(request)
+        requestValidator.validateRequiredApiHeaders().validateDeliveryRequest(request, false)
         prepareBrowse().then { ApiContext apiContext ->
             return browseService.getDelivery(request, apiContext)
+        }
+    }
+
+    @Override
+    Promise<List<DeliveryResponse>> getDeliveryFromOffer(DeliveryRequest request) {
+        List<DeliveryResponse> responses = [] as List
+        requestValidator.validateRequiredApiHeaders().validateDeliveryRequest(request, true)
+        OfferId offerId = request.offerId
+        prepareBrowse().then { ApiContext apiContext ->
+            facadeContainer.catalogFacade.getItemsInOffer(offerId.value).then { List<ItemId> itemIds ->
+                Promise.each(itemIds) { ItemId itemId ->
+                    browseService.getDelivery(new DeliveryRequest(itemId: itemId), apiContext).then { DeliveryResponse response ->
+                        responses << response
+                        return Promise.pure()
+                    }
+                }
+            }.then {
+                return Promise.pure(responses)
+            }
         }
     }
 

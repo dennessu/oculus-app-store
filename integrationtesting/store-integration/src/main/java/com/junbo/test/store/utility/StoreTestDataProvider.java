@@ -888,6 +888,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.getDelivery(deliveryRequest);
     }
 
+    public List<DeliveryResponse> getDeliveryListByOfferId(String offerId, int expectedCode) throws Exception {
+        return storeClient.getDeliveryList(new OfferId(offerId), expectedCode);
+    }
+
+    public List<DeliveryResponse> getDeliveryListByOfferId(String offerId) throws Exception {
+        return getDeliveryListByOfferId(offerId, 200);
+    }
+
     public String postPayment(String uid, PaymentInstrumentBase payment) throws Exception {
         return paymentProvider.postPaymentInstrument(uid, payment);
     }
