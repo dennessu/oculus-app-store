@@ -194,7 +194,7 @@ class UserValidatorImpl implements UserValidator {
             }
 
             if (options.username == null && options.groupId == null) {
-                options.limit = options.limit == null? maximumFetchSize : options.limit
+                throw AppCommonErrors.INSTANCE.parameterRequired('username or groupId or primaryEmail').exception()
             }
         } else {
             if (!StringUtils.isEmpty(options.username) || options.groupId != null) {

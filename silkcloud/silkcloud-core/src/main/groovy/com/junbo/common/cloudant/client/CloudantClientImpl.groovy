@@ -144,6 +144,10 @@ class CloudantClientImpl implements CloudantClientInternal {
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
             return executeRequest(dbUri, HttpMethod.DELETE, urlEncode(entity.cloudantId), getWriteParam(['rev': entity.cloudantRev], noOverrideWrites), null).then({ Response response ->
+                if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
+                    // already deleted
+                    return Promise.pure()
+                }
                 return checkWriteErrors("delete", dbUri, entity, response)
             })
         }

@@ -5,6 +5,7 @@
  */
 package com.junbo.test.store.apihelper;
 
+import com.junbo.common.id.OfferId;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
@@ -13,6 +14,8 @@ import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
+
+import java.util.List;
 
 //import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
 //import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
@@ -106,6 +109,8 @@ public interface StoreService {
     DeliveryResponse getDelivery(DeliveryRequest request) throws Exception;
 
     DeliveryResponse getDelivery(DeliveryRequest request, int expectedResponseCode) throws Exception;
+
+    List<DeliveryResponse> getDeliveryList(OfferId offerId, int expectedResponseCode) throws Exception;
 
     InitialDownloadItemsResponse getInitialDownloadItemsResponse() throws Exception;
 

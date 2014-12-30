@@ -335,11 +335,7 @@ class UserResourceImpl implements UserResource {
                     }
                 }
             } else {
-                return userService.getAllUsers(listOptions.limit, listOptions.offset).then { List<User> userList ->
-                    return Promise.pure(new Results(
-                            items: userList
-                    ))
-                }
+               throw AppCommonErrors.INSTANCE.parameterRequired('primaryMail').exception()
             }
         }
     }

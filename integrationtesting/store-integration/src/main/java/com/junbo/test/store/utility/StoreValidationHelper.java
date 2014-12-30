@@ -64,8 +64,8 @@ public class StoreValidationHelper extends ValidationHelper {
         }
         Instrument instrument = billingProfile.getInstruments().get(0); //verify the first item
         verifyEqual(instrument.getType(), "CREDITCARD", "verify paymentType");
-        verifyEqual(instrument.getAccountNum(), "1111", "verify account number");
-        verifyEqual(instrument.getExpireDate(), "2016-6", "verify expire date");
+        verifyEqual(instrument.getAccountNum(), "2927", "verify account number");
+        verifyEqual(instrument.getExpireDate(), "2016-06", "verify expire date");
     }
 
     public void verifyPreparePurchase(PreparePurchaseResponse response) {

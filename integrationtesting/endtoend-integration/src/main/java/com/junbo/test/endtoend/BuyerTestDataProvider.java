@@ -187,8 +187,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return paymentProvider.postPaymentInstrument(uid, paymentInfo, billAddressId);
     }
 
-    public void deletePaymentInstrument(String uid, String paymentId) throws Exception
-    {
+    public void deletePaymentInstrument(String uid, String paymentId) throws Exception {
         paymentProvider.deletePaymentInstruments(uid, paymentId);
     }
 
@@ -246,8 +245,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
-                                    String paymentInstrumentId, boolean hasPhysicalGood)
-            throws Exception {
+                                    String paymentInstrumentId, boolean hasPhysicalGood, int expectedResponseCode) throws Exception {
         if (cartId == null) {
             cartId = cartClient.getCartPrimary(uid);
         }
@@ -289,9 +287,14 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
         order.setLocale(new LocaleId("en_US"));
         logger.LogSample("Post an order");
-        return orderProvider.postOrder(order);
+        return orderProvider.postOrder(order, expectedResponseCode);
     }
 
+    public String postOrderByCartId(String uid, String cartId, Country country, Currency currency,
+                                    String paymentInstrumentId, boolean hasPhysicalGood)
+            throws Exception {
+        return postOrderByCartId(uid, cartId, country, currency, paymentInstrumentId, hasPhysicalGood, 200);
+    }
 
     public String updateOrderTentative(String orderId, boolean isTentative) throws Exception {
         return this.updateOrderTentative(orderId, isTentative, 200);

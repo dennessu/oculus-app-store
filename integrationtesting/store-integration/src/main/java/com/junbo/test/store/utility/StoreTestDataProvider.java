@@ -297,7 +297,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo.getAccountNum(),creditCardInfo.getEncryptedCVMCode());
+        instrument.setExpireDate(creditCardInfo.getExpireDate());
         instrument.setAccountName(creditCardInfo.getAccountName());
         instrument.setAccountNum(encryptedString);
         instrument.setBillingAddress(getBillingAddress());
@@ -339,7 +340,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         InstrumentUpdateRequest instrumentUpdateRequest = new InstrumentUpdateRequest();
         Instrument instrument = new Instrument();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo);
+        String encryptedString = paymentProvider.encryptCreditCardInfo(creditCardInfo.getAccountNum(),creditCardInfo.getEncryptedCVMCode());
+        instrument.setExpireDate("2016-06");
         instrument.setAccountName(creditCardInfo.getAccountName());
         instrument.setAccountNum(encryptedString);
         instrument.setType("CREDITCARD");
@@ -869,6 +871,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         DeliveryRequest deliveryRequest = new DeliveryRequest();
         deliveryRequest.setItemId(new ItemId(itemId));
         return storeClient.getDelivery(deliveryRequest);
+    }
+
+    public List<DeliveryResponse> getDeliveryListByOfferId(String offerId, int expectedCode) throws Exception {
+        return storeClient.getDeliveryList(new OfferId(offerId), expectedCode);
+    }
+
+    public List<DeliveryResponse> getDeliveryListByOfferId(String offerId) throws Exception {
+        return getDeliveryListByOfferId(offerId, 200);
     }
 
     public String postPayment(String uid, PaymentInstrumentBase payment) throws Exception {

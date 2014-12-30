@@ -126,7 +126,6 @@ class CheckoutTests(ut.TestBase):
         }
 
     def testCheckout(self):
-        cardInfo = self.getFBEncryptedCardInfo()
         user = oauth.testRegister('identity commerce')
         devinfo = self.testDeveloper()
 

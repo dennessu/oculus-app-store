@@ -18,6 +18,8 @@ public final class Header {
     public static final String AUTHORIZATION = "Authorization";
     public static final String OCULUS_INTERNAL = "Oculus-internal";
     public static final String X_ENABLE_PROFILING = "X-Enable-Profiling";
+    public static final String USER_AGENT = "User-Agent";
+
 
 
     private Header() {
