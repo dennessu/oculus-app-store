@@ -66,6 +66,7 @@ def bumprev(db):
         bulkStr = json.dumps({'docs': docs}, indent=2)
         if len(docs) > 0:
             curlJson(db + '/_bulk_docs', "POST", bulkStr)
+            print "%d docs updated" % rowsUpdated
         else:
             break
     print "%d docs updated" % rowsUpdated
