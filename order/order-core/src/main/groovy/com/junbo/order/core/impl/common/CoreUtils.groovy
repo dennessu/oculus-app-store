@@ -605,4 +605,22 @@ class CoreUtils {
         }
         return false
     }
+
+    static String getOrderType(Order order) {
+        if (CollectionUtils.isEmpty(order.orderItems)) {
+            return null
+        }
+        Boolean hasPhysical = order.orderItems.any { OrderItem oi ->
+            oi.type == ItemType.PHYSICAL_GOODS.name() || oi.type == ItemType.SHIPPING_AND_HANDLING.name()
+        }
+        Boolean hasDigital = order.orderItems.any { OrderItem oi ->
+            oi.type != ItemType.PHYSICAL_GOODS.name() && oi.type != ItemType.SHIPPING_AND_HANDLING.name()
+        }
+        if (hasPhysical && hasDigital) {
+            return 'bundle'
+        } else if(hasPhysical) {
+            return 'physical'
+        }
+        return 'digital'
+    }
 }

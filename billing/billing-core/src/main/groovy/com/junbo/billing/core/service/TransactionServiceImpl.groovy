@@ -330,6 +330,9 @@ class TransactionServiceImpl implements TransactionService {
         chargeInfo.setCurrency(balance.currency)
         chargeInfo.setAmount(balance.totalAmount)
         chargeInfo.setCountry(balance.country)
+        if (balance.getProperty(PropertyKey.ORDER_TYPE) != null) {
+            chargeInfo.setPaymentType(balance.getProperty(PropertyKey.ORDER_TYPE))
+        }
         paymentTransaction.setChargeInfo(chargeInfo)
 
         String description = balance.getProperty(PropertyKey.BALANCE_DESCRIPTION)
