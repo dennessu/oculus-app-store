@@ -50,6 +50,11 @@ class PITypeDataHandler extends BaseDataHandler {
             logger.debug("Overwrite PIType $piType.typeCode with this content")
             piType.id = (PITypeId) existing.id
             piType.rev = existing.rev
+            piType.createdTime = existing.createdTime
+            piType.createdBy = existing.createdBy
+            piType.updatedBy = existing.updatedBy
+            piType.updatedTime = existing.updatedTime
+            piType.adminInfo = existing.adminInfo
             try {
                 piTypeResource.put((PITypeId) existing.id, piType).get()
             } catch (Exception e) {

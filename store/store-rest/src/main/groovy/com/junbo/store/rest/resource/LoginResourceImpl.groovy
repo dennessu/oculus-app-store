@@ -104,6 +104,9 @@ class LoginResourceImpl implements LoginResource {
     @Value('${store.tos.freepurchase.enable}')
     private Boolean tosFreepurchaseEnable
 
+    @Value('${store.conf.tosChallengeDefaultLocale}')
+    private String tosDefaultLocale
+
     private class CreateUserContext {
         User user
         UserLoginName userLoginName
@@ -402,9 +405,11 @@ class LoginResourceImpl implements LoginResource {
 
     @Override
     Promise<com.junbo.store.spec.model.browse.document.Tos> getRegisterTos() {
+        LocaleId localeId = null
         requestValidator.validateRequiredApiHeaders()
 
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
+            localeId = apiContext.locale.getId()
             return resourceContainer.tosResource.list(new TosListOptions(title: tosCreateUser, countryId: apiContext.country.getId()))
         }.recover { Throwable ex ->
             appErrorUtils.throwUnknownError('getRegisterTos', ex)
@@ -424,7 +429,17 @@ class LoginResourceImpl implements LoginResource {
             Tos tos = tosList.reverse().find { Tos tos ->
                 return tos.state == 'APPROVED'
             }
-            if (tos == null) {
+
+            Boolean localeExists = false
+            if (!CollectionUtils.isEmpty(tos.locales)) {
+                localeExists = tos.locales.contains(localeId)
+
+                localeExists = localeExists || tos.locales.any { LocaleId locale ->
+                    return locale.toString().equals(tosDefaultLocale)
+                }
+            }
+
+            if (tos == null || !localeExists) {
                 throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
             }
             return Promise.pure(dataConverter.toStoreTos(tos, null))
@@ -686,7 +701,7 @@ class LoginResourceImpl implements LoginResource {
     private Promise<AuthTokenResponse> processAfterSignIn(UserSignInRequest userSignInRequest, AuthTokenResponse authTokenResponse, com.junbo.store.spec.model.ApiContext apiContext) {
         CommonUtils.pushAuthHeader(authTokenResponse.accessToken)
         Promise.pure().then {
-            return checkTosChallengeForLogin(authTokenResponse.getUserId(), apiContext.country.getId(), userSignInRequest.challengeAnswer, authTokenResponse)
+            return checkTosChallengeForLogin(authTokenResponse.getUserId(), apiContext.country.getId(), userSignInRequest.challengeAnswer, authTokenResponse, apiContext.locale.getId())
                     .then { AuthTokenResponse response ->
                 if (response.challenge != null) {
                     return Promise.pure(response)
@@ -705,9 +720,9 @@ class LoginResourceImpl implements LoginResource {
         }
     }
 
-    private Promise<AuthTokenResponse> checkTosChallengeForLogin(UserId userId, CountryId country, ChallengeAnswer challengeAnswer, AuthTokenResponse authTokenResponse) {
+    private Promise<AuthTokenResponse> checkTosChallengeForLogin(UserId userId, CountryId country, ChallengeAnswer challengeAnswer, AuthTokenResponse authTokenResponse, LocaleId localeId) {
         if (tosFreepurchaseEnable) {
-            return challengeHelper.checkTosChallenge(userId, tosCreateUser, country, challengeAnswer).then { Challenge challenge ->
+            return challengeHelper.checkTosChallenge(userId, tosCreateUser, country, challengeAnswer, localeId).then { Challenge challenge ->
                 if (challenge == null) {
                     return Promise.pure(authTokenResponse)
                 }

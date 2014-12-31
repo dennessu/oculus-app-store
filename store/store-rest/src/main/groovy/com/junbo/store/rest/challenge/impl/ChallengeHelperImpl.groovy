@@ -1,13 +1,14 @@
 package com.junbo.store.rest.challenge.impl
 
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
-import com.junbo.identity.spec.v1.model.Tos
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserTosAgreement
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
+import com.junbo.identity.spec.v1.option.model.CountryGetOptions
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
@@ -55,12 +56,19 @@ class ChallengeHelperImpl implements ChallengeHelper {
     @Value('${store.conf.pinValidDuration}')
     private Integer pinCodeValidateDuration
 
+    @Autowired
+    @Value('${store.conf.tosChallengeDefaultLocale}')
+    private String defaultLocale
+
     @Override
-    Promise<Challenge> checkTosChallenge(UserId userId, String tosTitle, CountryId countryId, ChallengeAnswer challengeAnswer) {
+    Promise<Challenge> checkTosChallenge(UserId userId, String tosTitle, CountryId countryId, ChallengeAnswer challengeAnswer, LocaleId localeId) {
         if (!tosChallengeEnabled) {
             return Promise.pure()
         }
-        return resourceContainer.tosResource.list(new TosListOptions(title: tosTitle, countryId: countryId)).then { Results<Tos> toses ->
+
+        User user = resourceContainer.userResource.get(userId, new UserGetOptions()).get()
+        CountryId selectedCountryId = user.countryOfResidence == null ? countryId : user.countryOfResidence
+        return resourceContainer.tosResource.list(new TosListOptions(title: tosTitle, countryId: selectedCountryId)).then { Results<Tos> toses ->
             if (toses == null || CollectionUtils.isEmpty(toses.items)) {
                 return Promise.pure(null)
             }
@@ -79,6 +87,11 @@ class ChallengeHelperImpl implements ChallengeHelper {
             if (tos == null) {
                 return Promise.pure(null)
             }
+
+            if (!isSupportLocale(tos, user, localeId, selectedCountryId)) {
+                return Promise.pure(null)
+            }
+
             return resourceContainer.userTosAgreementResource.list(new UserTosAgreementListOptions(
                     userId: userId,
                     tosId: tos.getId()
@@ -99,6 +112,28 @@ class ChallengeHelperImpl implements ChallengeHelper {
 
                 return Promise.pure(null)
             }
+        }
+    }
+
+    private Boolean isSupportLocale(Tos tos, User user, LocaleId localeId, CountryId countryId) {
+        if (CollectionUtils.isEmpty(tos.locales)) {
+            return false
+        }
+        if (tos.locales.contains(user.countryOfResidence)) {
+            return true
+        }
+
+        if (tos.locales.contains(localeId)) {
+            return true
+        }
+
+        Country country = resourceContainer.countryResource.get(countryId, new CountryGetOptions()).get()
+        if (tos.locales.contains(country.defaultLocale)) {
+            return true
+        }
+
+        return tos.locales.any { LocaleId tosLocale ->
+            return tosLocale.toString().equals(defaultLocale)
         }
     }
 

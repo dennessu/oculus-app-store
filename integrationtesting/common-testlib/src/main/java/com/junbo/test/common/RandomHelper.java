@@ -65,4 +65,8 @@ public class RandomHelper {
     public static String randomIP() {
         return randomNumeric(2) + "." + randomNumeric(2) + "." + randomNumeric(2) + "." + randomNumeric(2);
     }
+
+    public static Double randomDouble() {
+        return new Random().nextDouble();
+    }
 }

@@ -224,6 +224,7 @@ public class postCredentialAttempts {
         errorMessage = "User Password Incorrect";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
 
         password = IdentityModel.DefaultPassword();
         response = Identity.UserCredentialPostDefault(postedUser.getId(), null, password);

@@ -588,7 +588,7 @@ ansible-playbook -i prod.hosts logstash.yml --limit eu
 1. Setup DBs in new region
 
   ```
-  ansible-playbook -i prod.hosts setup-db.yml -e "sourcedir=/home/devops appname=apphost-cli-0.0.1-SNAPSHOT CRYPTO_KEY=..."
+  ansible-playbook -i prod.hosts setup-db.yml -e "sourcedir=/home/devops appname=apphost-cli-0.0.1-SNAPSHOT CRYPTO_KEY=..." --limit eu
   ```
 
 1. Copy masterkey from existing regions
