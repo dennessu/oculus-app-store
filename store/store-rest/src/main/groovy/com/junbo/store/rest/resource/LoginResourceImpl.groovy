@@ -1,4 +1,5 @@
 package com.junbo.store.rest.resource
+
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -10,6 +11,8 @@ import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.identity.spec.v1.option.list.CountryListOptions
 import com.junbo.identity.spec.v1.option.list.TosListOptions
+import com.junbo.identity.spec.v1.option.model.CountryGetOptions
+import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
@@ -406,11 +409,13 @@ class LoginResourceImpl implements LoginResource {
     @Override
     Promise<com.junbo.store.spec.model.browse.document.Tos> getRegisterTos() {
         LocaleId localeId = null
+        CountryId countryId = null
         requestValidator.validateRequiredApiHeaders()
 
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
             localeId = apiContext.locale.getId()
-            return resourceContainer.tosResource.list(new TosListOptions(title: tosCreateUser, countryId: apiContext.country.getId()))
+            countryId = apiContext.country.getId()
+            return resourceContainer.tosResource.list(new TosListOptions(title: tosCreateUser, countryId: apiContext.country.getId(), state: 'APPROVED'))
         }.recover { Throwable ex ->
             appErrorUtils.throwUnknownError('getRegisterTos', ex)
         }.then { Results<Tos> tosResults ->
@@ -418,7 +423,7 @@ class LoginResourceImpl implements LoginResource {
                 return Promise.pure(null)
             }
 
-            List<Tos> tosList = tosResults.items.sort { Tos tos ->
+            Tos latestTos = tosResults.items.max { Tos tos ->
                 try {
                     return Double.parseDouble(tos.version)
                 } catch (NumberFormatException ex) {
@@ -426,20 +431,23 @@ class LoginResourceImpl implements LoginResource {
                 }
             }
 
-            Tos tos = tosList.reverse().find { Tos tos ->
-                return tos.state == 'APPROVED'
-            }
+            List<Tos> tosList = tosResults.items.findAll { Tos item ->
+                try {
+                    Double current = Double.parseDouble(item.version)
+                    Double latest = Double.parseDouble(latestTos.version)
 
-            Boolean localeExists = false
-            if (!CollectionUtils.isEmpty(tos.locales)) {
-                localeExists = tos.locales.contains(localeId)
-
-                localeExists = localeExists || tos.locales.any { LocaleId locale ->
-                    return locale.toString().equals(tosDefaultLocale)
+                    return current == latest
+                } catch (NumberFormatException ex) {
+                    return false
                 }
-            }
+            }?.asList()
 
-            if (tos == null || !localeExists) {
+            if (CollectionUtils.isEmpty(tosList)) {
+                throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
+            }
+            LocaleId locale = getLocale(null, localeId, null)
+            Tos tos = getSupportedTos(tosList, locale)
+            if (tos == null) {
                 throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
             }
             return Promise.pure(dataConverter.toStoreTos(tos, null))
@@ -466,6 +474,61 @@ class LoginResourceImpl implements LoginResource {
             response.supportedCountries = response.supportedCountries.unique().sort()
             return Promise.pure(response)
         }
+    }
+
+    private Tos getSupportedTos(List<Tos> tosList, LocaleId localeId) {
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(tosList) || localeId == null) {
+            return null
+        }
+
+        Map<String, Boolean> circle = new HashMap<>()
+
+        LocaleId current = localeId
+        LocaleId fallback = null
+        while (true) {
+            com.junbo.identity.spec.v1.model.Locale locale = resourceContainer.localeResource.get(current, new LocaleGetOptions()).get()
+            Boolean visited = circle.get(locale.getId().toString())
+            if (visited) {
+                break
+            }
+            circle.put(locale.getId().toString(), true)
+            for (Tos tos : tosList) {
+                if (!CollectionUtils.isEmpty(tos.locales)) {
+                    if (tos.locales.any { LocaleId tosLocaleId ->
+                        return tosLocaleId == current
+                    }) {
+                        return tos
+                    }
+                }
+            }
+
+            fallback = locale.fallbackLocale
+            if (current == fallback || fallback == null) {
+                break
+            }
+            current = fallback
+        }
+
+        return null
+    }
+
+    private LocaleId getLocale(User user, LocaleId localeId, CountryId countryId) {
+        if (user != null && user.preferredLocale != null) {
+            return user.preferredLocale
+        }
+
+        if (localeId != null) {
+            return localeId
+        }
+
+        if (countryId != null) {
+            Country country = resourceContainer.countryResource.get(countryId, new CountryGetOptions()).get()
+            if (country != null && country.defaultLocale != null) {
+                return country.defaultLocale
+            }
+        }
+
+        return new LocaleId(tosDefaultLocale)
     }
 
     private Promise<AuthTokenResponse> innerSignIn(User createdUser, UserLoginName userLoginName, StoreUserEmail storeUserEmail) {

@@ -146,6 +146,7 @@
         <property name="tosResource" ref="oauth_tosResource"/>
         <property name="userTosAgreementResource" ref="oauth_userTosAgreementResource"/>
         <property name="countryResource" ref="oauth_countryResource" />
+        <property name="localeResource" ref="oauth_localeResource" />
         <property name="defaultLocale" value="en_US" />
         <property name="tosCache" ref="tosCache"/>
     </bean>

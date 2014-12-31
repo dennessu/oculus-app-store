@@ -14,7 +14,9 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
+import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.resource.CountryResource
+import com.junbo.identity.spec.v1.resource.LocaleResource
 import com.junbo.identity.spec.v1.resource.TosResource
 import com.junbo.identity.spec.v1.resource.UserTosAgreementResource
 import com.junbo.langur.core.context.JunboHttpContext
@@ -38,6 +40,8 @@ class TosUtil {
 
     private CountryResource countryResource
 
+    private LocaleResource localeResource
+
     private String defaultLocale
 
     private UserTosAgreementResource userTosAgreementResource
@@ -55,6 +59,11 @@ class TosUtil {
     @Required
     void setCountryResource(CountryResource countryResource) {
         this.countryResource = countryResource
+    }
+
+    @Required
+    void setLocaleResource(LocaleResource localeResource) {
+        this.localeResource = localeResource
     }
 
     @Required
@@ -100,15 +109,13 @@ class TosUtil {
             def results = tosResource.list(options).get()
 
             if (!CollectionUtils.isEmpty(results.items)) {
-                Tos latest = results.items.get(0)
-                for (Tos tos : results.items) {
-                    if (compareVersion(latest.version, tos.version) < 0) {
-                        latest = tos
+                List<Tos> latestTosList = getLatestTosList(results.items)
+                if (!CollectionUtils.isEmpty(latestTosList)) {
+                    LocaleId localeId = getLocale(user, country)
+                    Tos supportedTos = getSupportedTos(latestTosList, localeId)
+                    if (supportedTos != null) {
+                        tosId.add(supportedTos.getId())
                     }
-                }
-
-                if (isTosInSupportList(latest, user, country)) {
-                    tosId.add(latest.getId())
                 }
             }
         }
@@ -116,39 +123,47 @@ class TosUtil {
         return tosId
     }
 
-    Boolean isTosInSupportList(Tos tos, User user, CountryId countryId) {
-        if (CollectionUtils.isEmpty(tos.locales)) {
-            return false
+    private List<Tos> getLatestTosList(List<Tos> tosList) {
+        if (CollectionUtils.isEmpty(tosList)) {
+            return new ArrayList<Tos>()
         }
 
-        if (user.preferredLocale != null) {
-            if (tos.locales.contains(user.preferredLocale)) {
-                return true
+        Double max = Double.parseDouble(tosList.get(0).version)
+        for (Tos tos : tosList) {
+            Double current = Double.parseDouble(tos.version)
+            if (current > max) {
+                max = current
             }
+        }
+
+        List<Tos> result = new ArrayList<>()
+        for (Tos tos : tosList) {
+            Double current = Double.parseDouble(tos.version)
+            if (max == current) {
+                result.add(tos)
+            }
+        }
+
+        return result
+    }
+
+    LocaleId getLocale(User user, CountryId countryId) {
+        if (user != null && user.preferredLocale != null) {
+            return user.preferredLocale
         }
 
         if (JunboHttpContext.acceptableLanguage != null) {
-            if (tos.locales.any { LocaleId localeId ->
-                return localeId.toString().equals(JunboHttpContext.acceptableLanguage)
-            }) {
-                return true
+            return new LocaleId(JunboHttpContext.acceptableLanguage)
+        }
+
+        if (countryId != null) {
+            Country existingCountry = countryResource.get(countryId, new CountryGetOptions()).get()
+            if (existingCountry.defaultLocale != null) {
+                return existingCountry.defaultLocale
             }
         }
 
-        Country existingCountry = countryResource.get(countryId, new CountryGetOptions()).get()
-        if (tos.locales.contains(existingCountry.defaultLocale)) {
-            return true
-        }
-
-        return tos.locales.any { LocaleId localeId ->
-            return localeId.toString().equals(defaultLocale)
-        }
-    }
-
-    static int compareVersion(String version1, String version2) {
-        double v1 = Double.parseDouble(version1)
-        double v2 = Double.parseDouble(version2)
-        return Double.compare(v1, v2)
+        return new LocaleId(defaultLocale)
     }
 
     private CountryId getValidCountry(User user) {
@@ -160,6 +175,42 @@ class TosUtil {
                 !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(HEADER_IP_GEO_LOCATION))) {
             String country = JunboHttpContext.getRequestHeaders().getFirst(HEADER_IP_GEO_LOCATION)
             return new CountryId(country)
+        }
+
+        return null
+    }
+
+    private Tos getSupportedTos(List<Tos> tosList, LocaleId localeId) {
+        if (CollectionUtils.isEmpty(tosList) || localeId == null) {
+            return null
+        }
+
+        Map<String, Boolean> circle = new HashMap<>()
+
+        LocaleId current = localeId
+        LocaleId fallback = null
+        while (true) {
+            com.junbo.identity.spec.v1.model.Locale locale = localeResource.get(current, new LocaleGetOptions()).get()
+            Boolean visited = circle.get(locale.getId().toString())
+            if (visited) {
+                break
+            }
+            circle.put(locale.getId().toString(), true)
+            for (Tos tos : tosList) {
+                if (!CollectionUtils.isEmpty(tos.locales)) {
+                    if (tos.locales.any { LocaleId tosLocaleId ->
+                        return tosLocaleId == current
+                    }) {
+                        return tos
+                    }
+                }
+            }
+
+            fallback = locale.fallbackLocale
+            if (current == fallback || fallback == null) {
+                break
+            }
+            current = fallback
         }
 
         return null
