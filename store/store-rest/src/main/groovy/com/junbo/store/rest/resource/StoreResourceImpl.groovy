@@ -335,7 +335,7 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             if (tosFreepurchaseEnable) {
-                return challengeHelper.checkTosChallenge(user.getId(), tosPurchase, apiContext.country.getId(), request.challengeAnswer).then { Challenge tosChallenge ->
+                return challengeHelper.checkTosChallenge(user.getId(), tosPurchase, apiContext.country.getId(), request.challengeAnswer, apiContext.locale.getId()).then { Challenge tosChallenge ->
                     challenge = tosChallenge
                     return Promise.pure(null)
                 }
@@ -842,7 +842,7 @@ class StoreResourceImpl implements StoreResource {
             if (challenge != null) {
                 return Promise.pure(challenge)
             }
-            return challengeHelper.checkTosChallenge(userId, tosPurchase, apiContext.country.getId(), request.challengeAnswer)
+            return challengeHelper.checkTosChallenge(userId, tosPurchase, apiContext.country.getId(), request.challengeAnswer, apiContext.locale.getId())
         }
     }
 

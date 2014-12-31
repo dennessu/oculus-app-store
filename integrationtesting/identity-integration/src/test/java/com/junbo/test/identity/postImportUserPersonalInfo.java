@@ -185,6 +185,7 @@ public class postImportUserPersonalInfo {
         String errorMessage = "Field value is invalid. username is already used by others";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
     }
 
     @Test(groups = "dailies")
@@ -215,6 +216,7 @@ public class postImportUserPersonalInfo {
         String errorMessage = String.format("Email %s is already used", oculusInput.getEmail());
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
     }
 
     @Test(groups = "dailies")
@@ -268,6 +270,7 @@ public class postImportUserPersonalInfo {
         String errorMessage = "password only accept version 1";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
     }
 
     @Test(groups = "dailies")

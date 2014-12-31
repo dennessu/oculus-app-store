@@ -9,4 +9,5 @@ class TosData {
     String type
     String version
     List<String> countries
+    List<String> locales
 }

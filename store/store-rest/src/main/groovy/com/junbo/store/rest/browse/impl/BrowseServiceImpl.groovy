@@ -123,7 +123,7 @@ class BrowseServiceImpl implements BrowseService {
     @Override
     Promise<TocResponse> getToc(ApiContext apiContext) {
         TocResponse result = new TocResponse()
-        challengeHelper.checkTosChallenge(apiContext.user, storeBrowseTos, apiContext.country.getId(), null).then { Challenge challenge ->
+        challengeHelper.checkTosChallenge(apiContext.user, storeBrowseTos, apiContext.country.getId(), null, apiContext.locale.getId()).then { Challenge challenge ->
             if (challenge != null) {
                 return Promise.pure(new TocResponse(challenge: challenge))
             }

@@ -103,6 +103,7 @@ public class postCountry {
         CloseableHttpResponse response = HttpclientHelper.GetHttpResponse(
                 url, null, HttpclientHelper.HttpRequestType.get, nvps);
         Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
+        response.close();
     }
 
     @Test(groups = "dailies")

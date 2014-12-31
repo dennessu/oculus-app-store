@@ -452,6 +452,7 @@
     <bean id="tosValidator" class="com.junbo.identity.core.service.validator.impl.TosValidatorImpl">
         <property name="tosService" ref="tosService"/>
         <property name="countryService" ref="countryService" />
+        <property name="localeService" ref="localeService" />
         <property name="titleMinLength" value="1"/>
         <property name="titleMaxLength" value="255"/>
         <property name="contentMinLength" value="1"/>

@@ -396,6 +396,7 @@
                 <value>id</value>
                 <value>type</value>
                 <value>countries</value>
+                <value>locales</value>
                 <value>version</value>
                 <value>title</value>
                 <value>content</value>
@@ -416,6 +417,7 @@
             <list>
                 <value>type</value>
                 <value>countries</value>
+                <value>locales</value>
                 <value>version</value>
                 <value>title</value>
                 <value>content</value>
@@ -434,6 +436,7 @@
                 <value>id</value>
                 <value>type</value>
                 <value>countries</value>
+                <value>locales</value>
                 <value>version</value>
                 <value>title</value>
                 <value>content</value>
@@ -770,6 +773,7 @@
                         <value>isTaxExemptionValidated</value>
                         <value>profile</value>
                         <value>defaultPI</value>
+                        <value>measure</value>
                         <value>futureExpansion</value>
                         <value>rev</value>
                         <value>createdTime</value>
@@ -812,6 +816,7 @@
                         <value>isTaxExemptionValidated</value>
                         <value>profile</value>
                         <value>defaultPI</value>
+                        <value>measure</value>
                         <value>futureExpansion</value>
                         <value>adminInfo</value>
                         <value>createdBy</value>
@@ -852,6 +857,7 @@
                         <value>isTaxExemptionValidated</value>
                         <value>profile</value>
                         <value>defaultPI</value>
+                        <value>measure</value>
                         <value>futureExpansion</value>
                         <value>rev</value>
                         <value>adminInfo</value>

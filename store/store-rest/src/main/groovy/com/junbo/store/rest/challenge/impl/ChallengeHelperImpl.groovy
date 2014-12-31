@@ -1,13 +1,15 @@
 package com.junbo.store.rest.challenge.impl
 
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
-import com.junbo.identity.spec.v1.model.Tos
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserTosAgreement
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
+import com.junbo.identity.spec.v1.option.model.CountryGetOptions
+import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
@@ -55,17 +57,23 @@ class ChallengeHelperImpl implements ChallengeHelper {
     @Value('${store.conf.pinValidDuration}')
     private Integer pinCodeValidateDuration
 
+    @Autowired
+    @Value('${store.conf.tosChallengeDefaultLocale}')
+    private String defaultLocale
+
     @Override
-    Promise<Challenge> checkTosChallenge(UserId userId, String tosTitle, CountryId countryId, ChallengeAnswer challengeAnswer) {
+    Promise<Challenge> checkTosChallenge(UserId userId, String tosTitle, CountryId countryId, ChallengeAnswer challengeAnswer, LocaleId localeId) {
         if (!tosChallengeEnabled) {
             return Promise.pure()
         }
-        return resourceContainer.tosResource.list(new TosListOptions(title: tosTitle, countryId: countryId)).then { Results<Tos> toses ->
+
+        User user = resourceContainer.userResource.get(userId, new UserGetOptions()).get()
+        CountryId selectedCountryId = user.countryOfResidence == null ? countryId : user.countryOfResidence
+        return resourceContainer.tosResource.list(new TosListOptions(title: tosTitle, countryId: selectedCountryId, state: 'APPROVED')).then { Results<Tos> toses ->
             if (toses == null || CollectionUtils.isEmpty(toses.items)) {
                 return Promise.pure(null)
             }
-
-            List<Tos> tosList = toses.items.sort { Tos item ->
+            Tos latestTos = toses.items.max { Tos item ->
                 try {
                     return Double.parseDouble(item.version)
                 } catch (NumberFormatException ex) {
@@ -73,12 +81,28 @@ class ChallengeHelperImpl implements ChallengeHelper {
                 }
             }
 
-            Tos tos = tosList.reverse().find { Tos tos ->
-                return tos.state == 'APPROVED'
+            List<Tos> tosList = toses.items.findAll { Tos item ->
+                try {
+                    Double current = Double.parseDouble(item.version)
+                    Double latest = Double.parseDouble(latestTos.version)
+
+                    return current == latest
+                } catch (NumberFormatException ex) {
+                    return false
+                }
+            }?.asList()
+
+            if (CollectionUtils.isEmpty(tosList)) {
+                return Promise.pure(null)
             }
+
+            LocaleId locale = getLocale(user, localeId, countryId)
+            Tos tos = getSupportedTos(tosList, locale)
+
             if (tos == null) {
                 return Promise.pure(null)
             }
+
             return resourceContainer.userTosAgreementResource.list(new UserTosAgreementListOptions(
                     userId: userId,
                     tosId: tos.getId()
@@ -100,6 +124,61 @@ class ChallengeHelperImpl implements ChallengeHelper {
                 return Promise.pure(null)
             }
         }
+    }
+
+    private Tos getSupportedTos(List<Tos> tosList, LocaleId localeId) {
+        if (CollectionUtils.isEmpty(tosList) || localeId == null) {
+            return null
+        }
+
+        Map<String, Boolean> circle = new HashMap<>()
+
+        LocaleId current = localeId
+        LocaleId fallback = null
+        while (true) {
+            com.junbo.identity.spec.v1.model.Locale locale = resourceContainer.localeResource.get(current, new LocaleGetOptions()).get()
+            Boolean visited = circle.get(locale.getId().toString())
+            if (visited) {
+                break
+            }
+            circle.put(locale.getId().toString(), true)
+            for (Tos tos : tosList) {
+                if (!org.springframework.util.CollectionUtils.isEmpty(tos.locales)) {
+                    if (tos.locales.any { LocaleId tosLocaleId ->
+                        return tosLocaleId == current
+                    }) {
+                        return tos
+                    }
+                }
+            }
+
+            fallback = locale.fallbackLocale
+            if (current == fallback || fallback == null) {
+                break
+            }
+            current = fallback
+        }
+
+        return null
+    }
+
+    private LocaleId getLocale(User user, LocaleId localeId, CountryId countryId) {
+        if (user != null && user.preferredLocale != null) {
+            return user.preferredLocale
+        }
+
+        if (localeId != null) {
+            return localeId
+        }
+
+        if (countryId != null) {
+            Country country = resourceContainer.countryResource.get(countryId, new CountryGetOptions()).get()
+            if (country != null && country.defaultLocale != null) {
+                return country.defaultLocale
+            }
+        }
+
+        return new LocaleId(defaultLocale)
     }
 
     private Boolean hasValidTosAgreement(Results<UserTosAgreement> tosAgreementResults, Tos tos) {

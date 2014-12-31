@@ -185,6 +185,10 @@ class CoreBuilder {
         if (order.paymentDescription != null) {
             balance.propertySet.put(PropertyKey.BALANCE_DESCRIPTION.name(), order.paymentDescription)
         }
+        String orderType = CoreUtils.getOrderType(order)
+        if (orderType != null) {
+            balance.propertySet.put(PropertyKey.ORDER_TYPE.name(), orderType)
+        }
 
         return balance
     }

@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.TosId;
 import com.junbo.common.jackson.annotation.XSSFreeRichText;
 import com.junbo.common.jackson.annotation.XSSFreeString;
@@ -45,6 +46,9 @@ public class Tos extends PropertyAssignedAwareResourceMeta<TosId> {
 
     @ApiModelProperty(position = 7, required = true, value = "State of the TOS, it must in [DRAFT, APPROVED, OBSOLETE].")
     private String state;
+
+    @ApiModelProperty(position = 8, required = false, value = "The property represents which locales this TOS object is good in.")
+    private List<LocaleId> locales;
 
     @Override
     public TosId getId() {
@@ -109,5 +113,14 @@ public class Tos extends PropertyAssignedAwareResourceMeta<TosId> {
     public void setVersion(String version) {
         this.version = version;
         support.setPropertyAssigned("version");
+    }
+
+    public List<LocaleId> getLocales() {
+        return locales;
+    }
+
+    public void setLocales(List<LocaleId> locales) {
+        this.locales = locales;
+        support.setPropertyAssigned("locales");
     }
 }

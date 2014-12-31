@@ -2,6 +2,8 @@ package com.junbo.langur.core.context
 
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.internal.util.collection.StringKeyIgnoreCaseMultivaluedMap
+import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.MultivaluedMap
 
@@ -12,6 +14,12 @@ import javax.ws.rs.core.MultivaluedMap
 class JunboHttpContext {
 
     private static final ThreadLocal<JunboHttpContextData> CURRENT_DATA = new ThreadLocal<>()
+
+    private static String defaultCountry = 'US'
+
+    private static String defaultLocale = 'en_US'
+
+    private static String localeWildCard = '*'
 
     static class JunboHttpContextData {
 
@@ -127,13 +135,27 @@ class JunboHttpContext {
         return data.properties
     }
 
-    static List<Locale> getAcceptableLanguages() {
+    static String getAcceptableLanguage() {
         def data = CURRENT_DATA.get()
         if (data == null) {
             throw new IllegalStateException('Current JunboHttpContextData is null')
         }
+        String localeId
+        if (CollectionUtils.isEmpty(data.acceptableLanguages)) {
+            localeId = defaultLocale
+        } else {
+            Locale requestLocale = data.acceptableLanguages.get(0)
+            if (requestLocale.toString() == localeWildCard) {
+                localeId = defaultLocale
+            } else {
+                localeId = requestLocale.language
+                if (!StringUtils.isEmpty(requestLocale.country)) {
+                    localeId += "_${requestLocale.country}"
+                }
+            }
+        }
 
-        return data.acceptableLanguages
+        return localeId
     }
 
     static JunboHttpContextData getData() {
