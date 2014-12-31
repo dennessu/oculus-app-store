@@ -33,5 +33,7 @@ public enum PropertyKey {
     OFFER_ID,
     ITEM_DESCRIPTION,
     ORDER_ITEM_ID,
-    ORGANIZATION_ID
+    ORGANIZATION_ID,
+
+    ORDER_TYPE
 }
