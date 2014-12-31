@@ -45,6 +45,7 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
@@ -284,6 +285,10 @@ class UserServiceImpl implements UserService {
                 throw AppErrors.INSTANCE.errorCallingIdentity().exception()
             }
             return getMail(user, emailId).then { String email ->
+                if (StringUtils.isEmpty(email)) {
+                    throw AppCommonErrors.INSTANCE.invalidOperation('email is not exist').exception()
+                }
+
                 EmailVerifyCode code = new EmailVerifyCode(
                         userId: userId.value,
                         email: email,
@@ -425,6 +430,10 @@ class UserServiceImpl implements UserService {
     private Promise<String> getDefaultUserEmail(User user) {
         if (user == null) {
             throw AppErrors.INSTANCE.errorCallingIdentity().exception()
+        }
+
+        if (CollectionUtils.isEmpty(user.emails)) {
+            return Promise.pure(null)
         }
 
         for (int i = 0; i < user.emails.size(); i++) {

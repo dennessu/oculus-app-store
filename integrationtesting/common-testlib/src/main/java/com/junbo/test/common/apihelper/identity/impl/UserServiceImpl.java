@@ -665,6 +665,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         newTos.setCountries(tos.getCountries());
         newTos.setType(tos.getType());
         newTos.setContent(tos.getContent());
+        newTos.setLocales(tos.getLocales());
         restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
     }
 }

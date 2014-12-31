@@ -99,20 +99,7 @@ class ApiContextBuilder {
     }
 
     private Promise<com.junbo.identity.spec.v1.model.Locale> getLocale() {
-        String localeId
-        if (CollectionUtils.isEmpty(JunboHttpContext.acceptableLanguages)) {
-            localeId = defaultCountry
-        } else {
-            Locale requestLocale = JunboHttpContext.acceptableLanguages.get(0)
-            if (requestLocale.toString() == localeWildCard) {
-                localeId = defaultLocale
-            } else {
-                localeId = requestLocale.language
-                if (!StringUtils.isEmpty(requestLocale.country)) {
-                    localeId += "_${requestLocale.country}"
-                }
-            }
-        }
+        String localeId = JunboHttpContext.acceptableLanguage
 
         resourceContainer.localeResource.get(new LocaleId(localeId), new LocaleGetOptions()).recover { Throwable ex ->
             if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.LocaleNotFound)) {

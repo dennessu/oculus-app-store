@@ -19,5 +19,8 @@
         "KR",
         "NL",
         "SE"
+    ],
+    "locales": [
+        "en_US"
     ]
 }

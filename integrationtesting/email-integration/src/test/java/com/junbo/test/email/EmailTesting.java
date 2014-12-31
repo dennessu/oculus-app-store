@@ -286,7 +286,7 @@ public class EmailTesting extends TestClass {
         this.prepareAccessData();
         EmailTemplateService templateService = EmailTemplateServiceImpl.getInstance();
         QueryParam queryParam = new QueryParam();
-        queryParam.setAction("Welcome_V1");
+        queryParam.setAction("Welcome_V2");
         queryParam.setSource("Oculus");
         queryParam.setLocale("en_US");
 

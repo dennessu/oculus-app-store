@@ -1,6 +1,7 @@
 package com.junbo.data.handler
 
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.model.Results
 import com.junbo.data.model.TosData
@@ -66,6 +67,13 @@ class TosDataHandler extends BaseDataHandler {
                         countryIdList.add(new CountryId(countryId))
                     }
                     tos.countries = countryIdList
+                }
+                if (!CollectionUtils.isEmpty(tosData.locales)) {
+                    List<LocaleId> localeIdList = new ArrayList<>()
+                    tosData.locales.each { String localeId ->
+                        localeIdList.add(new LocaleId(localeId))
+                    }
+                    tos.locales = localeIdList
                 }
                 tos = tosResource.create(tos).get()
                 tos.state = 'APPROVED'
