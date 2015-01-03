@@ -68,6 +68,12 @@ public interface LoginResource {
     Promise<Tos> getRegisterTos();
 
     @GET
+    @Path("/lookup-tos")
+    @Consumes()
+    // This doesn't require email verification
+    Promise<Tos> lookupTos(@BeanParam LookupTosRequest lookupTosRequest);
+
+    @GET
     @Path("/countries")
     @Consumes()
     // This doesn't require email verification

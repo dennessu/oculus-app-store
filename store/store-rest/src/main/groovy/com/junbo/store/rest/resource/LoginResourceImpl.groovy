@@ -10,8 +10,6 @@ import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.CommunicationListOptions
 import com.junbo.identity.spec.v1.option.list.CountryListOptions
-import com.junbo.identity.spec.v1.option.list.TosListOptions
-import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -27,6 +25,7 @@ import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.utils.ApiContextBuilder
 import com.junbo.store.rest.utils.DataConverter
+import com.junbo.store.rest.utils.IdentityUtils
 import com.junbo.store.rest.utils.InitialItemPurchaseUtils
 import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.spec.error.AppErrors
@@ -107,8 +106,8 @@ class LoginResourceImpl implements LoginResource {
     @Value('${store.tos.freepurchase.enable}')
     private Boolean tosFreepurchaseEnable
 
-    @Value('${store.conf.tosChallengeDefaultLocale}')
-    private String tosDefaultLocale
+    @Resource(name = 'storeIdentityUtils')
+    private IdentityUtils identityUtils
 
     private class CreateUserContext {
         User user
@@ -415,42 +414,31 @@ class LoginResourceImpl implements LoginResource {
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
             localeId = apiContext.locale.getId()
             countryId = apiContext.country.getId()
-            return resourceContainer.tosResource.list(new TosListOptions(title: tosCreateUser, countryId: apiContext.country.getId(), state: 'APPROVED'))
-        }.recover { Throwable ex ->
-            appErrorUtils.throwUnknownError('getRegisterTos', ex)
-        }.then { Results<Tos> tosResults ->
-            if (tosResults == null || CollectionUtils.isEmpty(tosResults.items)) {
-                return Promise.pure(null)
-            }
-
-            Tos latestTos = tosResults.items.max { Tos tos ->
-                try {
-                    return Double.parseDouble(tos.version)
-                } catch (NumberFormatException ex) {
-                    return Double.valueOf(0)
+            return identityUtils.lookupTos(tosCreateUser, null, localeId, countryId).then { com.junbo.store.spec.model.browse.document.Tos tos ->
+                if (tos == null) {
+                    throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
                 }
+                return Promise.pure(tos)
             }
+        }
+    }
 
-            List<Tos> tosList = tosResults.items.findAll { Tos item ->
-                try {
-                    Double current = Double.parseDouble(item.version)
-                    Double latest = Double.parseDouble(latestTos.version)
+    @Override
+    Promise<com.junbo.store.spec.model.browse.document.Tos> lookupTos(LookupTosRequest lookupTosRequest) {
+        LocaleId localeId = null
+        CountryId countryId = null
+        requestValidator.validateRequiredApiHeaders().validateLookupTosRequest(lookupTosRequest)
 
-                    return current == latest
-                } catch (NumberFormatException ex) {
-                    return false
+        return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
+            localeId = apiContext.locale.getId()
+            countryId = apiContext.country.getId()
+            return identityUtils.lookupTos(lookupTosRequest.title, lookupTosRequest.type, localeId, countryId).then {
+                com.junbo.store.spec.model.browse.document.Tos tos ->
+                if (tos == null) {
+                    throw AppErrors.INSTANCE.tosNotFound().exception()
                 }
-            }?.asList()
-
-            if (CollectionUtils.isEmpty(tosList)) {
-                throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
+                return Promise.pure(tos)
             }
-            LocaleId locale = getLocale(null, localeId, null)
-            Tos tos = getSupportedTos(tosList, locale)
-            if (tos == null) {
-                throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
-            }
-            return Promise.pure(dataConverter.toStoreTos(tos, null))
         }
     }
 
@@ -512,24 +500,6 @@ class LoginResourceImpl implements LoginResource {
         return null
     }
 
-    private LocaleId getLocale(User user, LocaleId localeId, CountryId countryId) {
-        if (user != null && user.preferredLocale != null) {
-            return user.preferredLocale
-        }
-
-        if (localeId != null) {
-            return localeId
-        }
-
-        if (countryId != null) {
-            Country country = resourceContainer.countryResource.get(countryId, new CountryGetOptions()).get()
-            if (country != null && country.defaultLocale != null) {
-                return country.defaultLocale
-            }
-        }
-
-        return new LocaleId(tosDefaultLocale)
-    }
 
     private Promise<AuthTokenResponse> innerSignIn(User createdUser, UserLoginName userLoginName, StoreUserEmail storeUserEmail) {
         return resourceContainer.tokenEndpoint.postToken(

@@ -1010,4 +1010,8 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         user.setPreferredLocale(null);
         identityClient.PutUser(IdFormatter.encodeId(user.getId()), user, 200, true);
     }
+
+    public Tos lookupTos(String type, String title, int expectedCode) throws Exception  {
+        return loginClient.lookupTos(type, title, expectedCode);
+    }
 }

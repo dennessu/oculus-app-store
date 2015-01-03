@@ -102,6 +102,9 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "127", message = "Unsupported Country.")
     AppError unsupportedCountry();
 
+    @ErrorDef(httpStatusCode = 404, code = "128", message = "TOS not found.")
+    AppError tosNotFound();
+
     @ErrorDef(httpStatusCode = 412, code = "150", message = "IAP purchase not consumable.")
     AppError iapPurchaseNotConsumable();
 
