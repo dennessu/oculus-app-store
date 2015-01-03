@@ -109,4 +109,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 404, code = "127", message = "Unsupported Country.")
     AppError unsupportedCountry();
+
+    @ErrorDef(httpStatusCode = 404, code = "128", message = "TOS not found.")
+    AppError tosNotFound();
 }

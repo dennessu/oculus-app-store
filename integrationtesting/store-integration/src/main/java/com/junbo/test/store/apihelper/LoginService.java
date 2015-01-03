@@ -47,4 +47,6 @@ public interface LoginService {
     Error confirmEmail(ConfirmEmailRequest request, int expectedResponseCode, String errorCode) throws Exception;
 
     GetSupportedCountriesResponse getSupportedCountryCodes() throws Exception;
+
+    Tos lookupTos(String type, String title, int expectedResponseCode) throws Exception;
 }
