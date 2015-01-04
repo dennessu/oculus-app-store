@@ -5,11 +5,13 @@
  */
 package com.junbo.test.store;
 
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.Country;
+import com.junbo.identity.spec.v1.model.Tos;
 import com.junbo.store.spec.model.ChallengeAnswer;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
@@ -1271,6 +1273,69 @@ public class LoginResourceTesting extends BaseTestClass {
         response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert response != null;
         assert response.getChallenge() == null;
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "check Tos fallback logic"
+            }
+    )
+    // todo:    This is incomplete case due to it has some issues with registerTos API
+    @Test(enabled = false)
+    public void testMultipleSupportLocales() throws Exception{
+        List<String> supportLocales = new ArrayList<>();
+        supportLocales.add("zh_CN");
+        testDataProvider.deleteTos("end user tos", supportLocales);
+
+        supportLocales.clear();
+        supportLocales.add("zh_CN");
+        testDataProvider.CreateFromExistingTos("end user tos", supportLocales, "APPROVED");
+        List<Tos> tosList = testDataProvider.GetTosList("end user tos");
+        assert tosList != null;
+
+        Tos englishVersionTos = null;
+        Tos chineseVersionTos = null;
+        for (Tos tos : tosList) {
+            for (LocaleId localeId : tos.getLocales()) {
+                if (localeId.toString().equals("zh_CN")) {
+                    chineseVersionTos = tos;
+                    break;
+                } else if (localeId.toString().equals("en_US")) {
+                    englishVersionTos = tos;
+                    break;
+                }
+            }
+        }
+        assert englishVersionTos != null;
+        assert chineseVersionTos != null;
+
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setPreferredLocale("zh_CN");
+        TestContext.getData().putHeader("Accept-Language", "en_US");
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        AuthTokenResponse response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() == null;
+
+        testDataProvider.UpdateTos(chineseVersionTos.getId());
+        response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() == null;
+
+        testDataProvider.UpdateTos(englishVersionTos.getId());
+        response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() != null;
+
+        supportLocales.clear();
+        supportLocales.add("zh_CN");
+        testDataProvider.deleteTos("end user tos", supportLocales);
     }
 
     @Property(
