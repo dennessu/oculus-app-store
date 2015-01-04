@@ -469,7 +469,7 @@ class CheckoutTests(ut.TestBase):
             "holderName": "John Doe",
             "cvc": "123",
             "expiryMonth": "06",
-            "expiryYear": str(datetime.utcnow().year + 2)
+            "expiryYear": "2016"
         }
 
     def getFBEncryptedCardInfo(self, cardInfo = None):
@@ -492,7 +492,7 @@ class CheckoutTests(ut.TestBase):
             "holderName": "John Doe",
             "cvc": "737",
             "expiryMonth": "06",
-            "expiryYear": str(datetime.utcnow().year + 2),
+            "expiryYear": "2016",
             "generationtime": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
         }
 
