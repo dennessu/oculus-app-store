@@ -1,0 +1,11 @@
+{
+  "client_id" : "nanobot",
+  "client_secret" : "27CF2F29AC31BC15AA808D7F0945FFC3#811B3B6834E97EC4D1DBCD2D66107F11EA923DE23DC633A0E712AB5B3940425C8704A3468BFBC4B477CBA29BECDA3F2B",
+  "client_name" : "nanobot",
+
+  "scopes" : [ "catalog.update" ],
+  "default_scopes" : [ "catalog.update" ],
+
+  "response_types" : [ ],
+  "grant_types" : [ "CLIENT_CREDENTIALS" ]
+}
