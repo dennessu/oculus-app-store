@@ -48,6 +48,13 @@
                 "rights": [ "read" ],
                 "scriptType": "SPEL"
             }
+        ],
+        "catalog.update": [
+            {
+                "precondition": "true",
+                "rights": [ "draft.read", "read", "update" ],
+                "scriptType": "SPEL"
+            }
         ]
     }
 }

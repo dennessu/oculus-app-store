@@ -5,13 +5,13 @@
  */
 package com.junbo.test.store;
 
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.store.spec.model.ChallengeAnswer;
-import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.test.common.Entities.enums.ComponentType;
@@ -1275,6 +1275,69 @@ public class LoginResourceTesting extends BaseTestClass {
     }
 
     @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "check Tos fallback logic"
+            }
+    )
+    // todo:    This is incomplete case due to it has some issues with registerTos API
+    @Test(enabled = false)
+    public void testMultipleSupportLocales() throws Exception{
+        List<String> supportLocales = new ArrayList<>();
+        supportLocales.add("zh_CN");
+        testDataProvider.deleteTos("end user tos", supportLocales);
+
+        supportLocales.clear();
+        supportLocales.add("zh_CN");
+        testDataProvider.CreateFromExistingTos("end user tos", supportLocales, "APPROVED");
+        List<com.junbo.identity.spec.v1.model.Tos> tosList = testDataProvider.GetTosList("end user tos");
+        assert tosList != null;
+
+        com.junbo.identity.spec.v1.model.Tos englishVersionTos = null;
+        com.junbo.identity.spec.v1.model.Tos chineseVersionTos = null;
+        for (com.junbo.identity.spec.v1.model.Tos tos : tosList) {
+            for (LocaleId localeId : tos.getLocales()) {
+                if (localeId.toString().equals("zh_CN")) {
+                    chineseVersionTos = tos;
+                    break;
+                } else if (localeId.toString().equals("en_US")) {
+                    englishVersionTos = tos;
+                    break;
+                }
+            }
+        }
+        assert englishVersionTos != null;
+        assert chineseVersionTos != null;
+
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setPreferredLocale("zh_CN");
+        TestContext.getData().putHeader("Accept-Language", "en_US");
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        AuthTokenResponse response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() == null;
+
+        testDataProvider.UpdateTos(chineseVersionTos.getId());
+        response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() == null;
+
+        testDataProvider.UpdateTos(englishVersionTos.getId());
+        response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() != null;
+
+        supportLocales.clear();
+        supportLocales.add("zh_CN");
+        testDataProvider.deleteTos("end user tos", supportLocales);
+    }
+
+    @Property(
             priority = Priority.BVT,
             features = "Store sign in",
             component = Component.STORE,
@@ -1413,7 +1476,7 @@ public class LoginResourceTesting extends BaseTestClass {
     )
     @Test
     public void testLookupTos() throws Exception {
-        Tos tos = testDataProvider.lookupTos("TOS", "end user tos", 200);
+        com.junbo.store.spec.model.browse.document.Tos tos = testDataProvider.lookupTos("TOS", "end user tos", 200);
         Assert.assertEquals(tos.getTitle(), "end user tos");
 
         // test locale fallback
@@ -1426,7 +1489,7 @@ public class LoginResourceTesting extends BaseTestClass {
 
         // update tos to draft status
         testDataProvider.UpdateTos("end user tos", "DRAFT");
-        Tos newTos = testDataProvider.lookupTos("TOS", "end user tos", 200);
+        com.junbo.store.spec.model.browse.document.Tos newTos = testDataProvider.lookupTos("TOS", "end user tos", 200);
         Assert.assertEquals(newTos.getTosId(), tos.getTosId());
 
         Thread.sleep(2000);

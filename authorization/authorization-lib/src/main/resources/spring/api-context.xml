@@ -20,7 +20,7 @@
                 <entry key="ItemResource" value="catalog catalog.developer catalog.service csr catalog.admin"/>
                 <entry key="ItemResource.getItems" value="*"/>
                 <entry key="ItemResource.getItem" value="*"/>
-                <entry key="ItemRevisionResource" value="catalog catalog.developer catalog.service csr catalog.admin"/>
+                <entry key="ItemRevisionResource" value="catalog catalog.developer catalog.service csr catalog.admin catalog.update"/>
                 <entry key="ItemRevisionResource.getItemRevisions" value="*"/>
                 <entry key="ItemRevisionResource.getItemRevision" value="*"/>
                 <entry key="OfferAttributeResource" value="catalog.admin"/>
@@ -69,7 +69,7 @@
                 <entry key="GroupResource" value="identity identity.service csr group.readonly.service organization.group.admin"/>
                 <entry key="LocaleResource" value="identity.admin"/>
                 <entry key="MigrationResource" value="identity.migration"/>
-                <entry key="OrganizationResource" value="identity identity.service csr organization.group.admin"/>
+                <entry key="OrganizationResource" value="identity identity.service csr organization.group.admin catalog.update"/>
                 <entry key="PITypeResource" value="identity.admin"/>
                 <entry key="TosResource" value="identity.admin"/>
                 <entry key="UserAttributeDefinitionResource" value="identity.admin" />

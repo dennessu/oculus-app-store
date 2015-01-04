@@ -870,6 +870,26 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         identityClient.updateTos(title, status);
     }
 
+    public void UpdateTos(TosId tosId) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
+        identityClient.updateTos(tosId);
+    }
+
+    public void CreateFromExistingTos(String title, List<String> supportLocales, String status) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
+        identityClient.updateTos(title, supportLocales, status);
+    }
+
+    public List<com.junbo.identity.spec.v1.model.Tos> GetTosList(String title) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
+        return identityClient.getTosList(title);
+    }
+
+    public void deleteTos(String title, List<String> supportLocales) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
+        identityClient.deleteTos(title, supportLocales);
+    }
+
     public CaseyEmulatorData postCaseyEmulatorData(List<CmsSchedule> cmsSchedule, List<CmsPage> pages, Map<String, List<OfferId>> offerIds) throws Exception {
         CaseyEmulatorData data = new CaseyEmulatorData();
         data.setCaseyAggregateRatings(new ArrayList<CaseyAggregateRating>());

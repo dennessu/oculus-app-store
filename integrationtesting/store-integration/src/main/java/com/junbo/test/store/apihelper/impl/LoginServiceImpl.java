@@ -8,7 +8,6 @@ package com.junbo.test.store.apihelper.impl;
 import com.junbo.common.error.Error;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.store.spec.model.browse.SectionLayoutResponse;
 import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.test.common.apihelper.HttpClientBase;

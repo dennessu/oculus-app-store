@@ -5,7 +5,9 @@
  */
 package com.junbo.test.common.apihelper.identity;
 
+import com.junbo.common.id.TosId;
 import com.junbo.identity.spec.v1.model.Address;
+import com.junbo.identity.spec.v1.model.Tos;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.migration.UsernameMailBlocker;
 import com.junbo.test.common.Entities.Identity.UserInfo;
@@ -73,5 +75,13 @@ public interface UserService {
 
     void postUsernameEmailBlocker(UsernameMailBlocker usernameMailBlocker) throws Exception;
 
+    void updateTos(TosId tosId) throws Exception;
+
     void updateTos(String title, String status) throws Exception;
+
+    void updateTos(String title, List<String> supportLocales, String status) throws Exception;
+
+    void deleteTos(String title, List<String> supportLocales) throws Exception;
+
+    List<Tos> getTosList(String title) throws Exception;
 }

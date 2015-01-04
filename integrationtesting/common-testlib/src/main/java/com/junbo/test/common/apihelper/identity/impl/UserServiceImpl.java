@@ -8,7 +8,9 @@ package com.junbo.test.common.apihelper.identity.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.error.Error;
+import com.junbo.common.id.TosId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
@@ -29,6 +31,7 @@ import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.net.URLEncoder;
@@ -634,7 +637,33 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     @Override
+    public void updateTos(TosId tosId) throws Exception {
+        componentType = ComponentType.IDENTITY_ADMIN;
+        String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
+
+        String tosResponse = restApiCall(HTTPMethod.GET, url + "/" + tosId.toString());
+        Tos tos = new JsonMessageTranscoder().decode(new TypeReference<Tos>() {
+        }, tosResponse);
+
+        String putUrl = url;
+        Tos newTos = new Tos();
+        newTos.setTitle(tos.getTitle());
+        newTos.setState(tos.getState());
+        newTos.setCountries(tos.getCountries());
+        newTos.setType(tos.getType());
+        newTos.setContent(tos.getContent());
+        newTos.setLocales(tos.getLocales());
+        newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
+        restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
+    }
+
+    @Override
     public void updateTos(String title, String status) throws Exception {
+        updateTos(title, null, status);
+    }
+
+    @Override
+    public void updateTos(String title, List<String> supportLocales, String status) throws Exception {
         componentType = ComponentType.IDENTITY_ADMIN;
         String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
 
@@ -661,11 +690,73 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         Tos newTos = new Tos();
         newTos.setTitle(tos.getTitle());
         newTos.setState(status);
-        newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
         newTos.setCountries(tos.getCountries());
         newTos.setType(tos.getType());
         newTos.setContent(tos.getContent());
-        newTos.setLocales(tos.getLocales());
+        if (!CollectionUtils.isEmpty(supportLocales)) {
+            List<LocaleId> localeIds = new ArrayList<>();
+            for (String supportLocale : supportLocales) {
+                localeIds.add(new LocaleId(supportLocale));
+            }
+            newTos.setLocales(localeIds);
+            newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion())));
+        } else {
+            newTos.setLocales(tos.getLocales());
+            newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
+        }
         restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
+    }
+
+    @Override
+    public void deleteTos(String title, List<String> supportLocales) throws Exception {
+        componentType = ComponentType.IDENTITY_ADMIN;
+        String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
+
+        String queryUrl = url + "?title=" + URLEncoder.encode(title, "UTF-8");
+        String tosResponse = restApiCall(HTTPMethod.GET, queryUrl, null, true);
+        Results<Tos> tosResults = new JsonMessageTranscoder().decode(new TypeReference<Results>() {
+        }, tosResponse);
+
+        List<Tos> tosList = new ArrayList<>();
+        for (Object obj : tosResults.getItems()) {
+            Tos tos = (Tos) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class);
+            tosList.add(tos);
+        }
+
+        for (Tos tos : tosList) {
+            boolean exists = false;
+            if (!CollectionUtils.isEmpty(tos.getLocales())) {
+                for (LocaleId localeId : tos.getLocales()) {
+                    for (String supportLocale : supportLocales) {
+                        if (localeId.toString().equalsIgnoreCase(supportLocale)) {
+                            exists = true;
+                        }
+                    }
+                }
+            }
+            if (exists) {
+                restApiCall(HTTPMethod.DELETE, url + "/" + tos.getId().toString());
+            }
+        }
+    }
+
+    @Override
+    public List<Tos> getTosList(String title) throws Exception {
+        componentType = ComponentType.IDENTITY_ADMIN;
+
+        String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
+
+        String queryUrl = url + "?title=" + URLEncoder.encode(title, "UTF-8");
+        String tosResponse = restApiCall(HTTPMethod.GET, queryUrl, null, true);
+        Results<Tos> tosResults = new JsonMessageTranscoder().decode(new TypeReference<Results>() {
+        }, tosResponse);
+
+        List<Tos> tosList = new ArrayList<>();
+        for (Object obj : tosResults.getItems()) {
+            Tos tos = (Tos) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj), Tos.class);
+            tosList.add(tos);
+        }
+
+        return tosList;
     }
 }
