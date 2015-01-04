@@ -2,6 +2,7 @@
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
 t0=`date +%s`
+. ./setupproxy.sh
 ./fullcycle.sh "-x build $@"
 
 # source setupproxy to get the exported proxy variables

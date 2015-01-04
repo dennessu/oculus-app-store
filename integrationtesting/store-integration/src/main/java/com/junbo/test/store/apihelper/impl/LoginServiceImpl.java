@@ -8,6 +8,7 @@ package com.junbo.test.store.apihelper.impl;
 import com.junbo.common.error.Error;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.store.spec.model.browse.SectionLayoutResponse;
 import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.test.common.apihelper.HttpClientBase;
@@ -18,6 +19,7 @@ import com.junbo.test.store.apihelper.TestContext;
 import com.junbo.test.store.utility.DataGenerator;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
@@ -71,6 +73,20 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         }, responseBody);
 
         return supportedCountries;
+    }
+
+    @Override
+    public Tos lookupTos(String type, String title, int expectedResponseCode) throws Exception {
+        String url = getEndPointUrl() + "/lookup-tos?";
+        url = appendQuery(url, "type", type);
+        url = appendQuery(url, "title", title);
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
+        if (expectedResponseCode == 200) {
+            Tos response = new JsonMessageTranscoder().decode(new TypeReference<Tos>() {
+            }, responseBody);
+            return response;
+        }
+        return null;
     }
 
     @Override
@@ -242,5 +258,13 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         }, responseBody);
         assert error.getCode().equalsIgnoreCase(errorCode);
         return error;
+    }
+
+    private String appendQuery(String url, String name, Object val) throws UnsupportedEncodingException {
+
+        if (val != null) {
+            return url + "&" + name + "=" + URLEncoder.encode(val.toString(), "UTF-8");
+        }
+        return url;
     }
 }

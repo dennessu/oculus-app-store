@@ -13,6 +13,7 @@ import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.identity.spec.v1.model.Tos;
 import com.junbo.store.spec.model.ChallengeAnswer;
+import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.test.common.Entities.enums.ComponentType;
@@ -1465,4 +1466,54 @@ public class LoginResourceTesting extends BaseTestClass {
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("131.002"));
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            steps = {
+                    "check lookup tos"
+            }
+    )
+    @Test
+    public void testLookupTos() throws Exception {
+        Tos tos = testDataProvider.lookupTos("TOS", "end user tos", 200);
+        Assert.assertEquals(tos.getTitle(), "end user tos");
+
+        // test locale fallback
+        TestContext.getData().putHeader("Accept-Language", "zh-CN");
+        tos = testDataProvider.lookupTos("TOS", "end user tos", 200);
+        Assert.assertEquals(tos.getTitle(), "end user tos");
+
+        // test tos version update
+        Thread.sleep(2000);
+
+        // update tos to draft status
+        testDataProvider.UpdateTos("end user tos", "DRAFT");
+        Tos newTos = testDataProvider.lookupTos("TOS", "end user tos", 200);
+        Assert.assertEquals(newTos.getTosId(), tos.getTosId());
+
+        Thread.sleep(2000);
+        testDataProvider.UpdateTos("end user tos", "APPROVED");
+        newTos = testDataProvider.lookupTos("TOS", "end user tos", 200);
+        Assert.assertNotEquals(newTos.getTosId(), tos.getTosId());
+        Assert.assertTrue(Double.valueOf(newTos.getVersion()) > Double.valueOf(tos.getVersion()));
+    }
+
+    @Test
+    public void testLookupTosInvalid() throws Exception {
+        testDataProvider.lookupTos(null, "end user tos", 400);
+        testDataProvider.lookupTos("TOS", "", 400);
+
+        testDataProvider.lookupTos("TOS", "e1nd user tos", 404);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.128"));
+
+        testDataProvider.lookupTos("TOS1", "end user tos", 404);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.128"));
+
+        TestContext.getData().putHeader("oculus-geoip-country-code", "GU");
+        testDataProvider.lookupTos("TOS", "end user tos", 404);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.128"));
+    }
 }

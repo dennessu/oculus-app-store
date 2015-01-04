@@ -30,6 +30,7 @@ import com.junbo.store.spec.model.external.sewer.casey.cms.*
 import com.junbo.store.spec.model.external.sewer.casey.search.CaseyOffer
 import com.junbo.store.spec.model.external.sewer.casey.search.OfferSearchParams
 import groovy.transform.CompileStatic
+import org.apache.commons.lang.RandomStringUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -83,6 +84,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     Promise<CaseyResults<CaseyOffer>> searchOffers(OfferSearchParams params) {
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('search')
+        JunboHttpContext.responseHeaders.putSingle('oculus-region', RandomStringUtils.randomAlphabetic(10));
         if (randomData) {
             return randomCaseyEmulatorResource.searchOffers(params)
         }
@@ -101,6 +103,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     Promise<CaseyResults<CaseyAggregateRating>> getRatingByItemId(String itemId) {
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('getRatings')
+        JunboHttpContext.responseHeaders.putSingle('oculus-region', RandomStringUtils.randomAlphabetic(10));
         if (randomData) {
             return randomCaseyEmulatorResource.getRatingByItemId(itemId)
         }
@@ -126,6 +129,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         Assert.isTrue(params.resourceType == 'item')
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('getReviews')
+        JunboHttpContext.responseHeaders.putSingle('oculus-region', RandomStringUtils.randomAlphabetic(10));
         if (randomData) {
             return randomCaseyEmulatorResource.getReviews(params)
         }
@@ -161,6 +165,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         Assert.isTrue(review.resourceType == 'item')
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('addReviews')
+        JunboHttpContext.responseHeaders.putSingle('oculus-region', RandomStringUtils.randomAlphabetic(10));
         Assert.isNull(review.getUser())
         Assert.isNull(review.getPostedDate())
         CaseyEmulatorData caseyEmulatorData = caseyEmulatorDataRepository.get()
@@ -181,6 +186,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         CaseyEmulatorData caseyEmulatorData = caseyEmulatorDataRepository.get()
         CaseyReview oldReview = caseyEmulatorData.caseyReviews.find {CaseyReview e -> e.self.id == reviewId}
         Assert.notNull(oldReview)
+        JunboHttpContext.responseHeaders.putSingle('oculus-region', RandomStringUtils.randomAlphabetic(10));
         Assert.isTrue(oldReview.user.getId() == review.user.getId())
         Assert.isTrue(oldReview.country == review.country)
         Assert.isTrue(oldReview.locale == review.locale)
@@ -199,6 +205,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     Promise<CaseyResults<CmsCampaign>> getCmsCampaigns(CmsCampaignGetParam cmsCampaignGetParam) {
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('getCmsCampaigns')
+        JunboHttpContext.responseHeaders.putSingle('oculus-region', RandomStringUtils.randomAlphabetic(10));
         assert cmsCampaignGetParam.expand == 'results/placements/content'
         emulatorUtils.emulateLatency()
         CaseyResults<CmsCampaign> results = new CaseyResults<>()
@@ -211,6 +218,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
             @BeanParam CmsPageGetParams pageGetParams, @BeanParam SewerParam sewerParam) {
         Assert.notNull(sewerParam.country)
         Assert.notNull(sewerParam.locale)
+        JunboHttpContext.responseHeaders.putSingle('oculus-region', RandomStringUtils.randomAlphabetic(10));
         boolean calledByTest = JunboHttpContext.getData().getRequestHeaders().getFirst(EmulatorHeaders.X_QA_CALLED_BY_TEST.name()) != null
         boolean initialItemCmsPage = false
         // check the expand & properties query parameters are given correctly
@@ -264,6 +272,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         Assert.notNull(sewerParam.locale)
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('getCmsPagesDirect')
+        JunboHttpContext.responseHeaders.putSingle('oculus-region', RandomStringUtils.randomAlphabetic(10));
         List<CmsPage> pages = caseyEmulatorDataRepository.get().cmsPages
         if (pages == null) {
             throw AppCommonErrors.INSTANCE.resourceNotFound('cmsPage', pageId).exception()
@@ -282,6 +291,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
     Promise<CmsContent> getCmsContent(String contentId) {
         emulatorUtils.emulateLatency()
         emulatorUtils.emulateError('getCmsContent')
+        JunboHttpContext.responseHeaders.putSingle('oculus-region', RandomStringUtils.randomAlphabetic(10));
         return Promise.pure(cmsContentMap[contentId])
     }
 
@@ -291,6 +301,7 @@ class CaseyEmulatorResourceImpl implements CaseyEmulatorResource {
         emulatorUtils.emulateError('getCmsSchedules')
         Assert.notNull(cmsScheduleGetParams.locale)
         Assert.notNull(cmsScheduleGetParams.country)
+        JunboHttpContext.responseHeaders.putSingle('oculus-region', RandomStringUtils.randomAlphabetic(10));
         CmsSchedule cmsSchedule = caseyEmulatorDataRepository.get().cmsSchedules.find { CmsSchedule cmsSchedule ->
             return cmsSchedule.self?.id == pageId
         }
