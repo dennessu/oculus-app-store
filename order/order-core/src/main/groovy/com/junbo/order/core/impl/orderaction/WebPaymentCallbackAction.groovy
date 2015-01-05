@@ -47,8 +47,8 @@ class WebPaymentCallbackAction extends BaseOrderEventAwareAction {
                     order.setProperties(eventMap)
                 } else {
                     order.properties.putAll(eventMap)
-                    orderRepository.updateOrder(order, true, false, null)
                 }
+                orderRepository.updateOrder(order, true, false, null)
 
                 if (eventMap.containsKey('callbackData')) {
                     String data = eventMap.get('callbackData');
