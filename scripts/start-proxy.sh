@@ -7,6 +7,7 @@ cd $DIR
 
 PROXY_SERVER=silkcloud@54.92.103.97
 
+rm .tokyo-proxy 2>/dev/null || true
 if ! ( ssh -S .tokyo-proxy -O check $PROXY_SERVER ) 2>/dev/null; then
     echo Starting proxy...
     if [[ "$OS" == Windows* ]]; then
