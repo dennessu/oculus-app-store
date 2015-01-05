@@ -1284,14 +1284,9 @@ public class LoginResourceTesting extends BaseTestClass {
                     "check Tos fallback logic"
             }
     )
-    // todo:    This is incomplete case due to it has some issues with registerTos API
-    @Test(enabled = false)
+    @Test
     public void testMultipleSupportLocales() throws Exception{
         List<String> supportLocales = new ArrayList<>();
-        supportLocales.add("zh_CN");
-        testDataProvider.deleteTos("end user tos", supportLocales);
-
-        supportLocales.clear();
         supportLocales.add("zh_CN");
         testDataProvider.CreateFromExistingTos("end user tos", supportLocales, "APPROVED");
         List<com.junbo.identity.spec.v1.model.Tos> tosList = testDataProvider.GetTosList("end user tos");
@@ -1315,14 +1310,19 @@ public class LoginResourceTesting extends BaseTestClass {
 
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         createUserRequest.setPreferredLocale("zh_CN");
-        TestContext.getData().putHeader("Accept-Language", "en_US");
+        TestContext.getData().putHeader("Accept-Language", "en-US");
         testDataProvider.CreateUser(createUserRequest, true);
 
         AuthTokenResponse response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert response != null;
-        assert response.getChallenge() == null;
+        assert response.getChallenge() != null;
+        assert response.getChallenge().getTos().getTosId().equals(chineseVersionTos.getId());
 
-        testDataProvider.UpdateTos(chineseVersionTos.getId());
+        TestContext.getData().putHeader("Accept-Language", "zh-CN");
+        createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setPreferredLocale("zh_CN");
+        testDataProvider.CreateUser(createUserRequest, true);
+
         response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert response != null;
         assert response.getChallenge() == null;
@@ -1331,10 +1331,7 @@ public class LoginResourceTesting extends BaseTestClass {
         response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert response != null;
         assert response.getChallenge() != null;
-
-        supportLocales.clear();
-        supportLocales.add("zh_CN");
-        testDataProvider.deleteTos("end user tos", supportLocales);
+        assert !response.getChallenge().getTos().getTosId().equals(chineseVersionTos.getId());
     }
 
     @Property(

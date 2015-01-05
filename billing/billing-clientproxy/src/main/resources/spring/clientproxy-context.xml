@@ -89,4 +89,13 @@
         <property name="taxAuditUrl" value="${sabrix.tax.audit.Url}"/>
         <property name="taxExclusiveCountries" value="${sabrix.tax.exclusive.countries}"/>
     </bean>
+
+    <bean id="viesFacade" class="com.junbo.billing.clientproxy.impl.VIESFacadeImpl">
+        <property name="defaultUri" value="${vies.wsdl.location}"/>
+        <property name="marshaller" ref="marshaller"/>
+        <property name="unmarshaller" ref="marshaller"/>
+    </bean>
+    <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="com.junbo.billing.clientproxy.impl.wsdl.vies" />
+    </bean>
 </beans>
