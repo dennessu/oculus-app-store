@@ -15,6 +15,7 @@
             <map>
                 <entry key="SABRIX" value-ref="sabrixFacade"/>
                 <entry key="AVALARA" value-ref="avalaraFacade"/>
+                <entry key="VIES" value-ref="viesFacade"/>
             </map>
         </constructor-arg>
         <constructor-arg name="providerName" value="${tax.provider.name}"/>
