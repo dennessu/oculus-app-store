@@ -81,6 +81,7 @@ public class OfferRevisionValidator extends ValidationSupport {
         validateSubOffers(revision, errors);
         validateItems(revision, errors);
         validateCountries("regions", revision.getCountries(), revision.getPrice(), errors);
+        validateEventAction(revision, errors);
         if (Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus())) {
             if (revision.getStartTime() != null && revision.getEndTime() != null && revision.getStartTime().after(revision.getEndTime())) {
                 errors.add(AppCommonErrors.INSTANCE.fieldInvalid("endTime", "endTime should be after startTime"));
@@ -115,6 +116,7 @@ public class OfferRevisionValidator extends ValidationSupport {
         validateFieldMatch("status", revision.getStatus(), Status.DRAFT.name(), errors);
         validateOffer(revision, errors);
         validateLocales(revision.getLocales(), errors);
+        validateEventAction(revision, errors);
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
         if (!errors.isEmpty()) {
             AppErrorException exception = Utils.invalidFields(errors).exception();
@@ -136,6 +138,7 @@ public class OfferRevisionValidator extends ValidationSupport {
         }
         validateOffer(revision, errors);
         validateLocales(revision.getLocales(), errors);
+        validateEventAction(revision, errors);
 
         validateMapEmpty("futureExpansion", revision.getFutureExpansion(), errors);
 
@@ -297,6 +300,33 @@ public class OfferRevisionValidator extends ValidationSupport {
                 }
             }
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid("eventActions.PURCHASE", "CREDIT_WALLET action should be configured"));
+        }
+    }
+
+    private void validateEventAction(OfferRevision revision, List<AppError> errors) {
+        if (revision.getEventActions() == null) {
+            return;
+        }
+        for (String event : revision.getEventActions().keySet()) {
+            if (event == null || !EventType.contains(event)) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("eventActions[keys]", Joiner.on(",").join(EventType.values())));
+                continue;
+            }
+            if (revision.getEventActions().get(event) == null) {
+                continue;
+            }
+            for (Action action : revision.getEventActions().get(event)) {
+                if (action == null) {
+                    continue;
+                }
+                if (action.getType() == null || !ActionType.contains(action.getType())) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("eventActions." + event + ".type", Joiner.on(",").join(ActionType.values())));
+                } else if (ActionType.GRANT_ENTITLEMENT.is(action.getType()) || ActionType.DELIVER_PHYSICAL_GOODS.is(action.getType())) {
+                    if (action.getItemId()==null) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("eventActions." + event +".itemId", "cannot be null"));
+                    }
+                }
+            }
         }
     }
 }

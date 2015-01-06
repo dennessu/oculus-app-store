@@ -56,7 +56,9 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
             if (results != null) {
                 FulfilmentResult fulfilmentResult = new FulfilmentResult();
                 fulfilmentResult.setEntitlementIds(results.get(action.getActionId()));
-                actionRepo.update(action.getActionId(), action.getStatus(), Utils.toJson(fulfilmentResult));
+                actionRepo.update(action.getActionId(), status, Utils.toJson(fulfilmentResult));
+            } else {
+                actionRepo.update(action.getActionId(), status, null);
             }
         }
     }

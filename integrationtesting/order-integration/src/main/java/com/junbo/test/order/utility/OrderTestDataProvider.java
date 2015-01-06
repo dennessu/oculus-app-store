@@ -285,6 +285,10 @@ public class OrderTestDataProvider {
         return orderEventClient.getOrderEventsByOrderId(orderId);
     }
 
+    public OrderEvent getOrderEvents(String id, int expectedResponseCode) throws Exception {
+        return orderEventClient.getOrderEvent(id, expectedResponseCode);
+    }
+
     public void postOrderEvent(String orderId, EventStatus eventStatus, OrderActionType orderActionType, int expectedResponseCode)
             throws Exception {
         OrderEvent orderEvent = new OrderEvent();

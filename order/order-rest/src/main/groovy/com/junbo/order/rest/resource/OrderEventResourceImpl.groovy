@@ -3,7 +3,6 @@ import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.id.OrderEventId
 import com.junbo.common.id.OrderId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
@@ -22,7 +21,6 @@ import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-import javax.ws.rs.PathParam
 /**
  * Created by chriszhu on 3/12/14.
  */
@@ -47,6 +45,7 @@ class OrderEventResourceImpl implements OrderEventResource {
 
     @Override
     Promise<Results<OrderEvent>> getOrderEvents(OrderId orderId, PageParam pageParam) {
+        orderValidator.notNull(orderId, 'orderId')
         def callback = authorizeCallbackFactory.create(orderId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             Results<OrderEvent> results = new Results<>()

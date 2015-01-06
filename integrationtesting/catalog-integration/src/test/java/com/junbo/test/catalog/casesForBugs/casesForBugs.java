@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
@@ -18,10 +19,7 @@ import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.test.catalog.*;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.test.catalog.enums.CatalogItemAttributeType;
-import com.junbo.test.catalog.enums.CatalogItemType;
-import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
+import com.junbo.test.catalog.enums.*;
 import com.junbo.test.catalog.impl.*;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.ComponentType;
@@ -48,10 +46,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
-  * @author Jason
-  * Time: 4/1/2014
-  * test cases for bugs
-*/
+ * @author Jason
+ * Time: 4/1/2014
+ * test cases for bugs
+ */
 public class casesForBugs extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(casesForBugs.class);
@@ -335,8 +333,8 @@ public class casesForBugs extends BaseTestClass {
                     "2. Update an offer with isPublished = null"
             }
     )
-     @Test
-     public void testOfferIsPublishedNotNull() throws Exception {
+    @Test
+    public void testOfferIsPublishedNotNull() throws Exception {
         String defaultOfferFileName = "defaultOffer";
 
         Organization organization = organizationService.postDefaultOrganization();
@@ -635,5 +633,67 @@ public class casesForBugs extends BaseTestClass {
         Assert.assertEquals(offerRevision.getRank(), 0.0);
     }
 
-}
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Bug SER-911",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Verify it is prohibited that ItemId In EventAction Is Null",
+            steps = {}
+    )
+    @Test
+    public void testItemIdInEventActionIsNull() throws Exception {
+        final String defaultOfferRevisionFileName = "defaultOfferRevision";
+        prepareCatalogAdminToken();
 
+        List<Action> eventAction = new ArrayList<>();
+        Map<String, List<Action>> eventActions = new HashMap<>();
+
+        Action action = new Action();
+        action.setType(EventActionType.GRANT_ENTITLEMENT.toString());
+        eventAction.add(action);
+
+        eventActions.put(EventType.PURCHASE.toString(), eventAction);
+
+        Organization organization = organizationService.postDefaultOrganization();
+        OrganizationId organizationId = organization.getId();
+
+        Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
+        item = releaseItem(item);
+
+        Offer offer = offerService.postDefaultOffer(organizationId);
+
+        OfferRevision offerRevision = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, organizationId, false);
+
+        offerRevision.setOfferId(offer.getOfferId());
+
+        //set item info
+        ItemEntry itemEntry = new ItemEntry();
+        List<ItemEntry> itemEntities = new ArrayList<>();
+        itemEntry.setItemId(item.getItemId());
+        itemEntry.setQuantity(1);
+        itemEntities.add(itemEntry);
+        offerRevision.setItems(itemEntities);
+
+        offerRevision.setEventActions(eventActions);
+
+        try {
+            offerRevisionService.postOfferRevision(offerRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception:" + ex);
+        }
+
+        offerRevision = offerRevisionService.postDefaultOfferRevision(offer, item);
+
+        offerRevision.setEventActions(eventActions);
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+
+        try {
+            offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception:" + ex);
+        }
+    }
+
+}

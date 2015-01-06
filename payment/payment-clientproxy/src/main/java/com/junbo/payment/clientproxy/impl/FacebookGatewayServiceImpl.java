@@ -6,6 +6,8 @@ import com.junbo.payment.clientproxy.FacebookGatewayService;
 import com.junbo.payment.clientproxy.facebook.*;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -13,6 +15,7 @@ import java.io.IOException;
  * Created by wenzhu on 12/2/14.
  */
 public class FacebookGatewayServiceImpl implements FacebookGatewayService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FacebookGatewayServiceImpl.class);
     private FacebookOauthApi facebookOauthApi;
     private FacebookPaymentApi facebookPaymentApi;
     private FacebookCreditCardTokenApi facebookCCTokenApi;
@@ -82,6 +85,7 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
                 try {
                     results = mapper.readValue(s, FacebookCCBatchResponse[].class);
                 } catch (IOException e) {
+                    LOGGER.error("error deserialize facebook request.", e);
                     throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", "deserialize:" + s).exception();
                 }
                 FacebookCCBatchResponse getResult = null;
@@ -95,6 +99,7 @@ public class FacebookGatewayServiceImpl implements FacebookGatewayService {
                 try {
                     creditCard = mapper.readValue(getResult.getBody(), FacebookCreditCard.class);
                 } catch (IOException e) {
+                    LOGGER.error("error deserialize facebook response.", e);
                     throw AppServerExceptions.INSTANCE.providerProcessError("Facebook", "deserialize:" + getResult.getBody()).exception();
                 }
                 return Promise.pure(creditCard);
