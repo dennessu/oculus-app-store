@@ -52,11 +52,12 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
 
     private void setFulfilmentResults(EntitlementContext context, String status, Map<Long, List<String>> results) {
         for (FulfilmentAction action : context.getActions()) {
-            action.setStatus(status);
             if (results != null) {
                 FulfilmentResult fulfilmentResult = new FulfilmentResult();
                 fulfilmentResult.setEntitlementIds(results.get(action.getActionId()));
-                actionRepo.update(action.getActionId(), action.getStatus(), Utils.toJson(fulfilmentResult));
+                actionRepo.update(action.getActionId(), status, Utils.toJson(fulfilmentResult));
+            } else {
+                actionRepo.update(action.getActionId(), status, null);
             }
         }
     }
