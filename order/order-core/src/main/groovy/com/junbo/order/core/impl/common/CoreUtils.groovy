@@ -566,14 +566,12 @@ class CoreUtils {
                     fh.entitlements = []
                     // do not update the status for request_ actions
                     if (!CollectionUtils.isEmpty(fi.actions)) {
-                        fh.success = !fi.actions?.any { FulfilmentAction fa ->
-                            fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN
-                        }
+                        fh.success = isFulfillSuccess(fi)
                     }
                     // TODO: parse shippingDetails and coupons
                     def entitlementAction = fi.actions?.find() { FulfilmentAction fa ->
                         fa.type == FulfilmentActionType.GRANT_ENTITLEMENT &&
-                                fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
+                                isFulfillSuccess(fi)
                     }
                     if (entitlementAction != null) {
                         entitlementAction.result?.entitlementIds?.each { String eid ->
@@ -582,7 +580,7 @@ class CoreUtils {
                     }
                     def walletAction = fi.actions?.find() { FulfilmentAction fa ->
                         fa.type == FulfilmentActionType.CREDIT_WALLET &&
-                                fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
+                                isFulfillSuccess(fi)
                     }
                     if (walletAction != null) {
                         fh.walletAmount = walletAction.result.amount
@@ -591,6 +589,16 @@ class CoreUtils {
             }
         }
         return order
+    }
+
+    static Boolean isFulfillSuccess(FulfilmentItem fi) {
+        if (!CollectionUtils.isEmpty(fi.actions)) {
+            return !fi.actions?.any { FulfilmentAction fa ->
+                // TODO: need update when fulfillment component has physical status
+                fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN || fa.status == FulfilmentStatus.PENDING
+            }
+        }
+        return false
     }
 
     static Boolean bypassEvent(Order order, OrderEvent event) {
