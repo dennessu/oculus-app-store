@@ -53,7 +53,7 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
             oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.ORDER);
             responseBody = restApiCall(HTTPMethod.POST, getEndPointUrl(), orderEvent, expectedResponseCode, true);
         }
-        if(expectedResponseCode == 200) {
+        if (expectedResponseCode == 200) {
             return new JsonMessageTranscoder().decode(new TypeReference<OrderEvent>() {
             }, responseBody);
         }
@@ -81,7 +81,8 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
 
     @Override
     public OrderEvent getOrderEvent(String orderEventId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/" + orderEventId, expectedResponseCode, isServiceScope);
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
+        String responseBody = restApiCall(HTTPMethod.GET, getEndPointUrl() + "/" + orderEventId, null, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<OrderEvent>() {
         }, responseBody);
     }

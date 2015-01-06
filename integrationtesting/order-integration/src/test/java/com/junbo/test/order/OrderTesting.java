@@ -193,5 +193,23 @@ public class OrderTesting extends BaseOrderTestClass {
         //TODO verify response
     }
 
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "Get /orders-events/",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test get order events by null",
+            steps = {
+                    "1. Post a new user",
+                    "2. Get order events by null id",
+            }
+    )
+    @Test
+    public void testGetOrderEvents() throws Exception {
+        testDataProvider.getOrderEvents("", 400);
+
+    }
+
 
 }
