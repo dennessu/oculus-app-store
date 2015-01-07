@@ -2,6 +2,9 @@
     "item": {
         "categories": [{"id" : "App"}],
         "genres": [{"id" : "Educational"}],
+        "isDownloadable": true,
+        "maxNumberOfPurchase": 1,
+        "subtype": null,
         "defaultOffer": null, 
         "rev": null,
         "currentRevision": null, 

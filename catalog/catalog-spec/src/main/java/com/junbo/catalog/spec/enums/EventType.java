@@ -22,6 +22,9 @@ public enum EventType {
     }
 
     public static boolean contains(String type) {
+        if (type == null) {
+            return false;
+        }
         try {
             EventType.valueOf(type);
         } catch (IllegalArgumentException e) {

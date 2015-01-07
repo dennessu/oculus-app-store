@@ -9,7 +9,9 @@ package com.junbo.rating.core.service;
 import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.promotion.*;
+import com.junbo.catalog.spec.model.promotion.Benefit;
+import com.junbo.catalog.spec.model.promotion.PromotionRevision;
+import com.junbo.catalog.spec.model.promotion.PromotionType;
 import com.junbo.catalog.spec.model.promotion.criterion.Criterion;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Constants;
@@ -19,8 +21,10 @@ import com.junbo.rating.core.RatingService;
 import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.core.handler.HandlerRegister;
 import com.junbo.rating.spec.error.AppErrors;
-import com.junbo.rating.spec.fusion.*;
+import com.junbo.rating.spec.fusion.LinkedEntry;
+import com.junbo.rating.spec.fusion.Price;
 import com.junbo.rating.spec.fusion.Properties;
+import com.junbo.rating.spec.fusion.RatingOffer;
 import com.junbo.rating.spec.model.RatableItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -54,11 +58,26 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
                 throw AppErrors.INSTANCE.missingConfiguration("isPurchasable").exception();
             }
 
-            if (item.getQuantity() > 1 && containsSpecificTypeGoods(item.getOffer(), context.getTimestamp(),
-                    ItemType.APP, ItemType.DOWNLOADED_ADDITION, ItemType.VIDEO, ItemType.PHOTO)){
+            if (item.getQuantity() > 1 && containsDownloadable(item.getOffer(), context.getTimestamp())){
                 throw AppErrors.INSTANCE.incorrectQuantity(item.getOfferId(), item.getQuantity()).exception();
             }
         }
+    }
+
+    protected boolean containsDownloadable(RatingOffer offer, String timestamp) {
+        for (LinkedEntry entry : offer.getItems()) {
+            Item item = catalogGateway.getItem(entry.getEntryId());
+            if (ItemType.APP.is(item.getType()) || ItemType.ADDITIONAL_CONTENT.is(item.getType()) && item.getSubtype() != null) {
+                return true;
+            }
+        }
+        for (LinkedEntry entry : offer.getSubOffers()) {
+            RatingOffer subOffer = catalogGateway.getOffer(entry.getEntryId(), timestamp);
+            if (containsDownloadable(subOffer, timestamp)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected boolean containsSpecificTypeGoods(RatingOffer offer, String timestamp, ItemType... types) {

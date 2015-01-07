@@ -216,7 +216,7 @@ class CatalogFacadeImpl implements CatalogFacade {
         }) {
             return ItemType.PHYSICAL_GOODS
         } else if (items.any { Item item ->
-            items.type == com.junbo.catalog.spec.enums.ItemType.STORED_VALUE.name()
+            items.type == com.junbo.catalog.spec.enums.ItemType.EWALLET.name()
         }) {
             return ItemType.GIFT_CARD
         } else {

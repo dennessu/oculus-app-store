@@ -5,7 +5,10 @@
         "rev": null,
         "currentRevision": null, 
         "revisions": null, 
-        "type": "PHYSICAL", 
+        "type": "PHYSICAL",
+         "isDownloadable": false,
+         "maxNumberOfPurchase": 1000000001,
+         "subtype": null,
         "developer": {
             "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"

@@ -29,6 +29,9 @@ public enum Platforms {
     }
 
     public static boolean contains(String type) {
+        if (type == null) {
+            return false;
+        }
         for (Platforms platform : ALL) {
             if (platform.value.equals(type)) {
                 return true;

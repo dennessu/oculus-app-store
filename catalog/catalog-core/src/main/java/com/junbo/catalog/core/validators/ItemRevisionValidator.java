@@ -164,7 +164,7 @@ public class ItemRevisionValidator extends ValidationSupport {
                     errors.add(AppCommonErrors.INSTANCE.fieldInvalid("item", "item should have same owner as item-revision"));
                 }
                 if (Status.PENDING_REVIEW.is(revision.getStatus()) || Status.APPROVED.is(revision.getStatus())) {
-                    validateBinariesAndDownloadName(revision.getBinaries(), revision.getDownloadName(), item.getType(), errors);
+                    validateBinariesAndDownloadName(revision.getBinaries(), revision.getDownloadName(), item.getType(), item.getSubtype(), errors);
                 }
             }
         }
@@ -216,8 +216,8 @@ public class ItemRevisionValidator extends ValidationSupport {
         }
     }
 
-    private void validateBinariesAndDownloadName(Map<String, Binary> binaries, String downloadName, String itemType, List<AppError> errors) {
-        if (ItemType.APP.is(itemType) || ItemType.DOWNLOADED_ADDITION.is(itemType) || ItemType.VIDEO.is(itemType) || ItemType.PHOTO.is(itemType)) {
+    private void validateBinariesAndDownloadName(Map<String, Binary> binaries, String downloadName, String itemType, String itemSubtype, List<AppError> errors) {
+        if (ItemType.APP.is(itemType) || ItemSubtype.DOWNLOADABLE_ADDITION.is(itemSubtype) || ItemSubtype.VIDEO.is(itemSubtype) || ItemSubtype.PHOTO.is(itemSubtype)) {
             if (validateMapNotEmpty("binaries", binaries, errors)) {
                 for (String key : binaries.keySet()) {
                     if (!Platforms.contains(key)) {

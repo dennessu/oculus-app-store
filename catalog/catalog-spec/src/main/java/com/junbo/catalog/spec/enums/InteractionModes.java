@@ -22,6 +22,9 @@ public enum InteractionModes {
     }
 
     public static boolean contains(String type) {
+        if (type == null) {
+            return false;
+        }
         try {
             InteractionModes.valueOf(type);
         } catch (IllegalArgumentException e) {

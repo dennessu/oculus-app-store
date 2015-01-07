@@ -57,7 +57,10 @@ class CheckoutTests(ut.TestBase):
             "rev": None,
             "currentRevision": None,
             "revisions": None,
-            "type": "CONSUMABLE_UNLOCK",
+            "type": "ADDITIONAL_CONTENT",
+            "isDownloadable": False,
+            "maxNumberOfPurchase": 1000000001,
+            "subtype": None,
             "developer": organization['self']
         })
 

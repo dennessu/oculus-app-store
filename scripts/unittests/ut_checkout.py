@@ -58,6 +58,9 @@ class CheckoutTests(ut.TestBase):
             "currentRevision": None,
             "revisions": None,
             "type": "APP",
+            "isDownloadable": True,
+            "maxNumberOfPurchase": 1,
+            "subtype": None,
             "developer": organization['self']
         })
 

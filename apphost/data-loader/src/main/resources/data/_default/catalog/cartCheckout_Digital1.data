@@ -2,6 +2,9 @@
     "item": {
         "genres": [{"id" : "Shooter"}],
         "categories": [{"id" : "Game"}],
+        "isDownloadable": true,
+        "maxNumberOfPurchase": 1,
+        "subtype": null,
         "defaultOffer": null, 
         "rev": null,
         "currentRevision": null, 

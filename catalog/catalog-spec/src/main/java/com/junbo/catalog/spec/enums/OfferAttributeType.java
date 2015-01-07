@@ -22,6 +22,9 @@ public enum OfferAttributeType {
     }
 
     public static boolean contains(String type) {
+        if (type == null) {
+            return false;
+        }
         try {
             OfferAttributeType.valueOf(type);
         } catch (IllegalArgumentException e) {

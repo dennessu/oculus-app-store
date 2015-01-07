@@ -22,6 +22,9 @@ public enum DistributionChannel {
     }
 
     public static boolean contains(String type) {
+        if (type == null) {
+            return false;
+        }
         try {
             DistributionChannel.valueOf(type);
         } catch (IllegalArgumentException e) {
