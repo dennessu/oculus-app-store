@@ -11,6 +11,7 @@ dependencies {
     compile (libraries.spring_context)
     compile (libraries.guava)
     compile (libraries.asyncclient)
+    compile (libraries.apache_commons_lang)
 
     testCompile (libraries.spring_test)
 
