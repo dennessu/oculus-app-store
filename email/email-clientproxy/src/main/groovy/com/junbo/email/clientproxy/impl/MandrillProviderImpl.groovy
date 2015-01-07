@@ -14,6 +14,7 @@ import com.junbo.langur.core.async.JunboAsyncHttpClient.BoundRequestBuilder
 import com.junbo.langur.core.promise.Promise
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.StringEscapeUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.util.StringUtils
@@ -86,7 +87,7 @@ class MandrillProviderImpl implements EmailProvider {
             email.replacements.keySet().each { String key ->
                 def map = [:]
                 map.put(VARS_NAME, key)
-                map.put(VARS_CONTENT, email.replacements.get(key))
+                map.put(VARS_CONTENT, StringEscapeUtils.escapeHtml4(email.replacements.get(key)))
                 properties << map
             }
             message.properties = properties
