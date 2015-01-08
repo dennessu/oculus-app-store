@@ -14,6 +14,6 @@ import com.junbo.common.shuffle.Oculus40Id;
 public class OrderIdSerializer extends ResourceIdSerializer {
     @Override
     protected String encode(Object value) {
-        return Oculus40Id.format(Oculus40Id.shuffle((Long) value));
+        return Oculus40Id.encode((Long) value);
     }
 }

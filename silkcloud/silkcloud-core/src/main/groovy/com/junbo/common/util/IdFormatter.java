@@ -37,13 +37,11 @@ public class IdFormatter {
     public static String encodeId(Id id) {
         if(id instanceof OrderId) {
             Oculus40Id.validateRawValue(id.getValue());
-            Long value = Oculus40Id.shuffle(id.getValue());
-            return Oculus40Id.format(value);
+            return Oculus40Id.encode(id.getValue());
         }
         else {
             Oculus48Id.validateRawValue(id.getValue());
-            Long value = Oculus48Id.shuffle(id.getValue());
-            return Oculus48Id.format(value);
+            return Oculus48Id.encode(id.getValue());
         }
     }
 

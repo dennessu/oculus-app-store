@@ -64,7 +64,7 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
                     uri = cloudantGlobalUri.getUri(dc)
                     if (uri == null) {
                         logger.error("Cloudant URI not found for datacenter: $dc id: $id")
-                        throw AppCommonErrors.INSTANCE.invalidId("id", Oculus48Id.format(value)).exception()
+                        throw AppCommonErrors.INSTANCE.invalidId("id", Oculus48Id.encode(value)).exception()
                     }
                 }
             } catch (NumberFormatException ex) {

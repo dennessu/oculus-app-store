@@ -7,7 +7,6 @@ package com.junbo.common.job.cache;
 
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.memcached.JunboMemcachedClient;
-import com.junbo.common.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +34,13 @@ public class CacheSnifferJob implements InitializingBean {
     private static final String CHANGES_KEY = "changes";
     private static final String CLOUDANT_HEARTBEAT_KEY = "common.cloudant.heartbeat";
     private static final String SNIFFER_ENABLED_KEY = "common.jobs.sniffer.enabled";
+    private static final String DBNAME_PREFIX = "common.cloudant.dbNamePrefix";
 
     private static final int SAFE_SLEEP = 5000;
     private static final int MONITOR_THREADS = 10;
 
     private boolean enabled;
+    private String dbNamePrefix;
     private Integer expiration;
     private Integer connectionTimeout;
 
@@ -49,6 +50,7 @@ public class CacheSnifferJob implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         // initialize configuration
         this.enabled = SnifferUtils.safeParseBoolean(SnifferUtils.getConfig(SNIFFER_ENABLED_KEY));
+        this.dbNamePrefix = SnifferUtils.getConfig(DBNAME_PREFIX);
         this.expiration = 0; //forever
 
         // initialize cloudant feed connection timeout
@@ -135,7 +137,7 @@ public class CacheSnifferJob implements InitializingBean {
 
                             if (change == null) {
                                 //theoretically, the code will not be reached
-                                LOGGER.error("Invalid cloudant chagne feed received.");
+                                LOGGER.error("Invalid cloudant change feed received.");
                                 continue outer;
                             }
 
@@ -204,62 +206,66 @@ public class CacheSnifferJob implements InitializingBean {
                 return;
             }
 
-            boolean cacheIsValid = false;
-            String entityKey = entityIdStr + ":" + database + ":" + cloudantUri.getDc();
+            String databaseWithoutPrefix = SnifferUtils.removePrefix(database, dbNamePrefix);
+            String rawCacheEntityKey = entityIdStr + ":" + databaseWithoutPrefix;
+            invalidateCache(change, changes, rawCacheEntityKey, "_rev");
 
-            boolean revFound = false;
-            try {
-                // best effort: don't clear cache if the new rev is already in cache.
-                if (changes != null && changes.size() == 1) {
-                    Map changedFields = (Map) changes.get(0);
-                    if (changedFields != null && changedFields.containsKey("rev")) {
-                        Object revObject = changedFields.get("rev");
-                        String rev = (revObject == null ? null : revObject.toString());
+            String cookedCacheEntityKey = "<COOKED>" + SnifferUtils.encodeId(entityIdStr, databaseWithoutPrefix);
+            invalidateCache(change, changes, cookedCacheEntityKey, "rev");
+        }
 
-                        if (!StringUtils.isEmpty(rev)) {
-                            String existingValue = getCache(entityKey);
-                            if (existingValue == null) {
-                                // not in cache, so cache is valid
-                                cacheIsValid = true;
+        return;
+    }
+
+    private void invalidateCache(String change, List changes, String entityKey, String entityRevKey) {
+        boolean cacheIsValid = false;
+
+        boolean revFound = false;
+        try {
+            // best effort: don't clear cache if the new rev is already in cache.
+            if (changes != null && changes.size() == 1) {
+                Map changedFields = (Map) changes.get(0);
+                if (changedFields != null && changedFields.containsKey("rev")) {
+                    Object revObject = changedFields.get("rev");
+                    String rev = (revObject == null ? null : revObject.toString());
+
+                    if (!StringUtils.isEmpty(rev)) {
+                        String existingValue = getCache(entityKey);
+                        if (existingValue == null) {
+                            // not in cache, so cache is valid
+                            cacheIsValid = true;
+                            revFound = true;
+                            LOGGER.debug("[miss] {}@{}", entityKey, rev);
+                        } else {
+                            Map<String, Object> entity = SnifferUtils.parse(existingValue, Map.class);
+
+                            if (entity != null && entity.containsKey(entityRevKey)) {
                                 revFound = true;
-                                LOGGER.debug("[miss] {}@{}", entityKey, rev);
-                            } else {
-                                Map<String, Object> entity = SnifferUtils.parse(existingValue, Map.class);
-
-                                if (entity != null && entity.containsKey("_rev")) {
-                                    revFound = true;
-                                    String entityRev = (String)entity.get("_rev");
-                                    int compareResult = Utils.compareCloudantRev(rev, entityRev);
-                                    if (compareResult == 0) {
-                                        cacheIsValid = true;
-                                        LOGGER.debug("[valid] {}@{}", entityKey, entityRev);
-                                    } else if (compareResult < 0) {
-                                        cacheIsValid = true;
-                                        LOGGER.debug("[valid] {}@{} r@{}", entityKey, entityRev, rev);
-                                    } else {
-                                        LOGGER.debug("[invalid] {}@{} r@{}", entityKey, entityRev, rev);
-                                    }
+                                String entityRev = (String)entity.get(entityRevKey);
+                                if (rev.equals(entityRev)) {
+                                    cacheIsValid = true;
+                                    LOGGER.debug("[valid] {}@{}", entityKey, entityRev);
+                                } else {
+                                    LOGGER.debug("[invalid] {}@{} r@{}", entityKey, entityRev, rev);
                                 }
                             }
                         }
                     }
                 }
-            } catch (Exception ex) {
-                LOGGER.error("Failed to compare cache rev with change for key {}. Default to delete existing cache.", entityKey, ex);
-                cacheIsValid = false;
-            } finally {
-                // add a trace anyway
-                if (!revFound) {
-                    LOGGER.warn("Received entity change key {}, rev not found. full change: {}", entityKey, change);
-                }
             }
-
-            if (!cacheIsValid) {
-                deleteCache(entityKey);
+        } catch (Exception ex) {
+            LOGGER.error("Failed to compare cache rev with change for key {}. Default to delete existing cache.", entityKey, ex);
+            cacheIsValid = false;
+        } finally {
+            // add a trace anyway
+            if (!revFound) {
+                LOGGER.warn("Received entity change key {}, rev not found. full change: {}", entityKey, change);
             }
         }
 
-        return;
+        if (!cacheIsValid) {
+            deleteCache(entityKey);
+        }
     }
 
     private void updateCache(String key, String value) {

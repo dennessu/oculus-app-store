@@ -7,6 +7,8 @@ package com.junbo.common.job.cache;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.cloudant.exception.CloudantConnectException;
+import com.junbo.common.shuffle.Oculus40Id;
+import com.junbo.common.shuffle.Oculus48Id;
 import com.junbo.configuration.ConfigServiceManager;
 import com.ning.http.client.Response;
 import org.apache.commons.lang3.StringUtils;
@@ -88,5 +90,27 @@ public final class SnifferUtils {
                 //ignore silently
             }
         }
+    }
+
+    public static String encodeId(String idStr, String database) {
+        try {
+            Long longValue = Long.parseLong(idStr);
+
+            // hard code that order id is 40 bit...
+            if (database.equalsIgnoreCase("order")) {
+                return Oculus40Id.encode(longValue);
+            } else {
+                return Oculus48Id.encode(longValue);
+            }
+        } catch (Exception ex) {
+            return idStr;
+        }
+    }
+
+    public static String removePrefix(String str, String prefix) {
+        if (str.startsWith(prefix)) {
+            return str.substring(prefix.length());
+        }
+        return str;
     }
 }

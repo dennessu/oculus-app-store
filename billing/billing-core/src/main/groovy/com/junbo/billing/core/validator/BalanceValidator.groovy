@@ -194,7 +194,7 @@ class BalanceValidator {
                             'refunded {}', refundItem.originalBalanceItemId, refundItem.amount,
                             originalItem.amount, itemRefunded)
                     throw AppErrors.INSTANCE.balanceItemRefundTotalExceeded(
-                            originalBalance.getId(), Oculus48Id.format(originalItem.getId()),
+                            originalBalance.getId(), Oculus48Id.encode(originalItem.getId()),
                             refundItem.amount, originalItem.amount, itemRefunded).exception()
                 }
             }
