@@ -5,8 +5,10 @@
  */
 
 package com.junbo.billing.clientproxy.impl
+
 import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.clientproxy.impl.avalara.ResponseMessage
+import com.junbo.billing.clientproxy.impl.common.VatUtil
 import com.junbo.billing.clientproxy.impl.common.XmlConvertor
 import com.junbo.billing.clientproxy.impl.sabrix.*
 import com.junbo.billing.spec.enums.BalanceType
@@ -32,8 +34,7 @@ import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
 import java.text.SimpleDateFormat
-import java.util.regex.Matcher
-import java.util.regex.Pattern
+
 /**
  * Implementation of Sabrix facade to calculate tax & validate address.
  */
@@ -69,7 +70,6 @@ class SabrixFacadeImpl implements TaxFacade {
             }
     private static final Map<String, TaxAuthority> AUTHORITY_MAP
     private static final Map<String, String> EXCHANGE_RATE_MAP
-    private static final Map<String, String> VAT_FORMAT_MAP
 
     static {
         Map<String, TaxAuthority> authorityMap = new HashMap<String, TaxAuthority>()
@@ -112,23 +112,6 @@ class SabrixFacadeImpl implements TaxFacade {
         exchangeRateMap.put('GBP', '1.71')
 
         EXCHANGE_RATE_MAP = Collections.unmodifiableMap(exchangeRateMap)
-
-        Map<String, String> vatFormatMap = new HashMap<String, String>()
-        vatFormatMap.put('AU', '^((ABN)\\s)?\\d{2}\\s\\d{3}\\s\\d{3}\\s\\d{3}(\\s\\d{3})?$|^(ABN)?\\d{11}(\\d{3})?$')
-        vatFormatMap.put('AT', '^ATU\\d{8}$|^AT U\\d{8}$|^EU')
-        vatFormatMap.put('BE', '^BE\\d{10}$|^BE\\s0\\d{9}$|^EU')
-        vatFormatMap.put('CZ', '^CZ\\d{8}$|^CZ\\d{9}$|^CZ\\d{10}$|^EU')
-        vatFormatMap.put('DK', '^(DK)?\\d{8}$|^EU')
-        vatFormatMap.put('FI', '^FI\\d{8}$|^EU')
-        vatFormatMap.put('DE', '^DE\\d{9}$|^EU')
-        vatFormatMap.put('IE', '^IE\\d{7}[A-Z]{1,2}$|^IE\\d[A-Z]\\d{5}[A-Z]$|^IE\\d\\W\\d{5}[A-Z]$|^EU')
-        vatFormatMap.put('IT', '^(IT)?\\d{11}$|^EU')
-        vatFormatMap.put('NL', '^NL\\d{9}B\\d{2}$|^EU')
-        vatFormatMap.put('PL', '^(PL)?\\s?\\d{10}$|^(PL)?\\s?\\d{3}-\\d{2}-\\d{2}-\\d{3}$|^(PL)?\\s?\\d{3}-\\d{3}-\\d{2}-\\d{2}$|^EU')
-        vatFormatMap.put('ES', '^(ES)?[A-Z0-9]\\d{7}[A-Z0-9]$|^EU')
-        vatFormatMap.put('SE', '^SE\\d{12}$|^EU')
-        vatFormatMap.put('GB', '^GB\\d{9}$|^GB\\d{12}$|^GB[A-Z]{2}\\d{3}$|^EU')
-        VAT_FORMAT_MAP = Collections.unmodifiableMap(vatFormatMap)
     }
     @Override
     Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
@@ -161,7 +144,7 @@ class SabrixFacadeImpl implements TaxFacade {
 
     @Override
     Promise<VatIdValidationResponse> validateVatId(String vatId, String country) {
-        if (!isValidFormat(vatId, country)) {
+        if (!VatUtil.isValidFormat(vatId, country)) {
             def validationResponse = new VatIdValidationResponse()
             validationResponse.vatId = vatId
             validationResponse.message = 'Invalid format.'
@@ -175,16 +158,6 @@ class SabrixFacadeImpl implements TaxFacade {
         return validateVatId(request).then { RegistrationValidationResponse response ->
             return getVatIdValidationResponse(response)
         }
-    }
-
-    boolean isValidFormat(String vatId, String country) {
-        String REFormat = VAT_FORMAT_MAP.get(country)
-        if (REFormat == null) {
-            return true
-        }
-        Pattern p = Pattern.compile(REFormat)
-        Matcher m = p.matcher(vatId)
-        return m.matches()
     }
 
     RegistrationValidationRequest generateRequest(String vatId) {
