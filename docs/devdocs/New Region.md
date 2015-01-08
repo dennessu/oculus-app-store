@@ -594,69 +594,25 @@ ansible-playbook -i prod.hosts logstash.yml --limit eu
 1. Copy masterkey from existing regions
 
   ```
-  export CRYPTO_SERVER_1=10.11.34.10
-  export CRYPTO_SERVER_2=10.110.34.10
-  export CRYPTO_SERVER_3=10.110.38.10
-
-  ROWCOUNT1=`ssh $CRYPTO_SERVER_1 'psql -d crypto -c "select count(*) from master_key;"' | egrep '^[[:blank:]]*[[:digit:]]+[[:blank:]]*$' | sed 's/[ \t]*//'`
-  ROWCOUNT2=`ssh $CRYPTO_SERVER_2 'psql -d crypto -c "select count(*) from master_key;"' | egrep '^[[:blank:]]*[[:digit:]]+[[:blank:]]*$' | sed 's/[ \t]*//'`
-  ROWCOUNT3=`ssh $CRYPTO_SERVER_3 'psql -d crypto -c "select count(*) from master_key;"' | egrep '^[[:blank:]]*[[:digit:]]+[[:blank:]]*$' | sed 's/[ \t]*//'`
-
-  echo Found $ROWCOUNT1 master keys in $CRYPTO_SERVER_1
-  echo Found $ROWCOUNT2 master keys in $CRYPTO_SERVER_2
-  echo Found $ROWCOUNT3 master keys in $CRYPTO_SERVER_3
-
-  if [ "$ROWCOUNT2" -gt "$ROWCOUNT1" ]; then
-  echo $CRYPTO_SERVER_2 has more rows, aborting...
-  exit 1
-  fi
-
-  if [ "$ROWCOUNT3" -gt "$ROWCOUNT1" ]; then
-  echo $CRYPTO_SERVER_3 has more rows, aborting...
-  exit 1
-  fi
-
-  mkdir -p ~/crypto-backup
-  ssh $CRYPTO_SERVER_1 pg_dump crypto | gzip > ~/crypto-backup/backup1.sql.gz
-  ssh $CRYPTO_SERVER_2 pg_dump crypto | gzip > ~/crypto-backup/backup2.sql.gz
-  ssh $CRYPTO_SERVER_3 pg_dump crypto | gzip > ~/crypto-backup/backup3.sql.gz
-
-  ssh $CRYPTO_SERVER_2 psql -d postgres << EOF
-  UPDATE pg_database SET datallowconn = 'false' WHERE datname = 'crypto';
-  SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'crypto';
-  DROP DATABASE crypto;
-  EOF
-  ssh $CRYPTO_SERVER_2 createdb crypto
-  ssh $CRYPTO_SERVER_1 pg_dump crypto | ssh $CRYPTO_SERVER_2 psql -d crypto
-
-  ssh $CRYPTO_SERVER_3 psql -d postgres << EOF
-  UPDATE pg_database SET datallowconn = 'false' WHERE datname = 'crypto';
-  SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'crypto';
-  DROP DATABASE crypto;
-  EOF
-  ssh $CRYPTO_SERVER_3 createdb crypto
-  ssh $CRYPTO_SERVER_1 pg_dump crypto | ssh $CRYPTO_SERVER_3 psql -d crypto
-
-  diff <(ssh $CRYPTO_SERVER_1 pg_dump crypto ) <(ssh $CRYPTO_SERVER_2 pg_dump crypto )
-  diff <(ssh $CRYPTO_SERVER_1 pg_dump crypto ) <(ssh $CRYPTO_SERVER_3 pg_dump crypto )
-
-  ```
-
-  If all the commands ran successfully, delete the backup files.
-
-  ```
-  rm -rf ~/crypto-backup
+  ansible-playbook -i prod.hosts copy-masterkey.yml -e "source=10.11.34.10 target=10.110.34.10"
+  ansible-playbook -i prod.hosts copy-masterkey.yml -e "source=10.11.34.10 target=10.110.38.10"
   ```
 
 1. Setup Utility in new region
 ```
-ansible-playbook -i prod.hosts upgrade-app.yml -e "sourcedir=/home/devops appname=apphost-cli-0.0.1-SNAPSHOT newrelicdir=/home/devops/newrelic" --limit eu-utl
+ansible-playbook -i prod.hosts upgrade-utl.yml -e "sourcedir=/home/devops appname=apphost-cli-0.0.1-SNAPSHOT newrelicdir=/home/devops/newrelic" --limit eu-utl
 ```
 
 1. Setup Apps in new region
 
   ```
   ansible-playbook -i prod.hosts upgrade-app.yml -e "sourcedir=/home/devops appname=apphost-cli-0.0.1-SNAPSHOT newrelicdir=/home/devops/newrelic" --limit eu-app:eu-cryptoapp
+  ```
+
+1. Run dataloader in new region
+
+  ```
+  ansible-playbook -i prod.hosts dataloader.yml --limit eu
   ```
 
 1. Test new Apps in new region
