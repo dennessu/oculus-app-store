@@ -211,7 +211,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testTosRepository() {
         String content = UUID.randomUUID().toString()
         Tos tos = new Tos()
-        tos.setTitle('title')
         tos.setContent(content)
         tos = tosRepository.create(tos).get()
 

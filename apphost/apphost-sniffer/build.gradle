@@ -1,0 +1,14 @@
+apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = "com.junbo.apphost.core.JunboApplication"
+applicationDefaultJvmArgs = ["-Xmx2048m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility", "-Djava.net.preferIPv4Stack=true", "-Dfile.encoding=UTF-8"]
+
+dependencies {
+    compile junboProject(':silkcloud-apphost')
+    compile junboProject(':config-data')
+    compile junboProject(':authorization-lib')
+
+    // only run sniffer
+    compile junboProject(':silkcloud-sniffer')
+}

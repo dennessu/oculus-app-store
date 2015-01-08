@@ -247,9 +247,9 @@ public class CustomBeanSerializer extends BeanSerializerBase {
                 } else if (fieldValue instanceof Id) {
                     result = IdFormatter.encodeId((Id) fieldValue);
                 } else if (hasOrderIdAnnotation) {
-                    result = Oculus40Id.format(Oculus40Id.shuffle((Long) fieldValue));
+                    result = Oculus40Id.encode((Long) fieldValue);
                 } else if (hasIdAnnotation && fieldValue instanceof Long) {
-                    result = Oculus48Id.format(Oculus48Id.shuffle((Long) fieldValue));
+                    result = Oculus48Id.encode((Long) fieldValue);
                 } else {
                     result = fieldValue.toString();
                 }

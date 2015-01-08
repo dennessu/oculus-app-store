@@ -89,7 +89,7 @@ public final class CommonUtil {
         try{
             if (value instanceof Long) {
                 Oculus48Id.validateRawValue((Long) value);
-                return Oculus48Id.format(Oculus48Id.shuffle((Long) value));
+                return Oculus48Id.encode((Long) value);
             } else {
                 return value == null ? "" : value.toString();
             }

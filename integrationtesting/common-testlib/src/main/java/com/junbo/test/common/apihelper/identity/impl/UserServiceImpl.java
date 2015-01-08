@@ -647,27 +647,28 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
         String putUrl = url;
         Tos newTos = new Tos();
-        newTos.setTitle(tos.getTitle());
         newTos.setState(tos.getState());
         newTos.setCountries(tos.getCountries());
         newTos.setType(tos.getType());
         newTos.setContent(tos.getContent());
         newTos.setLocales(tos.getLocales());
+        newTos.setMinorversion(tos.getMinorversion());
+        newTos.setCoveredLocales(tos.getCoveredLocales());
         newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
         restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
     }
 
     @Override
-    public void updateTos(String title, String status) throws Exception {
-        updateTos(title, null, status);
+    public void updateTos(String type, String status) throws Exception {
+        updateTos(type, null, status);
     }
 
     @Override
-    public void updateTos(String title, List<String> supportLocales, String status) throws Exception {
+    public void updateTos(String type, List<String> supportLocales, String status) throws Exception {
         componentType = ComponentType.IDENTITY_ADMIN;
         String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
 
-        String queryUrl = url + "?title=" + URLEncoder.encode(title, "UTF-8");
+        String queryUrl = url + "?type=" + URLEncoder.encode(type, "UTF-8");
         String tosResponse = restApiCall(HTTPMethod.GET, queryUrl, null, true);
         Results<Tos> tosResults = new JsonMessageTranscoder().decode(new TypeReference<Results>() {
         }, tosResponse);
@@ -688,31 +689,32 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         Tos tos = tosList.get(0);
         String putUrl = url;
         Tos newTos = new Tos();
-        newTos.setTitle(tos.getTitle());
         newTos.setState(status);
         newTos.setCountries(tos.getCountries());
         newTos.setType(tos.getType());
         newTos.setContent(tos.getContent());
+        newTos.setLocales(tos.getLocales());
+        newTos.setMinorversion(tos.getMinorversion());
         if (!CollectionUtils.isEmpty(supportLocales)) {
             List<LocaleId> localeIds = new ArrayList<>();
             for (String supportLocale : supportLocales) {
                 localeIds.add(new LocaleId(supportLocale));
             }
-            newTos.setLocales(localeIds);
+            newTos.setCoveredLocales(localeIds);
             newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion())));
         } else {
-            newTos.setLocales(tos.getLocales());
+            newTos.setCoveredLocales(tos.getCoveredLocales());
             newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
         }
         restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
     }
 
     @Override
-    public void deleteTos(String title, List<String> supportLocales) throws Exception {
+    public void deleteTos(String type, List<String> supportLocales) throws Exception {
         componentType = ComponentType.IDENTITY_ADMIN;
         String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
 
-        String queryUrl = url + "?title=" + URLEncoder.encode(title, "UTF-8");
+        String queryUrl = url + "?type=" + URLEncoder.encode(type, "UTF-8");
         String tosResponse = restApiCall(HTTPMethod.GET, queryUrl, null, true);
         Results<Tos> tosResults = new JsonMessageTranscoder().decode(new TypeReference<Results>() {
         }, tosResponse);
@@ -725,8 +727,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
         for (Tos tos : tosList) {
             boolean exists = false;
-            if (!CollectionUtils.isEmpty(tos.getLocales())) {
-                for (LocaleId localeId : tos.getLocales()) {
+            if (!CollectionUtils.isEmpty(tos.getCoveredLocales())) {
+                for (LocaleId localeId : tos.getCoveredLocales()) {
                     for (String supportLocale : supportLocales) {
                         if (localeId.toString().equalsIgnoreCase(supportLocale)) {
                             exists = true;

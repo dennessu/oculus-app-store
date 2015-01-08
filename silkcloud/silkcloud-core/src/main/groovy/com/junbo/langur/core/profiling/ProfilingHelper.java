@@ -8,6 +8,7 @@ package com.junbo.langur.core.profiling;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
 import com.junbo.langur.core.context.JunboHttpContext;
+import com.junbo.langur.core.metric.MetricHelper;
 import com.junbo.langur.core.track.TrackContextManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,8 @@ import java.util.Stack;
  * Profile helper.
  */
 public class ProfilingHelper {
-    private ProfilingHelper() {}
+    private ProfilingHelper() {
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(ProfilingHelper.class);
     private static final ThreadLocal<Data> profileData = new ThreadLocal<>();
@@ -163,9 +165,9 @@ public class ProfilingHelper {
     public static void err(Logger logger, Throwable ex) {
         if (isProfileEnabled()) {
             if (ex != null) {
-                profileData.get().end(logger, "(ERR) %s %s", ex.getClass().getSimpleName(), ex.getMessage());
+                profileData.get().end(logger, true, "(ERR) %s %s", ex.getClass().getSimpleName(), ex.getMessage());
             } else {
-                profileData.get().end(logger, "(ERR) null");
+                profileData.get().end(logger, true, "(ERR) null");
             }
         }
     }
@@ -277,6 +279,10 @@ public class ProfilingHelper {
         }
 
         void end(Logger logger, String result, Object... args) {
+            end(logger, false, result, args);
+        }
+
+        void end(Logger logger, boolean hasError, String result, Object... args) {
             if (result == null) {
                 return;
             }
@@ -291,18 +297,25 @@ public class ProfilingHelper {
 
                 long startOffset = stackFrame.startTime - profilingStartTime;
                 long stepElapsed = now - stackFrame.startTime;
+
+                if (hasError) {
+                    MetricHelper.addMetric(stackFrame.type, "ERR", stepElapsed);
+                } else {
+                    MetricHelper.addMetric(stackFrame.type, result, stepElapsed);
+                }
+
                 Thresholds thresholds = getThreshold(stackFrame.type);
 
                 if (stepElapsed >= overrideThreshold ||
-                    stepElapsed >= thresholds.debugThreshold ||
-                    logger.isTraceEnabled()) {
+                        stepElapsed >= thresholds.debugThreshold ||
+                        logger.isTraceEnabled()) {
                     String traceLine = new StringBuffer()
-                        .append(String.format("%04d", startOffset))
-                        .append(" ")
-                        .append(String.format("%04d", stepElapsed))
-                        .append(" (").append(stackFrame.type).append(") ")
-                        .append(stackFrame.message).append(" ").append(result)
-                        .toString();
+                            .append(String.format("%04d", startOffset))
+                            .append(" ")
+                            .append(String.format("%04d", stepElapsed))
+                            .append(" (").append(stackFrame.type).append(") ")
+                            .append(stackFrame.message).append(" ").append(result)
+                            .toString();
                     if (profilingLoggerEnabled) {
                         if (stepElapsed >= thresholds.debugThreshold) {
                             // If the elapse is warning level, still trace at debug level when external logger is used.

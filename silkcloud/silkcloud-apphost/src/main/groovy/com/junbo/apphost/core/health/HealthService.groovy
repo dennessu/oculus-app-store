@@ -12,6 +12,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionDefinition
@@ -35,7 +36,9 @@ class HealthService {
     private long cloudantGetRemoteInterval;
     private long cloudantSnifferTimeout;
     private long cloudantSnifferInterval;
+
     private CryptoResource cryptoResource;
+
     private PlatformTransactionManager transactionManager
 
     @Autowired(required = false)
@@ -68,7 +71,8 @@ class HealthService {
         this.cloudantSnifferInterval = cloudantSnifferInterval
     }
 
-    @Required
+    @Autowired(required = false)
+    @Qualifier("identityCryptoResource")
     void setCryptoResource(CryptoResource cryptoResource) {
         this.cryptoResource = cryptoResource
     }
@@ -341,6 +345,10 @@ class HealthService {
 
     public Promise<Map> testCryptoResource() {
         Map result = createResultMap();
+
+        if (cryptoResource == null) {
+            return Promise.pure(result);
+        }
 
         String message = "ping " + System.currentTimeMillis();
         CryptoMessage encryptedCryptoMessage;

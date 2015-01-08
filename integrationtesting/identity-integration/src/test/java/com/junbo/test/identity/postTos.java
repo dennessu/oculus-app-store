@@ -49,7 +49,8 @@ public class postTos {
         assert tos.getState().equalsIgnoreCase(tosGet.getState());
         assert tos.getType().equalsIgnoreCase(tosGet.getType());
         assert tos.getContent().equalsIgnoreCase(tosGet.getContent());
-        assert tos.getTitle().equalsIgnoreCase(tosGet.getTitle());
+        assert tos.getCoveredLocales().equals(tosGet.getCoveredLocales());
+        assert tos.getLocales().equals(tosGet.getLocales());
     }
 
     @Test(groups = "dailies")

@@ -5,7 +5,9 @@ import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.model.Results
 import com.junbo.data.model.TosData
+import com.junbo.data.model.TosLocalePropertyData
 import com.junbo.identity.spec.v1.model.Tos
+import com.junbo.identity.spec.v1.model.TosLocaleProperty
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.resource.TosResource
 import com.junbo.langur.core.client.TypeReference
@@ -43,7 +45,7 @@ class TosDataHandler extends BaseDataHandler {
 
         Results<Tos> existing = null
         try {
-            existing = tosResource.list(new TosListOptions(title: tosData.title, type: tosData.type)).get()
+            existing = tosResource.list(new TosListOptions(type: tosData.type)).get()
         } catch (AppErrorException e) {
             logger.debug('This content does not exist in current database', e)
         }
@@ -55,11 +57,11 @@ class TosDataHandler extends BaseDataHandler {
             logger.debug('Create new tos')
             try {
                 Tos tos = new Tos(
-                        title: tosData.title,
                         content: tosData.content,
                         type: tosData.type,
                         version: tosData.version,
-                        state: 'DRAFT'
+                        state: 'DRAFT',
+                        minorversion: tosData.minorversion
                 )
                 if (!CollectionUtils.isEmpty(tosData.countries)) {
                     List<CountryId> countryIdList = new ArrayList<>()
@@ -68,18 +70,27 @@ class TosDataHandler extends BaseDataHandler {
                     }
                     tos.countries = countryIdList
                 }
-                if (!CollectionUtils.isEmpty(tosData.locales)) {
+                if (!CollectionUtils.isEmpty(tosData.coveredLocales)) {
                     List<LocaleId> localeIdList = new ArrayList<>()
-                    tosData.locales.each { String localeId ->
+                    tosData.coveredLocales.each { String localeId ->
                         localeIdList.add(new LocaleId(localeId))
                     }
-                    tos.locales = localeIdList
+                    tos.coveredLocales = localeIdList
+                }
+                if (tosData.locales != null && !tosData.locales.isEmpty()) {
+                    Map<String, TosLocaleProperty> localePropertyMap = new HashMap<>()
+                    tosData.locales.each { Map.Entry<String, TosLocalePropertyData> entry ->
+                        TosLocaleProperty tosLocaleProperty = new TosLocaleProperty()
+                        tosLocaleProperty.setTitle(entry.getValue().title)
+                        localePropertyMap.put(entry.key, tosLocaleProperty)
+                    }
+                    tos.locales = localePropertyMap
                 }
                 tos = tosResource.create(tos).get()
                 tos.state = 'APPROVED'
                 tos = tosResource.put(tos.getId(), tos).get()
             } catch (Exception e) {
-                logger.error("Error creating tos $tosData.title", e)
+                logger.error("Error creating tos $tosData.type", e)
             }
         }
     }

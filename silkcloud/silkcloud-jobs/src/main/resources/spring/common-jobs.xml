@@ -6,31 +6,30 @@
 
     <context:component-scan base-package="com.junbo.common.job"/>
 
-    <!-- Common Scheduler -->
-    <bean id="commonSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+    <!-- DualWrite Scheduler -->
+    <bean id="dualwriteSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
           parent="baseJobScheduler">
-        <property name="schedulerName" value="commonScheduler"/>
+        <property name="schedulerName" value="dualwriteScheduler"/>
         <property name="autoStartup" value="${common.jobs.scheduler.start}"/>
         <property name="triggers">
             <list>
-                <ref bean="commonJobTrigger"/>
-                <ref bean="snifferJobTrigger"/>
+                <ref bean="dualwriteJobTrigger"/>
             </list>
         </property>
     </bean>
 
-    <!-- common Job Trigger -->
-    <bean id="commonJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="commonJobDetail"/>
+    <!-- DualWrite Job Trigger -->
+    <bean id="dualwriteJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="dualwriteJobDetail"/>
         <property name="cronExpression" value="${common.jobs.job.cronexpression}"/>
     </bean>
 
-    <!-- Common Job -->
-    <bean id="commonJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <!-- DualWrite Job -->
+    <bean id="dualwriteJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
             <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
                 <property name="targetBeanName">
-                    <idref bean="commonJob"/>
+                    <idref bean="dualwriteJob"/>
                 </property>
             </bean>
         </property>
@@ -38,7 +37,7 @@
         <property name="concurrent" value="false"/>
     </bean>
 
-    <bean id="commonJob" class="com.junbo.common.job.CommonJob">
+    <bean id="dualwriteJob" class="com.junbo.common.job.DualWriteJob">
         <property name="threadPoolTaskExecutor" ref="commonJobAsyncTaskExecutor"/>
         <property name="limit" value="${common.jobs.pagesize}"/>
         <property name="maxThreadPoolSize" value="${common.jobs.processor.poolsize}"/>
@@ -48,7 +47,7 @@
         <property name="timeOffsetMillionSec" value="${common.sharding.pendingAction.timeOffsetMillionSec}" />
     </bean>
 
-    <bean id="dualWriteProcessor" class="com.junbo.common.job.DualWriteProcessor">
+    <bean id="dualWriteProcessor" class="com.junbo.common.job.DualWriteProcessorImpl">
         <constructor-arg ref="transactionManager" />
         <constructor-arg ref="pendingActionSqlRepo" />
         <constructor-arg>
@@ -68,20 +67,24 @@
                 <entry key="com.junbo.order.spec.model.BillingHistory" value-ref="cloudantBillingHistoryRepository" />
                 <entry key="com.junbo.order.spec.model.Discount" value-ref="cloudantDiscountRepository" />
                 <entry key="com.junbo.order.spec.model.FulfillmentHistory" value-ref="cloudantFulfillmentHistoryRepository" />
+                <entry key="com.junbo.order.spec.model.ItemSnapshot" value-ref="cloudantItemSnapshotRepository" />
+                <entry key="com.junbo.order.spec.model.OfferSnapshot" value-ref="cloudantOfferSnapshotRepository" />
+                <entry key="com.junbo.order.spec.model.Order" value-ref="cloudantOrderRepository" />
                 <entry key="com.junbo.order.spec.model.OrderEvent" value-ref="cloudantOrderEventRepository" />
                 <entry key="com.junbo.order.spec.model.OrderItem" value-ref="cloudantOrderItemRepository" />
-                <entry key="com.junbo.order.spec.model.OfferSnapshot" value-ref="cloudantOfferSnapshotRepository"/>
-                <entry key="com.junbo.order.spec.model.ItemSnapshot" value-ref="cloudantItemSnapshotRepository"/>
-                <entry key="com.junbo.order.spec.model.Order" value-ref="cloudantOrderRepository" />
+                <!-- not dual-write to cloudant entry key="com.junbo.order.spec.model.OrderItemRevision" value-ref="cloudantOrderItemRevisionRepository" /-->
+                <!-- not dual-write to cloudant entry key="com.junbo.order.spec.model.OrderRevision" value-ref="cloudantOrderRevisionRepository" /-->
                 <entry key="com.junbo.order.spec.model.PreorderInfo" value-ref="cloudantPreorderInfoRepository" />
-                <entry key="com.junbo.order.spec.model.SubledgerItem" value-ref="cloudantSubledgerItemRepository" />
+                <!-- not dual-write to cloudant entry key="com.junbo.order.spec.model.PreorderUpdateHistory" value-ref="cloudantPreorderUpdateHistoryRepository" /-->
                 <entry key="com.junbo.order.spec.model.Subledger" value-ref="cloudantSubledgerRepository" />
+                <entry key="com.junbo.order.spec.model.SubledgerItem" value-ref="cloudantSubledgerItemRepository" />
                 <entry key="com.junbo.payment.spec.model.CreditCardDetail" value-ref="cloudantCreditCardDetailRepository" />
                 <entry key="com.junbo.payment.spec.model.PaymentEvent" value-ref="cloudantPaymentEventRepository" />
                 <entry key="com.junbo.payment.spec.model.PaymentInstrument" value-ref="cloudantPaymentInstrumentRepository" />
                 <entry key="com.junbo.payment.spec.model.PaymentProperty" value-ref="cloudantPaymentPropertyRepository" />
                 <entry key="com.junbo.payment.spec.model.PaymentTransaction" value-ref="cloudantPaymentTransactionRepository" />
                 <entry key="com.junbo.payment.spec.model.TrackingUuid" value-ref="cloudantTrackingUuidRepository" />
+                <entry key="com.junbo.payment.spec.internal.FacebookPaymentAccountMapping" value-ref="cloudantFacebookPaymentAccountRepository" />
             </map>
         </constructor-arg>
     </bean>
@@ -93,26 +96,5 @@
         <property name="rejectedExecutionHandler">
             <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
         </property>
-    </bean>
-
-    <!-- memcached sniffer job -->
-    <bean id="snifferJob" class="com.junbo.common.job.cache.CacheSnifferJob"/>
-
-    <bean id="snifferJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-        <property name="jobDetail" ref="snifferJobDetail" />
-        <property name="startDelay" value="2000" />
-        <property name="repeatCount" value="0" />
-    </bean>
-
-    <bean id="snifferJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject">
-            <bean class="com.junbo.common.util.LazyInitProxyFactoryBean">
-                <property name="targetBeanName">
-                    <idref bean="snifferJob"/>
-                </property>
-            </bean>
-        </property>
-        <property name="targetMethod" value="listen" />
-        <property name="concurrent" value="false"/>
     </bean>
 </beans>

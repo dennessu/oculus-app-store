@@ -459,13 +459,6 @@
         <property name="contentMaxLength" value="1073741824"/>
         <property name="minVersionLength" value="1" />
         <property name="maxVersionLength" value="255" />
-        <property name="allowedTosTypes">
-            <list>
-                <value>EULA</value>
-                <value>TOS</value>
-                <value>PP</value>
-            </list>
-        </property>
         <property name="tosStatus">
             <list>
                 <value>DRAFT</value>

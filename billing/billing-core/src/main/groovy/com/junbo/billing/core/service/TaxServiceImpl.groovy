@@ -51,20 +51,23 @@ class TaxServiceImpl implements TaxService {
 
     TaxFacade taxFacade
 
+    TaxFacade vatFacade
+
     Map<String, TaxFacade> map
 
     String providerName
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaxServiceImpl)
 
-    TaxServiceImpl(Map<String, TaxFacade> map, String providerName) {
+    TaxServiceImpl(Map<String, TaxFacade> map, String providerName, String vatProviderName) {
         if (map == null || providerName == null) {
             throw AppErrors.INSTANCE.taxCalculationError('Fail to load tax configuration.').exception()
         }
         this.map = map
         this.providerName = providerName
         this.taxFacade = map.get(providerName)
-        if (taxFacade == null) {
+        this.vatFacade = map.get(vatProviderName)
+        if (taxFacade == null || vatFacade == null) {
             throw AppErrors.INSTANCE.taxCalculationError('Fail to load tax configuration.').exception()
         }
     }
@@ -120,7 +123,7 @@ class TaxServiceImpl implements TaxService {
 
     @Override
     Promise<VatIdValidationResponse> validateVatId(String vatId, String country) {
-        return taxFacade.validateVatId(vatId, country)
+        return vatFacade.validateVatId(vatId, country)
     }
 
     @Override

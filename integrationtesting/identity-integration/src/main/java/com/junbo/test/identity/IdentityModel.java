@@ -339,7 +339,7 @@ public class IdentityModel {
     public static Tos DefaultTos() throws Exception {
         List<String> supportedCountries = new ArrayList<>();
         supportedCountries.add("US");
-        return DefaultTos(RandomHelper.randomAlphabetic(15), "TOS", "APPROVED", supportedCountries);
+        return DefaultTos(RandomHelper.randomAlphabetic(15), RandomHelper.randomAlphabetic(15), "APPROVED", supportedCountries);
     }
 
     public static Tos DefaultTos(String title, String type, String state, List<String> supportedCountries)
@@ -348,13 +348,24 @@ public class IdentityModel {
         tos.setContent(RandomHelper.randomAlphabetic(1000));
         tos.setType(type);
         tos.setVersion(RandomHelper.randomAlphabetic(15));
-        tos.setTitle(title);
         tos.setState(state);
         List<CountryId> supportedCountryIds = new ArrayList<>();
         for (String supportedCountry : supportedCountries) {
             supportedCountryIds.add(new CountryId(supportedCountry));
         }
         tos.setCountries(supportedCountryIds);
+        List<LocaleId> localeIds = new ArrayList<>();
+        localeIds.add(new LocaleId("en_US"));
+        localeIds.add(new LocaleId("zh_CN"));
+        tos.setCoveredLocales(localeIds);
+
+        Map<String, TosLocaleProperty> tosLocalePropertyMap = new HashMap<>();
+        TosLocaleProperty tosLocaleProperty = new TosLocaleProperty();
+        tosLocaleProperty.setTitle(title);
+        tosLocalePropertyMap.put("en_US", tosLocaleProperty);
+        tos.setLocales(tosLocalePropertyMap);
+
+        tos.setMinorversion(1.0);
 
         return tos;
     }

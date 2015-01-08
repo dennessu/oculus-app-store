@@ -70,51 +70,55 @@ public class Oculus48Id {
        oculus48ShuffleMap.put(28, 33);
     }
 
-   public static Long shuffle(Long id) {
-       Long shufflePart = (id >> OCULUS48_SHUFFLE_OFFSET) & OCULUS48_MASK_BITS;
-       Long nonShufflePart = (id) & (~(OCULUS48_MASK_BITS << OCULUS48_SHUFFLE_OFFSET));
-       Long shuffledValue = 0L;
-       Iterator it = oculus48ShuffleMap.entrySet().iterator();
-       while (it.hasNext()) {
-           Map.Entry pair = (Map.Entry)it.next();
-           shuffledValue += (shufflePart & (0x1L << (int)pair.getKey())) == 0 ? 0 : (0x1L << (int)pair.getValue());
-       }
-       Long value = nonShufflePart + (shuffledValue << OCULUS48_SHUFFLE_OFFSET);
-       return value ^ MAGIC_NUMBER;
-   }
+    public static String encode(Long id) {
+        return format(shuffle(id));
+    }
 
-   public static Long unShuffle(Long value) {
-       Long id = value ^ MAGIC_NUMBER;
-       Long shuffledPart = (id >> OCULUS48_SHUFFLE_OFFSET) & OCULUS48_MASK_BITS;
-       Long nonShuffledPart = (id) & (~(OCULUS48_MASK_BITS << OCULUS48_SHUFFLE_OFFSET));
-       Long unShuffleValue = 0L;
-       Iterator it = oculus48ShuffleMap.entrySet().iterator();
-       while (it.hasNext()) {
-           Map.Entry pair = (Map.Entry)it.next();
-           unShuffleValue += (shuffledPart & (0x1L << (int)pair.getValue())) == 0 ? 0 : (0x1L << (int)pair.getKey());
-       }
+    public static Long shuffle(Long id) {
+        Long shufflePart = (id >> OCULUS48_SHUFFLE_OFFSET) & OCULUS48_MASK_BITS;
+        Long nonShufflePart = (id) & (~(OCULUS48_MASK_BITS << OCULUS48_SHUFFLE_OFFSET));
+        Long shuffledValue = 0L;
+        Iterator it = oculus48ShuffleMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            shuffledValue += (shufflePart & (0x1L << (int)pair.getKey())) == 0 ? 0 : (0x1L << (int)pair.getValue());
+        }
+        Long value = nonShufflePart + (shuffledValue << OCULUS48_SHUFFLE_OFFSET);
+        return value ^ MAGIC_NUMBER;
+    }
 
-       return nonShuffledPart + (unShuffleValue << OCULUS48_SHUFFLE_OFFSET);
-   }
+    public static Long unShuffle(Long value) {
+        Long id = value ^ MAGIC_NUMBER;
+        Long shuffledPart = (id >> OCULUS48_SHUFFLE_OFFSET) & OCULUS48_MASK_BITS;
+        Long nonShuffledPart = (id) & (~(OCULUS48_MASK_BITS << OCULUS48_SHUFFLE_OFFSET));
+        Long unShuffleValue = 0L;
+        Iterator it = oculus48ShuffleMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            unShuffleValue += (shuffledPart & (0x1L << (int)pair.getValue())) == 0 ? 0 : (0x1L << (int)pair.getKey());
+        }
 
-   public static String format(Long id) {
-       String idStr = Long.toHexString(id).toLowerCase();
-       String displayStr = "";
-       for(int i=1; i<=OCULUS48_DECIMAL_LENGTH; i++) {
-           if(i <= idStr.length()) {
-               displayStr = idStr.substring(idStr.length()-i , idStr.length()-i+1) + displayStr;
-           }
-           else {
-               displayStr = OCULUS48_ID_DEFAULT_FILL_FIELD + displayStr;
-           }
-       }
+        return nonShuffledPart + (unShuffleValue << OCULUS48_SHUFFLE_OFFSET);
+    }
 
-       return displayStr;
-   }
+    public static String format(Long id) {
+        String idStr = Long.toHexString(id).toLowerCase();
+        String displayStr = "";
+        for (int i=1; i<=OCULUS48_DECIMAL_LENGTH; i++) {
+            if (i <= idStr.length()) {
+                displayStr = idStr.substring(idStr.length()-i , idStr.length()-i+1) + displayStr;
+            }
+            else {
+                displayStr = OCULUS48_ID_DEFAULT_FILL_FIELD + displayStr;
+            }
+        }
 
-   public static Long deFormat(String id) {
-       return Long.parseLong(id, OCULUS48_ID_RADIX);
-   }
+        return displayStr;
+    }
+
+    public static Long deFormat(String id) {
+        return Long.parseLong(id, OCULUS48_ID_RADIX);
+    }
 
     public static void validateRawValue(long value) {
         if(value > OCULUS48_MAXIMUM) {

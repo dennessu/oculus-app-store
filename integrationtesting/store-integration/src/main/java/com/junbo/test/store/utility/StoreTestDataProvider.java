@@ -865,9 +865,9 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         identityClient.postUsernameEmailBlocker(usernameMailBlocker);
     }
 
-    public void UpdateTos(String title, String status) throws Exception {
+    public void UpdateTos(String type, String status) throws Exception {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
-        identityClient.updateTos(title, status);
+        identityClient.updateTos(type, status);
     }
 
     public void UpdateTos(TosId tosId) throws Exception {
@@ -875,9 +875,9 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         identityClient.updateTos(tosId);
     }
 
-    public void CreateFromExistingTos(String title, List<String> supportLocales, String status) throws Exception {
+    public void CreateFromExistingTos(String type, List<String> supportLocales, String status) throws Exception {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
-        identityClient.updateTos(title, supportLocales, status);
+        identityClient.updateTos(type, supportLocales, status);
     }
 
     public List<com.junbo.identity.spec.v1.model.Tos> GetTosList(String title) throws Exception {

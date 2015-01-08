@@ -23,11 +23,7 @@ import com.junbo.store.clientproxy.error.ErrorContext
 import com.junbo.store.clientproxy.sentry.SentryFacade
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.rest.challenge.ChallengeHelper
-import com.junbo.store.rest.utils.ApiContextBuilder
-import com.junbo.store.rest.utils.DataConverter
-import com.junbo.store.rest.utils.IdentityUtils
-import com.junbo.store.rest.utils.InitialItemPurchaseUtils
-import com.junbo.store.rest.utils.RequestValidator
+import com.junbo.store.rest.utils.*
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
@@ -88,8 +84,8 @@ class LoginResourceImpl implements LoginResource {
     @Resource(name = 'storeSentryFacade')
     private SentryFacade sentryFacade
 
-    @Value('${store.tos.createuser}')
-    private String tosCreateUser
+    @Value('${store.tos.createtostype}')
+    private String tosCreateUserType
 
     @Resource(name = 'storeDataConverter')
     DataConverter dataConverter
@@ -414,7 +410,7 @@ class LoginResourceImpl implements LoginResource {
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
             localeId = apiContext.locale.getId()
             countryId = apiContext.country.getId()
-            return identityUtils.lookupTos(tosCreateUser, null, localeId, countryId).then { com.junbo.store.spec.model.browse.document.Tos tos ->
+            return identityUtils.lookupTos(tosCreateUserType, localeId, countryId).then { com.junbo.store.spec.model.browse.document.Tos tos ->
                 if (tos == null) {
                     throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
                 }
@@ -432,7 +428,7 @@ class LoginResourceImpl implements LoginResource {
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
             localeId = apiContext.locale.getId()
             countryId = apiContext.country.getId()
-            return identityUtils.lookupTos(lookupTosRequest.title, lookupTosRequest.type, localeId, countryId).then {
+            return identityUtils.lookupTos(lookupTosRequest.type, localeId, countryId).then {
                 com.junbo.store.spec.model.browse.document.Tos tos ->
                 if (tos == null) {
                     throw AppErrors.INSTANCE.tosNotFound().exception()
@@ -755,7 +751,7 @@ class LoginResourceImpl implements LoginResource {
 
     private Promise<AuthTokenResponse> checkTosChallengeForLogin(UserId userId, CountryId country, ChallengeAnswer challengeAnswer, AuthTokenResponse authTokenResponse, LocaleId localeId) {
         if (tosFreepurchaseEnable) {
-            return challengeHelper.checkTosChallenge(userId, tosCreateUser, country, challengeAnswer, localeId).then { Challenge challenge ->
+            return challengeHelper.checkTosChallenge(userId, tosCreateUserType, country, challengeAnswer, localeId).then { Challenge challenge ->
                 if (challenge == null) {
                     return Promise.pure(authTokenResponse)
                 }

@@ -17,7 +17,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.spec.error.AppErrors
-import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.identity.PersonalInfo
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
@@ -119,9 +118,9 @@ class IdentityUtils {
         }
     }
 
-    public Promise<com.junbo.store.spec.model.browse.document.Tos> lookupTos(String title, String type,
+    public Promise<com.junbo.store.spec.model.browse.document.Tos> lookupTos(String type,
                                                                              LocaleId localeId, CountryId countryId) {
-        return resourceContainer.tosResource.list(new TosListOptions(title: title, countryId: countryId,
+        return resourceContainer.tosResource.list(new TosListOptions(countryId: countryId,
                 state: 'APPROVED', type: type)).recover { Throwable ex ->
             appErrorUtils.throwUnknownError('lookupTos', ex)
         }.then { Results<Tos> tosResults ->
@@ -156,7 +155,7 @@ class IdentityUtils {
             if (tos == null) {
                 return Promise.pure(null)
             }
-            return Promise.pure(dataConverter.toStoreTos(tos, null))
+            return Promise.pure(dataConverter.toStoreTos(tos, null, localeId))
         }
     }
 
@@ -196,8 +195,8 @@ class IdentityUtils {
             }
             circle.put(locale.getId().toString(), true)
             for (Tos tos : tosList) {
-                if (!org.springframework.util.CollectionUtils.isEmpty(tos.locales)) {
-                    if (tos.locales.any { LocaleId tosLocaleId ->
+                if (!CollectionUtils.isEmpty(tos.coveredLocales)) {
+                    if (tos.coveredLocales.any { LocaleId tosLocaleId ->
                         return tosLocaleId == current
                     }) {
                         return tos

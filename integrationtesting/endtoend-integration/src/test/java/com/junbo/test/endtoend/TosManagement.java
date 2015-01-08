@@ -61,7 +61,6 @@ public class TosManagement extends TestClass {
         Tos tosDefault = tosService.postTos();
 
         Tos tos = new Tos();
-        tos.setTitle(RandomFactory.getRandomStringOfAlphabet(10));
         tos.setContent(RandomFactory.getRandomStringOfAlphabetOrNumeric(20));
         tos.setState(TosState.DRAFT.getState());
 

@@ -102,7 +102,6 @@ class TosUtil {
         for (Client.RequiredTos requiredTos : client.requiredTos) {
             TosListOptions options = new TosListOptions(
                     type: requiredTos.type,
-                    title: requiredTos.title,
                     countryId: country,
                     state: 'APPROVED'
             )
@@ -197,8 +196,8 @@ class TosUtil {
             }
             circle.put(locale.getId().toString(), true)
             for (Tos tos : tosList) {
-                if (!CollectionUtils.isEmpty(tos.locales)) {
-                    if (tos.locales.any { LocaleId tosLocaleId ->
+                if (!CollectionUtils.isEmpty(tos.coveredLocales)) {
+                    if (tos.coveredLocales.any { LocaleId tosLocaleId ->
                         return tosLocaleId == current
                     }) {
                         return tos

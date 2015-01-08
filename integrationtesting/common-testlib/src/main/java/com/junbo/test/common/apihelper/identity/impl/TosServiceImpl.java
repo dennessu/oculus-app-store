@@ -43,7 +43,6 @@ public class TosServiceImpl extends HttpClientBase implements TosService {
     //Create a default TOS
     public Tos postTos() throws Exception {
         Tos tos = new Tos();
-        tos.setTitle(RandomFactory.getRandomStringOfAlphabet(10));
         tos.setContent(RandomFactory.getRandomStringOfAlphabetOrNumeric(20));
         tos.setState(TosState.DRAFT.getState());
         return this.postTos(tos);

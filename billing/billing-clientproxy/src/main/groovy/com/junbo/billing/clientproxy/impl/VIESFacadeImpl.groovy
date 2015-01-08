@@ -7,6 +7,7 @@
 package com.junbo.billing.clientproxy.impl
 
 import com.junbo.billing.clientproxy.TaxFacade
+import com.junbo.billing.clientproxy.impl.common.VatUtil
 import com.junbo.billing.clientproxy.impl.wsdl.vies.CheckVat
 import com.junbo.billing.clientproxy.impl.wsdl.vies.CheckVatResponse
 import com.junbo.billing.spec.model.Balance
@@ -14,6 +15,7 @@ import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport
@@ -46,6 +48,20 @@ class VIESFacadeImpl extends WebServiceGatewaySupport implements TaxFacade {
 
     @Override
     Promise<VatIdValidationResponse> validateVatId(String vatId, String country) {
+        if (StringUtils.isEmpty(vatId) || StringUtils.isEmpty(country)) {
+            def validationResponse = new VatIdValidationResponse()
+            validationResponse.message = 'vatId & country shall not be empty.'
+            validationResponse.status = 'INVALID'
+            return Promise.pure(validationResponse)
+        }
+        if (!VatUtil.isValidFormat(vatId, country)) {
+            def validationResponse = new VatIdValidationResponse()
+            validationResponse.vatId = vatId
+            validationResponse.message = 'Invalid format.'
+            validationResponse.status = 'INVALID'
+            return Promise.pure(validationResponse)
+        }
+        vatId = VatUtil.splitVat(vatId, country)
         CheckVat request = new CheckVat()
         request.countryCode = country
         request.vatNumber = vatId

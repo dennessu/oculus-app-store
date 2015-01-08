@@ -14,6 +14,7 @@ dependencies {
     compile junboProject(':apphost-rest')
     compile junboProject(':apphost-crypto')
     compile junboProject(':apphost-jobs')
+    compile junboProject(':apphost-sniffer')
     compile junboProject(':apphost-dataloader')
     compile junboProject(':apphost-emulators')
 }

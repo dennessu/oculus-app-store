@@ -77,11 +77,11 @@ public interface UserService {
 
     void updateTos(TosId tosId) throws Exception;
 
-    void updateTos(String title, String status) throws Exception;
+    void updateTos(String type, String status) throws Exception;
 
-    void updateTos(String title, List<String> supportLocales, String status) throws Exception;
+    void updateTos(String type, List<String> supportLocales, String status) throws Exception;
 
-    void deleteTos(String title, List<String> supportLocales) throws Exception;
+    void deleteTos(String type, List<String> supportLocales) throws Exception;
 
-    List<Tos> getTosList(String title) throws Exception;
+    List<Tos> getTosList(String type) throws Exception;
 }

@@ -7,7 +7,7 @@ apply plugin: 'groovy'
 task genJaxb {
     ext.sourcesDir = "${buildDir}/generated-src"
     ext.classesDir = "${buildDir}/classes/main"
-    ext.schema = "http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl"
+    ext.viesSchema = "http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl"
 
     outputs.dir classesDir
 
@@ -18,7 +18,7 @@ task genJaxb {
             mkdir(dir: sourcesDir)
             mkdir(dir: classesDir)
 
-            xjc(destdir: sourcesDir, schema: schema,
+            xjc(destdir: sourcesDir, schema: viesSchema,
                     package: "com.junbo.billing.clientproxy.impl.wsdl.vies") {
                 arg(value: "-wsdl")
                 produces(dir: sourcesDir, includes: "**/*.java")
