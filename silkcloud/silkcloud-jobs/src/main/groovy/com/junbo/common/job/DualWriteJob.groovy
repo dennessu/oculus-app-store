@@ -28,20 +28,20 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 @CompileStatic
 @DisallowConcurrentExecution
-class CommonJob implements InitializingBean {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommonJob)
+class DualWriteJob implements InitializingBean {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DualWriteJob)
 
     private Integer limit
     private Integer timeOffsetMillionSec
     private Integer maxThreadPoolSize
     private ThreadPoolTaskExecutor  threadPoolTaskExecutor
 
-    private CommonProcessor dualWriteProcessor
+    private DualWriteProcessor dualWriteProcessor
     private PendingActionRepository pendingActionRepository
     private PlatformTransactionManager transactionManager
 
     void execute() {
-        LOGGER.info('name=CommonProcessJobStart')
+        LOGGER.info('name=DualWriteProcessJobStart')
         def start = System.currentTimeMillis()
         def count = 0, numSuccess = new AtomicInteger(), numFail = new AtomicInteger()
         List<Future> futures = [] as LinkedList<Future>
@@ -54,7 +54,7 @@ class CommonJob implements InitializingBean {
                     @Override
                     Void call() throws Exception {
                         def result = dualWriteProcessor.process(pendingAction).get()
-                        if (result.success) {
+                        if (result) {
                             numSuccess.andIncrement
                         } else {
                             numFail.andIncrement
@@ -76,7 +76,7 @@ class CommonJob implements InitializingBean {
             future.get()
         }
 
-        LOGGER.info('name=CommonProcessJobEnd, numOfUsers={}, numSuccess={}, numFail={}, latency={}ms',
+        LOGGER.info('name=DualWriteProcessJobEnd, numOfUsers={}, numSuccess={}, numFail={}, latency={}ms',
                 count, numSuccess, numFail, System.currentTimeMillis() - start)
         assert count == numSuccess.get() + numFail.get()
     }
@@ -149,7 +149,7 @@ class CommonJob implements InitializingBean {
     }
 
     @Required
-    void setDualWriteProcessor(CommonProcessor dualWriteProcessor) {
+    void setDualWriteProcessor(DualWriteProcessor dualWriteProcessor) {
         this.dualWriteProcessor = dualWriteProcessor
     }
 

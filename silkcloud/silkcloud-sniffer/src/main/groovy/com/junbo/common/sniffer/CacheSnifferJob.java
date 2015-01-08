@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 SilkCloud and/or its affiliates. All rights reserved.
  */
-package com.junbo.common.job.cache;
+package com.junbo.common.sniffer;
 
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.memcached.JunboMemcachedClient;
