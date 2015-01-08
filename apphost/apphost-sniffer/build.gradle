@@ -7,16 +7,8 @@ applicationDefaultJvmArgs = ["-Xmx2048m", "-XX:MaxPermSize=512m", "-Dspring.prof
 dependencies {
     compile junboProject(':silkcloud-apphost')
     compile junboProject(':config-data')
+    compile junboProject(':authorization-lib')
 
-    compile junboProject(':billing-jobs')
-    compile junboProject(':order-jobs')
-    compile junboProject(':catalog-jobs')
-    compile junboProject(':identity-job')
-    compile junboProject(':payment-jobs')
-    compile junboProject(':silkcloud-jobs')
-
-    // also run sniffer
+    // only run sniffer
     compile junboProject(':silkcloud-sniffer')
-
-    compile junboProject(':email-listener')
 }

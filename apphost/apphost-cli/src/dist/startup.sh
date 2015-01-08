@@ -2,14 +2,14 @@
 (set -o igncr) 2>/dev/null && set -o igncr; # ignore \r in windows. The comment is needed.
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-usage() { echo "Usage: $0 [-p <apphost-cli|apphost-rest|apphost-crypto|apphost-jobs|apphost-emulators>] [<environment>]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-p <apphost-cli|apphost-rest|apphost-crypto|apphost-jobs|apphost-sniffer|apphost-emulators>] [<environment>]" 1>&2; exit 1; }
 
 while getopts ":p:" o; do
     case "$o" in
         p)
             profile=${OPTARG}
             case "${OPTARG}" in
-                apphost-cli|apphost-rest|apphost-crypto|apphost-jobs|apphost-emulators)
+                apphost-cli|apphost-rest|apphost-crypto|apphost-jobs|apphost-sniffer|apphost-emulators)
                     ;;
                 *)
                     usage

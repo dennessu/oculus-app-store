@@ -62,6 +62,10 @@ public class Oculus40Id {
         oculus40ShuffleMap.put(25, 25);
     }
 
+    public static String encode(Long id) {
+        return format(shuffle(id));
+    }
+
     public static Long shuffle(Long id) {
         Long shufflePart = (id >> OCULUS40_SHUFFLE_OFFSET) & OCULUS40_MASK_BITS;
         Long nonShufflePart = (id) & (~(OCULUS40_MASK_BITS << OCULUS40_SHUFFLE_OFFSET));

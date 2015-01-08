@@ -23,7 +23,7 @@ public interface BrowseService {
 
     Promise<ListResponse> getList(ListRequest request, ApiContext apiContext);
 
-    Promise<InitialDownloadItemsResponse> getInitialDownloadItems(ApiContext apiContext);
+    Promise<InitialDownloadItemsResponse> getInitialDownloadItems(Integer version, ApiContext apiContext);
 
     Promise<LibraryResponse> getLibrary(boolean isIAP, ItemId hostItemId, ApiContext apiContext);
 

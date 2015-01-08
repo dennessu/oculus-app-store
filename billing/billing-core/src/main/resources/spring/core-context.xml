@@ -19,6 +19,7 @@
             </map>
         </constructor-arg>
         <constructor-arg name="providerName" value="${tax.provider.name}"/>
+        <constructor-arg name="vatProviderName" value="${vat.provider.name}"/>
     </bean>
 
     <!-- publisher-->

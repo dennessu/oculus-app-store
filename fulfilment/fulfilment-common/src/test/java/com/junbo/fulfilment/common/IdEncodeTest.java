@@ -16,7 +16,7 @@ public class IdEncodeTest {
     @Test
     public void testEncodeId() {
         Long value = 400L;
-        String encoded = Oculus48Id.format(Oculus48Id.shuffle(value));
+        String encoded = Oculus48Id.encode(value);
         Assert.assertNotNull(encoded);
     }
 }

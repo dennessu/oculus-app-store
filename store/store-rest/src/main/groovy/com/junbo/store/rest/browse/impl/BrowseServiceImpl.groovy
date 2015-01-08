@@ -1,11 +1,13 @@
 package com.junbo.store.rest.browse.impl
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.model.item.Binary
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ItemId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.util.IdFormatter
 import com.junbo.entitlement.spec.model.DownloadUrlGetOptions
 import com.junbo.entitlement.spec.model.DownloadUrlResponse
@@ -30,6 +32,7 @@ import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.Assert
@@ -43,7 +46,7 @@ import javax.annotation.Resource
  */
 @Component('storeBrowseService')
 @CompileStatic
-class BrowseServiceImpl implements BrowseService {
+class BrowseServiceImpl implements BrowseService, InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BrowseServiceImpl)
 
@@ -62,6 +65,9 @@ class BrowseServiceImpl implements BrowseService {
 
     @Value('${store.browse.cmsPage.initialItems.contentName}')
     private String initialItemsCmsPageContentName
+
+    @Value('${store.browse.cmsPage.initialItems.version.Map}')
+    private String initialItemsVersionedMapString;
 
     @Resource(name = 'storeFacadeContainer')
     private FacadeContainer facadeContainer
@@ -83,6 +89,8 @@ class BrowseServiceImpl implements BrowseService {
 
     @Resource(name = 'storeResponseValidator')
     private ResponseValidator responseValidator
+
+    private Map<Integer, Map> initialItemsVersionedMap;
 
     private Set<String> libraryItemTypes = [
             ItemType.APP.name()
@@ -161,9 +169,17 @@ class BrowseServiceImpl implements BrowseService {
     }
 
     @Override
-    Promise<InitialDownloadItemsResponse> getInitialDownloadItems(ApiContext apiContext) {
-        facadeContainer.caseyFacade.getInitialDownloadItemsFromCmsPage(initialItemsCmsPagePath,
-                initialItemsCmsPageSlot, initialItemsCmsPageContentName,  apiContext).then { List<InitialDownloadItemsResponse.InitialDownloadItemEntry> list ->
+    Promise<InitialDownloadItemsResponse> getInitialDownloadItems(Integer version, ApiContext apiContext) {
+        String path, slot;
+        if (version != null && initialItemsVersionedMap.containsKey(version)) {
+            path = initialItemsVersionedMap[version]['path'];
+            slot = initialItemsVersionedMap[version]['slot'];
+        } else {
+            path = initialItemsCmsPagePath;
+            slot = initialItemsCmsPageSlot;
+        }
+        facadeContainer.caseyFacade.getInitialDownloadItemsFromCmsPage(path, slot, initialItemsCmsPageContentName,
+                apiContext).then { List<InitialDownloadItemsResponse.InitialDownloadItemEntry> list ->
             return Promise.pure(new InitialDownloadItemsResponse(items: list))
         }
     }
@@ -392,5 +408,11 @@ class BrowseServiceImpl implements BrowseService {
 
     private int getPageSize(Integer count) {
         return (count == null || count <= 0) ? DEFAULT_PAGE_SIZE : Math.min(count, MAX_PAGE_SIZE)
+    }
+
+    @Override
+    void afterPropertiesSet() throws Exception {
+        initialItemsVersionedMap = (Map <Integer, Map>)ObjectMapperProvider.instance().readValue(initialItemsVersionedMapString,
+                new TypeReference<Map<Integer, Map>>() {});
     }
 }
