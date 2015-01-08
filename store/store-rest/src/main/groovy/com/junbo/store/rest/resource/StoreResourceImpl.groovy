@@ -534,10 +534,10 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<InitialDownloadItemsResponse> getInitialDownloadItems() {
+    Promise<InitialDownloadItemsResponse> getInitialDownloadItems(Integer version) {
         requestValidator.validateRequiredApiHeaders()
         prepareBrowse(false).then { ApiContext apiContext ->
-            return browseService.getInitialDownloadItems(apiContext)
+            return browseService.getInitialDownloadItems(version, apiContext)
         }
     }
 

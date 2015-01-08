@@ -95,7 +95,7 @@ public interface StoreResource {
     @Path("/initial-download-items")
     @RouteByAccessToken(switchable = true)
     @Consumes()
-    Promise<InitialDownloadItemsResponse> getInitialDownloadItems();
+    Promise<InitialDownloadItemsResponse> getInitialDownloadItems(@QueryParam("initial-download-version") Integer version);
 
     @GET
     @Path("/section-layout")
