@@ -86,10 +86,6 @@ class TosValidatorImpl implements TosValidator {
             throw AppCommonErrors.INSTANCE.fieldNotWritable('id', tos.id, tosId.toString()).exception()
         }
 
-        if (tos.title != oldTos.title) {
-            throw AppCommonErrors.INSTANCE.fieldNotWritable('title').exception()
-        }
-
         return checkBasicTosInfo(tos).then {
             return Promise.pure(null)
         }
@@ -102,9 +98,6 @@ class TosValidatorImpl implements TosValidator {
 
         if (tos.type == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('type').exception()
-        }
-        if (!(tos.type in allowedTosTypes)) {
-            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('type', allowedTosTypes.join(',')).exception()
         }
 
         if (tos.version == null) {
@@ -121,16 +114,6 @@ class TosValidatorImpl implements TosValidator {
             Double.parseDouble(tos.version)
         } catch (NumberFormatException ){
             throw AppCommonErrors.INSTANCE.fieldInvalid('version', "The version should be a number").exception()
-        }
-
-        if (tos.title == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('title').exception()
-        }
-        if (tos.title.size() > titleMaxLength) {
-            throw AppCommonErrors.INSTANCE.fieldTooLong('title', titleMaxLength).exception()
-        }
-        if (tos.title.size() < titleMinLength) {
-            throw AppCommonErrors.INSTANCE.fieldTooShort('title', titleMinLength).exception()
         }
 
         if (tos.content == null) {
@@ -233,11 +216,6 @@ class TosValidatorImpl implements TosValidator {
     @Required
     void setCountryService(CountryService countryService) {
         this.countryService = countryService
-    }
-
-    @Required
-    void setAllowedTosTypes(List<String> allowedTosTypes) {
-        this.allowedTosTypes = allowedTosTypes
     }
 
     @Required

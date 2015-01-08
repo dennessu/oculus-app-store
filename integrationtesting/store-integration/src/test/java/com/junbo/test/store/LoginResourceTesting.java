@@ -1255,13 +1255,13 @@ public class LoginResourceTesting extends BaseTestClass {
 
         Thread.sleep(2000);
         // update tos to draft status
-        testDataProvider.UpdateTos("end user tos", "DRAFT");
+        testDataProvider.UpdateTos("TOS", "DRAFT");
         response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert response != null;
         assert response.getChallenge() == null;
 
         Thread.sleep(2000);
-        testDataProvider.UpdateTos("end user tos", "APPROVED");
+        testDataProvider.UpdateTos("TOS", "APPROVED");
         response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert response != null;
         assert response.getChallenge() != null;
@@ -1288,7 +1288,7 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testMultipleSupportLocales() throws Exception{
         List<String> supportLocales = new ArrayList<>();
         supportLocales.add("zh_CN");
-        testDataProvider.CreateFromExistingTos("end user tos", supportLocales, "APPROVED");
+        testDataProvider.CreateFromExistingTos("TOS", supportLocales, "APPROVED");
         List<com.junbo.identity.spec.v1.model.Tos> tosList = testDataProvider.GetTosList("end user tos");
         assert tosList != null;
 
@@ -1485,12 +1485,12 @@ public class LoginResourceTesting extends BaseTestClass {
         Thread.sleep(2000);
 
         // update tos to draft status
-        testDataProvider.UpdateTos("end user tos", "DRAFT");
+        testDataProvider.UpdateTos("TOS", "DRAFT");
         com.junbo.store.spec.model.browse.document.Tos newTos = testDataProvider.lookupTos("TOS", "end user tos", 200);
         Assert.assertEquals(newTos.getTosId(), tos.getTosId());
 
         Thread.sleep(2000);
-        testDataProvider.UpdateTos("end user tos", "APPROVED");
+        testDataProvider.UpdateTos("TOS", "APPROVED");
         newTos = testDataProvider.lookupTos("TOS", "end user tos", 200);
         Assert.assertNotEquals(newTos.getTosId(), tos.getTosId());
         Assert.assertTrue(Double.valueOf(newTos.getVersion()) > Double.valueOf(tos.getVersion()));
@@ -1500,9 +1500,6 @@ public class LoginResourceTesting extends BaseTestClass {
     public void testLookupTosInvalid() throws Exception {
         testDataProvider.lookupTos(null, "end user tos", 400);
         testDataProvider.lookupTos("TOS", "", 400);
-
-        testDataProvider.lookupTos("TOS", "e1nd user tos", 404);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.128"));
 
         testDataProvider.lookupTos("TOS1", "end user tos", 404);
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.128"));

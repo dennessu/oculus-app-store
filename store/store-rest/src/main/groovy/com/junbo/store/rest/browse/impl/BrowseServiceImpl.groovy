@@ -1,4 +1,5 @@
 package com.junbo.store.rest.browse.impl
+
 import com.junbo.catalog.spec.enums.EntitlementType
 import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.model.item.Binary
@@ -24,11 +25,7 @@ import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.browse.*
-import com.junbo.store.spec.model.browse.document.Item
-import com.junbo.store.spec.model.browse.document.Review
-import com.junbo.store.spec.model.browse.document.RevisionNote
-import com.junbo.store.spec.model.browse.document.SectionInfo
-import com.junbo.store.spec.model.browse.document.SectionInfoNode
+import com.junbo.store.spec.model.browse.document.*
 import com.junbo.store.spec.model.external.sewer.casey.CaseyResults
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -40,6 +37,7 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
+
 /**
  * The BrowseServiceImpl class.
  */
@@ -53,8 +51,8 @@ class BrowseServiceImpl implements BrowseService {
 
     private static final int MAX_PAGE_SIZE = 50
 
-    @Value('${store.tos.browse}')
-    private String storeBrowseTos
+    @Value('${store.tos.browsetostype}')
+    private String storeBrowseTosType
 
     @Value('${store.browse.cmsPage.initialItems.path}')
     private String initialItemsCmsPagePath
@@ -116,7 +114,7 @@ class BrowseServiceImpl implements BrowseService {
     @Override
     Promise<TocResponse> getToc(ApiContext apiContext) {
         TocResponse result = new TocResponse()
-        challengeHelper.checkTosChallenge(apiContext.user, storeBrowseTos, apiContext.country.getId(), null, apiContext.locale.getId()).then { Challenge challenge ->
+        challengeHelper.checkTosChallenge(apiContext.user, storeBrowseTosType, apiContext.country.getId(), null, apiContext.locale.getId()).then { Challenge challenge ->
             if (challenge != null) {
                 return Promise.pure(new TocResponse(challenge: challenge))
             }

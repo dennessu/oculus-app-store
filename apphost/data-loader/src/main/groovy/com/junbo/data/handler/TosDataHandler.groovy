@@ -45,7 +45,7 @@ class TosDataHandler extends BaseDataHandler {
 
         Results<Tos> existing = null
         try {
-            existing = tosResource.list(new TosListOptions(title: tosData.title, type: tosData.type)).get()
+            existing = tosResource.list(new TosListOptions(type: tosData.type)).get()
         } catch (AppErrorException e) {
             logger.debug('This content does not exist in current database', e)
         }
@@ -57,7 +57,6 @@ class TosDataHandler extends BaseDataHandler {
             logger.debug('Create new tos')
             try {
                 Tos tos = new Tos(
-                        title: tosData.title,
                         content: tosData.content,
                         type: tosData.type,
                         version: tosData.version,
@@ -91,7 +90,7 @@ class TosDataHandler extends BaseDataHandler {
                 tos.state = 'APPROVED'
                 tos = tosResource.put(tos.getId(), tos).get()
             } catch (Exception e) {
-                logger.error("Error creating tos $tosData.title", e)
+                logger.error("Error creating tos $tosData.type", e)
             }
         }
     }

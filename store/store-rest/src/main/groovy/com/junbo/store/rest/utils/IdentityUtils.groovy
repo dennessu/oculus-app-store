@@ -118,9 +118,9 @@ class IdentityUtils {
         }
     }
 
-    public Promise<com.junbo.store.spec.model.browse.document.Tos> lookupTos(String title, String type,
+    public Promise<com.junbo.store.spec.model.browse.document.Tos> lookupTos(String type,
                                                                              LocaleId localeId, CountryId countryId) {
-        return resourceContainer.tosResource.list(new TosListOptions(title: title, countryId: countryId,
+        return resourceContainer.tosResource.list(new TosListOptions(countryId: countryId,
                 state: 'APPROVED', type: type)).recover { Throwable ex ->
             appErrorUtils.throwUnknownError('lookupTos', ex)
         }.then { Results<Tos> tosResults ->
@@ -155,7 +155,7 @@ class IdentityUtils {
             if (tos == null) {
                 return Promise.pure(null)
             }
-            return Promise.pure(dataConverter.toStoreTos(tos, null))
+            return Promise.pure(dataConverter.toStoreTos(tos, null, localeId))
         }
     }
 

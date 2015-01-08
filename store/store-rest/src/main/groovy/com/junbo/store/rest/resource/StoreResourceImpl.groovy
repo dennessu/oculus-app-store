@@ -69,11 +69,8 @@ class StoreResourceImpl implements StoreResource {
     @Value('${store.browse.verifyUser}')
     private boolean verifyUserInBrowse
 
-    @Value('${store.tos.createuser}')
-    private String tosCreateUser
-
-    @Value('${store.tos.purchase}')
-    private String tosPurchase
+    @Value('${store.tos.purchasetostype}')
+    private String tosPurchaseType
 
     @Value('${store.tos.freepurchase.enable}')
     private Boolean tosFreepurchaseEnable
@@ -334,7 +331,7 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             if (tosFreepurchaseEnable) {
-                return challengeHelper.checkTosChallenge(user.getId(), tosPurchase, apiContext.country.getId(), request.challengeAnswer, apiContext.locale.getId()).then { Challenge tosChallenge ->
+                return challengeHelper.checkTosChallenge(user.getId(), tosPurchaseType, apiContext.country.getId(), request.challengeAnswer, apiContext.locale.getId()).then { Challenge tosChallenge ->
                     challenge = tosChallenge
                     return Promise.pure(null)
                 }
@@ -827,7 +824,7 @@ class StoreResourceImpl implements StoreResource {
             if (challenge != null) {
                 return Promise.pure(challenge)
             }
-            return challengeHelper.checkTosChallenge(userId, tosPurchase, apiContext.country.getId(), request.challengeAnswer, apiContext.locale.getId())
+            return challengeHelper.checkTosChallenge(userId, tosPurchaseType, apiContext.country.getId(), request.challengeAnswer, apiContext.locale.getId())
         }
     }
 

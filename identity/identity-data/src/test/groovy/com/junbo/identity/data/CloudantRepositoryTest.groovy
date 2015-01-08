@@ -200,12 +200,10 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     @Test
     public void testTosRepository() {
         Tos tos = new Tos()
-        tos.title = 'title'
         tos.content = 'content'
 
         tos = tosRepository.create(tos).get()
         Tos getTos = tosRepository.get(tos.getId()).get()
-        Assert.assertEquals(tos.title, getTos.title)
 
         tosRepository.delete(tos.getId()).get()
 

@@ -42,11 +42,6 @@ class TosServiceImpl implements TosService {
     }
 
     @Override
-    Promise<List<Tos>> searchByTitle(String title, Integer limit, Integer offset) {
-        return tosRepository.searchByTitle(title, limit, offset)
-    }
-
-    @Override
     Promise<List<Tos>> searchByType(String type, Integer limit, Integer offset) {
         return tosRepository.searchByType(type, limit, offset)
     }
@@ -59,21 +54,6 @@ class TosServiceImpl implements TosService {
     @Override
     Promise<List<Tos>> searchByCountry(CountryId country, Integer limit, Integer offset) {
         return tosRepository.searchByCountry(country, limit, offset)
-    }
-
-    @Override
-    Promise<List<Tos>> searchByTitleAndType(String title, String type, Integer limit, Integer offset) {
-        return tosRepository.searchByTitleAndType(title, type, limit, offset)
-    }
-
-    @Override
-    Promise<List<Tos>> searchByTitleAndState(String title, String state, Integer limit, Integer offset) {
-        return tosRepository.searchByTitleAndState(title, state, limit, offset)
-    }
-
-    @Override
-    Promise<List<Tos>> searchByTitleAndCountry(String title, CountryId country, Integer limit, Integer offset) {
-        return tosRepository.searchByTitleAndCountry(title, country, limit, offset)
     }
 
     @Override
@@ -92,28 +72,8 @@ class TosServiceImpl implements TosService {
     }
 
     @Override
-    Promise<List<Tos>> searchByTitleAndTypeAndState(String title, String type, String state, Integer limit, Integer offset) {
-        return tosRepository.searchByTitleAndTypeAndState(title, type, state, limit, offset)
-    }
-
-    @Override
-    Promise<List<Tos>> searchByTitleAndTypeAndCountry(String title, String type, CountryId country, Integer limit, Integer offset) {
-        return tosRepository.searchByTitleAndTypeAndCountry(title, type, country, limit, offset)
-    }
-
-    @Override
-    Promise<List<Tos>> searchByTitleAndStateAndCountry(String title, String state, CountryId country, Integer limit, Integer offset) {
-        return tosRepository.searchByTitleAndStateAndCountry(title, state, country, limit, offset)
-    }
-
-    @Override
     Promise<List<Tos>> searchByTypeAndStateAndCountry(String type, String state, CountryId country, Integer limit, Integer offset) {
         return tosRepository.searchByTypeAndStateAndCountry(type, state, country, limit, offset)
-    }
-
-    @Override
-    Promise<List<Tos>> searchByTitleAndTypeAndStateAndCountry(String title, String type, String state, CountryId country, Integer limit, Integer offset) {
-        return tosRepository.searchByTitleAndTypeAndStateAndCountry(title, type, state, country, limit, offset)
     }
 
     @Required

@@ -62,14 +62,14 @@ class ChallengeHelperImpl implements ChallengeHelper {
     private String defaultLocale
 
     @Override
-    Promise<Challenge> checkTosChallenge(UserId userId, String tosTitle, CountryId countryId, ChallengeAnswer challengeAnswer, LocaleId localeId) {
+    Promise<Challenge> checkTosChallenge(UserId userId, String tosType, CountryId countryId, ChallengeAnswer challengeAnswer, LocaleId localeId) {
         if (!tosChallengeEnabled) {
             return Promise.pure()
         }
 
         User user = resourceContainer.userResource.get(userId, new UserGetOptions()).get()
         CountryId selectedCountryId = user.countryOfResidence == null ? countryId : user.countryOfResidence
-        return resourceContainer.tosResource.list(new TosListOptions(title: tosTitle, countryId: selectedCountryId, state: 'APPROVED')).then { Results<Tos> toses ->
+        return resourceContainer.tosResource.list(new TosListOptions(type: tosType, countryId: selectedCountryId, state: 'APPROVED')).then { Results<Tos> toses ->
             if (toses == null || CollectionUtils.isEmpty(toses.items)) {
                 return Promise.pure(null)
             }
@@ -118,7 +118,7 @@ class ChallengeHelperImpl implements ChallengeHelper {
                         }
                     }
 
-                    return Promise.pure(new Challenge(type: Constants.ChallengeType.TOS_ACCEPTANCE, tos: dataConverter.toStoreTos(tos, null)))
+                    return Promise.pure(new Challenge(type: Constants.ChallengeType.TOS_ACCEPTANCE, tos: dataConverter.toStoreTos(tos, null, localeId)))
                 }
 
                 return Promise.pure(null)

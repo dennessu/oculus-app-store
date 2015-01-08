@@ -102,7 +102,6 @@ class TosUtil {
         for (Client.RequiredTos requiredTos : client.requiredTos) {
             TosListOptions options = new TosListOptions(
                     type: requiredTos.type,
-                    title: requiredTos.title,
                     countryId: country,
                     state: 'APPROVED'
             )

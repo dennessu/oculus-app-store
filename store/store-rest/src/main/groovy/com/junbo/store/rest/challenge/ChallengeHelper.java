@@ -17,7 +17,7 @@ import com.junbo.store.spec.model.ChallengeAnswer;
  */
 public interface ChallengeHelper {
 
-    Promise<Challenge> checkTosChallenge(UserId userId, String tosTitle, CountryId countryId, ChallengeAnswer challengeAnswer, LocaleId localeId);
+    Promise<Challenge> checkTosChallenge(UserId userId, String tosType, CountryId countryId, ChallengeAnswer challengeAnswer, LocaleId localeId);
 
     Promise<Challenge> checkPurchasePINChallenge(UserId userId, ChallengeAnswer challengeAnswer);
 }

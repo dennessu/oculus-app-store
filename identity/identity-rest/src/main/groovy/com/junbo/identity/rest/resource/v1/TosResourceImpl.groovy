@@ -142,31 +142,14 @@ class TosResourceImpl implements TosResource {
 
     private Promise<List<Tos>> search(TosListOptions listOptions) {
         Promise.pure().then {
-            if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state) && !StringUtils.isEmpty(listOptions.type) && listOptions.countryId != null) {
-                return tosService.searchByTitleAndTypeAndStateAndCountry(listOptions.title, listOptions.type, listOptions.state,
-                        listOptions.countryId, listOptions.limit, listOptions.offset)
-            } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state) && !StringUtils.isEmpty(listOptions.type)) {
-                return tosService.searchByTitleAndTypeAndState(listOptions.title, listOptions.type, listOptions.state, listOptions.limit, listOptions.offset)
-            } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state) && listOptions.countryId != null) {
-                return tosService.searchByTitleAndStateAndCountry(listOptions.title, listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
-            } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.type) && listOptions.countryId != null) {
-                return tosService.searchByTitleAndTypeAndCountry(listOptions.title, listOptions.type, listOptions.countryId, listOptions.limit, listOptions.offset)
-            } else if (!StringUtils.isEmpty(listOptions.type) && !StringUtils.isEmpty(listOptions.state) && listOptions.countryId != null) {
+            if (!StringUtils.isEmpty(listOptions.type) && !StringUtils.isEmpty(listOptions.state) && listOptions.countryId != null) {
                 return tosService.searchByTypeAndStateAndCountry(listOptions.type, listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
-            } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.type)) {
-                return tosService.searchByTitleAndType(listOptions.title, listOptions.type, listOptions.limit, listOptions.offset)
-            } else if (!StringUtils.isEmpty(listOptions.title) && !StringUtils.isEmpty(listOptions.state)) {
-                return tosService.searchByTitleAndState(listOptions.title, listOptions.state, listOptions.limit, listOptions.offset)
-            } else if (!StringUtils.isEmpty(listOptions.title) && listOptions.countryId != null) {
-                return tosService.searchByTitleAndCountry(listOptions.title, listOptions.countryId, listOptions.limit, listOptions.offset)
-            } else if (!StringUtils.isEmpty(listOptions.type) && !StringUtils.isEmpty(listOptions.state)) {
+            }  else if (!StringUtils.isEmpty(listOptions.type) && !StringUtils.isEmpty(listOptions.state)) {
                 return tosService.searchByTypeAndState(listOptions.type, listOptions.state, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.type) && listOptions.countryId != null) {
                 return tosService.searchByTypeAndCountry(listOptions.type, listOptions.countryId, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.state) && listOptions.countryId != null) {
                 return tosService.searchByStateAndCountry(listOptions.state, listOptions.countryId, listOptions.limit, listOptions.offset)
-            } else if (!StringUtils.isEmpty(listOptions.title)) {
-                return tosService.searchByTitle(listOptions.title, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.type)) {
                 return tosService.searchByType(listOptions.type, listOptions.limit, listOptions.offset)
             } else if (!StringUtils.isEmpty(listOptions.state)) {

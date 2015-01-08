@@ -7,15 +7,17 @@ import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.model.UserTosAgreement
+import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.TypeSpecificDetails
+import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.spec.model.Address
 import com.junbo.store.spec.model.billing.Instrument
 import com.junbo.store.spec.model.billing.PaymentOption
 import com.junbo.store.spec.model.browse.document.Tos
 import com.junbo.store.spec.model.identity.PersonalInfo
-import com.junbo.store.clientproxy.ResourceContainer
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -23,6 +25,7 @@ import javax.annotation.Resource
 @CompileStatic
 @Component('storeDataConverter')
 class DataConverter {
+    private static String DEFAULT_LOCALE = 'en_US'
 
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
@@ -99,15 +102,46 @@ class DataConverter {
         )
     }
 
-    Tos toStoreTos(com.junbo.identity.spec.v1.model.Tos tos, UserTosAgreement userTosAgreement) {
+    Tos toStoreTos(com.junbo.identity.spec.v1.model.Tos tos, UserTosAgreement userTosAgreement, LocaleId localeId) {
         return new Tos(
             tosId: tos.getId(),
             type: tos.type,
             version: tos.version,
-            title: tos.title,
+            title: getTitle(tos, localeId),
             content: tos.content,
             accepted: userTosAgreement != null,
             acceptedDate: userTosAgreement?.agreementTime
         )
+    }
+
+    String getTitle(com.junbo.identity.spec.v1.model.Tos tos, LocaleId localeId) {
+        if (tos == null || tos.locales == null || tos.locales.isEmpty()) {
+            return null
+        }
+
+        Map<String, Boolean> circle = new HashMap<>()
+
+        LocaleId current = localeId
+        LocaleId fallback = null
+        while (true) {
+            com.junbo.identity.spec.v1.model.Locale locale = resourceContainer.localeResource.get(current, new LocaleGetOptions()).get()
+            Boolean visited = circle.get(locale.getId().toString())
+            if (visited) {
+                break
+            }
+            circle.put(locale.getId().toString(), true)
+            String title = tos.locales.get(locale.getId().toString())?.getTitle()?.toString()
+            if (!StringUtils.isEmpty(title)) {
+                return title
+            }
+
+            fallback = locale.fallbackLocale
+            if (current == fallback || fallback == null) {
+                break
+            }
+            current = fallback
+        }
+
+        return null
     }
 }

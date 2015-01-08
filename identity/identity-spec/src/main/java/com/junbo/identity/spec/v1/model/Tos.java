@@ -37,10 +37,6 @@ public class Tos extends PropertyAssignedAwareResourceMeta<TosId> {
     @ApiModelProperty(position = 4, required = true, value = "Version number of the TOS.")
     private String version;
 
-    @XSSFreeString
-    @ApiModelProperty(position = 5, required = true, value = "The title of the TOS.")
-    private String title;
-
     @XSSFreeRichText
     @ApiModelProperty(position = 6, required = true, value = "The content of the TOS resource.")
     private String content;
@@ -66,15 +62,6 @@ public class Tos extends PropertyAssignedAwareResourceMeta<TosId> {
         this.id = id;
         support.setPropertyAssigned("id");
         support.setPropertyAssigned("self");
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-        support.setPropertyAssigned("title");
     }
 
     public String getContent() {

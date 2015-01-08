@@ -339,7 +339,7 @@ public class IdentityModel {
     public static Tos DefaultTos() throws Exception {
         List<String> supportedCountries = new ArrayList<>();
         supportedCountries.add("US");
-        return DefaultTos(RandomHelper.randomAlphabetic(15), "TOS", "APPROVED", supportedCountries);
+        return DefaultTos(RandomHelper.randomAlphabetic(15), RandomHelper.randomAlphabetic(15), "APPROVED", supportedCountries);
     }
 
     public static Tos DefaultTos(String title, String type, String state, List<String> supportedCountries)
@@ -348,7 +348,6 @@ public class IdentityModel {
         tos.setContent(RandomHelper.randomAlphabetic(1000));
         tos.setType(type);
         tos.setVersion(RandomHelper.randomAlphabetic(15));
-        tos.setTitle(title);
         tos.setState(state);
         List<CountryId> supportedCountryIds = new ArrayList<>();
         for (String supportedCountry : supportedCountries) {
