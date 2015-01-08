@@ -653,6 +653,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         newTos.setType(tos.getType());
         newTos.setContent(tos.getContent());
         newTos.setLocales(tos.getLocales());
+        newTos.setMinorversion(tos.getMinorversion());
+        newTos.setCoveredLocales(tos.getCoveredLocales());
         newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
         restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
     }
@@ -693,15 +695,17 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         newTos.setCountries(tos.getCountries());
         newTos.setType(tos.getType());
         newTos.setContent(tos.getContent());
+        newTos.setLocales(tos.getLocales());
+        newTos.setMinorversion(tos.getMinorversion());
         if (!CollectionUtils.isEmpty(supportLocales)) {
             List<LocaleId> localeIds = new ArrayList<>();
             for (String supportLocale : supportLocales) {
                 localeIds.add(new LocaleId(supportLocale));
             }
-            newTos.setLocales(localeIds);
+            newTos.setCoveredLocales(localeIds);
             newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion())));
         } else {
-            newTos.setLocales(tos.getLocales());
+            newTos.setCoveredLocales(tos.getCoveredLocales());
             newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
         }
         restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
@@ -725,8 +729,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
         for (Tos tos : tosList) {
             boolean exists = false;
-            if (!CollectionUtils.isEmpty(tos.getLocales())) {
-                for (LocaleId localeId : tos.getLocales()) {
+            if (!CollectionUtils.isEmpty(tos.getCoveredLocales())) {
+                for (LocaleId localeId : tos.getCoveredLocales()) {
                     for (String supportLocale : supportLocales) {
                         if (localeId.toString().equalsIgnoreCase(supportLocale)) {
                             exists = true;

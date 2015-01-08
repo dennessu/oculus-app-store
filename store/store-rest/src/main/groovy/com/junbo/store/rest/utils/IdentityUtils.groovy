@@ -17,7 +17,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.spec.error.AppErrors
-import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.identity.PersonalInfo
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
@@ -196,8 +195,8 @@ class IdentityUtils {
             }
             circle.put(locale.getId().toString(), true)
             for (Tos tos : tosList) {
-                if (!org.springframework.util.CollectionUtils.isEmpty(tos.locales)) {
-                    if (tos.locales.any { LocaleId tosLocaleId ->
+                if (!CollectionUtils.isEmpty(tos.coveredLocales)) {
+                    if (tos.coveredLocales.any { LocaleId tosLocaleId ->
                         return tosLocaleId == current
                     }) {
                         return tos

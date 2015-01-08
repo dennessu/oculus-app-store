@@ -16,6 +16,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -47,8 +48,14 @@ public class Tos extends PropertyAssignedAwareResourceMeta<TosId> {
     @ApiModelProperty(position = 7, required = true, value = "State of the TOS, it must in [DRAFT, APPROVED, OBSOLETE].")
     private String state;
 
-    @ApiModelProperty(position = 8, required = false, value = "The property represents which locales this TOS object is good in.")
-    private List<LocaleId> locales;
+    @ApiModelProperty(position = 8, required = false, value = "Array of links to Locale resource, represents which locale this TOS is good in.")
+    private List<LocaleId> coveredLocales;
+
+    @ApiModelProperty(position = 9, required = false, value = "")
+    private Map<String, TosLocaleProperty> locales;
+
+    @ApiModelProperty(position = 10, required = false, value = "minor version number for TOS typo fix, this expect to not trigger TOS re-challenge")
+    private Double minorversion;
 
     @Override
     public TosId getId() {
@@ -115,12 +122,30 @@ public class Tos extends PropertyAssignedAwareResourceMeta<TosId> {
         support.setPropertyAssigned("version");
     }
 
-    public List<LocaleId> getLocales() {
+    public List<LocaleId> getCoveredLocales() {
+        return coveredLocales;
+    }
+
+    public void setCoveredLocales(List<LocaleId> coveredLocales) {
+        this.coveredLocales = coveredLocales;
+        support.setPropertyAssigned("coveredLocales");
+    }
+
+    public Map<String, TosLocaleProperty> getLocales() {
         return locales;
     }
 
-    public void setLocales(List<LocaleId> locales) {
+    public void setLocales(Map<String, TosLocaleProperty> locales) {
         this.locales = locales;
         support.setPropertyAssigned("locales");
+    }
+
+    public Double getMinorversion() {
+        return minorversion;
+    }
+
+    public void setMinorversion(Double minorversion) {
+        this.minorversion = minorversion;
+        support.setPropertyAssigned("minorversion");
     }
 }

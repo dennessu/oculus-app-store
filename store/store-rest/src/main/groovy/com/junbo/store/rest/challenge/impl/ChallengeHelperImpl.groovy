@@ -143,8 +143,8 @@ class ChallengeHelperImpl implements ChallengeHelper {
             }
             circle.put(locale.getId().toString(), true)
             for (Tos tos : tosList) {
-                if (!org.springframework.util.CollectionUtils.isEmpty(tos.locales)) {
-                    if (tos.locales.any { LocaleId tosLocaleId ->
+                if (!CollectionUtils.isEmpty(tos.coveredLocales)) {
+                    if (tos.coveredLocales.any { LocaleId tosLocaleId ->
                         return tosLocaleId == current
                     }) {
                         return tos

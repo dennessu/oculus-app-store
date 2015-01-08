@@ -401,6 +401,8 @@
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
+                <value>coveredLocales</value>
+                <value>minorversion</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
@@ -422,6 +424,8 @@
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
+                <value>coveredLocales</value>
+                <value>minorversion</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
                 <value>createdBy</value>
@@ -441,6 +445,8 @@
                 <value>title</value>
                 <value>content</value>
                 <value>state</value>
+                <value>coveredLocales</value>
+                <value>minorversion</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>

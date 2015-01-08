@@ -481,8 +481,8 @@ class LoginResourceImpl implements LoginResource {
             }
             circle.put(locale.getId().toString(), true)
             for (Tos tos : tosList) {
-                if (!CollectionUtils.isEmpty(tos.locales)) {
-                    if (tos.locales.any { LocaleId tosLocaleId ->
+                if (!CollectionUtils.isEmpty(tos.coveredLocales)) {
+                    if (tos.coveredLocales.any { LocaleId tosLocaleId ->
                         return tosLocaleId == current
                     }) {
                         return tos

@@ -20,7 +20,13 @@
         "NL",
         "SE"
     ],
-     "locales": [
+     "locales": {
+         "en_US": {
+             "title":"end user tos"
+         }
+     },
+     "minorversion":1.0,
+     "coveredLocales": [
          "en_US"
      ]
 }

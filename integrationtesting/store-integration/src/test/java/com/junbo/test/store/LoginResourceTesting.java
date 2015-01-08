@@ -1295,7 +1295,7 @@ public class LoginResourceTesting extends BaseTestClass {
         com.junbo.identity.spec.v1.model.Tos englishVersionTos = null;
         com.junbo.identity.spec.v1.model.Tos chineseVersionTos = null;
         for (com.junbo.identity.spec.v1.model.Tos tos : tosList) {
-            for (LocaleId localeId : tos.getLocales()) {
+            for (LocaleId localeId : tos.getCoveredLocales()) {
                 if (localeId.toString().equals("zh_CN")) {
                     chineseVersionTos = tos;
                     break;

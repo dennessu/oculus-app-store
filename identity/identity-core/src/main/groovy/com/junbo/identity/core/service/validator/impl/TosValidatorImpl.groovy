@@ -11,10 +11,12 @@ import com.junbo.identity.service.TosService
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.Tos
+import com.junbo.identity.spec.v1.model.TosLocaleProperty
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Required
 
 /**
@@ -149,6 +151,10 @@ class TosValidatorImpl implements TosValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('countries').exception()
         }
 
+        if (tos.minorversion != null && tos.minorversion < 0.0) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('minorversion').exception()
+        }
+
         return Promise.each(tos.countries) { CountryId countryId ->
             return countryService.get(countryId).then { Country country ->
                 if (country == null) {
@@ -156,11 +162,14 @@ class TosValidatorImpl implements TosValidator {
                 }
 
                 return Promise.pure(null)
+            }.then {
+                return Promise.pure(null)
             }
         }.then {
-            return Promise.pure(null)
-        }.then {
-            return Promise.each(tos.locales) { LocaleId localeId ->
+            if (CollectionUtils.isEmpty(tos.coveredLocales)) {
+                return Promise.pure(null)
+            }
+            return Promise.each(tos.coveredLocales) { LocaleId localeId ->
                 return localeService.get(localeId).then { com.junbo.identity.spec.v1.model.Locale locale ->
                     if (locale == null) {
                         throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
@@ -168,9 +177,31 @@ class TosValidatorImpl implements TosValidator {
 
                     return Promise.pure(null)
                 }
+            }.then {
+                return Promise.pure(null)
             }
         }.then {
-            return Promise.pure(null)
+            if (tos.locales == null || tos.locales.isEmpty()) {
+                return Promise.pure(null)
+            }
+
+            return Promise.each(tos.locales.entrySet()) { Map.Entry<String, TosLocaleProperty> entry ->
+                String key = entry.key
+                TosLocaleProperty tosLocaleProperty = entry.value
+                if (key == null || tosLocaleProperty == null || StringUtils.isEmpty(tosLocaleProperty.title)) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('locales').exception()
+                }
+
+                return localeService.get(new LocaleId(key)).then { com.junbo.identity.spec.v1.model.Locale locale ->
+                    if (locale == null) {
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('locales').exception()
+                    }
+
+                    return Promise.pure(null)
+                }
+            }.then {
+                return Promise.pure(null)
+            }
         }
     }
 
