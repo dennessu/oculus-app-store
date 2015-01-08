@@ -45,6 +45,8 @@ dependencies {
     compile (libraries.postgresql)
     compile (libraries.HikariCP)
 
+    compile (libraries.metrics)
+
     // dependency for docs
     compile (libraries.swagger_annotations)
     compile("com.wordnik:swagger-jersey2-jaxrs_2.10:${swaggerVersion}") {
