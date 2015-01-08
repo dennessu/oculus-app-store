@@ -5,6 +5,12 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+echo "[SETUP][REPLICA] check database existence"
+if [ -d $REPLICA_DATA_PATH ];then
+    echo "[SETUP][REPLICA] folder $REPLICA_DATA_PATH exists. skip database setup"
+    exit 0
+fi
+
 echo "[SETUP][REPLICA] create pgha base $PGHA_BASE"
 createDir $PGHA_BASE
 

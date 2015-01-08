@@ -5,6 +5,12 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+echo "[SETUP][MASTER] check database existence"
+if [ -d $MASTER_DATA_PATH ];then
+    echo "[SETUP][MASTER] folder $MASTER_DATA_PATH exists. skip database setup"
+    exit 0
+fi
+
 echo "[SETUP][MASTER] kill postgres instance with port [$MASTER_DB_PORT]"
 forceKill $MASTER_DB_PORT
 

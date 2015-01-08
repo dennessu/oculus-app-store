@@ -5,6 +5,12 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+echo "[SETUP][BCP] check database existence"
+if [ -d $BCP_DATA_PATH ];then
+    echo "[SETUP][BCP] folder $BCP_DATA_PATH exists. skip database setup"
+    exit 0
+fi
+
 echo "[SETUP][BCP] create pgha base $PGHA_BASE"
 createDir $PGHA_BASE
 
