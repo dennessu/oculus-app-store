@@ -93,10 +93,16 @@ public abstract class CloudantId implements UniversalId {
         if (id.startsWith("_")) {
             throw AppCommonErrors.INSTANCE.invalidId(field, id).exception();
         }
+        if (id.contains("?")) {
+            throw AppCommonErrors.INSTANCE.invalidId(field, id).exception();
+        }
     }
 
     public static void validate(String id) {
         if (id.startsWith("_")) {
+            throw AppCommonErrors.INSTANCE.invalidId("id", id).exception();
+        }
+        if (id.contains("?")) {
             throw AppCommonErrors.INSTANCE.invalidId("id", id).exception();
         }
     }

@@ -665,6 +665,11 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     @Override
     public void updateTos(String type, List<String> supportLocales, String status) throws Exception {
+        updateTos(type, supportLocales, status, false);
+    }
+
+    @Override
+    public void updateTos(String type, List<String> supportLocales, String status, boolean increaseMinorVersion) throws Exception {
         componentType = ComponentType.IDENTITY_ADMIN;
         String url = String.format(getEndPointUrl().replace("/users", "") + "/tos");
 
@@ -704,7 +709,12 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion())));
         } else {
             newTos.setCoveredLocales(tos.getCoveredLocales());
-            newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
+            if (increaseMinorVersion) {
+                newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion())));
+                newTos.setMinorversion(tos.getMinorversion() + 0.1);
+            } else {
+                newTos.setVersion(String.valueOf(Double.parseDouble(tos.getVersion()) + 0.1));
+            }
         }
         restApiCall(HTTPMethod.POST, putUrl, newTos, 201, true);
     }

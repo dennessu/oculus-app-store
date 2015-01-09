@@ -8,9 +8,11 @@ package com.junbo.oauth.core.util
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.TosId
+import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.Tos
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserTosAgreement
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
@@ -33,6 +35,8 @@ import org.springframework.util.CollectionUtils
 class TosUtil {
 
     public static final String HEADER_IP_GEO_LOCATION = "oculus-geoip-country-code"
+
+    public static final int PAGE_SIZE = 100
 
     private Cache tosCache
 
@@ -80,16 +84,11 @@ class TosUtil {
         Set<TosId> unacceptedTosIds = []
         CountryId validCountry = getValidCountry(user)
         if (client.requiredTos != null && !client.requiredTos.isEmpty() && validCountry != null) {
-            List<TosId> tosIds = getTosIds(client, validCountry, user)
-            for (TosId tosId : tosIds) {
-                UserTosAgreementListOptions options = new UserTosAgreementListOptions(
-                        userId: user.getId(),
-                        tosId: tosId
-                )
-
-                def results = userTosAgreementResource.list(options).get()
-                if (results.items.isEmpty()) {
-                    unacceptedTosIds.add(tosId)
+            List<List<Tos>> tosList = getTosList(client, validCountry, user)
+            Set<TosId> acceptedTosIds = getAcceptedTosIds(user.getId())
+            tosList.each { List<Tos> toses ->
+                if (!toses.any {Tos tos -> acceptedTosIds.contains(tos.getId())}) {
+                    unacceptedTosIds << toses[0].getId()
                 }
             }
         }
@@ -97,8 +96,24 @@ class TosUtil {
         return unacceptedTosIds
     }
 
-    private List<TosId> getTosIds(final Client client, final CountryId country, final User user) {
-        final List<TosId> tosId = []
+    private Set<TosId> getAcceptedTosIds(UserId userId) {
+        Set<TosId> acceptedTosIds = []
+        int offset = 0;
+        while (true) {
+            List<UserTosAgreement> results = userTosAgreementResource.list(new UserTosAgreementListOptions(userId: userId, offset: offset)).get().items;
+            results.each { UserTosAgreement userTosAgreement ->
+                acceptedTosIds.add(userTosAgreement.tosId);
+            }
+            if (results.size() < PAGE_SIZE)  {
+                break
+            }
+            offset += PAGE_SIZE
+        }
+        return acceptedTosIds
+    }
+
+    private List<List<Tos>> getTosList(final Client client, final CountryId country, final User user) {
+        final List<List<Tos>> tosList = []
         for (Client.RequiredTos requiredTos : client.requiredTos) {
             TosListOptions options = new TosListOptions(
                     type: requiredTos.type,
@@ -111,15 +126,15 @@ class TosUtil {
                 List<Tos> latestTosList = getLatestTosList(results.items)
                 if (!CollectionUtils.isEmpty(latestTosList)) {
                     LocaleId localeId = getLocale(user, country)
-                    Tos supportedTos = getSupportedTos(latestTosList, localeId)
-                    if (supportedTos != null) {
-                        tosId.add(supportedTos.getId())
+                    List<Tos> supportedTos = getSupportedTos(latestTosList, localeId)
+                    if (supportedTos != null && !supportedTos.isEmpty()) {
+                        tosList.add(supportedTos)
                     }
                 }
             }
         }
 
-        return tosId
+        return tosList
     }
 
     private List<Tos> getLatestTosList(List<Tos> tosList) {
@@ -179,15 +194,16 @@ class TosUtil {
         return null
     }
 
-    private Tos getSupportedTos(List<Tos> tosList, LocaleId localeId) {
+    private List<Tos> getSupportedTos(List<Tos> tosList, LocaleId localeId) {
         if (CollectionUtils.isEmpty(tosList) || localeId == null) {
-            return null
+            return []
         }
 
         Map<String, Boolean> circle = new HashMap<>()
 
         LocaleId current = localeId
         LocaleId fallback = null
+        List<Tos> result = [];
         while (true) {
             com.junbo.identity.spec.v1.model.Locale locale = localeResource.get(current, new LocaleGetOptions()).get()
             Boolean visited = circle.get(locale.getId().toString())
@@ -200,9 +216,12 @@ class TosUtil {
                     if (tos.coveredLocales.any { LocaleId tosLocaleId ->
                         return tosLocaleId == current
                     }) {
-                        return tos
+                        result << tos
                     }
                 }
+            }
+            if (!result.isEmpty()) {
+                return result.sort {Tos tos -> return tos.minorversion}.reverse().asList();
             }
 
             fallback = locale.fallbackLocale
@@ -212,6 +231,6 @@ class TosUtil {
             current = fallback
         }
 
-        return null
+        return []
     }
 }

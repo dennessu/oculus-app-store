@@ -1,14 +1,15 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.id.TosId
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.TosListOptions
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
+import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
@@ -16,6 +17,7 @@ import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
+import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.identity.PersonalInfo
 import groovy.transform.CompileStatic
@@ -24,13 +26,14 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * The IdentityUtils class.
  */
 @CompileStatic
 @Component('storeIdentityUtils')
 class IdentityUtils {
+
+    private final static int PAGE_SIZE = 100;
 
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
@@ -118,14 +121,14 @@ class IdentityUtils {
         }
     }
 
-    public Promise<com.junbo.store.spec.model.browse.document.Tos> lookupTos(String type,
-                                                                             LocaleId localeId, CountryId countryId) {
+    // list of tos order by minor version desc
+    public Promise<List<Tos>> lookupTos(String type, LocaleId localeId, CountryId countryId) {
         return resourceContainer.tosResource.list(new TosListOptions(countryId: countryId,
                 state: 'APPROVED', type: type)).recover { Throwable ex ->
             appErrorUtils.throwUnknownError('lookupTos', ex)
         }.then { Results<Tos> tosResults ->
             if (tosResults == null || org.springframework.util.CollectionUtils.isEmpty(tosResults.items)) {
-                return Promise.pure(null)
+                return Promise.pure([])
             }
 
             Tos latestTos = tosResults.items.max { Tos tos ->
@@ -148,15 +151,54 @@ class IdentityUtils {
             }?.asList()
 
             if (org.springframework.util.CollectionUtils.isEmpty(tosList)) {
-                return Promise.pure(null)
+                return Promise.pure([])
             }
-            LocaleId locale = getLocale(null, localeId, null)
-            Tos tos = getSupportedTos(tosList, locale)
-            if (tos == null) {
-                return Promise.pure(null)
-            }
-            return Promise.pure(dataConverter.toStoreTos(tos, null, localeId))
+            return Promise.pure(getSupportedTos(tosList, localeId))
         }
+    }
+
+    private Boolean hasValidTosAgreement(Results<UserTosAgreement> tosAgreementResults, Tos tos) {
+        if (tosAgreementResults == null || CollectionUtils.isEmpty(tosAgreementResults.items)) {
+            return false
+        }
+        return true
+    }
+
+    public Promise<Boolean> checkTosAgreement(UserId userId, Tos tos) {
+        return resourceContainer.userTosAgreementResource.list(new UserTosAgreementListOptions(
+                userId: userId,
+                tosId: tos.getId()
+        )).then { Results<UserTosAgreement> tosAgreementResults ->
+            return Promise.pure(hasValidTosAgreement(tosAgreementResults, tos))
+        }
+    }
+
+    public Promise<Boolean> checkTosAgreementAny(UserId userId, List<Tos> tos) {
+        int offset = 0;
+        boolean result = false;
+        Set<TosId> tosIds = new HashSet<TosId>(tos.collect {Tos e-> e.getId()});
+        CommonUtils.loop {
+            return resourceContainer.userTosAgreementResource.list(new UserTosAgreementListOptions(
+                    userId: userId, offset: offset, limit: PAGE_SIZE
+            )).then { Results<UserTosAgreement> tosAgreementResults ->
+                boolean accepted = tosAgreementResults.items.any { UserTosAgreement userTosAgreement ->
+                    tosIds.contains(userTosAgreement.tosId)
+                }
+                if (accepted) {
+                    result = accepted
+                    return Promise.pure(Promise.BREAK)
+                }
+
+                if (tosAgreementResults.items.size() < PAGE_SIZE) {
+                    return Promise.pure(Promise.BREAK)
+                }
+                offset += PAGE_SIZE
+                return Promise.pure()
+            }
+        }.then {
+            return Promise.pure(result)
+        }
+
     }
 
     private LocaleId getLocale(User user, LocaleId localeId, CountryId countryId) {
@@ -178,9 +220,9 @@ class IdentityUtils {
         return new LocaleId(tosDefaultLocale)
     }
 
-    private Tos getSupportedTos(List<Tos> tosList, LocaleId localeId) {
+    private List<Tos> getSupportedTos(List<Tos> tosList, LocaleId localeId) {
         if (org.apache.commons.collections.CollectionUtils.isEmpty(tosList) || localeId == null) {
-            return null
+            return []
         }
 
         Map<String, Boolean> circle = new HashMap<>()
@@ -194,14 +236,19 @@ class IdentityUtils {
                 break
             }
             circle.put(locale.getId().toString(), true)
+
+            List<Tos> result = []
             for (Tos tos : tosList) {
                 if (!CollectionUtils.isEmpty(tos.coveredLocales)) {
                     if (tos.coveredLocales.any { LocaleId tosLocaleId ->
                         return tosLocaleId == current
                     }) {
-                        return tos
+                        result << tos
                     }
                 }
+            }
+            if (!result.isEmpty()) {
+                return result.sort { Tos tos ->  return tos.minorversion }.reverse()
             }
 
             fallback = locale.fallbackLocale
@@ -211,6 +258,6 @@ class IdentityUtils {
             current = fallback
         }
 
-        return null
+        return []
     }
 }

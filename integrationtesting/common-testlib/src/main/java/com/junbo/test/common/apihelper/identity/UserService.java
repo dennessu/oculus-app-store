@@ -81,6 +81,8 @@ public interface UserService {
 
     void updateTos(String type, List<String> supportLocales, String status) throws Exception;
 
+    void updateTos(String type, List<String> supportLocales, String status, boolean increaseMinorVersion) throws Exception;
+
     void deleteTos(String type, List<String> supportLocales) throws Exception;
 
     List<Tos> getTosList(String type) throws Exception;

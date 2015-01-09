@@ -12,6 +12,7 @@ import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.store.spec.model.ChallengeAnswer;
+import com.junbo.store.spec.model.browse.document.Tos;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.test.common.Entities.enums.ComponentType;
@@ -1272,6 +1273,12 @@ public class LoginResourceTesting extends BaseTestClass {
         response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert response != null;
         assert response.getChallenge() == null;
+
+        Thread.sleep(2000);
+        testDataProvider.UpdateTos("TOS", "APPROVED", true); // update the minor version does not trigger challenge
+        response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() == null;
     }
 
     @Property(
@@ -1472,40 +1479,40 @@ public class LoginResourceTesting extends BaseTestClass {
             }
     )
     @Test
-    public void testLookupTos() throws Exception {
-        com.junbo.store.spec.model.browse.document.Tos tos = testDataProvider.lookupTos("TOS", "end user tos", 200);
-        Assert.assertEquals(tos.getTitle(), "end user tos");
+    public void testGetPrivacyPolicyTos() throws Exception {
+        com.junbo.store.spec.model.browse.document.Tos tos = testDataProvider.lookupTos(200);
+        Assert.assertEquals(tos.getTitle(), "privacy policy");
 
         // test locale fallback
         TestContext.getData().putHeader("Accept-Language", "zh-CN");
-        tos = testDataProvider.lookupTos("TOS", "end user tos", 200);
-        Assert.assertEquals(tos.getTitle(), "end user tos");
+        tos = testDataProvider.lookupTos(200);
+        Assert.assertEquals(tos.getTitle(), "privacy policy");
 
         // test tos version update
         Thread.sleep(2000);
 
         // update tos to draft status
-        testDataProvider.UpdateTos("TOS", "DRAFT");
-        com.junbo.store.spec.model.browse.document.Tos newTos = testDataProvider.lookupTos("TOS", "end user tos", 200);
+        testDataProvider.UpdateTos("PP", "DRAFT");
+        com.junbo.store.spec.model.browse.document.Tos newTos = testDataProvider.lookupTos(200);
         Assert.assertEquals(newTos.getTosId(), tos.getTosId());
 
         Thread.sleep(2000);
-        testDataProvider.UpdateTos("TOS", "APPROVED");
-        newTos = testDataProvider.lookupTos("TOS", "end user tos", 200);
+        testDataProvider.UpdateTos("PP", "APPROVED");
+        newTos = testDataProvider.lookupTos(200);
         Assert.assertNotEquals(newTos.getTosId(), tos.getTosId());
         Assert.assertTrue(Double.valueOf(newTos.getVersion()) > Double.valueOf(tos.getVersion()));
+
+        // update minor version
+        Thread.sleep(2000);
+        testDataProvider.UpdateTos("PP", "APPROVED", true);
+        Tos minorVersionNewTos = testDataProvider.lookupTos(200);
+        Assert.assertNotEquals(minorVersionNewTos.getTosId(), newTos.getTosId());
     }
 
     @Test
     public void testLookupTosInvalid() throws Exception {
-        testDataProvider.lookupTos(null, "end user tos", 400);
-        testDataProvider.lookupTos("TOS", "", 400);
-
-        testDataProvider.lookupTos("TOS1", "end user tos", 404);
-        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.128"));
-
         TestContext.getData().putHeader("oculus-geoip-country-code", "GU");
-        testDataProvider.lookupTos("TOS", "end user tos", 404);
+        testDataProvider.lookupTos(404);
         Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.128"));
     }
 }
