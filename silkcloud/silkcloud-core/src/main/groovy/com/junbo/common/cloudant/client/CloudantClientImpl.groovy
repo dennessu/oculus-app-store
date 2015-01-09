@@ -13,6 +13,7 @@ import com.junbo.common.cloudant.model.CloudantReduceQueryResult
 import com.junbo.common.cloudant.model.CloudantResponse
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CloudantId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.util.Utils
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
@@ -262,7 +263,7 @@ class CloudantClientImpl implements CloudantClientInternal {
                                                                           Integer limit, Integer skip, boolean descending, boolean includeDocs) {
         def query = [:]
         if (key != null) {
-            query.put('key', "\"$key\"")
+            query.put('key', getEncodeParameterString(key))
         }
         if (limit != null) {
             query.put('limit', limit.toString())
@@ -289,7 +290,7 @@ class CloudantClientImpl implements CloudantClientInternal {
     public Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String key, String viewName) {
         def query = [:]
         if (key != null) {
-            query.put('key', "\"$key\"")
+            query.put('key', getEncodeParameterString(key))
         }
         query.put('include_docs', 'false')
         query.put('reduce', 'true')
@@ -440,7 +441,7 @@ class CloudantClientImpl implements CloudantClientInternal {
 
         keys.each { Object key ->
             if (key instanceof String) {
-                result.add('\"' + key + '\"')
+                result.add(getEncodeParameterString(key))
             } else {
                 result.add(key.toString())
             }
@@ -466,7 +467,7 @@ class CloudantClientImpl implements CloudantClientInternal {
 
         keys.each { Object key ->
             if (key instanceof String) {
-                result.add('\"' + key + '\"')
+                result.add(getEncodeParameterString(key))
             } else {
                 result.add(key.toString())
             }
@@ -600,5 +601,9 @@ class CloudantClientImpl implements CloudantClientInternal {
 
     public static ProxyServer getProxyServer() {
         return proxyServer;
+    }
+
+    public static String getEncodeParameterString(String raw) {
+        return ObjectMapperProvider.instance().writer().writeValueAsString(raw)
     }
 }

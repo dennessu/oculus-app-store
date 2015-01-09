@@ -1494,6 +1494,9 @@ public class LoginResourceTesting extends BaseTestClass {
         newTos = testDataProvider.lookupTos("TOS", "end user tos", 200);
         Assert.assertNotEquals(newTos.getTosId(), tos.getTosId());
         Assert.assertTrue(Double.valueOf(newTos.getVersion()) > Double.valueOf(tos.getVersion()));
+
+        newTos = testDataProvider.lookupTos("TO\"\"S", "end user tos", 404);
+        Assert.assertTrue(Master.getInstance().getApiErrorMsg().contains("130.128"));
     }
 
     @Test
