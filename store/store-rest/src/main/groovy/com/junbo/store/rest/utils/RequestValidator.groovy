@@ -480,11 +480,6 @@ class RequestValidator {
         notEmpty(iapConsumeItemRequest.useCountConsumed, 'useCountConsumed')
     }
 
-    public void validateLookupTosRequest(LookupTosRequest request) {
-        notEmpty(request.title, 'title')
-        notEmpty(request.type, 'type')
-    }
-
     private Promise<Boolean> isMailChanged(UserProfileUpdateRequest request, User currentUser) {
         if (StringUtils.isEmpty(request.userProfile?.email?.value)) {
             return Promise.pure(false)

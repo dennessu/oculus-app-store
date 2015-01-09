@@ -75,10 +75,8 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     }
 
     @Override
-    public Tos lookupTos(String type, String title, int expectedResponseCode) throws Exception {
-        String url = getEndPointUrl() + "/lookup-tos?";
-        url = appendQuery(url, "type", type);
-        url = appendQuery(url, "title", title);
+    public Tos getPrivacyPolicyTos(int expectedResponseCode) throws Exception {
+        String url = getEndPointUrl() + "/privacy-policy";
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
         if (expectedResponseCode == 200) {
             Tos response = new JsonMessageTranscoder().decode(new TypeReference<Tos>() {

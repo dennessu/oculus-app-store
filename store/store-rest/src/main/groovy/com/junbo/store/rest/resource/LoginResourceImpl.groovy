@@ -87,6 +87,9 @@ class LoginResourceImpl implements LoginResource {
     @Value('${store.tos.createtostype}')
     private String tosCreateUserType
 
+    @Value('${store.tos.privacytostype}')
+    private String privacyPolicyTosType
+
     @Resource(name = 'storeDataConverter')
     DataConverter dataConverter
 
@@ -410,30 +413,28 @@ class LoginResourceImpl implements LoginResource {
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
             localeId = apiContext.locale.getId()
             countryId = apiContext.country.getId()
-            return identityUtils.lookupTos(tosCreateUserType, localeId, countryId).then { com.junbo.store.spec.model.browse.document.Tos tos ->
-                if (tos == null) {
+            return identityUtils.lookupTos(tosCreateUserType, localeId, countryId).then { List<Tos> tosList ->
+                if (CollectionUtils.isEmpty(tosList)) {
                     throw AppErrors.INSTANCE.RegisterTosNotFound().exception()
                 }
-                return Promise.pure(tos)
+                return Promise.pure(dataConverter.toStoreTos(tosList[0], null, localeId));
             }
         }
     }
 
     @Override
-    Promise<com.junbo.store.spec.model.browse.document.Tos> lookupTos(LookupTosRequest lookupTosRequest) {
+    Promise<com.junbo.store.spec.model.browse.document.Tos> getPrivacyPolicy() {
         LocaleId localeId = null
         CountryId countryId = null
-        requestValidator.validateRequiredApiHeaders().validateLookupTosRequest(lookupTosRequest)
 
         return apiContextBuilder.buildApiContext().then { com.junbo.store.spec.model.ApiContext apiContext ->
             localeId = apiContext.locale.getId()
             countryId = apiContext.country.getId()
-            return identityUtils.lookupTos(lookupTosRequest.type, localeId, countryId).then {
-                com.junbo.store.spec.model.browse.document.Tos tos ->
-                if (tos == null) {
+            return identityUtils.lookupTos(privacyPolicyTosType, localeId, countryId).then { List<Tos> tosList ->
+                if (CollectionUtils.isEmpty(tosList)) {
                     throw AppErrors.INSTANCE.tosNotFound().exception()
                 }
-                return Promise.pure(tos)
+                return Promise.pure(dataConverter.toStoreTos(tosList[0], null, localeId));
             }
         }
     }

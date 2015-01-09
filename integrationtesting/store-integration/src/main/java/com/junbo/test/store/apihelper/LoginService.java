@@ -48,5 +48,5 @@ public interface LoginService {
 
     GetSupportedCountriesResponse getSupportedCountryCodes() throws Exception;
 
-    Tos lookupTos(String type, String title, int expectedResponseCode) throws Exception;
+    Tos getPrivacyPolicyTos(int expectedResponseCode) throws Exception;
 }

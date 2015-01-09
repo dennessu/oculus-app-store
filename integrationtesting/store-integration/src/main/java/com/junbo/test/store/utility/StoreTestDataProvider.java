@@ -855,6 +855,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         identityClient.updateTos(type, status);
     }
 
+    public void UpdateTos(String type, String status, boolean increaseMinorVersion) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
+        identityClient.updateTos(type, null, status, increaseMinorVersion);
+    }
+
     public void UpdateTos(TosId tosId) throws Exception {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
         identityClient.updateTos(tosId);
@@ -990,7 +995,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         identityClient.PutUser(IdFormatter.encodeId(user.getId()), user, 200, true);
     }
 
-    public Tos lookupTos(String type, String title, int expectedCode) throws Exception  {
-        return loginClient.lookupTos(type, title, expectedCode);
+    public Tos lookupTos(int expectedCode) throws Exception  {
+        return loginClient.getPrivacyPolicyTos(expectedCode);
     }
 }
