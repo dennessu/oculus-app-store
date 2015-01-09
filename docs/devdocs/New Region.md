@@ -545,8 +545,6 @@ Copy the zip file from `apphost/apphost-cli/build/distributions/` to your deploy
 
 Go to the ansible folder of the deployment server and pull the hosts change.
 
-Download the latest newrelic jar and configure the license file. Put the files in `/home/devops/newrelic`.
-
 Prepare the JKS file used to encrypt crypto key. They are found in `/etc/silkcloud/encryptKeyStore.jks` of existing crypto-app servers. Copy the file to `/home/devops/encryptKeyStore.jks`
 
 ### Test Connection to New Servers
@@ -563,7 +561,7 @@ For more information about the playbook, refer to [Silkcloud Playbook](https://g
 
 1. Init servers
 ```
-ansible-playbook -i prod.hosts initserver.yml -e "jkskeypath=/home/devops/encryptKeyStore.jks" --limit eu
+ansible-playbook -i prod.hosts initserver.yml -e "jkskeypath=/home/devops/encryptKeyStore.jks DATABASE_PASSWORD_HASH=xxxxx" --limit eu
 ```
 
 1. Install fbservices
@@ -600,13 +598,13 @@ ansible-playbook -i prod.hosts logstash.yml --limit eu
 
 1. Setup Utility in new region
 ```
-ansible-playbook -i prod.hosts upgrade-utl.yml -e "sourcedir=/home/devops appname=apphost-cli-0.0.1-SNAPSHOT newrelicdir=/home/devops/newrelic" --limit eu-utl
+ansible-playbook -i prod.hosts upgrade-utl.yml -e "sourcedir=/home/devops appname=apphost-cli-0.0.1-SNAPSHOT" --limit eu-utl
 ```
 
 1. Setup Apps in new region
 
   ```
-  ansible-playbook -i prod.hosts upgrade-app.yml -e "sourcedir=/home/devops appname=apphost-cli-0.0.1-SNAPSHOT newrelicdir=/home/devops/newrelic" --limit eu-app:eu-cryptoapp
+  ansible-playbook -i prod.hosts upgrade-app.yml -e "sourcedir=/home/devops appname=apphost-cli-0.0.1-SNAPSHOT" --limit eu-app:eu-cryptoapp
   ```
 
 1. Run dataloader in new region
