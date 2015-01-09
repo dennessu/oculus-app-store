@@ -51,7 +51,7 @@ class CoreUtils {
             return false
         }
         if (order.orderItems.any { OrderItem oi ->
-            oi.type == ItemType.GIFT_CARD.name()
+            oi.type == ItemType.EWALLET.name()
         }) {
             return true
         }
