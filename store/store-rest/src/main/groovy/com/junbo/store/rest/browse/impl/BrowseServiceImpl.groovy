@@ -97,8 +97,7 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
     ] as Set
 
     private Set<String> iapLibraryItemTypes = [
-            ItemType.CONSUMABLE_UNLOCK.name(),
-            ItemType.PERMANENT_UNLOCK.name()
+            ItemType.ADDITIONAL_CONTENT.name()
     ] as Set
 
     @Override

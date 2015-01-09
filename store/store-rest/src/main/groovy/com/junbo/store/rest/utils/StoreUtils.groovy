@@ -38,7 +38,6 @@ class StoreUtils {
         valuesMap.put('useCount', item.useCount)
         valuesMap.put('sku', item.iapDetails.sku)
         valuesMap.put('type', item.itemType)
-        valuesMap.put('isConsumable', item.itemType == ItemType.CONSUMABLE_UNLOCK.name())
         valuesMap.put('signatureTimestamp', System.currentTimeMillis())
         String jsonText = ObjectMapperProvider.instance().writeValueAsString(valuesMap)
 

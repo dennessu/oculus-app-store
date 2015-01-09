@@ -140,7 +140,7 @@ class EntitlementFacadeImpl implements EntitlementFacade {
         result.entitlementType = sewerEntitlement.type
         result.itemType = sewerItem.type
         result.item = new ItemId(sewerItem.itemId)
-        boolean isIAP = (result.itemType == ItemType.CONSUMABLE_UNLOCK.name()) || (result.itemType == ItemType.PERMANENT_UNLOCK.name())
+        boolean isIAP = (result.itemType == ItemType.ADDITIONAL_CONTENT.name());
         if (includeDetails) {
             result.itemDetails = itemBuilder.buildItem(sewerItem, Images.BuildType.Item_Details, apiContext)
             if (isIAP && result.itemDetails != null) {
