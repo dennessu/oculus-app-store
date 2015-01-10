@@ -13,10 +13,7 @@ import java.util.List;
  * Item type.
  */
 public enum ItemType {
-    PHYSICAL, APP, EWALLET, SUBSCRIPTION, ADDITIONAL_CONTENT,
-
-    // Below are deprecated types, will be deleted
-    DOWNLOADED_ADDITION, PERMANENT_UNLOCK, CONSUMABLE_UNLOCK, VIDEO, PHOTO;
+    PHYSICAL, APP, EWALLET, SUBSCRIPTION, ADDITIONAL_CONTENT;
 
     public static final List<ItemType> ALL = Arrays.asList(ItemType.values());
 
