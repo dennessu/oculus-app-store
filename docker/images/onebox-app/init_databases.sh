@@ -34,7 +34,7 @@ python $SC_APP_DIR/dbsetup/couchdb/couchdbcmd.py createdbs $SC_ENVIRONMENT --pre
 echo "## couchdb/cloudant dbs created."
 
 # disable memcached here, otherwise it would be slow to load data.
-JAVA_OPTS="-Dcommon.memcached.enabled=false" /var/silkcloud/apphost/dataloader.sh
+SC_DL_SINGLE_THREAD=true JAVA_OPTS="-Dcommon.memcached.enabled=false" /var/silkcloud/apphost/dataloader.sh
 echo "## domain data loaded."
 
 echo "#### finished preparing databases."

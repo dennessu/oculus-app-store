@@ -40,11 +40,18 @@ class DataLoader {
     private static List<String> dataList
     private static Set<String> serialDataList
     private static String env = "_default"
+    private static Boolean forceSingleThread = false
     static PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(this.class.classLoader)
 
     static void main(String[] args) {
         try {
             configLog()
+
+            String scDataloaderSingleThread = System.getenv("SC_DL_SINGLE_THREAD")
+            if (scDataloaderSingleThread != null && scDataloaderSingleThread.toLowerCase().equals("true")) {
+                forceSingleThread = true
+                LOGGER.info("Force using single thread to load")
+            }
 
             LOGGER.info("loading spring context start")
             ApplicationContext applicationContext = new JunboApplication.JunboApplicationContext(
@@ -147,12 +154,15 @@ class DataLoader {
                 DataHandler handler = handlers[data]
                 resources = handler.resolveDependencies(resources)
 
-                if (isSerial) {
+                if (isSerial || forceSingleThread) {
                     resources.each { Resource resource ->
                         if (handler != null) {
+                            long startTime = System.currentTimeMillis()
                             LOGGER.info("handling resource: " + data + " " + resource.filename)
                             String content = IOUtils.toString(resource.URI, "UTF-8")
                             handler.handle(content)
+                            LOGGER.info("Finished handling resource " + data + " " + resource.filename + " ElapsedMS: " +
+                                (System.currentTimeMillis() - startTime))
                         } else {
                             LOGGER.error("no handler for $data")
                             fail()
@@ -165,9 +175,12 @@ class DataLoader {
                             void run() {
                                 try {
                                     if (handler != null) {
+                                        long startTime = System.currentTimeMillis()
                                         LOGGER.info("handling resource: " + data + " " + resource.filename)
                                         String content = IOUtils.toString(resource.URI, "UTF-8")
                                         handler.handle(content)
+                                        LOGGER.info("Finished handling resource " + data + " " + resource.filename +
+                                            " ElapsedMS: " + (System.currentTimeMillis() - startTime))
                                     } else {
                                         LOGGER.error("no handler for $data")
                                         fail()
@@ -188,7 +201,7 @@ class DataLoader {
                 fail()
             }
 
-            if (!isSerial) {
+            if (!(isSerial || forceSingleThread)) {
                 latch.await()
             }
         }
