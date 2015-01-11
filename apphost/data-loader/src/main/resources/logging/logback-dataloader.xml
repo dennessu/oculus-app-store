@@ -18,7 +18,7 @@
             com.google.common.util.concurrent,
             com.junbo.langur.core.promise" />
 
-    <property name="CONSOLE_LOG_PATTERN" value="%clr(%-10p) %clr(%-40.40logger{39}){cyan} %clr(:){bold} %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%d{HH:mm:ss.SSS} %clr(%-5p) %clr(%-20.20logger{19}){cyan} %clr(:){bold} %m%n%wex{${EXCEPTION_IGNORED_PACKAGES}}"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
