@@ -108,8 +108,19 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     }
 
     @Override
+    public Item getEntity(String entityId) {
+        Item item = getEntityRepo().get(entityId);
+        checkEntityNotNull(entityId, item, getEntityType());
+        return normalizeLegacy(item);
+    }
+
+    @Override
     public List<Item> getItems(ItemsGetOptions options) {
-        return itemRepo.getItems(options);
+        List<Item> items = itemRepo.getItems(options);
+        for (Item item : items) {
+            normalizeLegacy(item);
+        }
+        return items;
     }
 
     @Override
@@ -209,6 +220,28 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     @Override
     protected String getRevisionType() {
         return "item-revision";
+    }
+
+    private Item normalizeLegacy(Item item) {
+        if (item==null) {
+            return null;
+        }
+        if (ItemType.APP.is(item.getType())) {
+            if (item.getIsDownloadable()==null) {
+                item.setIsDownloadable(true);
+            }
+            if (item.getMaxNumberOfPurchase()==null) {
+                item.setMaxNumberOfPurchase(1);
+            }
+        } else if (ItemType.PHYSICAL.is(item.getType())) {
+            if (item.getIsDownloadable()==null) {
+                item.setIsDownloadable(false);
+            }
+            if (item.getMaxNumberOfPurchase()==null) {
+                item.setMaxNumberOfPurchase(MAX_NUMBER_OF_PURCHASE);
+            }
+        }
+        return item;
     }
 
     private void generateEntitlementDef(ItemRevision revision, Item item) {
