@@ -1,5 +1,8 @@
 package com.junbo.store.rest.utils
 
+import com.junbo.common.id.ItemId
+import com.junbo.common.id.UserId
+import com.junbo.common.util.IdFormatter
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.crypto.spec.model.ItemCryptoMessage
 import com.junbo.langur.core.promise.Promise
@@ -25,20 +28,18 @@ class StoreUtils {
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
-    Promise<Item> signIAPPurchase(Entitlement entitlement, HostItemInfo hostItemInfo) {
-        Item item = entitlement.itemDetails
-        Assert.notNull(item)
-        Assert.notNull(item.iapDetails)
-
+    Promise<Item> signIAPItem(UserId userId, Item item, ItemId hostItemId) {
+        Assert.isTrue(item.iapDetails != null)
         Map<String, Object> valuesMap = new HashMap<>()
-        valuesMap.put('packageName', hostItemInfo.packageName)
+        valuesMap.put('userId', IdFormatter.encodeId(userId))
+        valuesMap.put('useCount', item.useCount)
         valuesMap.put('sku', item.iapDetails.sku)
         valuesMap.put('type', item.itemType)
         valuesMap.put('signatureTimestamp', System.currentTimeMillis())
         String jsonText = ObjectMapperProvider.instance().writeValueAsString(valuesMap)
-        item.payload = jsonText
 
-        return resourceContainer.itemCryptoResource.sign(hostItemInfo.hostItemId.value, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
+        item.payload = jsonText
+        return resourceContainer.itemCryptoResource.sign(hostItemId.value, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
             item.signature = itemCryptoMessage.message
             return Promise.pure(item)
         }

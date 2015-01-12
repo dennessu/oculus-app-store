@@ -148,9 +148,9 @@ class IAPResourceImpl implements IAPResource {
         if (entitlement.user != apiContext.user) {
             throw AppErrors.INSTANCE.invalidIAPPurchaseToken().exception()
         }
-        if (entitlement.itemType != ItemType.CONSUMABLE_UNLOCK.name()) {
-            throw AppErrors.INSTANCE.iapPurchaseNotConsumable().exception()
-        }
+        //if (entitlement.itemType != ItemType.CONSUMABLE_UNLOCK.name()) {
+        //    throw AppErrors.INSTANCE.iapPurchaseNotConsumable().exception()
+        //}
         facadeContainer.catalogFacade.checkHostItem(entitlement.item, hostItemId).then { Boolean hosted ->
             if (!hosted) {
                 throw AppErrors.INSTANCE.invalidIAPPurchaseToken().exception()

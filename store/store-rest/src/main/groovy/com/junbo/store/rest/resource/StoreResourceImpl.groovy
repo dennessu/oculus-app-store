@@ -704,7 +704,7 @@ class StoreResourceImpl implements StoreResource {
         facadeContainer.entitlementFacade.getEntitlementsByIds(entitlementIds, true, apiContext).then { List<Entitlement> entitlements ->
             Promise.each(entitlements) { Entitlement e ->
                 if (e.itemType == ItemType.ADDITIONAL_CONTENT.name()|| e.itemType == ItemType.ADDITIONAL_CONTENT.name()) { // iap
-                    return storeUtils.signIAPItem(apiContext.user, e.itemDetails, hostItemId)
+                    return storeUtils.signIAPItem(apiContext.user, e.itemDetails, hostItemInfo.hostItemId)
                 }
                 return Promise.pure()
             }.then {

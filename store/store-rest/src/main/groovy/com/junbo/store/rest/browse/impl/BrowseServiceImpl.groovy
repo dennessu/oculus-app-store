@@ -122,9 +122,7 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
         }.then { Item item ->
             decorateItem(true, includeDetails, apiContext, item).then {
                 DetailsResponse response = new DetailsResponse(item: item)
-                if (item.itemType != ItemType.CONSUMABLE_UNLOCK.name() && item.itemType != ItemType.PERMANENT_UNLOCK.name()) {
-                    responseValidator.validateItemDetailsResponse(response)
-                }
+                responseValidator.validateItemDetailsResponse(response)
                 return Promise.pure(response)
             }
         }
@@ -206,7 +204,7 @@ class BrowseServiceImpl implements BrowseService, InitializingBean {
             if (isIAP) {
                 return Promise.each(entitlementList) { com.junbo.store.spec.model.Entitlement entitlement ->
                     Assert.notNull(hostItemInfo)
-                    storeUtils.signIAPPurchase(entitlement, hostItemInfo)
+                    storeUtils.signIAPItem(apiContext.user, entitlement.itemDetails, hostItemInfo.hostItemId)
                 }
             }
             fillCurrentUserReview(result?.items, apiContext).then {

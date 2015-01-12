@@ -410,9 +410,6 @@ class ItemBuilder {
     }
 
     private void fillNullValueWithDefault(Item item, boolean offerAvailable) {
-        if (item.itemType == ItemType.PERMANENT_UNLOCK.name() || item.itemType == ItemType.CONSUMABLE_UNLOCK.name()) {
-            return
-        }
         item.title = CommonUtils.toDefaultIfNull(item.title)
         item.descriptionHtml = CommonUtils.toDefaultIfNull(item.descriptionHtml)
         item.creator = CommonUtils.toDefaultIfNull(item.creator)
