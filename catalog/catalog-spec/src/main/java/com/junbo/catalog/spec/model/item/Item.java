@@ -26,8 +26,19 @@ public class Item extends BaseEntityModel {
     private String itemId;
 
     @ApiModelProperty(position = 2, required = true, value = "Item type", allowableValues =
-            "PHYSICAL, APP, DOWNLOADED_ADDITION, STORED_VALUE, SUBSCRIPTION, PERMANENT_UNLOCK, CONSUMABLE_UNLOCK")
+            "PHYSICAL, APP, EWALLET, SUBSCRIPTION")
     private String type;
+
+    @ApiModelProperty(position = 3, required = false, value = "Item type that describes the Content Type of the item if it's an ADDITIONAL_CONTENT item", allowableValues =
+            "VIDEO, PHOTO, DOWNLOADABLE_ADDITION")
+    private String subtype;
+
+    @ApiModelProperty(position = 4, required = true, value = "Whether this item requires download. True if the itemType is APP, " +
+            " or itemType is ADDITIONAL_CONTENT and contentType in ['VIDEO', 'PHOTO', 'DOWNLOADABLE_ADDITION']")
+    private Boolean isDownloadable;
+
+    @ApiModelProperty(position = 5, required = true, value = "The Number of purchase can happen on this item. Value should be MAX for PHYSICAL, EWALLET, and SUBSCRIPTION. ")
+    private Integer maxNumberOfPurchase;
 
     @ItemRevisionId
     @JsonProperty("currentRevision")
@@ -76,6 +87,30 @@ public class Item extends BaseEntityModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getSubtype() {
+        return subtype;
+    }
+
+    public void setSubtype(String subtype) {
+        this.subtype = subtype;
+    }
+
+    public Boolean getIsDownloadable() {
+        return isDownloadable;
+    }
+
+    public void setIsDownloadable(Boolean isDownloadable) {
+        this.isDownloadable = isDownloadable;
+    }
+
+    public Integer getMaxNumberOfPurchase() {
+        return maxNumberOfPurchase;
+    }
+
+    public void setMaxNumberOfPurchase(Integer maxNumberOfPurchase) {
+        this.maxNumberOfPurchase = maxNumberOfPurchase;
     }
 
     @Override

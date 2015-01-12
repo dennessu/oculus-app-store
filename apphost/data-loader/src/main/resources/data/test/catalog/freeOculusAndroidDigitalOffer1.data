@@ -6,6 +6,9 @@
         "rev": null,
         "currentRevision": null,
         "revisions": null,
+        "isDownloadable": true,
+        "maxNumberOfPurchase": 1,
+        "subtype": null,
         "developer": {
             "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"

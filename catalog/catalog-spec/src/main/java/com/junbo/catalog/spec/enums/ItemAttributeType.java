@@ -22,6 +22,9 @@ public enum ItemAttributeType {
     }
 
     public static boolean contains(String type) {
+        if (type == null) {
+            return false;
+        }
         try {
             ItemAttributeType.valueOf(type);
         } catch (IllegalArgumentException e) {

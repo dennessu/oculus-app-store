@@ -41,7 +41,7 @@ public class ItemRevision extends BaseRevisionModel {
 
     @XSSFreeString
     @ApiModelProperty(position = 4, required = true,
-            value = " the name of the file when download from the Oculus platform, must have value when Item type is APP or DOWNLOADED_ADDITION, must be empty for other types")
+            value = " the name of the file when download from the Oculus platform, must have value when Item type is downloadable, must be empty for other types")
     private String downloadName;
 
     @XSSFreeString

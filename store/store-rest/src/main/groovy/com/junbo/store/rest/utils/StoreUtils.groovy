@@ -34,11 +34,7 @@ class StoreUtils {
         valuesMap.put('packageName', hostItemInfo.packageName)
         valuesMap.put('sku', item.iapDetails.sku)
         valuesMap.put('type', item.itemType)
-        if (entitlement.createdTime != null) {
-            valuesMap.put('purchaseTime', entitlement.createdTime.time)
-        }
-        valuesMap.put('developerPayload', entitlement.developerPayload)
-        valuesMap.put('iapPurchaseToken', entitlement.self.value)
+        valuesMap.put('signatureTimestamp', System.currentTimeMillis())
         String jsonText = ObjectMapperProvider.instance().writeValueAsString(valuesMap)
         item.payload = jsonText
 

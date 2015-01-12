@@ -167,6 +167,9 @@ class CatalogDataHandler extends BaseDataHandler {
                 ItemRevision hotsItemRevision = CloneUtils.clone(itemRevision)
 
                 hostItem.type = ItemType.APP
+                hostItem.isDownloadable = true
+                hostItem.maxNumberOfPurchase = 1
+                hostItem.subtype = null
                 String hostItemId = handle(hostItem)
 
                 hotsItemRevision.locales.get("en_US").name = "testItem_HostItem_" + UUID.randomUUID().toString()

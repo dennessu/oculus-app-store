@@ -216,19 +216,15 @@ class CatalogFacadeImpl implements CatalogFacade {
         }) {
             return ItemType.PHYSICAL_GOODS
         } else if (items.any { Item item ->
-            items.type == com.junbo.catalog.spec.enums.ItemType.STORED_VALUE.name()
+            items.type == com.junbo.catalog.spec.enums.ItemType.EWALLET.name()
         }) {
-            return ItemType.GIFT_CARD
+            return ItemType.EWALLET
         } else {
             def isDownloadable = items.any { Item item ->
-                item.type == com.junbo.catalog.spec.enums.ItemType.APP.name() ||
-                        item.type == com.junbo.catalog.spec.enums.ItemType.DOWNLOADED_ADDITION.name() ||
-                        item.type == com.junbo.catalog.spec.enums.ItemType.VIDEO.name() ||
-                        item.type == com.junbo.catalog.spec.enums.ItemType.PHOTO.name()
+                item.type == com.junbo.catalog.spec.enums.ItemType.APP.name()
             }
             def isDigitalContent = items.any { Item item ->
-                item.type == com.junbo.catalog.spec.enums.ItemType.PERMANENT_UNLOCK.name() ||
-                        item.type == com.junbo.catalog.spec.enums.ItemType.CONSUMABLE_UNLOCK.name()
+                item.type == com.junbo.catalog.spec.enums.ItemType.ADDITIONAL_CONTENT.name()
             }
             if (isDownloadable && isDigitalContent) {
                 throw AppErrors.INSTANCE.offerItemTypeNotValid().exception()

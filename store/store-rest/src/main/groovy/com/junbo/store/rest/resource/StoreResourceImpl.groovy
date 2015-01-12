@@ -703,11 +703,8 @@ class StoreResourceImpl implements StoreResource {
         // get entitlements
         facadeContainer.entitlementFacade.getEntitlementsByIds(entitlementIds, true, apiContext).then { List<Entitlement> entitlements ->
             Promise.each(entitlements) { Entitlement e ->
-                if (e.itemType == ItemType.CONSUMABLE_UNLOCK.name() || e.itemType == ItemType.PERMANENT_UNLOCK.name()) { // iap
-                    return facadeContainer.entitlementFacade.updateEntitlementDeveloperPayload(e.self, developerPayload).then {
-                        e.developerPayload = developerPayload
-                        return storeUtils.signIAPPurchase(e, hostItemInfo)
-                    }
+                if (e.itemType == ItemType.ADDITIONAL_CONTENT.name()|| e.itemType == ItemType.ADDITIONAL_CONTENT.name()) { // iap
+                    return storeUtils.signIAPItem(apiContext.user, e.itemDetails, hostItemId)
                 }
                 return Promise.pure()
             }.then {

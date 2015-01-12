@@ -35,6 +35,7 @@ import java.util.List;
  */
 public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OfferServiceImpl.class);
+    private static final Integer MAX_NUMBER_OF_PURCHASE = 1000000000;
 
     private ItemRepository itemRepo;
     private ItemRevisionRepository itemRevisionRepo;
@@ -107,8 +108,19 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     }
 
     @Override
+    public Item getEntity(String entityId) {
+        Item item = getEntityRepo().get(entityId);
+        checkEntityNotNull(entityId, item, getEntityType());
+        return normalizeLegacy(item);
+    }
+
+    @Override
     public List<Item> getItems(ItemsGetOptions options) {
-        return itemRepo.getItems(options);
+        List<Item> items = itemRepo.getItems(options);
+        for (Item item : items) {
+            normalizeLegacy(item);
+        }
+        return items;
     }
 
     @Override
@@ -135,7 +147,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         if (Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus())) {
             revisionValidator.validateFull(revision, oldRevision);
             Item item = itemRepo.get(revision.getItemId());
-            generateEntitlementDef(revision, item.getType());
+            generateEntitlementDef(revision, item);
             if (Status.APPROVED.is(revision.getStatus())) {
                 revision.setTimestamp(Utils.currentTimestamp());
 
@@ -210,20 +222,43 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         return "item-revision";
     }
 
-    private void generateEntitlementDef(ItemRevision revision, String itemType) {
+    private Item normalizeLegacy(Item item) {
+        if (item==null) {
+            return null;
+        }
+        if (ItemType.APP.is(item.getType())) {
+            if (item.getIsDownloadable()==null) {
+                item.setIsDownloadable(true);
+            }
+            if (item.getMaxNumberOfPurchase()==null) {
+                item.setMaxNumberOfPurchase(1);
+            }
+        } else if (ItemType.PHYSICAL.is(item.getType())) {
+            if (item.getIsDownloadable()==null) {
+                item.setIsDownloadable(false);
+            }
+            if (item.getMaxNumberOfPurchase()==null) {
+                item.setMaxNumberOfPurchase(MAX_NUMBER_OF_PURCHASE);
+            }
+        }
+        return item;
+    }
+
+    private void generateEntitlementDef(ItemRevision revision, Item item) {
         if (revision.getEntitlementDefs() == null) {
             revision.setEntitlementDefs(new ArrayList<EntitlementDef>());
         }
         List<EntitlementDef> entitlementDefs = revision.getEntitlementDefs();
-        if (ItemType.APP.is(itemType) || ItemType.VIDEO.is(itemType) || ItemType.PHOTO.is(itemType)) {
+        String itemType = item.getType(), itemSubtype = item.getSubtype();
+        if (ItemType.APP.is(itemType) || ItemType.ADDITIONAL_CONTENT.is(itemType) && (ItemSubtype.PHOTO.is(itemSubtype) || ItemSubtype.VIDEO.is(itemSubtype))) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.RUN, false);
-        } else if (ItemType.DOWNLOADED_ADDITION.is(itemType)) {
+        } else if (ItemType.ADDITIONAL_CONTENT.is(itemType) && ItemSubtype.DOWNLOADABLE_ADDITION.is(itemSubtype)) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, false);
-        } else if (ItemType.PERMANENT_UNLOCK.is(itemType)) {
+        } else if (ItemType.ADDITIONAL_CONTENT.is(itemType) && itemSubtype == null && item.getMaxNumberOfPurchase()==1) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, false);
-        } else if (ItemType.CONSUMABLE_UNLOCK.is(itemType)) {
+        } else if (ItemType.ADDITIONAL_CONTENT.is(itemType) && itemSubtype == null && item.getMaxNumberOfPurchase()!=1) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, true);
         }
     }
@@ -302,8 +337,35 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     }
 
     private void validateItemCommon(Item item, List<AppError> errors) {
-        if (item.getType() == null || !ItemType.contains(item.getType())) {
+        if (!ItemType.contains(item.getType())) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("type", Joiner.on(", ").join(ItemType.values())));
+        }
+        if (ItemType.ADDITIONAL_CONTENT.is(item.getType())) {
+            if (item.getSubtype() != null && !ItemSubtype.contains(item.getSubtype())) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("subtype", Joiner.on(", ").join(ItemSubtype.values()) + ", null"));
+            }
+        } else if (item.getSubtype() != null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("subtype"));
+        }
+        if (ItemType.APP.is(item.getType()) || ItemType.ADDITIONAL_CONTENT.is(item.getType()) && ItemSubtype.contains(item.getSubtype())) {
+            if (item.getIsDownloadable() != Boolean.TRUE) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isDownloadable", "Expected value is true."));
+            }
+            if (item.getMaxNumberOfPurchase()==null || item.getMaxNumberOfPurchase() != 1) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("maxNumberOfPurchase", "Expected value is 1"));
+            }
+        } else if (item.getIsDownloadable() != Boolean.FALSE) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isDownloadable", "Expected value is false"));
+        }
+        if (ItemType.PHYSICAL.is(item.getType()) || ItemType.SUBSCRIPTION.is(item.getType()) || ItemType.EWALLET.is(item.getType())) {
+            if (item.getMaxNumberOfPurchase()==null || item.getMaxNumberOfPurchase()<MAX_NUMBER_OF_PURCHASE) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("maxNumberOfPurchase", "should be greater than or equals to " + MAX_NUMBER_OF_PURCHASE));
+            }
+        }
+        if (ItemType.ADDITIONAL_CONTENT.is(item.getType()) && item.getSubtype() == null) {
+            if (item.getMaxNumberOfPurchase() == null || item.getMaxNumberOfPurchase() !=1 && item.getMaxNumberOfPurchase() < MAX_NUMBER_OF_PURCHASE) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("maxNumberOfPurchase", "should be either 1 or not less than " + MAX_NUMBER_OF_PURCHASE));
+            }
         }
         if (item.getDefaultOffer() != null) {
             Offer offer = offerRepo.get(item.getDefaultOffer());

@@ -27,6 +27,9 @@ public enum Status {
     }
 
     public static boolean contains(String status) {
+        if (status == null) {
+            return false;
+        }
         try {
             Status.valueOf(status);
         } catch (IllegalArgumentException e) {

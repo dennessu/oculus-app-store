@@ -126,6 +126,9 @@ class CatalogTests(ut.TestBase):
             "currentRevision": None,
             "revisions": None,
             "type": "APP",
+            "isDownloadable": True,
+            "maxNumberOfPurchase": 1,
+            "subtype": None,
             "developer": organization['self']
         })
 
@@ -142,6 +145,9 @@ class CatalogTests(ut.TestBase):
             "currentRevision": None,
             "revisions": None,
             "type": "APP",
+            "isDownloadable": True,
+            "maxNumberOfPurchase": 1,
+            "subtype": None,
             "developer": organization['self']
         })
         itemRev = curlJson('POST', ut.test_uri, '/v1/item-revisions', headers = {
@@ -168,8 +174,7 @@ class CatalogTests(ut.TestBase):
         offer['isPublished'] = True
         errorResp = curlJson('PUT', ut.test_uri, offer['self']['href'], headers = {
             "Authorization": "Bearer " + adminToken
-        }, data = offer, raiseOnError = False)
-        assert errorResp['message'] == 'Input Error'
+        }, data = offer)
 
         offerRev = curlJson('POST', ut.test_uri, '/v1/offer-revisions', headers = {
             "Authorization": "Bearer " + user.access_token
@@ -219,6 +224,9 @@ class CatalogTests(ut.TestBase):
             "currentRevision": None,
             "revisions": None,
             "type": "APP",
+            "isDownloadable": True,
+            "maxNumberOfPurchase": 1,
+            "subtype": None,
             "developer": organization1['self']
         })
 

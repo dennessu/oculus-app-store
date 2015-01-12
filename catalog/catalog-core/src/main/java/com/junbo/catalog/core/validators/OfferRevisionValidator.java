@@ -26,7 +26,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,16 +37,6 @@ public class OfferRevisionValidator extends ValidationSupport {
     private OfferRepository offerRepo;
     private ItemRepository itemRepo;
     private OrganizationFacade organizationFacade;
-    private static final Map<String, String> PRODUCT_CODE_MAP = new HashMap<>();
-    static {
-        PRODUCT_CODE_MAP.put(ItemType.PHYSICAL.name(), "PHYSICAL_GOODS");
-        PRODUCT_CODE_MAP.put(ItemType.APP.name(), "DOWNLOADABLE_SOFTWARE");
-        PRODUCT_CODE_MAP.put(ItemType.DOWNLOADED_ADDITION.name(), "DOWNLOADABLE_SOFTWARE");
-        PRODUCT_CODE_MAP.put(ItemType.PERMANENT_UNLOCK.name(), "DIGITAL_CONTENT");
-        PRODUCT_CODE_MAP.put(ItemType.CONSUMABLE_UNLOCK.name(), "DIGITAL_CONTENT");
-        PRODUCT_CODE_MAP.put(ItemType.STORED_VALUE.name(), "GIFT_CARD");
-        PRODUCT_CODE_MAP.put(ItemType.SUBSCRIPTION.name(), "SUBSCRIPTION");
-    }
 
     @Required
     public void setOfferRepo(OfferRepository offerRepo) {
@@ -257,7 +246,7 @@ public class OfferRevisionValidator extends ValidationSupport {
                     if (Status.APPROVED.is(revision.getStatus()) && item.getCurrentRevisionId() == null){
                         errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "Item " + item.getItemId() + " does not have an approved revision"));
                     }
-                    if (ItemType.STORED_VALUE.is(item.getType())) {
+                    if (ItemType.EWALLET.is(item.getType())) {
                         svItemId = item.getItemId();
                     }
                     if (itemEntry.getQuantity() == null) {
@@ -274,7 +263,7 @@ public class OfferRevisionValidator extends ValidationSupport {
                 }
             }
             if (svItemId != null && revision.getItems().size() > 1) {
-                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "STORED_VALUE item is mutually exclusive with other items in an offer"));
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "EWALLET item is mutually exclusive with other items in an offer"));
             }
             validateWalletAction(svItemId, revision.getEventActions(), errors);
         }

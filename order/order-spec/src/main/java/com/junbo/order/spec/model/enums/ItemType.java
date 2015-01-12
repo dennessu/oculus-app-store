@@ -15,7 +15,7 @@ import javax.ws.rs.NotSupportedException;
 public enum ItemType implements Identifiable<Short> {
     DIGITAL(0),
     PHYSICAL_GOODS(1),
-    GIFT_CARD(2),
+    EWALLET(2),
     DOWNLOADABLE_SOFTWARE(3),
     DIGITAL_CONTENT(4),
     SHIPPING_AND_HANDLING(5);

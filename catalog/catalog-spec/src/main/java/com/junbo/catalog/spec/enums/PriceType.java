@@ -22,6 +22,9 @@ public enum PriceType {
     }
 
     public static boolean contains(String type) {
+        if (type == null) {
+            return false;
+        }
         try {
             PriceType.valueOf(type);
         } catch (IllegalArgumentException e) {

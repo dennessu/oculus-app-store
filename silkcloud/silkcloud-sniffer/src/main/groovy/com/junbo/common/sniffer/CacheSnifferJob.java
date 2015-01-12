@@ -206,6 +206,10 @@ public class CacheSnifferJob implements InitializingBean {
                 return;
             }
 
+            // TODO: remove after next deployment
+            String oldRawCacheEntityKey = entityIdStr + ":" + database + ":" + cloudantUri.getDc();
+            invalidateCache(change, changes, oldRawCacheEntityKey, "_rev");
+
             String databaseWithoutPrefix = SnifferUtils.removePrefix(database, dbNamePrefix);
             String rawCacheEntityKey = entityIdStr + ":" + databaseWithoutPrefix;
             invalidateCache(change, changes, rawCacheEntityKey, "_rev");

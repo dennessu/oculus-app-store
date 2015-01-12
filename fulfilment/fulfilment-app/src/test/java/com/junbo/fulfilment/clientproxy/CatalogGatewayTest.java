@@ -78,7 +78,7 @@ public class CatalogGatewayTest extends BaseTest {
 
         // create item
         Item item = new Item();
-        item.setType(ItemType.STORED_VALUE.name());
+        item.setType(ItemType.EWALLET.name());
         item.setOwnerId(ownerId);
 
         final String itemId = megaGateway.createItem(item);

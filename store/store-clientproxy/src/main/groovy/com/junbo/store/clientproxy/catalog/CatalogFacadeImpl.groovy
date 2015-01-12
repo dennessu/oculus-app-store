@@ -15,7 +15,6 @@ import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.ItemId
 import com.junbo.common.id.ItemRevisionId
-import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Organization
@@ -29,7 +28,6 @@ import com.junbo.store.clientproxy.utils.ReviewBuilder
 import com.junbo.store.common.cache.Cache
 import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.error.AppErrors
-import com.junbo.store.spec.exception.casey.CaseyException
 import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.browse.document.RevisionNote
 import com.junbo.store.spec.model.catalog.Offer
@@ -91,7 +89,7 @@ class CatalogFacadeImpl implements CatalogFacade {
             result.setId(offerId)
             Promise.each(offerRevision.items) { ItemEntry itemEntry ->
                 resourceContainer.itemResource.getItem(itemEntry.itemId).then { com.junbo.catalog.spec.model.item.Item catalogItem ->
-                    if (catalogItem.type == ItemType.STORED_VALUE.name()) {
+                    if (catalogItem.type == ItemType.EWALLET.name()) {
                         result.hasStoreValueItem = true
                     }
                     if (catalogItem.type == ItemType.PHYSICAL.name()) {

@@ -109,7 +109,8 @@ class ItemBuilder {
         result.creator = developer
         result.self = caseyItem?.self
         result.images = buildImages(caseyOffer?.images, type)
-        if (result.itemType == ItemType.CONSUMABLE_UNLOCK.name() || result.itemType == ItemType.PERMANENT_UNLOCK.name()) {
+        result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext)
+        if (result.itemType == ItemType.ADDITIONAL_CONTENT.name()) {
             result.iapDetails = buildIAPDetails(caseyItem?.sku)
         } else {
             result.appDetails = buildAppDetails(caseyOffer, caseyItem, publisher, developer, apiContext)
@@ -167,7 +168,7 @@ class ItemBuilder {
         item.images = buildImages(itemLocaleProperties?.images, type)
         item.supportedLocales = currentRevision?.supportedLocales
         item.creator = developer?.name
-        if (item.itemType == ItemType.CONSUMABLE_UNLOCK.name() || item.itemType == ItemType.PERMANENT_UNLOCK.name()) {
+        if (item.itemType == ItemType.ADDITIONAL_CONTENT.name()) {
             item.iapDetails = buildIAPDetails(currentRevision?.sku)
         } else {
             item.appDetails = buildAppDetails(currentRevision, categories, genres, developer, itemLocaleProperties, apiContext)
