@@ -13,6 +13,8 @@ public enum StoreApiHeader {
 
     ANDROID_ID("X-ANDROID-ID"),
 
+    DEVICE_ID("X-DEVICE-ID"),
+
     ACCEPT_LANGUAGE("Accept-Language"),
 
     USER_AGENT("User-Agent"),

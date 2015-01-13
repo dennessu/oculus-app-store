@@ -27,6 +27,8 @@ public class ApiContext {
 
     private String androidId;
 
+    private String deviceId;
+
     private String userAgent;
 
     private UserId user;
@@ -78,6 +80,14 @@ public class ApiContext {
 
     public void setAndroidId(String androidId) {
         this.androidId = androidId;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public String getUserAgent() {
