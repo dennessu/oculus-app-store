@@ -398,6 +398,7 @@
                 <value>countries</value>
                 <value>locales</value>
                 <value>version</value>
+                <value>title</value>
                 <value>content</value>
                 <value>state</value>
                 <value>coveredLocales</value>
@@ -420,6 +421,7 @@
                 <value>countries</value>
                 <value>locales</value>
                 <value>version</value>
+                <value>title</value>
                 <value>content</value>
                 <value>state</value>
                 <value>coveredLocales</value>
@@ -440,6 +442,7 @@
                 <value>countries</value>
                 <value>locales</value>
                 <value>version</value>
+                <value>title</value>
                 <value>content</value>
                 <value>state</value>
                 <value>coveredLocales</value>
