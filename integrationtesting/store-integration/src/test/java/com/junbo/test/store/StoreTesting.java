@@ -313,6 +313,7 @@ public class StoreTesting extends BaseTestClass {
     )
     @Test
     public void testMakeFreePurchase() throws Exception {
+        List<String> initialItems = new ArrayList<>(testDataProvider.getInitialItems("android-initial-app", "offers"));
         CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         validationHelper.verifyEmailInAuthResponse(authTokenResponse, createUserRequest.getEmail(), false);
@@ -323,7 +324,6 @@ public class StoreTesting extends BaseTestClass {
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
         validationHelper.verifyEmailInAuthResponse(signInResponse, createUserRequest.getEmail(), true);
 
-        List<String> initialItems = new ArrayList<>(testDataProvider.getInitialItems("android-initial-app", "offers"));
 
         LibraryResponse libraryResponse = testDataProvider.getLibrary();
 

@@ -61,10 +61,11 @@ class ApiContextBuilder {
         result.platform = Platform.ANDROID
         result.userAgent = getHeader(StoreApiHeader.USER_AGENT)
         result.androidId = getHeader(StoreApiHeader.ANDROID_ID)
+        result.deviceId = getHeader(StoreApiHeader.DEVICE_ID)
         result.user = (AuthorizeContext.currentUserId?.value == null || AuthorizeContext.currentUserId?.value == 0) ? null : AuthorizeContext.currentUserId
         String countryCode = getHeader(StoreApiHeader.IP_COUNTRY)
 
-        if (!androidIdPattern.matcher(result.androidId).matches()) {
+        if (!StringUtils.isEmpty(result.androidId) && !androidIdPattern.matcher(result.androidId).matches()) {
             LOGGER.warn('name=Invalid_AndroidId_Pattern, androidId={}', result.androidId)
         }
         Promise.pure().then { // get country.
