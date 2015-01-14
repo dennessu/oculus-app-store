@@ -1,4 +1,4 @@
-language: java
+cache: true
 
 jdk:
    - oraclejdk7
@@ -13,6 +13,9 @@ addons:
 branches:
   only:
     - release
+
+before_script:
+  - ./setupdb.sh
 
 script:
   - ./setupdb.sh
