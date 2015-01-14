@@ -173,12 +173,42 @@ class UserServiceImpl implements UserService {
 
     @Override
     Promise<UserId> getUserIdByUserEmail(String userEmail) {
-        return userPersonalInfoResource.list(new UserPersonalInfoListOptions(email: userEmail)).then { Results<UserPersonalInfo> results ->
+        return userPersonalInfoResource.list(new UserPersonalInfoListOptions(email: userEmail.toLowerCase(java.util.Locale.ENGLISH))).then { Results<UserPersonalInfo> results ->
             if (results == null || results.items == null || results.items.isEmpty()) {
                 throw AppErrors.INSTANCE.noAccountFound().exception()
             }
 
-            return Promise.pure(results.items.get(0).userId)
+            return getDefaultEmailUser(results.items).then { User user ->
+                if (user == null) {
+                    throw AppErrors.INSTANCE.noAccountFound().exception()
+                }
+
+                return Promise.pure(user.getId())
+            }
+        }
+    }
+
+    private Promise<User> getDefaultEmailUser(List<UserPersonalInfo> userPersonalInfoList) {
+        User user = null
+        return Promise.each(userPersonalInfoList) { UserPersonalInfo info ->
+            return userResource.get(info.userId, new UserGetOptions()).then { User existing ->
+                if (existing == null || CollectionUtils.isEmpty(existing.emails)) {
+                    return Promise.pure(null)
+                }
+
+                UserPersonalInfoLink existingLink = existing.emails.find { UserPersonalInfoLink link ->
+                    return link.isDefault && link.value == info.id
+                }
+
+                if (existingLink != null) {
+                    user = existing
+                    return Promise.pure(Promise.BREAK)
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(user)
         }
     }
 
