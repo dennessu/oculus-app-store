@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!-- mock -->
-    <import resource="classpath*:spring/*-context.xml"/>
+    <import resource="classpath*:spring/db-context.xml"/>
     <context:component-scan base-package="com.junbo.order.mock"/>
 
     <bean id="mockAuthSettleAction" class="com.junbo.order.core.impl.orderaction.AuthSettleAction">
@@ -49,9 +49,27 @@
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
     </bean>
 
+
+    <bean id="orderFlowDefLoader" class="com.junbo.langur.core.webflow.definition.FlowDefLoaderImpl"/>
+
+    <bean id="orderStateRepository" class="com.junbo.langur.core.webflow.state.DummyStateRepository"/>
+
+    <bean id="orderStateExecutorFactory" class="com.junbo.langur.core.webflow.executor.StateExecutorFactoryImpl"/>
+
+    <bean id="flowExecutor" class="com.junbo.langur.core.webflow.executor.FlowExecutorImpl">
+        <property name="flowDefLoader" ref="orderFlowDefLoader"/>
+        <property name="stateExecutorFactory" ref="orderStateExecutorFactory"/>
+        <property name="stateRepository" ref="orderStateRepository"/>
+    </bean>
+
+    <bean id="mockOrderValidator" class="com.junbo.order.core.impl.common.OrderValidator">
+        <property name="facadeContainer" ref="mockFacadeContainer" />
+    </bean>
+
     <bean id="mockOrderService" class="com.junbo.order.core.impl.order.OrderServiceImpl">
         <property name="facadeContainer" ref="mockFacadeContainer"/>
         <property name="flowExecutor" ref="flowExecutor"/>
+        <property name="orderValidator" ref="mockOrderValidator" />
         <property name="orderRepository" ref="orderRepositoryFacade"/>
         <property name="orderInternalService" ref="mockOrderInternalService"/>
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
@@ -72,6 +90,7 @@
     <bean id="mockOrderInternalService" class="com.junbo.order.core.impl.internal.impl.OrderInternalServiceImpl">
         <property name="facadeContainer" ref="mockFacadeContainer"/>
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+        <property name="orderValidator" ref="mockOrderValidator" />
     </bean>
 
     <bean id="mockOrderServiceContextBuilder" class="com.junbo.order.core.impl.order.OrderServiceContextBuilder">

@@ -1,4 +1,6 @@
 package com.junbo.order.core.orderflow
+
+import com.junbo.common.error.AppErrorException
 import com.junbo.order.core.BaseTest
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderServiceOperation
@@ -32,9 +34,13 @@ class FlowSelectorTest extends BaseTest {
     void testSelector_CREATE_PayIn_NoPI_Digital() {
         def context = TestBuilder.buildDefaultContext()
         context.order.payments = null
-        flowSelector.select(context, OrderServiceOperation.CREATE).syncThen { String name ->
-            assert(name == FlowType.FREE_SETTLE.name())
-        }.get()
+        try {
+            flowSelector.select(context, OrderServiceOperation.CREATE).get()
+        }catch (ex) {
+            assert ((AppErrorException)(ex)).error.error().code == '199.001'
+            return
+        }
+        assert false
     }
 
 }

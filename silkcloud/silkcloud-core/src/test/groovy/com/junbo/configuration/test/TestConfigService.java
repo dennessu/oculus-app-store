@@ -10,7 +10,7 @@ import java.util.Properties;
 
 public class TestConfigService implements ConfigService, AutoCloseable {
     private ConfigService oldInstance;
-    private ConfigContext context = new ConfigContext("unittest").complete("dc0", "127.0.0.1/32");
+    private ConfigContext context = new ConfigContext("unittest").complete("dc0", "127.0.0.1/32", "0");
     private ConfigService.ConfigListener listener;
     private Map<String, String> properties = new HashMap<String, String>() {{
         put("common.topo.datacenters", "http://localhost:8080/v1;0;dc0;2,http://localhost:8080/v1;1;dc1;2");

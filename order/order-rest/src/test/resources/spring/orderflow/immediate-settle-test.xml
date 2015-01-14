@@ -9,32 +9,32 @@
         <wf:action-state id="validation">
             <wf:action ref="mockValidateUserAction"/>
             <wf:action ref="mockValidatePaymentInstrumentsAction"/>
-            <wf:transition on="*" to="checkChargeEvent"/>
+            <wf:transition to="checkChargeEvent"/>
         </wf:action-state>
 
         <wf:action-state id="checkChargeEvent">
             <wf:action ref="mockChargeEventCheckAction"/>
-            <wf:transition on="COMPLETED" to="fullfill"/>
+            <wf:transition on="COMPLETED" to="fulfill"/>
             <wf:transition on="__NONE" to="charge"/>
-            <wf:transition on="*" to="endState"/>
+            <wf:transition to="endState"/>
         </wf:action-state>
 
         <wf:action-state id="charge">
             <wf:action ref="mockImmediateSettleAction"/>
-            <wf:transition on="*" to="checkasynccharge"/>
+            <wf:transition to="checkasynccharge"/>
         </wf:action-state>
 
         <wf:action-state id="checkasynccharge">
             <wf:action ref="asyncChargeCheckAction"/>
             <wf:transition on="asynccharge" to="endState"/>
-            <wf:transition on="*" to="fullfill"/>
+            <wf:transition to="fulfill"/>
         </wf:action-state>
 
-        <wf:action-state id="fullfill">
+        <wf:action-state id="fulfill">
             <wf:action ref="mockFulfillmentAction"/>
             <wf:action ref="subledgerCreateItemAction"/>
             <wf:action ref="mockSendEmailAction"/>
-            <wf:transition on="*" to="endState"/>
+            <wf:transition to="endState"/>
         </wf:action-state>
 
         <wf:end-state id="endState">

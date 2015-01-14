@@ -31,11 +31,11 @@ import java.util.jar.JarFile;
 /**
  * This ConfigurationService can have two parameters:
  * 1):  environment:    If this environment(onebox/int/prod...) is configured,
- *                      it will load configuration from its environment configuration;
- *                      If this environment isn't configured, it will load from onebox environment by default;
+ * it will load configuration from its environment configuration;
+ * If this environment isn't configured, it will load from onebox environment by default;
  * 2):  configDir:      This is the override configuration file, if it is set,
- *                      it will override the same property in the configuration data, and we will watch this file;
- *                      if it isn't set, use configuration data.
+ * it will override the same property in the configuration data, and we will watch this file;
+ * if it isn't set, use configuration data.
  */
 @SuppressWarnings("unused")
 public class ConfigServiceImpl implements com.junbo.configuration.ConfigService {
@@ -46,6 +46,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private static final String CONFIG_DIR_DEFAULT = "/etc/silkcloud;./conf";
     private static final String ACTIVE_ENV_OPTS = "environment";
     private static final String ACTIVE_DC_OPTS = "datacenter";
+    private static final String ACTIVE_SHARD_RANGE_OPTS = "shardrange";
     private static final String ACTIVE_SUBNET_OPTS = "subnet";
     private static final String SUFFIX_PROPERTY_FILE = ".properties";
     private static final String DEFAULT_FOLDER = "_default";
@@ -140,8 +141,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         if (StringUtils.isEmpty(result)) {
             logger.info("No configContext {} configured, will use default {}='{}'", settingName, settingKey, defaultValue);
             result = defaultValue;
-        }
-        else {
+        } else {
             logger.info("ConfigContext {} is configured as {}='{}'", settingName, settingKey, result);
         }
         properties.setProperty(settingKey, result);
@@ -165,7 +165,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             // 1) _default/_default.properties
             InputStream inputStream = this.getClass().getClassLoader().
                     getResourceAsStream(CONFIG_PATH + "/" + DEFAULT_FOLDER + "/" + DEFAULT_PROPERTIES_FILE);
-            if(inputStream != null) {
+            if (inputStream != null) {
                 properties.load(inputStream);
                 check(properties);
             }
@@ -211,7 +211,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             String env = this.getConfigContext().getEnvironment();
             inputStream = this.getClass().getClassLoader().
                     getResourceAsStream(CONFIG_PATH + "/" + env + "/" + DEFAULT_PROPERTIES_FILE);
-            if(inputStream != null) {
+            if (inputStream != null) {
                 Properties temp = new Properties();
                 temp.load(inputStream);
                 check(temp);
@@ -229,8 +229,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 check(temp);
                 merge(properties, temp);
             }
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             logger.error("Failed to read jar file.", ex);
             throw new RuntimeException("Failed to read configuration jar file.", ex);
         }
@@ -311,17 +310,14 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             if (stream != null) {
                 props.load(stream);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Unable to load properties from path [" + entryName + "]", ex);
-        }
-        finally {
+        } finally {
             try {
                 if (stream != null) {
                     stream.close();
                 }
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 // ignored
             }
         }
@@ -376,7 +372,8 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
         configContext.complete(
                 finalProperties.getProperty(ACTIVE_DC_OPTS),
-                finalProperties.getProperty(ACTIVE_SUBNET_OPTS));
+                finalProperties.getProperty(ACTIVE_SUBNET_OPTS),
+                finalProperties.getProperty(ACTIVE_SHARD_RANGE_OPTS));
 
         this.finalProperties = new HashMap<>();
         for (String key : finalProperties.stringPropertyNames()) {
@@ -394,7 +391,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         }
 
         List<String> keys = new ArrayList<>();
-        for(Map.Entry<Object, Object> entry : properties.entrySet()) {
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             String key = entry.getKey().toString();
 
             if (key.endsWith(CRYPTO_SUFFIX)) {
@@ -419,7 +416,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             return source;
         }
 
-        for(Map.Entry<Object, Object> entry : override.entrySet()) {
+        for (Map.Entry<Object, Object> entry : override.entrySet()) {
             String key = entry.getKey().toString();
 
             if (key.endsWith(CRYPTO_SUFFIX)) {
@@ -485,7 +482,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         return newProperties;
     }
 
-    private String loadPasswordKey(Properties... properties){
+    private String loadPasswordKey(Properties... properties) {
         for (Properties propertyBag : properties) {
             if (propertyBag == null) continue;
             if (propertyBag.containsKey(CONFIG_PASSWORD_KEY)) {
@@ -498,8 +495,8 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         throw new RuntimeException(CONFIG_PASSWORD_KEY + " is not specified.");
     }
 
-    private void watch(){
-        if(!StringUtils.isEmpty(configPath)) {
+    private void watch() {
+        if (!StringUtils.isEmpty(configPath)) {
             FileWatcher.getInstance().addListener(Paths.get(configPath), new FileWatcher.FileListener() {
                 @Override
                 public void onFileChanged(Path path, WatchEvent.Kind<Path> kind) {
@@ -552,8 +549,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 ConfigListener listener = listenerWeakReference.get();
                 if (listener == null) {
                     toRemove.add(listenerWeakReference);
-                }
-                else {
+                } else {
                     listener.onConfigChanged(key, newValue);
                 }
             }

@@ -9,31 +9,31 @@
         <wf:action-state id="validation">
             <wf:action ref="validateUserAction"/>
             <wf:action ref="validatePaymentInstrumentsAction"/>
-            <wf:transition on="*" to="riskReview"/>
+            <wf:transition to="riskReview"/>
         </wf:action-state>
 
         <wf:action-state id="riskReview">
             <wf:action ref="riskReviewAction"/>
             <wf:transition on="APPROVED" to="auth"/>
-            <wf:transition on="*" to="endState"/>
+            <wf:transition to="endState"/>
         </wf:action-state>
 
         <wf:action-state id="auth">
             <wf:action ref="depositAction"/>
-            <wf:transition on="*" to="checkasynccharge"/>
+            <wf:transition to="checkasynccharge"/>
         </wf:action-state>
 
         <wf:action-state id="checkasynccharge">
             <wf:action ref="asyncChargeCheckAction"/>
             <wf:transition on="asynccharge" to="endState"/>
-            <wf:transition on="*" to="fullfill"/>
+            <wf:transition to="fullfill"/>
         </wf:action-state>
 
         <wf:action-state id="fullfill">
             <wf:action ref="riskUpdateAction"/>
             <wf:action ref="fulfillmentAction"/>
             <wf:action ref="sendEmailAction"/>
-            <wf:transition on="*" to="endState"/>
+            <wf:transition to="endState"/>
         </wf:action-state>
 
         <wf:end-state id="endState">

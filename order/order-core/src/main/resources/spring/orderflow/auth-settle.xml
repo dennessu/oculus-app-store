@@ -9,38 +9,38 @@
         <wf:action-state id="validation">
             <wf:action ref="validateUserAction"/>
             <wf:action ref="validatePaymentInstrumentsAction"/>
-            <wf:transition on="*" to="checkAuthEvent"/>
+            <wf:transition to="checkAuthEvent"/>
         </wf:action-state>
 
         <wf:action-state id="checkAuthEvent">
             <wf:action ref="authEventCheckAction"/>
-            <wf:transition on="COMPLETED" to="fullfill"/>
+            <wf:transition on="COMPLETED" to="fulfill"/>
             <wf:transition on="__NONE" to="riskReview"/>
-            <wf:transition on="*" to="endState"/>
+            <wf:transition to="endState"/>
         </wf:action-state>
 
         <wf:action-state id="riskReview">
             <wf:action ref="riskReviewAction"/>
             <wf:transition on="APPROVED" to="auth"/>
-            <wf:transition on="*" to="endState"/>
+            <wf:transition to="endState"/>
         </wf:action-state>
 
         <wf:action-state id="auth">
             <wf:action ref="authSettleAction"/>
-            <wf:transition on="*" to="checkasynccharge"/>
+            <wf:transition to="checkasynccharge"/>
         </wf:action-state>
 
         <wf:action-state id="checkasynccharge">
             <wf:action ref="asyncChargeCheckAction"/>
             <wf:transition on="asynccharge" to="endState"/>
-            <wf:transition on="*" to="fullfill"/>
+            <wf:transition to="fulfill"/>
         </wf:action-state>
 
-        <wf:action-state id="fullfill">
+        <wf:action-state id="fulfill">
             <wf:action ref="riskUpdateAction"/>
             <wf:action ref="fulfillmentAction"/>
             <wf:action ref="sendEmailAction"/>
-            <wf:transition on="*" to="endState"/>
+            <wf:transition to="endState"/>
         </wf:action-state>
 
         <wf:end-state id="endState">

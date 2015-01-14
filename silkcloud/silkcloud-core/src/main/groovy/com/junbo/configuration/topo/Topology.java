@@ -5,9 +5,10 @@
  */
 package com.junbo.configuration.topo;
 
-import com.junbo.configuration.topo.model.TopologyConfig;
 import com.junbo.configuration.ConfigService;
+import com.junbo.configuration.ConfigServiceManager;
 import com.junbo.configuration.reloadable.StringConfig;
+import com.junbo.configuration.topo.model.TopologyConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,20 +19,14 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class Topology implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(Topology.class);
+    private static final String SELF_URL = ConfigServiceManager.instance().getConfigValue("apphost.server.uri")
+            .replace("0\\.0\\.0\\.0", ConfigServiceManager.instance().getConfigContext().getIpAddresses().get(0));
 
-    private String appHostUrl;
     private StringConfig appUrlTemplateConfig;
-    private StringConfig appServersConfig;
-    private StringConfig otherServersConfig;
 
     private TopologyConfig topologyConfig;
-    private ConfigService configService;
 
-    public Topology() {}
-
-    @Required
-    public void setAppHostUrl(String appHostUrl) {
-        this.appHostUrl = appHostUrl;
+    public Topology() {
     }
 
     @Required
@@ -39,28 +34,9 @@ public class Topology implements InitializingBean {
         this.appUrlTemplateConfig = appUrlTemplateConfig;
     }
 
-    @Required
-    public void setAppServersConfig(StringConfig appServersConfig) {
-        this.appServersConfig = appServersConfig;
-    }
-
-    public void setOtherServersConfig(StringConfig otherServersConfig) {
-        this.otherServersConfig = otherServersConfig;
-    }
-
-    @Required
-    public void setConfigService(ConfigService configService) {
-        this.configService = configService;
-    }
-
     @Override
     public void afterPropertiesSet() throws Exception {
-        topologyConfig = new TopologyConfig(
-                this.appHostUrl,
-                this.appUrlTemplateConfig.get(),
-                this.appServersConfig.get(),
-                this.otherServersConfig.get(),
-                configService);
+        topologyConfig = new TopologyConfig(this.appUrlTemplateConfig.get());
 
         ConfigService.ConfigListener configListener = new ConfigService.ConfigListener() {
             @Override
@@ -69,15 +45,10 @@ public class Topology implements InitializingBean {
             }
         };
         this.appUrlTemplateConfig.setConfigListener(configListener);
-        this.appServersConfig.setConfigListener(configListener);
     }
 
     public String getAppServerUrl(int shard) {
         return topologyConfig.getAppServerUrl(shard);
-    }
-
-    public boolean isHandledBy(int shard, String ipAddress, int port) {
-        return topologyConfig.isHandledBy(shard, ipAddress, port);
     }
 
     public boolean isHandledBySelf(int shard) {
@@ -85,51 +56,33 @@ public class Topology implements InitializingBean {
     }
 
     public String getSelfUrl() {
-        return topologyConfig.getSelfUrl();
+        return SELF_URL;
     }
 
     /**
      * Get the total number of shards int the topology.
+     *
      * @return
      */
     public int getNumberOfShards() {
         return topologyConfig.getNumberOfShards();
     }
 
-    /**
-     * Generate a random shard id handled by current server.
-     * @return the shard id controlled by current server
-     */
     public int getRandomShardId() {
         return topologyConfig.getRandomShardId();
     }
 
     public int getCurrentDCId() {
-        return topologyConfig.getDCId();
-    }
-
-    /**
-     * Shards handled by current server.
-     * @return an array of shards handled by current server.
-     */
-    public int[] handledShards() {
-        return topologyConfig.handledShards();
+        return DataCenters.instance().currentDataCenterId();
     }
 
     private void reload() {
         try {
-            TopologyConfig newTopologyConfig = new TopologyConfig(
-                    this.appHostUrl,
-                    this.appUrlTemplateConfig.get(),
-                    this.appServersConfig.get(),
-                    this.otherServersConfig.get(),
-                    configService);
+            TopologyConfig newTopologyConfig = new TopologyConfig(this.appUrlTemplateConfig.get());
             this.topologyConfig = newTopologyConfig;
         } catch (Exception ex) {
             logger.error("Failed to load new topology configuration: \n" +
-                "appUrlTemplate: " + this.appUrlTemplateConfig.get() + "\n" +
-                "appServers: " + this.appServersConfig.get(),
-                "otherServers: " + this.otherServersConfig.get(), ex);
+                    "appUrlTemplate: " + this.appUrlTemplateConfig.get() + "\n");
             // continue to use existing configuration.
         }
     }

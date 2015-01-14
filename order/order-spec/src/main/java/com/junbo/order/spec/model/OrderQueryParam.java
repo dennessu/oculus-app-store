@@ -16,7 +16,7 @@ public class OrderQueryParam {
     private Boolean tentative;
 
     public Boolean getTentative() {
-        return tentative;
+        return tentative == null ? false : tentative;
     }
 
     public void setTentative(Boolean tentative) {
