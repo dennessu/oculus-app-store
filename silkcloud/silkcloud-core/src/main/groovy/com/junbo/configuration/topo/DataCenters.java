@@ -15,10 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * DataCenters.
- *
+ * <p/>
  * This is a global setting.
  */
 public class DataCenters {
@@ -110,6 +111,14 @@ public class DataCenters {
         return dataCenter.getId();
     }
 
+    public Set<Integer> currentShardRange() {
+        return getConfigService().getConfigContext().getShards();
+    }
+
+    public boolean isLocalShard(int shardId) {
+        return currentShardRange().contains(shardId);
+    }
+
     private void reload() {
         try {
             DataCentersConfig newData = new DataCentersConfig(dataCentersConfig.get());
@@ -117,7 +126,7 @@ public class DataCenters {
             this.data = newData;
         } catch (Exception ex) {
             logger.error("Failed to load new datacenters configuration: \n" +
-                "dataCenters: " + this.dataCentersConfig.get(), ex);
+                    "dataCenters: " + this.dataCentersConfig.get(), ex);
             // continue to use existing configuration.
         }
     }

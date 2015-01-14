@@ -6,6 +6,7 @@
 
 package com.junbo.configuration;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ public class ConfigContext {
     private String baseEnv;
     private String environment;
     private String datacenter;
+    private Set<Integer> shards;
     private List<String> ipAddresses;
 
     public ConfigContext(String environment) {
@@ -34,7 +36,7 @@ public class ConfigContext {
         this.baseEnv = parseBaseEnv(environment);
     }
 
-    public ConfigContext complete(String datacenter, String subnet) {
+    public ConfigContext complete(String datacenter, String subnet, String shardRange) {
         if (datacenter == null || datacenter.length() == 0) {
             throw new RuntimeException("ERROR: datacenter is not set.");
         }
@@ -44,6 +46,8 @@ public class ConfigContext {
 
         this.datacenter = datacenter;
         this.ipAddresses = getIpAddresses(subnet);
+
+        this.shards = parseShardRange(shardRange);
 
         return this;
     }
@@ -58,6 +62,10 @@ public class ConfigContext {
 
     public String getDataCenter() {
         return datacenter;
+    }
+
+    public Set<Integer> getShards() {
+        return shards;
     }
 
     public List<String> getIpAddresses() {
@@ -88,7 +96,7 @@ public class ConfigContext {
                 throw new RuntimeException("Subnet mask bits out of range: " + subnetBits);
             }
 
-            mask = (int)(0xFFFFFFFFL << (32 - subnetBits));     // cast to long to prevent subnetBits == 32
+            mask = (int) (0xFFFFFFFFL << (32 - subnetBits));     // cast to long to prevent subnetBits == 32
 
             subnetIp = parseIpAddress(subnetIpStr) & mask;
         } catch (Exception ex) {
@@ -179,4 +187,30 @@ public class ConfigContext {
     }
 
     //endregion
+
+    private Set<Integer> parseShardRange(String shardRange) {
+        Set<Integer> result = new HashSet<>();
+        for (String range : shardRange.split(",")) {
+            if (StringUtils.isEmpty(range)) {
+                continue;
+            }
+
+            String[] fromAndTo = range.trim().split("\\.\\.");
+            if (fromAndTo.length == 1) {
+                result.add(Integer.parseInt(fromAndTo[0]));
+            } else if (fromAndTo.length == 2) {
+                int from = Integer.parseInt(fromAndTo[0]);
+                int to = Integer.parseInt(fromAndTo[1]);
+                if (from > to) {
+                    throw new RuntimeException("from > to in shardRange: " + shardRange);
+                }
+                for (int i = from; i <= to; i++) {
+                    result.add(i);
+                }
+            } else {
+                throw new RuntimeException("Invalid shardRange: " + shardRange);
+            }
+        }
+        return result;
+    }
 }
