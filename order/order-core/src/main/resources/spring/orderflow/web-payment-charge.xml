@@ -9,18 +9,18 @@
         <wf:action-state id="preCharge">
             <wf:action ref="validateUserAction"/>
             <wf:action ref="validatePaymentInstrumentsAction"/>
-            <wf:transition on="*" to="riskReview"/>
+            <wf:transition to="riskReview"/>
         </wf:action-state>
 
         <wf:action-state id="riskReview">
             <wf:action ref="riskReviewAction"/>
             <wf:transition on="APPROVED" to="charge"/>
-            <wf:transition on="*" to="endState"/>
+            <wf:transition to="endState"/>
         </wf:action-state>
 
         <wf:action-state id="charge">
             <wf:action ref="webPaymentChargeAction"/>
-            <wf:transition on="*" to="endState"/>
+            <wf:transition to="endState"/>
         </wf:action-state>
 
         <wf:end-state id="endState">

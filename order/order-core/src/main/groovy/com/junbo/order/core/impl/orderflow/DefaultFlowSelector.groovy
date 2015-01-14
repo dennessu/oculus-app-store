@@ -12,6 +12,7 @@ import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.FlowType
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreUtils
+import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.spec.error.AppErrors
@@ -26,6 +27,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
+
+import javax.annotation.Resource
+
 /**
  * Created by chriszhu on 2/7/14.
  */
@@ -38,6 +42,9 @@ class DefaultFlowSelector implements FlowSelector {
 
     @Autowired
     OrderServiceContextBuilder orderServiceContextBuilder
+
+    @Resource(name='orderValidator')
+    OrderValidator orderValidator
 
     @Override
     Promise<String> select(OrderServiceContext context, OrderServiceOperation operation) throws AppErrorException {
@@ -102,13 +109,12 @@ class DefaultFlowSelector implements FlowSelector {
 
         assert(context != null && context.order != null)
 
-        if (CollectionUtils.isEmpty(context.order.payments)) {
-            return Promise.pure(FlowType.FREE_SETTLE.name())
-        }
         // select order flow per payment info and product item info
         return orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
             // TODO: do not support multiple payment methods now
-            assert(!CollectionUtils.isEmpty(pis))
+            if(CollectionUtils.isEmpty(pis)) {
+                orderValidator.notEmpty(pis, 'payments')
+            }
             switch (PIType.get(pis[0].type)) {
             // TODO reference to payment instrument type
                 case PIType.CREDITCARD:

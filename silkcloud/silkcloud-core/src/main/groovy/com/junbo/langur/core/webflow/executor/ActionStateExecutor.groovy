@@ -1,14 +1,11 @@
 package com.junbo.langur.core.webflow.executor
-
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.webflow.FlowException
 import com.junbo.langur.core.webflow.WebFlowErrors
 import com.junbo.langur.core.webflow.action.ActionList
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.langur.core.webflow.definition.ActionStateDef
 import com.junbo.langur.core.webflow.definition.TransitionDef
 import groovy.transform.CompileStatic
-
 /**
  * Created by kg on 2/26/14.
  */
@@ -54,7 +51,7 @@ class ActionStateExecutor implements StateExecutor {
                     }
 
                     def transitionDef = stateDef.transitions.find { TransitionDef transitionDef ->
-                        transitionDef.on == null || transitionDef.on == '*' || result.id == transitionDef.on
+                        transitionDef.on == '*' || result.id == transitionDef.on
                     }
 
                     if (transitionDef != null) {
@@ -85,7 +82,7 @@ class ActionStateExecutor implements StateExecutor {
         assert flowState.stateId == stateDef.id
 
         def transitionDef = stateDef.transitions.find { TransitionDef transitionDef ->
-            transitionDef.on == null || transitionDef.on == '*' || trigger == transitionDef.on
+            (transitionDef.on == null || transitionDef.on.isEmpty()) && trigger == 'void' || transitionDef.on == '*' || trigger == transitionDef.on
         }
 
         if (transitionDef == null) {
