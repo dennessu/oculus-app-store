@@ -1,0 +1,25 @@
+language: java
+
+jdk:
+   - oraclejdk7
+
+services:
+  - couchdb
+  - memcached
+
+addons:
+  postgresql : "9.3"
+
+branches:
+  only:
+    - release
+
+script:
+  - ./setupdb.sh
+
+notifications:
+  email:
+   recipients:
+     - txchen@silkcloud.com
+   on_success: change
+   on_failure: always
