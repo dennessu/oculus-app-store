@@ -1,6 +1,4 @@
-# hack: use java as language would auto invoke gradle
-#       which does not work. Here use python + custom scripts to work around.
-language: python
+language: java
 
 cache: true
 
