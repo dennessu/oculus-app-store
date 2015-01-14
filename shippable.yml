@@ -1,3 +1,5 @@
+# hack: use java as language would auto invoke gradle
+#       which does not work. Here use python + custom scripts to work around.
 language: python
 
 cache: true
@@ -20,7 +22,7 @@ before_script:
   - ./setupdb.sh
 
 script:
-  - ./setupdb.sh
+  - ./supercycle.sh
 
 notifications:
   email:
