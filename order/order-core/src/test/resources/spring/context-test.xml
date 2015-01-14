@@ -5,10 +5,6 @@
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <import resource="classpath*:spring/*-context.xml"/>
-    <import resource="classpath*:spring/flow-context-test.xml"/>
-    <import resource="classpath*:spring/orderflow/*.xml"/>
-
     <context:component-scan base-package="com.junbo.order.core"/>
     <context:component-scan base-package="com.junbo.order.db"/>
     <context:component-scan base-package="com.junbo.order.mock"/>
