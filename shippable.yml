@@ -16,6 +16,9 @@ branches:
   only:
     - release
 
+install:
+  - true # bypass default gradle action
+
 before_script:
   - ./setupdb.sh
 
