@@ -9,6 +9,9 @@
     <context:component-scan base-package="com.junbo.order.db"/>
     <context:component-scan base-package="com.junbo.order.mock"/>
     <context:component-scan base-package="com.junbo.order.clientproxy"/>
+    <import resource="classpath*:spring/*-context.xml"/>
+    <import resource="classpath*:spring/flow-context-test.xml"/>
+    <import resource="classpath*:spring/orderflow/*.xml"/>
     <aop:config proxy-target-class="true"/>
 
 </beans>

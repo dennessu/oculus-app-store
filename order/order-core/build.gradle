@@ -9,4 +9,5 @@ dependencies {
     testCompile (libraries.spring_test)
     testCompile (libraries.easy_mock)
     testCompile junboProject(':authorization-lib')
+    testCompile junboProject(':crypto-spec')
 }
