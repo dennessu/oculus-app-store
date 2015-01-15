@@ -13,6 +13,8 @@ machine:
 # checkout:
 
 dependencies:
+  cache_directories:
+    - ~/.m2
   override:
     - docker info
 
@@ -20,7 +22,7 @@ database:
   override:
     - ./setupdb.sh
   post:
-    - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build
+    - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build --parallel-threads=2
     - ./dataloader.sh
 
 test:
