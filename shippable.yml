@@ -20,15 +20,18 @@ branches:
 install:
   - true # bypass default gradle action
 
-#before_script:
-#  - ./setupdb.sh
+before_script:
+  - ./setupdb.sh
 
 script:
-#  - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build
-#  - ./dataloader.sh
-#  - ./test.sh -r
+  - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build
+  - ./dataloader.sh
+  - ./test.sh -r
 #  - docker/images/onebox-app/ci_buildimageandpush.sh
-  - true
+
+after_script:
+  - rm -r -f apphost/apphost-cli/build/install/apphost-cli/bin/apphost/logs
+  - rm -r -f apphost/apphost-cli/build/install/apphost-cli/bin/apphost/activemq-data
 
 notifications:
   email:
@@ -37,4 +40,4 @@ notifications:
    on_success: always
    on_failure: always
 
-commit_container: silkcloud/test
+commit_container: silkcloud/apphost
