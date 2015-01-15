@@ -36,3 +36,5 @@ notifications:
      - txchen@silkcloud.com
    on_success: always
    on_failure: always
+
+commit_container: silkcloud/test
