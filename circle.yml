@@ -8,6 +8,7 @@ machine:
 
 dependencies:
   override:
+    - true
 
 database:
   override:
