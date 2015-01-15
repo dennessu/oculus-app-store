@@ -57,6 +57,7 @@ public class DualWriteQueue {
         pendingAction.setDeletedKey(Utils.keyToLong(key))
         pendingAction.setDeletedEntityType(entityClass.getName())
         pendingAction.setChangedEntityId(pendingAction.getDeletedKey())
+        pendingAction.setRetryCount(0)
 
         return repository.create(pendingAction);
     }
@@ -71,6 +72,7 @@ public class DualWriteQueue {
         newPendingAction.setDeletedKey(Utils.keyToLong(key))
         newPendingAction.setDeletedEntityType(pendingAction.getDeletedEntityType())
         newPendingAction.setChangedEntityId(newPendingAction.getDeletedKey())
+        newPendingAction.setRetryCount(0)
 
         return repository.update(newPendingAction, pendingAction);
     }
