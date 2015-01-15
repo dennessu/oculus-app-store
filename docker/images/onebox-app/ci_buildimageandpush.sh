@@ -29,7 +29,7 @@ DH_USERNAME=scdockerro
 : ${DH_PASSWORD:? "Env var DH_PASSWORD not found, cannot continue"}
 : ${DH_USERNAME:? "Env var DH_USERNAME not found, cannot continue"}
 
-docker login -e "$DH_EMAIL" -p "$DH_PASSWORD" -u "$DH_USERNAME" || die "!! docker login failed"
+docker login -e "$DH_EMAIL" -p "$DH_PASSWORD" -u "$DH_USERNAME" https://index.docker.io/v1/ || die "!! docker login failed"
 
 REPO_ROOT=`git rev-parse --show-toplevel`
 APPHOST_FOLDER=$REPO_ROOT/apphost/apphost-cli/build/install/apphost-cli
