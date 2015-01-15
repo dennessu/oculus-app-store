@@ -18,9 +18,6 @@ dependencies {
     compile(libraries.jackson_annotations)
     compile(libraries.jackson_databind)
 
-    compile(libraries.aspectjrt)
-    compile(libraries.aspectjweaver)
-
     compile junboProject(':oom-core')
 
     compile junboProject(':oauth-spec')
