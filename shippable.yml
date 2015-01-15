@@ -5,6 +5,10 @@ cache: true
 jdk:
   - oraclejdk7
 
+# DH_EMAIL DH_PASSWORD DH_USERNAME
+env:
+  secure: iLYZhDKUrGl/oNpDarc2Ebt0HhxGth6pXPM80BvALiC4q5Fd6A2CJf/Z2o+5YNgNH9YvebE/vOzChcsFBE5zhjSTszzmBR1GHO9hErH4KZAuE0bS1zAI4xDfud77AwyuuLctC9K8SjA2dNH+Q6OPfzUE2O8bOwnB6ABbdfp0GdQKgYimr2EEQi13dSYop/miYJfhM4HDp5GrJyPzwYt3FyqOtvf9KmeFkwd2Q0AcorwKvgCQV0Sry3gb09V4kakDVbj0lShw9S6KFGTcCA17zGfdXfgt5MKdncJl+SmAnB2tUfrqjhCF8Bj8YNsK9uSFARFNiNYWr9rUY+35xmit4A==
+
 services:
   - couchdb
   - memcached
@@ -27,6 +31,9 @@ script:
   - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build
   - ./dataloader.sh
   - ./test.sh -r
+
+after_script:
+  - docker/images/onebox-app/ci_buildimageandpush.sh
 
 notifications:
   email:
