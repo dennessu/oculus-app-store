@@ -28,6 +28,7 @@ script:
 #  - ./dataloader.sh
 #  - ./test.sh -r
 #  - docker/images/onebox-app/ci_buildimageandpush.sh
+  - true
 
 notifications:
   email:
