@@ -15,6 +15,7 @@ addons:
 branches:
   only:
     - release
+    - master
 
 install:
   - true # bypass default gradle action
@@ -25,11 +26,11 @@ before_script:
 script:
   - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build
   - ./dataloader.sh
-  - ./test.sh
+  - ./test.sh -r
 
 notifications:
   email:
    recipients:
      - txchen@silkcloud.com
-   on_success: change
+   on_success: always
    on_failure: always
