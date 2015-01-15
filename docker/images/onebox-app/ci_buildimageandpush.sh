@@ -20,6 +20,11 @@ alias die='error_exit "Error ${0}(@`echo $(( $LINENO - 1 ))`):"'
 
 hash docker >/dev/null 2>&1 || die "!! docker not installed, cannot continue"
 
+# hack: since shippable encrypted env var feature is not working, set the value here
+DH_EMAIL=jubot@silkcloud.com
+DH_PASSWORD="987#Bugsfor$abc"
+DH_USERNAME=scdockerro
+
 : ${DH_EMAIL:? "Env var DH_EMAIL not found, cannot continue"}
 : ${DH_PASSWORD:? "Env var DH_PASSWORD not found, cannot continue"}
 : ${DH_USERNAME:? "Env var DH_USERNAME not found, cannot continue"}
