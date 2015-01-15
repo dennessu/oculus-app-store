@@ -29,6 +29,7 @@ DH_USERNAME=scdockerro
 : ${DH_PASSWORD:? "Env var DH_PASSWORD not found, cannot continue"}
 : ${DH_USERNAME:? "Env var DH_USERNAME not found, cannot continue"}
 
+echo docker login -e "$DH_EMAIL" -p "$DH_PASSWORD" -u "$DH_USERNAME" https://index.docker.io/v1/ || die "!! docker login failed"
 docker login -e "$DH_EMAIL" -p "$DH_PASSWORD" -u "$DH_USERNAME" https://index.docker.io/v1/ || die "!! docker login failed"
 
 REPO_ROOT=`git rev-parse --show-toplevel`
@@ -62,6 +63,7 @@ mkdir -p $DIR/bin/apphost
 cp -r -f -p $APPHOST_FOLDER/* $DIR/bin/apphost/
 rm -r -f $DIR/bin/apphost/logs
 rm -r -f $DIR/bin/apphost/activemq-data
+cd $DIR
 # run docker build
 echo "## building docker image, set the tag to $git_branch"
 docker build --rm -t silkcloud/onebox-app:$git_branch .
