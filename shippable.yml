@@ -31,7 +31,7 @@ script:
 #  - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build
 #  - ./dataloader.sh
 #  - ./test.sh -r
-  - sudo docker/images/onebox-app/ci_buildimageandpush.sh
+  - docker/images/onebox-app/ci_buildimageandpush.sh
 
 notifications:
   email:

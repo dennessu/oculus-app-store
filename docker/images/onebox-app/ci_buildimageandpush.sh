@@ -29,8 +29,11 @@ DH_USERNAME=scdockerro
 : ${DH_PASSWORD:? "Env var DH_PASSWORD not found, cannot continue"}
 : ${DH_USERNAME:? "Env var DH_USERNAME not found, cannot continue"}
 
-echo docker login -e "$DH_EMAIL" -p "$DH_PASSWORD" -u "$DH_USERNAME" https://index.docker.io/v1/ || die "!! docker login failed"
-docker login -e "$DH_EMAIL" -p "$DH_PASSWORD" -u "$DH_USERNAME" https://index.docker.io/v1/ || die "!! docker login failed"
+env
+sudo env
+
+echo sudo docker login -e "$DH_EMAIL" -p "$DH_PASSWORD" -u "$DH_USERNAME" https://index.docker.io/v1/ || die "!! docker login failed"
+sudo docker login -e "$DH_EMAIL" -p "$DH_PASSWORD" -u "$DH_USERNAME" https://index.docker.io/v1/ || die "!! docker login failed"
 
 REPO_ROOT=`git rev-parse --show-toplevel`
 APPHOST_FOLDER=$REPO_ROOT/apphost/apphost-cli/build/install/apphost-cli
@@ -66,11 +69,11 @@ rm -r -f $DIR/bin/apphost/activemq-data
 cd $DIR
 # run docker build
 echo "## building docker image, set the tag to $git_branch"
-docker build --rm -t silkcloud/onebox-app:$git_branch .
+sudo docker build --rm -t silkcloud/onebox-app:$git_branch .
 echo "## also set tag to $alternative_tag"
-docker tag -f silkcloud/onebox-app:$git_branch silkcloud/onebox-app:$alternative_tag
+sudo docker tag -f silkcloud/onebox-app:$git_branch silkcloud/onebox-app:$alternative_tag
 echo "## finished building docker image"
 echo "## now pushing docker image to docker hub"
-docker push silkcloud/onebox-app:$git_branch
-docker push silkcloud/onebox-app:$alternative_tag
+sudo docker push silkcloud/onebox-app:$git_branch
+sudo docker push silkcloud/onebox-app:$alternative_tag
 echo "## docker images pushed to docker hub, tags = silkcloud/onebox-app:$git_branch silkcloud/onebox-app:$alternative_tag"
