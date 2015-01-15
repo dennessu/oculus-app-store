@@ -37,7 +37,7 @@ function cleanupTrap {
     echo !!!!!!!!!!!!!!!!
     if [[ "$reduce_output" = "1" ]]; then
       echo "Print the supercycle_suite.log:"
-      cat logs/supercycle_suite.log
+      cat scripts/unittests/logs/supercycle_suite.log
     fi
 }
 
