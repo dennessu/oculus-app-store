@@ -11,6 +11,7 @@ import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
+import com.junbo.entitlement.spec.model.RevokeRequest;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -73,4 +74,8 @@ public interface EntitlementResource {
     @GET
     Promise<Results<Entitlement>> searchEntitlements(@BeanParam EntitlementSearchParam searchParam,
                                                      @BeanParam PageMetadata pageMetadata);
+
+    @RouteByAccessToken(switchable = true)
+    @POST
+    Promise<Response> revokeEntitlement(RevokeRequest revokeRequest);
 }

@@ -26,6 +26,7 @@ import com.junbo.entitlement.core.service.EntitlementServiceImpl;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
+import com.junbo.entitlement.spec.model.RevokeRequest;
 import com.junbo.langur.core.rest.ResourceScopeValidator;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,6 +133,38 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         }
         Assert.assertEquals(true, false);
 
+    }
+
+    @Test
+    public void testRevokeEntitlement() {
+        Entitlement entitlement = buildAnEntitlement();
+        Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
+        RevokeRequest revokeRequest = new RevokeRequest();
+        revokeRequest.setEntitlementId(addedEntitlement.getId());
+        entitlementService.revokeEntitlement(revokeRequest);
+        try {
+            entitlementService.getEntitlement(addedEntitlement.getId());
+        } catch (WebApplicationException e) {
+            Assert.assertEquals(e.getResponse().getStatus(), 404);
+            return;
+        }
+        Assert.assertEquals(true, false);
+    }
+
+    @Test
+    public void testRevokeWrongEntitlement() {
+        Entitlement entitlement = buildAnEntitlement();
+        Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
+        RevokeRequest revokeRequest = new RevokeRequest();
+        revokeRequest.setEntitlementId(addedEntitlement.getId());
+        revokeRequest.setCount(2);
+        try{
+            entitlementService.revokeEntitlement(revokeRequest);
+        } catch (WebApplicationException e){
+            Assert.assertEquals(e.getResponse().getStatus(), 400);
+            return;
+        }
+        Assert.assertEquals(true, false);
     }
 
     @Test
