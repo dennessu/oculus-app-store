@@ -36,7 +36,7 @@ script:
   - ./test.sh -r
 
 after_script:
-  - docker/images/onebox-app/ci_buildimageandpush.sh
+  - sudo docker/images/onebox-app/ci_buildimageandpush.sh
 
 notifications:
   email:
