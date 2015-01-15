@@ -1,0 +1,22 @@
+machine:
+  java:
+    version: oraclejdk7
+  services:
+    - docker
+
+# checkout:
+
+# dependencies:
+
+database:
+  override:
+    - ./setupdb.sh
+  post:
+    - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build
+    - ./dataloader.sh
+
+test:
+  override:
+    - ./test.sh -r
+
+#deployment:
