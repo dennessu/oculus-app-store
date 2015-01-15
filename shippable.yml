@@ -17,10 +17,6 @@ branches:
     - release
     - master
 
-# by default shippable minion has no docker, so install it
-before_install:
-  - curl -sSL https://get.docker.com/ubuntu/ | sudo sh
-
 install:
   - true # bypass default gradle action
 
@@ -31,7 +27,7 @@ script:
 #  - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build
 #  - ./dataloader.sh
 #  - ./test.sh -r
-  - docker/images/onebox-app/ci_buildimageandpush.sh
+#  - docker/images/onebox-app/ci_buildimageandpush.sh
 
 notifications:
   email:
