@@ -22,7 +22,7 @@ branches:
     - master
 
 before_install:
-  - apt-get install -y lxc-docker
+  - sudo apt-get install -y lxc-docker
 
 install:
   - true # bypass default gradle action
