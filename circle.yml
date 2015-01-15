@@ -6,7 +6,8 @@ machine:
 
 # checkout:
 
-# dependencies:
+dependencies:
+  override:
 
 database:
   override:
