@@ -334,7 +334,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     }
 
     private boolean isAdmin() {
-        return AuthorizeContext.hasAnyScope(new String[] {"catalog.admin", "catalog.service"});
+        return AuthorizeContext.hasAnyScope(new String[] {"catalog.admin", "catalog.service", "readonly.service"});
     }
 
     private boolean isDeveloper() {
