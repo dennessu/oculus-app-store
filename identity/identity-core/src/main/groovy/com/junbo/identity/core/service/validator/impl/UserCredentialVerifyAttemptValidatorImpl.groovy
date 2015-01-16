@@ -385,7 +385,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         QueryParam queryParam = new QueryParam(
                 source: EMAIL_SOURCE,
                 action: emailTemplate,
-                locale: 'en_US'
+                userId: user?.getId()
         )
 
         return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->

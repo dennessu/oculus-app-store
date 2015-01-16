@@ -313,6 +313,7 @@ class LoginResourceImpl implements LoginResource {
             }
             throw ex
         }.then {
+            LOGGER.info("User apiContext.user.getId() created from horizon with client id $clientId")
             return facadeContainer.oAuthFacade.sendWelcomeEmail(request.preferredLocale, request.cor, apiContext.user.getId()).then {
                 return Promise.pure(authTokenResponse)
             }

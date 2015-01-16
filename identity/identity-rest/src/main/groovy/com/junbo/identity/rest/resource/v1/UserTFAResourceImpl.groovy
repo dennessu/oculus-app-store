@@ -270,9 +270,18 @@ class UserTFAResourceImpl implements UserTFAResource {
         if (userTFA.verifyType == TFAVerifyType.EMAIL.toString()) {
             QueryParam queryParam = new QueryParam(
                     source: EMAIL_SOURCE,
-                    action: EMAIL_ACTION,
-                    locale: userTFA.sentLocale == null ? 'en_US' : userTFA.sentLocale.value.replace('-', '_')
+                    action: EMAIL_ACTION
             )
+
+            if (userTFA.sentLocale == null) {
+                if (userTFA.userId == null) {
+                    queryParam.locale = 'en_US'
+                } else {
+                    queryParam.userId = userTFA.userId
+                }
+            } else {
+                queryParam.locale = userTFA.sentLocale.value.replace('-', '_')
+            }
 
             return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
                 if (results.items.isEmpty()) {

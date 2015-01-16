@@ -13,7 +13,6 @@
     <context:component-scan base-package="com.junbo.order.db"/>
     <context:component-scan base-package="com.junbo.order.mock"/>
     <context:component-scan base-package="com.junbo.order.clientproxy"/>
-    <aop:config proxy-target-class="true"/>
 
     <bean id="junboHttpContextScopeListeners" class="com.junbo.langur.core.context.JunboHttpContextScopeListeners">
         <property name="list">

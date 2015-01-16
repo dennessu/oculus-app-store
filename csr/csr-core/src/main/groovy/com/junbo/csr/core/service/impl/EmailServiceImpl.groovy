@@ -49,8 +49,7 @@ class EmailServiceImpl implements EmailService{
 
     @Override
     Promise<String> sendCSRInvitationEmail(QueryParam templateQueryParam, String recipient, User user, String link) {
-        // todo: remove this hard coded after email template has been setup
-        templateQueryParam.locale = 'en_US'
+        templateQueryParam.userId = user.getId()
 
         // TODO: cache the email template for each locale.
         return emailTemplateResource.getEmailTemplates(templateQueryParam).then { Results<EmailTemplate> results ->

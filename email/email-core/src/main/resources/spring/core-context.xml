@@ -2,7 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
     <context:component-scan base-package="com.junbo.email.core"/>
     <context:component-scan base-package="com.junbo.email.clientproxy.*"/>
 
@@ -33,5 +34,97 @@
     <bean id="templateService" class="com.junbo.email.core.service.EmailTemplateServiceImpl">
         <property name="templateRepository" ref="emailTemplateRepo"/>
         <property name="templateValidator" ref="templateValidator"/>
+        <property name="localeResource" ref="emailIdentityLocaleClient" />
+        <property name="emailTemplateLocaleService" ref="templateLocaleService" />
+    </bean>
+
+    <util:list id="ko_KR_list">
+        <value>ko_KR</value>
+    </util:list>
+
+    <util:list id="it_IT_list">
+        <value>it_IT</value>
+        <value>it_SM</value>
+        <value>it_VA</value>
+    </util:list>
+
+    <util:list id="fr_FR_list">
+        <value>fr_BE</value>
+        <value>fr_BF</value>
+        <value>fr_BL</value>
+        <value>fr_CA</value>
+        <value>fr_CF</value>
+        <value>fr_DJ</value>
+        <value>fr_FR</value>
+        <value>fr_GG</value>
+        <value>fr_GQ</value>
+        <value>fr_HT</value>
+        <value>fr_JE</value>
+        <value>fr_KM</value>
+        <value>fr_LU</value>
+        <value>fr_MC</value>
+        <value>fr_MF</value>
+        <value>fr_ML</value>
+        <value>fr_NC</value>
+        <value>fr_NE</value>
+        <value>fr_PF</value>
+        <value>fr_PM</value>
+        <value>fr_SC</value>
+        <value>fr_TD</value>
+        <value>fr_TF</value>
+        <value>fr_WF</value>
+        <value>fr_YT</value>
+    </util:list>
+
+    <util:list id="de_DE_list">
+        <value>de_AT</value>
+        <value>de_BE</value>
+        <value>de_CH</value>
+        <value>de_DE</value>
+        <value>de_LI</value>
+        <value>de_LU</value>
+    </util:list>
+
+    <util:list id="es_ES_list">
+        <value>es_ES</value>
+        <value>es_GQ</value>
+        <value>es_EH</value>
+    </util:list>
+
+    <util:list id="es_LA_list">
+        <value>es_AR</value>
+        <value>es_BO</value>
+        <value>es_CL</value>
+        <value>es_CO</value>
+        <value>es_CR</value>
+        <value>es_CU</value>
+        <value>es_DO</value>
+        <value>es_EC</value>
+        <value>es_GT</value>
+        <value>es_HN</value>
+        <value>es_MX</value>
+        <value>es_NI</value>
+        <value>es_PA</value>
+        <value>es_PE</value>
+        <value>es_PR</value>
+        <value>es_PY</value>
+        <value>es_SV</value>
+        <value>es_UY</value>
+        <value>es_VE</value>
+    </util:list>
+
+    <bean id="templateLocaleService" class="com.junbo.email.core.service.EmailTemplateLocaleServiceImpl">
+        <property name="localeMap">
+            <map>
+                <entry key="ko_KR" value-ref="ko_KR_list" />
+                <entry key="it_IT" value-ref="it_IT_list" />
+                <entry key="fr_FR" value-ref="fr_FR_list" />
+                <entry key="de_DE" value-ref="de_DE_list" />
+                <entry key="es_ES" value-ref="es_ES_list" />
+                <entry key="es_LA" value-ref="es_LA_list" />
+            </map>
+        </property>
+        <property name="userResource" ref="emailIdentityUserClient" />
+        <property name="defaultLocale" value="${email.client.fallbacklocale}" />
     </bean>
 </beans>

@@ -1,7 +1,7 @@
 {
     "source" : "Oculus",
     "action" : "ActiveDevAccount_V1",
-    "locale" : "en_US",
+    "locales" : ["en_US"],
     "providerName" : "mandrill",
     "placeholderNames" : [ "devname", "publishername" ]
 }

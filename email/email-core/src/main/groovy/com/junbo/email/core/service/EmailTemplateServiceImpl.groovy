@@ -5,16 +5,21 @@
  */
 package com.junbo.email.core.service
 
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.EmailTemplateId
 import com.junbo.common.model.Results
+import com.junbo.email.core.EmailTemplateLocaleService
 import com.junbo.email.core.EmailTemplateService
 import com.junbo.email.core.validator.EmailTemplateValidator
 import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.QueryParam
+import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
+import com.junbo.identity.spec.v1.resource.LocaleResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
@@ -32,12 +37,24 @@ import javax.transaction.Transactional
 
     private EmailTemplateValidator templateValidator
 
+    private LocaleResource localeResource
+
+    private EmailTemplateLocaleService emailTemplateLocaleService
+
     void setTemplateRepository(EmailTemplateRepository templateRepository) {
         this.templateRepository = templateRepository
     }
 
     void setTemplateValidator(EmailTemplateValidator templateValidator) {
         this.templateValidator = templateValidator
+    }
+
+    void setLocaleResource(LocaleResource localeResource) {
+        this.localeResource = localeResource
+    }
+
+    void setEmailTemplateLocaleService(EmailTemplateLocaleService emailTemplateLocaleService) {
+        this.emailTemplateLocaleService = emailTemplateLocaleService
     }
 
     Promise<EmailTemplate> postEmailTemplate(EmailTemplate template) {
@@ -70,7 +87,11 @@ import javax.transaction.Transactional
 
     Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam) {
         def queries = this.buildQueryParam(queryParam)
+
         return templateRepository.getEmailTemplates(queries, null).then { List<EmailTemplate> templates ->
+            if (queries.get('locale') != null && CollectionUtils.isEmpty(templates)) {
+                return Promise.pure(getFallbackEmailTemplates(queries, queries.get('locale')))
+            }
             def results = new Results<EmailTemplate>(items:[])
             if (templates != null && templates.size() !=0) {
                 results.items.addAll(templates)
@@ -93,9 +114,43 @@ import javax.transaction.Transactional
         if (!StringUtils.isEmpty(queryParam?.source)) {
             map.put('source', queryParam.source)
         }
-        if (!StringUtils.isEmpty(queryParam?.locale)) {
-            map.put('locale', queryParam.locale)
+
+        String locale = emailTemplateLocaleService.getEmailTemplateLocale(queryParam?.locale, queryParam?.userId).get();
+        if (!StringUtils.isEmpty(locale)) {
+            map.put('locale', locale)
         }
         return map
+    }
+
+    private Results<EmailTemplate> getFallbackEmailTemplates(Map<String, String> queries, String currentLocale) {
+        Map<String, Boolean> circle = new HashMap<>()
+
+        LocaleId current = new LocaleId(currentLocale)
+        LocaleId fallback = null
+        while (true) {
+            com.junbo.identity.spec.v1.model.Locale locale = localeResource.get(current, new LocaleGetOptions()).get()
+            Boolean visited = circle.get(locale.getId().toString())
+            if (visited) {
+                break
+            }
+            circle.put(locale.getId().toString(), true)
+
+            fallback = locale.fallbackLocale
+            if (current == fallback || fallback == null) {
+                break
+            }
+
+            queries.put('locale', fallback.toString())
+            List<EmailTemplate> emailTemplates = templateRepository.getEmailTemplates(queries, null).get()
+            if (!CollectionUtils.isEmpty(emailTemplates)) {
+                return new Results<EmailTemplate>(
+                        items: emailTemplates
+                )
+            }
+
+            current = fallback
+        }
+
+        return new Results<EmailTemplate>()
     }
 }

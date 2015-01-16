@@ -5,6 +5,8 @@
  */
 package com.junbo.email.spec.model;
 
+import com.junbo.common.id.UserId;
+
 /**
  * QueryParam.
  */
@@ -24,6 +26,8 @@ public class QueryParam {
     @javax.ws.rs.QueryParam("size")
     private Integer size;
 
+    @javax.ws.rs.QueryParam("user")
+    private UserId userId;
 
     public String getSource() {
         return source;
@@ -65,4 +69,11 @@ public class QueryParam {
         this.size = size;
     }
 
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
 }

@@ -4,25 +4,32 @@ import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
+import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceImpl
 import com.junbo.order.rest.resource.OrderResourceImpl
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.enums.OrderStatus
+import com.junbo.order.spec.resource.OrderResource
+import groovy.transform.CompileStatic
+import org.springframework.aop.framework.Advised
+import org.springframework.aop.support.AopUtils
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
+
 /**
  * Created by chriszhu on 7/3/14.
  */
+@CompileStatic
 class OrderE2ETest extends BaseTest {
 
     @Resource(name = 'defaultOrderResource')
-    OrderResourceImpl orderResource
+    OrderResource orderResource
     @Resource(name = 'mockOrderService')
-    OrderServiceImpl orderServiceImpl
+    OrderService orderServiceImpl
     @Resource(name = 'mockCsrLogResource')
     CsrLogResource csrLogResource
 
@@ -30,13 +37,13 @@ class OrderE2ETest extends BaseTest {
     void setUp() {
         //orderServiceImpl.facadeContainer.billingFacade = EasyMock.createMock(BillingFacade.class)
         //orderServiceImpl.facadeContainer.ratingFacade = EasyMock.createMock(RatingFacade.class)
-        orderResource.orderService = orderServiceImpl
-        orderResource.csrLogResource = csrLogResource
+        getTargetObject(orderResource, OrderResourceImpl).orderService = orderServiceImpl
+        getTargetObject(orderResource, OrderResourceImpl).csrLogResource = csrLogResource
     }
 
     @Test(enabled = true)
     Order testPostTentativeOrder() {
-        orderServiceImpl.flowSelector = new FlowSelector() {
+        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_RATE_ORDER')
@@ -58,7 +65,7 @@ class OrderE2ETest extends BaseTest {
 
     @Test(enabled = true)
     void testPostFreeOrder() {
-        orderServiceImpl.flowSelector = new FlowSelector() {
+        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_FREE_ORDER')
@@ -86,7 +93,7 @@ class OrderE2ETest extends BaseTest {
     @Test(enabled = true)
     Order testPutTentativeOrder() {
         def tentativeOrder = testPostTentativeOrder()
-        orderServiceImpl.flowSelector = new FlowSelector() {
+        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_IMMEDIATE_SETTLE')
@@ -109,7 +116,7 @@ class OrderE2ETest extends BaseTest {
     @Test(enabled = true)
     void testRefundOrder() {
         def order = testPutTentativeOrder()
-        orderServiceImpl.flowSelector = new FlowSelector() {
+        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_REFUND_ORDER')
@@ -127,7 +134,7 @@ class OrderE2ETest extends BaseTest {
 
     @Test(enabled = true)
     void testPostTooManyItems() {
-        orderServiceImpl.flowSelector = new FlowSelector() {
+        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_FREE_ORDER')
@@ -156,7 +163,7 @@ class OrderE2ETest extends BaseTest {
 
     @Test(enabled = true)
     void testPostTooManyOffers() {
-        orderServiceImpl.flowSelector = new FlowSelector() {
+        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_FREE_ORDER')
@@ -182,5 +189,14 @@ class OrderE2ETest extends BaseTest {
             return
         }
         assert false
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T getTargetObject(Object proxy, Class<T> targetClass) throws Exception {
+        if (AopUtils.isJdkDynamicProxy(proxy)) {
+            return (T) proxy.asType(Advised).getTargetSource().getTarget();
+        } else {
+            return (T) proxy; // expected to be cglib proxy then, which is simply a specialized class
+        }
     }
 }
