@@ -13,6 +13,8 @@ machine:
 # checkout:
 
 dependencies:
+  pre:
+    - sudo apt-get update; sudo apt-get install gradle
   cache_directories:
     - ~/.m2
   override:
