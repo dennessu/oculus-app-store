@@ -31,6 +31,6 @@ script:
 notifications:
   email:
    recipients:
-     - txchen@silkcloud.com
+     - all@silkcloud.com
    on_success: always
    on_failure: always

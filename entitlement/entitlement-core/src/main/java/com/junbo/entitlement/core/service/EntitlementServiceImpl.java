@@ -26,10 +26,7 @@ import com.junbo.entitlement.auth.EntitlementAuthorizeCallbackFactory;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
-import com.junbo.entitlement.spec.model.DownloadUrlGetOptions;
-import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.entitlement.spec.model.EntitlementSearchParam;
-import com.junbo.entitlement.spec.model.PageMetadata;
+import com.junbo.entitlement.spec.model.*;
 import com.junbo.langur.core.promise.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -372,6 +369,27 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    @Transactional
+    public void revokeEntitlement(RevokeRequest request) {
+        validateNotNull(request.getEntitlementId(), "entitlementId");
+        Entitlement existing = getEntitlement(request.getEntitlementId());
+        if (request.getCount() == null) {
+            if (existing.getUseCount() != null) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid("count", "entitlement " + request.getEntitlementId() + " is consumable").exception();
+            } else {
+                deleteEntitlement(request.getEntitlementId());
+            }
+        } else {
+            if (existing.getUseCount() == null) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid("count", "entitlement " + request.getEntitlementId() + " is not consumable").exception();
+            } else {
+                existing.setUseCount(existing.getUseCount() - request.getCount());
+                updateEntitlement(existing.getId(), existing);
+            }
+        }
     }
 
     private Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid, final String requiredRight) {

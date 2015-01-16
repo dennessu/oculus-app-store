@@ -1,0 +1,12 @@
+{
+  "client_id" : "share-service",
+  "client_secret" : "F05865F918568C5D9ACFF066761F722D#B15BE72E97952669A23449309E286E6FBD1F0F9D495403081D598DFDE6EFEEF8BCAF65AD213834705C4253A45B1854C1",
+  "client_name" : "share-service",
+
+  "scopes" : [ "identity.service" ],
+  "default_scopes" : [ "identity.service" ],
+
+  "response_types" : [ ],
+  "grant_types" : [ "CLIENT_CREDENTIALS" ],
+  "internal" : true
+}

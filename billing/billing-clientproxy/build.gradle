@@ -47,9 +47,7 @@ dependencies {
     compile (libraries.spring_context)
     compile (libraries.jersey_common)
 
-    compile junboProject(':identity-spec')
     compile junboProject(':payment-spec')
-    compile junboProject(':oauth-spec')
     compile junboProject(':catalog-spec')
     compile 'com.thoughtworks.xstream:xstream:1.4.7'
     compile 'org.springframework.ws:spring-ws-core:2.2.0.RELEASE'

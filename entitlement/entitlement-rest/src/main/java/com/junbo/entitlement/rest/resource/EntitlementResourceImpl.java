@@ -19,6 +19,7 @@ import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
+import com.junbo.entitlement.spec.model.RevokeRequest;
 import com.junbo.entitlement.spec.resource.EntitlementResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,12 @@ public class EntitlementResourceImpl implements EntitlementResource {
         }
         result.setNext(link);
         return Promise.pure(result);
+    }
+
+    @Override
+    public Promise<Response> revokeEntitlement(RevokeRequest revokeRequest) {
+        entitlementService.revokeEntitlement(revokeRequest);
+        return Promise.pure(Response.status(200).build());
     }
 
     private String buildNextUrl(

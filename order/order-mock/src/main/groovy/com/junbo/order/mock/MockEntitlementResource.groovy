@@ -5,6 +5,7 @@ import com.junbo.common.model.Results
 import com.junbo.entitlement.spec.model.Entitlement
 import com.junbo.entitlement.spec.model.EntitlementSearchParam
 import com.junbo.entitlement.spec.model.PageMetadata
+import com.junbo.entitlement.spec.model.RevokeRequest
 import com.junbo.entitlement.spec.resource.EntitlementResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -48,4 +49,8 @@ class MockEntitlementResource extends BaseMock implements EntitlementResource {
         return Promise.pure(null)
     }
 
+    @Override
+    Promise<Response> revokeEntitlement(RevokeRequest revokeRequest) {
+        return null
+    }
 }

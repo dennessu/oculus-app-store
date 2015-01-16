@@ -32,7 +32,7 @@ public interface AppErrors {
             field = "cause", reason = "Entitlement {0} cannot be transferred. {1}")
     AppError entitlementNotTransferable(Object id, String msg);
 
-    @ErrorDef(httpStatusCode = 500, code = "104", message = "Error Parsing Download URL",
+    @ErrorDef(httpStatusCode = 412, code = "104", message = "Error Parsing Download URL",
             field = "cause", reason = "{0}")
     AppError errorParsingDownloadUrl(String msg);
 }
