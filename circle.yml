@@ -22,7 +22,7 @@ database:
   override:
     - ./setupdb.sh
   post:
-    - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build --parallel-threads=2
+    - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build --parallel-threads=1
     - ./dataloader.sh
 
 test:
