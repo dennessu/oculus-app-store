@@ -155,16 +155,7 @@ class CatalogDataHandler extends BaseDataHandler {
                 handle(itemRevision)
             }
         } else {
-            itemId = itemExisting.itemId
-            if (attributeEquals(item.genres, itemExisting.genres) &&
-                    attributeEquals(item.categories, itemExisting.categories)) {
-                logger.info("----The item $itemRevisionName and its revision have been loaded, skip")
-            } else {
-                itemExisting.genres = item.genres
-                itemExisting.categories = item.categories
-                itemResource.update(itemExisting.getId(), itemExisting).get()
-                logger.info("----The item $itemRevisionName and its revision have been loaded, greners changed, update")
-            }
+            logger.debug("The item $itemExisting.itemId already exists, skip this content.")
         }
 
         //loading offer and its revision
@@ -202,14 +193,7 @@ class CatalogDataHandler extends BaseDataHandler {
             offerRevision.offerId = offerId
             handle(offerRevision)
         } else {
-            if (attributeEquals(offer.categories, offerExisting.categories)) {
-                logger.info("----The offer $offerRevisionName and its revision have been loaded, skip")
-            } else {
-                offerExisting.categories = offer.categories
-                offerResource.update(offerExisting.getId(), offerExisting).get()
-                logger.info("----The offer $offerRevisionName and its revision have been loaded, categories changed, update")
-            }
-
+            logger.debug("The item $offerExisting.offerId already exists, skip this content.")
         }
 
     }
