@@ -16,6 +16,16 @@ trap "error_exit 'Error happened, failed to build image'" ERR
 shopt -s expand_aliases
 alias die='error_exit "Error ${0}(@`echo $(( $LINENO - 1 ))`):"'
 
+# if the os is Linux, use sudo for docker
+if [[ `uname` == 'Linux' ]]; then
+  SUDO_CMD="sudo "
+fi
+
+# if the os is Mac, don't use sudo since boot2docker is already run in root
+if [[ `uname` == 'Darwin' ]]; then
+  SUDO_CMD=""
+fi
+
 hash docker >/dev/null 2>&1 || die "!! docker not installed, cannot continue"
 
 REPO_ROOT=`git rev-parse --show-toplevel`
@@ -52,11 +62,11 @@ rm -r -f $DIR/bin/apphost/activemq-data
 cd $DIR
 # run docker build
 echo "## building docker image, set the tag to $git_branch"
-sudo docker build --rm -t silkcloud/onebox-app:$git_branch .
+$SUDO_CMD docker build --rm -t silkcloud/onebox-app:$git_branch .
 echo "## also set tag to $alternative_tag"
-sudo docker tag -f silkcloud/onebox-app:$git_branch silkcloud/onebox-app:$alternative_tag
+$SUDO_CMD docker tag -f silkcloud/onebox-app:$git_branch silkcloud/onebox-app:$alternative_tag
 echo "## finished building docker image"
 echo "## now pushing docker image to docker hub"
-sudo docker push silkcloud/onebox-app:$git_branch
-sudo docker push silkcloud/onebox-app:$alternative_tag
+$SUDO_CMD docker push silkcloud/onebox-app:$git_branch
+$SUDO_CMD docker push silkcloud/onebox-app:$alternative_tag
 echo "## docker images pushed to docker hub, tags = silkcloud/onebox-app:$git_branch silkcloud/onebox-app:$alternative_tag"
