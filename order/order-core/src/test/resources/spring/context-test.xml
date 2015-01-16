@@ -12,6 +12,4 @@
     <import resource="classpath*:spring/*-context.xml"/>
     <import resource="classpath*:spring/flow-context-test.xml"/>
     <import resource="classpath*:spring/orderflow/*.xml"/>
-    <aop:config proxy-target-class="true"/>
-
 </beans>
