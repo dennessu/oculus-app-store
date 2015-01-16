@@ -14,7 +14,9 @@ machine:
 
 dependencies:
   pre:
-    - sudo apt-get update; sudo apt-get install gradle
+    - wget -q -O /tmp/gradle-2.1-bin.zip https://services.gradle.org/distributions/gradle-2.1-bin.zip
+    - sudo unzip /tmp/gradle-2.1-bin.zip -d /opt/
+    - sudo ln -s /opt/gradle-2.1/bin/gradle /usr/bin/gradle
   cache_directories:
     - ~/.m2
   override:
