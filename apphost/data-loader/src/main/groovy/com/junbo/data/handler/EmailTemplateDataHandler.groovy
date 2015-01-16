@@ -1,5 +1,6 @@
 package com.junbo.data.handler
 
+import com.junbo.data.model.EmailTemplateData
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.QueryParam
 import com.junbo.email.spec.resource.EmailTemplateResource
@@ -27,33 +28,46 @@ class EmailTemplateDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        EmailTemplate template
+        EmailTemplateData emailTemplateData
         try {
-            template = transcoder.decode(new TypeReference<EmailTemplate>() {}, content) as EmailTemplate
+            emailTemplateData = transcoder.decode(new TypeReference<EmailTemplateData>() {}, content) as EmailTemplateData
         } catch (Exception e) {
             logger.error("Error parsing emailTemplate $content", e)
-            exit()
         }
 
-        EmailTemplate existing
-        try {
-            def list = templateResource.getEmailTemplates(
-                    new QueryParam(source: template.source, action: template.action, locale: template.locale)).get()
-            if (list?.items?.size() != 0) {
-                existing = list.items.first() as EmailTemplate
-            }
-        } catch (Exception e) {
-            logger.debug('This content does not exist in current database', e)
-        }
+        for (String locale : emailTemplateData.locales) {
+            EmailTemplate template = new EmailTemplate(
+                    source: emailTemplateData.source,
+                    action: emailTemplateData.action,
+                    locale: locale,
+                    providerName: emailTemplateData.providerName,
+                    placeholderNames: emailTemplateData.placeholderNames
+            )
 
-        if (existing != null) {
-            logger.debug("EmailTemplate ${existing.action} already exists, skipped!")
-        } else {
-            logger.debug('Create new EmailTemplate with this content.')
+            EmailTemplate existing
             try {
-                templateResource.postEmailTemplate(template).get()
+                def list = templateResource.getEmailTemplates(
+                        new QueryParam(source: template.source, action: template.action, locale: template.locale)).get()
+                if (list?.items?.size() != 0) {
+                    existing = list.items.first() as EmailTemplate
+                    if (existing.locale != locale) {
+                        // This is to avoid locale fallback search
+                        existing = null
+                    }
+                }
             } catch (Exception e) {
-                logger.error("Error creating emailTemplate $template.action", e)
+                logger.debug('This content does not exist in current database', e)
+            }
+
+            if (existing != null) {
+                logger.debug("EmailTemplate ${existing.action} already exists, skipped!")
+            } else {
+                logger.debug('Create new EmailTemplate with this content.')
+                try {
+                    templateResource.postEmailTemplate(template).get()
+                } catch (Exception e) {
+                    logger.error("Error creating emailTemplate $template.action", e)
+                }
             }
         }
     }

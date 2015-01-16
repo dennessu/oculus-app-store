@@ -1,7 +1,7 @@
 {
     "source" : "Oculus",
     "action" : "EmailVerification_V1",
-    "locale" : "en_US",
+    "locales" : ["en_US", "de_DE", "es_ES", "es_LA", "fr_FR", "it_IT", "ko_KR"],
     "providerName" : "mandrill",
     "placeholderNames" : [ "firstName", "link" ]
 }

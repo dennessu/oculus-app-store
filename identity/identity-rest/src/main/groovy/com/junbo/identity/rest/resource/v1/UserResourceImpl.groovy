@@ -535,7 +535,7 @@ class UserResourceImpl implements UserResource {
                 queryParam = new QueryParam(
                         source: EMAIL_SOURCE,
                         action: EMAIL_DEACTIVATE_ACCOUNT_ACTION,
-                        locale: 'en_US'   //todo: remove hardcode locale when email template is localized
+                        userId: user.getId()
                 )
             }
 
@@ -544,7 +544,7 @@ class UserResourceImpl implements UserResource {
                 queryParam = new QueryParam(
                         source: EMAIL_SOURCE,
                         action: EMAIL_REACTIVATE_ACCOUNT_ACTION,
-                        locale: 'en_US' //todo: remove hardcode locale when email template is localized
+                        userId: user.getId()
                 )
             }
 
@@ -819,7 +819,7 @@ class UserResourceImpl implements UserResource {
         QueryParam queryParam = new QueryParam(
                 source: EMAIL_SOURCE,
                 action: EMAIL_PII_CHANGE_ACTION,
-                locale: 'en_US'
+                userId: user.getId()
         )
 
         if (CollectionUtils.isEmpty(user.emails) || user.username == null) {

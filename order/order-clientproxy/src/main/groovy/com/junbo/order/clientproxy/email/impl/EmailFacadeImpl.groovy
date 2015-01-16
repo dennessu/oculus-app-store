@@ -1,8 +1,8 @@
 package com.junbo.order.clientproxy.email.impl
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.email.spec.model.Email
@@ -49,11 +49,11 @@ class EmailFacadeImpl implements EmailFacade {
 
     @Override
     Promise<Email> sendOrderConfirmationEMail(Order order, User user, List<Offer> offers) {
-        if (order == null || user == null || CollectionUtils.isEmpty(offers)) {
+        if (order == null || user == null || user.getId() == null || CollectionUtils.isEmpty(offers)) {
             LOGGER.info('name=Email_Info_Not_Sufficient')
             return Promise.pure(null)
         }
-        return getEmailTemplates('Oculus', 'OrderConfirmation_V1', 'en_US').recover {
+        return getEmailTemplates('Oculus', 'OrderConfirmation_V1', user.getId()).recover {
             LOGGER.info('name=Get_Email_Template_Error')
             return Promise.pure(null)
         }.then { List<EmailTemplate> templates ->
@@ -67,18 +67,18 @@ class EmailFacadeImpl implements EmailFacade {
         }
     }
 
-    Promise<List<EmailTemplate>> getEmailTemplates(String source, String action, String locale) {
-        QueryParam param = buildQueryParam(source, action, locale)
+    Promise<List<EmailTemplate>> getEmailTemplates(String source, String action, UserId userId) {
+        QueryParam param = buildQueryParam(source, action, userId)
         return emailTemplateResource.getEmailTemplates(param).syncThen { Results<EmailTemplate> results ->
             return results == null ? Collections.emptyList() : results.items
         }
     }
 
-    private QueryParam buildQueryParam(String source, String action, String locale) {
+    private QueryParam buildQueryParam(String source, String action, UserId userId) {
         QueryParam param = new QueryParam()
         param.source = source
         param.action = action
-        param.locale = locale
+        param.userId = userId
         return param
     }
 

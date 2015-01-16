@@ -6,6 +6,7 @@
 package com.junbo.test.identity;
 
 import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.test.common.HttpclientHelper;
@@ -495,6 +496,34 @@ public class postUser {
         nameInfo = Identity.UserPersonalInfoPost(user.getId(), nameInfo);
         user.setName(nameInfo.getId());
         Identity.UserPut(user);
+    }
+
+    @Test(groups = "dailies")
+    // https://oculus.atlassian.net/browse/SER-923
+    public void testUserPutEmails() throws Exception {
+        User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
+
+        // If it is zh_CN, it should send en_US email
+        user.setPreferredLocale(new LocaleId("zh_CN"));
+        // todo:    Check email is sent out through en_US
+        UserPersonalInfo usernameInfo = IdentityModel.DefaultUserPersonalInfoUsername();
+        usernameInfo = Identity.UserPersonalInfoPost(user.getId(), usernameInfo);
+        user.setUsername(usernameInfo.getId());
+        user = Identity.UserPut(user);
+
+        // todo:    Check email is sent out through ko_KR
+        user.setPreferredLocale(new LocaleId("ko_KR"));
+        usernameInfo = IdentityModel.DefaultUserPersonalInfoUsername();
+        usernameInfo = Identity.UserPersonalInfoPost(user.getId(), usernameInfo);
+        user.setUsername(usernameInfo.getId());
+        user = Identity.UserPut(user);
+
+        // todo:    Check email is sent out through es_LA
+        user.setPreferredLocale(new LocaleId("es_CL"));
+        usernameInfo = IdentityModel.DefaultUserPersonalInfoUsername();
+        usernameInfo = Identity.UserPersonalInfoPost(user.getId(), usernameInfo);
+        user.setUsername(usernameInfo.getId());
+        user = Identity.UserPut(user);
     }
 
     @Test(groups = "dailies")

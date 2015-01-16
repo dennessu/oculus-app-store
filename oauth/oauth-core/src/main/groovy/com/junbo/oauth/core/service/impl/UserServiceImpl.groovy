@@ -517,8 +517,7 @@ class UserServiceImpl implements UserService {
     }
 
     private Promise<String> sendEmail(QueryParam queryParam, User user, String email, String uri, Map<String, String> replacements) {
-        // todo: remove this hard coded after email template has been setup
-        queryParam.locale = 'en_US'
+        queryParam.userId = user.getId()
 
         // TODO: cache the email template for each locale.
         return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
