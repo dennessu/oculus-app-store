@@ -9,6 +9,7 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserDOB
@@ -189,6 +190,9 @@ class CreateUserPii implements Action {
                         userId: ((UserId) user.id).value,
                         lastAuthDate: new Date()
                 )
+
+                String encodedUserId = IdFormatter.encodeId(updatedUser.getId())
+                LOGGER.info("User $encodedUserId created from id-web with client id $contextWrapper.client.clientId")
 
                 contextWrapper.loginState = loginState
                 return Promise.pure(new ActionResult('success'))

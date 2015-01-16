@@ -1,8 +1,9 @@
 package com.junbo.store.rest.utils
-
+import com.fasterxml.jackson.core.type.TypeReference
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
@@ -17,21 +18,21 @@ import com.junbo.store.spec.model.ApiContext
 import com.junbo.store.spec.model.Platform
 import com.junbo.store.spec.model.StoreApiHeader
 import groovy.transform.CompileStatic
-import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.InitializingBean
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
 import java.util.regex.Pattern
-
 /**
  * The ApiContextBuilder class.
  */
 @CompileStatic
 @Component('storeContextBuilder')
-class ApiContextBuilder {
+class ApiContextBuilder implements InitializingBean {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ApiContextBuilder)
 
@@ -52,6 +53,15 @@ class ApiContextBuilder {
     private String defaultLocale = 'en_US'
 
     private String localeWildCard = '*'
+
+    @Value('${store.locale.mapping}')
+    private String localeMappingString;
+
+    @Value('${store.locale.mapping.enabled}')
+    private boolean localeMappingEnabled;
+
+    private Map<String, String> localeMapping = [:] as Map;
+
 
     private final Pattern androidIdPattern = Pattern.compile('[a-fA-F\\d]{1,16}')
 
@@ -100,7 +110,7 @@ class ApiContextBuilder {
     }
 
     private Promise<com.junbo.identity.spec.v1.model.Locale> getLocale() {
-        String localeId = JunboHttpContext.acceptableLanguage
+        String localeId = doLocaleMapping(JunboHttpContext.acceptableLanguage);
 
         resourceContainer.localeResource.get(new LocaleId(localeId), new LocaleGetOptions()).recover { Throwable ex ->
             if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.LocaleNotFound)) {
@@ -132,6 +142,20 @@ class ApiContextBuilder {
                 }
             }
             throw ex
+        }
+    }
+
+    private String doLocaleMapping(String localeId) {
+        if (!localeMappingEnabled || localeId == null) {
+            return localeId;
+        }
+        return localeMapping.containsKey(localeId) ? localeMapping[localeId] : localeId
+    }
+
+    @Override
+    void afterPropertiesSet() throws Exception {
+        if (!StringUtils.isBlank(localeMappingString)) {
+            localeMapping = (Map<String, String>) ObjectMapperProvider.instance().readValue(localeMappingString, new TypeReference<Map<String, String>>() {})
         }
     }
 }

@@ -27,17 +27,10 @@ script:
   - GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m" ./build.sh -x build
   - ./dataloader.sh
   - ./test.sh -r
-#  - docker/images/onebox-app/ci_buildimageandpush.sh
-
-after_script:
-  - rm -r -f apphost/apphost-cli/build/install/apphost-cli/bin/apphost/logs
-  - rm -r -f apphost/apphost-cli/build/install/apphost-cli/bin/apphost/activemq-data
 
 notifications:
   email:
    recipients:
-     - txchen@silkcloud.com
+     - all@silkcloud.com
    on_success: always
    on_failure: always
-
-commit_container: silkcloud/apphost

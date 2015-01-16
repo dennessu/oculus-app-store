@@ -45,7 +45,7 @@
         "readonly.service": [
             {
                 "precondition": "true",
-                "rights": [ "read" ],
+                "rights": [ "read", "draft.read" ],
                 "scriptType": "SPEL"
             }
         ]
