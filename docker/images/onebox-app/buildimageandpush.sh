@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# this script would build onebox-app image and auto push to docker hub
-# this should be run in CI environment, and the following env vars are required:
-#  - DH_EMAIL
-#  - DH_PASSWORD
-#  - DH_USERNAME
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -14,26 +9,14 @@ function error_exit {
     echo "$@"
     exit 1
 }
+trap "error_exit 'Received signal SIGHUP'" SIGHUP
+trap "error_exit 'Received signal SIGINT'" SIGINT
+trap "error_exit 'Received signal SIGTERM'" SIGTERM
 trap "error_exit 'Error happened, failed to build image'" ERR
 shopt -s expand_aliases
 alias die='error_exit "Error ${0}(@`echo $(( $LINENO - 1 ))`):"'
 
 hash docker >/dev/null 2>&1 || die "!! docker not installed, cannot continue"
-
-# hack: since shippable encrypted env var feature is not working, set the value here
-DH_EMAIL=jubot@silkcloud.com
-DH_PASSWORD='987#Bugsfor$abc'
-DH_USERNAME=scdockerro
-
-: ${DH_EMAIL:? "Env var DH_EMAIL not found, cannot continue"}
-: ${DH_PASSWORD:? "Env var DH_PASSWORD not found, cannot continue"}
-: ${DH_USERNAME:? "Env var DH_USERNAME not found, cannot continue"}
-
-env
-sudo env
-
-echo sudo docker login -e "$DH_EMAIL" -p "$DH_PASSWORD" -u "$DH_USERNAME" https://index.docker.io/v1/ || die "!! docker login failed"
-sudo docker login -e "$DH_EMAIL" -p "$DH_PASSWORD" -u "$DH_USERNAME" https://index.docker.io/v1/ || die "!! docker login failed"
 
 REPO_ROOT=`git rev-parse --show-toplevel`
 APPHOST_FOLDER=$REPO_ROOT/apphost/apphost-cli/build/install/apphost-cli
