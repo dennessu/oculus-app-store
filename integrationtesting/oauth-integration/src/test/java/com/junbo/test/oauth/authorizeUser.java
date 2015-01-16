@@ -7,10 +7,7 @@ package com.junbo.test.oauth;
 
 import com.junbo.common.error.Error;
 import com.junbo.common.error.ErrorDetail;
-import com.junbo.identity.spec.v1.model.User;
-import com.junbo.identity.spec.v1.model.UserLoginName;
-import com.junbo.identity.spec.v1.model.UserPersonalInfo;
-import com.junbo.identity.spec.v1.model.UserVAT;
+import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.oauth.spec.model.TokenInfo;
@@ -31,10 +28,7 @@ import org.testng.annotations.Test;
 
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author dw
@@ -929,5 +923,117 @@ public class authorizeUser {
         error.setDetails(details);
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         Oauth.PostRegisterUser(cid, userName, email, error);
+    }
+
+    @Test(groups = "dailies")
+    public void resetPasswordWithMultiReferencedEmail() throws Exception {
+        String email = RandomHelper.randomEmail();
+
+        Identity.GetHttpAuthorizationHeader();
+
+        // create user 1
+        User user1 = Identity.UserPostDefault(IdentityModel.DefaultUser());
+        UserPersonalInfo userPersonalInfoName1 = Identity.UserPersonalInfoPost(user1.getId(),
+                IdentityModel.DefaultUserPersonalInfoUsername());
+        // create user pii 11 with target email
+        UserPersonalInfo userPersonalInfo11 = Identity.UserPersonalInfoPost(user1.getId(),
+                IdentityModel.DefaultUserPersonalInfoEmail(email));
+        // create user pii 12 with random email to be default for user 1
+        UserPersonalInfo userPersonalInfo12 = Identity.UserPersonalInfoPost(user1.getId(),
+                IdentityModel.DefaultUserPersonalInfoEmail(RandomHelper.randomEmail()));
+        // create user link 11 with target email for user 1, not default
+        UserPersonalInfoLink link11 = new UserPersonalInfoLink();
+        link11.setValue(userPersonalInfo11.getId());
+        link11.setLabel(RandomHelper.randomAlphabetic(15));
+        link11.setUserId(user1.getId());
+        link11.setIsDefault(false);
+        // create user link 12 with random default email for user 1
+        UserPersonalInfoLink link12 = new UserPersonalInfoLink();
+        link12.setValue(userPersonalInfo12.getId());
+        link12.setLabel(RandomHelper.randomAlphabetic(15));
+        link12.setUserId(user1.getId());
+        link12.setIsDefault(true);
+
+        List<UserPersonalInfoLink> links1 = new ArrayList<>();
+        links1.add(link11);
+        links1.add(link12);
+        user1.setEmails(links1);
+        user1.setUsername(userPersonalInfoName1.getId());
+        user1.setIsAnonymous(false);
+        Identity.UserPut(user1);
+        Identity.UserGetByUserId(user1.getId());
+
+        // create user 2
+        User user2 = Identity.UserPostDefault(IdentityModel.DefaultUser());
+        UserPersonalInfo userPersonalInfoName2 = Identity.UserPersonalInfoPost(user2.getId(),
+                IdentityModel.DefaultUserPersonalInfoUsername());
+        // create user pii 21 with target email
+        UserPersonalInfo userPersonalInfo21 = Identity.UserPersonalInfoPost(user2.getId(),
+                IdentityModel.DefaultUserPersonalInfoEmail(email));
+        Calendar ca = Calendar.getInstance();
+        userPersonalInfo21.setLastValidateTime(ca.getTime());
+        Identity.UserPersonalInfoPut(user2.getId(), userPersonalInfo21);
+        Identity.UserGetByUserId(user2.getId());
+
+        // create user 3
+        User user3 = Identity.UserPostDefault(IdentityModel.DefaultUser());
+        UserPersonalInfo userPersonalInfoName3 = Identity.UserPersonalInfoPost(user3.getId(),
+                IdentityModel.DefaultUserPersonalInfoUsername());
+        // create user pii 31 with target email
+        UserPersonalInfo userPersonalInfo31 = Identity.UserPersonalInfoPost(user3.getId(),
+                IdentityModel.DefaultUserPersonalInfoEmail(email));
+        // create user pii 32 with random email to be default for user 3
+        UserPersonalInfo userPersonalInfo32 = Identity.UserPersonalInfoPost(user3.getId(),
+                IdentityModel.DefaultUserPersonalInfoEmail(RandomHelper.randomEmail()));
+        // create user link 31 with target email for user 3, not default
+        UserPersonalInfoLink link31 = new UserPersonalInfoLink();
+        link31.setValue(userPersonalInfo31.getId());
+        link31.setLabel(RandomHelper.randomAlphabetic(15));
+        link31.setUserId(user3.getId());
+        link31.setIsDefault(false);
+        // create user link 32 with random default email for user 3
+        UserPersonalInfoLink link32 = new UserPersonalInfoLink();
+        link32.setValue(userPersonalInfo32.getId());
+        link32.setLabel(RandomHelper.randomAlphabetic(15));
+        link32.setUserId(user3.getId());
+        link32.setIsDefault(true);
+        List<UserPersonalInfoLink> links3 = new ArrayList<>();
+        links3.add(link31);
+        links3.add(link32);
+        user3.setEmails(links3);
+        user3.setUsername(userPersonalInfoName3.getId());
+        user3.setIsAnonymous(false);
+        Identity.UserPut(user3);
+        Identity.UserGetByUserId(user3.getId());
+
+        // create user link 2 with target default email for user 2
+        UserPersonalInfoLink link2 = new UserPersonalInfoLink();
+        link2.setValue(userPersonalInfo21.getId());
+        link2.setLabel(RandomHelper.randomAlphabetic(15));
+        link2.setUserId(user2.getId());
+        link2.setIsDefault(true);
+        List<UserPersonalInfoLink> links2 = new ArrayList<>();
+        links2.add(link2);
+        user2.setEmails(links2);
+        user2.setUsername(userPersonalInfoName2.getId());
+        user2.setIsAnonymous(false);
+        Identity.UserPut(user2);
+        Identity.UserGetByUserId(user2.getId());
+
+        //HttpclientHelper.ResetHttpClient();
+        String newPassword = "ASDFqwer1234";
+        String resetPasswordLink = Oauth.PostResetPassword(email, null);
+        String resetPasswordCid = Oauth.GetResetPasswordCid(resetPasswordLink);
+        Oauth.GetResetPasswordView(resetPasswordCid);
+        Oauth.PostResetPasswordWithNewPassword(resetPasswordCid, newPassword);
+
+        HttpclientHelper.ResetHttpClient();
+        String cid = Oauth.GetLoginCid();
+        CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+        Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+        String loginResponseLink = Oauth.UserLogin(cid, email, newPassword);
+        String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
+        Oauth.Logout(idToken);
+
     }
 }
