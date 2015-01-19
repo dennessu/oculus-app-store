@@ -87,4 +87,11 @@ public class Utils {
         }
         return IdFormatter.encodeId(value);
     }
+
+    public static String escaple(String value) {
+        if (value == null) {
+            return null;
+        }
+        return value.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
 }
