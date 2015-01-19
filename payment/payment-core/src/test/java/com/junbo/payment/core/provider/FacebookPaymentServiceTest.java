@@ -13,6 +13,7 @@ import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.ChargeInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.RiskFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.TransactionStatus;
@@ -74,11 +75,19 @@ public class FacebookPaymentServiceTest extends BaseTest {
         request.setAccountNumber(ccToken);
         request.setBillingAddressId(null);
         request.setPhoneNumber(null);
+        RiskFeature riskFeature = new RiskFeature(){
+            {
+                setTimeSinceUserAccountCreatedInDays(10);
+                setSourceCountry("US");
+            }
+        };
+        request.setRiskFeature(riskFeature);
         result = addPI(request);
         Assert.assertNotNull(result);
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotEquals("", result.getExternalToken());
         PaymentTransaction transaction = buildPaymentTransaction(request);
+        transaction.setRiskFeature(riskFeature);
         PaymentTransaction paymentResult = mockFBPaymentService.authorize(transaction).get();
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction captureTrx = new PaymentTransaction(){
@@ -105,11 +114,19 @@ public class FacebookPaymentServiceTest extends BaseTest {
         request.setAccountNumber(ccToken);
         request.setBillingAddressId(null);
         request.setPhoneNumber(null);
+        RiskFeature riskFeature = new RiskFeature(){
+            {
+                setTimeSinceUserAccountCreatedInDays(10);
+                setSourceCountry("US");
+            }
+        };
+        request.setRiskFeature(riskFeature);
         result = addPI(request);
         Assert.assertNotNull(result);
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotEquals("", result.getExternalToken());
         PaymentTransaction transaction = buildPaymentTransaction(request);
+        transaction.setRiskFeature(riskFeature);
         PaymentTransaction paymentResult = mockFBPaymentService.authorize(transaction).get();
         Assert.assertEquals(paymentResult.getStatus().toString(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction captureTrx = new PaymentTransaction(){
