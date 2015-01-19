@@ -12,8 +12,10 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.enumid.EnumId;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Link;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +44,9 @@ public class EnumIdDeserizlizer<T extends EnumId> extends JsonDeserializer<T> {
         try {
             id = this.clazz.newInstance();
             if (ref != null) {
+                if (StringUtils.isEmpty(ref.getId())) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid(jp.getCurrentName()).exception();
+                }
                 id.setValue(ref.getId());
             }
         }

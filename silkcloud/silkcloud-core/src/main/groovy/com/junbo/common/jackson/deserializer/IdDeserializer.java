@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.Id;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Link;
@@ -45,6 +46,9 @@ public class IdDeserializer<T extends Id>
         try {
             id = this.clazz.newInstance();
             if (ref != null) {
+                if (ref.getId() == null) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid(jp.getCurrentName()).exception();
+                }
                 id.setValue(IdFormatter.decodeId(this.clazz, ref.getId()));
             }
         } catch (InstantiationException | IllegalAccessException e) {

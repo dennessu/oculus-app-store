@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.billing.spec.resource.VatResource
+import com.junbo.common.enumid.CountryId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PITypeId
 import com.junbo.common.id.UserId
@@ -399,6 +400,8 @@ class UserValidatorImpl implements UserValidator {
             }.then {
                 return validateVat(newUser)
             }.then {
+                return validateTaxExemption(oldUser, newUser)
+            }.then {
                 return validateDefaultPI(oldUser, newUser)
             }
     }
@@ -738,6 +741,57 @@ class UserValidatorImpl implements UserValidator {
             }
         }.then {
             return Promise.pure(null)
+        }
+    }
+
+    Promise<Void> validateTaxExemption(User oldUser, User user) {
+        if (user.taxExemption == null || user.taxExemption.isEmpty()) {
+            return Promise.pure(null)
+        }
+        Map<String, TaxExempt> taxExemptMap = oldUser?.taxExemption
+
+        return Promise.each(user.taxExemption.entrySet()) { Map.Entry<String, TaxExempt> entry ->
+            if (StringUtils.isEmpty(entry.key) ||!ValidatorUtil.isValidCountryCode(entry.key)) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.key').exception()
+            }
+
+            if (entry.value == null) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.value').exception()
+            }
+            return countryService.get(new CountryId(entry.getKey())).then { Country country ->
+                if (country == null) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.key').exception()
+                }
+
+                TaxExempt existingTaxExempt = taxExemptMap?.get(entry.key)
+                if (existingTaxExempt != null && existingTaxExempt.equals(entry.value)) {
+                    return Promise.pure(null)
+                }
+
+                if (existingTaxExempt?.isTaxExemptionValidated != entry.value.isTaxExemptionValidated) {
+                    if (!AuthorizeContext.hasScopes('csr')) {
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('taxExemption.value', 'isTaxExemptionValidated can only be changed by CSR').exception()
+                    }
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(null)
+        }
+    }
+
+    Promise<Map<String, TaxExempt>> getExistingTaxExempt(User user) {
+        if (user.getId() == null) {
+            return Promise.pure(new HashMap<String, TaxExempt>())
+        } else {
+            return userService.get(user.getId()).then { User existing ->
+                if (existing.taxExemption == null || existing.taxExemption.isEmpty()) {
+                    return Promise.pure(new HashMap<String, TaxExempt>())
+                }
+
+                return Promise.pure(existing.taxExemption)
+            }
         }
     }
 

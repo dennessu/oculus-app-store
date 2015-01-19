@@ -418,6 +418,15 @@ public class IdentityModel {
         return userVAT;
     }
 
+    public static TaxExempt DefaultUserTaxExempt() throws Exception {
+        TaxExempt taxExempt = new TaxExempt();
+        taxExempt.setTaxExemptionCertificateFile(RandomHelper.randomAlphabetic(15));
+        taxExempt.setTaxExemptionCertificateNumber(RandomHelper.randomAlphabetic(15));
+        taxExempt.setTaxExemptionReason(RandomHelper.randomAlphabetic(15));
+
+        return taxExempt;
+    }
+
     public static DeviceType DefaultDeviceType(List<DeviceTypeId> deviceTypeIds) throws Exception {
         DeviceType deviceType = new DeviceType();
         deviceType.setInstructionManual(RandomHelper.randomAlphabetic(100));
