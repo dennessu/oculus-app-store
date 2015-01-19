@@ -15,4 +15,8 @@ import java.util.Map;
  */
 public interface EntitlementGateway {
     Map<Long, List<String>> grant(Map<Long, List<Entitlement>> entitlements);
+
+    boolean revokeNonConsumable(String entitlementId);
+
+    boolean revokeConsumable(String entitlementId, Integer count);
 }

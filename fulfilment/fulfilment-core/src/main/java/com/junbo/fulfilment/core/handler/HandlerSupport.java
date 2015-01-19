@@ -46,7 +46,6 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
     @Autowired
     protected FulfilmentActionRepository actionRepo;
 
-
     public void process(T context) {
         for (final FulfilmentAction action : context.getActions()) {
             try {
@@ -67,6 +66,10 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
                 LOGGER.error("Error occurred during updating action.", e);
             }
         }
+    }
+
+    public void revoke(T context) {
+        throw new RuntimeException("not implemented");
     }
 
     protected FulfilmentResult handle(T context, FulfilmentAction action) {

@@ -14,4 +14,6 @@ import com.junbo.fulfilment.core.context.FulfilmentContext;
  */
 public interface FulfilmentHandler<T extends FulfilmentContext> {
     void process(T context);
+
+    void revoke(T context);
 }
