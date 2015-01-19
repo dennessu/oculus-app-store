@@ -84,13 +84,13 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         } else if (options.getPublisherId() != null || !StringUtils.isEmpty(options.getStatus())) {
             StringBuilder sb = new StringBuilder();
             if (options.getPublisherId() != null) {
-                sb.append("ownerId:'").append(options.getPublisherId().getValue()).append("'");
+                sb.append("ownerId:\"").append(options.getPublisherId().getValue()).append("\"");
             }
             if (!StringUtils.isEmpty(options.getStatus())) {
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("status:'").append(options.getStatus()).append("'");
+                sb.append("status:\"").append(options.getStatus()).append("\"");
             }
             CloudantSearchResult<OfferRevision> searchResult = searchSync("search", sb.toString(), options.getValidSize(), options.getCursor());
             offerRevisions = searchResult.getResults();

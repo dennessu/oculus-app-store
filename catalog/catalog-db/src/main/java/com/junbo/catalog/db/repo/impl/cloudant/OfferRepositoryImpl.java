@@ -78,7 +78,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
         } else if (options.getCategory() != null || options.getPublished() != null || options.getOwnerId() != null || options.getCountry() != null) {
             StringBuilder sb = new StringBuilder();
             if (options.getCategory() != null) {
-                sb.append("categoryId:'").append(options.getCategory()).append("'");
+                sb.append("categoryId:\"").append(options.getCategory()).append("\"");
             }
             if (options.getPublished() != null) {
                 if (sb.length() > 0) {
@@ -90,14 +90,14 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("ownerId:'").append(options.getOwnerId().getValue()).append("'");
+                sb.append("ownerId:\"").append(options.getOwnerId().getValue()).append("\"");
             }
             if (options.getCountry() != null) {
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("(availableCountry:('").append(options.getCountry()).append("')");
-                sb.append(" AND ").append("-unavailableCountry:'").append(options.getCountry()).append("')");
+                sb.append("(availableCountry:(\"").append(options.getCountry()).append("\")");
+                sb.append(" AND ").append("-unavailableCountry:\"").append(options.getCountry()).append("\")");
             }
             CloudantSearchResult<Offer> searchResult =
                     search("search", sb.toString(), options.getValidSize(), options.getCursor()).get();

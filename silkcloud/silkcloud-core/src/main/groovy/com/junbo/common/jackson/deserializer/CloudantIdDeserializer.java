@@ -11,9 +11,11 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.CloudantId;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Link;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +46,9 @@ public class CloudantIdDeserializer<T extends CloudantId>
         try {
             id = this.clazz.newInstance();
             if (ref != null) {
+                if (StringUtils.isEmpty(ref.getId())) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid(jp.getCurrentName()).exception();
+                }
                 id.setValue(ref.getId());
             }
         } catch (InstantiationException | IllegalAccessException e) {

@@ -87,8 +87,9 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
     @JsonIgnore
     private UserInfo userInfo;
 
-    public Long
-    getId() {
+    private RiskFeature riskFeature;
+
+    public Long getId() {
         return id;
     }
 
@@ -264,5 +265,13 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
 
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public RiskFeature getRiskFeature() {
+        return riskFeature;
+    }
+
+    public void setRiskFeature(RiskFeature riskFeature) {
+        this.riskFeature = riskFeature;
     }
 }

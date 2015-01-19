@@ -99,12 +99,6 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
     @ApiModelProperty(position = 15, required = false, value = "A mapping between country code and User VAT number, country code must be exist valid country code.")
     private Map<String, UserVAT> vat = new HashMap<>();
 
-    @ApiModelProperty(position = 16, required = false, value = "true if the user claims to be tax exempt, false if user has not claimed to be tax exempt.")
-    private Boolean isTaxExemptionClaimed;
-
-    @ApiModelProperty(position = 17, required = false, value = "True if Oculus has verified user taxExemption material, " +
-            "False if Oculus hasn't verified user taxExemption material, this value should only be set by internal tool by Oculus employee.")
-    private Boolean isTaxExemptionValidated;
 
     @ApiModelProperty(position = 18, required = false, value = "User profile information object, contains the profile info migrated from share.")
     private UserProfile profile;
@@ -157,11 +151,14 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
     @HateoasLink("/payment-instruments?userId={id}")
     private Link paymentInstruments;
 
+    @ApiModelProperty(position = 18, required = false, value = "A mapping between country code and user Tax ememption information, country code must be exist valid country code")
+    private Map<String, TaxExempt> taxExemption;
+
     @ApiModelProperty(position = 19, required = false, value = "[Client Immutable] A Link to Order-List resource to Search orders of the user.")
     @HateoasLink("/orders?userId={id}")
     private Link orders;
 
-    @ApiModelProperty(position = 20, required = false, value = "[Client Immutable] A Link to Cart-List resource to Search the primary cart of the user.")
+    @ApiModelProperty(position = 20, required = false, value = "[Client Immutable] A Link to Cart-List resource to Search the prLoginResourceImplimary cart of the user.")
     @HateoasLink("/users/{id}/carts/primary")
     private Link cart;
 
@@ -499,22 +496,13 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
         support.setPropertyAssigned("vat");
     }
 
-    public Boolean getIsTaxExemptionClaimed() {
-        return isTaxExemptionClaimed;
+    public Map<String, TaxExempt> getTaxExemption() {
+        return taxExemption;
     }
 
-    public void setIsTaxExemptionClaimed(Boolean isTaxExemptionClaimed) {
-        this.isTaxExemptionClaimed = isTaxExemptionClaimed;
-        support.setPropertyAssigned("isTaxExemptionClaimed");
-    }
-
-    public Boolean getIsTaxExemptionValidated() {
-        return isTaxExemptionValidated;
-    }
-
-    public void setIsTaxExemptionValidated(Boolean isTaxExemptionValidated) {
-        this.isTaxExemptionValidated = isTaxExemptionValidated;
-        support.setPropertyAssigned("isTaxExemptionValidated");
+    public void setTaxExemption(Map<String, TaxExempt> taxExemption) {
+        this.taxExemption = taxExemption;
+        support.setPropertyAssigned("taxExemption");
     }
 
     public UserProfile getProfile() {

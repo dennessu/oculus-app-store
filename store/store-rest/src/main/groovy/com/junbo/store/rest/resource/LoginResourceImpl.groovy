@@ -244,11 +244,13 @@ class LoginResourceImpl implements LoginResource {
             textMap[SentryFieldConstant.EMAIL.value] = request.email
             textMap[SentryFieldConstant.USERNAME.value] = request.username
             textMap[SentryFieldConstant.REAL_NAME.value] = request.firstName + " " + request.lastName
-            sentryFacade.doSentryCheck(sentryFacade.createSentryRequest(SentryCategory.OCULUS_REGISTRATION_CREATE.value,
-                textMap))
-        }.recover { Throwable throwable ->
-            LOGGER.error("CreateUser:  Call sentry error, Ignore")
-            return Promise.pure()
+            return Promise.pure().then {
+                return sentryFacade.doSentryCheck(sentryFacade.createSentryRequest(SentryCategory.OCULUS_REGISTRATION_CREATE.value,
+                        textMap))
+            }.recover { Throwable throwable ->
+                LOGGER.error("CreateUser:  Call sentry error, Ignore")
+                return Promise.pure()
+            }
         }.then { SentryResponse sentryResponse ->
             if (sentryResponse != null && sentryResponse.isBlockAccess()) {
                 throw AppErrors.INSTANCE.sentryBlockRegisterAccess().exception()
@@ -265,7 +267,7 @@ class LoginResourceImpl implements LoginResource {
             if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
                     ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
                     ErrorCodes.Identity.FieldDuplicate, ErrorCodes.Identity.AgeRestriction,
-                    ErrorCodes.Sentry.BlockAccess)) {
+                    ErrorCodes.Sentry.BlockAccess, ErrorCodes.Identity.TosNotFound)) {
                 throw ex
             }
             appErrorUtils.throwUnknownError('createUser', ex)

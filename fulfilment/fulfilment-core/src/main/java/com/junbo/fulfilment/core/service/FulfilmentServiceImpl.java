@@ -84,6 +84,21 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     }
 
     @Override
+    public FulfilmentRequest revoke(FulfilmentRequest request) {
+        Long orderId = request.getOrderId();
+
+        FulfilmentRequest existingRequest = retrieveRequestByOrderId(orderId);
+
+        // classify fulfilment actions
+        ClassifyResult classifyResult = classify(existingRequest);
+
+        // dispatch fulfilment revoke actions
+        dispatchRevoke(existingRequest, classifyResult);
+
+        return request;
+    }
+
+    @Override
     public FulfilmentRequest retrieveRequest(Long requestId) {
         return load(requestId);
     }
@@ -204,6 +219,27 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
             }
 
             HandlerRegistry.resolve(actionType).process(context);
+        }
+    }
+
+    @Override
+    public void dispatchRevoke(FulfilmentRequest request, ClassifyResult classifyResult) {
+        Map<Long, FulfilmentItem> items = ModelUtils.buildFulfilmentItemMap(request);
+
+        for (String actionType : classifyResult.getActionTypes()) {
+            FulfilmentContext context = FulfilmentContextFactory.create(actionType);
+
+            context.setItems(items);
+            context.setUserId(request.getUserId());
+            context.setOrderId(request.getOrderId());
+            context.setActions(classifyResult.get(actionType));
+
+            if (!Utils.equals(FulfilmentActionType.GRANT_ENTITLEMENT, actionType)) {
+                LOGGER.warn("Skip revoking for action type [" + actionType + "].");
+                continue;
+            }
+
+            HandlerRegistry.resolve(actionType).revoke(context);
         }
     }
 

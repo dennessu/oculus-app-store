@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface FulfilmentService {
     FulfilmentRequest fulfill(FulfilmentRequest request);
 
+    FulfilmentRequest revoke(FulfilmentRequest request);
+
     FulfilmentRequest retrieveRequest(Long requestId);
 
     FulfilmentRequest retrieveRequestByOrderId(Long billingOrderId);

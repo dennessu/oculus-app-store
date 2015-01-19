@@ -20,6 +20,7 @@ class ErrorCodes {
         static final String InvalidField = '131.001'
         static final String MaximumLoginAttempt = '131.139'
         static final String AgeRestriction = '131.140'
+        static final String TosNotFound = '131.119'
     }
 
     class OAuth {

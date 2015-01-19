@@ -6,6 +6,7 @@
 package com.junbo.fulfilment.clientproxy.impl;
 
 import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.entitlement.spec.model.RevokeRequest;
 import com.junbo.entitlement.spec.resource.EntitlementResource;
 import com.junbo.fulfilment.clientproxy.EntitlementGateway;
 import com.junbo.fulfilment.common.util.Utils;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import javax.ws.rs.core.Response;
 import java.util.*;
 
 /**
@@ -56,5 +58,26 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             result.put(actionId, entitlementIds);
         }
         return result;
+    }
+
+    @Override
+    public boolean revokeNonConsumable(String entitlementId) {
+        return revokeConsumable(entitlementId, null);
+    }
+
+    @Override
+    public boolean revokeConsumable(String entitlementId, Integer count) {
+        try {
+            RevokeRequest revokeRequest = new RevokeRequest();
+            revokeRequest.setEntitlementId(entitlementId);
+            revokeRequest.setCount(count);
+
+            Response response = entitlementResource.revokeEntitlement(revokeRequest).get();
+
+            return response.getStatus() == Response.Status.OK.getStatusCode();
+        } catch (Exception e) {
+            LOGGER.error("Error occurred during calling [Entitlement] component.", e);
+            throw AppErrors.INSTANCE.gatewayFailure("Entitlement").exception();
+        }
     }
 }

@@ -81,13 +81,13 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         } else if (options.getDeveloperId() != null || !StringUtils.isEmpty(options.getStatus())) {
             StringBuilder sb = new StringBuilder();
             if (options.getDeveloperId() != null) {
-                sb.append("ownerId:'").append(options.getDeveloperId().getValue()).append("'");
+                sb.append("ownerId:\"").append(options.getDeveloperId().getValue()).append("\"");
             }
             if (!StringUtils.isEmpty(options.getStatus())) {
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("status:'").append(options.getStatus()).append("'");
+                sb.append("status:\"").append(options.getStatus()).append("\"");
             }
             CloudantSearchResult<ItemRevision> searchResult = searchSync("search", sb.toString(), options.getValidSize(), options.getCursor());
             itemRevisions = searchResult.getResults();
@@ -166,7 +166,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
 
     @Override
     public boolean checkPackageName(String itemId, String packageName) {
-        String query = "packageName:'" + packageName.replace("'","") + "' AND -itemId:'" + itemId.replace("'","") + "'";
+        String query = "packageName:\"" + Utils.escaple(packageName) + "\" AND -itemId:\"" + Utils.escaple(itemId) + "\"";
         CloudantQueryResult searchResult = searchSync("search", query, 1, null, false);
         return searchResult.getTotalRows() == 0;
     }

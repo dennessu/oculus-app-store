@@ -773,10 +773,9 @@
                         <value>passport</value>
                         <value>governmentId</value>
                         <value>driversLicense</value>
+                        <value>taxExemption</value>
                         <value>gender</value>
                         <value>vat</value>
-                        <value>isTaxExemptionClaimed</value>
-                        <value>isTaxExemptionValidated</value>
                         <value>profile</value>
                         <value>defaultPI</value>
                         <value>measure</value>
@@ -816,10 +815,9 @@
                         <value>passport</value>
                         <value>governmentId</value>
                         <value>driversLicense</value>
+                        <value>taxExemption</value>
                         <value>gender</value>
                         <value>vat</value>
-                        <value>isTaxExemptionClaimed</value>
-                        <value>isTaxExemptionValidated</value>
                         <value>profile</value>
                         <value>defaultPI</value>
                         <value>measure</value>
@@ -857,10 +855,9 @@
                         <value>passport</value>
                         <value>governmentId</value>
                         <value>driversLicense</value>
+                        <value>taxExemption</value>
                         <value>gender</value>
                         <value>vat</value>
-                        <value>isTaxExemptionClaimed</value>
-                        <value>isTaxExemptionValidated</value>
                         <value>profile</value>
                         <value>defaultPI</value>
                         <value>measure</value>

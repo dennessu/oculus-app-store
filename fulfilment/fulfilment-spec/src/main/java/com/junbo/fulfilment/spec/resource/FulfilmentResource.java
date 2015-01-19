@@ -30,6 +30,10 @@ public interface FulfilmentResource {
     @Path("/")
     Promise<FulfilmentRequest> fulfill(@Valid FulfilmentRequest request);
 
+    @POST
+    @Path("/revoke")
+    Promise<FulfilmentRequest> revoke(@Valid FulfilmentRequest request);
+
     @GET
     @Path("/")
     Promise<FulfilmentRequest> getByOrderId(@QueryParam("orderId") OrderId orderId);

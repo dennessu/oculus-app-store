@@ -71,7 +71,8 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> createOrder(Order order) {
-        orderValidator.notNull(order, 'order').notNull(order.user, 'user')
+        orderValidator.notNull(order, 'order').notNull(order.user, 'user').notNull(order.country, 'country')
+            .notNull(order.currency, 'currency')
         LOGGER.info('name=OrderResourceImpl.createOrder. user: {}', order.user.value)
         def callback = authorizeCallbackFactory.create(order)
         return RightsScope.with(authorizeService.authorize(callback)) {
@@ -100,6 +101,7 @@ class OrderResourceImpl implements OrderResource {
     @Override
     Promise<Order> updateOrderByOrderId(OrderId orderId, Order order) {
         orderValidator.notNull(order, 'order').notNull(order.user, 'user').notNull(orderId, 'orderId')
+                .notNull(order.country, 'country').notNull(order.currency, 'currency')
         LOGGER.info('name=OrderResourceImpl.updateOrderByOrderId. orderId: {}', orderId.value)
         def callback = authorizeCallbackFactory.create(order)
         return RightsScope.with(authorizeService.authorize(callback)) {
