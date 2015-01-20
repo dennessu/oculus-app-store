@@ -195,7 +195,7 @@ class CheckoutTests(ut.TestBase):
         piTypes = curlJson('GET', ut.test_uri, '/v1/payment-instrument-types')
         ccPiType = [ piType for piType in piTypes['results'] if piType['typeCode'] == 'CREDITCARD' ][0]
 
-        cardInfo = self.getEncryptedCardInfo()
+        cardInfo = self.getFBEncryptedCardInfo()
         pi = curlJson('POST', ut.test_uri, '/v1/payment-instruments', headers = {
             "Authorization": "Bearer " + user.access_token
         }, data = {

@@ -1,7 +1,7 @@
 {
     "id":"0",
     "providerName":"AdyenCC",
-    "piType":"0",
+    "piType":"-1",
     "currency":"USD",
     "countryCode":"",
     "createdBy":"wenhongzhu"

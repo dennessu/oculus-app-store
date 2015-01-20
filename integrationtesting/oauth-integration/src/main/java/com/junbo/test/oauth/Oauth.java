@@ -288,6 +288,10 @@ public class Oauth {
         PostRegisterUser(cid, userName, email, null, true, false, null);
     }
 
+    public static void PostRegisterUser(String cid, String userName, String email, String password, String pin) throws Exception {
+        PostRegisterUser(cid, userName, email, null, true, false, null, pin, password);
+    }
+
     public static void PostRegisterUser(String cid, String userName, String email, Error error)
             throws Exception {
         PostRegisterUser(cid, userName, email, error, false, false, null);
@@ -296,18 +300,18 @@ public class Oauth {
     // pass in userName and email for validation purpose only
     public static void PostRegisterUser(
             String cid, String userName, String email, Error errors, Boolean verifyEmail, Boolean doubleVerifyEmail,
-            ViewModel emailVerifyRequiredViewModel) throws Exception {
+            ViewModel emailVerifyRequiredViewModel, String pin, String password) throws Exception{
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
         nvps.add(new BasicNameValuePair(DefaultFNUserName, userName));
-        nvps.add(new BasicNameValuePair(DefaultFNPassword, DefaultUserPwd));
+        nvps.add(new BasicNameValuePair(DefaultFNPassword, password));
         nvps.add(new BasicNameValuePair(DefaultFNEmail, email));
         nvps.add(new BasicNameValuePair(DefaultFNFirstName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNLastName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNGender, "male"));
         nvps.add(new BasicNameValuePair(DefaultFNDoB, "1980-01-01"));
-        nvps.add(new BasicNameValuePair(DefaultFNPin, RandomHelper.randomNumeric(4)));
+        nvps.add(new BasicNameValuePair(DefaultFNPin, pin));
 
         CloseableHttpResponse response = OauthPost(DefaultAuthorizeURI, nvps);
         try {
@@ -341,6 +345,12 @@ public class Oauth {
         } finally {
             response.close();
         }
+    }
+
+    public static void PostRegisterUser(
+            String cid, String userName, String email, Error errors, Boolean verifyEmail, Boolean doubleVerifyEmail,
+            ViewModel emailVerifyRequiredViewModel) throws Exception {
+        PostRegisterUser(cid, userName, email, errors, verifyEmail, doubleVerifyEmail, emailVerifyRequiredViewModel, RandomHelper.randomNumeric(4), DefaultUserPwd);
     }
 
     public static String GetAuthCodeAfterRegisterUser(String cid) throws Exception {

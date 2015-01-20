@@ -55,6 +55,7 @@ public class Identity {
     public static final String IdentityV1UserPersonalInfoURI = IdentityEndPointV1 + "/personal-info";
     public static final String IdentityV1UsernameMailBlockerURI = IdentityEndPointV1 + "/imports/username-email-block";
     public static final String IdentityV1TosURI = IdentityEndPointV1 + "/tos";
+    public static final String IdentityV1UserTosAgreementURI = IdentityEndPointV1 + "/tos-agreements";
     public static final String IdentityV1UserAuthenticatorURI = IdentityEndPointV1 + "/authenticators";
     public static final String IdentityV1PITypeURI = IdentityEndPointV1 + "/payment-instrument-types";
     public static final String IdentityV1UserCommunicationURI = IdentityEndPointV1 + "/opt-ins";
@@ -522,6 +523,14 @@ public class Identity {
 
     public static User UserGetByUserId(UserId userId) throws Exception {
         return (User) IdentityGet(IdentityV1UserURI + "/" + IdFormatter.encodeId(userId), User.class);
+    }
+
+    public static UserTosAgreement UserTosAgreementPost(UserId userId, TosId tosId) throws Exception {
+        UserTosAgreement userTosAgreement = new UserTosAgreement();
+        userTosAgreement.setTosId(tosId);
+        userTosAgreement.setUserId(userId);
+        userTosAgreement.setAgreementTime(new Date());
+        return IdentityPost(IdentityV1UserTosAgreementURI, JsonHelper.JsonSerializer(userTosAgreement), UserTosAgreement.class);
     }
 
     public static CloseableHttpResponse UserPersonalInfoPost(UserPersonalInfo upi, boolean validResponse) throws Exception {

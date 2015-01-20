@@ -17,6 +17,9 @@ import java.util.List;
  */
 public class FacebookPayment {
     //input request
+    @QueryParam("request_id")
+    @JsonProperty("request_id")
+    private String requestId;
     @QueryParam("credential_id")
     @JsonProperty
     private String credential;
@@ -51,6 +54,14 @@ public class FacebookPayment {
     @JsonProperty("time_created")
     private String createdTime;
     private List<FacebookPaymentAction> actions;
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
 
     public String getCredential() {
         return credential;

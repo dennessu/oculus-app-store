@@ -194,6 +194,7 @@ class CatalogDataHandler extends BaseDataHandler {
                 handle(itemRevision)
             }
         } else {
+            itemId = itemExisting.itemId
             logger.debug("The item $itemExisting.itemId already exists, skip this content.")
         }
 

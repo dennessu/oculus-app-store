@@ -303,6 +303,43 @@ public class authorizeUser {
     }
 
     @Property(environment = "release")
+    @Test(groups = "dailies", enabled = false)
+    public void registerOvrTestUsers() throws Exception {
+        List<Tos> tosList = Identity.TosSearch(null, "TOS", "APPROVED", "US");
+        Double maxVersion = Double.parseDouble(tosList.get(0).getVersion());
+        Tos maxVersionTos = tosList.get(0);
+        for (Tos tos : tosList) {
+            Double currentVersion = Double.parseDouble(tos.getVersion());
+            if (maxVersion < currentVersion) {
+                maxVersionTos = tos;
+                maxVersion = currentVersion;
+            }
+        }
+        for (int i =1; i <= 150; i++) {
+            try {
+                HttpclientHelper.CreateHttpClient();
+                String email = "davosvr" + String.format("%03d", i) + "@gmail.com";
+                String password = "milkvr" + String.format("%03d", i);
+
+                HttpclientHelper.ResetHttpClient();
+                String cid = Oauth.GetLoginCid();
+                CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+                Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+                String loginResponseLink = Oauth.UserLogin(cid, email, password);
+                String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
+                Identity.SetHttpAuthorizationHeader(accessToken);
+                TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
+
+                Identity.UserTosAgreementPost(tokenInfo.getSub(), maxVersionTos.getId());
+
+                HttpclientHelper.CloseHttpClient();
+            } catch (Throwable e) {
+                // Ignore
+            }
+        }
+    }
+
+    @Property(environment = "release")
     @Test(groups = "int/ppe/prod/sewer")
     public void loginExistingUser() throws Exception {
         if (Oauth.DefaultOauthEndpoint.contains("http://localhost:8080")) return;
