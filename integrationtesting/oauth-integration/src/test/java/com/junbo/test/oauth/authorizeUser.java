@@ -303,7 +303,7 @@ public class authorizeUser {
     }
 
     @Property(environment = "release")
-    @Test(groups = "dailies")
+    @Test(groups = "dailies", enabled = false)
     public void registerOvrTestUsers() throws Exception {
         List<Tos> tosList = Identity.TosSearch(null, "TOS", "APPROVED", "US");
         Double maxVersion = Double.parseDouble(tosList.get(0).getVersion());
