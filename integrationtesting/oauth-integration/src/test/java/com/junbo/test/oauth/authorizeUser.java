@@ -303,6 +303,54 @@ public class authorizeUser {
     }
 
     @Property(environment = "release")
+    @Test(groups = "dailies")
+    public void registerOvrTestUsers() throws Exception {
+        for (int i =1; i <= 150; i++) {
+            try {
+                HttpclientHelper.CreateHttpClient();
+                String username = "davosvr" + String.format("%03d", i);
+                String email = "davosvr" + String.format("%03d", i) + "@gmail.com";
+                String password = "milkvr" + String.format("%03d", i);
+                String pin = String.format("%04d", i);
+
+                Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+                String cid = Oauth.GetRegistrationCid();
+
+                Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+                CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
+                Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+
+                Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+                CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
+                Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
+                Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+                currentViewResponse = Oauth.GetViewStateByCid(cid);
+                Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
+
+                Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+                Oauth.PostRegisterUser(cid, username, email, password, pin);
+
+                HttpclientHelper.ResetHttpClient();
+                cid = Oauth.GetLoginCid();
+                currentViewResponse = Oauth.GetViewStateByCid(cid);
+                Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
+                String loginResponseLink = Oauth.UserLogin(cid, email, password);
+                String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
+                TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
+                Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
+                Validator.Validate("validate token->scopes is correct", Oauth.DefaultLoginScopes, tokenInfo.getScopes());
+                Identity.SetHttpAuthorizationHeader(accessToken);
+                User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
+                Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoAddress());
+                Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoDob());
+                HttpclientHelper.CloseHttpClient();
+            } catch (Throwable e) {
+                // Ignore
+            }
+        }
+    }
+
+    @Property(environment = "release")
     @Test(groups = "int/ppe/prod/sewer")
     public void loginExistingUser() throws Exception {
         if (Oauth.DefaultOauthEndpoint.contains("http://localhost:8080")) return;
