@@ -305,44 +305,33 @@ public class authorizeUser {
     @Property(environment = "release")
     @Test(groups = "dailies")
     public void registerOvrTestUsers() throws Exception {
+        List<Tos> tosList = Identity.TosSearch(null, "TOS", "APPROVED", "US");
+        Double maxVersion = Double.parseDouble(tosList.get(0).getVersion());
+        Tos maxVersionTos = tosList.get(0);
+        for (Tos tos : tosList) {
+            Double currentVersion = Double.parseDouble(tos.getVersion());
+            if (maxVersion < currentVersion) {
+                maxVersionTos = tos;
+                maxVersion = currentVersion;
+            }
+        }
         for (int i =1; i <= 150; i++) {
             try {
                 HttpclientHelper.CreateHttpClient();
-                String username = "davosvr" + String.format("%03d", i);
                 String email = "davosvr" + String.format("%03d", i) + "@gmail.com";
                 String password = "milkvr" + String.format("%03d", i);
-                String pin = String.format("%04d", i);
-
-                Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
-                String cid = Oauth.GetRegistrationCid();
-
-                Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-                CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
-                Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
-
-                Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-                CloseableHttpResponse postViewResponse = Oauth.PostViewRegisterByCid(cid);
-                Oauth.validateViewModeResponse(postViewResponse, Oauth.ViewModelType.register.name());
-                Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-                currentViewResponse = Oauth.GetViewStateByCid(cid);
-                Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.register.name());
-
-                Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-                Oauth.PostRegisterUser(cid, username, email, password, pin);
 
                 HttpclientHelper.ResetHttpClient();
-                cid = Oauth.GetLoginCid();
-                currentViewResponse = Oauth.GetViewStateByCid(cid);
+                String cid = Oauth.GetLoginCid();
+                CloseableHttpResponse currentViewResponse = Oauth.GetViewStateByCid(cid);
                 Oauth.validateViewModeResponse(currentViewResponse, Oauth.ViewModelType.login.name());
                 String loginResponseLink = Oauth.UserLogin(cid, email, password);
                 String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
-                TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
-                Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
-                Validator.Validate("validate token->scopes is correct", Oauth.DefaultLoginScopes, tokenInfo.getScopes());
                 Identity.SetHttpAuthorizationHeader(accessToken);
-                User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
-                Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoAddress());
-                Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoDob());
+                TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
+
+                Identity.UserTosAgreementPost(tokenInfo.getSub(), maxVersionTos.getId());
+
                 HttpclientHelper.CloseHttpClient();
             } catch (Throwable e) {
                 // Ignore
