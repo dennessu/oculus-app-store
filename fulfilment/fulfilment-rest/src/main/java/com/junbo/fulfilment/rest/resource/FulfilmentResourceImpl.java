@@ -40,6 +40,13 @@ public class FulfilmentResourceImpl implements FulfilmentResource {
         return Promise.pure(result);
     }
 
+    @Override
+    public Promise<FulfilmentRequest> revoke(@Valid FulfilmentRequest request) {
+        authorize();
+        FulfilmentRequest result = service.revoke(request);
+        return Promise.pure(result);
+    }
+
     @GET
     public Promise<FulfilmentRequest> getByOrderId(@QueryParam("orderId") OrderId orderId) {
         authorize();

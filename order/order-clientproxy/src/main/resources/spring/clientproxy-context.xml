@@ -18,11 +18,13 @@
 
     <bean id="order.identityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
           parent="userResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.identityUserPersonalInfoClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
           parent="userPersonalInfoResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.billingBalanceClient"

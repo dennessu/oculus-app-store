@@ -12,6 +12,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 
+import javax.validation.Valid
 import java.util.concurrent.ConcurrentHashMap
 /**
  * Created by fzhang on 14-3-7.
@@ -32,6 +33,11 @@ class MockFulfillmentResource extends BaseMock implements FulfilmentResource {
         }
         fulfilmentRequestMap[request.orderId] = request
         return Promise.pure(request)
+    }
+
+    @Override
+    Promise<FulfilmentRequest> revoke(FulfilmentRequest request) {
+        return null
     }
 
     @Override

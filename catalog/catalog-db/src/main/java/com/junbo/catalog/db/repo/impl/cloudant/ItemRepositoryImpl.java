@@ -81,31 +81,31 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                 || options.getHostItemId() != null) {
             StringBuilder sb = new StringBuilder();
             if (options.getGenre() != null) {
-                sb.append("genreId:'").append(options.getGenre().replace("'", "")).append("'");
+                sb.append("genreId:\"").append(Utils.escaple(options.getGenre())).append("\"");
             }
             if (!StringUtils.isEmpty(options.getType())) {
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("type:'").append(options.getType().replace("'", "")).append("'");
+                sb.append("type:\"").append(Utils.escaple(options.getType())).append("\"");
             }
             if (!StringUtils.isEmpty(options.getOwnerId())) {
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("ownerId:'").append(options.getOwnerId().getValue()).append("'");
+                sb.append("ownerId:\"").append(options.getOwnerId().getValue()).append("\"");
             }
             if (!StringUtils.isEmpty(options.getPackageName())) {
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("packageName:'").append(options.getPackageName().replace("'", "")).append("'");
+                sb.append("packageName:\"").append(Utils.escaple(options.getPackageName())).append("\"");
             }
             if (options.getHostItemId() != null) {
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("hostItemId:'").append(options.getHostItemId().replace("'", "")).append("'");
+                sb.append("hostItemId:\"").append(Utils.escaple(options.getHostItemId())).append("\"");
             }
             CloudantSearchResult<Item> searchResult =
                     searchSync("search", sb.toString(), options.getValidSize(), options.getCursor());

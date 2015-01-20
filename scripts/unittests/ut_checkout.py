@@ -276,6 +276,22 @@ class CheckoutTests(ut.TestBase):
         searchEntitlementIds = [ entitlement['self']['id'] for entitlement in entitlementSearchResults['results'] ]
         self.assertSetEqual(set(entitlementIds), set(searchEntitlementIds))
 
+        # revoke entitlement fulfilment
+        curlJson('POST', ut.test_uri, '/v1/fulfilments/revoke', data = {
+            'orderId': order['self']
+        }, headers = {
+            "Authorization": "Bearer " + fulfilmentToken
+        })
+
+        # try to verify revoked entitlements
+        entitlementSearchResults = curlJson('GET', ut.test_uri, '/v1/entitlements', query = {
+            "userId": user.json['self']['id'],
+            "itemId": devinfo['item']['self']['id']
+        }, headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        assert len(entitlementSearchResults['results']) == 0
+
         errorUserLogResponse = curlJson('GET', ut.test_uri, '/v1/user-logs', query={
             "userId": user.json['self']['id'],
             "apiName": "orders"

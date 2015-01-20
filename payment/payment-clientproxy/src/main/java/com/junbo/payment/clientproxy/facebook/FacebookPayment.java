@@ -26,19 +26,21 @@ public class FacebookPayment {
     private String currency;
     @QueryParam("action")
     private FacebookPaymentActionType action;
-    @QueryParam("payer_ip")
-    @JsonProperty("payer_ip")
+    @QueryParam("ip_address")
+    @JsonProperty("ip_address")
     private String payerIp;
-    @QueryParam("item_type")
-    @JsonProperty("item_type")
+    @QueryParam("payment_type")
+    @JsonProperty("payment_type")
     private FacebookItemType itemType;
-    @QueryParam("item_description")
-    @JsonProperty("item_description")
+    @QueryParam("payment_description")
+    @JsonProperty("payment_description")
     private FacebookItemDescription itemDescription;
     @QueryParam("refund_reason")
     @JsonProperty("refund_reason")
-
     private String refundReason;
+    @QueryParam("risk_features")
+    @JsonProperty("risk_features")
+    private FacebookRiskFeature riskFeature;
     //output response
     private String id;
     private Boolean success;
@@ -168,6 +170,14 @@ public class FacebookPayment {
 
     public void setActions(List<FacebookPaymentAction> actions) {
         this.actions = actions;
+    }
+
+    public FacebookRiskFeature getRiskFeature() {
+        return riskFeature;
+    }
+
+    public void setRiskFeature(FacebookRiskFeature riskFeature) {
+        this.riskFeature = riskFeature;
     }
 
 }

@@ -55,6 +55,8 @@ public class PaymentTransaction extends ResourceMetaForDualWrite<Long> {
     @JsonIgnore
     private UserInfo userInfo;
 
+    private RiskFeature riskFeature;
+
     public UUID getTrackingUuid() {
         return trackingUuid;
     }
@@ -173,5 +175,13 @@ public class PaymentTransaction extends ResourceMetaForDualWrite<Long> {
 
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
+    }
+
+    public RiskFeature getRiskFeature(){
+        return riskFeature;
+    }
+
+    public void setRiskFeature(RiskFeature riskFeature) {
+        this.riskFeature = riskFeature;
     }
 }

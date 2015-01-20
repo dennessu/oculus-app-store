@@ -131,6 +131,20 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         fbCreditCard.setCardHolderName(request.getAccountName());
         fbCreditCard.setExpiryMonth(tokens[1]);
         fbCreditCard.setExpiryYear(tokens[0]);
+        //Risk Feature
+        if(request.getRiskFeature() != null){
+            FacebookRiskFeature fbRiskFeature = new FacebookRiskFeature();
+            fbRiskFeature.setBrowserName(request.getRiskFeature().getBrowserName());
+            fbRiskFeature.setBrowserVersion(request.getRiskFeature().getBrowserVersion());
+            fbRiskFeature.setCurrencyPurchasing(request.getRiskFeature().getCurrencyPurchasing());
+            fbRiskFeature.setInstalledApps(request.getRiskFeature().getInstalledApps());
+            fbRiskFeature.setPlatformName(request.getRiskFeature().getPlatformName());
+            fbRiskFeature.setPlatformVersion(request.getRiskFeature().getPlatformVersion());
+            fbRiskFeature.setSourceCountry(request.getRiskFeature().getSourceCountry());
+            fbRiskFeature.setSourceDatr(request.getRiskFeature().getSourceDatr());
+            fbRiskFeature.setTimeSinceUserAccountCreatedInDays(request.getRiskFeature().getTimeSinceUserAccountCreatedInDays());
+            fbCreditCard.setRiskFeature(fbRiskFeature);
+        }
         // Billing address
         Address address = null;
         if(request.getBillingAddressId() != null){
@@ -140,6 +154,13 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         if(address != null){
             fbCreditCard.setBillingAddress(getFacebookAddress(address, request));
         }
+
+        FacebookAddress fbAddress = new FacebookAddress();
+        fbAddress.setZip("12345");
+        fbAddress.setCountryCode("US");
+        fbAddress.setCity("MENLO Park");
+        fbAddress.setState("CA");
+        fbCreditCard.setBillingAddress(fbAddress);
 
         return facebookGatewayService.batchAddAndGetCreditCard(accessToken, fbAccount, fbCreditCard).then(new Promise.Func<FacebookCreditCard, Promise<PaymentInstrument>>() {
             @Override
@@ -196,12 +217,14 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setAction(FacebookPaymentActionType.authorize);
                 fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                fbPayment.setItemType(FacebookItemType.oculus_digital);
+                fbPayment.setItemType(FacebookItemType.oculus_launch_v1);
                 FacebookItemDescription description = new FacebookItemDescription(getPaymentEntity(paymentRequest.getMerchantAccount()),
                         getPaymentType(paymentRequest.getChargeInfo().getPaymentType()));
                 description.setItems(new String[]{paymentRequest.getChargeInfo().getBusinessDescriptor()});
                 fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
+                //Risk Feature
+                fbPayment.setRiskFeature(getFBRiskFeature(paymentRequest));
                 return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
@@ -276,12 +299,14 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setAction(FacebookPaymentActionType.charge);
                 fbPayment.setAmount(paymentRequest.getChargeInfo().getAmount());
                 fbPayment.setCurrency(paymentRequest.getChargeInfo().getCurrency());
-                fbPayment.setItemType(FacebookItemType.oculus_digital);
+                fbPayment.setItemType(FacebookItemType.oculus_launch_v1);
                 FacebookItemDescription description = new FacebookItemDescription(getPaymentEntity(paymentRequest.getMerchantAccount()),
                         getPaymentType(paymentRequest.getChargeInfo().getPaymentType()));
                 description.setItems(new String[]{paymentRequest.getChargeInfo().getBusinessDescriptor()});
                 fbPayment.setItemDescription(description);
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
+                //Risk Feature
+                fbPayment.setRiskFeature(getFBRiskFeature(paymentRequest));
                 return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
@@ -428,6 +453,23 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         }catch (Exception ex){
             throw AppCommonErrors.INSTANCE.fieldInvalid("payment_entity").exception();
         }
+    }
+
+    private FacebookRiskFeature getFBRiskFeature(PaymentTransaction request){
+        if(request.getRiskFeature() != null){
+            FacebookRiskFeature fbRiskFeature = new FacebookRiskFeature();
+            fbRiskFeature.setBrowserName(request.getRiskFeature().getBrowserName());
+            fbRiskFeature.setBrowserVersion(request.getRiskFeature().getBrowserVersion());
+            fbRiskFeature.setCurrencyPurchasing(request.getRiskFeature().getCurrencyPurchasing());
+            fbRiskFeature.setInstalledApps(request.getRiskFeature().getInstalledApps());
+            fbRiskFeature.setPlatformName(request.getRiskFeature().getPlatformName());
+            fbRiskFeature.setPlatformVersion(request.getRiskFeature().getPlatformVersion());
+            fbRiskFeature.setSourceCountry(request.getRiskFeature().getSourceCountry());
+            fbRiskFeature.setSourceDatr(request.getRiskFeature().getSourceDatr());
+            fbRiskFeature.setTimeSinceUserAccountCreatedInDays(request.getRiskFeature().getTimeSinceUserAccountCreatedInDays());
+            return fbRiskFeature;
+        }
+        return null;
     }
 
 

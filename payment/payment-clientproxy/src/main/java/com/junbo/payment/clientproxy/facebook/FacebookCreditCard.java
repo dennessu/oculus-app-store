@@ -39,6 +39,9 @@ public class FacebookCreditCard {
     @QueryParam("payer_ip")
     @JsonProperty("payer_ip")
     private String payerIp;
+    @QueryParam("risk_features")
+    @JsonProperty("risk_features")
+    private FacebookRiskFeature riskFeature;
 
     @JsonProperty("payment_account")
     private FacebookPaymentAccount paymentAccount;
@@ -164,6 +167,14 @@ public class FacebookCreditCard {
         this.timeCreated = timeCreated;
     }
 
+    public FacebookRiskFeature getRiskFeature() {
+        return riskFeature;
+    }
+
+    public void setRiskFeature(FacebookRiskFeature riskFeature) {
+        this.riskFeature = riskFeature;
+    }
+
     public String getError() {
         return error;
     }
@@ -177,12 +188,15 @@ public class FacebookCreditCard {
         StringBuilder sb = new StringBuilder();
         sb.append("expiry_month=" + this.expiryMonth + concat);
         sb.append("expiry_year="+ this.expiryYear + concat);
-        sb.append("token=" + this.token + concat);
+        sb.append("token=" + this.token);
         if(!CommonUtil.isNullOrEmpty(this.cardHolderName)){
-            sb.append("card_holder_name=" + this.cardHolderName + concat);
+            sb.append(concat + "card_holder_name=" + this.cardHolderName);
         }
         if(billingAddress != null){
-            sb.append("billing_address=" + this.billingAddress.toBatchString());
+            sb.append(concat + "billing_address=" + this.billingAddress.toBatchString());
+        }
+        if(riskFeature != null){
+            sb.append(concat + "risk_features=" + this.riskFeature.toBatchString());
         }
         return sb.toString();
     }

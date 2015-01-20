@@ -1084,4 +1084,19 @@ public class authorizeUser {
         Oauth.Logout(idToken);
 
     }
+
+    @Test(groups = "dailies")
+    public void loginRequiredForNotLoggedInUser() throws Exception {
+        CloseableHttpResponse response = Oauth.OauthGet(Oauth.DefaultAuthorizeURI +
+                "?client_id=" + Oauth.DefaultClientId + "&response_type=token%20id_token&state=state&nonce=12345" +
+                "&redirect_uri=http://localhost&country=US&locale=en_US&prompt=none", null);
+        Boolean flag = false;
+        for (Header h : response.getAllHeaders()) {
+            if (h.getName().equals("Location")) {
+                Validator.Validate("validate login required", true, h.getValue().contains("error=login_required"));
+                flag = true;
+            }
+        }
+        Validator.Validate("login required is returned", true, flag);
+    }
 }

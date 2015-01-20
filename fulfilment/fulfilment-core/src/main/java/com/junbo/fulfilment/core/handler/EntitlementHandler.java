@@ -24,7 +24,6 @@ import java.util.Map;
  * EntitlementHandler.
  */
 public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
-
     @Override
     public void process(EntitlementContext context) {
         LOGGER.info("Start preparing entitlements for order [" + context.getOrderId() + "].");
@@ -84,5 +83,17 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
             }
         }
         return entitlements;
+    }
+
+    @Override
+    public void revoke(EntitlementContext context) {
+        // for now, only revoke non-consumable entitlements
+        for (FulfilmentAction action : context.getActions()) {
+            List<String> entitlements = action.getResult().getEntitlementIds();
+
+            for (String entitlementId : entitlements) {
+                entitlementGateway.revokeNonConsumable(entitlementId);
+            }
+        }
     }
 }
