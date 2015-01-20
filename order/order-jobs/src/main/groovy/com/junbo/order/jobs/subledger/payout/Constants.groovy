@@ -8,6 +8,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Constants {
 
+    public static final String X_REQUEST_ID = "oculus-request-id";
+
     public static final String SIGNATURE_EXTENSION = 'signature'
 
     public static final String CSV_EXTENSION = 'csv'

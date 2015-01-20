@@ -5,7 +5,6 @@ import com.junbo.authorization.AuthorizeCallback
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.catalog.spec.enums.InputDevices
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.OrganizationId
@@ -55,6 +54,9 @@ class SubledgerServiceImpl implements SubledgerService {
 
     @Resource(name = 'orderSubledgerBuilder')
     SubledgerBuilder subledgerBuilder
+
+    @Resource(name = 'orderSubledgerHelper')
+    SubledgerHelper subledgerHelper
 
     @Resource
     AuthorizeService authorizeService
@@ -171,23 +173,39 @@ class SubledgerServiceImpl implements SubledgerService {
 
     @Override
     @Transactional
-    void aggregateSubledgerItem(SubledgerItem subledgerItem) {
-        def subledger = getSubledger(subledgerItem.subledger)
-
-        if (subledgerItem.subledgerItemAction == SubledgerItemAction.PAYOUT.name()) {
-            subledger.totalAmount += subledgerItem.totalAmount
-            subledger.totalQuantity += subledgerItem.totalQuantity
-            subledger.totalPayoutAmount += subledgerItem.totalPayoutAmount
-        } else {
-            subledger.totalAmount -= subledgerItem.totalAmount
-            subledger.totalQuantity -= subledgerItem.totalQuantity
-            subledger.totalPayoutAmount -= subledgerItem.totalPayoutAmount
+    void aggregateSubledgerItem(List<SubledgerItem> subledgerItems) {
+        subledgerItems.each { SubledgerItem item ->
+            if (item.subledgerKey == null) {
+                throw new RuntimeException('subledgerKey in subleger item could not be null')
+            }
+            if (!item.subledgerKey.equals(subledgerItems[0].subledgerKey)) {
+                throw new RuntimeException('subledger items should should have same key')
+            }
         }
 
-        subledgerItem.subledger = subledger.getId()
-        subledgerItem.status = SubledgerItemStatus.PROCESSED
-        SubledgerItem oldSubledgerItem = subledgerRepository.getSubledgerItem(subledgerItem.getId())
-        subledgerRepository.updateSubledgerItem(subledgerItem, oldSubledgerItem)
+        def subledger = subledgerHelper.getMatchingSubledger(subledgerItems[0].subledgerKey)
+
+        if (subledger == null) {
+            subledger = subledgerHelper.subledgerForSubledgerKey(subledgerItems[0].subledgerKey)
+            subledger = createSubledger(subledger)
+        }
+
+        subledgerItems.each { SubledgerItem subledgerItem ->
+            subledgerItem.subledger = subledger.getId()
+            subledgerItem.status = SubledgerItemStatus.PROCESSED
+            if (subledgerItem.subledgerItemAction == SubledgerItemAction.PAYOUT.name()) {
+                subledger.totalAmount += subledgerItem.totalAmount
+                subledger.totalQuantity += subledgerItem.totalQuantity
+                subledger.totalPayoutAmount += subledgerItem.totalPayoutAmount
+            } else {
+                subledger.totalAmount -= subledgerItem.totalAmount
+                subledger.totalQuantity -= subledgerItem.totalQuantity
+                subledger.totalPayoutAmount -= subledgerItem.totalPayoutAmount
+            }
+
+            SubledgerItem oldSubledgerItem = subledgerRepository.getSubledgerItem(subledgerItem.getId())
+            subledgerRepository.updateSubledgerItem(subledgerItem, oldSubledgerItem)
+        }
 
         subledgerRepository.updateSubledger(subledger)
     }

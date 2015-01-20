@@ -31,8 +31,8 @@ class SubledgerItemResourceImpl implements SubledgerItemResource {
     }
 
     @Override
-    Promise<SubledgerItem> aggregateSubledgerItem(SubledgerItem item) {
-        subledgerService.aggregateSubledgerItem(item)
-        return Promise.pure(item)
+    Promise<Void> aggregateSubledgerItem(List<SubledgerItem> subledgerItems) {
+        subledgerService.aggregateSubledgerItem(subledgerItems)
+        return Promise.pure()
     }
 }

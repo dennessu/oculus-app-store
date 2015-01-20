@@ -40,9 +40,11 @@ public interface SubledgerRepositoryFacade {
 
     SubledgerItem getSubledgerItem(SubledgerItemId subledgerItemId);
 
-    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
+    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, OfferId offerId, Date endTime, PageParam pageParam);
 
     List<SubledgerItem> getSubledgerItemByOrderItemId(OrderItemId orderItemId);
+
+    List<OfferId> getDistinctSubledgerItemOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
 
     SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem, SubledgerItem oldSubledgerItem);
 

@@ -56,6 +56,8 @@ class SubledgerRepositoryTest extends BaseTest {
         find = subledgerRepositoryCloudant.find(sellerId, PayoutStatus.COMPLETED.name(),
                 subledger.offer, startTime, new CurrencyId('A'),
                 subledger.country).get()
+
+        subledgerRepositoryCloudant.delete(subledger.getId())
         assert find == null
     }
 
@@ -63,7 +65,7 @@ class SubledgerRepositoryTest extends BaseTest {
     public void testListCloudant() {
         Date startTime = new Date();
         def sample = TestHelper.generateSubledger()
-
+        List<Subledger> created = []
         for (int i = 0;i < 8; ++i) {
             Date time = new Date(startTime.time + i * 1000)
             for (int j = 0; j < 2; ++j) {
@@ -72,7 +74,7 @@ class SubledgerRepositoryTest extends BaseTest {
                 subledger.startTime = time
                 subledger.payoutStatus = sample.payoutStatus
                 subledger.seller = sample.seller
-                subledgerRepositoryCloudant.create(subledger).get()
+                created << subledgerRepositoryCloudant.create(subledger).get()
             }
 
         }
@@ -120,6 +122,10 @@ class SubledgerRepositoryTest extends BaseTest {
                     (long) (new Date(startTime.time + 3 * 1000).getTime() / 1000)
             assert (long) (it.startTime.getTime() / 1000) <
                     (long) (new Date(startTime.time + 5 * 1000).getTime() / 1000)
+        }
+
+        created.each { Subledger subledger ->
+            subledgerRepositoryCloudant.delete(subledger.getId())
         }
     }
 

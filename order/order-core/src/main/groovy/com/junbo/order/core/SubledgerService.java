@@ -28,7 +28,7 @@ public interface SubledgerService {
 
     List<SubledgerItem> getSubledgerItemsByOrderItemId(OrderItemId orderItemId);
 
-    void aggregateSubledgerItem(SubledgerItem item);
+    void aggregateSubledgerItem(List<SubledgerItem> item);
 
     void updateStatusOnFacebookPayoutStatusChange(FBPayoutStatusChangeRequest fbPayoutStatusChangeRequest);
 }

@@ -1,18 +1,15 @@
 package com.junbo.order.core.impl.subledger
 
-import com.junbo.common.enumid.CountryId
-import com.junbo.common.enumid.CurrencyId
-import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.model.Subledger
+import com.junbo.order.spec.model.SubledgerKey
 import com.junbo.order.spec.model.enums.PayoutStatus
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-import java.text.SimpleDateFormat
+
 /**
  * Created by fzhang on 4/10/2014.
  */
@@ -40,28 +37,23 @@ class SubledgerHelper {
         return new Date(start.time + MS_A_DAY)
     }
 
-    Subledger getMatchingSubledger(SubledgerItemContext subledgerItemContext) {
-        def sellerId = subledgerItemContext.seller
-        def startTime = getSubledgerStartTime(subledgerItemContext.createdTime)
+    Subledger getMatchingSubledger(SubledgerKey subledgerKey) {
+        def sellerId = subledgerKey.offerPublisher
+        def startTime = getSubledgerStartTime(subledgerKey.subledgerTime)
 
         return subledgerRepository.findSubledger(sellerId, PayoutStatus.PENDING.name(),
-                subledgerItemContext.offer, startTime, subledgerItemContext.currency,
-                subledgerItemContext.country)
+                subledgerKey.offerId, startTime, subledgerKey.currency,
+                subledgerKey.country)
     }
 
-    Subledger getMatchingSubledger(Offer offer, CountryId country, CurrencyId currency, Date createdTime) {
-        return getMatchingSubledger(
-                subledgerItemContextBuilder.buildContext(offer, country, currency, createdTime))
-    }
-
-    Subledger subledgerForSubledgerItemContext(SubledgerItemContext context) {
+    Subledger subledgerForSubledgerKey(SubledgerKey subledgerKey) {
         Subledger subledger = new Subledger(
-                seller: context.seller,
-                offer: context.offer,
-                startTime: getSubledgerStartTime(context.createdTime),
-                endTime: getNextSubledgerStartTime(context.createdTime),
-                country: context.country,
-                currency: context.currency
+                seller: subledgerKey.offerPublisher,
+                offer: subledgerKey.offerId,
+                startTime: getSubledgerStartTime(subledgerKey.subledgerTime),
+                endTime: getNextSubledgerStartTime(subledgerKey.subledgerTime),
+                country: subledgerKey.country,
+                currency: subledgerKey.currency
         )
         return subledger
     }

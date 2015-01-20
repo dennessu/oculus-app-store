@@ -169,6 +169,12 @@
         <property name="queueCapacity" value="0" />
     </bean>
 
+    <bean id="subledgerTaskAsyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="${order.jobs.order.process.poolsize}" />
+        <property name="maxPoolSize" value="${order.jobs.order.process.poolsize}" />
+        <property name="queueCapacity" value="0" />
+    </bean>
+
     <!-- Exporter -->
     <bean id="orderMbeanExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
         <property name="beans">
@@ -181,6 +187,9 @@
                 </entry>
                 <entry key="quartz:type=QuartzJob,name=payoutUpdateJob">
                     <idref bean="order.payoutUpdateJob"/>
+                </entry>
+                <entry key="quartz:type=QuartzJob,name=subledgerAggregateJob">
+                    <idref bean="subledgerAggregator"/>
                 </entry>
             </map>
         </property>
