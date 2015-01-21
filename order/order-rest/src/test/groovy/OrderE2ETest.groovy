@@ -114,6 +114,48 @@ class OrderE2ETest extends BaseTest {
     }
 
     @Test(enabled = true)
+    void testPutTentativeFreeOrder() {
+        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
+            @Override
+            Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return Promise.pure('MOCK_RATE_ORDER')
+            }
+        }
+        def order = TestBuilder.buildOrderRequest()
+        order.payments = null
+        order.orderItems.add(TestBuilder.buildOrderItem())
+        order.user = new UserId(idGenerator.nextId(UserId))
+        order.shippingMethod = 'free'
+
+        def orderResult = orderResource.createOrder(order).get()
+        def orderGet = orderResource.getOrderByOrderId(orderResult.getId()).get()
+
+        assert orderResult.status == OrderStatus.OPEN.name()
+        assert orderResult.tentative
+        assert orderGet.status == OrderStatus.OPEN.name()
+        assert orderGet.tentative
+
+        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
+            @Override
+            Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                return Promise.pure('MOCK_FREE_SETTLE')
+            }
+        }
+        orderGet.tentative = false
+        JunboHttpContext.data = new JunboHttpContext.JunboHttpContextData(
+                requestIpAddress: '127.0.0.1'
+        )
+        orderGet.payments = null
+        orderResult = orderResource.updateOrderByOrderId(orderGet.getId(), orderGet).get()
+        orderGet = orderResource.getOrderByOrderId(orderResult.getId()).get()
+
+        assert orderResult.status == OrderStatus.COMPLETED.name()
+        assert !orderResult.tentative
+        assert orderGet.status == OrderStatus.COMPLETED.name()
+        assert !orderGet.tentative
+    }
+
+    @Test(enabled = true)
     void testRefundOrder() {
         def order = testPutTentativeOrder()
         getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {

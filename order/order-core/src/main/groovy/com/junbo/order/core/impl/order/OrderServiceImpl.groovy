@@ -29,6 +29,7 @@ import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.model.enums.OrderStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -83,12 +84,14 @@ class OrderServiceImpl implements OrderService {
                 if (ratedOrder.status == OrderStatus.PRICE_RATING_CHANGED.name()) {
                     throw AppErrors.INSTANCE.orderPriceChanged().exception()
                 }
-                // TODO: compare the reqeust and the order persisted
+                // TODO: compare the request and the order persisted
                 orderValidator.validateSettleOrderRequest(ratedOrder)
 
-                if (order.payments.size() > 0 && ratedOrder.payments.size() > 0) {
-                    ratedOrder.payments[0].successRedirectUrl = order.payments[0].successRedirectUrl
-                    ratedOrder.payments[0].cancelRedirectUrl = order.payments[0].cancelRedirectUrl
+                if (!CollectionUtils.isEmpty(order.payments) && !CollectionUtils.isEmpty(ratedOrder.payments)) {
+                    ratedOrder.payments.eachWithIndex { PaymentInfo pi, int index ->
+                        pi.successRedirectUrl = order.payments[index].successRedirectUrl
+                        pi.cancelRedirectUrl = order.payments[index].cancelRedirectUrl
+                    }
                 }
 
                 ratedOrder.purchaseTime = ratedOrder.honoredTime
@@ -425,7 +428,7 @@ class OrderServiceImpl implements OrderService {
 
     private void checkItemCount (Order order) {
         assert (order != null && order.orderItems != null)
-        if (order.orderItems.size() > itemCountLimitation) {
+        if (itemCountLimitation != null && order.orderItems.size() > itemCountLimitation) {
             LOGGER.error('name=tooManyItems:' + order.orderItems.size() + ' should not exceed: ' + itemCountLimitation)
             throw AppErrors.INSTANCE.tooManyItems(itemCountLimitation).exception()
         }
@@ -434,7 +437,7 @@ class OrderServiceImpl implements OrderService {
         order.orderItems.each { OrderItem oi ->
             offerCount += oi.quantity
         }
-        if (offerCount > offerCountLimitation) {
+        if (offerCountLimitation != null && offerCount > offerCountLimitation) {
             LOGGER.error('name=tooManyOffers:' + offerCount + ' should not exceed: ' + offerCountLimitation)
             throw AppErrors.INSTANCE.tooManyOffers(offerCountLimitation).exception()
         }

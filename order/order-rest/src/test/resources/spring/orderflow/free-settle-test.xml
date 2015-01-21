@@ -5,11 +5,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
-    <wf:flow id="FREE_SETTLE">
-        <wf:action-state id="FREE_SETTLE_immediateSettle">
-            <wf:action ref="validateUserAction"/>
-            <wf:action ref="validatePaymentInstrumentsAction"/>
-            <!--       <wf:action ref="ratingAction"/> -->
-        </wf:action-state>
+    <wf:flow id="MOCK_FREE_SETTLE">
+        <wf:end-state id="endState">
+            <wf:on-entry>
+                <wf:action ref="mockValidateUserAction"/>
+                <wf:action ref="markSettleAction"/>
+                <wf:action ref="mockFulfillmentAction"/>
+                <wf:action ref="mockSendEmailAction"/>
+            </wf:on-entry>
+        </wf:end-state>
     </wf:flow>
 </beans>
