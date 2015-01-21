@@ -224,8 +224,9 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     //make sure the url and key info are valid and just check whether the url generated is valid
     public void testGenerateUrl() throws IOException, URISyntaxException, InvalidKeySpecException {
 //           String url = "http://static.oculusvr.com/uploads%2F14013776640911fhvo9od2t9-pc.zip";
-        String url = "https://d1aifagf6hhneo.cloudfront.net/binaries%2Fsr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
+//        String url = "https://d1aifagf6hhneo.cloudfront.net/binaries%2Fsr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
 //        String url = "https://s3.amazonaws.com/ovr_ink_uploader/binaries/NmOPHrojTKjt0rTm2vCQ_SpotifyInstaller.zip";
+        String url = "https://dzyswitkpc22t.cloudfront.net/Items/51c731df613ee2f30402e6b2ffe10544/b332f14febf6a9c8c03e06a9b470e2ec/Android/Unsigned/swj5rzwFRPR1bBhY2wJQ_app.apk";
         String result = generatePreSignedDownloadUrl(url, "xx", "1.0", "PC");
         System.out.println(result);
     }

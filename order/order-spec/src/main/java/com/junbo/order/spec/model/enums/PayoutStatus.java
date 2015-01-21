@@ -14,9 +14,10 @@ import javax.ws.rs.NotSupportedException;
  */
 public enum PayoutStatus implements Identifiable<Short> {
 
-    PENDING(0),
-    COMPLETED(1),
-    FAILED(2);
+    PENDING(0), // Pending Aggregation
+    COMPLETED(1), // Subledger Paid
+    FAILED(2), // Subledger Payout Failed
+    PROCESSING(3); // In Process of Payout
 
     private PayoutStatus(int id) {
         this.id = (short) id;

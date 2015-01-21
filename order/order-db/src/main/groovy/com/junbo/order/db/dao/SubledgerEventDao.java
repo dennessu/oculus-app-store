@@ -8,8 +8,13 @@ package com.junbo.order.db.dao;
 
 import com.junbo.order.db.entity.SubledgerEventEntity;
 
+import java.util.List;
+
 /**
  * Created by linyi on 14-2-7.
  */
 public interface SubledgerEventDao extends BaseDao<SubledgerEventEntity> {
+
+    List<SubledgerEventEntity> getSubledgerEventsBySubledgerId(Long subledgerId);
+
 }

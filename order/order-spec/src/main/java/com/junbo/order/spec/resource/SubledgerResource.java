@@ -11,6 +11,7 @@ import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.routing.RouteBy;
+import com.junbo.order.spec.model.FBPayoutStatusChangeRequest;
 import com.junbo.order.spec.model.PageParam;
 import com.junbo.order.spec.model.Subledger;
 import com.junbo.order.spec.model.SubledgerParam;
@@ -46,4 +47,8 @@ public interface SubledgerResource {
     @RouteBy(value = "subledgerParam.getSellerId()")
     Promise<Results<Subledger>> getSubledgers(@BeanParam SubledgerParam subledgerParam, @BeanParam PageParam pageParam);
 
+    @POST
+    @Path("/payout-status-update")
+    @RouteBy(value = "request.getPayoutId()")
+    Promise<Void> updateStatusOnFacebookPayoutStatusChange(FBPayoutStatusChangeRequest request);
 }

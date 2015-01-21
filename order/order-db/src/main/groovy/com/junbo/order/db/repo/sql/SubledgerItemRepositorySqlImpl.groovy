@@ -1,5 +1,6 @@
 package com.junbo.order.db.repo.sql
 
+import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.SubledgerItemId
 import com.junbo.langur.core.promise.Promise
@@ -69,10 +70,10 @@ class SubledgerItemRepositorySqlImpl implements SubledgerItemRepository {
     }
 
     @Override
-    Promise<List<SubledgerItem>> getByStatus(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
-        List<SubledgerItem> result = []
-        subledgerItemDao.getByStatus(dataCenterId, (Integer) shardKey,
-                SubledgerItemStatus.valueOf(status),
+    Promise<List<SubledgerItem>> getSubledgerItems(Integer dataCenterId, Object shardKey, String status, OfferId offerId, Date endTime, PageParam pageParam) {
+        List<SubledgerItem> result = [] as List
+        subledgerItemDao.getByStatusOfferIdCreatedTime(dataCenterId, (Integer) shardKey,
+                SubledgerItemStatus.valueOf(status), offerId.value, endTime,
                 pageParam.start, pageParam.count).each { SubledgerItemEntity entity ->
             result << modelMapper.toSubledgerItemModel(entity, new MappingContext())
         }
@@ -84,5 +85,16 @@ class SubledgerItemRepositorySqlImpl implements SubledgerItemRepository {
         return Promise.pure(subledgerItemDao.getByOrderItemId(orderItemId.value).collect { SubledgerItemEntity entity ->
             return modelMapper.toSubledgerItemModel(entity, new MappingContext());
         })
+    }
+
+    @Override
+    Promise<List<OfferId>> getDistinctOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
+        List<OfferId> result = [] as List
+        subledgerItemDao.getDistrictOfferIds(dataCenterId, (Integer) shardKey,
+                SubledgerItemStatus.valueOf(status),
+                pageParam.start, pageParam.count).each { String offerId ->
+            result << new OfferId(offerId)
+        }
+        return Promise.pure(result)
     }
 }

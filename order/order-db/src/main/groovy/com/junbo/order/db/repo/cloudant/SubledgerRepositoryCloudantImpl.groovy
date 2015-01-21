@@ -9,6 +9,7 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrganizationId
+import com.junbo.common.id.PayoutId
 import com.junbo.common.id.SubledgerId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.db.repo.SubledgerRepository
@@ -41,6 +42,17 @@ class SubledgerRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite
                                           endDateStr].join(';')
         return super.queryView('by_seller_status_offer_time_cc', startKey, endKey,
             pageParam?.count, pageParam?.start, false)
+    }
+
+    @Override
+    Promise<List<Subledger>> listOrderBySeller(int dataCenterId, int shardId, String payOutStatus, Date startDate, Date endDate,
+                                               PageParam pageParam) {
+        throw new UnsupportedOperationException("not supported in cloudant repository")
+    }
+
+    @Override
+    Promise<List<Subledger>> listByPayoutId(PayoutId payoutId, PageParam pageParam) {
+        return super.queryView('by_payout_id', payoutId.value.toString(), pageParam?.count, pageParam?.start, false)
     }
 
     @Override

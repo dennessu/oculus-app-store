@@ -3,6 +3,7 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrganizationId
+import com.junbo.common.id.PayoutId
 import com.junbo.common.id.SubledgerId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
@@ -81,6 +82,28 @@ class SubledgerRepositorySqlImpl implements SubledgerRepository {
                 subledgerParam.sellerId.value, PayoutStatus.valueOf(subledgerParam.payOutStatus),
                 subledgerParam.fromDate, subledgerParam.toDate,
                 pageParam.start, pageParam.count).each { SubledgerEntity entity ->
+            result << modelMapper.toSubledgerModel(entity, new MappingContext())
+        }
+        return Promise.pure(result)
+    }
+
+    @Override
+    Promise<List<Subledger>> listOrderBySeller(int dataCenterId, int shardId, String payOutStatus, Date startDate, Date endDate,
+                                               PageParam pageParam) {
+        List<Subledger> result = []
+        subledgerDao.getByStatusOrderBySeller(
+                dataCenterId, shardId, PayoutStatus.valueOf(payOutStatus),
+                startDate, endDate,
+                pageParam.start, pageParam.count).each { SubledgerEntity entity ->
+            result << modelMapper.toSubledgerModel(entity, new MappingContext())
+        }
+        return Promise.pure(result)
+    }
+
+    @Override
+    Promise<List<Subledger>> listByPayoutId(PayoutId payoutId, PageParam pageParam) {
+        List<Subledger> result = []
+        subledgerDao.getByPayoutId(payoutId.value, pageParam.start, pageParam.count).each { SubledgerEntity entity ->
             result << modelMapper.toSubledgerModel(entity, new MappingContext())
         }
         return Promise.pure(result)

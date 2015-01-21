@@ -5,6 +5,7 @@
  */
 package com.junbo.order.db.repo.cloudant
 
+import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.SubledgerItemId
 import com.junbo.langur.core.promise.Promise
@@ -22,12 +23,17 @@ import groovy.transform.TypeChecked
 class SubledgerItemRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<SubledgerItem, SubledgerItemId> implements SubledgerItemRepository {
 
     @Override
-    Promise<List<SubledgerItem>> getByStatus(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
-        throw new RuntimeException("SubledgerItemRepository::getByStatus is only available in SQL mode for backend jobs.");
+    Promise<List<SubledgerItem>> getSubledgerItems(Integer dataCenterId, Object shardKey, String status, OfferId offerId, Date endTime, PageParam pageParam) {
+        throw new UnsupportedOperationException("SubledgerItemRepository::getSubledgerItems is only available in SQL mode for backend jobs.");
     }
 
     @Override
     Promise<List<SubledgerItem>> getByOrderItemId(OrderItemId orderItemId) {
         return super.queryView('by_orderitemid', orderItemId.value.toString())
+    }
+
+    @Override
+    Promise<List<OfferId>> getDistinctOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
+        throw new UnsupportedOperationException("SubledgerItemRepository::getDistinctSubledgerItemOfferIds is only available in SQL mode for backend jobs.");
     }
 }

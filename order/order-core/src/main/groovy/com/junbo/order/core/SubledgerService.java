@@ -7,10 +7,7 @@ package com.junbo.order.core;
 
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.SubledgerId;
-import com.junbo.order.spec.model.PageParam;
-import com.junbo.order.spec.model.Subledger;
-import com.junbo.order.spec.model.SubledgerItem;
-import com.junbo.order.spec.model.SubledgerParam;
+import com.junbo.order.spec.model.*;
 
 import java.util.List;
 
@@ -31,5 +28,7 @@ public interface SubledgerService {
 
     List<SubledgerItem> getSubledgerItemsByOrderItemId(OrderItemId orderItemId);
 
-    void aggregateSubledgerItem(SubledgerItem item);
+    void aggregateSubledgerItem(List<SubledgerItem> item);
+
+    void updateStatusOnFacebookPayoutStatusChange(FBPayoutStatusChangeRequest fbPayoutStatusChangeRequest);
 }

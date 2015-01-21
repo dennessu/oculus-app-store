@@ -33,6 +33,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 
+import java.nio.charset.Charset
 import java.security.MessageDigest
 
 /**
@@ -173,7 +174,7 @@ class DrmServiceImpl implements DrmService {
     private Promise<SignedLicense> sign(String itemId, LicenseData licenseData) {
         String jsonText = ObjectMapperProvider.instanceNoIndent().writeValueAsString(licenseData)
 
-        itemCryptoResource.sign(itemId, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
+        itemCryptoResource.sign(itemId, new ItemCryptoMessage(message: Base64.encodeBase64String(jsonText.getBytes(Charset.forName('UTF-8')))), false).then { ItemCryptoMessage itemCryptoMessage ->
 
             return Promise.pure(new SignedLicense(
                     reasonCode: licenseData.reasonCode,

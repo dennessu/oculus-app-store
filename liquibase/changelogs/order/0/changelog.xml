@@ -432,5 +432,20 @@
                 ]]>
         </sql>
     </changeSet>
+
+    <changeSet author="fzhang" id = "1.6" context="PREDEPLOY">
+        <sql><![CDATA[
+                alter table subledger add column payout_id bigint default null;
+                create index subledger_payout_id on subledger (payout_id);
+                create index subledger_status_starttime_sellerId on subledger (payout_status_id, start_time, seller_id);
+                alter table subledger_event add column properties varchar(4000) default null;
+                create index subledger_event_subledger_id on subledger_event (subledger_id);
+
+                create index subledger_item_status_offer_id_created_time on subledger_item(status_id, offer_id, created_time);
+                create unique index subledger_offer_seller_start_time_country_currency on subledger (offer_id, seller_id, start_time, country, currency);
+            ]]>
+        </sql>
+    </changeSet>
+
     <include file="../../common/ping.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

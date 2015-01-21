@@ -1,20 +1,14 @@
 package com.junbo.order.core.impl.subledger
 
-import com.google.common.math.IntMath
-import com.junbo.common.enumid.CountryId
-import com.junbo.common.enumid.CurrencyId
-import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.model.Subledger
+import com.junbo.order.spec.model.SubledgerKey
 import com.junbo.order.spec.model.enums.PayoutStatus
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-import java.math.RoundingMode
-import java.text.SimpleDateFormat
 
 /**
  * Created by fzhang on 4/10/2014.
@@ -23,7 +17,7 @@ import java.text.SimpleDateFormat
 @Component('orderSubledgerHelper')
 class SubledgerHelper {
 
-    private static final int MONTH_A_YEAR = 12
+    private static final long MS_A_DAY = 24L * 3600 * 1000
 
     @Resource(name = 'subledgerRepositoryFacade')
     SubledgerRepositoryFacade subledgerRepository
@@ -34,70 +28,33 @@ class SubledgerHelper {
     @Resource(name = 'subledgerItemContextBuilder')
     SubledgerItemContextBuilder subledgerItemContextBuilder
 
-    private Date startTime
-
-    private int durationInMonth
-
-    @Value('${order.subledger.starttime}')
-    void setStartTime(String originTime) {
-        this.startTime = new SimpleDateFormat('yyyy-MM-dd', Locale.US).parse(originTime)
-    }
-
-    @Value('${order.subledger.duration}')
-    void setDurationInMonth(int durationInMonth) {
-        this.durationInMonth = durationInMonth
-    }
-
     Date getSubledgerStartTime(Date sampleTime) {
-        def result = Calendar.instance
-        def monthDiff = diffMonth(sampleTime, startTime)
-
-        def deltaMonth = IntMath.divide(monthDiff, durationInMonth, RoundingMode.FLOOR) * durationInMonth
-        result.setTime(startTime)
-        result.add(Calendar.MONTH, deltaMonth)
-
-        if (sampleTime.before(result.time)) {
-            result.add(Calendar.MONTH, -durationInMonth)
-        }
-
-        assert result.time <= sampleTime
-        return result.time
+        return new Date(sampleTime.year, sampleTime.month, sampleTime.date)
     }
 
     Date getNextSubledgerStartTime(Date sampleTime) {
-        def result = Calendar.instance
-        result.time = getSubledgerStartTime(sampleTime)
-        result.add(Calendar.MONTH, durationInMonth)
-        return result.time
+        Date start = getSubledgerStartTime(sampleTime)
+        return new Date(start.time + MS_A_DAY)
     }
 
-    Subledger getMatchingSubledger(SubledgerItemContext subledgerItemContext) {
-        def sellerId = subledgerItemContext.seller
-        def startTime = getSubledgerStartTime(subledgerItemContext.createdTime)
+    Subledger getMatchingSubledger(SubledgerKey subledgerKey) {
+        def sellerId = subledgerKey.offerPublisher
+        def startTime = getSubledgerStartTime(subledgerKey.subledgerTime)
 
         return subledgerRepository.findSubledger(sellerId, PayoutStatus.PENDING.name(),
-                subledgerItemContext.offer, startTime, subledgerItemContext.currency,
-                subledgerItemContext.country)
+                subledgerKey.offerId, startTime, subledgerKey.currency,
+                subledgerKey.country)
     }
 
-    Subledger getMatchingSubledger(Offer offer, CountryId country, CurrencyId currency, Date createdTime) {
-        return getMatchingSubledger(
-                subledgerItemContextBuilder.buildContext(offer, country, currency, createdTime))
-    }
-
-    Subledger subledgerForSubledgerItemContext(SubledgerItemContext context) {
+    Subledger subledgerForSubledgerKey(SubledgerKey subledgerKey) {
         Subledger subledger = new Subledger(
-                seller: context.seller,
-                offer: context.offer,
-                startTime: getSubledgerStartTime(context.createdTime),
-                endTime: getNextSubledgerStartTime(context.createdTime),
-                country: context.country,
-                currency: context.currency
+                seller: subledgerKey.offerPublisher,
+                offer: subledgerKey.offerId,
+                startTime: getSubledgerStartTime(subledgerKey.subledgerTime),
+                endTime: getNextSubledgerStartTime(subledgerKey.subledgerTime),
+                country: subledgerKey.country,
+                currency: subledgerKey.currency
         )
         return subledger
-    }
-
-    private static int diffMonth(Date left, Date right) {
-        (left.year * MONTH_A_YEAR + left.month) - (right.year * MONTH_A_YEAR + right.month)
     }
 }

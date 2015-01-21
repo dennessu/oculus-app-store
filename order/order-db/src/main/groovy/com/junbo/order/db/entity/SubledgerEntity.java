@@ -28,6 +28,7 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
     private Long sellerId;
     private String offerId;
     private Long sellerTaxProfileId;
+    private Long payoutId;
     private String currency;
     private String country;
     private BigDecimal totalAmount;
@@ -87,6 +88,15 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    @Column(name = "PAYOUT_ID")
+    public Long getPayoutId() {
+        return payoutId;
+    }
+
+    public void setPayoutId(Long payoutId) {
+        this.payoutId = payoutId;
     }
 
     @Column(name = "COUNTRY")

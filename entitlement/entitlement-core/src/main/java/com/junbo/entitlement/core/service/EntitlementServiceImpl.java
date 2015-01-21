@@ -451,8 +451,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             URL url = new URL(urlString);
             bucketName = bucketMap.get(url.getHost());
             String objectKey = url.getPath().substring(1);
-            return generateS3Url(bucketName, objectKey,
-                    generateFilename(objectKey, filename, version, platform), generateExpirationDate());
+            if (bucketName == null) {
+                return generateCloudantFrontUrl(urlString, generateFilename(objectKey, filename, version, platform), generateExpirationDate());
+            } else {
+                return generateS3Url(bucketName, objectKey,
+                        generateFilename(objectKey, filename, version, platform), generateExpirationDate());
+            }
         }
 
         return urlString;

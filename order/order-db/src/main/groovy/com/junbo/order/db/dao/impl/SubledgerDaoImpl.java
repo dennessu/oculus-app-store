@@ -10,9 +10,11 @@ import com.junbo.order.db.dao.SubledgerDao;
 import com.junbo.order.db.entity.SubledgerEntity;
 import com.junbo.order.spec.model.enums.PayoutStatus;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
 import java.util.Date;
 import java.util.List;
@@ -26,23 +28,26 @@ public class SubledgerDaoImpl extends BaseDaoImpl<SubledgerEntity> implements Su
     @Override
     public List<SubledgerEntity> getBySellerId(long sellerId, PayoutStatus payoutStatus,
                                                Date fromDate, Date toDate, int start, int count) {
-        Criteria criteria = this.getSession(sellerId).createCriteria(SubledgerEntity.class);
+        return innerList(sellerId, null, null, payoutStatus, fromDate, toDate, start, count, false);
+    }
 
-        criteria.add(Restrictions.eq("sellerId", sellerId));
-        criteria.add(Restrictions.eq("payoutStatus", payoutStatus));
+    @Override
+    public List<SubledgerEntity> getByStatusOrderBySeller(int dataCenterId, int shardId, PayoutStatus payoutStatus, Date fromDate, Date toDate, int start, int count) {
+        return innerList(null, dataCenterId, shardId, payoutStatus, fromDate, toDate, start, count, true);
+    }
 
-        if (fromDate != null) {
-            criteria.add(Restrictions.ge("startTime", fromDate));
-        }
-        if (toDate != null) {
-            criteria.add(Restrictions.lt("startTime", toDate));
-        }
-
-        setupPagingAndOrder(criteria, start, count);
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<SubledgerEntity> getByPayoutId(long payoutId, int start, int count) {
+        Criteria criteria = this.getSession(payoutId).createCriteria(SubledgerEntity.class);
+        criteria.add(Restrictions.eq("payoutId", payoutId));
+        criteria.setFirstResult(start);
+        criteria.setMaxResults(count);
         return criteria.list();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public SubledgerEntity find(long sellerId, PayoutStatus payoutStatus, Date startTime,
                                 String offerId, String currency, String country) {
         Criteria criteria = this.getSession(sellerId).createCriteria(SubledgerEntity.class);
@@ -61,9 +66,41 @@ public class SubledgerDaoImpl extends BaseDaoImpl<SubledgerEntity> implements Su
         return result.isEmpty() ? null : result.get(0);
     }
 
-    private void setupPagingAndOrder(Criteria criteria, int start, int count) {
+    private List<SubledgerEntity> innerList(Long sellerId, Integer dataCenterId, Integer shardId, PayoutStatus payoutStatus,
+                                            Date fromDate, Date toDate, int start, int count, boolean orderBySellerId) {
+        Session session;
+        if (sellerId == null) {
+            Assert.notNull(dataCenterId);
+            Assert.notNull(shardId);
+            session = this.getSessionByShardId(dataCenterId, shardId);
+        } else {
+            session = this.getSession(sellerId);
+        }
+        Criteria criteria = session.createCriteria(SubledgerEntity.class);
+
+        if (sellerId != null) {
+            criteria.add(Restrictions.eq("sellerId", sellerId));
+        }
+        criteria.add(Restrictions.eq("payoutStatus", payoutStatus));
+
+        if (fromDate != null) {
+            criteria.add(Restrictions.ge("startTime", fromDate));
+        }
+        if (toDate != null) {
+            criteria.add(Restrictions.lt("startTime", toDate));
+        }
+
+        setupPagingAndOrder(criteria, start, count, orderBySellerId);
+        return criteria.list();
+    }
+
+    private void setupPagingAndOrder(Criteria criteria, int start, int count, boolean orderBySellerId) {
         criteria.setFirstResult(start);
         criteria.setMaxResults(count);
-        criteria.addOrder(Order.desc("subledgerId"));
+        if (orderBySellerId) {
+            criteria.addOrder(Order.asc("sellerId"));
+        } else {
+            criteria.addOrder(Order.desc("subledgerId"));
+        }
     }
 }

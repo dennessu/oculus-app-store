@@ -241,6 +241,24 @@ public interface ModelMapper {
     SubledgerEntity toSubledgerEntity(Subledger subledger, MappingContext context);
 
     @Mappings({
+            @Mapping(source = "eventId", target = "id", excluded = false, bidirectional = false),
+            @Mapping(source = "actionId", target = "action", excluded = false, bidirectional = false),
+            @Mapping(source = "statusId", target = "status", excluded = false, bidirectional = false),
+            @Mapping(source = "subledgerId", target = "subledger", excluded = false, bidirectional = false),
+            @Mapping(source = "properties", target = "properties", excluded = false, bidirectional = false, explicitMethod = "convertPropertySet"),
+    })
+    SubledgerEvent toSubledgerEventModel(SubledgerEventEntity subledgerEventEntity, MappingContext context);
+
+    @Mappings({
+            @Mapping(source = "id", target = "eventId", excluded = false, bidirectional = false),
+            @Mapping(source = "action", target = "actionId", excluded = false, bidirectional = false),
+            @Mapping(source = "status", target = "statusId", excluded = false, bidirectional = false),
+            @Mapping(source = "subledger", target = "subledgerId", excluded = false, bidirectional = false),
+            @Mapping(source = "properties", target = "properties", excluded = false, bidirectional = false, explicitMethod = "convertPropertySet"),
+    })
+    SubledgerEventEntity toSubledgerEventEntity(SubledgerEvent subledger, MappingContext context);
+
+    @Mappings({
             @Mapping(source = "subledgerItemId", target = "id", excluded = false, bidirectional = false),
             @Mapping(source = "offerId", target = "offer", excluded = false, bidirectional = false),
             @Mapping(source = "subledgerId", target = "subledger", excluded = false, bidirectional = false),

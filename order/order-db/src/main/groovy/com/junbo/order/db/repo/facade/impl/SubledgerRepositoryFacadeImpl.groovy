@@ -3,12 +3,14 @@ package com.junbo.order.db.repo.facade.impl
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.*
+import com.junbo.order.db.repo.SubledgerEventRepository
 import com.junbo.order.db.repo.SubledgerItemRepository
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
+import com.junbo.order.spec.model.SubledgerEvent
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.SubledgerParam
 import groovy.transform.CompileStatic
@@ -25,6 +27,8 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
 
     private SubledgerItemRepository subledgerItemRepository;
 
+    private SubledgerEventRepository subledgerEventRepository;
+
     @Required
     void setSubledgerRepository(SubledgerRepository subledgerRepository) {
         this.subledgerRepository = subledgerRepository
@@ -33,6 +37,11 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     @Required
     void setSubledgerItemRepository(SubledgerItemRepository subledgerItemRepository) {
         this.subledgerItemRepository = subledgerItemRepository
+    }
+
+    @Required
+    void setSubledgerEventRepository(SubledgerEventRepository subledgerEventRepository) {
+        this.subledgerEventRepository = subledgerEventRepository
     }
 
     @Override
@@ -57,7 +66,7 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
 
     @Override
     Subledger getSubledger(SubledgerId subledgerId) {
-        return subledgerRepository.get(subledgerId).get();
+        return subledgerRepository.get(subledgerId).get()
     }
 
     @Override
@@ -66,9 +75,19 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
+    List<Subledger> getSubledgersOrderBySeller(int dataCenterId, int shardId, String payOutStatus, Date startDate, Date endDate, PageParam pageParam) {
+        return subledgerRepository.listOrderBySeller(dataCenterId, shardId, payOutStatus, startDate, endDate, pageParam).get()
+    }
+
+    @Override
+    List<Subledger> getSubledgersByPayouId(PayoutId payoutId, PageParam pageParam) {
+        return subledgerRepository.listByPayoutId(payoutId, pageParam).get()
+    }
+
+    @Override
     Subledger findSubledger(OrganizationId sellerId, String payoutStatus, OfferId offerId,
                             Date startTime, CurrencyId currency, CountryId country) {
-        return subledgerRepository.find(sellerId, payoutStatus, offerId, startTime, currency, country).get();
+        return subledgerRepository.find(sellerId, payoutStatus, offerId, startTime, currency, country).get()
     }
 
     @Override
@@ -82,8 +101,8 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
-    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
-        return subledgerItemRepository.getByStatus(dataCenterId, shardKey, status, pageParam).get()
+    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, OfferId offerId, Date endTime, PageParam pageParam) {
+        return subledgerItemRepository.getSubledgerItems(dataCenterId, shardKey, status, offerId, endTime, pageParam).get()
     }
 
     @Override
@@ -92,7 +111,22 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
+    List<OfferId> getDistinctSubledgerItemOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
+        return subledgerItemRepository.getDistinctOfferIds(dataCenterId, shardKey, status, pageParam).get()
+    }
+
+    @Override
     SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem, SubledgerItem oldSubledgerItem) {
         return subledgerItemRepository.update(subledgerItem, oldSubledgerItem).get();
+    }
+
+    @Override
+    SubledgerEvent createSubledgerEvent(SubledgerEvent subledgerEvent) {
+        return subledgerEventRepository.create(subledgerEvent).get()
+    }
+
+    @Override
+    List<SubledgerEvent> getSubledgerEvents(SubledgerId subledgerId) {
+        return subledgerEventRepository.getBySubledgerId(subledgerId).get();
     }
 }

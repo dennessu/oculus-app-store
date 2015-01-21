@@ -73,17 +73,6 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
                 def offer = serviceContext.offersMap[orderItem.offer]
                 def subledgerItem = buildSubledgerItem(order, orderItem, offer)
                 subledgerItem.status = initialStatus.name()
-                def subledger = subledgerHelper.getMatchingSubledger(offer, order.country, order.currency, new Date())
-
-                if (subledger != null) {
-                    // link to subledger only if matching subledger found. If not found, let the back-end job to create
-                    // the subledger so as to avoid concurrent creation of same subledger
-                    LOGGER.debug('name=Subledger_For_SubledgerItem_Found, orderItemId={}', orderItem.id)
-                    subledgerItem.subledger = subledger.getId()
-                } else {
-                    LOGGER.debug('name=Subledger_For_SubledgerItem_Not_Found, orderItemId={}', orderItem.id)
-                }
-
                 subledgerItemResource.createSubledgerItem(subledgerItem)
             }
         }.syncThen {

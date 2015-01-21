@@ -10,12 +10,14 @@ import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.*
 import com.junbo.order.db.entity.*
 import com.junbo.order.spec.model.Subledger
+import com.junbo.order.spec.model.SubledgerEvent
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.enums.*
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.lang.RandomStringUtils
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.BeansException
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
@@ -221,7 +223,9 @@ class TestHelper implements ApplicationContextAware {
             endTime: new Date(),
             country: new CountryId('US'),
             currency: new CurrencyId(RandomStringUtils.randomAlphabetic(3)),
-            totalAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX))
+            totalAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)),
+            totalQuantity: generateLong(),
+            totalPayoutAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX))
         )
     }
 
@@ -257,6 +261,19 @@ class TestHelper implements ApplicationContextAware {
         entity.setUpdatedBy(123L)
         entity.setStatus(SubledgerItemStatus.OPEN)
         return entity
+    }
+
+    static SubledgerEvent generateSubledgerEvent(SubledgerId subledgerId) {
+        SubledgerEvent event = new SubledgerEvent(
+                action: SubledgerActionType.UPDATE_STATUS.name(),
+                status: EventStatus.COMPLETED.name(),
+                subledger: subledgerId
+        )
+        event.properties = [:]
+        for (int i = 0;i < 5;++i) {
+            event.properties[RandomStringUtils.randomAlphabetic(10)] = RandomStringUtils.randomAlphabetic(10)
+        }
+        return event
     }
 
     @Override

@@ -9,7 +9,7 @@
     <context:component-scan base-package="com.junbo.order.clientproxy"/>
 
     <bean id="orderAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service email.service billing.service catalog.service fulfilment.service rating.service payment.service subledger.service csr.service entitlement.service"/>
+        <property name="scope" value="identity.service email.service billing.service catalog.service fulfilment.service rating.service payment.service subledger.service csr.service entitlement.service crypto.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${order.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${order.clientproxy.service.clientId}"/>
@@ -120,4 +120,9 @@
         <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
+    <bean id="order.cryptoClient" class="com.junbo.crypto.spec.resource.proxy.ItemCryptoResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+    </bean>
 </beans>

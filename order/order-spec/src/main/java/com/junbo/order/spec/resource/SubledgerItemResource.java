@@ -36,6 +36,6 @@ public interface SubledgerItemResource {
 
     @POST
     @Path("/aggregate")
-    @RouteBy("subledgerItem.getOrderItem()")
-    Promise<SubledgerItem> aggregateSubledgerItem(SubledgerItem subledgerItem);
+    @RouteBy("subledgerItems.get(0).getOrderItem()")
+    Promise<Void> aggregateSubledgerItem(List<SubledgerItem> subledgerItems);
 }

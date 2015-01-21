@@ -282,6 +282,16 @@
       "views": {
         "by_seller_status_offer_time_cc": {
           "map": "function(doc) {emit(doc.seller + ';' + doc.payoutStatus + ';' + doc.startTime + ';' + doc.offer + ';' + doc.currency + ';' + doc.country, doc._id)}"
+        },
+        "by_payout_id": {
+          "map": "function(doc) {if (doc.payoutId) {emit(doc.payoutId, doc._id)}}"
+        }
+      }
+    },
+    "subledger_event": {
+      "views": {
+        "by_subledger": {
+          "map": "function(doc) {if (doc.subledger) {emit(doc.subledger, doc._id)}}"
         }
       }
     },

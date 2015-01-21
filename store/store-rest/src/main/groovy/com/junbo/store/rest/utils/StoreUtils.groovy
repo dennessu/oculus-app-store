@@ -14,10 +14,13 @@ import com.junbo.store.spec.model.browse.document.Item
 import com.junbo.store.spec.model.iap.HostItemInfo
 import com.junbo.store.spec.model.iap.IAPParam
 import groovy.transform.CompileStatic
+import org.apache.commons.codec.binary.Base64
 import org.springframework.stereotype.Component
 import org.springframework.util.Assert
 
 import javax.annotation.Resource
+import java.nio.charset.Charset
+
 /**
  * The StoreUtils class.
  */
@@ -39,7 +42,8 @@ class StoreUtils {
         String jsonText = ObjectMapperProvider.instance().writeValueAsString(valuesMap)
 
         item.payload = jsonText
-        return resourceContainer.itemCryptoResource.sign(hostItemId.value, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
+        return resourceContainer.itemCryptoResource.sign(hostItemId.value, new
+                ItemCryptoMessage(message: Base64.encodeBase64String(jsonText.getBytes(Charset.forName('UTF-8')))), false).then { ItemCryptoMessage itemCryptoMessage ->
             item.signature = itemCryptoMessage.message
             return Promise.pure(item)
         }

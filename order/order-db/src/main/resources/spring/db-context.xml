@@ -130,6 +130,10 @@
         <property name="dbName" value="subledger"/>
     </bean>
 
+    <bean id="cloudantSubledgerEventRepository" class="com.junbo.order.db.repo.cloudant.SubledgerEventRepositoryCloundantImpl" parent="cloudantClient">
+        <property name="dbName" value="subledger_event"/>
+    </bean>
+
     <!-- dual-write repositories -->
 
     <bean id="billingHistoryRepository" parent="baseRepository">
@@ -198,9 +202,16 @@
         <property name="sqlRepositoryImpl" ref="sqlSubledgerRepository" />
     </bean>
 
+    <bean id="subledgerEventRepository" parent="baseRepository" >
+        <property name="repositoryInterface" value="com.junbo.order.db.repo.SubledgerEventRepository"/>
+        <property name="cloudantRepositoryImpl" ref="cloudantSubledgerEventRepository" />
+        <property name="sqlRepositoryImpl" ref="sqlSubledgerEventRepository" />
+    </bean>
+
     <bean id="subledgerRepositoryFacade" class="com.junbo.order.db.repo.facade.impl.SubledgerRepositoryFacadeImpl">
         <property name="subledgerRepository" ref="subledgerRepository" />
         <property name="subledgerItemRepository" ref="subledgerItemRepository" />
+        <property name="subledgerEventRepository" ref="subledgerEventRepository"/>
     </bean>
 
 </beans>

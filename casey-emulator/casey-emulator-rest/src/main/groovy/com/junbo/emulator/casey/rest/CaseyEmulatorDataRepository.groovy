@@ -10,6 +10,8 @@ import com.junbo.store.spec.model.external.sewer.casey.CaseyLink
 import com.junbo.store.spec.model.external.sewer.casey.cms.*
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -40,10 +42,14 @@ class CaseyEmulatorDataRepository implements InitializingBean {
     @Resource(name = 'caseyResourceContainer')
     ResourceContainer resourceContainer
 
+    private boolean initialized = false
+
     private CaseyEmulatorData caseyEmulatorData = new CaseyEmulatorData(
         caseyAggregateRatings: [],
         caseyReviews: []
     )
+
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass())
 
     CaseyEmulatorData post(CaseyEmulatorData caseyEmulatorData) {
         if (caseyEmulatorData.cmsPages != null) {
@@ -64,6 +70,9 @@ class CaseyEmulatorDataRepository implements InitializingBean {
     }
 
     CaseyEmulatorData get() {
+        if (!initialized) {
+            resetData()
+        }
         return caseyEmulatorData
     }
 
@@ -84,7 +93,7 @@ class CaseyEmulatorDataRepository implements InitializingBean {
 
     @Override
     void afterPropertiesSet() throws Exception {
-        resetData()
+        //resetData()
     }
 
     private CmsPage generateDefaultCmsPage() {
