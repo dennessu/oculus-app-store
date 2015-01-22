@@ -11,7 +11,7 @@
     ],
     "authdbs": {
         "silkcloudtest-mh": [
-            "oculus001", "oculus002", "oculus003"
+            "oculus001", "oculus002", "oculus003", "oculus004"
         ]
     }
 }
