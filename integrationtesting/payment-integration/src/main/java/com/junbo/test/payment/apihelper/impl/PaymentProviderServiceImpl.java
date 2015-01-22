@@ -151,7 +151,7 @@ public class PaymentProviderServiceImpl extends HttpClientBase implements Paymen
                     Request req;
                     ProxyServer proxyServer;
                     String profile = System.getProperty("profile", "onebox");
-                    if (!profile.equalsIgnoreCase("onebox")) {
+                    if (profile.equalsIgnoreCase("onebox")) {
                         proxyServer = new ProxyServer(ProxyServer.Protocol.HTTP, "127.0.0.1", 13128, "silkcloud", "#Bugs4$1");
                     }
                     else {
