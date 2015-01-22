@@ -116,7 +116,7 @@ class CountryResourceImpl implements CountryResource {
 
                 return Promise.pure().then {
                     if (StringUtils.isEmpty(listOptions.returnLocale?.toString())) {
-                        countryList.each { Country existing ->
+                        countryList.items.each { Country existing ->
                             existing = countryFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
                             result.items.add(existing)
                         }
@@ -126,7 +126,7 @@ class CountryResourceImpl implements CountryResource {
 
                     return localeService.get(listOptions.returnLocale).then { Locale queryLocale ->
                         if (queryLocale == null) {
-                            countryList.each { Country existing ->
+                            countryList.items.each { Country existing ->
                                 existing = countryFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
                                 result.items.add(existing)
                             }
