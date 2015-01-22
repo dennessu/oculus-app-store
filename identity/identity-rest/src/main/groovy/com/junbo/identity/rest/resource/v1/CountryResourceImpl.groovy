@@ -134,7 +134,7 @@ class CountryResourceImpl implements CountryResource {
                             return Promise.pure(null)
                         }
 
-                        return Promise.each(countryList) { Country newCountry ->
+                        return Promise.each(countryList.items) { Country newCountry ->
                             return filterCountry(newCountry, listOptions.returnLocale?.toString()).then { Country filterCountry ->
                                 if (filterCountry != null) {
                                     filterCountry = countryFilter.filterForGet(filterCountry, listOptions.properties?.split(',') as List<String>)
