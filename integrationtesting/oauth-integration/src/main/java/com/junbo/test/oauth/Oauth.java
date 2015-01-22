@@ -98,6 +98,7 @@ public class Oauth {
     public static CloseableHttpResponse OauthPost(String requestURI, List<NameValuePair> nvps,
                                                   Boolean addInternalHeader, Boolean enableRedirect) throws Exception {
         HttpPost httpPost = new HttpPost(requestURI);
+        httpPost.addHeader("accept-encoding","gzip;q=0,deflate;q=0");
         if (addInternalHeader) httpPost.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
         httpPost.setConfig(RequestConfig.custom()
                 .setRedirectsEnabled(enableRedirect).setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build());
@@ -112,6 +113,7 @@ public class Oauth {
     public static CloseableHttpResponse OauthPut(String requestURI, List<NameValuePair> nvps,
                                                  Boolean addInternalHeader, Boolean enableRedirect) throws Exception {
         HttpPut httpPut = new HttpPut(requestURI);
+        httpPut.addHeader("accept-encoding","gzip;q=0,deflate;q=0");
         if (addInternalHeader) httpPut.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
         httpPut.setConfig(RequestConfig.custom()
                 .setRedirectsEnabled(enableRedirect).setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build());
@@ -126,6 +128,7 @@ public class Oauth {
     public static CloseableHttpResponse OauthGet(String requestURI, List<NameValuePair> nvpHeaders,
                                                  Boolean addInternalHeader, Boolean enableRedirect) throws Exception {
         HttpGet httpGet = new HttpGet(requestURI);
+        httpGet.addHeader("accept-encoding","gzip;q=0,deflate;q=0");
         if (addInternalHeader) httpGet.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
         httpGet.setConfig(RequestConfig.custom()
                 .setRedirectsEnabled(enableRedirect).setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build());
@@ -144,6 +147,7 @@ public class Oauth {
     public static void OauthDelete(String requestURI, Boolean addInternalHeader, Boolean enableRedirect)
             throws Exception {
         HttpDelete httpDelete = new HttpDelete(requestURI);
+        httpDelete.addHeader("accept-encoding","gzip;q=0,deflate;q=0");
         if (addInternalHeader) httpDelete.addHeader(OculusInternalHeader, OculusInternalHeaderDefaultValue);
         httpDelete.setConfig(RequestConfig.custom()
                 .setRedirectsEnabled(enableRedirect).setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build());
