@@ -29,6 +29,7 @@ class JunboMemcachedClient implements InitializingBean {
     }
 
     private MemcachedClientIF memcachedClient
+    private String id
     private String servers
     private boolean enabled
     private Integer timeout
@@ -46,6 +47,7 @@ class JunboMemcachedClient implements InitializingBean {
         String strTimeout = configService.getConfigValue("common.memcached.timeout")
         String strCompression = configService.getConfigValue("common.memcached.compressionThreshold")
 
+        client.id = "1"
         client.servers = configService.getConfigValue("common.memcached.servers")
         client.enabled = Boolean.parseBoolean(strEnabled)
         client.timeout = safeParseInt(strTimeout)
@@ -99,6 +101,10 @@ class JunboMemcachedClient implements InitializingBean {
         this.servers = servers
     }
 
+    void setId(String id) {
+        this.id = id
+    }
+
     void setEnabled(boolean enabled) {
         this.enabled = enabled
     }
@@ -133,6 +139,10 @@ class JunboMemcachedClient implements InitializingBean {
 
     void setAuthType(String authType) {
         this.authType = authType
+    }
+
+    String getId() {
+        return id
     }
 
     String getServers() {
