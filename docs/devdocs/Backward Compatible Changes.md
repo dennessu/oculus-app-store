@@ -35,6 +35,7 @@ We use liquibase to manage the upgrade for PostgreSQL. Liquibase will validate t
 Within the changeset, the following changes are backward compatible:
   * Create a new table
   * Create a new index to an existing table with `CREATE INDEX CONCURRENTLY` option
+    * Remember to add `runInTransaction="false"` in the change set to avoid errors.
   * Drop an existing index if that's not used with `DROP INDEX CONCURRENTLY` option
   * Add a new nullable column without default value to a big table
   * Add a new column to a small table (less than 1000 rows)

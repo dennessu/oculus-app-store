@@ -7,6 +7,8 @@ package com.junbo.common.sniffer;
 
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.memcached.JunboMemcachedClient;
+import com.junbo.configuration.ConfigService;
+import com.junbo.configuration.ConfigServiceManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ public class CacheSnifferJob implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheSnifferJob.class);
 
     private static JunboMemcachedClient memcachedClient = JunboMemcachedClient.instance();
+    private static JunboMemcachedClient memcachedClient2 = createMemcacheClient2();
 
     private static final String FEED_SEPARATOR = "\r\n";
     private static final String SEQ_KEY = "seq";
@@ -282,6 +285,13 @@ public class CacheSnifferJob implements InitializingBean {
 
         try {
             memcachedClient.set(key, this.expiration, value).get();
+            if (memcachedClient2 != null) {
+                try {
+                    memcachedClient2.set(key, this.expiration, value).get();
+                } catch (Exception e) {
+                    LOGGER.warn("Error writing to memcached client 2", e);
+                }
+            }
             LOGGER.trace("[updated cache] [key]" + key + " [value]" + value);
         } catch (Exception e) {
             LOGGER.warn("Error writing to memcached.", e);
@@ -301,6 +311,13 @@ public class CacheSnifferJob implements InitializingBean {
 
         try {
             memcachedClient.delete(key).get();
+            if (memcachedClient2 != null) {
+                try {
+                    memcachedClient2.delete(key).get();
+                } catch (Exception e) {
+                    LOGGER.warn("Error deleting from memcached client 2", e);
+                }
+            }
             LOGGER.trace("[deleted cache] [key]" + key);
         } catch (Exception e) {
             LOGGER.warn("Error deleting from memcached.", e);
@@ -326,5 +343,31 @@ public class CacheSnifferJob implements InitializingBean {
                 uri.getValue(),
                 SnifferUtils.isNull(uri.getUsername(), ""),
                 database);
+    }
+
+    /**
+     * Create second memcached client because PROD green and PROD blue share the sniffer server,
+     * but uses separate memcached servers.
+     */
+    private static JunboMemcachedClient createMemcacheClient2() {
+        ConfigService configService = ConfigServiceManager.instance();
+        String memcachedSnifferServers = configService.getConfigValue("common.memcached.sniffer.servers");
+        if (StringUtils.isEmpty(memcachedSnifferServers)) {
+            return null;
+        }
+
+        JunboMemcachedClient client2 = new JunboMemcachedClient();
+        client2.setServers(memcachedSnifferServers);
+
+        // copy other properties from the original memcachedClient.
+        client2.setEnabled(memcachedClient.getEnabled());
+        client2.setTimeout(memcachedClient.getTimeout());
+        client2.setCompressionThreshold(memcachedClient.getCompressionThreshold());
+        client2.setUsername(memcachedClient.getUsername());
+        client2.setPassword(memcachedClient.getPassword());
+        client2.setAuthType(memcachedClient.getAuthType());
+
+        client2.afterPropertiesSet();
+        return client2;
     }
 }

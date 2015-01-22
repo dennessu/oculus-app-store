@@ -88,7 +88,7 @@ class JunboMemcachedClient implements InitializingBean {
             try {
                 this.memcachedClient = new net.spy.memcached.MemcachedClient(connectionFactoryBuilder.build(), AddrUtil.getAddresses(servers))
             } catch (Exception ex) {
-                logger.warn("Error creating memcached client.", ex)
+                logger.warn("Error creating memcached client to servers: " + servers, ex)
             }
         } else {
             logger.info("CloudantClient memcached is globally disabled.")
@@ -133,6 +133,34 @@ class JunboMemcachedClient implements InitializingBean {
 
     void setAuthType(String authType) {
         this.authType = authType
+    }
+
+    String getServers() {
+        return servers
+    }
+
+    boolean getEnabled() {
+        return enabled
+    }
+
+    Integer getTimeout() {
+        return timeout
+    }
+
+    Integer getCompressionThreshold() {
+        return compressionThreshold
+    }
+
+    String getUsername() {
+        return username
+    }
+
+    String getPassword() {
+        return password
+    }
+
+    String getAuthType() {
+        return authType
     }
 
     private static Integer safeParseInt(String str) {
