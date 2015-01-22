@@ -154,7 +154,7 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
         if(address != null){
             fbCreditCard.setBillingAddress(getFacebookAddress(address, request));
         }
-        /* Test Use
+        /*//Test Use
         FacebookAddress fbAddress = new FacebookAddress();
         fbAddress.setZip("12345");
         fbAddress.setCountryCode("US");
@@ -226,6 +226,11 @@ public class FacebookCCProviderServiceImpl extends AbstractPaymentProviderServic
                 fbPayment.setPayerIp(paymentRequest.getChargeInfo().getIpAddress());
                 //Risk Feature
                 fbPayment.setRiskFeature(getFBRiskFeature(paymentRequest));
+                String ipAddress = paymentRequest.getChargeInfo().getIpAddress();
+                if(CommonUtil.isNullOrEmpty(ipAddress)){
+                    ipAddress = "127.0.0.1";
+                }
+                fbPayment.setPayerIp(ipAddress);
                 return facebookGatewayService.addPayment(s, fbPaymentAccount, fbPayment).then(new Promise.Func<FacebookPayment, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(FacebookPayment fbPayment) {
