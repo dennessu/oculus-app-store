@@ -36,6 +36,8 @@
         <property name="templateValidator" ref="templateValidator"/>
         <property name="localeResource" ref="emailIdentityLocaleClient" />
         <property name="emailTemplateLocaleService" ref="templateLocaleService" />
+        <property name="enableEmailTemplate" value="${emailtemplate.client.enablemultipletemplate}" />
+        <property name="defaultEmailTemplateLocale" value="${emailtemplate.client.defaulttemplatelocale}" />
     </bean>
 
     <util:list id="ko_KR_list">

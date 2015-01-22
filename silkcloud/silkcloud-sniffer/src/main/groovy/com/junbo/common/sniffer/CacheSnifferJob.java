@@ -7,6 +7,8 @@ package com.junbo.common.sniffer;
 
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.memcached.JunboMemcachedClient;
+import com.junbo.configuration.ConfigService;
+import com.junbo.configuration.ConfigServiceManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ public class CacheSnifferJob implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheSnifferJob.class);
 
     private static JunboMemcachedClient memcachedClient = JunboMemcachedClient.instance();
+    private static JunboMemcachedClient memcachedClient2 = createMemcacheClient2();
 
     private static final String FEED_SEPARATOR = "\r\n";
     private static final String SEQ_KEY = "seq";
@@ -102,7 +105,7 @@ public class CacheSnifferJob implements InitializingBean {
 
     private String getLastChange(CloudantUri cloudantUri, String database) {
         LOGGER.trace("Try to fetch last change token from memcached.");
-        String lastChange = getCache(buildLastChangeKey(cloudantUri, database));
+        String lastChange = getCache(memcachedClient, buildLastChangeKey(cloudantUri, database));
 
         if (StringUtils.isEmpty(lastChange)) {
             LOGGER.trace("Last change token is missing in memcached, fetch from cloudant instead.");
@@ -222,6 +225,13 @@ public class CacheSnifferJob implements InitializingBean {
     }
 
     private void invalidateCache(String change, List changes, String entityKey, String entityRevKey) {
+        invalidateCache(memcachedClient, change, changes, entityKey, entityRevKey);
+        if (memcachedClient2 != null) {
+            invalidateCache(memcachedClient2, change, changes, entityKey, entityRevKey);
+        }
+    }
+
+    private void invalidateCache(JunboMemcachedClient memcachedClient, String change, List changes, String entityKey, String entityRevKey) {
         boolean cacheIsValid = false;
 
         boolean revFound = false;
@@ -234,12 +244,12 @@ public class CacheSnifferJob implements InitializingBean {
                     String rev = (revObject == null ? null : revObject.toString());
 
                     if (!StringUtils.isEmpty(rev)) {
-                        String existingValue = getCache(entityKey);
+                        String existingValue = getCache(memcachedClient, entityKey);
                         if (existingValue == null) {
                             // not in cache, so cache is valid
                             cacheIsValid = true;
                             revFound = true;
-                            LOGGER.debug("[miss] {}@{}", entityKey, rev);
+                            LOGGER.debug("[miss] {}:{}@{}", memcachedClient.getId(), entityKey, rev);
                         } else {
                             Map<String, Object> entity = SnifferUtils.parse(existingValue, Map.class);
 
@@ -248,9 +258,9 @@ public class CacheSnifferJob implements InitializingBean {
                                 String entityRev = (String)entity.get(entityRevKey);
                                 if (rev.equals(entityRev)) {
                                     cacheIsValid = true;
-                                    LOGGER.debug("[valid] {}@{}", entityKey, entityRev);
+                                    LOGGER.debug("[valid] {}:{}@{}", memcachedClient.getId(), entityKey, entityRev);
                                 } else {
-                                    LOGGER.debug("[invalid] {}@{} r@{}", entityKey, entityRev, rev);
+                                    LOGGER.debug("[invalid] {}:{}@{} r@{}", memcachedClient.getId(), entityKey, entityRev, rev);
                                 }
                             }
                         }
@@ -258,21 +268,28 @@ public class CacheSnifferJob implements InitializingBean {
                 }
             }
         } catch (Exception ex) {
-            LOGGER.error("Failed to compare cache rev with change for key {}. Default to delete existing cache.", entityKey, ex);
+            LOGGER.error("Failed to compare cache rev with change for key {}:{}. Default to delete existing cache.", memcachedClient.getId(), entityKey, ex);
             cacheIsValid = false;
         } finally {
             // add a trace anyway
             if (!revFound) {
-                LOGGER.warn("Received entity change key {}, rev not found. full change: {}", entityKey, change);
+                LOGGER.warn("Received entity change key {}:{}, rev not found. full change: {}", memcachedClient.getId(), entityKey, change);
             }
         }
 
         if (!cacheIsValid) {
-            deleteCache(entityKey);
+            deleteCache(memcachedClient, entityKey);
         }
     }
 
     private void updateCache(String key, String value) {
+        updateCache(memcachedClient, key, value);
+        if (memcachedClient2 != null) {
+            updateCache(memcachedClient2, key, value);
+        }
+    }
+
+    private void updateCache(JunboMemcachedClient memcachedClient, String key, String value) {
         if (!checkCache(key)) {
             return;
         }
@@ -282,13 +299,13 @@ public class CacheSnifferJob implements InitializingBean {
 
         try {
             memcachedClient.set(key, this.expiration, value).get();
-            LOGGER.trace("[updated cache] [key]" + key + " [value]" + value);
+            LOGGER.trace("[updated cache] " + memcachedClient.getId() + " [key]" + key + " [value]" + value);
         } catch (Exception e) {
-            LOGGER.warn("Error writing to memcached.", e);
+            LOGGER.warn("Error writing to memcached " + memcachedClient.getId(), e);
         }
     }
 
-    private String getCache(String key) {
+    private String getCache(JunboMemcachedClient memcachedClient, String key) {
         if (!checkCache(key)) {
             return null;
         }
@@ -296,14 +313,14 @@ public class CacheSnifferJob implements InitializingBean {
         return (String) memcachedClient.get(key);
     }
 
-    void deleteCache(String key) {
+    void deleteCache(JunboMemcachedClient memcachedClient, String key) {
         checkCache(key);
 
         try {
             memcachedClient.delete(key).get();
-            LOGGER.trace("[deleted cache] [key]" + key);
+            LOGGER.trace("[deleted cache] " + memcachedClient.getId() + " [key]" + key);
         } catch (Exception e) {
-            LOGGER.warn("Error deleting from memcached.", e);
+            LOGGER.warn("Error deleting from memcached " + memcachedClient.getId(), e);
         }
     }
 
@@ -326,5 +343,32 @@ public class CacheSnifferJob implements InitializingBean {
                 uri.getValue(),
                 SnifferUtils.isNull(uri.getUsername(), ""),
                 database);
+    }
+
+    /**
+     * Create second memcached client because PROD green and PROD blue share the sniffer server,
+     * but uses separate memcached servers.
+     */
+    private static JunboMemcachedClient createMemcacheClient2() {
+        ConfigService configService = ConfigServiceManager.instance();
+        String memcachedSnifferServers = configService.getConfigValue("common.memcached.sniffer.servers");
+        if (StringUtils.isEmpty(memcachedSnifferServers)) {
+            return null;
+        }
+
+        JunboMemcachedClient client2 = new JunboMemcachedClient();
+        client2.setServers(memcachedSnifferServers);
+
+        // copy other properties from the original memcachedClient.
+        client2.setId("2");
+        client2.setEnabled(memcachedClient.getEnabled());
+        client2.setTimeout(memcachedClient.getTimeout());
+        client2.setCompressionThreshold(memcachedClient.getCompressionThreshold());
+        client2.setUsername(memcachedClient.getUsername());
+        client2.setPassword(memcachedClient.getPassword());
+        client2.setAuthType(memcachedClient.getAuthType());
+
+        client2.afterPropertiesSet();
+        return client2;
     }
 }

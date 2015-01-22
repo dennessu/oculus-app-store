@@ -11,10 +11,7 @@ import com.junbo.identity.data.identifiable.LocaleAccuracy
 import com.junbo.identity.service.CountryService
 import com.junbo.identity.service.LocaleService
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.Country
-import com.junbo.identity.spec.v1.model.CountryLocaleKey
-import com.junbo.identity.spec.v1.model.SubCountryLocaleKey
-import com.junbo.identity.spec.v1.model.SubCountryLocaleKeys
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.CountryListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.resource.CountryResource
@@ -117,14 +114,36 @@ class CountryResourceImpl implements CountryResource {
                 def result = new Results<Country>(items: [])
                 result.total = countryList.total
 
-                return Promise.each(countryList.items) { Country newCountry ->
-                    return filterCountry(newCountry, listOptions.returnLocale?.toString()).then { Country filterCountry ->
-                        if (filterCountry != null) {
-                            filterCountry = countryFilter.filterForGet(filterCountry, listOptions.properties?.split(',') as List<String>)
-                            result.items.add(filterCountry)
+                return Promise.pure().then {
+                    if (StringUtils.isEmpty(listOptions.returnLocale?.toString())) {
+                        countryList.each { Country existing ->
+                            existing = countryFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
+                            result.items.add(existing)
                         }
 
                         return Promise.pure(null)
+                    }
+
+                    return localeService.get(listOptions.returnLocale).then { Locale queryLocale ->
+                        if (queryLocale == null) {
+                            countryList.each { Country existing ->
+                                existing = countryFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
+                                result.items.add(existing)
+                            }
+
+                            return Promise.pure(null)
+                        }
+
+                        return Promise.each(countryList) { Country newCountry ->
+                            return filterCountry(newCountry, listOptions.returnLocale?.toString()).then { Country filterCountry ->
+                                if (filterCountry != null) {
+                                    filterCountry = countryFilter.filterForGet(filterCountry, listOptions.properties?.split(',') as List<String>)
+                                    result.items.add(filterCountry)
+                                }
+
+                                return Promise.pure(null)
+                            }
+                        }
                     }
                 }.then {
                     if (listOptions.returnLocale != null && !StringUtils.isEmpty(listOptions.sortBy)) {
@@ -177,12 +196,18 @@ class CountryResourceImpl implements CountryResource {
             return Promise.pure(country)
         }
 
-        return filterSubCountries(country, locale).then { Country newCountry ->
-            CountryLocaleKey localeKey = country.locales.get(locale)
-            return filterCountryLocaleKeys(newCountry.locales, locale).then { Map<String, CountryLocaleKey> map ->
-                newCountry.locales = map
-                newCountry.localeAccuracy = calcCountryLocaleKeyAccuracy(localeKey, map.get(locale))
-                return Promise.pure(newCountry)
+        return localeService.get(new LocaleId(locale)).then { Locale inputLocale ->
+            if (inputLocale == null) {
+                return Promise.pure(country)
+            }
+
+            return filterSubCountries(country, locale).then { Country newCountry ->
+                CountryLocaleKey localeKey = country.locales.get(locale)
+                return filterCountryLocaleKeys(newCountry.locales, locale).then { Map<String, CountryLocaleKey> map ->
+                    newCountry.locales = map
+                    newCountry.localeAccuracy = calcCountryLocaleKeyAccuracy(localeKey, map.get(locale))
+                    return Promise.pure(newCountry)
+                }
             }
         }
     }

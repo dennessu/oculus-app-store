@@ -71,6 +71,7 @@ public class Identity {
 
     public static <T> T IdentityPost(String requestURI, String objJson, Class<T> cls) throws Exception {
         HttpPost httpPost = new HttpPost(requestURI);
+        httpPost.addHeader("accept-encoding","gzip;q=0,deflate;q=0");
         httpPost.addHeader("Content-Type", "application/json; charset=utf-8");
         httpPost.addHeader("Authorization", httpAuthorizationHeader);
         httpPost.setEntity(new StringEntity(objJson, "utf-8"));
@@ -79,6 +80,7 @@ public class Identity {
 
     public static <T> T IdentityPut(String requestURI, String objJson, Class<T> cls) throws Exception {
         HttpPut httpPut = new HttpPut(requestURI);
+        httpPut.addHeader("accept-encoding","gzip;q=0,deflate;q=0");
         httpPut.addHeader("Content-Type", "application/json; charset=utf-8");
         httpPut.addHeader("Authorization", httpAuthorizationHeader);
         httpPut.setEntity(new StringEntity(objJson, "utf-8"));
@@ -87,6 +89,7 @@ public class Identity {
 
     public static <T> T IdentityGet(String requestURI, Class<T> cls) throws Exception {
         HttpGet httpGet = new HttpGet(requestURI);
+        httpGet.addHeader("accept-encoding","gzip;q=0,deflate;q=0");
         httpGet.addHeader("Content-Type", "application/json");
         httpGet.addHeader("Authorization", httpAuthorizationHeader);
         return HttpclientHelper.Execute(httpGet, cls);
@@ -94,6 +97,7 @@ public class Identity {
 
     public static void IdentityDelete(String requestURI) throws Exception {
         HttpDelete httpDelete = new HttpDelete(requestURI);
+        httpDelete.addHeader("accept-encoding","gzip;q=0,deflate;q=0");
         httpDelete.addHeader("Content-Type", "application/json");
         httpDelete.addHeader("Authorization", httpAuthorizationHeader);
         HttpclientHelper.Execute(httpDelete);

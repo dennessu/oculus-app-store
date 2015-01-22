@@ -29,6 +29,7 @@ class JunboMemcachedClient implements InitializingBean {
     }
 
     private MemcachedClientIF memcachedClient
+    private String id
     private String servers
     private boolean enabled
     private Integer timeout
@@ -46,6 +47,7 @@ class JunboMemcachedClient implements InitializingBean {
         String strTimeout = configService.getConfigValue("common.memcached.timeout")
         String strCompression = configService.getConfigValue("common.memcached.compressionThreshold")
 
+        client.id = "1"
         client.servers = configService.getConfigValue("common.memcached.servers")
         client.enabled = Boolean.parseBoolean(strEnabled)
         client.timeout = safeParseInt(strTimeout)
@@ -88,7 +90,7 @@ class JunboMemcachedClient implements InitializingBean {
             try {
                 this.memcachedClient = new net.spy.memcached.MemcachedClient(connectionFactoryBuilder.build(), AddrUtil.getAddresses(servers))
             } catch (Exception ex) {
-                logger.warn("Error creating memcached client.", ex)
+                logger.warn("Error creating memcached client to servers: " + servers, ex)
             }
         } else {
             logger.info("CloudantClient memcached is globally disabled.")
@@ -97,6 +99,10 @@ class JunboMemcachedClient implements InitializingBean {
 
     void setServers(String servers) {
         this.servers = servers
+    }
+
+    void setId(String id) {
+        this.id = id
     }
 
     void setEnabled(boolean enabled) {
@@ -133,6 +139,38 @@ class JunboMemcachedClient implements InitializingBean {
 
     void setAuthType(String authType) {
         this.authType = authType
+    }
+
+    String getId() {
+        return id
+    }
+
+    String getServers() {
+        return servers
+    }
+
+    boolean getEnabled() {
+        return enabled
+    }
+
+    Integer getTimeout() {
+        return timeout
+    }
+
+    Integer getCompressionThreshold() {
+        return compressionThreshold
+    }
+
+    String getUsername() {
+        return username
+    }
+
+    String getPassword() {
+        return password
+    }
+
+    String getAuthType() {
+        return authType
     }
 
     private static Integer safeParseInt(String str) {

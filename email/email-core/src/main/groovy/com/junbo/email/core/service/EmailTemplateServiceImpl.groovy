@@ -20,6 +20,7 @@ import com.junbo.identity.spec.v1.resource.LocaleResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
@@ -41,6 +42,10 @@ import javax.transaction.Transactional
 
     private EmailTemplateLocaleService emailTemplateLocaleService
 
+    private Boolean enableEmailTemplate
+
+    private String defaultEmailTemplateLocale
+
     void setTemplateRepository(EmailTemplateRepository templateRepository) {
         this.templateRepository = templateRepository
     }
@@ -55,6 +60,14 @@ import javax.transaction.Transactional
 
     void setEmailTemplateLocaleService(EmailTemplateLocaleService emailTemplateLocaleService) {
         this.emailTemplateLocaleService = emailTemplateLocaleService
+    }
+
+    void setEnableEmailTemplate(Boolean enableEmailTemplate) {
+        this.enableEmailTemplate = enableEmailTemplate
+    }
+
+    void setDefaultEmailTemplateLocale(String defaultEmailTemplateLocale) {
+        this.defaultEmailTemplateLocale = defaultEmailTemplateLocale
     }
 
     Promise<EmailTemplate> postEmailTemplate(EmailTemplate template) {
@@ -115,9 +128,15 @@ import javax.transaction.Transactional
             map.put('source', queryParam.source)
         }
 
-        String locale = emailTemplateLocaleService.getEmailTemplateLocale(queryParam?.locale, queryParam?.userId).get();
-        if (!StringUtils.isEmpty(locale)) {
-            map.put('locale', locale)
+        if (enableEmailTemplate) {
+            String locale = emailTemplateLocaleService.getEmailTemplateLocale(queryParam?.locale, queryParam?.userId).get();
+            if (!StringUtils.isEmpty(locale)) {
+                map.put('locale', locale)
+            }
+        } else {
+            if (!StringUtils.isEmpty(queryParam?.locale) || queryParam?.userId != null) {
+                map.put('locale', defaultEmailTemplateLocale)
+            }
         }
         return map
     }
