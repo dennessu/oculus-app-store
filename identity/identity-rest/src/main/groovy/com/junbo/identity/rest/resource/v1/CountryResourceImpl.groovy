@@ -11,10 +11,7 @@ import com.junbo.identity.data.identifiable.LocaleAccuracy
 import com.junbo.identity.service.CountryService
 import com.junbo.identity.service.LocaleService
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.Country
-import com.junbo.identity.spec.v1.model.CountryLocaleKey
-import com.junbo.identity.spec.v1.model.SubCountryLocaleKey
-import com.junbo.identity.spec.v1.model.SubCountryLocaleKeys
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.CountryListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.resource.CountryResource
@@ -176,12 +173,18 @@ class CountryResourceImpl implements CountryResource {
             return Promise.pure(country)
         }
 
-        return filterSubCountries(country, locale).then { Country newCountry ->
-            CountryLocaleKey localeKey = country.locales.get(locale)
-            return filterCountryLocaleKeys(newCountry.locales, locale).then { Map<String, CountryLocaleKey> map ->
-                newCountry.locales = map
-                newCountry.localeAccuracy = calcCountryLocaleKeyAccuracy(localeKey, map.get(locale))
-                return Promise.pure(newCountry)
+        return localeService.get(new LocaleId(locale)).then { Locale inputLocale ->
+            if (inputLocale == null) {
+                return Promise.pure(country)
+            }
+
+            return filterSubCountries(country, locale).then { Country newCountry ->
+                CountryLocaleKey localeKey = country.locales.get(locale)
+                return filterCountryLocaleKeys(newCountry.locales, locale).then { Map<String, CountryLocaleKey> map ->
+                    newCountry.locales = map
+                    newCountry.localeAccuracy = calcCountryLocaleKeyAccuracy(localeKey, map.get(locale))
+                    return Promise.pure(newCountry)
+                }
             }
         }
     }
