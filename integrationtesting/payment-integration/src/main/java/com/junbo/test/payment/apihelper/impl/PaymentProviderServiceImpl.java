@@ -149,7 +149,15 @@ public class PaymentProviderServiceImpl extends HttpClientBase implements Paymen
             case POST: {
                 try {
                     Request req;
-                    ProxyServer proxyServer = new ProxyServer(ProxyServer.Protocol.HTTP, "127.0.0.1", 13128, "silkcloud", "#Bugs4$1");
+                    ProxyServer proxyServer;
+                    String profile = System.getProperty("profile", "onebox");
+                    if (!profile.equalsIgnoreCase("onebox")) {
+                        proxyServer = new ProxyServer(ProxyServer.Protocol.HTTP, "127.0.0.1", 13128, "silkcloud", "#Bugs4$1");
+                    }
+                    else {
+                        proxyServer = null;
+                    }
+
                     if (Master.getInstance().getCookies().size() > 0) {
                         req = new RequestBuilder(httpMethod.getHttpMethod())
                                 .setUrl(restUrl)
@@ -159,12 +167,15 @@ public class PaymentProviderServiceImpl extends HttpClientBase implements Paymen
                                 .addCookie(Master.getInstance().getCookies().get(0))
                                 .build();
                     } else {
-                        req = new RequestBuilder(httpMethod.getHttpMethod())
+                        RequestBuilder reqBuilder = new RequestBuilder(httpMethod.getHttpMethod())
                                 .setUrl(restUrl)
                                 .setHeaders(getHeader(isServiceScope, headersToRemove))
                                 .setBodyEncoding("UTF-8")
-                                .setBody(requestBody).setProxyServer(proxyServer)
-                                .build();
+                                .setBody(requestBody);
+                        if (proxyServer != null) {
+                            reqBuilder.setProxyServer(proxyServer);
+                        }
+                        req = reqBuilder.build();
                     }
 
                     logger.LogRequest(req);
