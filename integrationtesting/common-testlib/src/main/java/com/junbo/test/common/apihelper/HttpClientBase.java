@@ -266,7 +266,7 @@ public abstract class HttpClientBase {
                     //handle redirect url logic for getPrimaryCart etc.
                     if (nettyResponse.getStatusCode() == 302) {
                         logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
-
+                        Thread.sleep(3000);
                         String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
                         if (redirectUrl.contains("cid")) {
                             List<Cookie> cookies = nettyResponse.getCookies();
