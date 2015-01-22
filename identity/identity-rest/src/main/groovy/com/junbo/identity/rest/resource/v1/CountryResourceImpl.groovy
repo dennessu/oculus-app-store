@@ -113,14 +113,36 @@ class CountryResourceImpl implements CountryResource {
             return search(listOptions).then { List<Country> countryList ->
                 def result = new Results<Country>(items: [])
 
-                return Promise.each(countryList) { Country newCountry ->
-                    return filterCountry(newCountry, listOptions.returnLocale?.toString()).then { Country filterCountry ->
-                        if (filterCountry != null) {
-                            filterCountry = countryFilter.filterForGet(filterCountry, listOptions.properties?.split(',') as List<String>)
-                            result.items.add(filterCountry)
+                return Promise.pure().then {
+                    if (StringUtils.isEmpty(listOptions.returnLocale?.toString())) {
+                        countryList.each { Country existing ->
+                            existing = countryFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
+                            result.items.add(existing)
                         }
 
                         return Promise.pure(null)
+                    }
+
+                    return localeService.get(listOptions.returnLocale).then { Locale queryLocale ->
+                        if (queryLocale == null) {
+                            countryList.each { Country existing ->
+                                existing = countryFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
+                                result.items.add(existing)
+                            }
+
+                            return Promise.pure(null)
+                        }
+
+                        return Promise.each(countryList) { Country newCountry ->
+                            return filterCountry(newCountry, listOptions.returnLocale?.toString()).then { Country filterCountry ->
+                                if (filterCountry != null) {
+                                    filterCountry = countryFilter.filterForGet(filterCountry, listOptions.properties?.split(',') as List<String>)
+                                    result.items.add(filterCountry)
+                                }
+
+                                return Promise.pure(null)
+                            }
+                        }
                     }
                 }.then {
                     if (listOptions.returnLocale != null && !StringUtils.isEmpty(listOptions.sortBy)) {
