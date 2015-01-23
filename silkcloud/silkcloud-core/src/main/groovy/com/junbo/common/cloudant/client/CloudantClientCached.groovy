@@ -32,6 +32,7 @@ class CloudantClientCached implements CloudantClientInternal {
 
     private static JunboMemcachedClient memcachedClient = JunboMemcachedClient.instance()
     private Integer expiration
+    private Map<String, Integer> expirationMap
     private Integer maxEntitySize
     private boolean storeViewResults
     private String currentDc
@@ -42,10 +43,12 @@ class CloudantClientCached implements CloudantClientInternal {
 
         String strMaxEntitySize = configService.getConfigValue("common.cloudant.cache.maxentitysize")
         String strExpiration = configService.getConfigValue("common.cloudant.cache.expiration")
+        String strExpirationMap = configService.getConfigValue("common.cloudant.cache.expiration.map")
         String strStoreViewResults = configService.getConfigValue("common.cloudant.cache.storeviewresults")
         String strRetryAddForSnifferDelete = configService.getConfigValue("common.cloudant.cache.retryAddForSnifferDelete")
 
         this.expiration = safeParseInt(strExpiration)
+        this.expirationMap = parseExpirationMap(strExpirationMap)
         this.maxEntitySize = safeParseInt(strMaxEntitySize)
         this.storeViewResults = strStoreViewResults == "true"
         this.currentDc = DataCenters.instance().currentDataCenter()
@@ -238,7 +241,7 @@ class CloudantClientCached implements CloudantClientInternal {
         try {
             String value = marshaller.marshall(entity)
             if (value.length() < this.maxEntitySize) {
-                def isSuccessful = memcachedClient.add(getKey(dbUri, entity.cloudantId), this.expiration, value).get()
+                def isSuccessful = memcachedClient.add(getKey(dbUri, entity.cloudantId), getExpiration(dbUri), value).get()
                 if (!isSuccessful) {
                     logger.warn("Update conflict for {} rev {} to memcached.", entity.cloudantId, entity.cloudantRev)
                     deleteCacheOnError(dbUri, entity.cloudantId)
@@ -271,7 +274,7 @@ class CloudantClientCached implements CloudantClientInternal {
             if (value.length() < this.maxEntitySize) {
                 boolean isSuccessful = false
                 if (casValue.getValue().cloudantRev == prevRev) {
-                    def casResponse = memcachedClient.cas(getKey(dbUri, entity.cloudantId), casValue.getCas(), this.expiration, value)
+                    def casResponse = memcachedClient.cas(getKey(dbUri, entity.cloudantId), casValue.getCas(), getExpiration(dbUri), value)
                     isSuccessful = (casResponse == CASResponse.OK)
                 } else if (casValue.getValue().cloudantRev == entity.cloudantRev) {
                     logger.info("Entity {} rev {} already cached in memcached. Skip storing rev {}.", entity.cloudantId, casValue.value.cloudantRev, entity.cloudantRev)
@@ -281,7 +284,7 @@ class CloudantClientCached implements CloudantClientInternal {
                     if (retryAddForSnifferDelete) {
                         // Most likely it conflicted with sniffer. Sniffer will delete the entity from the cache, so give a try to add directly.
                         logger.info("Update conflict detected, trying to directly add to cache for {} rev {}", entity.cloudantId, entity.cloudantRev)
-                        isSuccessful = memcachedClient.add(getKey(dbUri, entity.cloudantId), this.expiration, value).get()
+                        isSuccessful = memcachedClient.add(getKey(dbUri, entity.cloudantId), getExpiration(dbUri), value).get()
                     }
 
                     if (!isSuccessful) {
@@ -326,6 +329,33 @@ class CloudantClientCached implements CloudantClientInternal {
 
     private String getKey(CloudantDbUri dbUri, String id) {
         return id + ":" + dbUri.dbName
+    }
+
+    private Integer getExpiration(CloudantDbUri dbUri) {
+        Integer result = expirationMap?.get(dbUri.dbName)
+        if (result != null) {
+            return result
+        }
+        return expiration
+    }
+
+    private Map<String, Integer> parseExpirationMap(String strExpirationMap) {
+        if (StringUtils.isEmpty(strExpirationMap)) {
+            return null
+        }
+        Map<String, Integer> result = new HashMap<>()
+        for (String expirationMapItem : strExpirationMap.split(",")) {
+            String [] dbExpiration = expirationMapItem.split(":", 2)
+            if (dbExpiration.size() != 2) {
+                throw new RuntimeException("Invalid expiration item: " + expirationMapItem);
+            }
+            try {
+                result.put(dbExpiration[0].trim(), Integer.parseInt(dbExpiration[1].trim()))
+            } catch (NumberFormatException ex) {
+                throw new RuntimeException("Invalid expiration item: " + expirationMapItem);
+            }
+        }
+        return result
     }
 
     private static Integer safeParseInt(String str) {
