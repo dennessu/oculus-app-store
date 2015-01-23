@@ -41,7 +41,6 @@ public class CartCheckout extends BaseTestClass {
             component = Component.Order,
             owner = "ZhaoYunlong",
             status = Status.Enable,
-            environment = "release",
             description = "Test digital good checkout",
             steps = {
                     "1. Post a new user",
