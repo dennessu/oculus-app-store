@@ -15,15 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * generic dao.
+ * domain data dao, reads goes to shard 0 of local region, writes to shard 0 of all regions.
  * @param <T> the entity for this dao
  * @param <ID> the id for the entity
  */
 @SuppressWarnings("unchecked")
-public class GenericDAOImpl<T, ID extends Serializable> {
+public class DomainDataDAOImpl<T, ID extends Serializable> {
     @Autowired
     @Qualifier("userShardAlgorithm")
     private ShardAlgorithm shardAlgorithm;
@@ -32,11 +33,10 @@ public class GenericDAOImpl<T, ID extends Serializable> {
     protected SessionFactory sessionFactory;
     private Class<T> persistentClass;
 
-    public GenericDAOImpl(Class<T> persistentClass) {
+    public DomainDataDAOImpl(Class<T> persistentClass) {
         this.persistentClass = persistentClass;
     }
 
-    //TODO: move all the configuration data to config DB and remove the generic DAO here
     public Session currentSession() {
         ShardScope shardScope = new ShardScope(DataCenters.instance().currentDataCenterId(), 0);
         try {
@@ -46,38 +46,43 @@ public class GenericDAOImpl<T, ID extends Serializable> {
         }
     }
 
+    public List<Session> allSessions() {
+        List<Session> allSessions = new ArrayList<>();
+        for (Integer dcid : DataCenters.instance().getDataCenterIds()) {
+            // shard id is always 0.
+            ShardScope shardScope = new ShardScope(dcid, 0);
+            try {
+                allSessions.add(sessionFactory.getCurrentSession());
+            } finally {
+                shardScope.close();
+            }
+        }
+        return allSessions;
+    }
+
     public T get(ID id) {
         return (T) currentSession().get(persistentClass, id);
     }
 
-    public ID save(T entity) {
-        return  (ID) currentSession().save(entity);
+    public void save(T entity) {
+        for (Session session : allSessions()) {
+            session.save(entity);
+            session.flush();
+        }
     }
 
-    public T update(T entity) {
-        currentSession().update(entity);
-        return entity;
-    }
-
-    public T saveOrUpdate(T entity) {
-        currentSession().saveOrUpdate(entity);
-        return entity;
+    public void update(T entity) {
+        for (Session session : allSessions()) {
+            session.update(entity);
+            session.flush();
+        }
     }
 
     public void delete(T entity) {
-        currentSession().delete(entity);
-    }
-
-    public Boolean exists(ID id) {
-        return get(id) != null;
-    }
-
-    public void flush() {
-        currentSession().flush();
-    }
-
-    public void merge(T entity){
-        currentSession().merge(entity);
+        for (Session session : allSessions()) {
+            session.delete(entity);
+            session.flush();
+        }
     }
 
     @SuppressWarnings("unchecked")
