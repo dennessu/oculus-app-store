@@ -368,6 +368,20 @@ class CoreUtils {
         }
     }
 
+    static Boolean canRevoke(Order order, OrderItem orderItem) {
+
+
+
+
+        if (CollectionUtils.isEmpty(order.billingHistories)) {
+            return false
+        }
+        return order.billingHistories.any { BillingHistory bh ->
+            (bh.billingEvent == BillingAction.REQUEST_REFUND.name() && bh.success) ||
+                    (bh.billingEvent == BillingAction.REFUND.name() && bh.success)
+        }
+    }
+
     static Boolean isCanceled(Order order) {
         if (CollectionUtils.isEmpty(order.billingHistories)) {
             return false
@@ -409,6 +423,22 @@ class CoreUtils {
                 fulfillCompleted = false
             }
         }
+        return fulfillCompleted
+    }
+
+    static Boolean isFulfilled(OrderItem orderItem) {
+
+        def fulfillCompleted = true
+        if (CollectionUtils.isEmpty(orderItem.fulfillmentHistories)) {
+            fulfillCompleted = false
+            return fulfillCompleted
+        }
+        if (!orderItem.fulfillmentHistories.any() { FulfillmentHistory fh ->
+            fh.fulfillmentEvent == FulfillmentEventType.FULFILL.name() && fh.success
+        }) {
+            fulfillCompleted = false
+        }
+
         return fulfillCompleted
     }
 

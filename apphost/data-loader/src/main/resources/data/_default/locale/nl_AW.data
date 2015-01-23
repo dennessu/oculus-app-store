@@ -1,8 +1,8 @@
 {
   "localeCode": "nl_AW",
-  "shortName": "Dutch (AW)",
-  "longName": "Dutch (Aruba)",
-  "localeName": "Dutch (AW)",
+  "shortName": "Nederlands(AW)",
+  "longName": "Nederlands(Aruba)",
+  "localeName": "Dutch(AW)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

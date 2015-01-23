@@ -1,8 +1,8 @@
 {
   "localeCode": "ja_JP",
-  "shortName": "日本語（JP）",
-  "longName": "日本語（日本）",
-  "localeName": "日本語（JP）",
+  "shortName": "日本語(JP)",
+  "longName": "日本語(日本)",
+  "localeName": "Japanese(JP)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

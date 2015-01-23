@@ -1,8 +1,8 @@
 {
   "localeCode": "es_SV",
-  "shortName": "Español (SV)",
-  "longName": "Español (El Salvador)",
-  "localeName": "Español (SV)",
+  "shortName": "Español(SV)",
+  "longName": "Español(El Salvador)",
+  "localeName": "Spanish(SV)",
   "fallbackLocale": {
     "href": "/v1/locales/es_ES",
     "id": "es_ES"

@@ -447,5 +447,12 @@
         </sql>
     </changeSet>
 
+    <changeSet author="chriszhu" id = "1.7" context="PREDEPLOY">
+        <sql><![CDATA[
+                alter table order_item_revision add column revoked boolean default false;
+                ]]>
+        </sql>
+    </changeSet>
+
     <include file="../../common/ping.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

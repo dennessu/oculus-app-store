@@ -1,8 +1,8 @@
 {
   "localeCode": "es_CL",
-  "shortName": "Español (CL)",
-  "longName": "Español (Chile)",
-  "localeName": "Español (CL)",
+  "shortName": "Español(CL)",
+  "longName": "Español(Chile)",
+  "localeName": "Spanish(CL)",
   "fallbackLocale": {
     "href": "/v1/locales/es_ES",
     "id": "es_ES"

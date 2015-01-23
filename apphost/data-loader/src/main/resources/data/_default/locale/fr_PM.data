@@ -1,8 +1,8 @@
 {
   "localeCode": "fr_PM",
-  "shortName": "French (PM)",
-  "longName": "French (Saint Pierre and Miquelon)",
-  "localeName": "French (PM)",
+  "shortName": "Français(PM)",
+  "longName": "Français(Collectivité territoriale de Saint-Pierre-et-Miquelon)",
+  "localeName": "French(PM)",
   "fallbackLocale": {
     "href": "/v1/locales/fr_FR",
     "id": "fr_FR"

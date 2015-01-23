@@ -1,8 +1,8 @@
 {
   "localeCode": "si_LK",
-  "shortName": "Siṁhala  (LK)",
-  "longName": "Siṁhala  (śrī laṃkāva)",
-  "localeName": "Siṁhala  (LK)",
+  "shortName": "සිංහල signhala(LK)",
+  "longName": "සිංහල signhala(ශ්‍රී ලංකා ප්‍රජාතාන්ත්‍රික සමාජවාදී ජනරජය)",
+  "localeName": "Sinhala(LK)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

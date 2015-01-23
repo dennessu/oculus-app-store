@@ -20,6 +20,7 @@ import com.junbo.order.spec.model.OrderItemRevision
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
@@ -87,6 +88,21 @@ class OrderItemRepositorySqlImpl implements OrderItemRepository {
             entity.createdTime = oldEntity.createdTime
             entity.createdBy = oldEntity.createdBy
             entity.resourceAge = oldEntity.resourceAge
+            // update order revision for revoked
+            // for revoked update only
+            def existingRevisions = getOrderItemRevisions(oldEntity.getOrderItemId())
+            if (!CollectionUtils.isEmpty(existingRevisions))
+            {
+                existingRevisions.each { OrderItemRevision oir ->
+                    def newOrderItemRevision = orderItem.orderItemRevisions?.find { OrderItemRevision newOir ->
+                        newOir.getId() == oir.getId()
+                    }
+                    if (newOrderItemRevision != null && oir.revoked != newOrderItemRevision.revoked) {
+                        oir.revoked = newOrderItemRevision.revoked
+                        orderItemRevisionDao.update(modelMapper.toOrderItemRevisionEntity(oir, new MappingContext()))
+                    }
+                }
+            }
         }
         orderItemDao.update(entity)
         Utils.fillDateInfo(orderItem, entity)

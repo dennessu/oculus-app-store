@@ -11,5 +11,6 @@ package com.junbo.fulfilment.db.entity;
 public enum FulfilmentStatus {
     PENDING,
     SUCCEED,
-    FAILED
+    FAILED,
+    REVOKED
 }

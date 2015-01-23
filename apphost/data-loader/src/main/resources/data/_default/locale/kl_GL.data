@@ -1,8 +1,8 @@
 {
   "localeCode": "kl_GL",
-  "shortName": "Greenlandic (GL)",
-  "longName": "Greenlandic (Greenland)",
-  "localeName": "Greenlandic (GL)",
+  "shortName": "Kalaallisut(GL)",
+  "longName": "Kalaallisut(Kalaallit Nunaat)",
+  "localeName": "Greenlandic(GL)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

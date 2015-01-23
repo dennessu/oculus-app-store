@@ -1,8 +1,8 @@
 {
   "localeCode": "tk_TM",
-  "shortName": "Türkmençe  (TM)",
-  "longName": "Türkmençe  (Türkmenistan)",
-  "localeName": "Türkmençe  (TM)",
+  "shortName": "Türkmençe(TM)",
+  "longName": "Türkmençe(Türkmenistan)",
+  "localeName": "Turkmen(TM)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

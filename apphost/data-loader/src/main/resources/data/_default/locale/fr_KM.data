@@ -1,8 +1,8 @@
 {
   "localeCode": "fr_KM",
-  "shortName": "French (KM)",
-  "longName": "French (Comoros)",
-  "localeName": "French (KM)",
+  "shortName": "Français(KM)",
+  "longName": "Français(Comores)",
+  "localeName": "French(KM)",
   "fallbackLocale": {
     "href": "/v1/locales/fr_FR",
     "id": "fr_FR"

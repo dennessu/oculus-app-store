@@ -102,27 +102,25 @@ public class MerchantAccountRepository extends DomainDataRepository<MerchantAcco
     }
 
     @Transactional
-    public MerchantAccount save(MerchantAccount provider){
+    public void save(MerchantAccount provider){
         if(provider.getCreatedTime() == null){
             provider.setCreatedTime(new Date());
         }
         MerchantAccountEntity entity = paymentMapper.toMerchantAccountEntity(provider, new MappingContext());
-        Integer savedId = this.dao.save(entity);
-        return get(savedId);
+        this.dao.save(entity);
     }
 
     @Transactional
-    public MerchantAccount update(MerchantAccount model, MerchantAccount oldModel){
+    public void update(MerchantAccount model, MerchantAccount oldModel){
         if(model.getCreatedTime() == null){
             model.setCreatedTime(new Date());
         }
         MerchantAccountEntity entity = paymentMapper.toMerchantAccountEntity(model, new MappingContext());
-        MerchantAccountEntity updated = this.dao.update(entity);
-        return get(updated.getMerchantAccountId());
+        this.dao.update(entity);
     }
 
     @Transactional
-    void deleteClient(MerchantAccount model){
+    void delete(MerchantAccount model){
         MerchantAccountEntity entity = paymentMapper.toMerchantAccountEntity(model, new MappingContext());
         this.dao.delete(entity);
     }

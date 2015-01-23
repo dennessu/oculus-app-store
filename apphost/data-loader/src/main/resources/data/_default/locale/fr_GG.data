@@ -1,8 +1,8 @@
 {
    "localeCode" : "fr_GG",
-   "shortName" : "French (GG)",
-   "longName" : "French (Guernsey)",
-   "localeName" : "French (GG)",
+   "shortName" : "Français(GG)",
+   "longName" : "Français(Guernsey)",
+   "localeName" : "French(GG)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/fr_FR",

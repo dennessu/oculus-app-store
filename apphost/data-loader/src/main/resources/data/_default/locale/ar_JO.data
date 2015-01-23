@@ -1,8 +1,8 @@
 {
   "localeCode": "ar_JO",
-  "shortName": "العربية (JO)",
-  "longName": "العربية (الأردن)",
-  "localeName": "العربية (JO)",
+  "shortName": "العربية(JO)",
+  "longName": "العربية(الأردن‎)",
+  "localeName": "Arabic(JO)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

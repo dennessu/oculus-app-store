@@ -1,8 +1,8 @@
 {
    "localeCode" : "fr_DJ",
-   "shortName" : "French (DJ)",
-   "longName" : "French (Djibouti)",
-   "localeName" : "French (DJ)",
+   "shortName" : "Français(DJ)",
+   "longName" : "Français(Djibouti)",
+   "localeName" : "French(DJ)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/fr_FR",

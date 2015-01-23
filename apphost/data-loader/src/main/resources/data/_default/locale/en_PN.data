@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_PN",
-   "shortName" : "English (PN)",
-   "longName" : "English (Pitcairn Islands)",
-   "localeName" : "English (PN)",
+   "shortName" : "English(PN)",
+   "longName" : "English(Pitcairn Islands)",
+   "localeName" : "English(PN)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

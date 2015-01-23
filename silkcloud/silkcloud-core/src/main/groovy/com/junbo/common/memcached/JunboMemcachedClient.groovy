@@ -493,6 +493,17 @@ class JunboMemcachedClient implements InitializingBean {
         })
     }
 
+    void deleteAsync(String key) {
+        ProfilingHelper.begin("MC", "%s %s", "delete-async", key);
+        try {
+            memcachedClient.delete(key)
+            ProfilingHelper.end("(OK) (async)")
+        } catch (Throwable ex) {
+            ProfilingHelper.err(ex)
+            throw ex
+        }
+    }
+
     Future<Boolean> delete(String key) {
         return new FutureWrapper<Boolean>("delete", key, {
             return memcachedClient.delete(key)

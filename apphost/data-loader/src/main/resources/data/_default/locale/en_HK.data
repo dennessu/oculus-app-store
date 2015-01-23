@@ -1,8 +1,8 @@
 {
   "localeCode": "en_HK",
-  "shortName": "English (HK)",
-  "longName": "English (Hong Kong)",
-  "localeName": "English (HK)",
+  "shortName": "English(HK)",
+  "longName": "English(Hong Kong)",
+  "localeName": "English(HK)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

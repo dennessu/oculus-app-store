@@ -1,8 +1,8 @@
 {
   "localeCode": "he_IL",
-  "shortName": "עברית (IL)",
-  "longName": "עברית (ישראל)",
-  "localeName": "עברית (IL)",
+  "shortName": "עברית ʿIvrit(IL)",
+  "longName": "עברית ʿIvrit(מְדִינַת יִשְׂרָאֵל)",
+  "localeName": "Hebrew(IL)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

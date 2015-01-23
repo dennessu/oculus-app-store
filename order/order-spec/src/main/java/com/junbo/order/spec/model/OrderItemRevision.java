@@ -50,6 +50,9 @@ public class OrderItemRevision extends ResourceMetaForDualWrite<Long> {
     @JsonIgnore
     private BigDecimal totalDiscount;
 
+    @JsonIgnore
+    private Boolean revoked;
+
     @Override
     public Long getId() {
         return id;
@@ -130,6 +133,14 @@ public class OrderItemRevision extends ResourceMetaForDualWrite<Long> {
 
     public void setTotalDiscount(BigDecimal totalDiscount) {
         this.totalDiscount = totalDiscount;
+    }
+
+    public Boolean getRevoked() {
+        return revoked == null ? false : revoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+        this.revoked = revoked;
     }
 }
 

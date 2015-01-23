@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_PG",
-   "shortName" : "English (PG)",
-   "longName" : "English (Papua New Guinea)",
-   "localeName" : "English (PG)",
+   "shortName" : "English(PG)",
+   "longName" : "English(Papua New Guinea)",
+   "localeName" : "English(PG)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

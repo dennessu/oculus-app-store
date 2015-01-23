@@ -1,8 +1,8 @@
 {
   "localeCode": "uz_UZ",
-  "shortName": "Oʻzbek (UZ)",
-  "longName": "Oʻzbek (Oʻzbekiston)",
-  "localeName": "Oʻzbek (UZ)",
+  "shortName": "Oʻzbek(UZ)",
+  "longName": "Oʻzbek(Oʻzbekiston)",
+  "localeName": "Uzbek(UZ)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

@@ -6,7 +6,7 @@
 
 package com.junbo.payment.db.repository;
 
-import com.junbo.payment.db.dao.GenericDAOImpl;
+import com.junbo.payment.db.dao.DomainDataDAOImpl;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * @param <T> entity type
  * @param <DAO> dao type
  */
-public abstract class DomainDataRepository<T, DAO extends GenericDAOImpl> {
+public abstract class DomainDataRepository<T, DAO extends DomainDataDAOImpl> {
     private List<T> domainData;
 
     public void setDao(DAO dao) {
@@ -28,7 +28,7 @@ public abstract class DomainDataRepository<T, DAO extends GenericDAOImpl> {
         preLoadData();
     }
 
-    public void  preLoadData(){
+    public void preLoadData(){
         domainData = dao.getAll();
     }
 

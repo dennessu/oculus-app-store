@@ -10,6 +10,8 @@ import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceImpl
 import com.junbo.order.rest.resource.OrderResourceImpl
 import com.junbo.order.spec.model.Order
+import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.enums.FulfillmentEventType
 import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
@@ -19,7 +21,6 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
-
 /**
  * Created by chriszhu on 7/3/14.
  */
@@ -172,6 +173,12 @@ class OrderE2ETest extends BaseTest {
         assert !orderResult.tentative
         assert orderGet.status == OrderStatus.REFUNDED.name()
         assert !orderGet.tentative
+        orderGet.orderItems.each { OrderItem oi ->
+            assert oi.fulfillmentHistories[0].fulfillmentEvent == FulfillmentEventType.REVERSE_FULFILL.name()
+            assert oi.fulfillmentHistories[0].success
+            assert oi.fulfillmentHistories[1].fulfillmentEvent == FulfillmentEventType.FULFILL.name()
+            assert oi.fulfillmentHistories[1].success
+        }
     }
 
     @Test(enabled = true)

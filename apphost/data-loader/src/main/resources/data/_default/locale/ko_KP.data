@@ -1,8 +1,8 @@
 {
   "localeCode": "ko_KP",
-  "shortName": "Korean (KP)",
-  "longName": "Korean (North Korea)",
-  "localeName": "Korean (KP)",
+  "shortName": "문화어(KP)",
+  "longName": "문화어(조선민주주의인민공화국)",
+  "localeName": "Korean(KP)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

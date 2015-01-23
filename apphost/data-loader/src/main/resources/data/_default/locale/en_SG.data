@@ -1,8 +1,8 @@
 {
   "localeCode": "en_SG",
-  "shortName": "English (SG)",
-  "longName": "English (Singapore)",
-  "localeName": "English (SG)",
+  "shortName": "English(SG)",
+  "longName": "English(Singapore)",
+  "localeName": "English(SG)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

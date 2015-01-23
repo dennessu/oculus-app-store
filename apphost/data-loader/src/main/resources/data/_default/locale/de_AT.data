@@ -1,8 +1,8 @@
 {
   "localeCode": "de_AT",
-  "shortName": "Deutsch (AT)",
-  "longName": "Deutsch (Österreich)",
-  "localeName": "Deutsch (AT)",
+  "shortName": "Deutsch(AT)",
+  "longName": "Deutsch(Österreich)",
+  "localeName": "German(AT)",
   "fallbackLocale": {
     "href": "/v1/locales/de_DE",
     "id": "de_DE"

@@ -11,7 +11,7 @@ import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentTypeEntity
 /**
  * PI Type Dao.
  */
-public class PaymentInstrumentTypeDao extends GenericDAOImpl<PaymentInstrumentTypeEntity, Integer> {
+public class PaymentInstrumentTypeDao extends DomainDataDAOImpl<PaymentInstrumentTypeEntity, Integer> {
     public PaymentInstrumentTypeDao(){
         super(PaymentInstrumentTypeEntity.class);
     }

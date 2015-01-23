@@ -10,6 +10,7 @@
             <wf:on-entry>
                 <wf:action ref="mockValidateUserAction"/>
                 <wf:action ref="mockRefundOrderAction"/>
+                <wf:action ref="mockReverseFulfillmentAction"/>
                 <wf:action ref="mockSendEmailAction"/>
             </wf:on-entry>
         </wf:end-state>

@@ -1,8 +1,8 @@
 {
   "localeCode": "kk_KZ",
-  "shortName": "Qazaqşa (LV)",
-  "longName": "Qazaqşa (Қазақстан)",
-  "localeName": "Qazaqşa (LV)",
+  "shortName": "Qazaqşa(KZ)",
+  "longName": "Qazaqşa(Қазақстан)",
+  "localeName": "Kazakh(KZ)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

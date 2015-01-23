@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_MH",
-   "shortName" : "English (MH)",
-   "longName" : "English (Marshall Islands)",
-   "localeName" : "English (MH)",
+   "shortName" : "English(MH)",
+   "longName" : "English(Marshall Islands)",
+   "localeName" : "English(MH)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

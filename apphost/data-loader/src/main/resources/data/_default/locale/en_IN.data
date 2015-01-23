@@ -1,8 +1,8 @@
 {
   "localeCode": "en_IN",
-  "shortName": "English (IN)",
-  "longName": "English (India)",
-  "localeName": "English (IN)",
+  "shortName": "English(IN)",
+  "longName": "English(India)",
+  "localeName": "English(IN)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

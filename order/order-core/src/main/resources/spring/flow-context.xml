@@ -81,4 +81,8 @@
     <bean id="captureOrderAction" class="com.junbo.order.core.impl.orderaction.CaptureOrderAction">
         <property name="orderActionType" value="CAPTURE"/>
     </bean>
+
+    <bean id="reverseFulfillmentOrderAction" class="com.junbo.order.core.impl.orderaction.ReverseFulfillmentAction">
+        <property name="orderActionType" value="REVERSE_FULFILLMENT"/>
+    </bean>
 </beans>

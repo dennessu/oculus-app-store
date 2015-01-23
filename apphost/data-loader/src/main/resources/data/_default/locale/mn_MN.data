@@ -1,8 +1,8 @@
 {
   "localeCode": "mn_MN",
-  "shortName": "Mongol (MN)",
-  "longName": "Mongol (Монгол улс)",
-  "localeName": "Mongol (MN)",
+  "shortName": "Mongɣol kele(MN)",
+  "longName": "Mongɣol kele(Монгол Улс)",
+  "localeName": "Mongolian(MN)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

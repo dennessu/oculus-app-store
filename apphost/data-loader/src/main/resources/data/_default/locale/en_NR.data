@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_NR",
-   "shortName" : "English (NR)",
-   "longName" : "English (Nauru)",
-   "localeName" : "English (NR)",
+   "shortName" : "English(NR)",
+   "longName" : "English(Nauru)",
+   "localeName" : "English(NR)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

@@ -1,8 +1,8 @@
 {
   "localeCode": "fr_WF",
-  "shortName": "French (WF)",
-  "longName": "French (Wallis and Futuna)",
-  "localeName": "French (WF)",
+  "shortName": "Français(WF)",
+  "longName": "Français(Wallis et Futuna or Territoire des îles Wallis et Futuna)",
+  "localeName": "French(WF)",
   "fallbackLocale": {
     "href": "/v1/locales/fr_FR",
     "id": "fr_FR"

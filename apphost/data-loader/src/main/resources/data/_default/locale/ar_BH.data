@@ -1,8 +1,8 @@
 {
   "localeCode": "ar_BH",
-  "shortName": "العربية (BH)",
-  "longName": "العربية (البحرين)",
-  "localeName": "العربية (BH)",
+  "shortName": "العربية(BH)",
+  "longName": "العربية(مملكة البحرين)",
+  "localeName": "Arabic(BH)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

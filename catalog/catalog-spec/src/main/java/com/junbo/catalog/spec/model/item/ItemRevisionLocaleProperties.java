@@ -25,7 +25,7 @@ public class ItemRevisionLocaleProperties {
     @ApiModelProperty(position = 1, required = true, value = "item revision name")
     private String name;
     @JsonProperty("releaseNotes")
-    @ApiModelProperty(position = 3, required = true, value = "revision notes")
+    @ApiModelProperty(position = 3, required = true, value = "release notes")
     private RevisionNotes releaseNotes;
     @XSSFreeRichText
     @ApiModelProperty(position = 4, required = true, value = "long description")

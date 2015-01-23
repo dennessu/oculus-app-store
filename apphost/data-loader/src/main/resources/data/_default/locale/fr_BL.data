@@ -1,8 +1,8 @@
 {
    "localeCode" : "fr_BL",
-   "shortName" : "French (BL)",
-   "longName" : "French (Saint Barthélemy)",
-   "localeName" : "French (BL)",
+   "shortName" : "Français(BL)",
+   "longName" : "Français(Saint-Barthélemy)",
+   "localeName" : "French(BL)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/fr_FR",

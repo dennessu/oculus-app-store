@@ -1,8 +1,8 @@
 {
   "localeCode": "nl_BE",
-  "shortName": "Nederlands (BE)",
-  "longName": "Nederlands (België)",
-  "localeName": "Nederlands (BE)",
+  "shortName": "Nederlands(BE)",
+  "longName": "Nederlands(België)",
+  "localeName": "Dutch(BE)",
   "fallbackLocale": {
     "href": "/v1/locales/nl_NL",
     "id": "nl_NL"

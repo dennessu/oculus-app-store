@@ -52,4 +52,6 @@ public interface OrderInternalService {
     Promise<UserPersonalInfo> validateUserPersonalInfo(OrderServiceContext context);
 
     Promise<Order> validateDuplicatePurchase(Order order, Offer offer, int quantity);
+
+    Promise<Order> reverseFulfillment(Order order);
 }

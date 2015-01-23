@@ -1,8 +1,8 @@
 {
   "localeCode": "en_NZ",
-  "shortName": "English (NZ)",
-  "longName": "English (New Zealand)",
-  "localeName": "English (NZ)",
+  "shortName": "English(NZ)",
+  "longName": "English(New Zealand)",
+  "localeName": "English(NZ)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

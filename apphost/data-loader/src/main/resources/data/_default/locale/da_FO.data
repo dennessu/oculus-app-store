@@ -1,8 +1,8 @@
 {
    "localeCode" : "da_FO",
-   "shortName" : "Danish (FO)",
-   "longName" : "Danish (Faroe Islands)",
-   "localeName" : "Danish (FO)",
+   "shortName" : "Dansk(FO)",
+   "longName" : "Dansk(Færøerne)",
+   "localeName" : "Danish(FO)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

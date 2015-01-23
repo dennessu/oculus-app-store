@@ -31,6 +31,8 @@ public class RefundOrderItem {
     @JsonIgnore
     private Long orderItemId;
 
+    private Boolean revoked;
+
     public OfferId getOffer() {
         return offer;
     }
@@ -69,5 +71,13 @@ public class RefundOrderItem {
 
     public void setOrderItemId(Long orderItemId) {
         this.orderItemId = orderItemId;
+    }
+
+    public Boolean getRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+        this.revoked = revoked;
     }
 }

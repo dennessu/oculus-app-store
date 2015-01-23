@@ -1,8 +1,8 @@
 {
   "localeCode": "fr_BE",
-  "shortName": "Français (BE)",
-  "longName": "Français (Belgique)",
-  "localeName": "Français (BE)",
+  "shortName": "Français(BE)",
+  "longName": "Français(Belgique)",
+  "localeName": "French(BE)",
   "fallbackLocale": {
     "href": "/v1/locales/fr_FR",
     "id": "fr_FR"

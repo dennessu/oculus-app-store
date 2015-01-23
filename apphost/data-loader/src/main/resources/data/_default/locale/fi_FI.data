@@ -1,8 +1,8 @@
 {
   "localeCode": "fi_FI",
-  "shortName": "Suomi (FI)",
-  "longName": "Suomi (Suomi)",
-  "localeName": "Suomi (FI)",
+  "shortName": "Suomen kieli(FI)",
+  "longName": "Suomen kieli(Suomi)",
+  "localeName": "Finnish(FI)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

@@ -100,27 +100,25 @@ public class PaymentProviderRepository  extends DomainDataRepository<PaymentProv
     }
 
     @Transactional
-    public PaymentProviderModel save(PaymentProviderModel provider){
+    public void save(PaymentProviderModel provider){
         if(provider.getCreatedTime() == null){
             provider.setCreatedTime(new Date());
         }
         PaymentProviderEntity entity = paymentMapper.toProviderEntity(provider, new MappingContext());
-        Integer savedId = this.dao.save(entity);
-        return get(savedId);
+        this.dao.save(entity);
     }
 
     @Transactional
-    public PaymentProviderModel update(PaymentProviderModel provider, PaymentProviderModel oldProvider){
+    public void update(PaymentProviderModel provider, PaymentProviderModel oldProvider){
         if(provider.getCreatedTime() == null){
             provider.setCreatedTime(new Date());
         }
         PaymentProviderEntity entity = paymentMapper.toProviderEntity(provider, new MappingContext());
-        PaymentProviderEntity updated = this.dao.update(entity);
-        return get(updated.getId());
+        this.dao.update(entity);
     }
 
     @Transactional
-    void deleteClient(PaymentProviderModel model){
+    void delete(PaymentProviderModel model){
         PaymentProviderEntity entity = paymentMapper.toProviderEntity(model, new MappingContext());
         this.dao.delete(entity);
     }

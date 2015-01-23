@@ -1,8 +1,8 @@
 {
   "localeCode": "ro_RO",
-  "shortName": "Română (RO)",
-  "longName": "Română (România)",
-  "localeName": "Română (RO)",
+  "shortName": "Română(RO)",
+  "longName": "Română(România)",
+  "localeName": "Romanian(RO)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

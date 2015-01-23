@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_SB",
-   "shortName" : "English (SB)",
-   "longName" : "English (Solomon Islands)",
-   "localeName" : "English (SB)",
+   "shortName" : "English(SB)",
+   "longName" : "English(Solomon Islands)",
+   "localeName" : "English(SB)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

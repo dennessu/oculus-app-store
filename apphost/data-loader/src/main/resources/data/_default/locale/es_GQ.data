@@ -1,8 +1,8 @@
 {
    "localeCode" : "es_GQ",
-   "shortName" : "Spanish (GQ)",
-   "longName" : "Spanish (Equatorial Guinea)",
-   "localeName" : "Spanish (GQ)",
+   "shortName" : "Español(GQ)",
+   "longName" : "Español(Guinea Ecuatorial)",
+   "localeName" : "Spanish(GQ)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/es_ES",

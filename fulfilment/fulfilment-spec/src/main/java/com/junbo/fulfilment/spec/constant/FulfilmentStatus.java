@@ -12,6 +12,7 @@ public final class FulfilmentStatus {
     public static final String PENDING = "PENDING";
     public static final String SUCCEED = "SUCCEED";
     public static final String FAILED = "FAILED";
+    public static final String REVOKED = "REVOKED";
     public static final String UNKNOWN = null;
 
     private FulfilmentStatus() {

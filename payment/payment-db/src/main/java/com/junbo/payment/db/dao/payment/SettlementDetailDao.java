@@ -6,7 +6,7 @@
 
 package com.junbo.payment.db.dao.payment;
 
-import com.junbo.payment.db.dao.GenericDAOImpl;
+import com.junbo.payment.db.dao.RegionLocalDAOImpl;
 import com.junbo.payment.db.entity.payment.SettlementDetailEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Settlement Detail Dao.
  */
-public class SettlementDetailDao extends GenericDAOImpl<SettlementDetailEntity, String> {
+public class SettlementDetailDao extends RegionLocalDAOImpl<SettlementDetailEntity, String> {
     public SettlementDetailDao() {
         super(SettlementDetailEntity.class);
     }
