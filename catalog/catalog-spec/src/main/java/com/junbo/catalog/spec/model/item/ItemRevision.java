@@ -50,6 +50,10 @@ public class ItemRevision extends BaseRevisionModel {
         allowableValues = "INAPP, STORE")
     private List<String> distributionChannels;
 
+    @ApiModelProperty(position = 6, required = true,
+            value = "release notes for this version of the item, what has been changed, what bug has been fixed, this will show in the product page")
+    private String revisionNotes;
+
     @XSSFreeString
     @ApiModelProperty(position = 15, required = true, value = "Sku")
     private String sku;
@@ -130,6 +134,14 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setDownloadName(String downloadName) {
         this.downloadName = downloadName;
+    }
+
+    public String getRevisionNotes() {
+        return revisionNotes;
+    }
+
+    public void setRevisionNotes(String revisionNotes) {
+        this.revisionNotes = revisionNotes;
     }
 
     public List<String> getDistributionChannels() {

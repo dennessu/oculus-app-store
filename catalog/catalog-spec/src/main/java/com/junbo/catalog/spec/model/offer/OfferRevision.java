@@ -32,6 +32,10 @@ public class OfferRevision extends BaseRevisionModel {
             allowableValues = "INAPP, STORE")
     private List<String> distributionChannels;
 
+    @ApiModelProperty(position = 6, required = true,
+            value = "release notes for this version of the item, what has been changed, what bug has been fixed, this will show in the product page")
+    private String revisionNotes;
+
     @JsonProperty("publisher")
     @ApiModelProperty(position = 20, required = true, value = "Organization owner of the offer revision resource")
     private OrganizationId ownerId;
@@ -215,6 +219,14 @@ public class OfferRevision extends BaseRevisionModel {
 
     public void setRank(Double rank) {
         this.rank = rank;
+    }
+
+    public String getRevisionNotes() {
+        return revisionNotes;
+    }
+
+    public void setRevisionNotes(String revisionNotes) {
+        this.revisionNotes = revisionNotes;
     }
 
     @Override
