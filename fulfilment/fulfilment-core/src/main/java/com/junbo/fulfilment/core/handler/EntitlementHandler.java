@@ -89,10 +89,26 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
     public void revoke(EntitlementContext context) {
         // for now, only revoke non-consumable entitlements
         for (FulfilmentAction action : context.getActions()) {
-            List<String> entitlements = action.getResult().getEntitlementIds();
+            try {
+                LOGGER.info("Start revoking action [" + action.getActionId() + "].");
 
-            for (String entitlementId : entitlements) {
-                entitlementGateway.revokeNonConsumable(entitlementId);
+                List<String> entitlements = action.getResult().getEntitlementIds();
+
+                for (String entitlementId : entitlements) {
+                    entitlementGateway.revokeNonConsumable(entitlementId);
+                }
+
+                action.setStatus(FulfilmentStatus.REVOKED);
+
+                LOGGER.info("Finish processing action [" + action.getActionId() + "].");
+            } catch (Exception e) {
+                LOGGER.error("Error occurred during revoking action.", e);
+            }
+
+            try {
+                actionRepo.update(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
+            } catch (Exception e) {
+                LOGGER.error("Error occurred during updating action.", e);
             }
         }
     }
