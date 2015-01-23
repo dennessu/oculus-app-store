@@ -98,7 +98,7 @@ def silkcloud_utmain(suite = None):
     parser.add_argument("-sclient", nargs = '?', help = "The service client ID used in test cases.", default = 'service')
     parser.add_argument("-ssecret", nargs = '?', help = "The service client secret used in the test cases.", default = 'secret')
     parser.add_argument("-redirecturi", nargs = '?', help = "The redirect URI for the test cases.", default = 'http://localhost')
-    parser.add_argument("-profile", nargs = '?', help = "The profile setting.", default = '1')
+    parser.add_argument("-profile", nargs = '?', help = "The profile setting.", default = '0')
     parser.add_argument("-sleep", nargs = '?', help = "The sleep between API calls.")
     parser.add_argument('tests', metavar='test', nargs='*', help='The test cases to run.')
 

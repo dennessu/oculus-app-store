@@ -64,7 +64,7 @@ class CloudantClientCached implements CloudantClientInternal {
         }
 
         return impl.cloudantPost(dbUri, entityClass, entity, noOverrideWrites).then { T result ->
-            addCache(dbUri, entityClass, result)
+            addCache(dbUri, entityClass, CachedEntity.create(null, result))
             return Promise.pure(result)
         }
     }
@@ -72,14 +72,14 @@ class CloudantClientCached implements CloudantClientInternal {
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantGet(CloudantDbUri dbUri, Class<T> entityClass, String id) {
         CloudantId.validate(id)
-        CASValue<T> result = getCache(dbUri, entityClass, id)
+        CASValue<CachedEntity<T>> result = getCache(dbUri, entityClass, id)
         if (result == null) {
             return impl.cloudantGet(dbUri, entityClass, id).then { T resp ->
-                addCache(dbUri, entityClass, resp);
+                addCache(dbUri, entityClass, CachedEntity.create(id, resp));
                 return Promise.pure(resp)
             }
         }
-        return Promise.pure(result.getValue())
+        return Promise.pure(result.getValue().getEntity())
     }
 
     @Override
@@ -93,7 +93,7 @@ class CloudantClientCached implements CloudantClientInternal {
             deleteCacheOnError(dbUri, entity.cloudantId)
             throw ex
         }.then { T result ->
-            updateCache(dbUri, entityClass, result, revBeforePut)
+            updateCache(dbUri, entityClass, CachedEntity.create(entity.cloudantId, result), revBeforePut)
             return Promise.pure(result)
         }
     }
@@ -111,7 +111,7 @@ class CloudantClientCached implements CloudantClientInternal {
             deleteCacheOnError(dbUri, entity.cloudantId)
             throw ex
         }.then {
-            deleteCache(dbUri, entity.cloudantId)
+            updateCache(dbUri, entityClass, CachedEntity.create(entity.cloudantId, null), entity.cloudantRev)
             return Promise.pure(null)
         }
     }
@@ -181,13 +181,13 @@ class CloudantClientCached implements CloudantClientInternal {
     def <T extends CloudantEntity> Promise<CloudantQueryResult> updateCache(CloudantDbUri dbUri, Class<T> entityClass, Promise<CloudantQueryResult> future) {
         return future.then { CloudantQueryResult result ->
             result.rows.each { CloudantQueryResult.ResultObject row ->
-                addCache(dbUri, entityClass, (T)row.doc)
+                addCache(dbUri, entityClass, CachedEntity.create(null, (T)row.doc))
             }
             return Promise.pure(result)
         }
     }
 
-    def <T extends CloudantEntity> CASValue<T> getCache(CloudantDbUri dbUri, Class<T> entityClass, String id) {
+    def <T extends CloudantEntity> CASValue<CachedEntity<T>> getCache(CloudantDbUri dbUri, Class<T> entityClass, String id) {
         if (memcachedClient == null) {
             return null
         }
@@ -197,13 +197,18 @@ class CloudantClientCached implements CloudantClientInternal {
                 return null
             }
             try {
-                T result = (T) marshaller.unmarshall(casValue.value, entityClass)
-                if (result != null && logger.isDebugEnabled()) {
-                    logger.debug("Found {} rev {} from memcached.", result.cloudantId, result.cloudantRev)
+                if (casValue.value == null) {
+                    return null
                 }
-                if (result != null) {
-                    return new CASValue<T>(casValue.getCas(), result)
+                T result = unmarshall(casValue.value, entityClass)
+                if (logger.isDebugEnabled()) {
+                    if (result != null) {
+                        logger.debug("Found {} rev {} from memcached.", result.cloudantId, result.cloudantRev)
+                    } else {
+                        logger.debug("Found {} rev null from memcached.", id)
+                    }
                 }
+                return new CASValue<CachedEntity<T>>(casValue.getCas(), CachedEntity.create(id, result))
             } catch (Exception ex) {
                 logger.warn("Error unmarshalling from memcached.", ex)
                 deleteCacheOnError(dbUri, id)
@@ -214,14 +219,9 @@ class CloudantClientCached implements CloudantClientInternal {
         return null
     }
 
-    def <T extends CloudantEntity> boolean checkCachable(CloudantDbUri dbUri, T entity) {
+    def <T extends CloudantEntity> boolean checkCachable(CloudantDbUri dbUri, CachedEntity<T> entity) {
         if (memcachedClient == null || entity == null) {
             return false
-        }
-
-        // update cloudantId
-        if (entity.getId() != null) {
-            entity.setCloudantId(entity.getId().toString())
         }
 
         // check cachable
@@ -233,13 +233,13 @@ class CloudantClientCached implements CloudantClientInternal {
         return true
     }
 
-    def <T extends CloudantEntity> void addCache(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+    def <T extends CloudantEntity> void addCache(CloudantDbUri dbUri, Class<T> entityClass, CachedEntity<T> entity) {
         if (!checkCachable(dbUri, entity)) {
             return
         }
 
         try {
-            String value = marshaller.marshall(entity)
+            String value = marshall(entity)
             if (value.length() < this.maxEntitySize) {
                 def isSuccessful = memcachedClient.add(getKey(dbUri, entity.cloudantId), getExpiration(dbUri), value).get()
                 if (!isSuccessful) {
@@ -258,7 +258,7 @@ class CloudantClientCached implements CloudantClientInternal {
         }
     }
 
-    def <T extends CloudantEntity> void updateCache(CloudantDbUri dbUri, Class<T> entityClass, T entity, String prevRev) {
+    def <T extends CloudantEntity> void updateCache(CloudantDbUri dbUri, Class<T> entityClass, CachedEntity<T> entity, String prevRev) {
         if (!checkCachable(dbUri, entity)) {
             return
         }
@@ -270,7 +270,7 @@ class CloudantClientCached implements CloudantClientInternal {
         }
 
         try {
-            String value = marshaller.marshall(entity)
+            String value = marshall(entity)
             if (value.length() < this.maxEntitySize) {
                 boolean isSuccessful = false
                 if (casValue.getValue().cloudantRev == prevRev) {
@@ -320,8 +320,7 @@ class CloudantClientCached implements CloudantClientInternal {
             return
         }
         try {
-            // async delete
-            memcachedClient.delete(getKey(dbUri, id))
+            memcachedClient.deleteAsync(getKey(dbUri, id))
         } catch (Exception ex) {
             logger.warn("Error deleting key on error from memcached.", ex)
         }
@@ -361,5 +360,42 @@ class CloudantClientCached implements CloudantClientInternal {
     private static Integer safeParseInt(String str) {
         if (StringUtils.isEmpty(str)) return null
         return Integer.parseInt(str)
+    }
+
+    private static <T extends CloudantEntity> String marshall(CachedEntity<T> entity) {
+        if (entity.entity == null) {
+            return "null"
+        } else {
+            return marshaller.marshall(entity.entity)
+        }
+    }
+
+    private static <T> T unmarshall(String value, Class<T> cls) {
+        if (value == "null") {
+            return null
+        } else {
+            return marshaller.unmarshall(value, cls)
+        }
+    }
+
+    static final class CachedEntity<T extends CloudantEntity> {
+        String cloudantId;
+        String cloudantRev;
+        T entity;
+
+        static CachedEntity<T> create(String id, T entity) {
+            CachedEntity<T> result = new CachedEntity<>()
+            result.cloudantId = id
+            if (entity != null) {
+                if (entity.getId() != null) {
+                    // update cloudant id
+                    entity.setCloudantId(entity.getId().toString())
+                }
+                result.cloudantId = entity.cloudantId
+                result.cloudantRev = entity.cloudantRev
+                result.entity = entity
+            }
+            return result
+        }
     }
 }
