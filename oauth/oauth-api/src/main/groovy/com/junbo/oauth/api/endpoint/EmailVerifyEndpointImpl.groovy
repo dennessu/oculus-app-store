@@ -25,13 +25,13 @@ import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.CookieUtil
 import com.junbo.oauth.core.util.ValidatorUtil
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.spec.endpoint.EmailVerifyEndpoint
+import com.junbo.oauth.spec.error.AppErrors
 import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.model.ViewModel
@@ -122,15 +122,20 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             locale = 'en-US'
         }
 
+        locale = locale.replace('_', '-')
+        String[] parts = locale.split('-')
+        if (parts.length != 2) {
+            locale = 'en-US'
+            parts = locale.split('-')
+        }
+
         String failedUri = this.failedRedirectUri.replaceFirst('/locale', '/' + locale)
         String successUri = this.successRedirectUri.replaceFirst('/locale', '/' + locale)
 
-        locale = locale.replace('-', '_')
-        String[] parts = locale.split('_')
-        assert parts.length == 2 : 'locale should consist of 2 parts'
         failedUri = failedUri.replaceFirst('/country', '/' + parts[1])
         successUri = successUri.replaceFirst('/country', '/' + parts[1])
 
+        locale = locale.replace('-', '_')
         if (StringUtils.isEmpty(code)) {
             return Promise.pure(response(failedUri, false, locale, null, AppCommonErrors.INSTANCE.fieldRequired('evc')).build())
         }
