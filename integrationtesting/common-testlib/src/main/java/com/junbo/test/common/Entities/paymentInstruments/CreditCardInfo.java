@@ -44,7 +44,7 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         CreditCardInfo randomCreditCard = new CreditCardInfo();
         randomCreditCard.setAccountName(RandomFactory.getRandomStringOfAlphabet(5));
 
-        String[] creditCardArray = new String[]{"4111111111111111"};
+        String[] creditCardArray = new String[]{"4111117711552927"};
         randomCreditCard.setAccountNum(creditCardArray[RandomFactory.getRandomInteger(1)]);
         //randomCreditCard.setAccountNum(CreditCardGenerator.VISA.getRandomNumber());
         randomCreditCard.setEncryptedCVMCode(getCVMCode(CreditCardGenerator.VISA.toString(), true));
