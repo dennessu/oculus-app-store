@@ -1,6 +1,7 @@
 package com.junbo.order.mock
 import com.junbo.common.id.FulfilmentId
 import com.junbo.common.id.OrderId
+import com.junbo.fulfilment.spec.constant.FulfilmentActionType
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentAction
 import com.junbo.fulfilment.spec.model.FulfilmentItem
@@ -9,6 +10,7 @@ import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.stereotype.Component
 
 import java.util.concurrent.ConcurrentHashMap
@@ -28,6 +30,10 @@ class MockFulfillmentResource extends BaseMock implements FulfilmentResource {
         def id = generateLong()
         request.items?.each { FulfilmentItem item ->
             item.fulfilmentId = id
+            item.actions = [new FulfilmentAction(
+                    type: FulfilmentActionType.GRANT_ENTITLEMENT,
+                    status: FulfilmentStatus.SUCCEED
+            )]
         }
         fulfilmentRequestMap[request.orderId] = request
         return Promise.pure(request)
@@ -38,6 +44,10 @@ class MockFulfillmentResource extends BaseMock implements FulfilmentResource {
         def id = generateLong()
         request.items?.each { FulfilmentItem item ->
             item.fulfilmentId = id
+            item.actions = [new FulfilmentAction(
+                    type: FulfilmentActionType.GRANT_ENTITLEMENT,
+                    status: FulfilmentStatus.REVOKED
+            )]
         }
         fulfilmentRequestMap[request.orderId] = request
         return Promise.pure(request)
@@ -50,8 +60,11 @@ class MockFulfillmentResource extends BaseMock implements FulfilmentResource {
             request = new FulfilmentRequest()
         }
         request.items?.each { FulfilmentItem fi ->
-            fi.actions?.each { FulfilmentAction fa ->
-                fa.status == FulfilmentStatus.SUCCEED
+            if (CollectionUtils.isEmpty(fi.actions)) {
+                fi.actions = [new FulfilmentAction(
+                        type: FulfilmentActionType.GRANT_ENTITLEMENT,
+                        status: FulfilmentStatus.SUCCEED
+                )]
             }
         }
         return Promise.pure(request)

@@ -58,9 +58,11 @@ class FulfillmentEventHistoryBuilder {
         fulfillmentHistory.orderItemId = fulfilmentItem.itemReferenceId
         fulfillmentHistory.fulfillmentId = fulfilmentItem.fulfilmentId
 
-        fulfillmentHistory.success = true
-        fulfillmentHistory.success = !fulfilmentItem.actions?.any { FulfilmentAction fa ->
-            fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN || fa.status == FulfilmentStatus.PENDING
+        fulfillmentHistory.success = false
+        if (!CollectionUtils.isEmpty(fulfilmentItem.actions)) {
+            fulfillmentHistory.success = !fulfilmentItem.actions.any { FulfilmentAction fa ->
+                fa.status != FulfilmentStatus.REVOKED
+            }
         }
         return fulfillmentHistory
     }
