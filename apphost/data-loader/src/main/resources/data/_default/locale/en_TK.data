@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_TK",
-   "shortName" : "English (TK)",
-   "longName" : "English (Tokelau)",
-   "localeName" : "English (TK)",
+   "shortName" : "English(TK)",
+   "longName" : "English(Tokelau)",
+   "localeName" : "English(TK)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

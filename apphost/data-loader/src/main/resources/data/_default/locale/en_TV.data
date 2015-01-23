@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_TV",
-   "shortName" : "English (TV)",
-   "longName" : "English (Tuvalu)",
-   "localeName" : "English (TV)",
+   "shortName" : "English(TV)",
+   "longName" : "English(Tuvalu)",
+   "localeName" : "English(TV)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

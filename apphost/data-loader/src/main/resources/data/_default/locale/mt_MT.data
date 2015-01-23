@@ -1,8 +1,8 @@
 {
   "localeCode": "mt_MT",
-  "shortName": "Maltija (MT)",
-  "longName": "Maltija (Malta)",
-  "localeName": "Maltija (MT)",
+  "shortName": "Malti(MT)",
+  "longName": "Malti(Malta)",
+  "localeName": "Maltese(MT)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

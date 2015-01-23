@@ -1,8 +1,8 @@
 {
   "localeCode": "es_GT",
-  "shortName": "Español (GT)",
-  "longName": "Español (Guatemala)",
-  "localeName": "Español (GT)",
+  "shortName": "Español(GT)",
+  "longName": "Español(Guatemala)",
+  "localeName": "Spanish(GT)",
   "fallbackLocale": {
     "href": "/v1/locales/es_ES",
     "id": "es_ES"

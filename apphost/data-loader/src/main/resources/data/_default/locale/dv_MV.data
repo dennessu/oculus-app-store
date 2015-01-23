@@ -1,8 +1,8 @@
 {
    "localeCode" : "dv_MV",
-   "shortName" : "Maldivian (MV)",
-   "longName" : "Maldivian (Maldives)",
-   "localeName" : "Maldivian (MV)",
+   "shortName" : "ހި dhivehi(MV)",
+   "longName" : "ހި dhivehi(ދިވެހިރާއްޖޭގެ ޖުމްހޫރިއްޔާ)",
+   "localeName" : "Maldivian(MV)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

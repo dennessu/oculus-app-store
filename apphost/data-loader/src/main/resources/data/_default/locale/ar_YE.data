@@ -1,8 +1,8 @@
 {
   "localeCode": "ar_YE",
-  "shortName": "العربية (YE)",
-  "longName": "العربية (اليمن)",
-  "localeName": "العربية (YE)",
+  "shortName": "العربية(YE)",
+  "longName": "العربية(اليَمَن‎)",
+  "localeName": "Arabic(YE)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

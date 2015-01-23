@@ -1,8 +1,8 @@
 {
   "localeCode": "fr_YT",
-  "shortName": "French (YT)",
-  "longName": "French (Mayotte)",
-  "localeName": "French (YT)",
+  "shortName": "Français(YT)",
+  "longName": "Français(Mayotte)",
+  "localeName": "French(YT)",
   "fallbackLocale": {
     "href": "/v1/locales/fr_FR",
     "id": "fr_FR"

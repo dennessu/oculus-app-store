@@ -1,8 +1,8 @@
 {
   "localeCode": "fr_NE",
-  "shortName": "French (NE)",
-  "longName": "French (Niger)",
-  "localeName": "French (NE)",
+  "shortName": "Français(NE)",
+  "longName": "Français(Niger)",
+  "localeName": "French(NE)",
   "fallbackLocale": {
     "href": "/v1/locales/fr_FR",
     "id": "fr_FR"

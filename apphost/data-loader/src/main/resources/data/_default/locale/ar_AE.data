@@ -1,8 +1,8 @@
 {
   "localeCode": "ar_AE",
-  "shortName": "العربية (AE)",
-  "longName": "العربية (UAE)",
-  "localeName": "العربية (AE)",
+  "shortName": "العربية(AE)",
+  "longName": "العربية(الإمارات العربية المتحدة)",
+  "localeName": "Arabic(AE)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

@@ -1,8 +1,8 @@
 {
    "localeCode" : "es_CU",
-   "shortName" : "Spanish (CU)",
-   "longName" : "Spanish (Cuba)",
-   "localeName" : "Spanish (CU)",
+   "shortName" : "Español(CU)",
+   "longName" : "Español(Cuba)",
+   "localeName" : "Spanish(CU)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/es_ES",

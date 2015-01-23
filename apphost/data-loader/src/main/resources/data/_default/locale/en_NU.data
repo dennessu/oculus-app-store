@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_NU",
-   "shortName" : "English (NU)",
-   "longName" : "English (Niue)",
-   "localeName" : "English (NU)",
+   "shortName" : "English(NU)",
+   "longName" : "English(Niue)",
+   "localeName" : "English(NU)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

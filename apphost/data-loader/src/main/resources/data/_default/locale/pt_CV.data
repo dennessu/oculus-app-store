@@ -1,8 +1,8 @@
 {
   "localeCode": "pt_CV",
-  "shortName": "Portuguese (CV)",
-  "longName": "Portuguese (Cape Verde)",
-  "localeName": "Portuguese (CV)",
+  "shortName": "Português(CV)",
+  "longName": "Português(Cabo Verde)",
+  "localeName": "Portuguese(CV)",
   "fallbackLocale": {
     "href": "/v1/locales/pt_PT",
     "id": "pt_PT"

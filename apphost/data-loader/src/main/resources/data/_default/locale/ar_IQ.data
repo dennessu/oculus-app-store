@@ -1,8 +1,8 @@
 {
   "localeCode": "ar_IQ",
-  "shortName": "العربية (IQ)",
-  "longName": "العربية (العراق)",
-  "localeName": "العربية (IQ)",
+  "shortName": "العربية(IQ)",
+  "longName": "العربية(جمهورية العـراق)",
+  "localeName": "Arabic(IQ)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

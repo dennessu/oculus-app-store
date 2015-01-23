@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_SH",
-   "shortName" : "English (SH)",
-   "longName" : "English (Saint Helena)",
-   "localeName" : "English (SH)",
+   "shortName" : "English(SH)",
+   "longName" : "English(Saint Helena)",
+   "localeName" : "English(SH)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

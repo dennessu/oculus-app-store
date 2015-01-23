@@ -1,8 +1,8 @@
 {
   "localeCode": "sk_SK",
-  "shortName": "Slovenská (SK)",
-  "longName": "Slovenská (Slovensko)",
-  "localeName": "Slovenská (SK)",
+  "shortName": "Slovenčina(SK)",
+  "longName": "Slovenčina(Slovensko)",
+  "localeName": "Slovak(SK)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

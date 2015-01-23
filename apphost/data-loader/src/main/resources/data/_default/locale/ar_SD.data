@@ -1,8 +1,8 @@
 {
   "localeCode": "ar_SD",
-  "shortName": "العربية (SD)",
-  "longName": "العربية (السودان)",
-  "localeName": "العربية (SD)",
+  "shortName": "العربية(SD)",
+  "longName": "العربية(السودان)",
+  "localeName": "Arabic(SD)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

@@ -1,8 +1,8 @@
 {
   "localeCode": "et_EE",
-  "shortName": "Eesti (EE)",
-  "longName": "Eesti (Eesti)",
-  "localeName": "Eesti (EE)",
+  "shortName": "Eesti keel(EE)",
+  "longName": "Eesti keel(Eesti)",
+  "localeName": "Estonian(EE)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

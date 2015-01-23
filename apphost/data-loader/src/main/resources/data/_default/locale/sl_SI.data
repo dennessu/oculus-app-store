@@ -1,8 +1,8 @@
 {
   "localeCode": "sl_SI",
-  "shortName": "Slovenščina (SI)",
-  "longName": "Slovenščina (Slovenija)",
-  "localeName": "Slovenščina (SI)",
+  "shortName": "Slovenščina(SI)",
+  "longName": "Slovenščina(Slovenija)",
+  "localeName": "Slovene(SI)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

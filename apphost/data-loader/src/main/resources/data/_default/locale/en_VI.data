@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_VI",
-   "shortName" : "English (VI)",
-   "longName" : "United States Virgin Islands",
-   "localeName" : "English (VI)",
+   "shortName" : "English(VI)",
+   "longName" : "English(United States Virgin Islands)",
+   "localeName" : "English(VI)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

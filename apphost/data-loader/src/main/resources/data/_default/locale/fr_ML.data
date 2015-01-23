@@ -1,8 +1,8 @@
 {
   "localeCode": "fr_ML",
-  "shortName": "French (ML)",
-  "longName": "French (Mali)",
-  "localeName": "French (Mali)",
+  "shortName": "French(ML)",
+  "longName": "French(Mali)",
+  "localeName": "French(ML)",
   "fallbackLocale": {
     "href": "/v1/locales/fr_FR",
     "id": "fr_FR"

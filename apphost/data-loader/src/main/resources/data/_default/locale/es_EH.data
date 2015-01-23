@@ -1,8 +1,8 @@
 {
    "localeCode" : "es_EH",
-   "shortName" : "Spanish (EH)",
-   "longName" : "Spanish (Western Sahara)",
-   "localeName" : "Spanish (EH)",
+   "shortName" : "Español(EH)",
+   "longName" : "Español(Sahara Occidental)",
+   "localeName" : "Spanish(EH)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/es_ES",

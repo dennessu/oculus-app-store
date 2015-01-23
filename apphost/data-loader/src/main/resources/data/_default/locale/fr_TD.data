@@ -1,8 +1,8 @@
 {
   "localeCode": "fr_TD",
-  "shortName": "French (TD)",
-  "longName": "French (Chad)",
-  "localeName": "French (TD)",
+  "shortName": "Français(TD)",
+  "longName": "Français(Tchad)",
+  "localeName": "French(TD)",
   "fallbackLocale": {
     "href": "/v1/locales/fr_FR",
     "id": "fr_FR"

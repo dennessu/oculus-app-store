@@ -1,8 +1,8 @@
 {
   "localeCode": "pt_ST",
-  "shortName": "Portuguese (ST)",
-  "longName": "Portuguese (São Tomé and Príncipe)",
-  "localeName": "Portuguese (ST)",
+  "shortName": "Português(ST)",
+  "longName": "Português(São Tomé e Príncipe)",
+  "localeName": "Portuguese(ST)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

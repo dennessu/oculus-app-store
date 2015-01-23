@@ -1,8 +1,8 @@
 {
   "localeCode": "ur_PK",
-  "shortName": "اردو (PK)",
-  "longName": "اردو (پاكستان)",
-  "localeName": "اردو (PK)",
+  "shortName": "اُردُو(PK)",
+  "longName": "اُردُو(اسلامی جمہوریۂ پاكستان)",
+  "localeName": "Urdu(PK)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

@@ -1,8 +1,8 @@
 {
   "localeCode": "fr_HT",
-  "shortName": "French (HT)",
-  "longName": "French (Haiti)",
-  "localeName": "French (HT)",
+  "shortName": "Français(HT)",
+  "longName": "Français(Haïti)",
+  "localeName": "French(HT)",
   "fallbackLocale": {
     "href": "/v1/locales/fr_FR",
     "id": "fr_FR"

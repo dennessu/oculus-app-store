@@ -1,8 +1,8 @@
 {
   "localeCode": "en_CA",
-  "shortName": "English (CA)",
-  "longName": "English (Canada)",
-  "localeName": "English (CA)",
+  "shortName": "English(CA)",
+  "longName": "English(Canada)",
+  "localeName": "English(CA)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

@@ -1,8 +1,8 @@
 {
   "localeCode": "vi_VN",
-  "shortName": "Việt Nam (VN)",
-  "longName": "Việt Nam (Việt Nam)",
-  "localeName": "Việt Nam (VN)",
+  "shortName": "Tiếng Việt(VN)",
+  "longName": "Tiếng Việt(Việt Nam)",
+  "localeName": "Vietnamese(VN)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

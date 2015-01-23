@@ -1,14 +1,14 @@
 {
-   "localeCode" : "ar_KM",
-   "shortName" : "Arabic (KM)",
-   "longName" : "Arabic (Comoros)",
-   "localeName" : "Arabic (KM)",
-   "fallbackLocale" :
+   "localeCode": "ar_KM",
+   "shortName": "العربية(KM)",
+   "longName": "العربية(الاتحاد القمري)",
+   "localeName": "Arabic(KM)",
+   "fallbackLocale":
       {
-         "href" : "/v1/locales/en_US",
-         "id" : "en_US"
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
       },
-   "futureExpansion" :
+   "futureExpansion":
       {
       }
 }

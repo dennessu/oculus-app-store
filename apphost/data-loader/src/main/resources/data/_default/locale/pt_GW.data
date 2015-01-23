@@ -1,8 +1,8 @@
 {
   "localeCode": "pt_GW",
-  "shortName": "Portuguese (GW)",
-  "longName": "Portuguese (Guinea-Bissau)",
-  "localeName": "Portuguese (GW)",
+  "shortName": "Português(GW)",
+  "longName": "Português(Guiné-Bissau)",
+  "localeName": "Portuguese(GW)",
   "fallbackLocale": {
     "href": "/v1/locales/pt_PT",
     "id": "pt_PT"

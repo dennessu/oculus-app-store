@@ -1,8 +1,8 @@
 {
    "localeCode" : "en_UM",
-   "shortName" : "English (UM)",
-   "longName" : "English (United States Minor Outlying Islands) ",
-   "localeName" : "English (UM)",
+   "shortName" : "English(UM)",
+   "longName" : "English(United States Minor Outlying Islands) ",
+   "localeName" : "English(UM)",
    "fallbackLocale" :
       {
          "href" : "/v1/locales/en_US",

@@ -1,8 +1,8 @@
 {
   "localeCode": "sq_AL",
-  "shortName": "Shqip (AL)",
-  "longName": "Shqip (Shqipërisë)",
-  "localeName": "Shqip (AL)",
+  "shortName": "Shqip(AL)",
+  "longName": "Shqip(Shqipërisë)",
+  "localeName": "Albanian(AL)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

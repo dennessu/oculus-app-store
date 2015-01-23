@@ -1,14 +1,14 @@
 {
-   "localeCode" : "ar_MR",
-   "shortName" : "Arabic (MR)",
-   "longName" : "Arabic (Mauritania) ",
-   "localeName" : "Arabic (MR)",
-   "fallbackLocale" :
+   "localeCode": "ar_MR",
+   "shortName": "العربية(MR)",
+   "longName": "العربية(موريتانيا)",
+   "localeName": "Arabic(MR)",
+   "fallbackLocale":
       {
-         "href" : "/v1/locales/en_US",
-         "id" : "en_US"
+         "href": "/v1/locales/en_US",
+         "id": "en_US"
       },
-   "futureExpansion" :
+   "futureExpansion":
       {
       }
 }
