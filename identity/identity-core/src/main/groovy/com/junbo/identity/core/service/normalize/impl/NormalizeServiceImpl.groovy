@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.normalize.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.core.service.normalize.NormalizeService
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -21,7 +22,7 @@ class NormalizeServiceImpl implements NormalizeService {
     @Override
     String normalize(String name) {
         if (name == null) {
-            throw new IllegalArgumentException('name is null')
+            throw AppCommonErrors.INSTANCE.fieldInvalid('name', 'name is null').exception()
         }
 
         def result = StringUtils.deleteAny(name, charsToDelete)

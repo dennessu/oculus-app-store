@@ -196,6 +196,13 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     @Override
     Promise<List<String>> getVerifyEmailLink(UserId userId, String locale, String email) {
         List<String> links = new ArrayList<>();
+        if (userId == null) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
+        }
+        if (StringUtils.isEmpty(email)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
+        }
+
         List<EmailVerifyCode> verifyCodeList = emailVerifyCodeRepository.getByUserIdEmail(userId.value, email)
         if (CollectionUtils.isEmpty(verifyCodeList)) {
             return Promise.pure(links)
