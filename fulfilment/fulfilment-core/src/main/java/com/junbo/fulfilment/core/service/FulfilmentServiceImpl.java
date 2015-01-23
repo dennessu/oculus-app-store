@@ -95,7 +95,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         // dispatch fulfilment revoke actions
         dispatchRevoke(existingRequest, classifyResult);
 
-        return request;
+        return retrieveRequest(existingRequest.getRequestId());
     }
 
     @Override
