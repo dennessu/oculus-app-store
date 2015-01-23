@@ -12,6 +12,7 @@ import com.junbo.catalog.spec.model.item.Item
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.entitlement.spec.model.Entitlement
+import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
@@ -544,6 +545,58 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 throw AppErrors.INSTANCE.duplicatePurchase().exception()
             }
             return Promise.pure(order)
+        }
+    }
+
+    @Override
+    @Transactional
+    Promise<Boolean> reverseFulfillment(Order order) {
+        return facadeContainer.fulfillmentFacade.reverseFulfillment(order).then { FulfilmentRequest fr ->
+            if (fr == null || CollectionUtils.isEmpty(fr.items)) {
+                return Promise.pure(order)
+            }
+            def completed = true
+            fr.items.each { FulfilmentItem fulfilmentItem ->
+                def orderItem = order.orderItems?.find { OrderItem item ->
+                    item.getId()?.value == fulfilmentItem.itemReferenceId
+                }
+
+                def revokeItems = orderItem?.orderItemRevisions?.findAll { OrderItemRevision oir ->
+                    oir.revisionType == OrderItemRevisionType.REFUND.name() && !oir.revoked
+                }
+
+                if (CollectionUtils.isEmpty(revokeItems)) {
+                    return
+                }
+
+                def fulfillmentHistory = FulfillmentEventHistoryBuilder.buildRevokeFulfillmentHistory(fr, fulfilmentItem)
+                def fulfillmentEventStatus = FulfillmentEventHistoryBuilder.getFulfillmentEventStatus(fulfilmentItem)
+                if (fulfillmentEventStatus != EventStatus.COMPLETED) {
+                    LOGGER.error('name=Order_Failed_to_revoke_fulfillment. orderId: ' + order.getId().value)
+                    completed = false
+                }
+
+                // update to revoked
+                if(completed) {
+                    revokeItems?.each { OrderItemRevision oir ->
+                        oir.revoked = true
+                    }
+                    orderRepository.updateOrder(order, false, false, null)
+                }
+
+                // save fulfillment history
+                if (fulfillmentHistory.fulfillmentEvent != null) {
+                    def savedHistory = orderRepository.createFulfillmentHistory(fulfillmentHistory)
+                    if (orderItem.fulfillmentHistories == null) {
+                        orderItem.fulfillmentHistories = [savedHistory]
+                    }
+                    else {
+                        orderItem.fulfillmentHistories.add(savedHistory)
+                    }
+                }
+            }
+            return Promise.pure(completed)
+
         }
     }
 }

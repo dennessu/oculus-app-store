@@ -22,6 +22,11 @@
         <property name="orderActionType" value="FULFILL"/>
     </bean>
 
+    <bean id="mockReverseFulfillmentAction" class="com.junbo.order.core.impl.orderaction.ReverseFulfillmentAction">
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
+        <property name="orderActionType" value="REVERSE_FULFILLMENT"/>
+    </bean>
+
     <bean id="mockSendEmailAction" class="com.junbo.order.core.impl.orderaction.SendEmailAction">
         <property name="facadeContainer" ref="mockFacadeContainer"/>
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>

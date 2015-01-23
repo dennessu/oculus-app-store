@@ -50,6 +50,21 @@ class FulfillmentEventHistoryBuilder {
         return fulfillmentHistory
     }
 
+    static FulfillmentHistory buildRevokeFulfillmentHistory(FulfilmentRequest fulfilmentResult,
+                                                      FulfilmentItem fulfilmentItem) {
+        def fulfillmentHistory = new FulfillmentHistory()
+        fulfillmentHistory.trackingUuid = UUID.fromString(fulfilmentResult.trackingUuid)
+        fulfillmentHistory.fulfillmentEvent = FulfillmentEventType.REVERSE_FULFILL
+        fulfillmentHistory.orderItemId = fulfilmentItem.itemReferenceId
+        fulfillmentHistory.fulfillmentId = fulfilmentItem.fulfilmentId
+
+        fulfillmentHistory.success = true
+        fulfillmentHistory.success = !fulfilmentItem.actions?.any { FulfilmentAction fa ->
+            fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN || fa.status == FulfilmentStatus.PENDING
+        }
+        return fulfillmentHistory
+    }
+
     static FulfillmentHistory buildFulfillmentHistory(FulfilmentRequest fulfilmentResult,
                                                       FulfilmentItem fulfilmentItem, OrderEvent event) {
         def fulfillmentHistory = new FulfillmentHistory()

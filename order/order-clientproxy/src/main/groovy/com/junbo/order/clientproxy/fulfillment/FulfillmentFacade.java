@@ -19,4 +19,6 @@ public interface FulfillmentFacade {
     Promise<FulfilmentRequest> postFulfillment(Order order);
 
     Promise<FulfilmentRequest> getFulfillment(OrderId orderId);
+
+    Promise<FulfilmentRequest> reverseFulfillment(Order order);
 }

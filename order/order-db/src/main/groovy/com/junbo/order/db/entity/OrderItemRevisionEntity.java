@@ -32,6 +32,7 @@ public class OrderItemRevisionEntity   extends CommonDbEntityWithDate {
     private BigDecimal totalDiscount;
     private BigDecimal totalShippingFee;
     private BigDecimal totalShippingFeeDiscount;
+    private Boolean revoked;
 
     @Id
     @Column(name = "ORDER_ITEM_REVISION_ID")
@@ -134,6 +135,15 @@ public class OrderItemRevisionEntity   extends CommonDbEntityWithDate {
 
     public void setTotalShippingFeeDiscount(BigDecimal totalShippingFeeDiscount) {
         this.totalShippingFeeDiscount = totalShippingFeeDiscount;
+    }
+
+    @Column(name = "REVOKED")
+    public Boolean getRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+        this.revoked = revoked;
     }
 
     @Override

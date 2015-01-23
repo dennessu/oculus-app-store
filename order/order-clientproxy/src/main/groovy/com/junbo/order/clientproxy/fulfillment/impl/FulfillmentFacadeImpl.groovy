@@ -6,7 +6,6 @@
 
 package com.junbo.order.clientproxy.fulfillment.impl
 
-import com.junbo.common.error.AppError
 import com.junbo.common.id.OrderId
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.fulfilment.spec.resource.FulfilmentResource
@@ -14,10 +13,10 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.common.FacadeBuilder
 import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.error.ErrorUtils
 import com.junbo.order.spec.model.Order
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -42,13 +41,10 @@ class FulfillmentFacadeImpl implements FulfillmentFacade {
 
     @Override
     Promise<FulfilmentRequest> postFulfillment(Order order) {
-        return fulfilmentResource.fulfill(FacadeBuilder.buildFulfilmentRequest(order)).recover { Throwable ex ->
-            LOGGER.error('name=FulfillmentFacadeImpl_Create_Fulfillment_Error', ex)
-            throw convertError(ex).exception()
-        }.then { FulfilmentRequest f ->
+        return fulfilmentResource.fulfill(FacadeBuilder.buildFulfilmentRequest(order)).then { FulfilmentRequest f ->
             if (f == null) {
                 LOGGER.error('name=FulfillmentFacadeImpl_Create_Fulfillment_Null')
-                throw AppErrors.INSTANCE.billingResultInvalid('Create balance response is null').exception()
+                throw AppErrors.INSTANCE.fulfillmentConnectionError('Create fulfillment response is null').exception()
             }
             LOGGER.info('name=FulfillmentFacadeImpl_Create_Fulfillment_Success')
             return Promise.pure(f)
@@ -56,20 +52,25 @@ class FulfillmentFacadeImpl implements FulfillmentFacade {
     }
 
     @Override
-    Promise<FulfilmentRequest> getFulfillment(OrderId orderId) {
-        return fulfilmentResource.getByOrderId(orderId).recover { Throwable ex ->
-            LOGGER.error('name=FulfillmentFacadeImpl_Get_Fulfillment_Error', ex)
-            throw convertError(ex).exception()
-        }.then { FulfilmentRequest f ->
+    Promise<FulfilmentRequest> reverseFulfillment(Order order) {
+        def request = FacadeBuilder.buildRevokeFulfilmentRequest(order)
+        if (CollectionUtils.isEmpty(request.items)) {
+            return Promise.pure(request)
+        }
+        return fulfilmentResource.revoke(request).then { FulfilmentRequest f ->
+            if (f == null) {
+                LOGGER.error('name=FulfillmentFacadeImpl_Revoke_Fulfillment_Null')
+                throw AppErrors.INSTANCE.fulfillmentConnectionError('Revoke fulfillment response is null').exception()
+            }
+            LOGGER.info('name=FulfillmentFacadeImpl_Revoke_Fulfillment_Success')
             return Promise.pure(f)
         }
     }
 
-    private static AppError convertError(Throwable error) {
-        AppError e = ErrorUtils.toAppError(error)
-        if (e != null) {
-            return AppErrors.INSTANCE.fulfilmentConnectionError(e)
+    @Override
+    Promise<FulfilmentRequest> getFulfillment(OrderId orderId) {
+        return fulfilmentResource.getByOrderId(orderId).then { FulfilmentRequest f ->
+            return Promise.pure(f)
         }
-        return AppErrors.INSTANCE.fulfillmentConnectionError(error.message)
     }
 }

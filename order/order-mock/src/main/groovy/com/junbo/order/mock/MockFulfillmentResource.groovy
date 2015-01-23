@@ -1,5 +1,4 @@
 package com.junbo.order.mock
-
 import com.junbo.common.id.FulfilmentId
 import com.junbo.common.id.OrderId
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
@@ -12,7 +11,6 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
 
-import javax.validation.Valid
 import java.util.concurrent.ConcurrentHashMap
 /**
  * Created by fzhang on 14-3-7.
@@ -37,7 +35,12 @@ class MockFulfillmentResource extends BaseMock implements FulfilmentResource {
 
     @Override
     Promise<FulfilmentRequest> revoke(FulfilmentRequest request) {
-        return null
+        def id = generateLong()
+        request.items?.each { FulfilmentItem item ->
+            item.fulfilmentId = id
+        }
+        fulfilmentRequestMap[request.orderId] = request
+        return Promise.pure(request)
     }
 
     @Override

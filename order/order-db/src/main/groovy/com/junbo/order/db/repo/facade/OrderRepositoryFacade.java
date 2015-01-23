@@ -41,7 +41,7 @@ public interface OrderRepositoryFacade {
     List<Discount> getDiscounts(Long orderId);
 
     Order updateOrder(Order order, Boolean updateOnlyOrder,
-                      Boolean updateNonTentativeOrder, OrderItemRevisionType revisionType) ;
+                      Boolean saveRevision, OrderItemRevisionType revisionType) ;
 
     List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam);
 

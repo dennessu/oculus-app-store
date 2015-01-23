@@ -1,5 +1,4 @@
 package com.junbo.order.clientproxy.common
-
 import com.junbo.common.id.UserId
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
@@ -10,13 +9,17 @@ import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.OrderItemRevision
+import com.junbo.order.spec.model.enums.OrderItemRevisionType
 import com.junbo.rating.spec.model.priceRating.RatingItem
 import com.junbo.rating.spec.model.priceRating.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.apache.commons.collections.CollectionUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import java.text.SimpleDateFormat
-
 /**
  * Created by LinYi on 14-3-4.
  */
@@ -45,6 +48,8 @@ class FacadeBuilder {
                 }
             }
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FacadeBuilder)
+
     static FulfilmentRequest buildFulfilmentRequest(Order order) {
         FulfilmentRequest request = new FulfilmentRequest()
         request.userId = order.user.value
@@ -59,6 +64,45 @@ class FacadeBuilder {
         order.orderItems?.each { OrderItem item ->
             request.items << buildFulfilmentItem(item)
         }
+        return request
+    }
+
+    static FulfilmentRequest buildRevokeFulfilmentRequest(Order order) {
+        FulfilmentRequest request = new FulfilmentRequest()
+        request.userId = order.user.value
+        request.orderId = order.getId().value
+        request.trackingUuid = UUID.randomUUID()
+        request.shippingMethodId = order.shippingMethod
+
+        request.shippingAddressId = order.shippingAddress?.value
+        request.shippingToNameId = order.shippingToName?.value
+        request.shippingToPhoneId = order.shippingToPhone?.value
+        request.items = []
+
+        order.orderItems?.each { OrderItem oi ->
+            def revokeItems = oi.orderItemRevisions?.findAll { OrderItemRevision oir ->
+                oir.revisionType == OrderItemRevisionType.REFUND.name() && !oir.revoked
+            }
+            if (!CollectionUtils.isEmpty(revokeItems)) {
+                def revokeFulfillmentItem = buildFulfilmentItem(oi)
+                revokeFulfillmentItem.quantity = 0
+                // read from order item revision and accumulate the quantity
+                revokeItems.each { OrderItemRevision oir ->
+                    revokeFulfillmentItem.quantity += oir.quantity
+                }
+                if (revokeFulfillmentItem.quantity > oi.quantity) {
+                    LOGGER.error('name=Order_Build_Revoke_Fulfillment_Request. Please check. Order :'
+                            + order.getId().value + 'Item :'
+                            + oi.getId().value + 'quantity: '
+                            + revokeFulfillmentItem.quantity.toString() + 'is beyond the original value: '
+                            + oi.quantity.toString())
+                    revokeFulfillmentItem.quantity = oi.quantity
+                }
+                request.items << revokeFulfillmentItem
+            }
+
+        }
+
         return request
     }
 
