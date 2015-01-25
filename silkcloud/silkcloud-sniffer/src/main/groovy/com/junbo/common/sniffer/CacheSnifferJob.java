@@ -124,6 +124,7 @@ public class CacheSnifferJob implements InitializingBean {
                 for (; ; SnifferUtils.sleep(SAFE_SLEEP)) {
                     try {
                         String lastChange = getLastChange(cloudantUri, database);
+                        updateCache(buildLastChangeKey(cloudantUri, database), lastChange);
 
                         InputStream feed = CloudantSniffer.instance().getChangeFeed(cloudantUri, database, lastChange);
                         final BufferedReader reader = new BufferedReader(new InputStreamReader(feed));
@@ -208,10 +209,6 @@ public class CacheSnifferJob implements InitializingBean {
                 LOGGER.debug("[ignored] {}", entityIdStr);
                 return;
             }
-
-            // TODO: remove after next deployment
-            String oldRawCacheEntityKey = entityIdStr + ":" + database + ":" + cloudantUri.getDc();
-            invalidateCache(change, changes, oldRawCacheEntityKey, "_rev");
 
             String databaseWithoutPrefix = SnifferUtils.removePrefix(database, dbNamePrefix);
             String rawCacheEntityKey = entityIdStr + ":" + databaseWithoutPrefix;
