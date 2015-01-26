@@ -187,12 +187,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 }
                 else if (userLoginAttempt.type == CredentialType.PIN.toString()) {
                     return userPinService.searchByUserIdAndActiveStatus((UserId)user.id, true, maximumFetchSize,
-                            0).then { List<UserPin> userPinList ->
-                        if (CollectionUtils.isEmpty(userPinList)) {
+                            0).then { Results<UserPin> userPinList ->
+                        if (CollectionUtils.isEmpty(userPinList.items)) {
                             throw AppErrors.INSTANCE.userPinNotFound().exception()
                         }
 
-                        if (userPinList.size() > 1) {
+                        if (userPinList.items.size() > 1) {
                             throw AppErrors.INSTANCE.userPinIncorrect().exception()
                         }
 
