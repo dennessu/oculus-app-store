@@ -1,5 +1,6 @@
 package com.junbo.order.db.repo.sql
 
+import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.SubledgerItemId
@@ -70,10 +71,10 @@ class SubledgerItemRepositorySqlImpl implements SubledgerItemRepository {
     }
 
     @Override
-    Promise<List<SubledgerItem>> getSubledgerItems(Integer dataCenterId, Object shardKey, String status, OfferId offerId, Date endTime, PageParam pageParam) {
+    Promise<List<SubledgerItem>> getSubledgerItems(Integer dataCenterId, Object shardKey, String status, ItemId itemId, Date endTime, PageParam pageParam) {
         List<SubledgerItem> result = [] as List
-        subledgerItemDao.getByStatusOfferIdCreatedTime(dataCenterId, (Integer) shardKey,
-                SubledgerItemStatus.valueOf(status), offerId.value, endTime,
+        subledgerItemDao.getByStatusItemIdCreatedTime(dataCenterId, (Integer) shardKey,
+                SubledgerItemStatus.valueOf(status), itemId.value, endTime,
                 pageParam.start, pageParam.count).each { SubledgerItemEntity entity ->
             result << modelMapper.toSubledgerItemModel(entity, new MappingContext())
         }
@@ -88,12 +89,12 @@ class SubledgerItemRepositorySqlImpl implements SubledgerItemRepository {
     }
 
     @Override
-    Promise<List<OfferId>> getDistinctOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
-        List<OfferId> result = [] as List
-        subledgerItemDao.getDistrictOfferIds(dataCenterId, (Integer) shardKey,
+    Promise<List<ItemId>> getDistinctOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
+        List<ItemId> result = [] as List
+        subledgerItemDao.getDistrictItemIds(dataCenterId, (Integer) shardKey,
                 SubledgerItemStatus.valueOf(status),
-                pageParam.start, pageParam.count).each { String offerId ->
-            result << new OfferId(offerId)
+                pageParam.start, pageParam.count).each { String itemId ->
+            result << new ItemId(itemId)
         }
         return Promise.pure(result)
     }

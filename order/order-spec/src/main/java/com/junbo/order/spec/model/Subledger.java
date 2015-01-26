@@ -5,42 +5,49 @@
  */
 package com.junbo.order.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OrganizationId;
-import com.junbo.common.id.PayoutId;
-import com.junbo.common.id.SubledgerId;
+import com.junbo.common.id.*;
 import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by chriszhu on 2/10/14.
  */
 @JsonPropertyOrder(value = {
-        "id", "seller", "offer", "country", "currency",
+        "id", "subledgerType", "seller", "offer", "country", "currency", "item",
         "payoutStatus", "payoutId", "totalAmount", "totalPayoutAmount" , "totalQuantity", "startTime", "endTime", "resourceAge"
 })
 public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
     @JsonProperty("self")
     private SubledgerId id;
+    @XSSFreeString
+    private String subledgerType;
     private OrganizationId seller;
-    private OfferId offer;
+    private ItemId item;
+    private OfferId offer; // default offer of the item
     @XSSFreeString
     private String payoutStatus;
+    @JsonIgnore
+    private String key;
     private Date startTime;
     private Date endTime;
     private CountryId country;
     private CurrencyId currency;
     private BigDecimal totalAmount;
     private BigDecimal totalPayoutAmount;
+    private BigDecimal taxAmount;
     private Long totalQuantity;
     private PayoutId payoutId;
+    @JsonIgnore
+    private Map<String, String> properties;
 
     public SubledgerId getId() {
         return id;
@@ -48,6 +55,22 @@ public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
 
     public void setId(SubledgerId id) {
         this.id = id;
+    }
+
+    public String getSubledgerType() {
+        return subledgerType;
+    }
+
+    public void setSubledgerType(String subledgerType) {
+        this.subledgerType = subledgerType;
+    }
+
+    public BigDecimal getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
     }
 
     public OrganizationId getSeller() {
@@ -72,6 +95,14 @@ public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
 
     public void setPayoutStatus(String payoutStatus) {
         this.payoutStatus = payoutStatus;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Date getStartTime() {
@@ -106,6 +137,14 @@ public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
         this.currency = currency;
     }
 
+    public ItemId getItem() {
+        return item;
+    }
+
+    public void setItem(ItemId item) {
+        this.item = item;
+    }
+
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
@@ -136,5 +175,13 @@ public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
 
     public void setPayoutId(PayoutId payoutId) {
         this.payoutId = payoutId;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
     }
 }

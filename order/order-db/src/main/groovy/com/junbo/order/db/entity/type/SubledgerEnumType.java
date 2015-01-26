@@ -6,14 +6,14 @@
 
 package com.junbo.order.db.entity.type;
 
-import com.junbo.order.spec.model.enums.SubledgerItemAction;
+import com.junbo.order.spec.model.enums.SubledgerType;
 
 /**
  * Created by fzhang on 4/2/2014.
  */
-public class SubledgerItemActionType extends IdentifiableEnumType {
+public class SubledgerEnumType extends IdentifiableEnumType {
     @Override
     public Class returnedClass() {
-        return SubledgerItemAction.class;
+        return SubledgerType.class;
     }
 }

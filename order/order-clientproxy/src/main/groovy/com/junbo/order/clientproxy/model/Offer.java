@@ -6,7 +6,7 @@
 
 package com.junbo.order.clientproxy.model;
 
-import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.order.spec.model.enums.ItemType;
 
@@ -22,9 +22,10 @@ public class Offer {
     private String revisionId;
     private Organization owner;
     private ItemType type;
+    private Price price;
     private Map<String, Date> countryReleaseDates;
     private Map<String, OfferLocale> locales;
-    private List<Item> items;
+    private List<ItemEntry> items;
     private Map<String, String> itemIds;
     private List<Offer> subOffers;
 
@@ -60,6 +61,14 @@ public class Offer {
         this.type = type;
     }
 
+    public Price getPrice() {
+        return price;
+    }
+
+    public void setPrice(Price price) {
+        this.price = price;
+    }
+
     public Map<String, Date> getCountryReleaseDates() {
         return countryReleaseDates;
     }
@@ -84,11 +93,11 @@ public class Offer {
         this.itemIds = itemIds;
     }
 
-    public List<Item> getItems() {
+    public List<ItemEntry> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(List<ItemEntry> items) {
         this.items = items;
     }
 

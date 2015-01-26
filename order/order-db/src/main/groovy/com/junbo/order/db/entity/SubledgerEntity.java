@@ -8,6 +8,7 @@ package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
 import com.junbo.order.spec.model.enums.PayoutStatus;
+import com.junbo.order.spec.model.enums.SubledgerType;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -25,19 +26,23 @@ import java.util.Date;
 @Table(name = "SUBLEDGER")
 public class SubledgerEntity extends CommonDbEntityWithDate {
     private Long subledgerId;
+    private SubledgerType subledgerType;
     private Long sellerId;
     private String offerId;
+    private String itemId;
     private Long sellerTaxProfileId;
     private Long payoutId;
+    private String key ;
     private String currency;
     private String country;
     private BigDecimal totalAmount;
     private BigDecimal totalPayoutAmount;
+    private BigDecimal taxAmount;
     private Long totalQuantity;
     private PayoutStatus payoutStatus;
     private Date startTime;
     private Date endTime;
-    private String property;
+    private String properties;
 
     @Id
     @Column(name = "SUBLEDGER_ID")
@@ -48,6 +53,17 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
 
     public void setSubledgerId(Long subledgerId) {
         this.subledgerId = subledgerId;
+    }
+
+    @Column (name = "SUBLEDGER_TYPE")
+    @NotNull (message = ValidationMessages.MISSING_VALUE)
+    @Type(type = "com.junbo.order.db.entity.type.SubledgerEnumType")
+    public SubledgerType getSubledgerType() {
+        return subledgerType;
+    }
+
+    public void setSubledgerType(SubledgerType subledgerType) {
+        this.subledgerType = subledgerType;
     }
 
     @Column(name = "SELLER_ID")
@@ -71,6 +87,17 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
         this.offerId = offerId;
     }
 
+    @Column(name = "ITEM_ID")
+    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
+    @Length(max=128, message=ValidationMessages.TOO_LONG)
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
     @Column(name = "SELLER_TAX_PROFILE_ID")
     public Long getSellerTaxProfileId() {
         return sellerTaxProfileId;
@@ -88,6 +115,17 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    @Column(name = "SUBLEDGER_KEY")
+    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
+    @Length(max=128, message=ValidationMessages.TOO_LONG)
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     @Column(name = "PAYOUT_ID")
@@ -127,6 +165,16 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
 
     public void setTotalPayoutAmount(BigDecimal totalPayoutAmount) {
         this.totalPayoutAmount = totalPayoutAmount;
+    }
+
+    @Column(name = "TAX_AMOUNT")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
     }
 
     @Column(name = "TOTAL_QUANTITY")
@@ -170,14 +218,14 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
         this.endTime = endTime;
     }
 
-    @Column(name = "PROPERTY")
+    @Column(name = "properties")
     @Length(max=4000, message=ValidationMessages.TOO_LONG)
-    public String getProperty() {
-        return property;
+    public String getProperties() {
+        return properties;
     }
 
-    public void setProperty(String property) {
-        this.property = property;
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 
     @Override

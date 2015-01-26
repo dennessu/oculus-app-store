@@ -8,7 +8,6 @@ import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
-import com.junbo.catalog.spec.model.item.Item
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.entitlement.spec.model.Entitlement
@@ -17,6 +16,7 @@ import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
+import com.junbo.order.clientproxy.model.ItemEntry
 import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
@@ -552,8 +552,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Override
     Promise<Order> validateDuplicatePurchase(Order order, Offer offer, int quantity) {
         LOGGER.info('name=internal.validateDuplicatePurchase')
-        if (offer.items.any { Item item ->
-            !['APP', 'DOWNLOADED_ADDITION', 'PERMANENT_UNLOCK'].contains(item.type)
+        if (offer.items.any { ItemEntry itemEntry ->
+            !['APP', 'DOWNLOADED_ADDITION', 'PERMANENT_UNLOCK'].contains(itemEntry.item.type)
         }) {
             LOGGER.info("name=skip_validateDuplicatePurchase")
             return Promise.pure(order)
@@ -569,9 +569,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
             if (entitlements == null || entitlements.size() == 0) {
                 return order
             }
-            def isDup = offer.items.every() { Item item ->
+            def isDup = offer.items.every() { ItemEntry itemEntry ->
                 return entitlements.any() { Entitlement entitlement ->
-                    entitlement.itemId == item.id
+                    entitlement.itemId == itemEntry.item.itemId
                 }
             }
             LOGGER.info("name=validateDuplicatePurchase_Complete, isDup={}", isDup)

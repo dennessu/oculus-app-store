@@ -12,8 +12,6 @@ import com.junbo.common.id.SubledgerItemId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.SubledgerItemDao;
 import com.junbo.order.db.entity.SubledgerItemEntity;
-import com.junbo.order.spec.model.Subledger;
-import com.junbo.order.spec.model.SubledgerItem;
 import com.junbo.order.spec.model.enums.SubledgerItemStatus;
 import com.junbo.sharding.ShardAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,70 +82,70 @@ public class SubledgerItemDaoTest extends BaseTest {
         int shardId = shardAlgorithm.shardId(orderItemId);
         Long time = System.currentTimeMillis();
         Date createdTime = new Date(System.currentTimeMillis() - 1000);
-        List<String> offerIds = new ArrayList<>();
+        List<String> itemIds = new ArrayList<>();
         for (int i = 0;i < 10;++i) {
             for (int j = 0; j < 5;++j) {
                 SubledgerItemEntity entity = TestHelper.generateSubledgerItemEntity();
                 entity.setStatus(SubledgerItemStatus.PENDING_PROCESS);
                 entity.setSubledgerItemId(idGenerator.nextId(SubledgerItemId.class, orderItemId));
-                entity.setOfferId("testOffer_" + time.toString() + "_" + i);
-                offerIds.add(entity.getOfferId());
+                entity.setItemId("testItem_" + time.toString() + "_" + i);
+                itemIds.add(entity.getItemId());
                 entity.setCreatedTime(createdTime);
                 subledgerItemDao.create(entity);
             }
         }
 
-        List<String> offerIdResults = subledgerItemDao.getDistrictOfferIds(dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, 0, 4);
-        Assert.assertEquals(offerIdResults.size(), 4);
-        verifyOfferDistinct(offerIdResults);
+        List<String> itemIdResults = subledgerItemDao.getDistrictItemIds(dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, 0, 4);
+        Assert.assertEquals(itemIdResults.size(), 4);
+        verifyItemDistinct(itemIdResults);
 
-        offerIdResults = subledgerItemDao.getDistrictOfferIds(dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, 0, 10);
-        Assert.assertEquals(offerIdResults.size(), 10);
-        verifyOfferDistinct(offerIdResults);
+        itemIdResults = subledgerItemDao.getDistrictItemIds(dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, 0, 10);
+        Assert.assertEquals(itemIdResults.size(), 10);
+        verifyItemDistinct(itemIdResults);
 
         for (int i = 0;i < 4;++i) {
-            String offerId = offerIds.get(i);
-            List<SubledgerItemEntity> subledgerItemEntityList = subledgerItemDao.getByStatusOfferIdCreatedTime(
-                    dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, offerId, new Date(), 0, 2);
+            String itemId = itemIds.get(i);
+            List<SubledgerItemEntity> subledgerItemEntityList = subledgerItemDao.getByStatusItemIdCreatedTime(
+                    dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, itemId, new Date(), 0, 2);
             Assert.assertEquals(subledgerItemEntityList.size(), 2);
-            verifySubledgerItems(subledgerItemEntityList, offerId, SubledgerItemStatus.PENDING_PROCESS);
+            verifySubledgerItems(subledgerItemEntityList, itemId, SubledgerItemStatus.PENDING_PROCESS);
 
-            subledgerItemEntityList = subledgerItemDao.getByStatusOfferIdCreatedTime(
-                    dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, offerId, new Date(), 0, 10);
+            subledgerItemEntityList = subledgerItemDao.getByStatusItemIdCreatedTime(
+                    dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, itemId, new Date(), 0, 10);
             Assert.assertEquals(subledgerItemEntityList.size(), 5);
-            verifySubledgerItems(subledgerItemEntityList, offerId, SubledgerItemStatus.PENDING_PROCESS);
+            verifySubledgerItems(subledgerItemEntityList, itemId, SubledgerItemStatus.PENDING_PROCESS);
 
-            subledgerItemEntityList = subledgerItemDao.getByStatusOfferIdCreatedTime(
-                    dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, offerId, new Date(), 4, 2);
+            subledgerItemEntityList = subledgerItemDao.getByStatusItemIdCreatedTime(
+                    dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, itemId, new Date(), 4, 2);
             Assert.assertEquals(subledgerItemEntityList.size(), 1);
-            verifySubledgerItems(subledgerItemEntityList, offerId, SubledgerItemStatus.PENDING_PROCESS);
+            verifySubledgerItems(subledgerItemEntityList, itemId, SubledgerItemStatus.PENDING_PROCESS);
 
-            subledgerItemEntityList = subledgerItemDao.getByStatusOfferIdCreatedTime(
-                    dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, offerId, new Date(createdTime.getTime() - 100000), 0, 2);
+            subledgerItemEntityList = subledgerItemDao.getByStatusItemIdCreatedTime(
+                    dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, itemId, new Date(createdTime.getTime() - 100000), 0, 2);
             Assert.assertEquals(subledgerItemEntityList.size(), 0);
 
-            subledgerItemEntityList = subledgerItemDao.getByStatusOfferIdCreatedTime(
-                    dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, offerId + "abesd", new Date(), 0, 2);
+            subledgerItemEntityList = subledgerItemDao.getByStatusItemIdCreatedTime(
+                    dcId, shardId, SubledgerItemStatus.PENDING_PROCESS, itemId + "abesd", new Date(), 0, 2);
             Assert.assertEquals(subledgerItemEntityList.size(), 0);
 
-            subledgerItemEntityList = subledgerItemDao.getByStatusOfferIdCreatedTime(
-                    dcId, shardId, SubledgerItemStatus.PROCESSED, offerId, new Date(), 0, 2);
+            subledgerItemEntityList = subledgerItemDao.getByStatusItemIdCreatedTime(
+                    dcId, shardId, SubledgerItemStatus.PROCESSED, itemId, new Date(), 0, 2);
             Assert.assertEquals(subledgerItemEntityList.size(), 0);
         }
     }
 
-    void verifyOfferDistinct(List<String> list) {
-        Set<String> offerIds = new HashSet<>();
-        for (String offerId: list) {
-            Assert.assertTrue(!offerIds.contains(offerId));
-            offerIds.add(offerId);
+    void verifyItemDistinct(List<String> list) {
+        Set<String> itemIds = new HashSet<>();
+        for (String itemId: list) {
+            Assert.assertTrue(!itemIds.contains(itemId));
+            itemIds.add(itemId);
         }
     }
 
-    void verifySubledgerItems(List<SubledgerItemEntity> subledgerItems, String offerId, SubledgerItemStatus status) {
+    void verifySubledgerItems(List<SubledgerItemEntity> subledgerItems, String itemId, SubledgerItemStatus status) {
         for (SubledgerItemEntity subledgerItem : subledgerItems) {
-            if (offerId != null) {
-                Assert.assertEquals(subledgerItem.getOfferId(), offerId);
+            if (itemId != null) {
+                Assert.assertEquals(subledgerItem.getItemId(), itemId);
             }
             if (status != null) {
                 Assert.assertEquals(subledgerItem.getStatus(), status);

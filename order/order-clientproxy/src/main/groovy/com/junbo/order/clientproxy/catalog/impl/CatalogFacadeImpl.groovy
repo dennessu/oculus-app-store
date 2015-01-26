@@ -97,7 +97,8 @@ class CatalogFacadeImpl implements CatalogFacade {
                     id: or.offerId,
                     revisionId: or.id,
                     countryReleaseDates: new HashMap<String, Date>(),
-                    locales: new HashMap<String, OfferLocale>()
+                    locales: new HashMap<String, OfferLocale>(),
+                    price: or.price
             )
             or.countries?.keySet().each { String key ->
                 offer.countryReleaseDates.put(key, or.countries.get(key)?.releaseDate)
@@ -123,7 +124,7 @@ class CatalogFacadeImpl implements CatalogFacade {
                             timestamp: honoredTime.time,
                             itemIds: [ie.itemId] as Set
                     )
-                    items << item
+                    items << new com.junbo.order.clientproxy.model.ItemEntry(item: item, quantity: ie.quantity)
                     return itemRevisionResource.getItemRevisions(itemRevisionGetOption).syncRecover {
                         Throwable throwable ->
                             LOGGER.error('CatalogFacadeImpl_Get_Item_Revision_Error, itemId: {}', ie.itemId, throwable)
@@ -137,7 +138,7 @@ class CatalogFacadeImpl implements CatalogFacade {
                     }
                 }
             }.then {
-                offer.type = getType(items)
+                offer.type = getType(items.collect {com.junbo.order.clientproxy.model.ItemEntry entry -> entry.item}.asList())
                 offer.items = items
                 offer.itemIds = itemMap
                 return identityFacade.getOrganization(or.ownerId?.value).syncRecover {
@@ -170,7 +171,8 @@ class CatalogFacadeImpl implements CatalogFacade {
                             id: or.offerId,
                             revisionId: or.id,
                             countryReleaseDates: new HashMap<String, Date>(),
-                            locales: new HashMap<String, OfferLocale>()
+                            locales: new HashMap<String, OfferLocale>(),
+                            price: or.price
                     )
                     or.countries?.keySet()?.each { String key ->
                         offer.countryReleaseDates.put(key, or.countries.get(key)?.releaseDate)
@@ -188,7 +190,7 @@ class CatalogFacadeImpl implements CatalogFacade {
                     return Promise.each(or.items) { ItemEntry ie ->
                         return itemResource.getItem(ie.itemId).then { Item item ->
                             assert item != null
-                            items << item
+                            items << new com.junbo.order.clientproxy.model.ItemEntry(item: item, quantity: ie.quantity)
                             return itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions()).syncThen {
                                 ItemRevision itemRevision ->
                                     if (itemRevision != null) {
@@ -197,7 +199,7 @@ class CatalogFacadeImpl implements CatalogFacade {
                             }
                         }
                     }.then {
-                        offer.type = getType(items)
+                        offer.type = getType(items.collect {com.junbo.order.clientproxy.model.ItemEntry entry -> entry.item}.asList())
                         offer.items = items
                         offer.itemIds = itemMap
                         return identityFacade.getOrganization(or.ownerId?.value).syncThen { Organization org ->

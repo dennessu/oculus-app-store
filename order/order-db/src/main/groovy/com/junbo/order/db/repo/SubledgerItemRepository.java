@@ -5,7 +5,7 @@
  */
 package com.junbo.order.db.repo;
 
-import com.junbo.common.id.OfferId;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.SubledgerItemId;
 import com.junbo.langur.core.promise.Promise;
@@ -23,11 +23,11 @@ import java.util.List;
 public interface SubledgerItemRepository extends BaseRepository<SubledgerItem, SubledgerItemId> {
 
     @ReadMethod
-    Promise<List<SubledgerItem>> getSubledgerItems(Integer dataCenterId, Object shardKey, String status, OfferId offerId, Date endTime, PageParam pageParam);
+    Promise<List<SubledgerItem>> getSubledgerItems(Integer dataCenterId, Object shardKey, String status, ItemId itemId, Date endTime, PageParam pageParam);
 
     @ReadMethod
     Promise<List<SubledgerItem>> getByOrderItemId(OrderItemId orderItemId);
 
     @ReadMethod
-    Promise<List<OfferId>> getDistinctOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
+    Promise<List<ItemId>> getDistinctOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
 }

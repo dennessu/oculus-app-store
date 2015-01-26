@@ -37,6 +37,11 @@ public class SubledgerDaoImpl extends BaseDaoImpl<SubledgerEntity> implements Su
     }
 
     @Override
+    public List<SubledgerEntity> getByTime(int dataCenterId, int shardId, Date fromDate, Date toDate, int start, int count) {
+        return innerList(null, dataCenterId, shardId, null, fromDate, toDate, start, count, false);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<SubledgerEntity> getByPayoutId(long payoutId, int start, int count) {
         Criteria criteria = this.getSession(payoutId).createCriteria(SubledgerEntity.class);
@@ -49,15 +54,16 @@ public class SubledgerDaoImpl extends BaseDaoImpl<SubledgerEntity> implements Su
     @Override
     @SuppressWarnings("unchecked")
     public SubledgerEntity find(long sellerId, PayoutStatus payoutStatus, Date startTime,
-                                String offerId, String currency, String country) {
+                                String itemId, String subledgerKey, String currency, String country) {
         Criteria criteria = this.getSession(sellerId).createCriteria(SubledgerEntity.class);
 
         criteria.add(Restrictions.eq("sellerId", sellerId));
         criteria.add(Restrictions.eq("payoutStatus", payoutStatus));
         criteria.add(Restrictions.eq("startTime", startTime));
-        criteria.add(Restrictions.eq("offerId", offerId));
+        criteria.add(Restrictions.eq("itemId", itemId));
         criteria.add(Restrictions.eq("country", country));
         criteria.add(Restrictions.eq("currency", currency));
+        criteria.add(Restrictions.eq("key", subledgerKey));
 
         criteria.setFirstResult(0);
         criteria.setMaxResults(1);
@@ -81,7 +87,9 @@ public class SubledgerDaoImpl extends BaseDaoImpl<SubledgerEntity> implements Su
         if (sellerId != null) {
             criteria.add(Restrictions.eq("sellerId", sellerId));
         }
-        criteria.add(Restrictions.eq("payoutStatus", payoutStatus));
+        if (payoutStatus != null) {
+            criteria.add(Restrictions.eq("payoutStatus", payoutStatus));
+        }
 
         if (fromDate != null) {
             criteria.add(Restrictions.ge("startTime", fromDate));

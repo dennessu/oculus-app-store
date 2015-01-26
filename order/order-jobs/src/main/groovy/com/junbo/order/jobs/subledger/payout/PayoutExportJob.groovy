@@ -7,16 +7,17 @@ import com.junbo.configuration.topo.model.DataCenter
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
-import com.junbo.order.jobs.utils.csv.BufferedCSVWriter
+import com.junbo.order.jobs.utils.csv.ConcurrentCSVWriter
 import com.junbo.order.jobs.utils.csv.CSVWriter
 import com.junbo.order.jobs.utils.ftp.FTPUtils
 import com.junbo.order.jobs.utils.signature.SignatureUtils
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.enums.PayoutStatus
+import com.junbo.order.spec.model.enums.SubledgerType
 import groovy.transform.CompileStatic
 import org.apache.commons.io.FileUtils
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -171,7 +172,7 @@ class PayoutExportJob {
             FileUtils.openOutputStream(work, false).close()
 
             // write headers
-            CSVWriter csvWriter = new BufferedCSVWriter(work, lock, writeBufferSize)
+            CSVWriter csvWriter = new ConcurrentCSVWriter(work, lock, writeBufferSize)
             csvWriter.writeRecords(Arrays.asList(Arrays.asList('ds','financial_id','payout_amount','external_id')))
             csvWriter.flush()
 
@@ -202,18 +203,19 @@ class PayoutExportJob {
         LOGGER.info("name=SubledgerExportStart, file={}, dcId={}, shardId={}", file.path, dcId, shardId)
         int pageStart = 0
         Date endDate = new Date(date.time + MS_A_DAY)
+        Date startDate = new Date(date.time)
         DateFormat dateFormat = new SimpleDateFormat('yyyy-MM-dd')
 
         try {
-            CSVWriter csvWriter = new BufferedCSVWriter(file, lock, writeBufferSize)
+            CSVWriter csvWriter = new ConcurrentCSVWriter(file, lock, writeBufferSize)
 
-            subledgerPayoutIdAssignUtils.execute(dcId, shardId, date, endDate)
+            subledgerPayoutIdAssignUtils.execute(dcId, shardId, startDate, endDate)
 
             List<Subledger> subledgersWithSameSeller = [] as ArrayList<Subledger>
             while(true) {
                 List<Subledger> subledgers = transactionHelper.executeInNewTransaction {
                     subledgerRepository.getSubledgersOrderBySeller(dcId, shardId, PayoutStatus.PENDING.name(),
-                            date, endDate, new PageParam(start: pageStart, count: pageSize))
+                            startDate, endDate, new PageParam(start: pageStart, count: pageSize))
                 }
                 pageStart += subledgers.size()
 
@@ -223,14 +225,14 @@ class PayoutExportJob {
                     } else if (subledgersWithSameSeller[0].seller == subledger.seller) {
                         subledgersWithSameSeller << subledger
                     } else {
-                        aggregateAndWrite(subledgersWithSameSeller, csvWriter, dateFormat)
+                        aggregateAndWrite(subledgersWithSameSeller, csvWriter, date, dateFormat)
                         subledgersWithSameSeller.clear()
                         subledgersWithSameSeller << subledger
                     }
                 }
 
                 if (subledgers.size() < pageSize) {
-                    aggregateAndWrite(subledgersWithSameSeller, csvWriter, dateFormat)
+                    aggregateAndWrite(subledgersWithSameSeller, csvWriter, date, dateFormat)
                     csvWriter.flush()
                     break
                 }
@@ -244,12 +246,18 @@ class PayoutExportJob {
         return new File(new File(historyDir), file.getName())
     }
 
-    private List<PayoutRecord> aggregateToPayoutRecord(List<Subledger> subledgers, OrganizationId sellerId, Date date){
+    private List<PayoutRecord> aggregateToPayoutRecord(List<Subledger> subledgers, Date date){
         Map<PayoutId, PayoutRecord> recordMap = [:] as Map
-        String fbPayoutId = facadeContainer.identityFacade.getOrganization(sellerId.value).get().getFbPayoutOrgId()
 
         subledgers.each { Subledger subledger ->
-            Assert.notNull(subledger.payoutId)
+            String fbPayoutId = Utils.getFbPayoutOrgId(subledger)
+            if (StringUtils.isEmpty(fbPayoutId)) {
+                return
+            }
+            if (SubledgerType.valueOf(subledger.subledgerType).payoutActionType != SubledgerType.PayoutActionType.NONE) {
+                Assert.notNull(subledger.payoutId)
+            }
+
             PayoutRecord record = recordMap[subledger.payoutId] as PayoutRecord
             if (record == null) {
                 record = new PayoutRecord(
@@ -261,23 +269,23 @@ class PayoutExportJob {
                 recordMap[subledger.payoutId] = record
             }
 
-            record.payoutAmount += subledger.totalPayoutAmount
-        }
-
-        if (recordMap.values().size() > 1) {
-            LOGGER.warn('name=Multiple_PayoutId_ForSameSeller, sellerId={}, date={}, payoutIds={}', IdFormatter.encodeId(sellerId), date,
-                    StringUtils.join(recordMap.keySet().collect {PayoutId payoutId -> IdFormatter.encodeId(payoutId)}, ','))
+            SubledgerType.PayoutActionType payoutActionType = SubledgerType.valueOf(subledger.subledgerType).payoutActionType
+            if (payoutActionType == SubledgerType.PayoutActionType.ADD) {
+                record.payoutAmount += subledger.totalPayoutAmount
+            } else if (payoutActionType == SubledgerType.PayoutActionType.DEDUCT) {
+                record.payoutAmount -= subledger.totalPayoutAmount
+            }
         }
 
         return recordMap.values().asList()
     }
 
-    private void aggregateAndWrite(List<Subledger> subledgersWithSameSeller, CSVWriter csvWriter, DateFormat dateFormat) {
+    private void aggregateAndWrite(List<Subledger> subledgersWithSameSeller, CSVWriter csvWriter, Date date, DateFormat dateFormat) {
         if (subledgersWithSameSeller.isEmpty()) {
             return
         }
-        Subledger first = subledgersWithSameSeller[0]
-        List<List<String>> records = aggregateToPayoutRecord(subledgersWithSameSeller, first.seller, first.startTime).collect { PayoutRecord payoutRecord ->
+
+        List<List<String>> records = aggregateToPayoutRecord(subledgersWithSameSeller,  date).collect { PayoutRecord payoutRecord ->
             List<String> result = [] as List
             result << dateFormat.format(payoutRecord.date)
             result << payoutRecord.fbPayoutId
@@ -314,7 +322,7 @@ class PayoutExportJob {
         int numOfSuccess = 0
         LOGGER.info('name=Start_Multiple_Files_Upload')
         filesToUpload.each { File file ->
-            if (doUploadFile(file)) {
+            if (ftpUtils.uploadFile(file, "${remoteDir}/${file.name}", maxRetry)) {
                 FileUtils.moveFile(file, new File(historyDir + File.separator + file.name))
                 numOfSuccess++
             } else {
@@ -324,27 +332,4 @@ class PayoutExportJob {
         LOGGER.info('name=Finish_Multiple_Files_Upload, total={}, numOfSuccess={}', filesToUpload.size(), numOfSuccess)
     }
 
-
-    private boolean doUploadFile(File file) {
-        int retryCount = 0
-        long start = System.currentTimeMillis()
-
-        while (retryCount < maxRetry) {
-            LOGGER.info('name=Start_Upload_File, file={}, retryCount={}', file.getPath(), retryCount)
-            try {
-                if (ftpUtils.uploadFile(file, "${remoteDir}/${file.name}")) {
-                    LOGGER.info('name=Finish_Upload_File, file={}, latencyInMs={}', file.getPath(), System.currentTimeMillis() - start)
-                } else {
-                    LOGGER.info('name=FileAlreadyExistOnServer, file={}, skip', file.path)
-                }
-                return true
-            } catch (IOException ex) {
-                LOGGER.error('name=UploadFileError, path={}', file.path, ex)
-                Thread.sleep(1000L * initialRetryIntervalSecond * (1 << retryCount))
-                retryCount++
-            }
-        }
-
-        return false
-    }
 }

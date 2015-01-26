@@ -1,6 +1,7 @@
 package com.junbo.order.db.repo.sql
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.PayoutId
@@ -101,6 +102,18 @@ class SubledgerRepositorySqlImpl implements SubledgerRepository {
     }
 
     @Override
+    Promise<List<Subledger>> listByTime(int dataCenterId, int shardId, Date startDate, Date endDate, PageParam pageParam) {
+        List<Subledger> result = []
+        subledgerDao.getByTime(
+                dataCenterId, shardId,
+                startDate, endDate,
+                pageParam.start, pageParam.count).each { SubledgerEntity entity ->
+            result << modelMapper.toSubledgerModel(entity, new MappingContext())
+        }
+        return Promise.pure(result)
+    }
+
+    @Override
     Promise<List<Subledger>> listByPayoutId(PayoutId payoutId, PageParam pageParam) {
         List<Subledger> result = []
         subledgerDao.getByPayoutId(payoutId.value, pageParam.start, pageParam.count).each { SubledgerEntity entity ->
@@ -110,9 +123,10 @@ class SubledgerRepositorySqlImpl implements SubledgerRepository {
     }
 
     @Override
-    Promise<Subledger> find(OrganizationId sellerId, String payoutStatus, OfferId offerId, Date startTime, CurrencyId currency, CountryId country) {
+    Promise<Subledger> find(OrganizationId sellerId, String payoutStatus, ItemId itemId, Date startTime,
+                            String subledgerKey, CurrencyId currency, CountryId country) {
         def entity = subledgerDao.find(sellerId.value, PayoutStatus.valueOf(payoutStatus),
-                startTime, offerId.value.toString(), currency?.toString(), country?.toString())
+                startTime, itemId.value.toString(), subledgerKey, currency?.toString(), country?.toString())
         return Promise.pure(modelMapper.toSubledgerModel(entity, new MappingContext()));
     }
 }

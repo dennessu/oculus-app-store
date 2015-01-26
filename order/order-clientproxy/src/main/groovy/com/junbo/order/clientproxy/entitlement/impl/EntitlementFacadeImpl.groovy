@@ -13,6 +13,7 @@ import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.entitlement.spec.resource.EntitlementResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.entitlement.EntitlementFacade
+import com.junbo.order.clientproxy.model.ItemEntry
 import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
@@ -41,8 +42,8 @@ class EntitlementFacadeImpl implements EntitlementFacade {
     Promise<List<Entitlement>> getEntitlements(UserId userId, Offer offer) {
         def entitlementSearchParam = new EntitlementSearchParam(
                 userId: userId,
-                itemIds: offer.items.collect { Item item ->
-                    new ItemId(item.getId())
+                itemIds: offer.items.collect { ItemEntry itemEntry ->
+                    new ItemId(itemEntry.item.getId())
                 } as Set
         )
         def count = offer.items.size() * 3

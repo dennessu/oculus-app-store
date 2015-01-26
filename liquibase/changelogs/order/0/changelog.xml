@@ -454,5 +454,26 @@
         </sql>
     </changeSet>
 
+    <changeSet author="fzhang" id = "1.7" context="PREDEPLOY">
+        <sql><![CDATA[
+                alter table subledger add column subledger_type smallint default 0;
+                alter table subledger add column item_id varchar(128) default null;
+                alter table subledger add column tax_amount decimal default 0;
+                alter table subledger add column subledger_key varchar(128) default '';
+                alter table subledger add column properties varchar(4000) default null;
+                drop index subledger_offer_seller_start_time_country_currency;
+                create unique index subledger_start_time_seller_item_unique on subledger (start_time, seller_id, item_id, subledger_type, subledger_key, country, currency);
+
+                update subledger_item set status_id = 2 where status_id = 1;
+                alter table subledger_item add column subledger_type smallint default 0;
+                alter table subledger_item add column item_id varchar(128) default null;
+                alter table subledger_item add column tax_amount decimal default 0;
+                alter table subledger_item drop column subledger_item_action;
+                drop index subledger_item_status_offer_id_created_time;
+                create index subledger_item_status_item_id_created_time on subledger_item(status_id, item_id, created_time);
+            ]]>
+        </sql>
+    </changeSet>
+
     <include file="../../common/ping.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

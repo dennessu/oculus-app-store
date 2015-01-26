@@ -30,21 +30,24 @@ public interface SubledgerRepositoryFacade {
     List<Subledger> getSubledgersOrderBySeller(int dataCenterId, int shardId, String payOutStatus, Date startDate, Date endDate,
                                   PageParam pageParam);
 
+    List<Subledger> getSubledgersByTime(int dataCenterId, int shardId, Date startDate, Date endDate,
+                                               PageParam pageParam);
+
     List<Subledger> getSubledgersByPayouId(PayoutId payoutId, PageParam pageParam);
 
     Subledger findSubledger(OrganizationId sellerId, String payoutStatus,
-                                          OfferId offerId, Date startTime,  CurrencyId currency,
+                                          ItemId itemId, Date startTime, String subledgerKey, CurrencyId currency,
                                           CountryId country);
 
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem);
 
     SubledgerItem getSubledgerItem(SubledgerItemId subledgerItemId);
 
-    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, OfferId offerId, Date endTime, PageParam pageParam);
+    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, ItemId itemId, Date endTime, PageParam pageParam);
 
     List<SubledgerItem> getSubledgerItemByOrderItemId(OrderItemId orderItemId);
 
-    List<OfferId> getDistinctSubledgerItemOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
+    List<ItemId> getDistinctSubledgerItemItemIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
 
     SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem, SubledgerItem oldSubledgerItem);
 

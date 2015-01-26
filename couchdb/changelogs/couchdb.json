@@ -278,6 +278,9 @@
         },
         "by_payout_id": {
           "map": "function(doc) {if (doc.payoutId) {emit(doc.payoutId, doc._id)}}"
+        },
+        "by_seller_status_item_time_cc": {
+          "map": "function(doc) {emit(doc.seller + ';' + doc.payoutStatus + ';' + doc.startTime + ';' + doc.item + ';' + doc.currency + ';' + doc.country, doc._id)}"
         }
       }
     },

@@ -7,6 +7,7 @@ package com.junbo.order.db.repo.cloudant
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.id.ItemId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.PayoutId
@@ -51,19 +52,19 @@ class SubledgerRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite
     }
 
     @Override
+    Promise<List<Subledger>> listByTime(int dataCenterId, int shardId, Date startDate, Date endDate, PageParam pageParam) {
+        throw new UnsupportedOperationException("not supported in cloudant repository")
+    }
+
+    @Override
     Promise<List<Subledger>> listByPayoutId(PayoutId payoutId, PageParam pageParam) {
         return super.queryView('by_payout_id', payoutId.value.toString(), pageParam?.count, pageParam?.start, false)
     }
 
     @Override
-    Promise<Subledger> find(OrganizationId sellerId, String payoutStatus, OfferId offerId,
-                            Date startTime, CurrencyId currency, CountryId country) {
-        return super.queryView('by_seller_status_offer_time_cc',
-                [sellerId.toString(), payoutStatus, dateFormat.format(startTime),
-                offerId.toString(), currency.toString(), country.toString()].join(';')).then { List<Subledger> list ->
-
-            return Promise.pure(list.isEmpty() ? null : list.iterator().next())
-        }
+    Promise<Subledger> find(OrganizationId sellerId, String payoutStatus, ItemId itemId,
+                            Date startTime, String subledgerKey, CurrencyId currency, CountryId country) {
+        throw new UnsupportedOperationException('find is not supported in SubledgerRepositoryCloudantImpl.')
     }
 }
 

@@ -7,7 +7,7 @@ import java.util.concurrent.locks.Lock
 /**
  * The PayoutCSVWriter class.
  */
-class BufferedCSVWriter implements CSVWriter {
+class ConcurrentCSVWriter implements CSVWriter {
 
     private final Lock lock;
 
@@ -17,7 +17,7 @@ class BufferedCSVWriter implements CSVWriter {
 
     private List<List<String>> buffer = [] as List
 
-    BufferedCSVWriter(File file, Lock lock, int bufferSize) {
+    ConcurrentCSVWriter(File file, Lock lock, int bufferSize) {
         this.file = file
         this.lock = lock
         this.bufferSize = bufferSize
@@ -33,7 +33,9 @@ class BufferedCSVWriter implements CSVWriter {
 
     @Override
     void flush() {
-        lock.lock()
+        if (lock != null) {
+            lock.lock()
+        }
         try {
             CSVPrinter writer = null
             try {
@@ -49,7 +51,9 @@ class BufferedCSVWriter implements CSVWriter {
                 }
             }
         } finally {
-            lock.unlock()
+            if (lock != null) {
+                lock.unlock()
+            }
         }
     }
 }

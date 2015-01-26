@@ -17,7 +17,6 @@ import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.lang.RandomStringUtils
-import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.BeansException
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
@@ -200,17 +199,22 @@ class TestHelper implements ApplicationContextAware {
         entity.setSellerId(generateLong())
         entity.setCurrency(RandomStringUtils.randomAlphabetic(3))
         entity.setTotalAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
+        entity.setTaxAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setTotalPayoutAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setTotalQuantity(rand.nextInt(RAND_INT_MAX).longValue())
         entity.setCreatedTime(new Date())
         entity.setCreatedBy(123L)
+        entity.setSubledgerType(SubledgerType.PAYOUT)
         entity.setUpdatedTime(new Date())
         entity.setUpdatedBy(123L)
         entity.setStartTime(new Date())
         entity.setEndTime(new Date())
         entity.setPayoutStatus(PayoutStatus.PENDING)
         entity.setOfferId(generateId().toString())
+        entity.setItemId(generateId().toString())
         entity.setCountry('US')
+        entity.setKey(RandomStringUtils.randomAlphabetic(100))
+        entity.setProperties(RandomStringUtils.randomAlphabetic(1000))
         return entity
     }
 
@@ -218,11 +222,15 @@ class TestHelper implements ApplicationContextAware {
         return new Subledger(
             seller: new OrganizationId(generateId()),
             offer: new OfferId(generateStrId()),
+            item: new ItemId(generateStrId()),
             payoutStatus: PayoutStatus.COMPLETED.name(),
             startTime: new Date(),
+            key: RandomStringUtils.randomAlphabetic(100),
             endTime: new Date(),
             country: new CountryId('US'),
             currency: new CurrencyId(RandomStringUtils.randomAlphabetic(3)),
+            subledgerType: SubledgerType.CHARGE_BACK.name(),
+            taxAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)),
             totalAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)),
             totalQuantity: generateLong(),
             totalPayoutAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX))
@@ -232,13 +240,15 @@ class TestHelper implements ApplicationContextAware {
     static SubledgerItem generateSubledgerItem(OrderItemId orderItemId) {
         return new SubledgerItem(
                 offer: new OfferId(generateStrId()),
+                item: new ItemId(generateStrId()),
+                taxAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)),
                 subledger: new SubledgerId(generateId()),
                 originalSubledgerItem: new SubledgerItemId(generateId()),
                 totalAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)),
                 totalPayoutAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)),
                 totalQuantity: rand.nextInt(RAND_INT_MAX).longValue(),
                 orderItem: orderItemId,
-                subledgerItemAction: SubledgerItemAction.PAYOUT.name(),
+                subledgerType: SubledgerType.PAYOUT.name(),
                 status: SubledgerItemStatus.OPEN.name()
         )
     }
@@ -248,12 +258,13 @@ class TestHelper implements ApplicationContextAware {
         def rand = new SecureRandom()
         entity.setSubledgerItemId(generateId())
         entity.setOrderItemId(generateLong())
-        entity.setSubledgerId(generateLong())
-        entity.setSubledgerItemAction(SubledgerItemAction.PAYOUT)
+         entity.setSubledgerType(SubledgerType.PAYOUT)
         entity.setOriginalSubledgerItemId(generateLong())
+        entity.setTaxAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setTotalAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setTotalPayoutAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
         entity.setTotalQuantity(rand.nextInt(RAND_INT_MAX).longValue())
+        entity.setItemId(generateId().toString())
         entity.setCreatedTime(new Date())
         entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())

@@ -80,14 +80,19 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
+    List<Subledger> getSubledgersByTime(int dataCenterId, int shardId, Date startDate, Date endDate, PageParam pageParam) {
+        return subledgerRepository.listByTime(dataCenterId, shardId, startDate, endDate, pageParam).get()
+    }
+
+    @Override
     List<Subledger> getSubledgersByPayouId(PayoutId payoutId, PageParam pageParam) {
         return subledgerRepository.listByPayoutId(payoutId, pageParam).get()
     }
 
     @Override
-    Subledger findSubledger(OrganizationId sellerId, String payoutStatus, OfferId offerId,
-                            Date startTime, CurrencyId currency, CountryId country) {
-        return subledgerRepository.find(sellerId, payoutStatus, offerId, startTime, currency, country).get()
+    Subledger findSubledger(OrganizationId sellerId, String payoutStatus, ItemId itemId,
+                            Date startTime, String subledgerKey, CurrencyId currency, CountryId country) {
+        return subledgerRepository.find(sellerId, payoutStatus, itemId, startTime, subledgerKey, currency, country).get()
     }
 
     @Override
@@ -101,8 +106,8 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
-    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, OfferId offerId, Date endTime, PageParam pageParam) {
-        return subledgerItemRepository.getSubledgerItems(dataCenterId, shardKey, status, offerId, endTime, pageParam).get()
+    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, ItemId itemId, Date endTime, PageParam pageParam) {
+        return subledgerItemRepository.getSubledgerItems(dataCenterId, shardKey, status, itemId, endTime, pageParam).get()
     }
 
     @Override
@@ -111,7 +116,7 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
-    List<OfferId> getDistinctSubledgerItemOfferIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
+    List<ItemId> getDistinctSubledgerItemItemIds(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
         return subledgerItemRepository.getDistinctOfferIds(dataCenterId, shardKey, status, pageParam).get()
     }
 

@@ -54,7 +54,12 @@
     <bean id="subledgerCreateItemAction" class="com.junbo.order.core.impl.orderaction.SubledgerCreateItemAction">
     </bean>
 
-    <bean id="subledgerCreateRefundItemAction" class="com.junbo.order.core.impl.orderaction.SubledgerCreateRefundItemAction">
+    <bean id="subledgerCreateRefundItemAction" class="com.junbo.order.core.impl.orderaction.SubledgerCreateReverseItemAction">
+        <property name="actionType" value="REFUND"/>
+    </bean>
+
+    <bean id="subledgerCreateChargeBackItemAction" class="com.junbo.order.core.impl.orderaction.SubledgerCreateReverseItemAction">
+        <property name="actionType" value="CHARGE_BACK"/>
     </bean>
 
     <bean id="webPaymentChargeAction" class="com.junbo.order.core.impl.orderaction.WebPaymentChargeAction">

@@ -7,10 +7,7 @@ package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OrderItemId;
-import com.junbo.common.id.SubledgerId;
-import com.junbo.common.id.SubledgerItemId;
+import com.junbo.common.id.*;
 import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 
@@ -24,18 +21,22 @@ public class SubledgerItem extends ResourceMetaForDualWrite<SubledgerItemId> {
     @JsonProperty("self")
     private SubledgerItemId id;
     private SubledgerId subledger;
+    @XSSFreeString
+    private String subledgerType;
     private SubledgerItemId originalSubledgerItem;
     private BigDecimal totalAmount;
     private BigDecimal totalPayoutAmount;
+    private BigDecimal taxAmount;
     private Long totalQuantity;
     private OrderItemId orderItem;
-    @XSSFreeString
-    private String subledgerItemAction;
-    private OfferId offer;
+    private OfferId offer; // default offer of the item
+    private ItemId item;
     @XSSFreeString
     private String status;
     @JsonIgnore
-    private SubledgerKey subledgerKey;
+    private SubledgerCriteria subledgerCriteria;
+    @JsonIgnore
+    private SubledgerKeyInfo subledgerKeyInfo;
 
     public SubledgerItemId getId() {
         return id;
@@ -93,20 +94,36 @@ public class SubledgerItem extends ResourceMetaForDualWrite<SubledgerItemId> {
         this.orderItem = orderItem;
     }
 
-    public String getSubledgerItemAction() {
-        return subledgerItemAction;
-    }
-
-    public void setSubledgerItemAction(String subledgerItemAction) {
-        this.subledgerItemAction = subledgerItemAction;
-    }
-
     public OfferId getOffer() {
         return offer;
     }
 
     public void setOffer(OfferId offer) {
         this.offer = offer;
+    }
+
+    public ItemId getItem() {
+        return item;
+    }
+
+    public void setItem(ItemId item) {
+        this.item = item;
+    }
+
+    public String getSubledgerType() {
+        return subledgerType;
+    }
+
+    public void setSubledgerType(String subledgerType) {
+        this.subledgerType = subledgerType;
+    }
+
+    public BigDecimal getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
     }
 
     public String getStatus() {
@@ -117,11 +134,19 @@ public class SubledgerItem extends ResourceMetaForDualWrite<SubledgerItemId> {
         this.status = status;
     }
 
-    public SubledgerKey getSubledgerKey() {
-        return subledgerKey;
+    public SubledgerCriteria getSubledgerCriteria() {
+        return subledgerCriteria;
     }
 
-    public void setSubledgerKey(SubledgerKey subledgerKey) {
-        this.subledgerKey = subledgerKey;
+    public void setSubledgerCriteria(SubledgerCriteria subledgerCriteria) {
+        this.subledgerCriteria = subledgerCriteria;
+    }
+
+    public SubledgerKeyInfo getSubledgerKeyInfo() {
+        return subledgerKeyInfo;
+    }
+
+    public void setSubledgerKeyInfo(SubledgerKeyInfo subledgerKeyInfo) {
+        this.subledgerKeyInfo = subledgerKeyInfo;
     }
 }
