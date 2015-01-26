@@ -168,7 +168,7 @@
         "by_user": {
           "map": "function(doc) {emit(doc.user, doc._id)}"
         },
-        "by_user_tentitive": {
+        "by_user_tentative": {
           "map": "function(doc) {if (doc.tentative !== null) {emit(doc.user + \"_\" + doc.tentative, doc._id)}}"
         }
       }

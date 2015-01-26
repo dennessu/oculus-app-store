@@ -64,6 +64,7 @@ class ActionContextWrapper {
     public static final String EMAIL_VERIFY_LINK = 'email_verify_link'
     public static final String OVERRIDE_EXPIRATION = 'override_expiration'
     public static final String TOS_CHALLENGE = 'tos_challenge'
+    public static final String TFA_TYPES = 'tfa_types'
 
     @Delegate
     private final ActionContext actionContext
@@ -441,5 +442,13 @@ class ActionContextWrapper {
 
     void setTosChallenge(Set<String> tosChallenge) {
         actionContext.flowScope[TOS_CHALLENGE] = tosChallenge
+    }
+
+    Set<String> getTFATypes() {
+        return actionContext.flowScope[TFA_TYPES] as Set<String>
+    }
+
+    void setTFATypes(Set<String> tfaTypes) {
+        actionContext.flowScope[TFA_TYPES] = tfaTypes
     }
 }

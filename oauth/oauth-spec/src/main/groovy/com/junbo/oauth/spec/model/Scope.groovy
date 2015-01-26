@@ -17,6 +17,7 @@ class Scope extends ResourceMeta<String> {
     String description
     String logoUri
     Boolean tfaRequired
+    Set<String> tfaTypes
     String validationCondition
     Long overrideExpiration
 

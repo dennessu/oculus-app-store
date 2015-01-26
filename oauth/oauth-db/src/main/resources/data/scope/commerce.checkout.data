@@ -1,0 +1,10 @@
+{
+    "name": "commerce.checkout",
+    "description": "Scope to checkout in commerce.",
+    "tfaRequired": true,
+    "tfaTypes": [
+        "PIN",
+        "EMAIL",
+        "SMS"
+    ]
+}
