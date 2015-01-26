@@ -194,4 +194,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = "144", message = "UserAttributeDefinition not found", field = "id",
             reason = "UserAttributeDefinition with ID {0} is not found")
     AppError userAttributeDefinitionNotFound(UserAttributeDefinitionId userAttributeDefinitionId);
+
+    @ErrorDef(httpStatusCode = 404, code = "145", message = "User Pin Not Found")
+    AppError userPinNotFound();
 }

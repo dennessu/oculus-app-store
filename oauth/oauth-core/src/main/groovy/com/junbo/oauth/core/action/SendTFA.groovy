@@ -9,6 +9,7 @@ import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.model.UserTFA
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
@@ -65,6 +66,11 @@ class SendTFA implements Action {
                 return Promise.pure(new ActionResult('error'))
             }
             contextWrapper.user = user
+
+            if (!contextWrapper.TFATypes.contains(verifyType)) {
+                contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldInvalid('verifyType').error())
+                return Promise.pure(new ActionResult('error'))
+            }
 
             UserPersonalInfoLink personalInfo = null
 

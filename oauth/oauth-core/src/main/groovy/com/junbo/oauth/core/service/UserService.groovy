@@ -21,7 +21,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 interface UserService {
-    Promise<UserCredentialVerifyAttempt> authenticateUser(String username, String password,
+    Promise<UserCredentialVerifyAttempt> authenticateUser(String username, String type, String password,
                                                           String clientId, String ipAddress, String userAgent)
 
     Promise<UserInfo> getUserInfo(String authorization)

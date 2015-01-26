@@ -157,10 +157,10 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<UserCredentialVerifyAttempt> authenticateUser(String username, String password,
+    Promise<UserCredentialVerifyAttempt> authenticateUser(String username, String type, String password,
                                                           String clientId, String ipAddress, String userAgent) {
         UserCredentialVerifyAttempt loginAttempt = new UserCredentialVerifyAttempt(
-                type: 'PASSWORD',
+                type: type,
                 username: username,
                 value: password,
                 clientId: new ClientId(clientId),

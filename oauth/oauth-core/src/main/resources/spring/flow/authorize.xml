@@ -144,6 +144,9 @@
             <wf:transition on="verifyEMAIL" to="END">
                 <wf:action ref="verifyTFA"/>
             </wf:transition>
+            <wf:transition on="verifyPIN" to="END">
+                <wf:action ref="verifyPIN"/>
+            </wf:transition>
         </wf:view-state>
 
         <wf:view-state id="REGISTER_VIEW">
@@ -579,4 +582,7 @@
 
     <bean id="tosChallengeView" class="com.junbo.oauth.core.view.TosChallengeView"/>
 
+    <bean id="verifyPIN" class="com.junbo.oauth.core.action.VerifyPIN">
+        <property name="userService" ref="userService"/>
+    </bean>
 </beans>

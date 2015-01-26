@@ -79,6 +79,11 @@ class ValidateScopeAfterLogin implements Action {
         scopes.each { Scope scope ->
             if (scope.tfaRequired) {
                 tfaRequired = true
+                if (contextWrapper.TFATypes == null) {
+                    contextWrapper.TFATypes = scope.tfaTypes
+                } else {
+                    contextWrapper.TFATypes = contextWrapper.TFATypes.intersect(scope.tfaTypes) as Set<String>
+                }
             }
 
             if (StringUtils.hasText(scope.validationCondition)) {
