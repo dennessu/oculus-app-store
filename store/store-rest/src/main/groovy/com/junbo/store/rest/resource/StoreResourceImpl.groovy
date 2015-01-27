@@ -1,4 +1,5 @@
 package com.junbo.store.rest.resource.raw
+
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.model.item.Item
@@ -26,8 +27,6 @@ import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.clientproxy.error.AppErrorUtils
 import com.junbo.store.clientproxy.error.ErrorCodes
 import com.junbo.store.clientproxy.error.ErrorContext
-import com.junbo.store.db.repo.ConsumptionRepository
-import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.challenge.ChallengeHelper
 import com.junbo.store.rest.purchase.TokenProcessor
@@ -89,12 +88,6 @@ class StoreResourceImpl implements StoreResource {
 
     @Resource(name = 'storeUtils')
     private StoreUtils storeUtils
-
-    @Resource(name = 'cloudantConsumptionRepository')
-    private ConsumptionRepository consumptionRepository
-
-    @Resource(name = 'cloudantTokenPinRepository')
-    private TokenRepository tokenRepository
 
     @Resource(name = 'storeRequestValidator')
     private RequestValidator requestValidator

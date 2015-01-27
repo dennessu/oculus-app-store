@@ -10,7 +10,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.clientproxy.ResourceContainer
 import com.junbo.store.common.utils.CommonUtils
-import com.junbo.store.db.repo.ConsumptionRepository
 import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.rest.utils.ApiContextBuilder
 import com.junbo.store.rest.utils.IdentityUtils
@@ -29,6 +28,7 @@ import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
 import javax.ws.rs.ext.Provider
+
 /**
  * The IAPResourceImpl class.
  */
@@ -46,9 +46,6 @@ class IAPResourceImpl implements IAPResource {
 
     @Resource(name = 'storeUtils')
     private StoreUtils storeUtils
-
-    @Resource(name = 'cloudantConsumptionRepository')
-    private ConsumptionRepository consumptionRepository
 
     @Resource(name = 'storeRequestValidator')
     private RequestValidator requestValidator
