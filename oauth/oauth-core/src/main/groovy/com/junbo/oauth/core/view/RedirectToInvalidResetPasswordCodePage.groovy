@@ -5,6 +5,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.util.UriUtil
 import org.springframework.beans.factory.annotation.Required
 
 import javax.ws.rs.core.Response
@@ -31,7 +32,7 @@ class RedirectToInvalidResetPasswordCodePage implements Action {
         }
 
         if (contextWrapper.viewLocale != null) {
-            realUrl = realUrl.replaceFirst('/locale', '/' + contextWrapper.viewLocale)
+            realUrl = UriUtil.replaceLocale(realUrl, contextWrapper.viewLocale);
         }
 
         //append error code if needed, not need for now
