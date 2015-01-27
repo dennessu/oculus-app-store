@@ -3,8 +3,8 @@
   "client_secret" : "27CF2F29AC31BC15AA808D7F0945FFC3#811B3B6834E97EC4D1DBCD2D66107F11EA923DE23DC633A0E712AB5B3940425C8704A3468BFBC4B477CBA29BECDA3F2B",
   "client_name" : "answerHub",
 
-  "redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*" ],
-  "default_redirect_uri" : "https://id.oculus.com",
+  "redirect_uris" : [ "https://answers.oculus.com/oculus/login.html" ],
+  "default_redirect_uri" : "https://answers.oculus.com/oculus/login.html",
 
   "logout_redirect_uris" : [ "https://*.oculusvr.com/*", "https://*.oculus.com/*" ],
   "default_logout_redirect_uri" : "https://id.oculus.com",
