@@ -1,188 +1,236 @@
 {
-	"countryCode": "PG",
-	"defaultLocale": {
-		"href": "/v1/locales/en_PG",
-		"id": "en_PG"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/PGK",
-		"id": "PGK"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"CPK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chimbu",
-					"longName": "Chimbu"
-				}
-			}
-		},
-		"CPM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central",
-					"longName": "Central"
-				}
-			}
-		},
-		"EBR": {
-			"locales": {
-				"en_US": {
-					"shortName": "East New Britain",
-					"longName": "East New Britain"
-				}
-			}
-		},
-		"EHG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eastern Highlands",
-					"longName": "Eastern Highlands"
-				}
-			}
-		},
-		"EPW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Enga",
-					"longName": "Enga"
-				}
-			}
-		},
-		"ESW": {
-			"locales": {
-				"en_US": {
-					"shortName": "East Sepik",
-					"longName": "East Sepik"
-				}
-			}
-		},
-		"GPK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gulf",
-					"longName": "Gulf"
-				}
-			}
-		},
-		"MBA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Milne Bay",
-					"longName": "Milne Bay"
-				}
-			}
-		},
-		"MPL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Morobe",
-					"longName": "Morobe"
-				}
-			}
-		},
-		"MPM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Madang",
-					"longName": "Madang"
-				}
-			}
-		},
-		"MRL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Manus",
-					"longName": "Manus"
-				}
-			}
-		},
-		"NCD": {
-			"locales": {
-				"en_US": {
-					"shortName": "National Capital District (Port Moresby)",
-					"longName": "National Capital District (Port Moresby)"
-				}
-			}
-		},
-		"NIK": {
-			"locales": {
-				"en_US": {
-					"shortName": "New Ireland",
-					"longName": "New Ireland"
-				}
-			}
-		},
-		"NPP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern",
-					"longName": "Northern"
-				}
-			}
-		},
-		"NSB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bougainville",
-					"longName": "Bougainville"
-				}
-			}
-		},
-		"SAN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sandaun [West Sepik]",
-					"longName": "Sandaun [West Sepik]"
-				}
-			}
-		},
-		"SHM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern Highlands",
-					"longName": "Southern Highlands"
-				}
-			}
-		},
-		"WBK": {
-			"locales": {
-				"en_US": {
-					"shortName": "West New Britain",
-					"longName": "West New Britain"
-				}
-			}
-		},
-		"WHM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western Highlands",
-					"longName": "Western Highlands"
-				}
-			}
-		},
-		"WPD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western",
-					"longName": "Western"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_PG",
-		"id": "en_PG"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Papua New Guinea",
-			"longName": "Independent State of Papua New Guinea",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_PG",
+    "id" : "en_PG"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/PGK",
+    "id" : "PGK"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "CPK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chimbu",
+          "longName" : "Chimbu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CPM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central",
+          "longName" : "Central"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EBR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "East New Britain",
+          "longName" : "East New Britain"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EHG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eastern Highlands",
+          "longName" : "Eastern Highlands"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EPW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Enga",
+          "longName" : "Enga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ESW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "East Sepik",
+          "longName" : "East Sepik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GPK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gulf",
+          "longName" : "Gulf"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MBA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Milne Bay",
+          "longName" : "Milne Bay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MPL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Morobe",
+          "longName" : "Morobe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MPM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Madang",
+          "longName" : "Madang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MRL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Manus",
+          "longName" : "Manus"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NCD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "National Capital District (Port Moresby)",
+          "longName" : "National Capital District (Port Moresby)"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NIK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "New Ireland",
+          "longName" : "New Ireland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NPP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern",
+          "longName" : "Northern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NSB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bougainville",
+          "longName" : "Bougainville"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sandaun [West Sepik]",
+          "longName" : "Sandaun [West Sepik]"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SHM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern Highlands",
+          "longName" : "Southern Highlands"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WBK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "West New Britain",
+          "longName" : "West New Britain"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WHM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western Highlands",
+          "longName" : "Western Highlands"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WPD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western",
+          "longName" : "Western"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_PG",
+    "id" : "en_PG"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Papua New Guinea",
+      "longName" : "Independent State of Papua New Guinea",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Papua-Neuguinea",
+      "longName" : "Unabhängiger Staat Papua-Neuguinea",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Papua New Guinea",
+      "longName" : "Independent State of Papua New Guinea",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Papúa Nueva Guinea",
+      "longName" : "Estado Independiente de Papúa Nueva Guinea",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Papouasie Nouvelle-Guinée",
+      "longName" : "État indépendant de Papouasie Nouvelle Guinée",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Papua Nuova Guinea",
+      "longName" : "Stato Indipendente della Papua Nuova Guinea",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "파푸아뉴기니",
+      "longName" : "Independent State of Papua New Guinea",
+      "postalCode" : ""
+    }
+  }
 }

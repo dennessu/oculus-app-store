@@ -1,103 +1,140 @@
 {
-	"countryCode": "BW",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BWP",
-		"id": "BWP"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"CE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central",
-					"longName": "Central"
-				}
-			}
-		},
-		"GH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ghanzi",
-					"longName": "Ghanzi"
-				}
-			}
-		},
-		"KG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kgalagadi",
-					"longName": "Kgalagadi"
-				}
-			}
-		},
-		"KL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kgatleng",
-					"longName": "Kgatleng"
-				}
-			}
-		},
-		"KW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kweneng",
-					"longName": "Kweneng"
-				}
-			}
-		},
-		"NE": {
-			"locales": {
-				"en_US": {
-					"shortName": "North-East",
-					"longName": "North-East"
-				}
-			}
-		},
-		"NW": {
-			"locales": {
-				"en_US": {
-					"shortName": "North-West",
-					"longName": "North-West"
-				}
-			}
-		},
-		"SE": {
-			"locales": {
-				"en_US": {
-					"shortName": "South-East",
-					"longName": "South-East"
-				}
-			}
-		},
-		"SO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern",
-					"longName": "Southern"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Botswana",
-			"longName": "Republic of Botswana",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BW",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BWP",
+    "id" : "BWP"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "CE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central",
+          "longName" : "Central"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ghanzi",
+          "longName" : "Ghanzi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kgalagadi",
+          "longName" : "Kgalagadi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kgatleng",
+          "longName" : "Kgatleng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kweneng",
+          "longName" : "Kweneng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North-East",
+          "longName" : "North-East"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North-West",
+          "longName" : "North-West"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South-East",
+          "longName" : "South-East"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern",
+          "longName" : "Southern"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Botswana",
+      "longName" : "Republic of Botswana",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Botswana",
+      "longName" : "Republic of Botswana",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Botswana",
+      "longName" : "Republic of Botswana",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Botsuana",
+      "longName" : "República de Botsuana",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Botswana",
+      "longName" : "République du Botswana",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Botswana",
+      "longName" : "Repubblica di Botswana",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "보츠와나",
+      "longName" : "Republic of Botswana",
+      "postalCode" : ""
+    }
+  }
 }

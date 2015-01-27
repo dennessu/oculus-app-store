@@ -1,133 +1,168 @@
 {
-	"countryCode": "LB",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_LB",
-		"id": "ar_LB"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/LBP",
-		"id": "LBP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AK": {
-			"locales": {
-				"ar_LB": {
-					"shortName": "عكار",
-					"longName": "عكار"
-				},
-				"en_US": {
-					"shortName": "Aakkar",
-					"longName": "Aakkar"
-				}
-			}
-		},
-		"AS": {
-			"locales": {
-				"ar_LB": {
-					"shortName": "الشمال",
-					"longName": "الشمال"
-				},
-				"en_US": {
-					"shortName": "North",
-					"longName": "North"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Beirut",
-					"longName": "Beirut"
-				},
-				"ar_LB": {
-					"shortName": "محافظة بيروت",
-					"longName": "محافظة بيروت"
-				}
-			}
-		},
-		"BH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Baalbek-Hermel",
-					"longName": "Baalbek-Hermel"
-				},
-				"ar_LB": {
-					"shortName": "بعلبك الهرمل",
-					"longName": "بعلبك الهرمل"
-				}
-			}
-		},
-		"BI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Beqaa",
-					"longName": "Beqaa"
-				},
-				"ar_LB": {
-					"shortName": "البقاع",
-					"longName": "البقاع"
-				}
-			}
-		},
-		"JA": {
-			"locales": {
-				"en_US": {
-					"shortName": "South",
-					"longName": "South"
-				},
-				"ar_LB": {
-					"shortName": "الجنوب",
-					"longName": "الجنوب"
-				}
-			}
-		},
-		"JL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mount Lebanon",
-					"longName": "Mount Lebanon"
-				},
-				"ar_LB": {
-					"shortName": "جبل لبنان",
-					"longName": "جبل لبنان"
-				}
-			}
-		},
-		"NA": {
-			"locales": {
-				"ar_LB": {
-					"shortName": "محافظة النبطية",
-					"longName": "محافظة النبطية"
-				},
-				"en_US": {
-					"shortName": "Nabatieh",
-					"longName": "Nabatieh"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_LB",
-		"id": "ar_LB"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Lebanon",
-			"longName": "Lebanese Republic",
-			"postalCode": "Postal Code"
-		},
-		"ar_LB": {
-			"shortName": "لبنان",
-			"longName": "الجمهورية اللبنانية",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "LB",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_LB",
+    "id" : "ar_LB"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/LBP",
+    "id" : "LBP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AK" : {
+      "locales" : {
+        "ar_LB" : {
+          "shortName" : "عكار",
+          "longName" : "عكار"
+        },
+        "en_US" : {
+          "shortName" : "Aakkar",
+          "longName" : "Aakkar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AS" : {
+      "locales" : {
+        "ar_LB" : {
+          "shortName" : "الشمال",
+          "longName" : "الشمال"
+        },
+        "en_US" : {
+          "shortName" : "North",
+          "longName" : "North"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Beirut",
+          "longName" : "Beirut"
+        },
+        "ar_LB" : {
+          "shortName" : "محافظة بيروت",
+          "longName" : "محافظة بيروت"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Baalbek-Hermel",
+          "longName" : "Baalbek-Hermel"
+        },
+        "ar_LB" : {
+          "shortName" : "بعلبك الهرمل",
+          "longName" : "بعلبك الهرمل"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Beqaa",
+          "longName" : "Beqaa"
+        },
+        "ar_LB" : {
+          "shortName" : "البقاع",
+          "longName" : "البقاع"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South",
+          "longName" : "South"
+        },
+        "ar_LB" : {
+          "shortName" : "الجنوب",
+          "longName" : "الجنوب"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mount Lebanon",
+          "longName" : "Mount Lebanon"
+        },
+        "ar_LB" : {
+          "shortName" : "جبل لبنان",
+          "longName" : "جبل لبنان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NA" : {
+      "locales" : {
+        "ar_LB" : {
+          "shortName" : "محافظة النبطية",
+          "longName" : "محافظة النبطية"
+        },
+        "en_US" : {
+          "shortName" : "Nabatieh",
+          "longName" : "Nabatieh"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_LB",
+    "id" : "ar_LB"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Lebanon",
+      "longName" : "Lebanese Republic",
+      "postalCode" : ""
+    },
+    "ar_LB" : {
+      "shortName" : "لبنان",
+      "longName" : "الجمهورية اللبنانية",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Libanon",
+      "longName" : "Libanesische Republik",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Lebanon",
+      "longName" : "Lebanese Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Líbano",
+      "longName" : "República Libanesa",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Liban",
+      "longName" : "République libanaise",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Libano",
+      "longName" : "Repubblica Libanese",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "레바논",
+      "longName" : "Lebanese Republic",
+      "postalCode" : ""
+    }
+  }
 }

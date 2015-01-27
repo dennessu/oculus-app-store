@@ -19,6 +19,7 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.error.Error;
 import com.junbo.common.id.*;
 import com.junbo.common.json.ObjectMapperProvider;
@@ -873,6 +874,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     public void UpdateTos(String type, String status, boolean increaseMinorVersion) throws Exception {
         oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
         identityClient.updateTos(type, null, status, increaseMinorVersion);
+    }
+
+    public void UpdateTos(String type, String status, List<String> supportLocales, boolean increaseMinorVersion) throws Exception {
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY_ADMIN);
+        identityClient.updateTos(type, supportLocales, status, increaseMinorVersion);
     }
 
     public void UpdateTos(TosId tosId) throws Exception {

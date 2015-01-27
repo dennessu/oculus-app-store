@@ -1,29 +1,55 @@
 {
-	"countryCode": "IM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GBP",
-		"id": "GBP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Isle of Man",
-			"longName": "Isle of Man",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "IM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GBP",
+    "id" : "GBP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Isle of Man",
+      "longName" : "Isle of Man",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Isle of Man",
+      "longName" : "Isle of Man",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Isle of Man",
+      "longName" : "Isle of Man",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Isla de Man",
+      "longName" : "Isla de Man",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Île de Man",
+      "longName" : "Île de Man",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isola di Man",
+      "longName" : "Isola di Man",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "맨 섬",
+      "longName" : "맨 섬",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,151 +1,189 @@
 {
-	"countryCode": "CM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XAF",
-		"id": "XAF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"AD": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "Adamaoua",
-					"longName": "Adamaoua"
-				},
-				"en_US": {
-					"shortName": "Adamaoua",
-					"longName": "Adamaoua"
-				}
-			}
-		},
-		"CE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Centre",
-					"longName": "Centre"
-				},
-				"fr_FR": {
-					"shortName": "Centre",
-					"longName": "Centre"
-				}
-			}
-		},
-		"EN": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "Extrême-Nord",
-					"longName": "Extrême-Nord"
-				},
-				"en_US": {
-					"shortName": "Far North",
-					"longName": "Far North"
-				}
-			}
-		},
-		"ES": {
-			"locales": {
-				"en_US": {
-					"shortName": "East",
-					"longName": "East"
-				},
-				"fr_FR": {
-					"shortName": "Est",
-					"longName": "Est"
-				}
-			}
-		},
-		"LT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Littoral",
-					"longName": "Littoral"
-				},
-				"fr_FR": {
-					"shortName": "Littoral",
-					"longName": "Littoral"
-				}
-			}
-		},
-		"NO": {
-			"locales": {
-				"en_US": {
-					"shortName": "North",
-					"longName": "North"
-				},
-				"fr_FR": {
-					"shortName": "Nord",
-					"longName": "Nord"
-				}
-			}
-		},
-		"NW": {
-			"locales": {
-				"en_US": {
-					"shortName": "North-West",
-					"longName": "North-West"
-				},
-				"fr_FR": {
-					"shortName": "Nord-Ouest",
-					"longName": "Nord-Ouest"
-				}
-			}
-		},
-		"OU": {
-			"locales": {
-				"en_US": {
-					"shortName": "West",
-					"longName": "West"
-				},
-				"fr_FR": {
-					"shortName": "Ouest",
-					"longName": "Ouest"
-				}
-			}
-		},
-		"SU": {
-			"locales": {
-				"en_US": {
-					"shortName": "South",
-					"longName": "South"
-				},
-				"fr_FR": {
-					"shortName": "Sud",
-					"longName": "Sud"
-				}
-			}
-		},
-		"SW": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "Sud-Ouest",
-					"longName": "Sud-Ouest"
-				},
-				"en_US": {
-					"shortName": "South-West",
-					"longName": "South-West"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Cameroon",
-			"longName": "Republic of Cameroon",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XAF",
+    "id" : "XAF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "AD" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "Adamaoua",
+          "longName" : "Adamaoua"
+        },
+        "en_US" : {
+          "shortName" : "Adamaoua",
+          "longName" : "Adamaoua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Centre",
+          "longName" : "Centre"
+        },
+        "fr_FR" : {
+          "shortName" : "Centre",
+          "longName" : "Centre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EN" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "Extrême-Nord",
+          "longName" : "Extrême-Nord"
+        },
+        "en_US" : {
+          "shortName" : "Far North",
+          "longName" : "Far North"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ES" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "East",
+          "longName" : "East"
+        },
+        "fr_FR" : {
+          "shortName" : "Est",
+          "longName" : "Est"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Littoral",
+          "longName" : "Littoral"
+        },
+        "fr_FR" : {
+          "shortName" : "Littoral",
+          "longName" : "Littoral"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North",
+          "longName" : "North"
+        },
+        "fr_FR" : {
+          "shortName" : "Nord",
+          "longName" : "Nord"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North-West",
+          "longName" : "North-West"
+        },
+        "fr_FR" : {
+          "shortName" : "Nord-Ouest",
+          "longName" : "Nord-Ouest"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "West",
+          "longName" : "West"
+        },
+        "fr_FR" : {
+          "shortName" : "Ouest",
+          "longName" : "Ouest"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South",
+          "longName" : "South"
+        },
+        "fr_FR" : {
+          "shortName" : "Sud",
+          "longName" : "Sud"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SW" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "Sud-Ouest",
+          "longName" : "Sud-Ouest"
+        },
+        "en_US" : {
+          "shortName" : "South-West",
+          "longName" : "South-West"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Cameroon",
+      "longName" : "Republic of Cameroon",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Kamerun",
+      "longName" : "Republik Kamerun",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Cameroon",
+      "longName" : "Republic of Cameroon",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Camerún",
+      "longName" : "República de Camerún",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Cameroun",
+      "longName" : "République du Cameroun",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Camerun",
+      "longName" : "Repubblica del Camerun",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "카메룬",
+      "longName" : "Republic of Cameroon",
+      "postalCode" : ""
+    }
+  }
 }

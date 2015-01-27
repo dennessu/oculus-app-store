@@ -1,145 +1,181 @@
 {
-	"countryCode": "OM",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_OM",
-		"id": "ar_OM"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/OMR",
-		"id": "OMR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"BA": {
-			"locales": {
-				"ar_OM": {
-					"shortName": "الباطنة",
-					"longName": "الباطنة"
-				},
-				"en_US": {
-					"shortName": "Al Batinah",
-					"longName": "Al Batinah"
-				}
-			}
-		},
-		"BU": {
-			"locales": {
-				"ar_OM": {
-					"shortName": "البريمي‎",
-					"longName": "البريمي‎"
-				},
-				"en_US": {
-					"shortName": "Al Buraimi",
-					"longName": "Al Buraimi"
-				}
-			}
-		},
-		"DA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ad Dakhiliyah",
-					"longName": "Ad Dakhiliyah"
-				},
-				"ar_OM": {
-					"shortName": "الداخلية‎",
-					"longName": "الداخلية‎"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Muscat",
-					"longName": "Muscat"
-				},
-				"ar_OM": {
-					"shortName": "المسكات عنب طيب الشذا",
-					"longName": "المسكات عنب طيب الشذا"
-				}
-			}
-		},
-		"MU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Musandam",
-					"longName": "Musandam"
-				},
-				"ar_OM": {
-					"shortName": "محافظة مسندم",
-					"longName": "محافظة مسندم"
-				}
-			}
-		},
-		"SH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ash Sharqiyah",
-					"longName": "Ash Sharqiyah"
-				},
-				"ar_OM": {
-					"shortName": "الشرقية‎",
-					"longName": "الشرقية‎"
-				}
-			}
-		},
-		"WU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Wusta",
-					"longName": "Al Wusta"
-				},
-				"ar_OM": {
-					"shortName": "الوسطى‎",
-					"longName": "الوسطى‎"
-				}
-			}
-		},
-		"ZA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ad Dhahirah",
-					"longName": "Ad Dhahirah"
-				},
-				"ar_OM": {
-					"shortName": "الظاهرة‎",
-					"longName": "الظاهرة‎"
-				}
-			}
-		},
-		"ZU": {
-			"locales": {
-				"ar_OM": {
-					"shortName": "محافطة ظفار",
-					"longName": "محافطة ظفار"
-				},
-				"en_US": {
-					"shortName": "Dhofar",
-					"longName": "Dhofar"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_OM",
-		"id": "ar_OM"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Oman",
-			"longName": "Sultanate of Oman",
-			"postalCode": "Postal Code"
-		},
-		"ar_OM": {
-			"shortName": "عمان",
-			"longName": "سلطنة عُمان",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "OM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_OM",
+    "id" : "ar_OM"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/OMR",
+    "id" : "OMR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "BA" : {
+      "locales" : {
+        "ar_OM" : {
+          "shortName" : "الباطنة",
+          "longName" : "الباطنة"
+        },
+        "en_US" : {
+          "shortName" : "Al Batinah",
+          "longName" : "Al Batinah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BU" : {
+      "locales" : {
+        "ar_OM" : {
+          "shortName" : "البريمي‎",
+          "longName" : "البريمي‎"
+        },
+        "en_US" : {
+          "shortName" : "Al Buraimi",
+          "longName" : "Al Buraimi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ad Dakhiliyah",
+          "longName" : "Ad Dakhiliyah"
+        },
+        "ar_OM" : {
+          "shortName" : "الداخلية‎",
+          "longName" : "الداخلية‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Muscat",
+          "longName" : "Muscat"
+        },
+        "ar_OM" : {
+          "shortName" : "المسكات عنب طيب الشذا",
+          "longName" : "المسكات عنب طيب الشذا"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Musandam",
+          "longName" : "Musandam"
+        },
+        "ar_OM" : {
+          "shortName" : "محافظة مسندم",
+          "longName" : "محافظة مسندم"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ash Sharqiyah",
+          "longName" : "Ash Sharqiyah"
+        },
+        "ar_OM" : {
+          "shortName" : "الشرقية‎",
+          "longName" : "الشرقية‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Wusta",
+          "longName" : "Al Wusta"
+        },
+        "ar_OM" : {
+          "shortName" : "الوسطى‎",
+          "longName" : "الوسطى‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ad Dhahirah",
+          "longName" : "Ad Dhahirah"
+        },
+        "ar_OM" : {
+          "shortName" : "الظاهرة‎",
+          "longName" : "الظاهرة‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZU" : {
+      "locales" : {
+        "ar_OM" : {
+          "shortName" : "محافطة ظفار",
+          "longName" : "محافطة ظفار"
+        },
+        "en_US" : {
+          "shortName" : "Dhofar",
+          "longName" : "Dhofar"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_OM",
+    "id" : "ar_OM"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Oman",
+      "longName" : "Sultanate of Oman",
+      "postalCode" : ""
+    },
+    "ar_OM" : {
+      "shortName" : "عمان",
+      "longName" : "سلطنة عُمان",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Oman",
+      "longName" : "Sultanat Oman",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Oman",
+      "longName" : "Sultanate of Oman",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Omán",
+      "longName" : "Sultanato de Omán",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Oman",
+      "longName" : "Sultanat d’Oman",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Oman",
+      "longName" : "Sultanato dell'Oman",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "오만",
+      "longName" : "Sultanate of Oman",
+      "postalCode" : ""
+    }
+  }
 }

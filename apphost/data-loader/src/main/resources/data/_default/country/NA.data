@@ -1,135 +1,176 @@
 {
-	"countryCode": "NA",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/NAD",
-		"id": "NAD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"CA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zambezi",
-					"longName": "Zambezi"
-				}
-			}
-		},
-		"ER": {
-			"locales": {
-				"en_US": {
-					"shortName": "Erongo",
-					"longName": "Erongo"
-				}
-			}
-		},
-		"HA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hardap",
-					"longName": "Hardap"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karas",
-					"longName": "Karas"
-				}
-			}
-		},
-		"KH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khomas",
-					"longName": "Khomas"
-				}
-			}
-		},
-		"KU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kunene",
-					"longName": "Kunene"
-				}
-			}
-		},
-		"OD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Otjozondjupa",
-					"longName": "Otjozondjupa"
-				}
-			}
-		},
-		"OH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Omaheke",
-					"longName": "Omaheke"
-				}
-			}
-		},
-		"OK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kavango",
-					"longName": "Kavango"
-				}
-			}
-		},
-		"ON": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oshana",
-					"longName": "Oshana"
-				}
-			}
-		},
-		"OS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Omusati",
-					"longName": "Omusati"
-				}
-			}
-		},
-		"OT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oshikoto",
-					"longName": "Oshikoto"
-				}
-			}
-		},
-		"OW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ohangwena",
-					"longName": "Ohangwena"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Namibia",
-			"longName": "Republic of Namibia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/NAD",
+    "id" : "NAD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "CA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zambezi",
+          "longName" : "Zambezi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ER" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Erongo",
+          "longName" : "Erongo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hardap",
+          "longName" : "Hardap"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karas",
+          "longName" : "Karas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khomas",
+          "longName" : "Khomas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kunene",
+          "longName" : "Kunene"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Otjozondjupa",
+          "longName" : "Otjozondjupa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Omaheke",
+          "longName" : "Omaheke"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kavango",
+          "longName" : "Kavango"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ON" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oshana",
+          "longName" : "Oshana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Omusati",
+          "longName" : "Omusati"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oshikoto",
+          "longName" : "Oshikoto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ohangwena",
+          "longName" : "Ohangwena"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Namibia",
+      "longName" : "Republic of Namibia",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Namibia",
+      "longName" : "Republic of Namibia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Namibia",
+      "longName" : "Republic of Namibia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Namibia",
+      "longName" : "República de Namibia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Namibie",
+      "longName" : "République de Namibie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Namibia",
+      "longName" : "Repubblica di Namibia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "나미비아",
+      "longName" : "Republic of Namibia",
+      "postalCode" : ""
+    }
+  }
 }

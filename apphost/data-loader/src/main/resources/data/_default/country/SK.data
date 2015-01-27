@@ -1,133 +1,168 @@
 {
-	"countryCode": "SK",
-	"defaultLocale": {
-		"href": "/v1/locales/sk_SK",
-		"id": "sk_SK"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"BC": {
-			"locales": {
-				"sk_SK": {
-					"shortName": "Banskobystrický kraj",
-					"longName": "Banskobystrický kraj"
-				},
-				"en_US": {
-					"shortName": "Banská Bystrica Region",
-					"longName": "Banská Bystrica Region"
-				}
-			}
-		},
-		"BL": {
-			"locales": {
-				"sk_SK": {
-					"shortName": "Bratislavský kraj",
-					"longName": "Bratislavský kraj"
-				},
-				"en_US": {
-					"shortName": "Bratislava Region",
-					"longName": "Bratislava Region"
-				}
-			}
-		},
-		"KI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Košice Region",
-					"longName": "Košice Region"
-				},
-				"sk_SK": {
-					"shortName": "Košický kraj",
-					"longName": "Košický kraj"
-				}
-			}
-		},
-		"NI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nitra Region",
-					"longName": "Nitra Region"
-				},
-				"sk_SK": {
-					"shortName": "Nitriansky kraj",
-					"longName": "Nitriansky kraj"
-				}
-			}
-		},
-		"PV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Prešov Region",
-					"longName": "Prešov Region"
-				},
-				"sk_SK": {
-					"shortName": "Prešovský Kraj",
-					"longName": "Prešovský Kraj"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Trnava Region",
-					"longName": "Trnava Region"
-				},
-				"sk_SK": {
-					"shortName": "Trnavský kraj",
-					"longName": "Trnavský kraj"
-				}
-			}
-		},
-		"TC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Trenčín Region",
-					"longName": "Trenčín Region"
-				},
-				"sk_SK": {
-					"shortName": "Trenčiansky kraj",
-					"longName": "Trenčiansky kraj"
-				}
-			}
-		},
-		"ZI": {
-			"locales": {
-				"sk_SK": {
-					"shortName": "Žilinský kraj",
-					"longName": "Žilinský kraj"
-				},
-				"en_US": {
-					"shortName": "Trenčín Region",
-					"longName": "Trenčín Region"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/sk_SK",
-		"id": "sk_SK"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Slovakia",
-			"longName": "Slovak Republic",
-			"postalCode": "Postal Code"
-		},
-		"sk_SK": {
-			"shortName": "Slovensko",
-			"longName": "Slovenská republika",
-			"postalCode": "PSČ"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SK",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/sk_SK",
+    "id" : "sk_SK"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "BC" : {
+      "locales" : {
+        "sk_SK" : {
+          "shortName" : "Banskobystrický kraj",
+          "longName" : "Banskobystrický kraj"
+        },
+        "en_US" : {
+          "shortName" : "Banská Bystrica Region",
+          "longName" : "Banská Bystrica Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BL" : {
+      "locales" : {
+        "sk_SK" : {
+          "shortName" : "Bratislavský kraj",
+          "longName" : "Bratislavský kraj"
+        },
+        "en_US" : {
+          "shortName" : "Bratislava Region",
+          "longName" : "Bratislava Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Košice Region",
+          "longName" : "Košice Region"
+        },
+        "sk_SK" : {
+          "shortName" : "Košický kraj",
+          "longName" : "Košický kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nitra Region",
+          "longName" : "Nitra Region"
+        },
+        "sk_SK" : {
+          "shortName" : "Nitriansky kraj",
+          "longName" : "Nitriansky kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Prešov Region",
+          "longName" : "Prešov Region"
+        },
+        "sk_SK" : {
+          "shortName" : "Prešovský Kraj",
+          "longName" : "Prešovský Kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Trnava Region",
+          "longName" : "Trnava Region"
+        },
+        "sk_SK" : {
+          "shortName" : "Trnavský kraj",
+          "longName" : "Trnavský kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Trenčín Region",
+          "longName" : "Trenčín Region"
+        },
+        "sk_SK" : {
+          "shortName" : "Trenčiansky kraj",
+          "longName" : "Trenčiansky kraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZI" : {
+      "locales" : {
+        "sk_SK" : {
+          "shortName" : "Žilinský kraj",
+          "longName" : "Žilinský kraj"
+        },
+        "en_US" : {
+          "shortName" : "Trenčín Region",
+          "longName" : "Trenčín Region"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/sk_SK",
+    "id" : "sk_SK"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Slovakia",
+      "longName" : "Slovak Republic",
+      "postalCode" : ""
+    },
+    "sk_SK" : {
+      "shortName" : "Slovensko",
+      "longName" : "Slovenská republika",
+      "postalCode" : "PSČ"
+    },
+    "de_DE" : {
+      "shortName" : "Slowakei",
+      "longName" : "Slovak Republic",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Slovakia",
+      "longName" : "Slovak Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Eslovaquia",
+      "longName" : "República Eslovaca",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Slovaquie",
+      "longName" : "République slovaque",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Slovacchia",
+      "longName" : "Repubblica Slovacca",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "슬로바키아",
+      "longName" : "Slovak Republic",
+      "postalCode" : ""
+    }
+  }
 }

@@ -10,6 +10,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.util.UriUtil
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -38,7 +39,7 @@ class RedirectToPage implements Action {
         }
 
         if (contextWrapper.viewLocale != null) {
-            realUrl = realUrl.replaceFirst('/locale', '/' + contextWrapper.viewLocale)
+            realUrl = UriUtil.replaceLocale(realUrl, contextWrapper.viewLocale);
         }
 
         contextWrapper.responseBuilder = Response.status(Response.Status.FOUND)

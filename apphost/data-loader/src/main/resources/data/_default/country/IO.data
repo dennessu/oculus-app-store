@@ -1,29 +1,55 @@
 {
-	"countryCode": "IO",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GBP",
-		"id": "GBP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "British Indian Ocean Territory",
-			"longName": "British Indian Ocean Territory",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "IO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GBP",
+    "id" : "GBP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "British Indian Ocean Territory",
+      "longName" : "British Indian Ocean Territory",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Britisches Territorium im Indischen Ozean",
+      "longName" : "Britisches Territorium im Indischen Ozean",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "British Indian Ocean Territory",
+      "longName" : "British Indian Ocean Territory",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Territorio Británico del Océano Índico",
+      "longName" : "Territorio Británico del Océano Índico",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Territoire britannique de l’Océan Indien",
+      "longName" : "Territoire britannique de l’Océan Indien",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Territorio britannico dell'Oceano Indiano",
+      "longName" : "Territorio britannico dell'Oceano Indiano",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "영국령 인도양식민지",
+      "longName" : "영국령 인도양식민지",
+      "postalCode" : ""
+    }
+  }
 }

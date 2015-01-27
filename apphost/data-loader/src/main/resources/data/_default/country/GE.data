@@ -1,124 +1,164 @@
 {
-	"countryCode": "GE",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GEL",
-		"id": "GEL"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Abkhazia",
-					"longName": "Abkhazia"
-				}
-			}
-		},
-		"AJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ajaria",
-					"longName": "Ajaria"
-				}
-			}
-		},
-		"GU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Guria",
-					"longName": "Guria"
-				}
-			}
-		},
-		"IM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Imereti",
-					"longName": "Imereti"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"en_US": {
-					"shortName": "K'akheti",
-					"longName": "K'akheti"
-				}
-			}
-		},
-		"KK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kvemo Kartli",
-					"longName": "Kvemo Kartli"
-				}
-			}
-		},
-		"MM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mtskheta-Mtianeti",
-					"longName": "Mtskheta-Mtianeti"
-				}
-			}
-		},
-		"RL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rach'a-Lechkhumi-Kvemo Svaneti",
-					"longName": "Rach'a-Lechkhumi-Kvemo Svaneti"
-				}
-			}
-		},
-		"SJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Samtskhe-Javakheti",
-					"longName": "Samtskhe-Javakheti"
-				}
-			}
-		},
-		"SK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shida Kartli",
-					"longName": "Shida Kartli"
-				}
-			}
-		},
-		"SZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Samegrelo-Zemo Svaneti",
-					"longName": "Samegrelo-Zemo Svaneti"
-				}
-			}
-		},
-		"TB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tbilisi",
-					"longName": "Tbilisi"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Georgia",
-			"longName": "Georgia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GEL",
+    "id" : "GEL"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Abkhazia",
+          "longName" : "Abkhazia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ajaria",
+          "longName" : "Ajaria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Guria",
+          "longName" : "Guria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Imereti",
+          "longName" : "Imereti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "K'akheti",
+          "longName" : "K'akheti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kvemo Kartli",
+          "longName" : "Kvemo Kartli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mtskheta-Mtianeti",
+          "longName" : "Mtskheta-Mtianeti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rach'a-Lechkhumi-Kvemo Svaneti",
+          "longName" : "Rach'a-Lechkhumi-Kvemo Svaneti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Samtskhe-Javakheti",
+          "longName" : "Samtskhe-Javakheti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shida Kartli",
+          "longName" : "Shida Kartli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Samegrelo-Zemo Svaneti",
+          "longName" : "Samegrelo-Zemo Svaneti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tbilisi",
+          "longName" : "Tbilisi"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Georgia",
+      "longName" : "Georgia",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Georgien",
+      "longName" : "Georgien",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Georgia",
+      "longName" : "Georgia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Georgia",
+      "longName" : "Georgia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Géorgie",
+      "longName" : "Géorgie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Georgia",
+      "longName" : "Georgia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "조지아",
+      "longName" : "조지아",
+      "postalCode" : ""
+    }
+  }
 }

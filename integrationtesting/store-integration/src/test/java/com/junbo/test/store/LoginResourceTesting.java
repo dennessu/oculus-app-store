@@ -1279,6 +1279,13 @@ public class LoginResourceTesting extends BaseTestClass {
         response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert response != null;
         assert response.getChallenge() == null;
+
+        Thread.sleep(2000);
+        testDataProvider.UpdateTos("TOS", "APPROVED",  Arrays.asList("en_US","zh_CN"), true); // update the minor version does not trigger challenge
+        TestContext.getData().putHeader("Accept-Language", "zh-CN");
+        response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
+        assert response != null;
+        assert response.getChallenge() == null;
     }
 
     @Property(
@@ -1293,6 +1300,14 @@ public class LoginResourceTesting extends BaseTestClass {
     )
     @Test
     public void testMultipleSupportLocales() throws Exception{
+
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        createUserRequest.setPreferredLocale("zh_CN");
+        TestContext.getData().putHeader("Accept-Language", "en-US");
+        testDataProvider.CreateUser(createUserRequest, true);
+
+        testDataProvider.UpdateTos("TOS", "APPROVED");
+
         List<String> supportLocales = new ArrayList<>();
         supportLocales.add("zh_CN");
         testDataProvider.CreateFromExistingTos("TOS", supportLocales, "APPROVED");
@@ -1315,10 +1330,6 @@ public class LoginResourceTesting extends BaseTestClass {
         assert englishVersionTos != null;
         assert chineseVersionTos != null;
 
-        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
-        createUserRequest.setPreferredLocale("zh_CN");
-        TestContext.getData().putHeader("Accept-Language", "en-US");
-        testDataProvider.CreateUser(createUserRequest, true);
 
         AuthTokenResponse response = testDataProvider.SignIn(createUserRequest.getEmail(), createUserRequest.getPassword());
         assert response != null;

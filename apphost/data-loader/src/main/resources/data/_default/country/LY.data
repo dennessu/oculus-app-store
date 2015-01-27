@@ -1,301 +1,350 @@
 {
-	"countryCode": "LY",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_LY",
-		"id": "ar_LY"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/LYD",
-		"id": "LYD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"BA": {
-			"locales": {
-				"ar_LY": {
-					"shortName": "بنغازي",
-					"longName": "بنغازي"
-				},
-				"en_US": {
-					"shortName": "Benghazi",
-					"longName": "Benghazi"
-				}
-			}
-		},
-		"BU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Butnan",
-					"longName": "Butnan"
-				},
-				"ar_LY": {
-					"shortName": "البطنان",
-					"longName": "البطنان"
-				}
-			}
-		},
-		"DR": {
-			"locales": {
-				"ar_LY": {
-					"shortName": "درنة‎",
-					"longName": "درنة‎"
-				},
-				"en_US": {
-					"shortName": "Derna",
-					"longName": "Derna"
-				}
-			}
-		},
-		"GT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ghat",
-					"longName": "Ghat"
-				},
-				"ar_LY": {
-					"shortName": "غات",
-					"longName": "غات"
-				}
-			}
-		},
-		"JA": {
-			"locales": {
-				"ar_LY": {
-					"shortName": "الجبل الأخضر",
-					"longName": "الجبل الأخضر"
-				},
-				"en_US": {
-					"shortName": "Green Mountains",
-					"longName": "Green Mountains"
-				}
-			}
-		},
-		"JG": {
-			"locales": {
-				"en_US": {
-					"shortName": "The Western Mountains",
-					"longName": "The Western Mountains"
-				},
-				"ar_LY": {
-					"shortName": "الجبل الغربي",
-					"longName": "الجبل الغربي"
-				}
-			}
-		},
-		"JI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jafara",
-					"longName": "Jafara"
-				},
-				"ar_LY": {
-					"shortName": "الجفارة",
-					"longName": "الجفارة"
-				}
-			}
-		},
-		"JU": {
-			"locales": {
-				"ar_LY": {
-					"shortName": "الجفرة",
-					"longName": "الجفرة"
-				},
-				"en_US": {
-					"shortName": "Jufra",
-					"longName": "Jufra"
-				}
-			}
-		},
-		"KF": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kufra",
-					"longName": "Kufra"
-				},
-				"ar_LY": {
-					"shortName": "الكفرة",
-					"longName": "الكفرة"
-				}
-			}
-		},
-		"MB": {
-			"locales": {
-				"ar_LY": {
-					"shortName": "المرقب",
-					"longName": "المرقب"
-				},
-				"en_US": {
-					"shortName": "Murqub",
-					"longName": "Murqub"
-				}
-			}
-		},
-		"MI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Misrata",
-					"longName": "Misrata"
-				},
-				"ar_LY": {
-					"shortName": "مصراته",
-					"longName": "مصراته"
-				}
-			}
-		},
-		"MJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Marj",
-					"longName": "Marj"
-				},
-				"ar_LY": {
-					"shortName": "المرج",
-					"longName": "المرج"
-				}
-			}
-		},
-		"MQ": {
-			"locales": {
-				"ar_LY": {
-					"shortName": "مرزق",
-					"longName": "مرزق"
-				},
-				"en_US": {
-					"shortName": "Murzuq",
-					"longName": "Murzuq"
-				}
-			}
-		},
-		"NL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nalut",
-					"longName": "Nalut"
-				},
-				"ar_LY": {
-					"shortName": "نالوت",
-					"longName": "نالوت"
-				}
-			}
-		},
-		"NQ": {
-			"locales": {
-				"ar_LY": {
-					"shortName": "النقاط الخمس",
-					"longName": "النقاط الخمس"
-				},
-				"en_US": {
-					"shortName": "Nuqat al Khams",
-					"longName": "Nuqat al Khams"
-				}
-			}
-		},
-		"SB": {
-			"locales": {
-				"ar_LY": {
-					"shortName": "سبها",
-					"longName": "سبها"
-				},
-				"en_US": {
-					"shortName": "Sabha",
-					"longName": "Sabha"
-				}
-			}
-		},
-		"SR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sirte",
-					"longName": "Sirte"
-				},
-				"ar_LY": {
-					"shortName": "سرت",
-					"longName": "سرت"
-				}
-			}
-		},
-		"TB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tripoli",
-					"longName": "Tripoli"
-				},
-				"ar_LY": {
-					"shortName": "طرابلس",
-					"longName": "طرابلس"
-				}
-			}
-		},
-		"WA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Wahat",
-					"longName": "Al Wahat"
-				},
-				"ar_LY": {
-					"shortName": "الواحات",
-					"longName": "الواحات"
-				}
-			}
-		},
-		"WD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Wadi Al Hayaa",
-					"longName": "Wadi Al Hayaa"
-				},
-				"ar_LY": {
-					"shortName": "وادي الحياة",
-					"longName": "وادي الحياة"
-				}
-			}
-		},
-		"WS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Wadi al Shatii",
-					"longName": "Wadi al Shatii"
-				},
-				"ar_LY": {
-					"shortName": "وادي الشاطئ",
-					"longName": "وادي الشاطئ"
-				}
-			}
-		},
-		"ZA": {
-			"locales": {
-				"ar_LY": {
-					"shortName": "الزاوية",
-					"longName": "الزاوية"
-				},
-				"en_US": {
-					"shortName": "Zawiya",
-					"longName": "Zawiya"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_LY",
-		"id": "ar_LY"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Libya",
-			"longName": "State of Libya",
-			"postalCode": "Postal Code"
-		},
-		"ar_LY": {
-			"shortName": "ليبيا",
-			"longName": "دولة ليبيا",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "LY",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_LY",
+    "id" : "ar_LY"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/LYD",
+    "id" : "LYD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "BA" : {
+      "locales" : {
+        "ar_LY" : {
+          "shortName" : "بنغازي",
+          "longName" : "بنغازي"
+        },
+        "en_US" : {
+          "shortName" : "Benghazi",
+          "longName" : "Benghazi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Butnan",
+          "longName" : "Butnan"
+        },
+        "ar_LY" : {
+          "shortName" : "البطنان",
+          "longName" : "البطنان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DR" : {
+      "locales" : {
+        "ar_LY" : {
+          "shortName" : "درنة‎",
+          "longName" : "درنة‎"
+        },
+        "en_US" : {
+          "shortName" : "Derna",
+          "longName" : "Derna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ghat",
+          "longName" : "Ghat"
+        },
+        "ar_LY" : {
+          "shortName" : "غات",
+          "longName" : "غات"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JA" : {
+      "locales" : {
+        "ar_LY" : {
+          "shortName" : "الجبل الأخضر",
+          "longName" : "الجبل الأخضر"
+        },
+        "en_US" : {
+          "shortName" : "Green Mountains",
+          "longName" : "Green Mountains"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "The Western Mountains",
+          "longName" : "The Western Mountains"
+        },
+        "ar_LY" : {
+          "shortName" : "الجبل الغربي",
+          "longName" : "الجبل الغربي"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jafara",
+          "longName" : "Jafara"
+        },
+        "ar_LY" : {
+          "shortName" : "الجفارة",
+          "longName" : "الجفارة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JU" : {
+      "locales" : {
+        "ar_LY" : {
+          "shortName" : "الجفرة",
+          "longName" : "الجفرة"
+        },
+        "en_US" : {
+          "shortName" : "Jufra",
+          "longName" : "Jufra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kufra",
+          "longName" : "Kufra"
+        },
+        "ar_LY" : {
+          "shortName" : "الكفرة",
+          "longName" : "الكفرة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MB" : {
+      "locales" : {
+        "ar_LY" : {
+          "shortName" : "المرقب",
+          "longName" : "المرقب"
+        },
+        "en_US" : {
+          "shortName" : "Murqub",
+          "longName" : "Murqub"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Misrata",
+          "longName" : "Misrata"
+        },
+        "ar_LY" : {
+          "shortName" : "مصراته",
+          "longName" : "مصراته"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Marj",
+          "longName" : "Marj"
+        },
+        "ar_LY" : {
+          "shortName" : "المرج",
+          "longName" : "المرج"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MQ" : {
+      "locales" : {
+        "ar_LY" : {
+          "shortName" : "مرزق",
+          "longName" : "مرزق"
+        },
+        "en_US" : {
+          "shortName" : "Murzuq",
+          "longName" : "Murzuq"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nalut",
+          "longName" : "Nalut"
+        },
+        "ar_LY" : {
+          "shortName" : "نالوت",
+          "longName" : "نالوت"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NQ" : {
+      "locales" : {
+        "ar_LY" : {
+          "shortName" : "النقاط الخمس",
+          "longName" : "النقاط الخمس"
+        },
+        "en_US" : {
+          "shortName" : "Nuqat al Khams",
+          "longName" : "Nuqat al Khams"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SB" : {
+      "locales" : {
+        "ar_LY" : {
+          "shortName" : "سبها",
+          "longName" : "سبها"
+        },
+        "en_US" : {
+          "shortName" : "Sabha",
+          "longName" : "Sabha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sirte",
+          "longName" : "Sirte"
+        },
+        "ar_LY" : {
+          "shortName" : "سرت",
+          "longName" : "سرت"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tripoli",
+          "longName" : "Tripoli"
+        },
+        "ar_LY" : {
+          "shortName" : "طرابلس",
+          "longName" : "طرابلس"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Wahat",
+          "longName" : "Al Wahat"
+        },
+        "ar_LY" : {
+          "shortName" : "الواحات",
+          "longName" : "الواحات"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Wadi Al Hayaa",
+          "longName" : "Wadi Al Hayaa"
+        },
+        "ar_LY" : {
+          "shortName" : "وادي الحياة",
+          "longName" : "وادي الحياة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Wadi al Shatii",
+          "longName" : "Wadi al Shatii"
+        },
+        "ar_LY" : {
+          "shortName" : "وادي الشاطئ",
+          "longName" : "وادي الشاطئ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZA" : {
+      "locales" : {
+        "ar_LY" : {
+          "shortName" : "الزاوية",
+          "longName" : "الزاوية"
+        },
+        "en_US" : {
+          "shortName" : "Zawiya",
+          "longName" : "Zawiya"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_LY",
+    "id" : "ar_LY"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Libya",
+      "longName" : "State of Libya",
+      "postalCode" : ""
+    },
+    "ar_LY" : {
+      "shortName" : "ليبيا",
+      "longName" : "دولة ليبيا",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Libyen",
+      "longName" : "State of Libya",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Libya",
+      "longName" : "State of Libya",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Libia",
+      "longName" : "Libia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Libye",
+      "longName" : "État de Lybie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Libia",
+      "longName" : "Stato della Libia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "리비아",
+      "longName" : "State of Libya",
+      "postalCode" : ""
+    }
+  }
 }

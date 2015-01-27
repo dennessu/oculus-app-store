@@ -1,113 +1,151 @@
 {
-	"countryCode": "SR",
-	"defaultLocale": {
-		"href": "/v1/locales/nl_SR",
-		"id": "nl_SR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/SRD",
-		"id": "SRD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"BR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Brokopondo",
-					"longName": "Brokopondo"
-				}
-			}
-		},
-		"CM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Commewijne",
-					"longName": "Commewijne"
-				}
-			}
-		},
-		"CR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Coronie",
-					"longName": "Coronie"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Marowijne",
-					"longName": "Marowijne"
-				}
-			}
-		},
-		"NI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nickerie",
-					"longName": "Nickerie"
-				}
-			}
-		},
-		"PM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Paramaribo",
-					"longName": "Paramaribo"
-				}
-			}
-		},
-		"PR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Para",
-					"longName": "Para"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saramacca",
-					"longName": "Saramacca"
-				}
-			}
-		},
-		"SI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sipaliwini",
-					"longName": "Sipaliwini"
-				}
-			}
-		},
-		"WA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Wanica",
-					"longName": "Wanica"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/nl_SR",
-		"id": "nl_SR"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Suriname",
-			"longName": "Republic of Suriname",
-            "postalCode": "Postal Code"
-		},
-		"nl_SR": {
-			"shortName": "Suriname",
-			"longName": "Republiek Suriname",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/nl_SR",
+    "id" : "nl_SR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/SRD",
+    "id" : "SRD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "BR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Brokopondo",
+          "longName" : "Brokopondo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Commewijne",
+          "longName" : "Commewijne"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Coronie",
+          "longName" : "Coronie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Marowijne",
+          "longName" : "Marowijne"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nickerie",
+          "longName" : "Nickerie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Paramaribo",
+          "longName" : "Paramaribo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Para",
+          "longName" : "Para"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saramacca",
+          "longName" : "Saramacca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sipaliwini",
+          "longName" : "Sipaliwini"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Wanica",
+          "longName" : "Wanica"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/nl_SR",
+    "id" : "nl_SR"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Suriname",
+      "longName" : "Republic of Suriname",
+      "postalCode" : ""
+    },
+    "nl_SR" : {
+      "shortName" : "Suriname",
+      "longName" : "Republiek Suriname",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Suriname",
+      "longName" : "Republic of Suriname",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Suriname",
+      "longName" : "Republic of Suriname",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Surinam",
+      "longName" : "República de Surinam",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Suriname",
+      "longName" : "République du Suriname",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Suriname",
+      "longName" : "Repubblica del Suriname",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "수리남",
+      "longName" : "Republic of Suriname",
+      "postalCode" : ""
+    }
+  }
 }

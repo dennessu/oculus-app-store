@@ -1,232 +1,275 @@
 {
-	"countryCode": "KZ",
-	"defaultLocale": {
-		"href": "/v1/locales/kk_KZ",
-		"id": "kk_KZ"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/KZT",
-		"id": "KZT"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/RGRS",
-		"id": "RGRS"
-	}],
-	"subCountries": {
-		"AKM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Akmola Province",
-					"longName": "Akmola Province"
-				},
-				"kk_KZ": {
-					"shortName": "Ақмола облысы",
-					"longName": "Ақмола облысы"
-				}
-			}
-		},
-		"AKT": {
-			"locales": {
-				"kk_KZ": {
-					"shortName": "Ақтөбе облысы",
-					"longName": "Ақтөбе облысы"
-				},
-				"en_US": {
-					"shortName": "Aktobe Province",
-					"longName": "Aktobe Province"
-				}
-			}
-		},
-		"ALA": {
-			"locales": {
-				"kk_KZ": {
-					"shortName": "Алматы",
-					"longName": "Алматы"
-				},
-				"en_US": {
-					"shortName": "Almaty",
-					"longName": "Almaty"
-				}
-			}
-		},
-		"ALM": {
-			"locales": {
-				"kk_KZ": {
-					"shortName": "Алматы облысы",
-					"longName": "Алматы облысы"
-				},
-				"en_US": {
-					"shortName": "Almaty Province",
-					"longName": "Almaty Province"
-				}
-			}
-		},
-		"AST": {
-			"locales": {
-				"en_US": {
-					"shortName": "Astana",
-					"longName": "Astana"
-				},
-				"kk_KZ": {
-					"shortName": "Астана",
-					"longName": "Астана"
-				}
-			}
-		},
-		"ATY": {
-			"locales": {
-				"kk_KZ": {
-					"shortName": "Атырау облысы",
-					"longName": "Атырау облысы"
-				},
-				"en_US": {
-					"shortName": "Atyrau Province",
-					"longName": "Atyrau Province"
-				}
-			}
-		},
-		"KAR": {
-			"locales": {
-				"kk_KZ": {
-					"shortName": "Қарағанды облысы",
-					"longName": "Қарағанды облысы"
-				},
-				"en_US": {
-					"shortName": "Karagandy Province",
-					"longName": "Karagandy Province"
-				}
-			}
-		},
-		"KUS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kostanay Province",
-					"longName": "Kostanay Province"
-				},
-				"kk_KZ": {
-					"shortName": "Қостанай облысы",
-					"longName": "Қостанай облысы"
-				}
-			}
-		},
-		"KZY": {
-			"locales": {
-				"kk_KZ": {
-					"shortName": "Қызылорда облысы",
-					"longName": "Қызылорда облысы"
-				},
-				"en_US": {
-					"shortName": "Kyzylorda Province",
-					"longName": "Kyzylorda Province"
-				}
-			}
-		},
-		"MAN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mangystau Province",
-					"longName": "Mangystau Province"
-				},
-				"kk_KZ": {
-					"shortName": "Маңғыстау облысы",
-					"longName": "Маңғыстау облысы"
-				}
-			}
-		},
-		"PAV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pavlodar Province",
-					"longName": "Pavlodar Province"
-				},
-				"kk_KZ": {
-					"shortName": "Павлодар облысы",
-					"longName": "Павлодар облысы"
-				}
-			}
-		},
-		"SEV": {
-			"locales": {
-				"kk_KZ": {
-					"shortName": "Солтүстік Қазақстан облысы",
-					"longName": "Солтүстік Қазақстан облысы"
-				},
-				"en_US": {
-					"shortName": "North Kazakhstan Province",
-					"longName": "North Kazakhstan Province"
-				}
-			}
-		},
-		"VOS": {
-			"locales": {
-				"kk_KZ": {
-					"shortName": "Шығыс Қазақстан облысы",
-					"longName": "Шығыс Қазақстан облысы"
-				},
-				"en_US": {
-					"shortName": "East Kazakhstan Province",
-					"longName": "East Kazakhstan Province"
-				}
-			}
-		},
-		"YUZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "South Kazakhstan Province",
-					"longName": "South Kazakhstan Province"
-				},
-				"kk_KZ": {
-					"shortName": "Оңтүстік Қазақстан облысы",
-					"longName": "Оңтүстік Қазақстан облысы"
-				}
-			}
-		},
-		"ZAP": {
-			"locales": {
-				"en_US": {
-					"shortName": "West Kazakhstan Province",
-					"longName": "West Kazakhstan Province"
-				},
-				"kk_KZ": {
-					"shortName": "Батыс Қазақстан облысы",
-					"longName": "Батыс Қазақстан облысы"
-				}
-			}
-		},
-		"ZHA": {
-			"locales": {
-				"kk_KZ": {
-					"shortName": "Жамбыл облысы",
-					"longName": "Жамбыл облысы"
-				},
-				"en_US": {
-					"shortName": "Jambyl Province",
-					"longName": "Jambyl Province"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/kk_KZ",
-		"id": "kk_KZ"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Kazakhstan",
-			"longName": "Republic of Kazakhstan",
-			"postalCode": "Postal Code"
-		},
-		"kk_KZ": {
-			"shortName": "Қазақстан",
-			"longName": "Қазақстан Республикасы",
-			"postalCode": "Почтовый индекс"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "KZ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/kk_KZ",
+    "id" : "kk_KZ"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/KZT",
+    "id" : "KZT"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/RGRS",
+    "id" : "RGRS"
+  } ],
+  "subCountries" : {
+    "AKM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Akmola Province",
+          "longName" : "Akmola Province"
+        },
+        "kk_KZ" : {
+          "shortName" : "Ақмола облысы",
+          "longName" : "Ақмола облысы"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AKT" : {
+      "locales" : {
+        "kk_KZ" : {
+          "shortName" : "Ақтөбе облысы",
+          "longName" : "Ақтөбе облысы"
+        },
+        "en_US" : {
+          "shortName" : "Aktobe Province",
+          "longName" : "Aktobe Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ALA" : {
+      "locales" : {
+        "kk_KZ" : {
+          "shortName" : "Алматы",
+          "longName" : "Алматы"
+        },
+        "en_US" : {
+          "shortName" : "Almaty",
+          "longName" : "Almaty"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ALM" : {
+      "locales" : {
+        "kk_KZ" : {
+          "shortName" : "Алматы облысы",
+          "longName" : "Алматы облысы"
+        },
+        "en_US" : {
+          "shortName" : "Almaty Province",
+          "longName" : "Almaty Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AST" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Astana",
+          "longName" : "Astana"
+        },
+        "kk_KZ" : {
+          "shortName" : "Астана",
+          "longName" : "Астана"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ATY" : {
+      "locales" : {
+        "kk_KZ" : {
+          "shortName" : "Атырау облысы",
+          "longName" : "Атырау облысы"
+        },
+        "en_US" : {
+          "shortName" : "Atyrau Province",
+          "longName" : "Atyrau Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KAR" : {
+      "locales" : {
+        "kk_KZ" : {
+          "shortName" : "Қарағанды облысы",
+          "longName" : "Қарағанды облысы"
+        },
+        "en_US" : {
+          "shortName" : "Karagandy Province",
+          "longName" : "Karagandy Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KUS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kostanay Province",
+          "longName" : "Kostanay Province"
+        },
+        "kk_KZ" : {
+          "shortName" : "Қостанай облысы",
+          "longName" : "Қостанай облысы"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KZY" : {
+      "locales" : {
+        "kk_KZ" : {
+          "shortName" : "Қызылорда облысы",
+          "longName" : "Қызылорда облысы"
+        },
+        "en_US" : {
+          "shortName" : "Kyzylorda Province",
+          "longName" : "Kyzylorda Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MAN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mangystau Province",
+          "longName" : "Mangystau Province"
+        },
+        "kk_KZ" : {
+          "shortName" : "Маңғыстау облысы",
+          "longName" : "Маңғыстау облысы"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PAV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pavlodar Province",
+          "longName" : "Pavlodar Province"
+        },
+        "kk_KZ" : {
+          "shortName" : "Павлодар облысы",
+          "longName" : "Павлодар облысы"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SEV" : {
+      "locales" : {
+        "kk_KZ" : {
+          "shortName" : "Солтүстік Қазақстан облысы",
+          "longName" : "Солтүстік Қазақстан облысы"
+        },
+        "en_US" : {
+          "shortName" : "North Kazakhstan Province",
+          "longName" : "North Kazakhstan Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VOS" : {
+      "locales" : {
+        "kk_KZ" : {
+          "shortName" : "Шығыс Қазақстан облысы",
+          "longName" : "Шығыс Қазақстан облысы"
+        },
+        "en_US" : {
+          "shortName" : "East Kazakhstan Province",
+          "longName" : "East Kazakhstan Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YUZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South Kazakhstan Province",
+          "longName" : "South Kazakhstan Province"
+        },
+        "kk_KZ" : {
+          "shortName" : "Оңтүстік Қазақстан облысы",
+          "longName" : "Оңтүстік Қазақстан облысы"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZAP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "West Kazakhstan Province",
+          "longName" : "West Kazakhstan Province"
+        },
+        "kk_KZ" : {
+          "shortName" : "Батыс Қазақстан облысы",
+          "longName" : "Батыс Қазақстан облысы"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZHA" : {
+      "locales" : {
+        "kk_KZ" : {
+          "shortName" : "Жамбыл облысы",
+          "longName" : "Жамбыл облысы"
+        },
+        "en_US" : {
+          "shortName" : "Jambyl Province",
+          "longName" : "Jambyl Province"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/kk_KZ",
+    "id" : "kk_KZ"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Kazakhstan",
+      "longName" : "Republic of Kazakhstan",
+      "postalCode" : ""
+    },
+    "kk_KZ" : {
+      "shortName" : "Қазақстан",
+      "longName" : "Қазақстан Республикасы",
+      "postalCode" : "Почтовый индекс"
+    },
+    "de_DE" : {
+      "shortName" : "Kasachstan",
+      "longName" : "Republik Kasachstan",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Kazakhstan",
+      "longName" : "Republic of Kazakhstan",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Kazajistán",
+      "longName" : "República de Kazajistán",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Kazakhstan",
+      "longName" : "République du Kazakhstan",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Kazakistan",
+      "longName" : "Repubblica del Kazakhstan",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "카자흐스탄",
+      "longName" : "Republic of Kazakhstan",
+      "postalCode" : ""
+    }
+  }
 }

@@ -161,6 +161,9 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
             }});
         }
 
+        if (isAdmin()) {
+            return Promise.pure(itemRevision);
+        }
         boolean isDeveloper = isDeveloper();
         if (!Status.APPROVED.is(itemRevision.getStatus()) && !isDeveloper) {
             throw AppCommonErrors.INSTANCE.resourceNotFound("item-revision", revisionId).exception();

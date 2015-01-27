@@ -1,136 +1,171 @@
 {
-	"countryCode": "KG",
-	"defaultLocale": {
-		"href": "/v1/locales/ru_RU",
-		"id": "ru_RU"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/KGS",
-		"id": "KGS"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/RGRS",
-		"id": "RGRS"
-	}],
-	"subCountries": {
-		"B": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "Баткенская область",
-					"longName": "Баткенская область"
-				},
-				"en_US": {
-					"shortName": "Batken Province",
-					"longName": "Batken Province"
-				}
-			}
-		},
-		"C": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "Чуйская область",
-					"longName": "Чуйская область"
-				},
-				"en_US": {
-					"shortName": "Chui Province",
-					"longName": "Chui Province"
-				}
-			}
-		},
-		"GB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bishkek",
-					"longName": "Bishkek"
-				},
-				"ru_RU": {
-					"shortName": "Бишкек",
-					"longName": "Бишкек"
-				}
-			}
-		},
-		"J": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jalal-Abad Province",
-					"longName": "Jalal-Abad Province"
-				},
-				"ru_RU": {
-					"shortName": "Джалал-Абадская область",
-					"longName": "Джалал-Абадская область"
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"en_US": {
-					"shortName": "Naryn Province",
-					"longName": "Naryn Province"
-				},
-				"ru_RU": {
-					"shortName": "Нарынская область",
-					"longName": "Нарынская область"
-				}
-			}
-		},
-		"O": {
-			"locales": {
-				"en_US": {
-					"shortName": "Osh Province",
-					"longName": "Osh Province"
-				},
-				"ru_RU": {
-					"shortName": "Ошская область",
-					"longName": "Ошская область"
-				}
-			}
-		},
-		"T": {
-			"locales": {
-				"en_US": {
-					"shortName": "Talas Province",
-					"longName": "Talas Province"
-				},
-				"ru_RU": {
-					"shortName": "Таласская область",
-					"longName": "Таласская область"
-				}
-			}
-		},
-		"Y": {
-			"locales": {
-				"ru_RU": {
-					"shortName": "Иссык-Кульская область",
-					"longName": "Иссык-Кульская область"
-				},
-				"en_US": {
-					"shortName": "Issyk Kul Province",
-					"longName": "Issyk Kul Province"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ru_RU",
-		"id": "ru_RU"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-    		"en_US": {
-    			"shortName": "Kyrgyzstan",
-    			"longName": "Kyrgyz Republic",
-    			"postalCode": "Postal Code"
-    		},
-    		"ru_RU": {
-    			"shortName": "Киргизия",
-    			"longName": "Кыргызская Республика",
-    			"postalCode": "Почтовый индекс"
-    		}
-    	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "KG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ru_RU",
+    "id" : "ru_RU"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/KGS",
+    "id" : "KGS"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/RGRS",
+    "id" : "RGRS"
+  } ],
+  "subCountries" : {
+    "B" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "Баткенская область",
+          "longName" : "Баткенская область"
+        },
+        "en_US" : {
+          "shortName" : "Batken Province",
+          "longName" : "Batken Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "C" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "Чуйская область",
+          "longName" : "Чуйская область"
+        },
+        "en_US" : {
+          "shortName" : "Chui Province",
+          "longName" : "Chui Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bishkek",
+          "longName" : "Bishkek"
+        },
+        "ru_RU" : {
+          "shortName" : "Бишкек",
+          "longName" : "Бишкек"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "J" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jalal-Abad Province",
+          "longName" : "Jalal-Abad Province"
+        },
+        "ru_RU" : {
+          "shortName" : "Джалал-Абадская область",
+          "longName" : "Джалал-Абадская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Naryn Province",
+          "longName" : "Naryn Province"
+        },
+        "ru_RU" : {
+          "shortName" : "Нарынская область",
+          "longName" : "Нарынская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "O" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Osh Province",
+          "longName" : "Osh Province"
+        },
+        "ru_RU" : {
+          "shortName" : "Ошская область",
+          "longName" : "Ошская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "T" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Talas Province",
+          "longName" : "Talas Province"
+        },
+        "ru_RU" : {
+          "shortName" : "Таласская область",
+          "longName" : "Таласская область"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Y" : {
+      "locales" : {
+        "ru_RU" : {
+          "shortName" : "Иссык-Кульская область",
+          "longName" : "Иссык-Кульская область"
+        },
+        "en_US" : {
+          "shortName" : "Issyk Kul Province",
+          "longName" : "Issyk Kul Province"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ru_RU",
+    "id" : "ru_RU"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Kyrgyzstan",
+      "longName" : "Kyrgyz Republic",
+      "postalCode" : ""
+    },
+    "ru_RU" : {
+      "shortName" : "Киргизия",
+      "longName" : "Кыргызская Республика",
+      "postalCode" : "Почтовый индекс"
+    },
+    "de_DE" : {
+      "shortName" : "Kirgisistan",
+      "longName" : "Kyrgyz Republic",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Kyrgyzstan",
+      "longName" : "Kyrgyz Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Kirguistán",
+      "longName" : "República de Kirguistán",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Kyrgyzstan",
+      "longName" : "République kirghize",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Kirghizistan",
+      "longName" : "Repubblica di Kirghizista",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "키르기즈스탄",
+      "longName" : "Kyrgyz Republic",
+      "postalCode" : ""
+    }
+  }
 }

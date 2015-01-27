@@ -1,76 +1,110 @@
 {
-	"countryCode": "VC",
-	"defaultLocale": {
-		"href": "/v1/locales/en_VC",
-		"id": "en_VC"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XCD",
-		"id": "XCD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Charlotte",
-					"longName": "Charlotte"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Andrew",
-					"longName": "Saint Andrew"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint David",
-					"longName": "Saint David"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint George",
-					"longName": "Saint George"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Patrick",
-					"longName": "Saint Patrick"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Grenadines",
-					"longName": "Grenadines"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_VC",
-		"id": "en_VC"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Saint Vincent and the Grenadines",
-			"longName": "Saint Vincent and the Grenadines",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "VC",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_VC",
+    "id" : "en_VC"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XCD",
+    "id" : "XCD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Charlotte",
+          "longName" : "Charlotte"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Andrew",
+          "longName" : "Saint Andrew"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint David",
+          "longName" : "Saint David"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint George",
+          "longName" : "Saint George"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Patrick",
+          "longName" : "Saint Patrick"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Grenadines",
+          "longName" : "Grenadines"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_VC",
+    "id" : "en_VC"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Saint Vincent and the Grenadines",
+      "longName" : "Saint Vincent and the Grenadines",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "St. Vincent und die Grenadinen",
+      "longName" : "St. Vincent und die Grenadinen",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Saint Vincent and the Grenadines",
+      "longName" : "Saint Vincent and the Grenadines",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "San Vicente y las Granadinas",
+      "longName" : "San Vicente y las Granadinas",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Saint Vincent et Grenadines",
+      "longName" : "Saint Vincent et Grenadines",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Saint Vincent e Grenadine",
+      "longName" : "Saint Vincent e Grenadine",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "세인트 빈센트 그레나딘",
+      "longName" : "세인트 빈센트 그레나딘",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,38 +1,63 @@
 {
-	"countryCode": "BL",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_BL",
-		"id": "fr_BL"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_BL",
-		"id": "fr_BL"
-	},
-	{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Saint Barthélemy",
-			"longName": "Territorial collectivity of Saint Barthélemy",
-			"postalCode": "Postal Code"
-		},
-		"fr_BL": {
-			"shortName": "Saint-Barthélemy",
-			"longName": "Collectivité de Saint-Barthélemy",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BL",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_BL",
+    "id" : "fr_BL"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_BL",
+    "id" : "fr_BL"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Saint Barthélemy",
+      "longName" : "Territorial collectivity of Saint Barthélemy",
+      "postalCode" : ""
+    },
+    "fr_BL" : {
+      "shortName" : "Saint-Barthélemy",
+      "longName" : "Collectivité de Saint-Barthélemy",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Saint-Barthélemy",
+      "longName" : "Gebietskörperschaft Saint-Barthélemy",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Saint Barthélemy",
+      "longName" : "Territorial collectivity of Saint Barthélemy",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "San Bartolomé",
+      "longName" : "Colectividad territorial de San Bartolomé",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Saint-Barthélemy",
+      "longName" : "Collectivité territoriale de Saint Barthélemy",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Saint-Barthélemy",
+      "longName" : "Collettività territoriale di Saint-Barthélemy",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "생바르텔르미",
+      "longName" : "Territorial collectivity of Saint Barthélemy",
+      "postalCode" : ""
+    }
+  }
 }

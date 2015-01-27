@@ -1,961 +1,1065 @@
 {
-	"countryCode": "TH",
-	"defaultLocale": {
-		"href": "/v1/locales/th_TH",
-		"id": "th_TH"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/THB",
-		"id": "THB"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"10": {
-			"locales": {
-				"th_TH": {
-					"shortName": "กรุงเทพมหานคร",
-					"longName": "กรุงเทพมหานคร"
-				},
-				"en_US": {
-					"shortName": "Bangkok",
-					"longName": "Bangkok"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Samut Prakan",
-					"longName": "Samut Prakan"
-				},
-				"th_TH": {
-					"shortName": "สมุทรปราการ",
-					"longName": "สมุทรปราการ"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"th_TH": {
-					"shortName": "นนทบุรี",
-					"longName": "นนทบุรี"
-				},
-				"en_US": {
-					"shortName": "Nonthaburi",
-					"longName": "Nonthaburi"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pathum Thani",
-					"longName": "Pathum Thani"
-				},
-				"th_TH": {
-					"shortName": "ปทุมธานี",
-					"longName": "ปทุมธานี"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"th_TH": {
-					"shortName": "พระนครศรีอยุธยา",
-					"longName": "พระนครศรีอยุธยา"
-				},
-				"en_US": {
-					"shortName": "PhraNakhon Si Ayutthaya",
-					"longName": "PhraNakhon Si Ayutthaya"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"th_TH": {
-					"shortName": "อ่างทอง",
-					"longName": "อ่างทอง"
-				},
-				"en_US": {
-					"shortName": "Ang Thong",
-					"longName": "Ang Thong"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"th_TH": {
-					"shortName": "ลพบุรี",
-					"longName": "ลพบุรี"
-				},
-				"en_US": {
-					"shortName": "Lop Buri",
-					"longName": "Lop Buri"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sing Buri",
-					"longName": "Sing Buri"
-				},
-				"th_TH": {
-					"shortName": "สิงห์บุรี",
-					"longName": "สิงห์บุรี"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"th_TH": {
-					"shortName": "ชัยนาท",
-					"longName": "ชัยนาท"
-				},
-				"en_US": {
-					"shortName": "Chai Nat",
-					"longName": "Chai Nat"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saraburi",
-					"longName": "Saraburi"
-				},
-				"th_TH": {
-					"shortName": "สระบุรี",
-					"longName": "สระบุรี"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chon Buri",
-					"longName": "Chon Buri"
-				},
-				"th_TH": {
-					"shortName": "ชลบุรี",
-					"longName": "ชลบุรี"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"th_TH": {
-					"shortName": "ระยอง",
-					"longName": "ระยอง"
-				},
-				"en_US": {
-					"shortName": "Rayong",
-					"longName": "Rayong"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chanthaburi",
-					"longName": "Chanthaburi"
-				},
-				"th_TH": {
-					"shortName": "จันทบุรี",
-					"longName": "จันทบุรี"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"th_TH": {
-					"shortName": "ตราด",
-					"longName": "ตราด"
-				},
-				"en_US": {
-					"shortName": "Trat",
-					"longName": "Trat"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chachoengsao",
-					"longName": "Chachoengsao"
-				},
-				"th_TH": {
-					"shortName": "ฉะเชิงเทรา",
-					"longName": "ฉะเชิงเทรา"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"en_US": {
-					"shortName": "Prachin Buri",
-					"longName": "Prachin Buri"
-				},
-				"th_TH": {
-					"shortName": "ปราจีนบุรี",
-					"longName": "ปราจีนบุรี"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"th_TH": {
-					"shortName": "นครนายก",
-					"longName": "นครนายก"
-				},
-				"en_US": {
-					"shortName": "Nakhon Nayok",
-					"longName": "Nakhon Nayok"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sa Kaeo",
-					"longName": "Sa Kaeo"
-				},
-				"th_TH": {
-					"shortName": "สระแก้ว",
-					"longName": "สระแก้ว"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"th_TH": {
-					"shortName": "นครราชสีมา",
-					"longName": "นครราชสีมา"
-				},
-				"en_US": {
-					"shortName": "Nakhon Ratchasima",
-					"longName": "Nakhon Ratchasima"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"th_TH": {
-					"shortName": "บุรีรัมย์",
-					"longName": "บุรีรัมย์"
-				},
-				"en_US": {
-					"shortName": "Buri Ram",
-					"longName": "Buri Ram"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"en_US": {
-					"shortName": "Surin",
-					"longName": "Surin"
-				},
-				"th_TH": {
-					"shortName": "สุรินทร์",
-					"longName": "สุรินทร์"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"en_US": {
-					"shortName": "SiSa Ket",
-					"longName": "SiSa Ket"
-				},
-				"th_TH": {
-					"shortName": "ศรีสะเกษ",
-					"longName": "ศรีสะเกษ"
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ubon Ratchathani",
-					"longName": "Ubon Ratchathani"
-				},
-				"th_TH": {
-					"shortName": "อุบลราชธานี",
-					"longName": "อุบลราชธานี"
-				}
-			}
-		},
-		"35": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yasothon",
-					"longName": "Yasothon"
-				},
-				"th_TH": {
-					"shortName": "ยโสธร",
-					"longName": "ยโสธร"
-				}
-			}
-		},
-		"36": {
-			"locales": {
-				"th_TH": {
-					"shortName": "ชัยภูมิ",
-					"longName": "ชัยภูมิ"
-				},
-				"en_US": {
-					"shortName": "Chaiyaphum",
-					"longName": "Chaiyaphum"
-				}
-			}
-		},
-		"37": {
-			"locales": {
-				"en_US": {
-					"shortName": "Amnat Charoen",
-					"longName": "Amnat Charoen"
-				},
-				"th_TH": {
-					"shortName": "อำนาจเจริญ",
-					"longName": "อำนาจเจริญ"
-				}
-			}
-		},
-		"39": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nong Bua Lam Phu",
-					"longName": "Nong Bua Lam Phu"
-				},
-				"th_TH": {
-					"shortName": "หนองบัวลำภู",
-					"longName": "หนองบัวลำภู"
-				}
-			}
-		},
-		"40": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khon Kaen",
-					"longName": "Khon Kaen"
-				},
-				"th_TH": {
-					"shortName": "ขอนแก่น",
-					"longName": "ขอนแก่น"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"th_TH": {
-					"shortName": "อุดรธานี",
-					"longName": "อุดรธานี"
-				},
-				"en_US": {
-					"shortName": "Udon Thani",
-					"longName": "Udon Thani"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"en_US": {
-					"shortName": "Loei",
-					"longName": "Loei"
-				},
-				"th_TH": {
-					"shortName": "เลย",
-					"longName": "เลย"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nong Khai",
-					"longName": "Nong Khai"
-				},
-				"th_TH": {
-					"shortName": "หนองคาย",
-					"longName": "หนองคาย"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"th_TH": {
-					"shortName": "มหาสารคาม",
-					"longName": "มหาสารคาม"
-				},
-				"en_US": {
-					"shortName": "Maha Sarakham",
-					"longName": "Maha Sarakham"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"en_US": {
-					"shortName": "Roi Et",
-					"longName": "Roi Et"
-				},
-				"th_TH": {
-					"shortName": "ร้อยเอ็ด",
-					"longName": "ร้อยเอ็ด"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kalasin",
-					"longName": "Kalasin"
-				},
-				"th_TH": {
-					"shortName": "กาฬสินธุ์",
-					"longName": "กาฬสินธุ์"
-				}
-			}
-		},
-		"47": {
-			"locales": {
-				"th_TH": {
-					"shortName": "สกลนคร",
-					"longName": "สกลนคร"
-				},
-				"en_US": {
-					"shortName": "Sakon Nakhon",
-					"longName": "Sakon Nakhon"
-				}
-			}
-		},
-		"48": {
-			"locales": {
-				"th_TH": {
-					"shortName": "นครพนม",
-					"longName": "นครพนม"
-				},
-				"en_US": {
-					"shortName": "Nakhon Phanom",
-					"longName": "Nakhon Phanom"
-				}
-			}
-		},
-		"49": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mukdahan",
-					"longName": "Mukdahan"
-				},
-				"th_TH": {
-					"shortName": "มุกดาหาร",
-					"longName": "มุกดาหาร"
-				}
-			}
-		},
-		"50": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chiang Mai",
-					"longName": "Chiang Mai"
-				},
-				"th_TH": {
-					"shortName": "เชียงใหม่",
-					"longName": "เชียงใหม่"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lamphun",
-					"longName": "Lamphun"
-				},
-				"th_TH": {
-					"shortName": "ลำพูน",
-					"longName": "ลำพูน"
-				}
-			}
-		},
-		"52": {
-			"locales": {
-				"th_TH": {
-					"shortName": "ลำปาง",
-					"longName": "ลำปาง"
-				},
-				"en_US": {
-					"shortName": "Lampang",
-					"longName": "Lampang"
-				}
-			}
-		},
-		"53": {
-			"locales": {
-				"th_TH": {
-					"shortName": "อุตรดิตถ์",
-					"longName": "อุตรดิตถ์"
-				},
-				"en_US": {
-					"shortName": "Uttaradit",
-					"longName": "Uttaradit"
-				}
-			}
-		},
-		"54": {
-			"locales": {
-				"th_TH": {
-					"shortName": "แพร่",
-					"longName": "แพร่"
-				},
-				"en_US": {
-					"shortName": "Phrae",
-					"longName": "Phrae"
-				}
-			}
-		},
-		"55": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nan",
-					"longName": "Nan"
-				},
-				"th_TH": {
-					"shortName": "น่าน",
-					"longName": "น่าน"
-				}
-			}
-		},
-		"56": {
-			"locales": {
-				"th_TH": {
-					"shortName": "พะเยา",
-					"longName": "พะเยา"
-				},
-				"en_US": {
-					"shortName": "Phayao",
-					"longName": "Phayao"
-				}
-			}
-		},
-		"57": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chiang Rai",
-					"longName": "Chiang Rai"
-				},
-				"th_TH": {
-					"shortName": "เชียงราย",
-					"longName": "เชียงราย"
-				}
-			}
-		},
-		"58": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mae Hong Son",
-					"longName": "Mae Hong Son"
-				},
-				"th_TH": {
-					"shortName": "แม่ฮ่องสอน",
-					"longName": "แม่ฮ่องสอน"
-				}
-			}
-		},
-		"60": {
-			"locales": {
-				"th_TH": {
-					"shortName": "นครสวรรค์",
-					"longName": "นครสวรรค์"
-				},
-				"en_US": {
-					"shortName": "Nakhon Sawan",
-					"longName": "Nakhon Sawan"
-				}
-			}
-		},
-		"61": {
-			"locales": {
-				"th_TH": {
-					"shortName": "อุทัยธานี",
-					"longName": "อุทัยธานี"
-				},
-				"en_US": {
-					"shortName": "Uthai Thani",
-					"longName": "Uthai Thani"
-				}
-			}
-		},
-		"62": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kamphaeng Phet",
-					"longName": "Kamphaeng Phet"
-				},
-				"th_TH": {
-					"shortName": "กำแพงเพชร",
-					"longName": "กำแพงเพชร"
-				}
-			}
-		},
-		"63": {
-			"locales": {
-				"th_TH": {
-					"shortName": "ตาก",
-					"longName": "ตาก"
-				},
-				"en_US": {
-					"shortName": "Tak",
-					"longName": "Tak"
-				}
-			}
-		},
-		"64": {
-			"locales": {
-				"th_TH": {
-					"shortName": "สุโขทัย",
-					"longName": "สุโขทัย"
-				},
-				"en_US": {
-					"shortName": "Sukhothai",
-					"longName": "Sukhothai"
-				}
-			}
-		},
-		"65": {
-			"locales": {
-				"th_TH": {
-					"shortName": "พิษณุโลก",
-					"longName": "พิษณุโลก"
-				},
-				"en_US": {
-					"shortName": "Phitsanulok",
-					"longName": "Phitsanulok"
-				}
-			}
-		},
-		"66": {
-			"locales": {
-				"en_US": {
-					"shortName": "Phichit",
-					"longName": "Phichit"
-				},
-				"th_TH": {
-					"shortName": "พิจิตร",
-					"longName": "พิจิตร"
-				}
-			}
-		},
-		"67": {
-			"locales": {
-				"en_US": {
-					"shortName": "Phetchabun",
-					"longName": "Phetchabun"
-				},
-				"th_TH": {
-					"shortName": "เพชรบูรณ์",
-					"longName": "เพชรบูรณ์"
-				}
-			}
-		},
-		"70": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ratchaburi",
-					"longName": "Ratchaburi"
-				},
-				"th_TH": {
-					"shortName": "ราชบุรี",
-					"longName": "ราชบุรี"
-				}
-			}
-		},
-		"71": {
-			"locales": {
-				"th_TH": {
-					"shortName": "กาญจนบุรี",
-					"longName": "กาญจนบุรี"
-				},
-				"en_US": {
-					"shortName": "Kanchanaburi",
-					"longName": "Kanchanaburi"
-				}
-			}
-		},
-		"72": {
-			"locales": {
-				"th_TH": {
-					"shortName": "สุพรรณบุรี",
-					"longName": "สุพรรณบุรี"
-				},
-				"en_US": {
-					"shortName": "Suphan Buri",
-					"longName": "Suphan Buri"
-				}
-			}
-		},
-		"73": {
-			"locales": {
-				"th_TH": {
-					"shortName": "นครปฐม",
-					"longName": "นครปฐม"
-				},
-				"en_US": {
-					"shortName": "Nakhon Pathom",
-					"longName": "Nakhon Pathom"
-				}
-			}
-		},
-		"74": {
-			"locales": {
-				"th_TH": {
-					"shortName": "สมุทรสาคร",
-					"longName": "สมุทรสาคร"
-				},
-				"en_US": {
-					"shortName": "Samut Sakhon",
-					"longName": "Samut Sakhon"
-				}
-			}
-		},
-		"75": {
-			"locales": {
-				"en_US": {
-					"shortName": "Samut Songkhram",
-					"longName": "Samut Songkhram"
-				},
-				"th_TH": {
-					"shortName": "สมุทรสงคราม",
-					"longName": "สมุทรสงคราม"
-				}
-			}
-		},
-		"76": {
-			"locales": {
-				"th_TH": {
-					"shortName": "เพชรบุรี",
-					"longName": "เพชรบุรี"
-				},
-				"en_US": {
-					"shortName": "Phetchaburi",
-					"longName": "Phetchaburi"
-				}
-			}
-		},
-		"77": {
-			"locales": {
-				"en_US": {
-					"shortName": "Prachuap Khiri Khan",
-					"longName": "Prachuap Khiri Khan"
-				},
-				"th_TH": {
-					"shortName": "ประจวบคีรีขันธ์",
-					"longName": "ประจวบคีรีขันธ์"
-				}
-			}
-		},
-		"80": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nakhon Si Thammarat",
-					"longName": "Nakhon Si Thammarat"
-				},
-				"th_TH": {
-					"shortName": "นครศรีธรรมราช",
-					"longName": "นครศรีธรรมราช"
-				}
-			}
-		},
-		"81": {
-			"locales": {
-				"th_TH": {
-					"shortName": "กระบี่",
-					"longName": "กระบี่"
-				},
-				"en_US": {
-					"shortName": "Krabi",
-					"longName": "Krabi"
-				}
-			}
-		},
-		"82": {
-			"locales": {
-				"th_TH": {
-					"shortName": "พังงา",
-					"longName": "พังงา"
-				},
-				"en_US": {
-					"shortName": "Phangnga",
-					"longName": "Phangnga"
-				}
-			}
-		},
-		"83": {
-			"locales": {
-				"en_US": {
-					"shortName": "Phuket",
-					"longName": "Phuket"
-				},
-				"th_TH": {
-					"shortName": "ภูเก็ต",
-					"longName": "ภูเก็ต"
-				}
-			}
-		},
-		"84": {
-			"locales": {
-				"en_US": {
-					"shortName": "Surat Thani",
-					"longName": "Surat Thani"
-				},
-				"th_TH": {
-					"shortName": "สุราษฎร์ธานี",
-					"longName": "สุราษฎร์ธานี"
-				}
-			}
-		},
-		"85": {
-			"locales": {
-				"th_TH": {
-					"shortName": "ระนอง",
-					"longName": "ระนอง"
-				},
-				"en_US": {
-					"shortName": "Ranong",
-					"longName": "Ranong"
-				}
-			}
-		},
-		"86": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chumphon",
-					"longName": "Chumphon"
-				},
-				"th_TH": {
-					"shortName": "ชุมพร",
-					"longName": "ชุมพร"
-				}
-			}
-		},
-		"90": {
-			"locales": {
-				"th_TH": {
-					"shortName": "สงขลา",
-					"longName": "สงขลา"
-				},
-				"en_US": {
-					"shortName": "Songkhla",
-					"longName": "Songkhla"
-				}
-			}
-		},
-		"91": {
-			"locales": {
-				"th_TH": {
-					"shortName": "สตูล",
-					"longName": "สตูล"
-				},
-				"en_US": {
-					"shortName": "Satun",
-					"longName": "Satun"
-				}
-			}
-		},
-		"92": {
-			"locales": {
-				"en_US": {
-					"shortName": "Trang",
-					"longName": "Trang"
-				},
-				"th_TH": {
-					"shortName": "ตรัง",
-					"longName": "ตรัง"
-				}
-			}
-		},
-		"93": {
-			"locales": {
-				"en_US": {
-					"shortName": "Phatthalung",
-					"longName": "Phatthalung"
-				},
-				"th_TH": {
-					"shortName": "พัทลุง",
-					"longName": "พัทลุง"
-				}
-			}
-		},
-		"94": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pattani",
-					"longName": "Pattani"
-				},
-				"th_TH": {
-					"shortName": "ปัตตานี",
-					"longName": "ปัตตานี"
-				}
-			}
-		},
-		"95": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yala",
-					"longName": "Yala"
-				},
-				"th_TH": {
-					"shortName": "ยะลา",
-					"longName": "ยะลา"
-				}
-			}
-		},
-		"96": {
-			"locales": {
-				"en_US": {
-					"shortName": "Narathiwat",
-					"longName": "Narathiwat"
-				},
-				"th_TH": {
-					"shortName": "นราธิวาส",
-					"longName": "นราธิวาส"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"th_TH": {
-					"shortName": "พัทยา",
-					"longName": "พัทยา"
-				},
-				"en_US": {
-					"shortName": "Pattaya",
-					"longName": "Pattaya"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/th_TH",
-		"id": "th_TH"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Thailand",
-			"longName": "Kingdom of Thailand",
-			"postalCode": "Postal Code"
-		},
-		"th_TH": {
-			"shortName": "ประเทศไทย",
-			"longName": "ราชอาณาจักรไทย",
-			"postalCode": "รหัสไปรษณีย์"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TH",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/th_TH",
+    "id" : "th_TH"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/THB",
+    "id" : "THB"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "10" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "กรุงเทพมหานคร",
+          "longName" : "กรุงเทพมหานคร"
+        },
+        "en_US" : {
+          "shortName" : "Bangkok",
+          "longName" : "Bangkok"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Samut Prakan",
+          "longName" : "Samut Prakan"
+        },
+        "th_TH" : {
+          "shortName" : "สมุทรปราการ",
+          "longName" : "สมุทรปราการ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "นนทบุรี",
+          "longName" : "นนทบุรี"
+        },
+        "en_US" : {
+          "shortName" : "Nonthaburi",
+          "longName" : "Nonthaburi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pathum Thani",
+          "longName" : "Pathum Thani"
+        },
+        "th_TH" : {
+          "shortName" : "ปทุมธานี",
+          "longName" : "ปทุมธานี"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "พระนครศรีอยุธยา",
+          "longName" : "พระนครศรีอยุธยา"
+        },
+        "en_US" : {
+          "shortName" : "PhraNakhon Si Ayutthaya",
+          "longName" : "PhraNakhon Si Ayutthaya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "อ่างทอง",
+          "longName" : "อ่างทอง"
+        },
+        "en_US" : {
+          "shortName" : "Ang Thong",
+          "longName" : "Ang Thong"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "ลพบุรี",
+          "longName" : "ลพบุรี"
+        },
+        "en_US" : {
+          "shortName" : "Lop Buri",
+          "longName" : "Lop Buri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sing Buri",
+          "longName" : "Sing Buri"
+        },
+        "th_TH" : {
+          "shortName" : "สิงห์บุรี",
+          "longName" : "สิงห์บุรี"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "ชัยนาท",
+          "longName" : "ชัยนาท"
+        },
+        "en_US" : {
+          "shortName" : "Chai Nat",
+          "longName" : "Chai Nat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saraburi",
+          "longName" : "Saraburi"
+        },
+        "th_TH" : {
+          "shortName" : "สระบุรี",
+          "longName" : "สระบุรี"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chon Buri",
+          "longName" : "Chon Buri"
+        },
+        "th_TH" : {
+          "shortName" : "ชลบุรี",
+          "longName" : "ชลบุรี"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "ระยอง",
+          "longName" : "ระยอง"
+        },
+        "en_US" : {
+          "shortName" : "Rayong",
+          "longName" : "Rayong"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chanthaburi",
+          "longName" : "Chanthaburi"
+        },
+        "th_TH" : {
+          "shortName" : "จันทบุรี",
+          "longName" : "จันทบุรี"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "ตราด",
+          "longName" : "ตราด"
+        },
+        "en_US" : {
+          "shortName" : "Trat",
+          "longName" : "Trat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chachoengsao",
+          "longName" : "Chachoengsao"
+        },
+        "th_TH" : {
+          "shortName" : "ฉะเชิงเทรา",
+          "longName" : "ฉะเชิงเทรา"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Prachin Buri",
+          "longName" : "Prachin Buri"
+        },
+        "th_TH" : {
+          "shortName" : "ปราจีนบุรี",
+          "longName" : "ปราจีนบุรี"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "นครนายก",
+          "longName" : "นครนายก"
+        },
+        "en_US" : {
+          "shortName" : "Nakhon Nayok",
+          "longName" : "Nakhon Nayok"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sa Kaeo",
+          "longName" : "Sa Kaeo"
+        },
+        "th_TH" : {
+          "shortName" : "สระแก้ว",
+          "longName" : "สระแก้ว"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "นครราชสีมา",
+          "longName" : "นครราชสีมา"
+        },
+        "en_US" : {
+          "shortName" : "Nakhon Ratchasima",
+          "longName" : "Nakhon Ratchasima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "บุรีรัมย์",
+          "longName" : "บุรีรัมย์"
+        },
+        "en_US" : {
+          "shortName" : "Buri Ram",
+          "longName" : "Buri Ram"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Surin",
+          "longName" : "Surin"
+        },
+        "th_TH" : {
+          "shortName" : "สุรินทร์",
+          "longName" : "สุรินทร์"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SiSa Ket",
+          "longName" : "SiSa Ket"
+        },
+        "th_TH" : {
+          "shortName" : "ศรีสะเกษ",
+          "longName" : "ศรีสะเกษ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ubon Ratchathani",
+          "longName" : "Ubon Ratchathani"
+        },
+        "th_TH" : {
+          "shortName" : "อุบลราชธานี",
+          "longName" : "อุบลราชธานี"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "35" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yasothon",
+          "longName" : "Yasothon"
+        },
+        "th_TH" : {
+          "shortName" : "ยโสธร",
+          "longName" : "ยโสธร"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "36" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "ชัยภูมิ",
+          "longName" : "ชัยภูมิ"
+        },
+        "en_US" : {
+          "shortName" : "Chaiyaphum",
+          "longName" : "Chaiyaphum"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "37" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Amnat Charoen",
+          "longName" : "Amnat Charoen"
+        },
+        "th_TH" : {
+          "shortName" : "อำนาจเจริญ",
+          "longName" : "อำนาจเจริญ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "39" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nong Bua Lam Phu",
+          "longName" : "Nong Bua Lam Phu"
+        },
+        "th_TH" : {
+          "shortName" : "หนองบัวลำภู",
+          "longName" : "หนองบัวลำภู"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "40" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khon Kaen",
+          "longName" : "Khon Kaen"
+        },
+        "th_TH" : {
+          "shortName" : "ขอนแก่น",
+          "longName" : "ขอนแก่น"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "อุดรธานี",
+          "longName" : "อุดรธานี"
+        },
+        "en_US" : {
+          "shortName" : "Udon Thani",
+          "longName" : "Udon Thani"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Loei",
+          "longName" : "Loei"
+        },
+        "th_TH" : {
+          "shortName" : "เลย",
+          "longName" : "เลย"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nong Khai",
+          "longName" : "Nong Khai"
+        },
+        "th_TH" : {
+          "shortName" : "หนองคาย",
+          "longName" : "หนองคาย"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "มหาสารคาม",
+          "longName" : "มหาสารคาม"
+        },
+        "en_US" : {
+          "shortName" : "Maha Sarakham",
+          "longName" : "Maha Sarakham"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Roi Et",
+          "longName" : "Roi Et"
+        },
+        "th_TH" : {
+          "shortName" : "ร้อยเอ็ด",
+          "longName" : "ร้อยเอ็ด"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kalasin",
+          "longName" : "Kalasin"
+        },
+        "th_TH" : {
+          "shortName" : "กาฬสินธุ์",
+          "longName" : "กาฬสินธุ์"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "47" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "สกลนคร",
+          "longName" : "สกลนคร"
+        },
+        "en_US" : {
+          "shortName" : "Sakon Nakhon",
+          "longName" : "Sakon Nakhon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "48" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "นครพนม",
+          "longName" : "นครพนม"
+        },
+        "en_US" : {
+          "shortName" : "Nakhon Phanom",
+          "longName" : "Nakhon Phanom"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "49" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mukdahan",
+          "longName" : "Mukdahan"
+        },
+        "th_TH" : {
+          "shortName" : "มุกดาหาร",
+          "longName" : "มุกดาหาร"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "50" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chiang Mai",
+          "longName" : "Chiang Mai"
+        },
+        "th_TH" : {
+          "shortName" : "เชียงใหม่",
+          "longName" : "เชียงใหม่"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lamphun",
+          "longName" : "Lamphun"
+        },
+        "th_TH" : {
+          "shortName" : "ลำพูน",
+          "longName" : "ลำพูน"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "52" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "ลำปาง",
+          "longName" : "ลำปาง"
+        },
+        "en_US" : {
+          "shortName" : "Lampang",
+          "longName" : "Lampang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "53" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "อุตรดิตถ์",
+          "longName" : "อุตรดิตถ์"
+        },
+        "en_US" : {
+          "shortName" : "Uttaradit",
+          "longName" : "Uttaradit"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "54" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "แพร่",
+          "longName" : "แพร่"
+        },
+        "en_US" : {
+          "shortName" : "Phrae",
+          "longName" : "Phrae"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "55" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nan",
+          "longName" : "Nan"
+        },
+        "th_TH" : {
+          "shortName" : "น่าน",
+          "longName" : "น่าน"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "56" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "พะเยา",
+          "longName" : "พะเยา"
+        },
+        "en_US" : {
+          "shortName" : "Phayao",
+          "longName" : "Phayao"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "57" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chiang Rai",
+          "longName" : "Chiang Rai"
+        },
+        "th_TH" : {
+          "shortName" : "เชียงราย",
+          "longName" : "เชียงราย"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "58" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mae Hong Son",
+          "longName" : "Mae Hong Son"
+        },
+        "th_TH" : {
+          "shortName" : "แม่ฮ่องสอน",
+          "longName" : "แม่ฮ่องสอน"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "60" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "นครสวรรค์",
+          "longName" : "นครสวรรค์"
+        },
+        "en_US" : {
+          "shortName" : "Nakhon Sawan",
+          "longName" : "Nakhon Sawan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "61" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "อุทัยธานี",
+          "longName" : "อุทัยธานี"
+        },
+        "en_US" : {
+          "shortName" : "Uthai Thani",
+          "longName" : "Uthai Thani"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "62" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kamphaeng Phet",
+          "longName" : "Kamphaeng Phet"
+        },
+        "th_TH" : {
+          "shortName" : "กำแพงเพชร",
+          "longName" : "กำแพงเพชร"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "63" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "ตาก",
+          "longName" : "ตาก"
+        },
+        "en_US" : {
+          "shortName" : "Tak",
+          "longName" : "Tak"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "64" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "สุโขทัย",
+          "longName" : "สุโขทัย"
+        },
+        "en_US" : {
+          "shortName" : "Sukhothai",
+          "longName" : "Sukhothai"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "65" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "พิษณุโลก",
+          "longName" : "พิษณุโลก"
+        },
+        "en_US" : {
+          "shortName" : "Phitsanulok",
+          "longName" : "Phitsanulok"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "66" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Phichit",
+          "longName" : "Phichit"
+        },
+        "th_TH" : {
+          "shortName" : "พิจิตร",
+          "longName" : "พิจิตร"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "67" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Phetchabun",
+          "longName" : "Phetchabun"
+        },
+        "th_TH" : {
+          "shortName" : "เพชรบูรณ์",
+          "longName" : "เพชรบูรณ์"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "70" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ratchaburi",
+          "longName" : "Ratchaburi"
+        },
+        "th_TH" : {
+          "shortName" : "ราชบุรี",
+          "longName" : "ราชบุรี"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "71" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "กาญจนบุรี",
+          "longName" : "กาญจนบุรี"
+        },
+        "en_US" : {
+          "shortName" : "Kanchanaburi",
+          "longName" : "Kanchanaburi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "72" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "สุพรรณบุรี",
+          "longName" : "สุพรรณบุรี"
+        },
+        "en_US" : {
+          "shortName" : "Suphan Buri",
+          "longName" : "Suphan Buri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "73" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "นครปฐม",
+          "longName" : "นครปฐม"
+        },
+        "en_US" : {
+          "shortName" : "Nakhon Pathom",
+          "longName" : "Nakhon Pathom"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "74" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "สมุทรสาคร",
+          "longName" : "สมุทรสาคร"
+        },
+        "en_US" : {
+          "shortName" : "Samut Sakhon",
+          "longName" : "Samut Sakhon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "75" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Samut Songkhram",
+          "longName" : "Samut Songkhram"
+        },
+        "th_TH" : {
+          "shortName" : "สมุทรสงคราม",
+          "longName" : "สมุทรสงคราม"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "76" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "เพชรบุรี",
+          "longName" : "เพชรบุรี"
+        },
+        "en_US" : {
+          "shortName" : "Phetchaburi",
+          "longName" : "Phetchaburi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "77" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Prachuap Khiri Khan",
+          "longName" : "Prachuap Khiri Khan"
+        },
+        "th_TH" : {
+          "shortName" : "ประจวบคีรีขันธ์",
+          "longName" : "ประจวบคีรีขันธ์"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "80" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nakhon Si Thammarat",
+          "longName" : "Nakhon Si Thammarat"
+        },
+        "th_TH" : {
+          "shortName" : "นครศรีธรรมราช",
+          "longName" : "นครศรีธรรมราช"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "81" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "กระบี่",
+          "longName" : "กระบี่"
+        },
+        "en_US" : {
+          "shortName" : "Krabi",
+          "longName" : "Krabi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "82" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "พังงา",
+          "longName" : "พังงา"
+        },
+        "en_US" : {
+          "shortName" : "Phangnga",
+          "longName" : "Phangnga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "83" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Phuket",
+          "longName" : "Phuket"
+        },
+        "th_TH" : {
+          "shortName" : "ภูเก็ต",
+          "longName" : "ภูเก็ต"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "84" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Surat Thani",
+          "longName" : "Surat Thani"
+        },
+        "th_TH" : {
+          "shortName" : "สุราษฎร์ธานี",
+          "longName" : "สุราษฎร์ธานี"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "85" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "ระนอง",
+          "longName" : "ระนอง"
+        },
+        "en_US" : {
+          "shortName" : "Ranong",
+          "longName" : "Ranong"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "86" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chumphon",
+          "longName" : "Chumphon"
+        },
+        "th_TH" : {
+          "shortName" : "ชุมพร",
+          "longName" : "ชุมพร"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "90" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "สงขลา",
+          "longName" : "สงขลา"
+        },
+        "en_US" : {
+          "shortName" : "Songkhla",
+          "longName" : "Songkhla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "91" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "สตูล",
+          "longName" : "สตูล"
+        },
+        "en_US" : {
+          "shortName" : "Satun",
+          "longName" : "Satun"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "92" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Trang",
+          "longName" : "Trang"
+        },
+        "th_TH" : {
+          "shortName" : "ตรัง",
+          "longName" : "ตรัง"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "93" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Phatthalung",
+          "longName" : "Phatthalung"
+        },
+        "th_TH" : {
+          "shortName" : "พัทลุง",
+          "longName" : "พัทลุง"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "94" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pattani",
+          "longName" : "Pattani"
+        },
+        "th_TH" : {
+          "shortName" : "ปัตตานี",
+          "longName" : "ปัตตานี"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "95" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yala",
+          "longName" : "Yala"
+        },
+        "th_TH" : {
+          "shortName" : "ยะลา",
+          "longName" : "ยะลา"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "96" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Narathiwat",
+          "longName" : "Narathiwat"
+        },
+        "th_TH" : {
+          "shortName" : "นราธิวาส",
+          "longName" : "นราธิวาส"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "th_TH" : {
+          "shortName" : "พัทยา",
+          "longName" : "พัทยา"
+        },
+        "en_US" : {
+          "shortName" : "Pattaya",
+          "longName" : "Pattaya"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/th_TH",
+    "id" : "th_TH"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Thailand",
+      "longName" : "Kingdom of Thailand",
+      "postalCode" : ""
+    },
+    "th_TH" : {
+      "shortName" : "ประเทศไทย",
+      "longName" : "ราชอาณาจักรไทย",
+      "postalCode" : "รหัสไปรษณีย์"
+    },
+    "de_DE" : {
+      "shortName" : "Thailand",
+      "longName" : "Kingdom of Thailand",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Thailand",
+      "longName" : "Kingdom of Thailand",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Tailandia",
+      "longName" : "Reino de Tailandia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Thaïlande",
+      "longName" : "Royaume de Thaïlande",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Thailandia",
+      "longName" : "Regno di Thailandia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "태국",
+      "longName" : "Kingdom of Thailand",
+      "postalCode" : ""
+    }
+  }
 }

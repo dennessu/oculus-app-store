@@ -1,805 +1,896 @@
 {
-	"countryCode": "VN",
-	"defaultLocale": {
-		"href": "/v1/locales/vi_VN",
-		"id": "vi_VN"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/VND",
-		"id": "VND"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Lai Châu",
-					"longName": "Lai Châu"
-				},
-				"en_US": {
-					"shortName": "Lai Châu",
-					"longName": "Lai Châu"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Lào Cai",
-					"longName": "Lào Cai"
-				},
-				"en_US": {
-					"shortName": "Lào Cai",
-					"longName": "Lào Cai"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Hà Giang",
-					"longName": "Hà Giang"
-				},
-				"en_US": {
-					"shortName": "Hà Giang",
-					"longName": "Hà Giang"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cao Bằng",
-					"longName": "Cao Bằng"
-				},
-				"vi_VN": {
-					"shortName": "Cao Bằng",
-					"longName": "Cao Bằng"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sơn La",
-					"longName": "Sơn La"
-				},
-				"vi_VN": {
-					"shortName": "Sơn La",
-					"longName": "Sơn La"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yên Bái",
-					"longName": "Yên Bái"
-				},
-				"vi_VN": {
-					"shortName": "Yên Bái",
-					"longName": "Yên Bái"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tuyên Quang",
-					"longName": "Tuyên Quang"
-				},
-				"vi_VN": {
-					"shortName": "Tuyên Quang",
-					"longName": "Tuyên Quang"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lạng Sơn",
-					"longName": "Lạng Sơn"
-				},
-				"vi_VN": {
-					"shortName": "Lạng Sơn",
-					"longName": "Lạng Sơn"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Quảng Ninh",
-					"longName": "Quảng Ninh"
-				},
-				"en_US": {
-					"shortName": "Quảng Ninh",
-					"longName": "Quảng Ninh"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hòa Bình",
-					"longName": "Hòa Bình"
-				},
-				"vi_VN": {
-					"shortName": "Hòa Bình",
-					"longName": "Hòa Bình"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hà Tây",
-					"longName": "Hà Tây"
-				},
-				"vi_VN": {
-					"shortName": "Hà Tây",
-					"longName": "Hà Tây"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ninh Bình",
-					"longName": "Ninh Bình"
-				},
-				"vi_VN": {
-					"shortName": "Ninh Bình",
-					"longName": "Ninh Bình"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Thái Bình",
-					"longName": "Thái Bình"
-				},
-				"vi_VN": {
-					"shortName": "Thái Bình",
-					"longName": "Thái Bình"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Thanh Hóa",
-					"longName": "Thanh Hóa"
-				},
-				"en_US": {
-					"shortName": "Thanh Hóa",
-					"longName": "Thanh Hóa"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nghệ An",
-					"longName": "Nghệ An"
-				},
-				"vi_VN": {
-					"shortName": "Nghệ An",
-					"longName": "Nghệ An"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hà Tĩnh",
-					"longName": "Hà Tĩnh"
-				},
-				"vi_VN": {
-					"shortName": "Hà Tĩnh",
-					"longName": "Hà Tĩnh"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"en_US": {
-					"shortName": "Quảng Bình",
-					"longName": "Quảng Bình"
-				},
-				"vi_VN": {
-					"shortName": "Quảng Bình",
-					"longName": "Quảng Bình"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Quảng Trị",
-					"longName": "Quảng Trị"
-				},
-				"en_US": {
-					"shortName": "Quảng Trị",
-					"longName": "Quảng Trị"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Thừa Thiên–Huế",
-					"longName": "Thừa Thiên–Huế"
-				},
-				"en_US": {
-					"shortName": "Thừa Thiên–Huế",
-					"longName": "Thừa Thiên–Huế"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Quảng Nam",
-					"longName": "Quảng Nam"
-				},
-				"en_US": {
-					"shortName": "Quảng Nam",
-					"longName": "Quảng Nam"
-				}
-			}
-		},
-		"28": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Kon Tum",
-					"longName": "Kon Tum"
-				},
-				"en_US": {
-					"shortName": "Kon Tum",
-					"longName": "Kon Tum"
-				}
-			}
-		},
-		"29": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Quảng Ngãi",
-					"longName": "Quảng Ngãi"
-				},
-				"en_US": {
-					"shortName": "Quảng Ngãi",
-					"longName": "Quảng Ngãi"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Gia Lai",
-					"longName": "Gia Lai"
-				},
-				"en_US": {
-					"shortName": "Gia Lai",
-					"longName": "Gia Lai"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Bình Định",
-					"longName": "Bình Định"
-				},
-				"en_US": {
-					"shortName": "Bình Định",
-					"longName": "Bình Định"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"en_US": {
-					"shortName": "Phú Yên",
-					"longName": "Phú Yên"
-				},
-				"vi_VN": {
-					"shortName": "Phú Yên",
-					"longName": "Phú Yên"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Đắk Lắk",
-					"longName": "Đắk Lắk"
-				},
-				"en_US": {
-					"shortName": "Đắk Lắk",
-					"longName": "Đắk Lắk"
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Khánh Hòa",
-					"longName": "Khánh Hòa"
-				},
-				"en_US": {
-					"shortName": "Khánh Hòa",
-					"longName": "Khánh Hòa"
-				}
-			}
-		},
-		"35": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lâm Đồng",
-					"longName": "Lâm Đồng"
-				},
-				"vi_VN": {
-					"shortName": "Lâm Đồng",
-					"longName": "Lâm Đồng"
-				}
-			}
-		},
-		"36": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ninh Thuận",
-					"longName": "Ninh Thuận"
-				},
-				"vi_VN": {
-					"shortName": "Ninh Thuận",
-					"longName": "Ninh Thuận"
-				}
-			}
-		},
-		"37": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Tây Ninh",
-					"longName": "Tây Ninh"
-				},
-				"en_US": {
-					"shortName": "Tây Ninh",
-					"longName": "Tây Ninh"
-				}
-			}
-		},
-		"39": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Đồng Nai",
-					"longName": "Đồng Nai"
-				},
-				"en_US": {
-					"shortName": "Đồng Nai",
-					"longName": "Đồng Nai"
-				}
-			}
-		},
-		"40": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bình Thuận",
-					"longName": "Bình Thuận"
-				},
-				"vi_VN": {
-					"shortName": "Bình Thuận",
-					"longName": "Bình Thuận"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"en_US": {
-					"shortName": "Long An",
-					"longName": "Long An"
-				},
-				"vi_VN": {
-					"shortName": "Long An",
-					"longName": "Long An"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Bà Rịa–Vũng Tàu",
-					"longName": "Bà Rịa–Vũng Tàu"
-				},
-				"en_US": {
-					"shortName": "Bà Rịa–Vũng Tàu",
-					"longName": "Bà Rịa–Vũng Tàu"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "An Giang",
-					"longName": "An Giang"
-				},
-				"en_US": {
-					"shortName": "An Giang",
-					"longName": "An Giang"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Đồng Tháp",
-					"longName": "Đồng Tháp"
-				},
-				"en_US": {
-					"shortName": "Đồng Tháp",
-					"longName": "Đồng Tháp"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tiền Giang",
-					"longName": "Tiền Giang"
-				},
-				"vi_VN": {
-					"shortName": "Tiền Giang",
-					"longName": "Tiền Giang"
-				}
-			}
-		},
-		"47": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kiên Giang",
-					"longName": "Kiên Giang"
-				},
-				"vi_VN": {
-					"shortName": "Kiên Giang",
-					"longName": "Kiên Giang"
-				}
-			}
-		},
-		"49": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vĩnh Long",
-					"longName": "Vĩnh Long"
-				},
-				"vi_VN": {
-					"shortName": "Vĩnh Long",
-					"longName": "Vĩnh Long"
-				}
-			}
-		},
-		"50": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Bến Tre",
-					"longName": "Bến Tre"
-				},
-				"en_US": {
-					"shortName": "Bến Tre",
-					"longName": "Bến Tre"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"en_US": {
-					"shortName": "Trà Vinh",
-					"longName": "Trà Vinh"
-				},
-				"vi_VN": {
-					"shortName": "Trà Vinh",
-					"longName": "Trà Vinh"
-				}
-			}
-		},
-		"52": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sóc Trăng",
-					"longName": "Sóc Trăng"
-				},
-				"vi_VN": {
-					"shortName": "Sóc Trăng",
-					"longName": "Sóc Trăng"
-				}
-			}
-		},
-		"53": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Bắc Kạn",
-					"longName": "Bắc Kạn"
-				},
-				"en_US": {
-					"shortName": "Bắc Kạn",
-					"longName": "Bắc Kạn"
-				}
-			}
-		},
-		"54": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Bắc Giang",
-					"longName": "Bắc Giang"
-				},
-				"en_US": {
-					"shortName": "Bắc Giang",
-					"longName": "Bắc Giang"
-				}
-			}
-		},
-		"55": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Bạc Liêu",
-					"longName": "Bạc Liêu"
-				},
-				"en_US": {
-					"shortName": "Bạc Liêu",
-					"longName": "Bạc Liêu"
-				}
-			}
-		},
-		"56": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Bắc Ninh",
-					"longName": "Bắc Ninh"
-				},
-				"en_US": {
-					"shortName": "Bắc Ninh",
-					"longName": "Bắc Ninh"
-				}
-			}
-		},
-		"57": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bình Dương",
-					"longName": "Bình Dương"
-				},
-				"vi_VN": {
-					"shortName": "Bình Dương",
-					"longName": "Bình Dương"
-				}
-			}
-		},
-		"58": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Bình Phước",
-					"longName": "Bình Phước"
-				},
-				"en_US": {
-					"shortName": "Bình Phước",
-					"longName": "Bình Phước"
-				}
-			}
-		},
-		"59": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cà Mau",
-					"longName": "Cà Mau"
-				},
-				"vi_VN": {
-					"shortName": "Cà Mau",
-					"longName": "Cà Mau"
-				}
-			}
-		},
-		"61": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hải Dương",
-					"longName": "Hải Dương"
-				},
-				"vi_VN": {
-					"shortName": "Hải Dương",
-					"longName": "Hải Dương"
-				}
-			}
-		},
-		"63": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Hà Nam",
-					"longName": "Hà Nam"
-				},
-				"en_US": {
-					"shortName": "Hà Nam",
-					"longName": "Hà Nam"
-				}
-			}
-		},
-		"66": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Hưng Yên",
-					"longName": "Hưng Yên"
-				},
-				"en_US": {
-					"shortName": "Hưng Yên",
-					"longName": "Hưng Yên"
-				}
-			}
-		},
-		"67": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nam Định",
-					"longName": "Nam Định"
-				},
-				"vi_VN": {
-					"shortName": "Nam Định",
-					"longName": "Nam Định"
-				}
-			}
-		},
-		"68": {
-			"locales": {
-				"en_US": {
-					"shortName": "Phú Thọ",
-					"longName": "Phú Thọ"
-				},
-				"vi_VN": {
-					"shortName": "Phú Thọ",
-					"longName": "Phú Thọ"
-				}
-			}
-		},
-		"69": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Thái Nguyên",
-					"longName": "Thái Nguyên"
-				},
-				"en_US": {
-					"shortName": "Thái Nguyên",
-					"longName": "Thái Nguyên"
-				}
-			}
-		},
-		"70": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vĩnh Phúc",
-					"longName": "Vĩnh Phúc"
-				},
-				"vi_VN": {
-					"shortName": "Vĩnh Phúc",
-					"longName": "Vĩnh Phúc"
-				}
-			}
-		},
-		"71": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Điện Biên",
-					"longName": "Điện Biên"
-				},
-				"en_US": {
-					"shortName": "Điện Biên",
-					"longName": "Điện Biên"
-				}
-			}
-		},
-		"72": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Đắk Nông",
-					"longName": "Đắk Nông"
-				},
-				"en_US": {
-					"shortName": "Đắk Nông",
-					"longName": "Đắk Nông"
-				}
-			}
-		},
-		"73": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hậu Giang",
-					"longName": "Hậu Giang"
-				},
-				"vi_VN": {
-					"shortName": "Hậu Giang",
-					"longName": "Hậu Giang"
-				}
-			}
-		},
-		"CT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cần Thơ",
-					"longName": "Cần Thơ"
-				},
-				"vi_VN": {
-					"shortName": "Cần Thơ",
-					"longName": "Cần Thơ"
-				}
-			}
-		},
-		"DN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Da Nang",
-					"longName": "Da Nang"
-				},
-				"vi_VN": {
-					"shortName": "Đà Nẵng",
-					"longName": "Đà Nẵng"
-				}
-			}
-		},
-		"HN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hanoi",
-					"longName": "Hanoi"
-				},
-				"vi_VN": {
-					"shortName": "Hà Nội",
-					"longName": "Hà Nội"
-				}
-			}
-		},
-		"HP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Haiphong",
-					"longName": "Haiphong"
-				},
-				"vi_VN": {
-					"shortName": "Hải Phòng",
-					"longName": "Hải Phòng"
-				}
-			}
-		},
-		"SG": {
-			"locales": {
-				"vi_VN": {
-					"shortName": "Hồ Chí Minh",
-					"longName": "Hồ Chí Minh"
-				},
-				"en_US": {
-					"shortName": "Ho Chi Minh",
-					"longName": "Ho Chi Minh"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/vi_VN",
-		"id": "vi_VN"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Vietnam",
-			"longName": "Socialist Republic of Vietnam",
-			"postalCode": "Postal Code"
-		},
-		"vi_VN": {
-			"shortName": "Việt Nam",
-			"longName": "Cộng hòa Xã hội chủ nghĩa Việt Nam",
-			"postalCode": "Mã bưu chính"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "VN",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/vi_VN",
+    "id" : "vi_VN"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/VND",
+    "id" : "VND"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Lai Châu",
+          "longName" : "Lai Châu"
+        },
+        "en_US" : {
+          "shortName" : "Lai Châu",
+          "longName" : "Lai Châu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Lào Cai",
+          "longName" : "Lào Cai"
+        },
+        "en_US" : {
+          "shortName" : "Lào Cai",
+          "longName" : "Lào Cai"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Hà Giang",
+          "longName" : "Hà Giang"
+        },
+        "en_US" : {
+          "shortName" : "Hà Giang",
+          "longName" : "Hà Giang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cao Bằng",
+          "longName" : "Cao Bằng"
+        },
+        "vi_VN" : {
+          "shortName" : "Cao Bằng",
+          "longName" : "Cao Bằng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sơn La",
+          "longName" : "Sơn La"
+        },
+        "vi_VN" : {
+          "shortName" : "Sơn La",
+          "longName" : "Sơn La"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yên Bái",
+          "longName" : "Yên Bái"
+        },
+        "vi_VN" : {
+          "shortName" : "Yên Bái",
+          "longName" : "Yên Bái"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tuyên Quang",
+          "longName" : "Tuyên Quang"
+        },
+        "vi_VN" : {
+          "shortName" : "Tuyên Quang",
+          "longName" : "Tuyên Quang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lạng Sơn",
+          "longName" : "Lạng Sơn"
+        },
+        "vi_VN" : {
+          "shortName" : "Lạng Sơn",
+          "longName" : "Lạng Sơn"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Quảng Ninh",
+          "longName" : "Quảng Ninh"
+        },
+        "en_US" : {
+          "shortName" : "Quảng Ninh",
+          "longName" : "Quảng Ninh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hòa Bình",
+          "longName" : "Hòa Bình"
+        },
+        "vi_VN" : {
+          "shortName" : "Hòa Bình",
+          "longName" : "Hòa Bình"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hà Tây",
+          "longName" : "Hà Tây"
+        },
+        "vi_VN" : {
+          "shortName" : "Hà Tây",
+          "longName" : "Hà Tây"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ninh Bình",
+          "longName" : "Ninh Bình"
+        },
+        "vi_VN" : {
+          "shortName" : "Ninh Bình",
+          "longName" : "Ninh Bình"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Thái Bình",
+          "longName" : "Thái Bình"
+        },
+        "vi_VN" : {
+          "shortName" : "Thái Bình",
+          "longName" : "Thái Bình"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Thanh Hóa",
+          "longName" : "Thanh Hóa"
+        },
+        "en_US" : {
+          "shortName" : "Thanh Hóa",
+          "longName" : "Thanh Hóa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nghệ An",
+          "longName" : "Nghệ An"
+        },
+        "vi_VN" : {
+          "shortName" : "Nghệ An",
+          "longName" : "Nghệ An"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hà Tĩnh",
+          "longName" : "Hà Tĩnh"
+        },
+        "vi_VN" : {
+          "shortName" : "Hà Tĩnh",
+          "longName" : "Hà Tĩnh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Quảng Bình",
+          "longName" : "Quảng Bình"
+        },
+        "vi_VN" : {
+          "shortName" : "Quảng Bình",
+          "longName" : "Quảng Bình"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Quảng Trị",
+          "longName" : "Quảng Trị"
+        },
+        "en_US" : {
+          "shortName" : "Quảng Trị",
+          "longName" : "Quảng Trị"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Thừa Thiên–Huế",
+          "longName" : "Thừa Thiên–Huế"
+        },
+        "en_US" : {
+          "shortName" : "Thừa Thiên–Huế",
+          "longName" : "Thừa Thiên–Huế"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Quảng Nam",
+          "longName" : "Quảng Nam"
+        },
+        "en_US" : {
+          "shortName" : "Quảng Nam",
+          "longName" : "Quảng Nam"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "28" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Kon Tum",
+          "longName" : "Kon Tum"
+        },
+        "en_US" : {
+          "shortName" : "Kon Tum",
+          "longName" : "Kon Tum"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "29" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Quảng Ngãi",
+          "longName" : "Quảng Ngãi"
+        },
+        "en_US" : {
+          "shortName" : "Quảng Ngãi",
+          "longName" : "Quảng Ngãi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Gia Lai",
+          "longName" : "Gia Lai"
+        },
+        "en_US" : {
+          "shortName" : "Gia Lai",
+          "longName" : "Gia Lai"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Bình Định",
+          "longName" : "Bình Định"
+        },
+        "en_US" : {
+          "shortName" : "Bình Định",
+          "longName" : "Bình Định"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Phú Yên",
+          "longName" : "Phú Yên"
+        },
+        "vi_VN" : {
+          "shortName" : "Phú Yên",
+          "longName" : "Phú Yên"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Đắk Lắk",
+          "longName" : "Đắk Lắk"
+        },
+        "en_US" : {
+          "shortName" : "Đắk Lắk",
+          "longName" : "Đắk Lắk"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Khánh Hòa",
+          "longName" : "Khánh Hòa"
+        },
+        "en_US" : {
+          "shortName" : "Khánh Hòa",
+          "longName" : "Khánh Hòa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "35" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lâm Đồng",
+          "longName" : "Lâm Đồng"
+        },
+        "vi_VN" : {
+          "shortName" : "Lâm Đồng",
+          "longName" : "Lâm Đồng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "36" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ninh Thuận",
+          "longName" : "Ninh Thuận"
+        },
+        "vi_VN" : {
+          "shortName" : "Ninh Thuận",
+          "longName" : "Ninh Thuận"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "37" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Tây Ninh",
+          "longName" : "Tây Ninh"
+        },
+        "en_US" : {
+          "shortName" : "Tây Ninh",
+          "longName" : "Tây Ninh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "39" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Đồng Nai",
+          "longName" : "Đồng Nai"
+        },
+        "en_US" : {
+          "shortName" : "Đồng Nai",
+          "longName" : "Đồng Nai"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "40" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bình Thuận",
+          "longName" : "Bình Thuận"
+        },
+        "vi_VN" : {
+          "shortName" : "Bình Thuận",
+          "longName" : "Bình Thuận"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Long An",
+          "longName" : "Long An"
+        },
+        "vi_VN" : {
+          "shortName" : "Long An",
+          "longName" : "Long An"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Bà Rịa–Vũng Tàu",
+          "longName" : "Bà Rịa–Vũng Tàu"
+        },
+        "en_US" : {
+          "shortName" : "Bà Rịa–Vũng Tàu",
+          "longName" : "Bà Rịa–Vũng Tàu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "An Giang",
+          "longName" : "An Giang"
+        },
+        "en_US" : {
+          "shortName" : "An Giang",
+          "longName" : "An Giang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Đồng Tháp",
+          "longName" : "Đồng Tháp"
+        },
+        "en_US" : {
+          "shortName" : "Đồng Tháp",
+          "longName" : "Đồng Tháp"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tiền Giang",
+          "longName" : "Tiền Giang"
+        },
+        "vi_VN" : {
+          "shortName" : "Tiền Giang",
+          "longName" : "Tiền Giang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "47" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kiên Giang",
+          "longName" : "Kiên Giang"
+        },
+        "vi_VN" : {
+          "shortName" : "Kiên Giang",
+          "longName" : "Kiên Giang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "49" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vĩnh Long",
+          "longName" : "Vĩnh Long"
+        },
+        "vi_VN" : {
+          "shortName" : "Vĩnh Long",
+          "longName" : "Vĩnh Long"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "50" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Bến Tre",
+          "longName" : "Bến Tre"
+        },
+        "en_US" : {
+          "shortName" : "Bến Tre",
+          "longName" : "Bến Tre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Trà Vinh",
+          "longName" : "Trà Vinh"
+        },
+        "vi_VN" : {
+          "shortName" : "Trà Vinh",
+          "longName" : "Trà Vinh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "52" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sóc Trăng",
+          "longName" : "Sóc Trăng"
+        },
+        "vi_VN" : {
+          "shortName" : "Sóc Trăng",
+          "longName" : "Sóc Trăng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "53" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Bắc Kạn",
+          "longName" : "Bắc Kạn"
+        },
+        "en_US" : {
+          "shortName" : "Bắc Kạn",
+          "longName" : "Bắc Kạn"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "54" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Bắc Giang",
+          "longName" : "Bắc Giang"
+        },
+        "en_US" : {
+          "shortName" : "Bắc Giang",
+          "longName" : "Bắc Giang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "55" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Bạc Liêu",
+          "longName" : "Bạc Liêu"
+        },
+        "en_US" : {
+          "shortName" : "Bạc Liêu",
+          "longName" : "Bạc Liêu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "56" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Bắc Ninh",
+          "longName" : "Bắc Ninh"
+        },
+        "en_US" : {
+          "shortName" : "Bắc Ninh",
+          "longName" : "Bắc Ninh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "57" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bình Dương",
+          "longName" : "Bình Dương"
+        },
+        "vi_VN" : {
+          "shortName" : "Bình Dương",
+          "longName" : "Bình Dương"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "58" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Bình Phước",
+          "longName" : "Bình Phước"
+        },
+        "en_US" : {
+          "shortName" : "Bình Phước",
+          "longName" : "Bình Phước"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "59" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cà Mau",
+          "longName" : "Cà Mau"
+        },
+        "vi_VN" : {
+          "shortName" : "Cà Mau",
+          "longName" : "Cà Mau"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "61" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hải Dương",
+          "longName" : "Hải Dương"
+        },
+        "vi_VN" : {
+          "shortName" : "Hải Dương",
+          "longName" : "Hải Dương"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "63" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Hà Nam",
+          "longName" : "Hà Nam"
+        },
+        "en_US" : {
+          "shortName" : "Hà Nam",
+          "longName" : "Hà Nam"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "66" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Hưng Yên",
+          "longName" : "Hưng Yên"
+        },
+        "en_US" : {
+          "shortName" : "Hưng Yên",
+          "longName" : "Hưng Yên"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "67" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nam Định",
+          "longName" : "Nam Định"
+        },
+        "vi_VN" : {
+          "shortName" : "Nam Định",
+          "longName" : "Nam Định"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "68" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Phú Thọ",
+          "longName" : "Phú Thọ"
+        },
+        "vi_VN" : {
+          "shortName" : "Phú Thọ",
+          "longName" : "Phú Thọ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "69" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Thái Nguyên",
+          "longName" : "Thái Nguyên"
+        },
+        "en_US" : {
+          "shortName" : "Thái Nguyên",
+          "longName" : "Thái Nguyên"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "70" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vĩnh Phúc",
+          "longName" : "Vĩnh Phúc"
+        },
+        "vi_VN" : {
+          "shortName" : "Vĩnh Phúc",
+          "longName" : "Vĩnh Phúc"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "71" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Điện Biên",
+          "longName" : "Điện Biên"
+        },
+        "en_US" : {
+          "shortName" : "Điện Biên",
+          "longName" : "Điện Biên"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "72" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Đắk Nông",
+          "longName" : "Đắk Nông"
+        },
+        "en_US" : {
+          "shortName" : "Đắk Nông",
+          "longName" : "Đắk Nông"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "73" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hậu Giang",
+          "longName" : "Hậu Giang"
+        },
+        "vi_VN" : {
+          "shortName" : "Hậu Giang",
+          "longName" : "Hậu Giang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cần Thơ",
+          "longName" : "Cần Thơ"
+        },
+        "vi_VN" : {
+          "shortName" : "Cần Thơ",
+          "longName" : "Cần Thơ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Da Nang",
+          "longName" : "Da Nang"
+        },
+        "vi_VN" : {
+          "shortName" : "Đà Nẵng",
+          "longName" : "Đà Nẵng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hanoi",
+          "longName" : "Hanoi"
+        },
+        "vi_VN" : {
+          "shortName" : "Hà Nội",
+          "longName" : "Hà Nội"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Haiphong",
+          "longName" : "Haiphong"
+        },
+        "vi_VN" : {
+          "shortName" : "Hải Phòng",
+          "longName" : "Hải Phòng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SG" : {
+      "locales" : {
+        "vi_VN" : {
+          "shortName" : "Hồ Chí Minh",
+          "longName" : "Hồ Chí Minh"
+        },
+        "en_US" : {
+          "shortName" : "Ho Chi Minh",
+          "longName" : "Ho Chi Minh"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/vi_VN",
+    "id" : "vi_VN"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Vietnam",
+      "longName" : "Socialist Republic of Vietnam",
+      "postalCode" : ""
+    },
+    "vi_VN" : {
+      "shortName" : "Việt Nam",
+      "longName" : "Cộng hòa Xã hội chủ nghĩa Việt Nam",
+      "postalCode" : "Mã bưu chính"
+    },
+    "de_DE" : {
+      "shortName" : "Vietnam",
+      "longName" : "Socialist Republic of Vietnam",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Vietnam",
+      "longName" : "Socialist Republic of Vietnam",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Vietnam",
+      "longName" : "República Socialista de Vietnam",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Vietnam",
+      "longName" : "République socialiste du Vietnam",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Vietnam",
+      "longName" : "Repubblica Socialista del Vietnam",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "베트남",
+      "longName" : "Socialist Republic of Vietnam",
+      "postalCode" : ""
+    }
+  }
 }

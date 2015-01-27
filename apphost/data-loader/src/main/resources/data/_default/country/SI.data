@@ -1,2557 +1,2794 @@
 {
-	"countryCode": "SI",
-	"defaultLocale": {
-		"href": "/v1/locales/sl_SI",
-		"id": "sl_SI"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"001": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Ajdovščina",
-					"longName": "Ajdovščina"
-				},
-				"en_US": {
-					"shortName": "Ajdovščina",
-					"longName": "Ajdovščina"
-				}
-			}
-		},
-		"002": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Beltinci",
-					"longName": "Beltinci"
-				},
-				"en_US": {
-					"shortName": "Beltinci",
-					"longName": "Beltinci"
-				}
-			}
-		},
-		"003": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Bled",
-					"longName": "Bled"
-				},
-				"en_US": {
-					"shortName": "Bled",
-					"longName": "Bled"
-				}
-			}
-		},
-		"004": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bohinj",
-					"longName": "Bohinj"
-				},
-				"si_SI": {
-					"shortName": "Bohinj",
-					"longName": "Bohinj"
-				}
-			}
-		},
-		"005": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Borovnica",
-					"longName": "Borovnica"
-				},
-				"en_US": {
-					"shortName": "Borovnica",
-					"longName": "Borovnica"
-				}
-			}
-		},
-		"006": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bovec",
-					"longName": "Bovec"
-				},
-				"si_SI": {
-					"shortName": "Bovec",
-					"longName": "Bovec"
-				}
-			}
-		},
-		"007": {
-			"locales": {
-				"en_US": {
-					"shortName": "Brda",
-					"longName": "Brda"
-				},
-				"si_SI": {
-					"shortName": "Brda",
-					"longName": "Brda"
-				}
-			}
-		},
-		"008": {
-			"locales": {
-				"en_US": {
-					"shortName": "Brezovica",
-					"longName": "Brezovica"
-				},
-				"si_SI": {
-					"shortName": "Brezovica",
-					"longName": "Brezovica"
-				}
-			}
-		},
-		"009": {
-			"locales": {
-				"en_US": {
-					"shortName": "Brežice",
-					"longName": "Brežice"
-				},
-				"si_SI": {
-					"shortName": "Brežice",
-					"longName": "Brežice"
-				}
-			}
-		},
-		"010": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tišina",
-					"longName": "Tišina"
-				},
-				"si_SI": {
-					"shortName": "Tišina",
-					"longName": "Tišina"
-				}
-			}
-		},
-		"011": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Celje",
-					"longName": "Celje"
-				},
-				"en_US": {
-					"shortName": "Celje",
-					"longName": "Celje"
-				}
-			}
-		},
-		"012": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Cerklje na Gorenjskem",
-					"longName": "Cerklje na Gorenjskem"
-				},
-				"en_US": {
-					"shortName": "Cerklje na Gorenjskem",
-					"longName": "Cerklje na Gorenjskem"
-				}
-			}
-		},
-		"013": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cerknica",
-					"longName": "Cerknica"
-				},
-				"si_SI": {
-					"shortName": "Cerknica",
-					"longName": "Cerknica"
-				}
-			}
-		},
-		"014": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Cerkno",
-					"longName": "Cerkno"
-				},
-				"en_US": {
-					"shortName": "Cerkno",
-					"longName": "Cerkno"
-				}
-			}
-		},
-		"015": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Črenšovci",
-					"longName": "Črenšovci"
-				},
-				"en_US": {
-					"shortName": "Črenšovci",
-					"longName": "Črenšovci"
-				}
-			}
-		},
-		"016": {
-			"locales": {
-				"en_US": {
-					"shortName": "Črna na Koroškem",
-					"longName": "Črna na Koroškem"
-				},
-				"si_SI": {
-					"shortName": "Črna na Koroškem",
-					"longName": "Črna na Koroškem"
-				}
-			}
-		},
-		"017": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Črnomelj",
-					"longName": "Črnomelj"
-				},
-				"en_US": {
-					"shortName": "Črnomelj",
-					"longName": "Črnomelj"
-				}
-			}
-		},
-		"018": {
-			"locales": {
-				"en_US": {
-					"shortName": "Destrnik",
-					"longName": "Destrnik"
-				},
-				"si_SI": {
-					"shortName": "Destrnik",
-					"longName": "Destrnik"
-				}
-			}
-		},
-		"019": {
-			"locales": {
-				"en_US": {
-					"shortName": "Divača",
-					"longName": "Divača"
-				},
-				"si_SI": {
-					"shortName": "Divača",
-					"longName": "Divača"
-				}
-			}
-		},
-		"020": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Dobrepolje",
-					"longName": "Dobrepolje"
-				},
-				"en_US": {
-					"shortName": "Dobrepolje",
-					"longName": "Dobrepolje"
-				}
-			}
-		},
-		"021": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Dobrova–Polhov Gradec",
-					"longName": "Dobrova–Polhov Gradec"
-				},
-				"en_US": {
-					"shortName": "Dobrova–Polhov Gradec",
-					"longName": "Dobrova–Polhov Gradec"
-				}
-			}
-		},
-		"022": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dol pri Ljubljani",
-					"longName": "Dol pri Ljubljani"
-				},
-				"si_SI": {
-					"shortName": "Dol pri Ljubljani",
-					"longName": "Dol pri Ljubljani"
-				}
-			}
-		},
-		"023": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Domžale",
-					"longName": "Domžale"
-				},
-				"en_US": {
-					"shortName": "Domžale",
-					"longName": "Domžale"
-				}
-			}
-		},
-		"024": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Dornava",
-					"longName": "Dornava"
-				},
-				"en_US": {
-					"shortName": "Dornava",
-					"longName": "Dornava"
-				}
-			}
-		},
-		"025": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Dravograd",
-					"longName": "Dravograd"
-				},
-				"en_US": {
-					"shortName": "Dravograd",
-					"longName": "Dravograd"
-				}
-			}
-		},
-		"026": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Duplek",
-					"longName": "Duplek"
-				},
-				"en_US": {
-					"shortName": "Duplek",
-					"longName": "Duplek"
-				}
-			}
-		},
-		"027": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Gorenja vas–Poljane",
-					"longName": "Gorenja vas–Poljane"
-				},
-				"en_US": {
-					"shortName": "Gorenja vas–Poljane",
-					"longName": "Gorenja vas–Poljane"
-				}
-			}
-		},
-		"028": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gorišnica",
-					"longName": "Gorišnica"
-				},
-				"si_SI": {
-					"shortName": "Gorišnica",
-					"longName": "Gorišnica"
-				}
-			}
-		},
-		"029": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gornja Radgona",
-					"longName": "Gornja Radgona"
-				},
-				"si_SI": {
-					"shortName": "Gornja Radgona",
-					"longName": "Gornja Radgona"
-				}
-			}
-		},
-		"030": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gornji Grad",
-					"longName": "Gornji Grad"
-				},
-				"si_SI": {
-					"shortName": "Gornji Grad",
-					"longName": "Gornji Grad"
-				}
-			}
-		},
-		"031": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gornji Petrovci",
-					"longName": "Gornji Petrovci"
-				},
-				"si_SI": {
-					"shortName": "Gornji Petrovci",
-					"longName": "Gornji Petrovci"
-				}
-			}
-		},
-		"032": {
-			"locales": {
-				"en_US": {
-					"shortName": "Grosuplje",
-					"longName": "Grosuplje"
-				},
-				"si_SI": {
-					"shortName": "Grosuplje",
-					"longName": "Grosuplje"
-				}
-			}
-		},
-		"033": {
-			"locales": {
-				"en_US": {
-					"shortName": "Šalovci",
-					"longName": "Šalovci"
-				},
-				"si_SI": {
-					"shortName": "Šalovci",
-					"longName": "Šalovci"
-				}
-			}
-		},
-		"034": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Hrastnik",
-					"longName": "Hrastnik"
-				},
-				"en_US": {
-					"shortName": "Hrastnik",
-					"longName": "Hrastnik"
-				}
-			}
-		},
-		"035": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Hrpelje-Kozina",
-					"longName": "Hrpelje-Kozina"
-				},
-				"en_US": {
-					"shortName": "Hrpelje-Kozina",
-					"longName": "Hrpelje-Kozina"
-				}
-			}
-		},
-		"036": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Idrija",
-					"longName": "Idrija"
-				},
-				"en_US": {
-					"shortName": "Idrija",
-					"longName": "Idrija"
-				}
-			}
-		},
-		"037": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ig",
-					"longName": "Ig"
-				},
-				"si_SI": {
-					"shortName": "Ig",
-					"longName": "Ig"
-				}
-			}
-		},
-		"038": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Ilirska Bistrica",
-					"longName": "Ilirska Bistrica"
-				},
-				"en_US": {
-					"shortName": "Ilirska Bistrica",
-					"longName": "Ilirska Bistrica"
-				}
-			}
-		},
-		"039": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Ivančna Gorica",
-					"longName": "Ivančna Gorica"
-				},
-				"en_US": {
-					"shortName": "Ivančna Gorica",
-					"longName": "Ivančna Gorica"
-				}
-			}
-		},
-		"040": {
-			"locales": {
-				"en_US": {
-					"shortName": "Izola",
-					"longName": "Izola"
-				},
-				"si_SI": {
-					"shortName": "Izola",
-					"longName": "Izola"
-				}
-			}
-		},
-		"041": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Jesenice",
-					"longName": "Jesenice"
-				},
-				"en_US": {
-					"shortName": "Jesenice",
-					"longName": "Jesenice"
-				}
-			}
-		},
-		"042": {
-			"locales": {
-				"en_US": {
-					"shortName": "Juršinci",
-					"longName": "Juršinci"
-				},
-				"si_SI": {
-					"shortName": "Juršinci",
-					"longName": "Juršinci"
-				}
-			}
-		},
-		"043": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kamnik",
-					"longName": "Kamnik"
-				},
-				"si_SI": {
-					"shortName": "Kamnik",
-					"longName": "Kamnik"
-				}
-			}
-		},
-		"044": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kanal",
-					"longName": "Kanal"
-				},
-				"si_SI": {
-					"shortName": "Kanal",
-					"longName": "Kanal"
-				}
-			}
-		},
-		"045": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kidričevo",
-					"longName": "Kidričevo"
-				},
-				"si_SI": {
-					"shortName": "Kidričevo",
-					"longName": "Kidričevo"
-				}
-			}
-		},
-		"046": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kobarid",
-					"longName": "Kobarid"
-				},
-				"si_SI": {
-					"shortName": "Kobarid",
-					"longName": "Kobarid"
-				}
-			}
-		},
-		"047": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kobilje",
-					"longName": "Kobilje"
-				},
-				"si_SI": {
-					"shortName": "Kobilje",
-					"longName": "Kobilje"
-				}
-			}
-		},
-		"048": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kočevje",
-					"longName": "Kočevje"
-				},
-				"si_SI": {
-					"shortName": "Kočevje",
-					"longName": "Kočevje"
-				}
-			}
-		},
-		"049": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Komen",
-					"longName": "Komen"
-				},
-				"en_US": {
-					"shortName": "Komen",
-					"longName": "Komen"
-				}
-			}
-		},
-		"050": {
-			"locales": {
-				"en_US": {
-					"shortName": "Koper",
-					"longName": "Koper"
-				},
-				"si_SI": {
-					"shortName": "Koper",
-					"longName": "Koper"
-				}
-			}
-		},
-		"051": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Kozje",
-					"longName": "Kozje"
-				},
-				"en_US": {
-					"shortName": "Kozje",
-					"longName": "Kozje"
-				}
-			}
-		},
-		"052": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Kranj",
-					"longName": "Kranj"
-				},
-				"en_US": {
-					"shortName": "Kranj",
-					"longName": "Kranj"
-				}
-			}
-		},
-		"053": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kranjska Gora",
-					"longName": "Kranjska Gora"
-				},
-				"si_SI": {
-					"shortName": "Kranjska Gora",
-					"longName": "Kranjska Gora"
-				}
-			}
-		},
-		"054": {
-			"locales": {
-				"en_US": {
-					"shortName": "Krško",
-					"longName": "Krško"
-				},
-				"si_SI": {
-					"shortName": "Krško",
-					"longName": "Krško"
-				}
-			}
-		},
-		"055": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kungota",
-					"longName": "Kungota"
-				},
-				"si_SI": {
-					"shortName": "Kungota",
-					"longName": "Kungota"
-				}
-			}
-		},
-		"056": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kuzma",
-					"longName": "Kuzma"
-				},
-				"si_SI": {
-					"shortName": "Kuzma",
-					"longName": "Kuzma"
-				}
-			}
-		},
-		"057": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Laško",
-					"longName": "Laško"
-				},
-				"en_US": {
-					"shortName": "Laško",
-					"longName": "Laško"
-				}
-			}
-		},
-		"058": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lenart",
-					"longName": "Lenart"
-				},
-				"si_SI": {
-					"shortName": "Lenart",
-					"longName": "Lenart"
-				}
-			}
-		},
-		"059": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Lendava",
-					"longName": "Lendava"
-				},
-				"en_US": {
-					"shortName": "Lendava",
-					"longName": "Lendava"
-				}
-			}
-		},
-		"060": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Litija",
-					"longName": "Litija"
-				},
-				"en_US": {
-					"shortName": "Litija",
-					"longName": "Litija"
-				}
-			}
-		},
-		"061": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ljubljana",
-					"longName": "Ljubljana"
-				},
-				"si_SI": {
-					"shortName": "Ljubljana",
-					"longName": "Ljubljana"
-				}
-			}
-		},
-		"062": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ljubno",
-					"longName": "Ljubno"
-				},
-				"si_SI": {
-					"shortName": "Ljubno",
-					"longName": "Ljubno"
-				}
-			}
-		},
-		"063": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ljutomer",
-					"longName": "Ljutomer"
-				},
-				"si_SI": {
-					"shortName": "Ljutomer",
-					"longName": "Ljutomer"
-				}
-			}
-		},
-		"064": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Logatec",
-					"longName": "Logatec"
-				},
-				"en_US": {
-					"shortName": "Logatec",
-					"longName": "Logatec"
-				}
-			}
-		},
-		"065": {
-			"locales": {
-				"en_US": {
-					"shortName": "Loška Dolina",
-					"longName": "Loška Dolina"
-				},
-				"si_SI": {
-					"shortName": "Loška Dolina",
-					"longName": "Loška Dolina"
-				}
-			}
-		},
-		"066": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Loški Potok",
-					"longName": "Loški Potok"
-				},
-				"en_US": {
-					"shortName": "Loški Potok",
-					"longName": "Loški Potok"
-				}
-			}
-		},
-		"067": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Luče",
-					"longName": "Luče"
-				},
-				"en_US": {
-					"shortName": "Luče",
-					"longName": "Luče"
-				}
-			}
-		},
-		"068": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lukovica",
-					"longName": "Lukovica"
-				},
-				"si_SI": {
-					"shortName": "Lukovica",
-					"longName": "Lukovica"
-				}
-			}
-		},
-		"069": {
-			"locales": {
-				"en_US": {
-					"shortName": "Majšperk",
-					"longName": "Majšperk"
-				},
-				"si_SI": {
-					"shortName": "Majšperk",
-					"longName": "Majšperk"
-				}
-			}
-		},
-		"070": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Maribor",
-					"longName": "Maribor"
-				},
-				"en_US": {
-					"shortName": "Maribor",
-					"longName": "Maribor"
-				}
-			}
-		},
-		"071": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Medvode",
-					"longName": "Medvode"
-				},
-				"en_US": {
-					"shortName": "Medvode",
-					"longName": "Medvode"
-				}
-			}
-		},
-		"072": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mengeš",
-					"longName": "Mengeš"
-				},
-				"si_SI": {
-					"shortName": "Mengeš",
-					"longName": "Mengeš"
-				}
-			}
-		},
-		"073": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Metlika",
-					"longName": "Metlika"
-				},
-				"en_US": {
-					"shortName": "Metlika",
-					"longName": "Metlika"
-				}
-			}
-		},
-		"074": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Mežica",
-					"longName": "Mežica"
-				},
-				"en_US": {
-					"shortName": "Mežica",
-					"longName": "Mežica"
-				}
-			}
-		},
-		"075": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Miren–Kostanjevica",
-					"longName": "Miren–Kostanjevica"
-				},
-				"en_US": {
-					"shortName": "Miren–Kostanjevica",
-					"longName": "Miren–Kostanjevica"
-				}
-			}
-		},
-		"076": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mislinja",
-					"longName": "Mislinja"
-				},
-				"si_SI": {
-					"shortName": "Mislinja",
-					"longName": "Mislinja"
-				}
-			}
-		},
-		"077": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Moravče",
-					"longName": "Moravče"
-				},
-				"en_US": {
-					"shortName": "Moravče",
-					"longName": "Moravče"
-				}
-			}
-		},
-		"078": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moravske Toplice",
-					"longName": "Moravske Toplice"
-				},
-				"si_SI": {
-					"shortName": "Moravske Toplice",
-					"longName": "Moravske Toplice"
-				}
-			}
-		},
-		"079": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Mozirje",
-					"longName": "Mozirje"
-				},
-				"en_US": {
-					"shortName": "Mozirje",
-					"longName": "Mozirje"
-				}
-			}
-		},
-		"080": {
-			"locales": {
-				"en_US": {
-					"shortName": "Murska Sobota",
-					"longName": "Murska Sobota"
-				},
-				"si_SI": {
-					"shortName": "Murska Sobota",
-					"longName": "Murska Sobota"
-				}
-			}
-		},
-		"081": {
-			"locales": {
-				"en_US": {
-					"shortName": "Muta",
-					"longName": "Muta"
-				},
-				"si_SI": {
-					"shortName": "Muta",
-					"longName": "Muta"
-				}
-			}
-		},
-		"082": {
-			"locales": {
-				"en_US": {
-					"shortName": "Naklo",
-					"longName": "Naklo"
-				},
-				"si_SI": {
-					"shortName": "Naklo",
-					"longName": "Naklo"
-				}
-			}
-		},
-		"083": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Nazarje",
-					"longName": "Nazarje"
-				},
-				"en_US": {
-					"shortName": "Nazarje",
-					"longName": "Nazarje"
-				}
-			}
-		},
-		"084": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nova Gorica",
-					"longName": "Nova Gorica"
-				},
-				"si_SI": {
-					"shortName": "Nova Gorica",
-					"longName": "Nova Gorica"
-				}
-			}
-		},
-		"085": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Novo Mesto",
-					"longName": "Novo Mesto"
-				},
-				"en_US": {
-					"shortName": "Novo Mesto",
-					"longName": "Novo Mesto"
-				}
-			}
-		},
-		"086": {
-			"locales": {
-				"en_US": {
-					"shortName": "Odranci",
-					"longName": "Odranci"
-				},
-				"si_SI": {
-					"shortName": "Odranci",
-					"longName": "Odranci"
-				}
-			}
-		},
-		"087": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Ormož",
-					"longName": "Ormož"
-				},
-				"en_US": {
-					"shortName": "Ormož",
-					"longName": "Ormož"
-				}
-			}
-		},
-		"088": {
-			"locales": {
-				"en_US": {
-					"shortName": "Osilnica",
-					"longName": "Osilnica"
-				},
-				"si_SI": {
-					"shortName": "Osilnica",
-					"longName": "Osilnica"
-				}
-			}
-		},
-		"089": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Pesnica",
-					"longName": "Pesnica"
-				},
-				"en_US": {
-					"shortName": "Pesnica",
-					"longName": "Pesnica"
-				}
-			}
-		},
-		"090": {
-			"locales": {
-				"en_US": {
-					"shortName": "Piran",
-					"longName": "Piran"
-				},
-				"si_SI": {
-					"shortName": "Piran",
-					"longName": "Piran"
-				}
-			}
-		},
-		"091": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pivka",
-					"longName": "Pivka"
-				},
-				"si_SI": {
-					"shortName": "Pivka",
-					"longName": "Pivka"
-				}
-			}
-		},
-		"092": {
-			"locales": {
-				"en_US": {
-					"shortName": "Podčetrtek",
-					"longName": "Podčetrtek"
-				},
-				"si_SI": {
-					"shortName": "Podčetrtek",
-					"longName": "Podčetrtek"
-				}
-			}
-		},
-		"093": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Podvelka",
-					"longName": "Podvelka"
-				},
-				"en_US": {
-					"shortName": "Podvelka",
-					"longName": "Podvelka"
-				}
-			}
-		},
-		"094": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Postojna",
-					"longName": "Postojna"
-				},
-				"en_US": {
-					"shortName": "Postojna",
-					"longName": "Postojna"
-				}
-			}
-		},
-		"095": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Preddvor",
-					"longName": "Preddvor"
-				},
-				"en_US": {
-					"shortName": "Preddvor",
-					"longName": "Preddvor"
-				}
-			}
-		},
-		"096": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ptuj",
-					"longName": "Ptuj"
-				},
-				"si_SI": {
-					"shortName": "Ptuj",
-					"longName": "Ptuj"
-				}
-			}
-		},
-		"097": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Puconci",
-					"longName": "Puconci"
-				},
-				"en_US": {
-					"shortName": "Puconci",
-					"longName": "Puconci"
-				}
-			}
-		},
-		"098": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Rače–Fram",
-					"longName": "Rače–Fram"
-				},
-				"en_US": {
-					"shortName": "Rače–Fram",
-					"longName": "Rače–Fram"
-				}
-			}
-		},
-		"099": {
-			"locales": {
-				"en_US": {
-					"shortName": "Radeče",
-					"longName": "Radeče"
-				},
-				"si_SI": {
-					"shortName": "Radeče",
-					"longName": "Radeče"
-				}
-			}
-		},
-		"100": {
-			"locales": {
-				"en_US": {
-					"shortName": "Radenci",
-					"longName": "Radenci"
-				},
-				"si_SI": {
-					"shortName": "Radenci",
-					"longName": "Radenci"
-				}
-			}
-		},
-		"101": {
-			"locales": {
-				"en_US": {
-					"shortName": "Radlje ob Dravi",
-					"longName": "Radlje ob Dravi"
-				},
-				"si_SI": {
-					"shortName": "Radlje ob Dravi",
-					"longName": "Radlje ob Dravi"
-				}
-			}
-		},
-		"102": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Radovljica",
-					"longName": "Radovljica"
-				},
-				"en_US": {
-					"shortName": "Radovljica",
-					"longName": "Radovljica"
-				}
-			}
-		},
-		"103": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Ravne na Koroškem",
-					"longName": "Ravne na Koroškem"
-				},
-				"en_US": {
-					"shortName": "Ravne na Koroškem",
-					"longName": "Ravne na Koroškem"
-				}
-			}
-		},
-		"104": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Ribnica",
-					"longName": "Ribnica"
-				},
-				"en_US": {
-					"shortName": "Ribnica",
-					"longName": "Ribnica"
-				}
-			}
-		},
-		"105": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rogašovci",
-					"longName": "Rogašovci"
-				},
-				"si_SI": {
-					"shortName": "Rogašovci",
-					"longName": "Rogašovci"
-				}
-			}
-		},
-		"106": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Rogaška Slatina",
-					"longName": "Rogaška Slatina"
-				},
-				"en_US": {
-					"shortName": "Rogaška Slatina",
-					"longName": "Rogaška Slatina"
-				}
-			}
-		},
-		"107": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rogatec",
-					"longName": "Rogatec"
-				},
-				"si_SI": {
-					"shortName": "Rogatec",
-					"longName": "Rogatec"
-				}
-			}
-		},
-		"108": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ruše",
-					"longName": "Ruše"
-				},
-				"si_SI": {
-					"shortName": "Ruše",
-					"longName": "Ruše"
-				}
-			}
-		},
-		"109": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Semič",
-					"longName": "Semič"
-				},
-				"en_US": {
-					"shortName": "Semič",
-					"longName": "Semič"
-				}
-			}
-		},
-		"110": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Sevnica",
-					"longName": "Sevnica"
-				},
-				"en_US": {
-					"shortName": "Sevnica",
-					"longName": "Sevnica"
-				}
-			}
-		},
-		"111": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sežana",
-					"longName": "Sežana"
-				},
-				"si_SI": {
-					"shortName": "Sežana",
-					"longName": "Sežana"
-				}
-			}
-		},
-		"112": {
-			"locales": {
-				"en_US": {
-					"shortName": "Slovenj Gradec",
-					"longName": "Slovenj Gradec"
-				},
-				"si_SI": {
-					"shortName": "Slovenj Gradec",
-					"longName": "Slovenj Gradec"
-				}
-			}
-		},
-		"113": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Slovenska Bistrica",
-					"longName": "Slovenska Bistrica"
-				},
-				"en_US": {
-					"shortName": "Slovenska Bistrica",
-					"longName": "Slovenska Bistrica"
-				}
-			}
-		},
-		"114": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Slovenske Konjice",
-					"longName": "Slovenske Konjice"
-				},
-				"en_US": {
-					"shortName": "Slovenske Konjice",
-					"longName": "Slovenske Konjice"
-				}
-			}
-		},
-		"115": {
-			"locales": {
-				"en_US": {
-					"shortName": "Starše",
-					"longName": "Starše"
-				},
-				"si_SI": {
-					"shortName": "Starše",
-					"longName": "Starše"
-				}
-			}
-		},
-		"116": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sveti Jurij",
-					"longName": "Sveti Jurij"
-				},
-				"si_SI": {
-					"shortName": "Sveti Jurij",
-					"longName": "Sveti Jurij"
-				}
-			}
-		},
-		"117": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Šenčur",
-					"longName": "Šenčur"
-				},
-				"en_US": {
-					"shortName": "Šenčur",
-					"longName": "Šenčur"
-				}
-			}
-		},
-		"118": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Šentilj",
-					"longName": "Šentilj"
-				},
-				"en_US": {
-					"shortName": "Šentilj",
-					"longName": "Šentilj"
-				}
-			}
-		},
-		"119": {
-			"locales": {
-				"en_US": {
-					"shortName": "Šentjernej",
-					"longName": "Šentjernej"
-				},
-				"si_SI": {
-					"shortName": "Šentjernej",
-					"longName": "Šentjernej"
-				}
-			}
-		},
-		"120": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Šentjur",
-					"longName": "Šentjur"
-				},
-				"en_US": {
-					"shortName": "Šentjur",
-					"longName": "Šentjur"
-				}
-			}
-		},
-		"121": {
-			"locales": {
-				"en_US": {
-					"shortName": "Škocjan",
-					"longName": "Škocjan"
-				},
-				"si_SI": {
-					"shortName": "Škocjan",
-					"longName": "Škocjan"
-				}
-			}
-		},
-		"122": {
-			"locales": {
-				"en_US": {
-					"shortName": "Škofja Loka",
-					"longName": "Škofja Loka"
-				},
-				"si_SI": {
-					"shortName": "Škofja Loka",
-					"longName": "Škofja Loka"
-				}
-			}
-		},
-		"123": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Škofljica",
-					"longName": "Škofljica"
-				},
-				"en_US": {
-					"shortName": "Škofljica",
-					"longName": "Škofljica"
-				}
-			}
-		},
-		"124": {
-			"locales": {
-				"en_US": {
-					"shortName": "Šmarje pri Jelšah",
-					"longName": "Šmarje pri Jelšah"
-				},
-				"si_SI": {
-					"shortName": "Šmarje pri Jelšah",
-					"longName": "Šmarje pri Jelšah"
-				}
-			}
-		},
-		"125": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Šmartno ob Paki",
-					"longName": "Šmartno ob Paki"
-				},
-				"en_US": {
-					"shortName": "Šmartno ob Paki",
-					"longName": "Šmartno ob Paki"
-				}
-			}
-		},
-		"126": {
-			"locales": {
-				"en_US": {
-					"shortName": "Šoštanj",
-					"longName": "Šoštanj"
-				},
-				"si_SI": {
-					"shortName": "Šoštanj",
-					"longName": "Šoštanj"
-				}
-			}
-		},
-		"127": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Štore",
-					"longName": "Štore"
-				},
-				"en_US": {
-					"shortName": "Štore",
-					"longName": "Štore"
-				}
-			}
-		},
-		"128": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Tolmin",
-					"longName": "Tolmin"
-				},
-				"en_US": {
-					"shortName": "Tolmin",
-					"longName": "Tolmin"
-				}
-			}
-		},
-		"129": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Trbovlje",
-					"longName": "Trbovlje"
-				},
-				"en_US": {
-					"shortName": "Trbovlje",
-					"longName": "Trbovlje"
-				}
-			}
-		},
-		"130": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Trebnje",
-					"longName": "Trebnje"
-				},
-				"en_US": {
-					"shortName": "Trebnje",
-					"longName": "Trebnje"
-				}
-			}
-		},
-		"131": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tržič",
-					"longName": "Tržič"
-				},
-				"si_SI": {
-					"shortName": "Tržič",
-					"longName": "Tržič"
-				}
-			}
-		},
-		"132": {
-			"locales": {
-				"en_US": {
-					"shortName": "Turnišče",
-					"longName": "Turnišče"
-				},
-				"si_SI": {
-					"shortName": "Turnišče",
-					"longName": "Turnišče"
-				}
-			}
-		},
-		"133": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Velenje",
-					"longName": "Velenje"
-				},
-				"en_US": {
-					"shortName": "Velenje",
-					"longName": "Velenje"
-				}
-			}
-		},
-		"134": {
-			"locales": {
-				"en_US": {
-					"shortName": "Velike Lašče",
-					"longName": "Velike Lašče"
-				},
-				"si_SI": {
-					"shortName": "Velike Lašče",
-					"longName": "Velike Lašče"
-				}
-			}
-		},
-		"135": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Videm",
-					"longName": "Videm"
-				},
-				"en_US": {
-					"shortName": "Videm",
-					"longName": "Videm"
-				}
-			}
-		},
-		"136": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vipava",
-					"longName": "Vipava"
-				},
-				"si_SI": {
-					"shortName": "Vipava",
-					"longName": "Vipava"
-				}
-			}
-		},
-		"137": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vitanje",
-					"longName": "Vitanje"
-				},
-				"si_SI": {
-					"shortName": "Vitanje",
-					"longName": "Vitanje"
-				}
-			}
-		},
-		"138": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Vodice",
-					"longName": "Vodice"
-				},
-				"en_US": {
-					"shortName": "Vodice",
-					"longName": "Vodice"
-				}
-			}
-		},
-		"139": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vojnik",
-					"longName": "Vojnik"
-				},
-				"si_SI": {
-					"shortName": "Vojnik",
-					"longName": "Vojnik"
-				}
-			}
-		},
-		"140": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vrhnika",
-					"longName": "Vrhnika"
-				},
-				"si_SI": {
-					"shortName": "Vrhnika",
-					"longName": "Vrhnika"
-				}
-			}
-		},
-		"141": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Vuzenica",
-					"longName": "Vuzenica"
-				},
-				"en_US": {
-					"shortName": "Vuzenica",
-					"longName": "Vuzenica"
-				}
-			}
-		},
-		"142": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Zagorje ob Savi",
-					"longName": "Zagorje ob Savi"
-				},
-				"en_US": {
-					"shortName": "Zagorje ob Savi",
-					"longName": "Zagorje ob Savi"
-				}
-			}
-		},
-		"143": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zavrč",
-					"longName": "Zavrč"
-				},
-				"si_SI": {
-					"shortName": "Zavrč",
-					"longName": "Zavrč"
-				}
-			}
-		},
-		"144": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Zreče",
-					"longName": "Zreče"
-				},
-				"en_US": {
-					"shortName": "Zreče",
-					"longName": "Zreče"
-				}
-			}
-		},
-		"146": {
-			"locales": {
-				"en_US": {
-					"shortName": "Železniki",
-					"longName": "Železniki"
-				},
-				"si_SI": {
-					"shortName": "Železniki",
-					"longName": "Železniki"
-				}
-			}
-		},
-		"147": {
-			"locales": {
-				"en_US": {
-					"shortName": "Žiri",
-					"longName": "Žiri"
-				},
-				"si_SI": {
-					"shortName": "Žiri",
-					"longName": "Žiri"
-				}
-			}
-		},
-		"148": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Benedikt",
-					"longName": "Benedikt"
-				},
-				"en_US": {
-					"shortName": "Benedikt",
-					"longName": "Benedikt"
-				}
-			}
-		},
-		"149": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bistrica ob Sotli",
-					"longName": "Bistrica ob Sotli"
-				},
-				"si_SI": {
-					"shortName": "Bistrica ob Sotli",
-					"longName": "Bistrica ob Sotli"
-				}
-			}
-		},
-		"150": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Bloke",
-					"longName": "Bloke"
-				},
-				"en_US": {
-					"shortName": "Bloke",
-					"longName": "Bloke"
-				}
-			}
-		},
-		"151": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Braslovče",
-					"longName": "Braslovče"
-				},
-				"en_US": {
-					"shortName": "Braslovče",
-					"longName": "Braslovče"
-				}
-			}
-		},
-		"152": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cankova",
-					"longName": "Cankova"
-				},
-				"si_SI": {
-					"shortName": "Cankova",
-					"longName": "Cankova"
-				}
-			}
-		},
-		"153": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Cerkvenjak",
-					"longName": "Cerkvenjak"
-				},
-				"en_US": {
-					"shortName": "Cerkvenjak",
-					"longName": "Cerkvenjak"
-				}
-			}
-		},
-		"154": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dobje",
-					"longName": "Dobje"
-				},
-				"si_SI": {
-					"shortName": "Dobje",
-					"longName": "Dobje"
-				}
-			}
-		},
-		"155": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dobrna",
-					"longName": "Dobrna"
-				},
-				"si_SI": {
-					"shortName": "Dobrna",
-					"longName": "Dobrna"
-				}
-			}
-		},
-		"156": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Dobrovnik",
-					"longName": "Dobrovnik"
-				},
-				"en_US": {
-					"shortName": "Dobrovnik",
-					"longName": "Dobrovnik"
-				}
-			}
-		},
-		"157": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Dolenjske Toplice",
-					"longName": "Dolenjske Toplice"
-				},
-				"en_US": {
-					"shortName": "Dolenjske Toplice",
-					"longName": "Dolenjske Toplice"
-				}
-			}
-		},
-		"158": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Grad",
-					"longName": "Grad"
-				},
-				"en_US": {
-					"shortName": "Grad",
-					"longName": "Grad"
-				}
-			}
-		},
-		"159": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hajdina",
-					"longName": "Hajdina"
-				},
-				"si_SI": {
-					"shortName": "Hajdina",
-					"longName": "Hajdina"
-				}
-			}
-		},
-		"160": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hoče–Slivnica",
-					"longName": "Hoče–Slivnica"
-				},
-				"si_SI": {
-					"shortName": "Hoče–Slivnica",
-					"longName": "Hoče–Slivnica"
-				}
-			}
-		},
-		"161": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hodoš",
-					"longName": "Hodoš"
-				},
-				"si_SI": {
-					"shortName": "Hodoš",
-					"longName": "Hodoš"
-				}
-			}
-		},
-		"162": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Horjul",
-					"longName": "Horjul"
-				},
-				"en_US": {
-					"shortName": "Horjul",
-					"longName": "Horjul"
-				}
-			}
-		},
-		"163": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Jezersko",
-					"longName": "Jezersko"
-				},
-				"en_US": {
-					"shortName": "Jezersko",
-					"longName": "Jezersko"
-				}
-			}
-		},
-		"164": {
-			"locales": {
-				"en_US": {
-					"shortName": "Komenda",
-					"longName": "Komenda"
-				},
-				"si_SI": {
-					"shortName": "Komenda",
-					"longName": "Komenda"
-				}
-			}
-		},
-		"165": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kostel",
-					"longName": "Kostel"
-				},
-				"si_SI": {
-					"shortName": "Kostel",
-					"longName": "Kostel"
-				}
-			}
-		},
-		"166": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Križevci",
-					"longName": "Križevci"
-				},
-				"en_US": {
-					"shortName": "Križevci",
-					"longName": "Križevci"
-				}
-			}
-		},
-		"167": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Lovrenc na Pohorju",
-					"longName": "Lovrenc na Pohorju"
-				},
-				"en_US": {
-					"shortName": "Lovrenc na Pohorju",
-					"longName": "Lovrenc na Pohorju"
-				}
-			}
-		},
-		"168": {
-			"locales": {
-				"en_US": {
-					"shortName": "Markovci",
-					"longName": "Markovci"
-				},
-				"si_SI": {
-					"shortName": "Markovci",
-					"longName": "Markovci"
-				}
-			}
-		},
-		"169": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Miklavž na Dravskem Polju",
-					"longName": "Miklavž na Dravskem Polju"
-				},
-				"en_US": {
-					"shortName": "Miklavž na Dravskem Polju",
-					"longName": "Miklavž na Dravskem Polju"
-				}
-			}
-		},
-		"170": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mirna Peč",
-					"longName": "Mirna Peč"
-				},
-				"si_SI": {
-					"shortName": "Mirna Peč",
-					"longName": "Mirna Peč"
-				}
-			}
-		},
-		"171": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oplotnica",
-					"longName": "Oplotnica"
-				},
-				"si_SI": {
-					"shortName": "Oplotnica",
-					"longName": "Oplotnica"
-				}
-			}
-		},
-		"172": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Podlehnik",
-					"longName": "Podlehnik"
-				},
-				"en_US": {
-					"shortName": "Podlehnik",
-					"longName": "Podlehnik"
-				}
-			}
-		},
-		"173": {
-			"locales": {
-				"en_US": {
-					"shortName": "Polzela",
-					"longName": "Polzela"
-				},
-				"si_SI": {
-					"shortName": "Polzela",
-					"longName": "Polzela"
-				}
-			}
-		},
-		"174": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Prebold",
-					"longName": "Prebold"
-				},
-				"en_US": {
-					"shortName": "Prebold",
-					"longName": "Prebold"
-				}
-			}
-		},
-		"175": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Prevalje",
-					"longName": "Prevalje"
-				},
-				"en_US": {
-					"shortName": "Prevalje",
-					"longName": "Prevalje"
-				}
-			}
-		},
-		"176": {
-			"locales": {
-				"en_US": {
-					"shortName": "Razkrižje",
-					"longName": "Razkrižje"
-				},
-				"si_SI": {
-					"shortName": "Razkrižje",
-					"longName": "Razkrižje"
-				}
-			}
-		},
-		"177": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ribnica na Pohorju",
-					"longName": "Ribnica na Pohorju"
-				},
-				"si_SI": {
-					"shortName": "Ribnica na Pohorju",
-					"longName": "Ribnica na Pohorju"
-				}
-			}
-		},
-		"178": {
-			"locales": {
-				"en_US": {
-					"shortName": "Selnica ob Dravi",
-					"longName": "Selnica ob Dravi"
-				},
-				"si_SI": {
-					"shortName": "Selnica ob Dravi",
-					"longName": "Selnica ob Dravi"
-				}
-			}
-		},
-		"179": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sodražica",
-					"longName": "Sodražica"
-				},
-				"si_SI": {
-					"shortName": "Sodražica",
-					"longName": "Sodražica"
-				}
-			}
-		},
-		"180": {
-			"locales": {
-				"en_US": {
-					"shortName": "Solčava",
-					"longName": "Solčava"
-				},
-				"si_SI": {
-					"shortName": "Solčava",
-					"longName": "Solčava"
-				}
-			}
-		},
-		"181": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Sveta Ana",
-					"longName": "Sveta Ana"
-				},
-				"en_US": {
-					"shortName": "Sveta Ana",
-					"longName": "Sveta Ana"
-				}
-			}
-		},
-		"182": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Sveti Andraž v Slovenskih Goricah",
-					"longName": "Sveti Andraž v Slovenskih Goricah"
-				},
-				"en_US": {
-					"shortName": "Sveti Andraž v Slovenskih Goricah",
-					"longName": "Sveti Andraž v Slovenskih Goricah"
-				}
-			}
-		},
-		"183": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Šempeter–Vrtojba",
-					"longName": "Šempeter–Vrtojba"
-				},
-				"en_US": {
-					"shortName": "Šempeter–Vrtojba",
-					"longName": "Šempeter–Vrtojba"
-				}
-			}
-		},
-		"184": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tabor",
-					"longName": "Tabor"
-				},
-				"si_SI": {
-					"shortName": "Tabor",
-					"longName": "Tabor"
-				}
-			}
-		},
-		"185": {
-			"locales": {
-				"en_US": {
-					"shortName": "Trnovska Vas",
-					"longName": "Trnovska Vas"
-				},
-				"si_SI": {
-					"shortName": "Trnovska Vas",
-					"longName": "Trnovska Vas"
-				}
-			}
-		},
-		"186": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Trzin",
-					"longName": "Trzin"
-				},
-				"en_US": {
-					"shortName": "Trzin",
-					"longName": "Trzin"
-				}
-			}
-		},
-		"187": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Velika Polana",
-					"longName": "Velika Polana"
-				},
-				"en_US": {
-					"shortName": "Velika Polana",
-					"longName": "Velika Polana"
-				}
-			}
-		},
-		"188": {
-			"locales": {
-				"en_US": {
-					"shortName": "Veržej",
-					"longName": "Veržej"
-				},
-				"si_SI": {
-					"shortName": "Veržej",
-					"longName": "Veržej"
-				}
-			}
-		},
-		"189": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vransko",
-					"longName": "Vransko"
-				},
-				"si_SI": {
-					"shortName": "Vransko",
-					"longName": "Vransko"
-				}
-			}
-		},
-		"190": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Žalec",
-					"longName": "Žalec"
-				},
-				"en_US": {
-					"shortName": "Žalec",
-					"longName": "Žalec"
-				}
-			}
-		},
-		"191": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Žetale",
-					"longName": "Žetale"
-				},
-				"en_US": {
-					"shortName": "Žetale",
-					"longName": "Žetale"
-				}
-			}
-		},
-		"192": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Žirovnica",
-					"longName": "Žirovnica"
-				},
-				"en_US": {
-					"shortName": "Žirovnica",
-					"longName": "Žirovnica"
-				}
-			}
-		},
-		"193": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Žužemberk",
-					"longName": "Žužemberk"
-				},
-				"en_US": {
-					"shortName": "Žužemberk",
-					"longName": "Žužemberk"
-				}
-			}
-		},
-		"194": {
-			"locales": {
-				"en_US": {
-					"shortName": "Šmartno pri Litiji",
-					"longName": "Šmartno pri Litiji"
-				},
-				"si_SI": {
-					"shortName": "Šmartno pri Litiji",
-					"longName": "Šmartno pri Litiji"
-				}
-			}
-		},
-		"195": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Apače",
-					"longName": "Apače"
-				},
-				"en_US": {
-					"shortName": "Apače",
-					"longName": "Apače"
-				}
-			}
-		},
-		"196": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cirkulane",
-					"longName": "Cirkulane"
-				},
-				"si_SI": {
-					"shortName": "Cirkulane",
-					"longName": "Cirkulane"
-				}
-			}
-		},
-		"197": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kosanjevica na Krki",
-					"longName": "Kosanjevica na Krki"
-				},
-				"si_SI": {
-					"shortName": "Kosanjevica na Krki",
-					"longName": "Kosanjevica na Krki"
-				}
-			}
-		},
-		"198": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Makole",
-					"longName": "Makole"
-				},
-				"en_US": {
-					"shortName": "Makole",
-					"longName": "Makole"
-				}
-			}
-		},
-		"199": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Mokronog–Trebelno",
-					"longName": "Mokronog–Trebelno"
-				},
-				"en_US": {
-					"shortName": "Mokronog–Trebelno",
-					"longName": "Mokronog–Trebelno"
-				}
-			}
-		},
-		"200": {
-			"locales": {
-				"en_US": {
-					"shortName": "Poljčane",
-					"longName": "Poljčane"
-				},
-				"si_SI": {
-					"shortName": "Poljčane",
-					"longName": "Poljčane"
-				}
-			}
-		},
-		"201": {
-			"locales": {
-				"en_US": {
-					"shortName": "Renče-Vogrsko",
-					"longName": "Renče-Vogrsko"
-				},
-				"si_SI": {
-					"shortName": "Renče-Vogrsko",
-					"longName": "Renče-Vogrsko"
-				}
-			}
-		},
-		"202": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Središče ob Dravi",
-					"longName": "Središče ob Dravi"
-				},
-				"en_US": {
-					"shortName": "Središče ob Dravi",
-					"longName": "Središče ob Dravi"
-				}
-			}
-		},
-		"203": {
-			"locales": {
-				"en_US": {
-					"shortName": "Straža",
-					"longName": "Straža"
-				},
-				"si_SI": {
-					"shortName": "Straža",
-					"longName": "Straža"
-				}
-			}
-		},
-		"204": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Sveta Trojica v Slovenskih Goricah",
-					"longName": "Sveta Trojica v Slovenskih Goricah"
-				},
-				"en_US": {
-					"shortName": "Sveta Trojica v Slovenskih Goricah",
-					"longName": "Sveta Trojica v Slovenskih Goricah"
-				}
-			}
-		},
-		"205": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Sveti Tomaž",
-					"longName": "Sveti Tomaž"
-				},
-				"en_US": {
-					"shortName": "Sveti Tomaž",
-					"longName": "Sveti Tomaž"
-				}
-			}
-		},
-		"206": {
-			"locales": {
-				"en_US": {
-					"shortName": "Šmarješke Toplice",
-					"longName": "Šmarješke Toplice"
-				},
-				"si_SI": {
-					"shortName": "Šmarješke Toplice",
-					"longName": "Šmarješke Toplice"
-				}
-			}
-		},
-		"207": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gorje",
-					"longName": "Gorje"
-				},
-				"si_SI": {
-					"shortName": "Gorje",
-					"longName": "Gorje"
-				}
-			}
-		},
-		"208": {
-			"locales": {
-				"en_US": {
-					"shortName": "Log-Dragomer",
-					"longName": "Log-Dragomer"
-				},
-				"si_SI": {
-					"shortName": "Log-Dragomer",
-					"longName": "Log-Dragomer"
-				}
-			}
-		},
-		"209": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rečica ob Savinji",
-					"longName": "Rečica ob Savinji"
-				},
-				"si_SI": {
-					"shortName": "Rečica ob Savinji",
-					"longName": "Rečica ob Savinji"
-				}
-			}
-		},
-		"210": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sveti Jurij v Slovenskih Goricah",
-					"longName": "Sveti Jurij v Slovenskih Goricah"
-				},
-				"si_SI": {
-					"shortName": "Sveti Jurij v Slovenskih Goricah",
-					"longName": "Sveti Jurij v Slovenskih Goricah"
-				}
-			}
-		},
-		"211": {
-			"locales": {
-				"si_SI": {
-					"shortName": "Šentrupert",
-					"longName": "Šentrupert"
-				},
-				"en_US": {
-					"shortName": "Šentrupert",
-					"longName": "Šentrupert"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/sl_SI",
-		"id": "sl_SI"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Slovenia",
-			"longName": "Republic of Slovenia",
-			"postalCode": "Postal Code"
-		},
-		"sl_SI": {
-			"shortName": "Slovenija",
-			"longName": "Republika Slovenija",
-			"postalCode": "Poštna številka"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SI",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/sl_SI",
+    "id" : "sl_SI"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "001" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Ajdovščina",
+          "longName" : "Ajdovščina"
+        },
+        "en_US" : {
+          "shortName" : "Ajdovščina",
+          "longName" : "Ajdovščina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "002" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Beltinci",
+          "longName" : "Beltinci"
+        },
+        "en_US" : {
+          "shortName" : "Beltinci",
+          "longName" : "Beltinci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "003" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Bled",
+          "longName" : "Bled"
+        },
+        "en_US" : {
+          "shortName" : "Bled",
+          "longName" : "Bled"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "004" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bohinj",
+          "longName" : "Bohinj"
+        },
+        "si_SI" : {
+          "shortName" : "Bohinj",
+          "longName" : "Bohinj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "005" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Borovnica",
+          "longName" : "Borovnica"
+        },
+        "en_US" : {
+          "shortName" : "Borovnica",
+          "longName" : "Borovnica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "006" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bovec",
+          "longName" : "Bovec"
+        },
+        "si_SI" : {
+          "shortName" : "Bovec",
+          "longName" : "Bovec"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "007" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Brda",
+          "longName" : "Brda"
+        },
+        "si_SI" : {
+          "shortName" : "Brda",
+          "longName" : "Brda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "008" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Brezovica",
+          "longName" : "Brezovica"
+        },
+        "si_SI" : {
+          "shortName" : "Brezovica",
+          "longName" : "Brezovica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "009" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Brežice",
+          "longName" : "Brežice"
+        },
+        "si_SI" : {
+          "shortName" : "Brežice",
+          "longName" : "Brežice"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "010" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tišina",
+          "longName" : "Tišina"
+        },
+        "si_SI" : {
+          "shortName" : "Tišina",
+          "longName" : "Tišina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "011" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Celje",
+          "longName" : "Celje"
+        },
+        "en_US" : {
+          "shortName" : "Celje",
+          "longName" : "Celje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "012" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Cerklje na Gorenjskem",
+          "longName" : "Cerklje na Gorenjskem"
+        },
+        "en_US" : {
+          "shortName" : "Cerklje na Gorenjskem",
+          "longName" : "Cerklje na Gorenjskem"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "013" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cerknica",
+          "longName" : "Cerknica"
+        },
+        "si_SI" : {
+          "shortName" : "Cerknica",
+          "longName" : "Cerknica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "014" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Cerkno",
+          "longName" : "Cerkno"
+        },
+        "en_US" : {
+          "shortName" : "Cerkno",
+          "longName" : "Cerkno"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "015" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Črenšovci",
+          "longName" : "Črenšovci"
+        },
+        "en_US" : {
+          "shortName" : "Črenšovci",
+          "longName" : "Črenšovci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "016" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Črna na Koroškem",
+          "longName" : "Črna na Koroškem"
+        },
+        "si_SI" : {
+          "shortName" : "Črna na Koroškem",
+          "longName" : "Črna na Koroškem"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "017" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Črnomelj",
+          "longName" : "Črnomelj"
+        },
+        "en_US" : {
+          "shortName" : "Črnomelj",
+          "longName" : "Črnomelj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "018" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Destrnik",
+          "longName" : "Destrnik"
+        },
+        "si_SI" : {
+          "shortName" : "Destrnik",
+          "longName" : "Destrnik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "019" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Divača",
+          "longName" : "Divača"
+        },
+        "si_SI" : {
+          "shortName" : "Divača",
+          "longName" : "Divača"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "020" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Dobrepolje",
+          "longName" : "Dobrepolje"
+        },
+        "en_US" : {
+          "shortName" : "Dobrepolje",
+          "longName" : "Dobrepolje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "021" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Dobrova–Polhov Gradec",
+          "longName" : "Dobrova–Polhov Gradec"
+        },
+        "en_US" : {
+          "shortName" : "Dobrova–Polhov Gradec",
+          "longName" : "Dobrova–Polhov Gradec"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "022" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dol pri Ljubljani",
+          "longName" : "Dol pri Ljubljani"
+        },
+        "si_SI" : {
+          "shortName" : "Dol pri Ljubljani",
+          "longName" : "Dol pri Ljubljani"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "023" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Domžale",
+          "longName" : "Domžale"
+        },
+        "en_US" : {
+          "shortName" : "Domžale",
+          "longName" : "Domžale"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "024" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Dornava",
+          "longName" : "Dornava"
+        },
+        "en_US" : {
+          "shortName" : "Dornava",
+          "longName" : "Dornava"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "025" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Dravograd",
+          "longName" : "Dravograd"
+        },
+        "en_US" : {
+          "shortName" : "Dravograd",
+          "longName" : "Dravograd"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "026" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Duplek",
+          "longName" : "Duplek"
+        },
+        "en_US" : {
+          "shortName" : "Duplek",
+          "longName" : "Duplek"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "027" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Gorenja vas–Poljane",
+          "longName" : "Gorenja vas–Poljane"
+        },
+        "en_US" : {
+          "shortName" : "Gorenja vas–Poljane",
+          "longName" : "Gorenja vas–Poljane"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "028" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gorišnica",
+          "longName" : "Gorišnica"
+        },
+        "si_SI" : {
+          "shortName" : "Gorišnica",
+          "longName" : "Gorišnica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "029" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gornja Radgona",
+          "longName" : "Gornja Radgona"
+        },
+        "si_SI" : {
+          "shortName" : "Gornja Radgona",
+          "longName" : "Gornja Radgona"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "030" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gornji Grad",
+          "longName" : "Gornji Grad"
+        },
+        "si_SI" : {
+          "shortName" : "Gornji Grad",
+          "longName" : "Gornji Grad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "031" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gornji Petrovci",
+          "longName" : "Gornji Petrovci"
+        },
+        "si_SI" : {
+          "shortName" : "Gornji Petrovci",
+          "longName" : "Gornji Petrovci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "032" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Grosuplje",
+          "longName" : "Grosuplje"
+        },
+        "si_SI" : {
+          "shortName" : "Grosuplje",
+          "longName" : "Grosuplje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "033" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Šalovci",
+          "longName" : "Šalovci"
+        },
+        "si_SI" : {
+          "shortName" : "Šalovci",
+          "longName" : "Šalovci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "034" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Hrastnik",
+          "longName" : "Hrastnik"
+        },
+        "en_US" : {
+          "shortName" : "Hrastnik",
+          "longName" : "Hrastnik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "035" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Hrpelje-Kozina",
+          "longName" : "Hrpelje-Kozina"
+        },
+        "en_US" : {
+          "shortName" : "Hrpelje-Kozina",
+          "longName" : "Hrpelje-Kozina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "036" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Idrija",
+          "longName" : "Idrija"
+        },
+        "en_US" : {
+          "shortName" : "Idrija",
+          "longName" : "Idrija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "037" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ig",
+          "longName" : "Ig"
+        },
+        "si_SI" : {
+          "shortName" : "Ig",
+          "longName" : "Ig"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "038" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Ilirska Bistrica",
+          "longName" : "Ilirska Bistrica"
+        },
+        "en_US" : {
+          "shortName" : "Ilirska Bistrica",
+          "longName" : "Ilirska Bistrica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "039" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Ivančna Gorica",
+          "longName" : "Ivančna Gorica"
+        },
+        "en_US" : {
+          "shortName" : "Ivančna Gorica",
+          "longName" : "Ivančna Gorica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "040" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Izola",
+          "longName" : "Izola"
+        },
+        "si_SI" : {
+          "shortName" : "Izola",
+          "longName" : "Izola"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "041" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Jesenice",
+          "longName" : "Jesenice"
+        },
+        "en_US" : {
+          "shortName" : "Jesenice",
+          "longName" : "Jesenice"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "042" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Juršinci",
+          "longName" : "Juršinci"
+        },
+        "si_SI" : {
+          "shortName" : "Juršinci",
+          "longName" : "Juršinci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "043" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kamnik",
+          "longName" : "Kamnik"
+        },
+        "si_SI" : {
+          "shortName" : "Kamnik",
+          "longName" : "Kamnik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "044" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kanal",
+          "longName" : "Kanal"
+        },
+        "si_SI" : {
+          "shortName" : "Kanal",
+          "longName" : "Kanal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "045" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kidričevo",
+          "longName" : "Kidričevo"
+        },
+        "si_SI" : {
+          "shortName" : "Kidričevo",
+          "longName" : "Kidričevo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "046" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kobarid",
+          "longName" : "Kobarid"
+        },
+        "si_SI" : {
+          "shortName" : "Kobarid",
+          "longName" : "Kobarid"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "047" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kobilje",
+          "longName" : "Kobilje"
+        },
+        "si_SI" : {
+          "shortName" : "Kobilje",
+          "longName" : "Kobilje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "048" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kočevje",
+          "longName" : "Kočevje"
+        },
+        "si_SI" : {
+          "shortName" : "Kočevje",
+          "longName" : "Kočevje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "049" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Komen",
+          "longName" : "Komen"
+        },
+        "en_US" : {
+          "shortName" : "Komen",
+          "longName" : "Komen"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "050" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Koper",
+          "longName" : "Koper"
+        },
+        "si_SI" : {
+          "shortName" : "Koper",
+          "longName" : "Koper"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "051" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Kozje",
+          "longName" : "Kozje"
+        },
+        "en_US" : {
+          "shortName" : "Kozje",
+          "longName" : "Kozje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "052" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Kranj",
+          "longName" : "Kranj"
+        },
+        "en_US" : {
+          "shortName" : "Kranj",
+          "longName" : "Kranj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "053" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kranjska Gora",
+          "longName" : "Kranjska Gora"
+        },
+        "si_SI" : {
+          "shortName" : "Kranjska Gora",
+          "longName" : "Kranjska Gora"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "054" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Krško",
+          "longName" : "Krško"
+        },
+        "si_SI" : {
+          "shortName" : "Krško",
+          "longName" : "Krško"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "055" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kungota",
+          "longName" : "Kungota"
+        },
+        "si_SI" : {
+          "shortName" : "Kungota",
+          "longName" : "Kungota"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "056" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kuzma",
+          "longName" : "Kuzma"
+        },
+        "si_SI" : {
+          "shortName" : "Kuzma",
+          "longName" : "Kuzma"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "057" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Laško",
+          "longName" : "Laško"
+        },
+        "en_US" : {
+          "shortName" : "Laško",
+          "longName" : "Laško"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "058" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lenart",
+          "longName" : "Lenart"
+        },
+        "si_SI" : {
+          "shortName" : "Lenart",
+          "longName" : "Lenart"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "059" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Lendava",
+          "longName" : "Lendava"
+        },
+        "en_US" : {
+          "shortName" : "Lendava",
+          "longName" : "Lendava"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "060" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Litija",
+          "longName" : "Litija"
+        },
+        "en_US" : {
+          "shortName" : "Litija",
+          "longName" : "Litija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "061" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ljubljana",
+          "longName" : "Ljubljana"
+        },
+        "si_SI" : {
+          "shortName" : "Ljubljana",
+          "longName" : "Ljubljana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "062" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ljubno",
+          "longName" : "Ljubno"
+        },
+        "si_SI" : {
+          "shortName" : "Ljubno",
+          "longName" : "Ljubno"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "063" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ljutomer",
+          "longName" : "Ljutomer"
+        },
+        "si_SI" : {
+          "shortName" : "Ljutomer",
+          "longName" : "Ljutomer"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "064" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Logatec",
+          "longName" : "Logatec"
+        },
+        "en_US" : {
+          "shortName" : "Logatec",
+          "longName" : "Logatec"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "065" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Loška Dolina",
+          "longName" : "Loška Dolina"
+        },
+        "si_SI" : {
+          "shortName" : "Loška Dolina",
+          "longName" : "Loška Dolina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "066" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Loški Potok",
+          "longName" : "Loški Potok"
+        },
+        "en_US" : {
+          "shortName" : "Loški Potok",
+          "longName" : "Loški Potok"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "067" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Luče",
+          "longName" : "Luče"
+        },
+        "en_US" : {
+          "shortName" : "Luče",
+          "longName" : "Luče"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "068" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lukovica",
+          "longName" : "Lukovica"
+        },
+        "si_SI" : {
+          "shortName" : "Lukovica",
+          "longName" : "Lukovica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "069" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Majšperk",
+          "longName" : "Majšperk"
+        },
+        "si_SI" : {
+          "shortName" : "Majšperk",
+          "longName" : "Majšperk"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "070" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Maribor",
+          "longName" : "Maribor"
+        },
+        "en_US" : {
+          "shortName" : "Maribor",
+          "longName" : "Maribor"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "071" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Medvode",
+          "longName" : "Medvode"
+        },
+        "en_US" : {
+          "shortName" : "Medvode",
+          "longName" : "Medvode"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "072" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mengeš",
+          "longName" : "Mengeš"
+        },
+        "si_SI" : {
+          "shortName" : "Mengeš",
+          "longName" : "Mengeš"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "073" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Metlika",
+          "longName" : "Metlika"
+        },
+        "en_US" : {
+          "shortName" : "Metlika",
+          "longName" : "Metlika"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "074" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Mežica",
+          "longName" : "Mežica"
+        },
+        "en_US" : {
+          "shortName" : "Mežica",
+          "longName" : "Mežica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "075" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Miren–Kostanjevica",
+          "longName" : "Miren–Kostanjevica"
+        },
+        "en_US" : {
+          "shortName" : "Miren–Kostanjevica",
+          "longName" : "Miren–Kostanjevica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "076" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mislinja",
+          "longName" : "Mislinja"
+        },
+        "si_SI" : {
+          "shortName" : "Mislinja",
+          "longName" : "Mislinja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "077" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Moravče",
+          "longName" : "Moravče"
+        },
+        "en_US" : {
+          "shortName" : "Moravče",
+          "longName" : "Moravče"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "078" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moravske Toplice",
+          "longName" : "Moravske Toplice"
+        },
+        "si_SI" : {
+          "shortName" : "Moravske Toplice",
+          "longName" : "Moravske Toplice"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "079" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Mozirje",
+          "longName" : "Mozirje"
+        },
+        "en_US" : {
+          "shortName" : "Mozirje",
+          "longName" : "Mozirje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "080" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Murska Sobota",
+          "longName" : "Murska Sobota"
+        },
+        "si_SI" : {
+          "shortName" : "Murska Sobota",
+          "longName" : "Murska Sobota"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "081" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Muta",
+          "longName" : "Muta"
+        },
+        "si_SI" : {
+          "shortName" : "Muta",
+          "longName" : "Muta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "082" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Naklo",
+          "longName" : "Naklo"
+        },
+        "si_SI" : {
+          "shortName" : "Naklo",
+          "longName" : "Naklo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "083" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Nazarje",
+          "longName" : "Nazarje"
+        },
+        "en_US" : {
+          "shortName" : "Nazarje",
+          "longName" : "Nazarje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "084" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nova Gorica",
+          "longName" : "Nova Gorica"
+        },
+        "si_SI" : {
+          "shortName" : "Nova Gorica",
+          "longName" : "Nova Gorica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "085" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Novo Mesto",
+          "longName" : "Novo Mesto"
+        },
+        "en_US" : {
+          "shortName" : "Novo Mesto",
+          "longName" : "Novo Mesto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "086" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Odranci",
+          "longName" : "Odranci"
+        },
+        "si_SI" : {
+          "shortName" : "Odranci",
+          "longName" : "Odranci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "087" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Ormož",
+          "longName" : "Ormož"
+        },
+        "en_US" : {
+          "shortName" : "Ormož",
+          "longName" : "Ormož"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "088" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Osilnica",
+          "longName" : "Osilnica"
+        },
+        "si_SI" : {
+          "shortName" : "Osilnica",
+          "longName" : "Osilnica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "089" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Pesnica",
+          "longName" : "Pesnica"
+        },
+        "en_US" : {
+          "shortName" : "Pesnica",
+          "longName" : "Pesnica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "090" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Piran",
+          "longName" : "Piran"
+        },
+        "si_SI" : {
+          "shortName" : "Piran",
+          "longName" : "Piran"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "091" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pivka",
+          "longName" : "Pivka"
+        },
+        "si_SI" : {
+          "shortName" : "Pivka",
+          "longName" : "Pivka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "092" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Podčetrtek",
+          "longName" : "Podčetrtek"
+        },
+        "si_SI" : {
+          "shortName" : "Podčetrtek",
+          "longName" : "Podčetrtek"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "093" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Podvelka",
+          "longName" : "Podvelka"
+        },
+        "en_US" : {
+          "shortName" : "Podvelka",
+          "longName" : "Podvelka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "094" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Postojna",
+          "longName" : "Postojna"
+        },
+        "en_US" : {
+          "shortName" : "Postojna",
+          "longName" : "Postojna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "095" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Preddvor",
+          "longName" : "Preddvor"
+        },
+        "en_US" : {
+          "shortName" : "Preddvor",
+          "longName" : "Preddvor"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "096" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ptuj",
+          "longName" : "Ptuj"
+        },
+        "si_SI" : {
+          "shortName" : "Ptuj",
+          "longName" : "Ptuj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "097" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Puconci",
+          "longName" : "Puconci"
+        },
+        "en_US" : {
+          "shortName" : "Puconci",
+          "longName" : "Puconci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "098" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Rače–Fram",
+          "longName" : "Rače–Fram"
+        },
+        "en_US" : {
+          "shortName" : "Rače–Fram",
+          "longName" : "Rače–Fram"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "099" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Radeče",
+          "longName" : "Radeče"
+        },
+        "si_SI" : {
+          "shortName" : "Radeče",
+          "longName" : "Radeče"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "100" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Radenci",
+          "longName" : "Radenci"
+        },
+        "si_SI" : {
+          "shortName" : "Radenci",
+          "longName" : "Radenci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "101" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Radlje ob Dravi",
+          "longName" : "Radlje ob Dravi"
+        },
+        "si_SI" : {
+          "shortName" : "Radlje ob Dravi",
+          "longName" : "Radlje ob Dravi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "102" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Radovljica",
+          "longName" : "Radovljica"
+        },
+        "en_US" : {
+          "shortName" : "Radovljica",
+          "longName" : "Radovljica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "103" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Ravne na Koroškem",
+          "longName" : "Ravne na Koroškem"
+        },
+        "en_US" : {
+          "shortName" : "Ravne na Koroškem",
+          "longName" : "Ravne na Koroškem"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "104" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Ribnica",
+          "longName" : "Ribnica"
+        },
+        "en_US" : {
+          "shortName" : "Ribnica",
+          "longName" : "Ribnica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "105" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rogašovci",
+          "longName" : "Rogašovci"
+        },
+        "si_SI" : {
+          "shortName" : "Rogašovci",
+          "longName" : "Rogašovci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "106" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Rogaška Slatina",
+          "longName" : "Rogaška Slatina"
+        },
+        "en_US" : {
+          "shortName" : "Rogaška Slatina",
+          "longName" : "Rogaška Slatina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "107" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rogatec",
+          "longName" : "Rogatec"
+        },
+        "si_SI" : {
+          "shortName" : "Rogatec",
+          "longName" : "Rogatec"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "108" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ruše",
+          "longName" : "Ruše"
+        },
+        "si_SI" : {
+          "shortName" : "Ruše",
+          "longName" : "Ruše"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "109" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Semič",
+          "longName" : "Semič"
+        },
+        "en_US" : {
+          "shortName" : "Semič",
+          "longName" : "Semič"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "110" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Sevnica",
+          "longName" : "Sevnica"
+        },
+        "en_US" : {
+          "shortName" : "Sevnica",
+          "longName" : "Sevnica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "111" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sežana",
+          "longName" : "Sežana"
+        },
+        "si_SI" : {
+          "shortName" : "Sežana",
+          "longName" : "Sežana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "112" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Slovenj Gradec",
+          "longName" : "Slovenj Gradec"
+        },
+        "si_SI" : {
+          "shortName" : "Slovenj Gradec",
+          "longName" : "Slovenj Gradec"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "113" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Slovenska Bistrica",
+          "longName" : "Slovenska Bistrica"
+        },
+        "en_US" : {
+          "shortName" : "Slovenska Bistrica",
+          "longName" : "Slovenska Bistrica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "114" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Slovenske Konjice",
+          "longName" : "Slovenske Konjice"
+        },
+        "en_US" : {
+          "shortName" : "Slovenske Konjice",
+          "longName" : "Slovenske Konjice"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "115" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Starše",
+          "longName" : "Starše"
+        },
+        "si_SI" : {
+          "shortName" : "Starše",
+          "longName" : "Starše"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "116" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sveti Jurij",
+          "longName" : "Sveti Jurij"
+        },
+        "si_SI" : {
+          "shortName" : "Sveti Jurij",
+          "longName" : "Sveti Jurij"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "117" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Šenčur",
+          "longName" : "Šenčur"
+        },
+        "en_US" : {
+          "shortName" : "Šenčur",
+          "longName" : "Šenčur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "118" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Šentilj",
+          "longName" : "Šentilj"
+        },
+        "en_US" : {
+          "shortName" : "Šentilj",
+          "longName" : "Šentilj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "119" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Šentjernej",
+          "longName" : "Šentjernej"
+        },
+        "si_SI" : {
+          "shortName" : "Šentjernej",
+          "longName" : "Šentjernej"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "120" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Šentjur",
+          "longName" : "Šentjur"
+        },
+        "en_US" : {
+          "shortName" : "Šentjur",
+          "longName" : "Šentjur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "121" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Škocjan",
+          "longName" : "Škocjan"
+        },
+        "si_SI" : {
+          "shortName" : "Škocjan",
+          "longName" : "Škocjan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "122" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Škofja Loka",
+          "longName" : "Škofja Loka"
+        },
+        "si_SI" : {
+          "shortName" : "Škofja Loka",
+          "longName" : "Škofja Loka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "123" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Škofljica",
+          "longName" : "Škofljica"
+        },
+        "en_US" : {
+          "shortName" : "Škofljica",
+          "longName" : "Škofljica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "124" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Šmarje pri Jelšah",
+          "longName" : "Šmarje pri Jelšah"
+        },
+        "si_SI" : {
+          "shortName" : "Šmarje pri Jelšah",
+          "longName" : "Šmarje pri Jelšah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "125" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Šmartno ob Paki",
+          "longName" : "Šmartno ob Paki"
+        },
+        "en_US" : {
+          "shortName" : "Šmartno ob Paki",
+          "longName" : "Šmartno ob Paki"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "126" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Šoštanj",
+          "longName" : "Šoštanj"
+        },
+        "si_SI" : {
+          "shortName" : "Šoštanj",
+          "longName" : "Šoštanj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "127" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Štore",
+          "longName" : "Štore"
+        },
+        "en_US" : {
+          "shortName" : "Štore",
+          "longName" : "Štore"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "128" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Tolmin",
+          "longName" : "Tolmin"
+        },
+        "en_US" : {
+          "shortName" : "Tolmin",
+          "longName" : "Tolmin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "129" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Trbovlje",
+          "longName" : "Trbovlje"
+        },
+        "en_US" : {
+          "shortName" : "Trbovlje",
+          "longName" : "Trbovlje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "130" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Trebnje",
+          "longName" : "Trebnje"
+        },
+        "en_US" : {
+          "shortName" : "Trebnje",
+          "longName" : "Trebnje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "131" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tržič",
+          "longName" : "Tržič"
+        },
+        "si_SI" : {
+          "shortName" : "Tržič",
+          "longName" : "Tržič"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "132" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Turnišče",
+          "longName" : "Turnišče"
+        },
+        "si_SI" : {
+          "shortName" : "Turnišče",
+          "longName" : "Turnišče"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "133" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Velenje",
+          "longName" : "Velenje"
+        },
+        "en_US" : {
+          "shortName" : "Velenje",
+          "longName" : "Velenje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "134" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Velike Lašče",
+          "longName" : "Velike Lašče"
+        },
+        "si_SI" : {
+          "shortName" : "Velike Lašče",
+          "longName" : "Velike Lašče"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "135" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Videm",
+          "longName" : "Videm"
+        },
+        "en_US" : {
+          "shortName" : "Videm",
+          "longName" : "Videm"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "136" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vipava",
+          "longName" : "Vipava"
+        },
+        "si_SI" : {
+          "shortName" : "Vipava",
+          "longName" : "Vipava"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "137" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vitanje",
+          "longName" : "Vitanje"
+        },
+        "si_SI" : {
+          "shortName" : "Vitanje",
+          "longName" : "Vitanje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "138" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Vodice",
+          "longName" : "Vodice"
+        },
+        "en_US" : {
+          "shortName" : "Vodice",
+          "longName" : "Vodice"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "139" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vojnik",
+          "longName" : "Vojnik"
+        },
+        "si_SI" : {
+          "shortName" : "Vojnik",
+          "longName" : "Vojnik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "140" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vrhnika",
+          "longName" : "Vrhnika"
+        },
+        "si_SI" : {
+          "shortName" : "Vrhnika",
+          "longName" : "Vrhnika"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "141" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Vuzenica",
+          "longName" : "Vuzenica"
+        },
+        "en_US" : {
+          "shortName" : "Vuzenica",
+          "longName" : "Vuzenica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "142" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Zagorje ob Savi",
+          "longName" : "Zagorje ob Savi"
+        },
+        "en_US" : {
+          "shortName" : "Zagorje ob Savi",
+          "longName" : "Zagorje ob Savi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "143" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zavrč",
+          "longName" : "Zavrč"
+        },
+        "si_SI" : {
+          "shortName" : "Zavrč",
+          "longName" : "Zavrč"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "144" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Zreče",
+          "longName" : "Zreče"
+        },
+        "en_US" : {
+          "shortName" : "Zreče",
+          "longName" : "Zreče"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "146" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Železniki",
+          "longName" : "Železniki"
+        },
+        "si_SI" : {
+          "shortName" : "Železniki",
+          "longName" : "Železniki"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "147" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Žiri",
+          "longName" : "Žiri"
+        },
+        "si_SI" : {
+          "shortName" : "Žiri",
+          "longName" : "Žiri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "148" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Benedikt",
+          "longName" : "Benedikt"
+        },
+        "en_US" : {
+          "shortName" : "Benedikt",
+          "longName" : "Benedikt"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "149" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bistrica ob Sotli",
+          "longName" : "Bistrica ob Sotli"
+        },
+        "si_SI" : {
+          "shortName" : "Bistrica ob Sotli",
+          "longName" : "Bistrica ob Sotli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "150" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Bloke",
+          "longName" : "Bloke"
+        },
+        "en_US" : {
+          "shortName" : "Bloke",
+          "longName" : "Bloke"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "151" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Braslovče",
+          "longName" : "Braslovče"
+        },
+        "en_US" : {
+          "shortName" : "Braslovče",
+          "longName" : "Braslovče"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "152" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cankova",
+          "longName" : "Cankova"
+        },
+        "si_SI" : {
+          "shortName" : "Cankova",
+          "longName" : "Cankova"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "153" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Cerkvenjak",
+          "longName" : "Cerkvenjak"
+        },
+        "en_US" : {
+          "shortName" : "Cerkvenjak",
+          "longName" : "Cerkvenjak"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "154" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dobje",
+          "longName" : "Dobje"
+        },
+        "si_SI" : {
+          "shortName" : "Dobje",
+          "longName" : "Dobje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "155" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dobrna",
+          "longName" : "Dobrna"
+        },
+        "si_SI" : {
+          "shortName" : "Dobrna",
+          "longName" : "Dobrna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "156" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Dobrovnik",
+          "longName" : "Dobrovnik"
+        },
+        "en_US" : {
+          "shortName" : "Dobrovnik",
+          "longName" : "Dobrovnik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "157" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Dolenjske Toplice",
+          "longName" : "Dolenjske Toplice"
+        },
+        "en_US" : {
+          "shortName" : "Dolenjske Toplice",
+          "longName" : "Dolenjske Toplice"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "158" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Grad",
+          "longName" : "Grad"
+        },
+        "en_US" : {
+          "shortName" : "Grad",
+          "longName" : "Grad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "159" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hajdina",
+          "longName" : "Hajdina"
+        },
+        "si_SI" : {
+          "shortName" : "Hajdina",
+          "longName" : "Hajdina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "160" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hoče–Slivnica",
+          "longName" : "Hoče–Slivnica"
+        },
+        "si_SI" : {
+          "shortName" : "Hoče–Slivnica",
+          "longName" : "Hoče–Slivnica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "161" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hodoš",
+          "longName" : "Hodoš"
+        },
+        "si_SI" : {
+          "shortName" : "Hodoš",
+          "longName" : "Hodoš"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "162" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Horjul",
+          "longName" : "Horjul"
+        },
+        "en_US" : {
+          "shortName" : "Horjul",
+          "longName" : "Horjul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "163" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Jezersko",
+          "longName" : "Jezersko"
+        },
+        "en_US" : {
+          "shortName" : "Jezersko",
+          "longName" : "Jezersko"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "164" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Komenda",
+          "longName" : "Komenda"
+        },
+        "si_SI" : {
+          "shortName" : "Komenda",
+          "longName" : "Komenda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "165" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kostel",
+          "longName" : "Kostel"
+        },
+        "si_SI" : {
+          "shortName" : "Kostel",
+          "longName" : "Kostel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "166" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Križevci",
+          "longName" : "Križevci"
+        },
+        "en_US" : {
+          "shortName" : "Križevci",
+          "longName" : "Križevci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "167" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Lovrenc na Pohorju",
+          "longName" : "Lovrenc na Pohorju"
+        },
+        "en_US" : {
+          "shortName" : "Lovrenc na Pohorju",
+          "longName" : "Lovrenc na Pohorju"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "168" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Markovci",
+          "longName" : "Markovci"
+        },
+        "si_SI" : {
+          "shortName" : "Markovci",
+          "longName" : "Markovci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "169" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Miklavž na Dravskem Polju",
+          "longName" : "Miklavž na Dravskem Polju"
+        },
+        "en_US" : {
+          "shortName" : "Miklavž na Dravskem Polju",
+          "longName" : "Miklavž na Dravskem Polju"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "170" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mirna Peč",
+          "longName" : "Mirna Peč"
+        },
+        "si_SI" : {
+          "shortName" : "Mirna Peč",
+          "longName" : "Mirna Peč"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "171" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oplotnica",
+          "longName" : "Oplotnica"
+        },
+        "si_SI" : {
+          "shortName" : "Oplotnica",
+          "longName" : "Oplotnica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "172" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Podlehnik",
+          "longName" : "Podlehnik"
+        },
+        "en_US" : {
+          "shortName" : "Podlehnik",
+          "longName" : "Podlehnik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "173" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Polzela",
+          "longName" : "Polzela"
+        },
+        "si_SI" : {
+          "shortName" : "Polzela",
+          "longName" : "Polzela"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "174" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Prebold",
+          "longName" : "Prebold"
+        },
+        "en_US" : {
+          "shortName" : "Prebold",
+          "longName" : "Prebold"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "175" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Prevalje",
+          "longName" : "Prevalje"
+        },
+        "en_US" : {
+          "shortName" : "Prevalje",
+          "longName" : "Prevalje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "176" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Razkrižje",
+          "longName" : "Razkrižje"
+        },
+        "si_SI" : {
+          "shortName" : "Razkrižje",
+          "longName" : "Razkrižje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "177" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ribnica na Pohorju",
+          "longName" : "Ribnica na Pohorju"
+        },
+        "si_SI" : {
+          "shortName" : "Ribnica na Pohorju",
+          "longName" : "Ribnica na Pohorju"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "178" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Selnica ob Dravi",
+          "longName" : "Selnica ob Dravi"
+        },
+        "si_SI" : {
+          "shortName" : "Selnica ob Dravi",
+          "longName" : "Selnica ob Dravi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "179" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sodražica",
+          "longName" : "Sodražica"
+        },
+        "si_SI" : {
+          "shortName" : "Sodražica",
+          "longName" : "Sodražica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "180" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Solčava",
+          "longName" : "Solčava"
+        },
+        "si_SI" : {
+          "shortName" : "Solčava",
+          "longName" : "Solčava"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "181" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Sveta Ana",
+          "longName" : "Sveta Ana"
+        },
+        "en_US" : {
+          "shortName" : "Sveta Ana",
+          "longName" : "Sveta Ana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "182" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Sveti Andraž v Slovenskih Goricah",
+          "longName" : "Sveti Andraž v Slovenskih Goricah"
+        },
+        "en_US" : {
+          "shortName" : "Sveti Andraž v Slovenskih Goricah",
+          "longName" : "Sveti Andraž v Slovenskih Goricah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "183" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Šempeter–Vrtojba",
+          "longName" : "Šempeter–Vrtojba"
+        },
+        "en_US" : {
+          "shortName" : "Šempeter–Vrtojba",
+          "longName" : "Šempeter–Vrtojba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "184" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tabor",
+          "longName" : "Tabor"
+        },
+        "si_SI" : {
+          "shortName" : "Tabor",
+          "longName" : "Tabor"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "185" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Trnovska Vas",
+          "longName" : "Trnovska Vas"
+        },
+        "si_SI" : {
+          "shortName" : "Trnovska Vas",
+          "longName" : "Trnovska Vas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "186" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Trzin",
+          "longName" : "Trzin"
+        },
+        "en_US" : {
+          "shortName" : "Trzin",
+          "longName" : "Trzin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "187" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Velika Polana",
+          "longName" : "Velika Polana"
+        },
+        "en_US" : {
+          "shortName" : "Velika Polana",
+          "longName" : "Velika Polana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "188" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Veržej",
+          "longName" : "Veržej"
+        },
+        "si_SI" : {
+          "shortName" : "Veržej",
+          "longName" : "Veržej"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "189" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vransko",
+          "longName" : "Vransko"
+        },
+        "si_SI" : {
+          "shortName" : "Vransko",
+          "longName" : "Vransko"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "190" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Žalec",
+          "longName" : "Žalec"
+        },
+        "en_US" : {
+          "shortName" : "Žalec",
+          "longName" : "Žalec"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "191" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Žetale",
+          "longName" : "Žetale"
+        },
+        "en_US" : {
+          "shortName" : "Žetale",
+          "longName" : "Žetale"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "192" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Žirovnica",
+          "longName" : "Žirovnica"
+        },
+        "en_US" : {
+          "shortName" : "Žirovnica",
+          "longName" : "Žirovnica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "193" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Žužemberk",
+          "longName" : "Žužemberk"
+        },
+        "en_US" : {
+          "shortName" : "Žužemberk",
+          "longName" : "Žužemberk"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "194" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Šmartno pri Litiji",
+          "longName" : "Šmartno pri Litiji"
+        },
+        "si_SI" : {
+          "shortName" : "Šmartno pri Litiji",
+          "longName" : "Šmartno pri Litiji"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "195" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Apače",
+          "longName" : "Apače"
+        },
+        "en_US" : {
+          "shortName" : "Apače",
+          "longName" : "Apače"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "196" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cirkulane",
+          "longName" : "Cirkulane"
+        },
+        "si_SI" : {
+          "shortName" : "Cirkulane",
+          "longName" : "Cirkulane"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "197" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kosanjevica na Krki",
+          "longName" : "Kosanjevica na Krki"
+        },
+        "si_SI" : {
+          "shortName" : "Kosanjevica na Krki",
+          "longName" : "Kosanjevica na Krki"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "198" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Makole",
+          "longName" : "Makole"
+        },
+        "en_US" : {
+          "shortName" : "Makole",
+          "longName" : "Makole"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "199" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Mokronog–Trebelno",
+          "longName" : "Mokronog–Trebelno"
+        },
+        "en_US" : {
+          "shortName" : "Mokronog–Trebelno",
+          "longName" : "Mokronog–Trebelno"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "200" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Poljčane",
+          "longName" : "Poljčane"
+        },
+        "si_SI" : {
+          "shortName" : "Poljčane",
+          "longName" : "Poljčane"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "201" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Renče-Vogrsko",
+          "longName" : "Renče-Vogrsko"
+        },
+        "si_SI" : {
+          "shortName" : "Renče-Vogrsko",
+          "longName" : "Renče-Vogrsko"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "202" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Središče ob Dravi",
+          "longName" : "Središče ob Dravi"
+        },
+        "en_US" : {
+          "shortName" : "Središče ob Dravi",
+          "longName" : "Središče ob Dravi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "203" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Straža",
+          "longName" : "Straža"
+        },
+        "si_SI" : {
+          "shortName" : "Straža",
+          "longName" : "Straža"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "204" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Sveta Trojica v Slovenskih Goricah",
+          "longName" : "Sveta Trojica v Slovenskih Goricah"
+        },
+        "en_US" : {
+          "shortName" : "Sveta Trojica v Slovenskih Goricah",
+          "longName" : "Sveta Trojica v Slovenskih Goricah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "205" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Sveti Tomaž",
+          "longName" : "Sveti Tomaž"
+        },
+        "en_US" : {
+          "shortName" : "Sveti Tomaž",
+          "longName" : "Sveti Tomaž"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "206" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Šmarješke Toplice",
+          "longName" : "Šmarješke Toplice"
+        },
+        "si_SI" : {
+          "shortName" : "Šmarješke Toplice",
+          "longName" : "Šmarješke Toplice"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "207" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gorje",
+          "longName" : "Gorje"
+        },
+        "si_SI" : {
+          "shortName" : "Gorje",
+          "longName" : "Gorje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "208" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Log-Dragomer",
+          "longName" : "Log-Dragomer"
+        },
+        "si_SI" : {
+          "shortName" : "Log-Dragomer",
+          "longName" : "Log-Dragomer"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "209" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rečica ob Savinji",
+          "longName" : "Rečica ob Savinji"
+        },
+        "si_SI" : {
+          "shortName" : "Rečica ob Savinji",
+          "longName" : "Rečica ob Savinji"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "210" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sveti Jurij v Slovenskih Goricah",
+          "longName" : "Sveti Jurij v Slovenskih Goricah"
+        },
+        "si_SI" : {
+          "shortName" : "Sveti Jurij v Slovenskih Goricah",
+          "longName" : "Sveti Jurij v Slovenskih Goricah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "211" : {
+      "locales" : {
+        "si_SI" : {
+          "shortName" : "Šentrupert",
+          "longName" : "Šentrupert"
+        },
+        "en_US" : {
+          "shortName" : "Šentrupert",
+          "longName" : "Šentrupert"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/sl_SI",
+    "id" : "sl_SI"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Slovenia",
+      "longName" : "Republic of Slovenia",
+      "postalCode" : ""
+    },
+    "sl_SI" : {
+      "shortName" : "Slovenija",
+      "longName" : "Republika Slovenija",
+      "postalCode" : "Poštna številka"
+    },
+    "de_DE" : {
+      "shortName" : "Slowenien",
+      "longName" : "Republic of Slovenia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Slovenia",
+      "longName" : "Republic of Slovenia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Eslovenia",
+      "longName" : "República de Eslovenia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Slovénie",
+      "longName" : "République de Slovénie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Slovenia",
+      "longName" : "Repubblica di Slovenia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "슬로베니아",
+      "longName" : "Republic of Slovenia",
+      "postalCode" : ""
+    }
+  }
 }

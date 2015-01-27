@@ -1,232 +1,270 @@
 {
-	"countryCode": "KR",
-	"defaultLocale": {
-		"href": "/v1/locales/ko_KR",
-		"id": "ko_KR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/KRW",
-		"id": "KRW"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/GRB",
-		"id": "GRB"
-	}],
-	"subCountries": {
-		"11": {
-			"locales": {
-				"ko_KR": {
-					"shortName": "서울",
-					"longName": "서울"
-				},
-				"en_US": {
-					"shortName": "Seoul",
-					"longName": "Seoul"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"en_US": {
-					"shortName": "Busan",
-					"longName": "Busan"
-				},
-				"ko_KR": {
-					"shortName": "부산",
-					"longName": "부산"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"ko_KR": {
-					"shortName": "대구",
-					"longName": "대구"
-				},
-				"en_US": {
-					"shortName": "Daegu",
-					"longName": "Daegu"
-				}
-			}
-		},
-		"28": {
-			"locales": {
-				"en_US": {
-					"shortName": "Incheon",
-					"longName": "Incheon"
-				},
-				"ko_KR": {
-					"shortName": "인천",
-					"longName": "인천"
-				}
-			}
-		},
-		"29": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gwangju",
-					"longName": "Gwangju"
-				},
-				"ko_KR": {
-					"shortName": "광주",
-					"longName": "광주"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"ko_KR": {
-					"shortName": "대전",
-					"longName": "대전"
-				},
-				"en_US": {
-					"shortName": "Daejeon",
-					"longName": "Daejeon"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"ko_KR": {
-					"shortName": "울산",
-					"longName": "울산"
-				},
-				"en_US": {
-					"shortName": "Ulsan",
-					"longName": "Ulsan"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gyeonggi",
-					"longName": "Gyeonggi"
-				},
-				"ko_KR": {
-					"shortName": "경기도",
-					"longName": "경기도"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gangwon",
-					"longName": "Gangwon"
-				},
-				"ko_KR": {
-					"shortName": "강원도",
-					"longName": "강원도"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"ko_KR": {
-					"shortName": "충북",
-					"longName": "충북"
-				},
-				"en_US": {
-					"shortName": "North Chungcheong",
-					"longName": "North Chungcheong"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"en_US": {
-					"shortName": "South Chungcheong",
-					"longName": "South Chungcheong"
-				},
-				"ko_KR": {
-					"shortName": "충남",
-					"longName": "충남"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"en_US": {
-					"shortName": "North Jeolla",
-					"longName": "North Jeolla"
-				},
-				"ko_KR": {
-					"shortName": "전북",
-					"longName": "전북"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"en_US": {
-					"shortName": "South Jeolla",
-					"longName": "South Jeolla"
-				},
-				"ko_KR": {
-					"shortName": "전남",
-					"longName": "전남"
-				}
-			}
-		},
-		"47": {
-			"locales": {
-				"en_US": {
-					"shortName": "North Gyeongsang",
-					"longName": "North Gyeongsang"
-				},
-				"ko_KR": {
-					"shortName": "경북",
-					"longName": "경북"
-				}
-			}
-		},
-		"48": {
-			"locales": {
-				"en_US": {
-					"shortName": "South Gyeongsang",
-					"longName": "South Gyeongsang"
-				},
-				"ko_KR": {
-					"shortName": "경남",
-					"longName": "경남"
-				}
-			}
-		},
-		"49": {
-			"locales": {
-				"ko_KR": {
-					"shortName": "제주",
-					"longName": "제주"
-				},
-				"en_US": {
-					"shortName": "Jeju",
-					"longName": "Jeju"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ko_KR",
-		"id": "ko_KR"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Korea",
-			"longName": "Korea",
-			"postalCode": "Postal Code"
-		},
-		"ko_KR": {
-			"shortName": "한국",
-			"longName": "한국",
-			"postalCode": "우편 번호"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "KR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ko_KR",
+    "id" : "ko_KR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/KRW",
+    "id" : "KRW"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/GRB",
+    "id" : "GRB"
+  } ],
+  "subCountries" : {
+    "11" : {
+      "locales" : {
+        "ko_KR" : {
+          "shortName" : "서울",
+          "longName" : "서울"
+        },
+        "en_US" : {
+          "shortName" : "Seoul",
+          "longName" : "Seoul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Busan",
+          "longName" : "Busan"
+        },
+        "ko_KR" : {
+          "shortName" : "부산",
+          "longName" : "부산"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "ko_KR" : {
+          "shortName" : "대구",
+          "longName" : "대구"
+        },
+        "en_US" : {
+          "shortName" : "Daegu",
+          "longName" : "Daegu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "28" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Incheon",
+          "longName" : "Incheon"
+        },
+        "ko_KR" : {
+          "shortName" : "인천",
+          "longName" : "인천"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "29" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gwangju",
+          "longName" : "Gwangju"
+        },
+        "ko_KR" : {
+          "shortName" : "광주",
+          "longName" : "광주"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "ko_KR" : {
+          "shortName" : "대전",
+          "longName" : "대전"
+        },
+        "en_US" : {
+          "shortName" : "Daejeon",
+          "longName" : "Daejeon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "ko_KR" : {
+          "shortName" : "울산",
+          "longName" : "울산"
+        },
+        "en_US" : {
+          "shortName" : "Ulsan",
+          "longName" : "Ulsan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gyeonggi",
+          "longName" : "Gyeonggi"
+        },
+        "ko_KR" : {
+          "shortName" : "경기도",
+          "longName" : "경기도"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gangwon",
+          "longName" : "Gangwon"
+        },
+        "ko_KR" : {
+          "shortName" : "강원도",
+          "longName" : "강원도"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "ko_KR" : {
+          "shortName" : "충북",
+          "longName" : "충북"
+        },
+        "en_US" : {
+          "shortName" : "North Chungcheong",
+          "longName" : "North Chungcheong"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South Chungcheong",
+          "longName" : "South Chungcheong"
+        },
+        "ko_KR" : {
+          "shortName" : "충남",
+          "longName" : "충남"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North Jeolla",
+          "longName" : "North Jeolla"
+        },
+        "ko_KR" : {
+          "shortName" : "전북",
+          "longName" : "전북"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South Jeolla",
+          "longName" : "South Jeolla"
+        },
+        "ko_KR" : {
+          "shortName" : "전남",
+          "longName" : "전남"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "47" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North Gyeongsang",
+          "longName" : "North Gyeongsang"
+        },
+        "ko_KR" : {
+          "shortName" : "경북",
+          "longName" : "경북"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "48" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South Gyeongsang",
+          "longName" : "South Gyeongsang"
+        },
+        "ko_KR" : {
+          "shortName" : "경남",
+          "longName" : "경남"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "49" : {
+      "locales" : {
+        "ko_KR" : {
+          "shortName" : "제주",
+          "longName" : "제주"
+        },
+        "en_US" : {
+          "shortName" : "Jeju",
+          "longName" : "Jeju"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ko_KR",
+    "id" : "ko_KR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Korea",
+      "longName" : "Korea",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "대한민국",
+      "longName" : "대한민국",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Korea",
+      "longName" : "Korea",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Korea",
+      "longName" : "Korea",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Corea",
+      "longName" : "Corea",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Corée",
+      "longName" : "Corée",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Corea",
+      "longName" : "Corea",
+      "postalCode" : ""
+    }
+  }
 }

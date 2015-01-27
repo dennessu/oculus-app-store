@@ -1,108 +1,146 @@
 {
-	"countryCode": "SS",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"BN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern Bahr el-Ghazal",
-					"longName": "Northern Bahr el-Ghazal"
-				}
-			}
-		},
-		"BW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western Bahr el-Ghazal",
-					"longName": "Western Bahr el-Ghazal"
-				}
-			}
-		},
-		"EC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central Equatoria",
-					"longName": "Central Equatoria"
-				}
-			}
-		},
-		"EE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eastern Equatoria",
-					"longName": "Eastern Equatoria"
-				}
-			}
-		},
-		"EW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western Equatoria",
-					"longName": "Western Equatoria"
-				}
-			}
-		},
-		"JG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jonglei",
-					"longName": "Jonglei"
-				}
-			}
-		},
-		"LK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lakes",
-					"longName": "Lakes"
-				}
-			}
-		},
-		"NU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Upper Nile",
-					"longName": "Upper Nile"
-				}
-			}
-		},
-		"UY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Unity",
-					"longName": "Unity"
-				}
-			}
-		},
-		"WR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Warrap",
-					"longName": "Warrap"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "South Sudan",
-			"longName": "Republic of South Sudan",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SS",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "BN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern Bahr el-Ghazal",
+          "longName" : "Northern Bahr el-Ghazal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western Bahr el-Ghazal",
+          "longName" : "Western Bahr el-Ghazal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central Equatoria",
+          "longName" : "Central Equatoria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eastern Equatoria",
+          "longName" : "Eastern Equatoria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western Equatoria",
+          "longName" : "Western Equatoria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jonglei",
+          "longName" : "Jonglei"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lakes",
+          "longName" : "Lakes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Upper Nile",
+          "longName" : "Upper Nile"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Unity",
+          "longName" : "Unity"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Warrap",
+          "longName" : "Warrap"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "South Sudan",
+      "longName" : "Republic of South Sudan",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Südsudan",
+      "longName" : "Republic of South Sudan",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "South Sudan",
+      "longName" : "Republic of South Sudan",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Sudán del Sur",
+      "longName" : "República de Sudán del Sur",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Sud Soudan",
+      "longName" : "République du Soudan du Sud",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Sudan del Sud",
+      "longName" : "Repubblica del Sudan meridionale",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "남수단",
+      "longName" : "Republic of South Sudan",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,175 +1,221 @@
 {
-	"countryCode": "SO",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/SOS",
-		"id": "SOS"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"AW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Awdal",
-					"longName": "Awdal"
-				}
-			}
-		},
-		"BK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bakool",
-					"longName": "Bakool"
-				}
-			}
-		},
-		"BN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Banaadir",
-					"longName": "Banaadir"
-				}
-			}
-		},
-		"BR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bari",
-					"longName": "Bari"
-				}
-			}
-		},
-		"BY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bay",
-					"longName": "Bay"
-				}
-			}
-		},
-		"GA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Galguduud",
-					"longName": "Galguduud"
-				}
-			}
-		},
-		"GE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gedo",
-					"longName": "Gedo"
-				}
-			}
-		},
-		"HI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hiiraan",
-					"longName": "Hiiraan"
-				}
-			}
-		},
-		"JD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jubbada Dhexe",
-					"longName": "Jubbada Dhexe"
-				}
-			}
-		},
-		"JH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jubbada Hoose",
-					"longName": "Jubbada Hoose"
-				}
-			}
-		},
-		"MU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mudug",
-					"longName": "Mudug"
-				}
-			}
-		},
-		"NU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nugaal",
-					"longName": "Nugaal"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sanaag",
-					"longName": "Sanaag"
-				}
-			}
-		},
-		"SD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shabeellaha Dhexe",
-					"longName": "Shabeellaha Dhexe"
-				}
-			}
-		},
-		"SH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shabeellaha Hoose",
-					"longName": "Shabeellaha Hoose"
-				}
-			}
-		},
-		"SO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sool",
-					"longName": "Sool"
-				}
-			}
-		},
-		"TO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Togdheer",
-					"longName": "Togdheer"
-				}
-			}
-		},
-		"WO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Woqooyi Galbeed",
-					"longName": "Woqooyi Galbeed"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Somalia",
-			"longName": "Federal Republic of Somalia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/SOS",
+    "id" : "SOS"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "AW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Awdal",
+          "longName" : "Awdal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bakool",
+          "longName" : "Bakool"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Banaadir",
+          "longName" : "Banaadir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bari",
+          "longName" : "Bari"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bay",
+          "longName" : "Bay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Galguduud",
+          "longName" : "Galguduud"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gedo",
+          "longName" : "Gedo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hiiraan",
+          "longName" : "Hiiraan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jubbada Dhexe",
+          "longName" : "Jubbada Dhexe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jubbada Hoose",
+          "longName" : "Jubbada Hoose"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mudug",
+          "longName" : "Mudug"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nugaal",
+          "longName" : "Nugaal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sanaag",
+          "longName" : "Sanaag"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shabeellaha Dhexe",
+          "longName" : "Shabeellaha Dhexe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shabeellaha Hoose",
+          "longName" : "Shabeellaha Hoose"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sool",
+          "longName" : "Sool"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Togdheer",
+          "longName" : "Togdheer"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Woqooyi Galbeed",
+          "longName" : "Woqooyi Galbeed"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Somalia",
+      "longName" : "Federal Republic of Somalia",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Somalia",
+      "longName" : "Bundesrepublik Somalia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Somalia",
+      "longName" : "Federal Republic of Somalia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Somalia",
+      "longName" : "República Federal de Somalia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Somalie",
+      "longName" : "République fédérale de Somalie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Somalia",
+      "longName" : "Repubblica federale di Somalia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "소말리아",
+      "longName" : "Federal Republic of Somalia",
+      "postalCode" : ""
+    }
+  }
 }

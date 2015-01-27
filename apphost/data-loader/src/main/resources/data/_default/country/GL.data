@@ -1,81 +1,113 @@
 {
-	"countryCode": "GL",
-	"defaultLocale": {
-		"href": "/v1/locales/kl_GL",
-		"id": "kl_GL"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/DKK",
-		"id": "DKK"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"KU": {
-			"locales": {
-				"kl_GL": {
-					"shortName": "Kommune Kujalleq",
-					"longName": "Kommune Kujalleq"
-				},
-				"en_US": {
-					"shortName": "Kujalleq Municipality",
-					"longName": "Kujalleq Municipality"
-				}
-			}
-		},
-		"QA": {
-			"locales": {
-				"kl_GL": {
-					"shortName": "Qaasuitsup Kommunia",
-					"longName": "Qaasuitsup Kommunia"
-				},
-				"en_US": {
-					"shortName": "Qaasuitsup",
-					"longName": "Qaasuitsup"
-				}
-			}
-		},
-		"QE": {
-			"locales": {
-				"kl_GL": {
-					"shortName": "Qeqqata Kommunia",
-					"longName": "Qeqqata Kommunia"
-				},
-				"en_US": {
-					"shortName": "Qeqqata Municipality",
-					"longName": "Qeqqata Municipality"
-				}
-			}
-		},
-		"SM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sermersooq Municipality",
-					"longName": "Sermersooq Municipality"
-				},
-				"kl_GL": {
-					"shortName": "Kommuneqarfik Sermersooq",
-					"longName": "Kommuneqarfik Sermersooq"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/kl_GL",
-		"id": "kl_GL"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Greenland",
-			"longName": "Greenland",
-			"postalCode": "Postal Code"
-		},
-		"kl_GL": {
-			"shortName": "Kalaallit Nunaat",
-			"longName": "Kalaallit Nunaat",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GL",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/kl_GL",
+    "id" : "kl_GL"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/DKK",
+    "id" : "DKK"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "KU" : {
+      "locales" : {
+        "kl_GL" : {
+          "shortName" : "Kommune Kujalleq",
+          "longName" : "Kommune Kujalleq"
+        },
+        "en_US" : {
+          "shortName" : "Kujalleq Municipality",
+          "longName" : "Kujalleq Municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QA" : {
+      "locales" : {
+        "kl_GL" : {
+          "shortName" : "Qaasuitsup Kommunia",
+          "longName" : "Qaasuitsup Kommunia"
+        },
+        "en_US" : {
+          "shortName" : "Qaasuitsup",
+          "longName" : "Qaasuitsup"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QE" : {
+      "locales" : {
+        "kl_GL" : {
+          "shortName" : "Qeqqata Kommunia",
+          "longName" : "Qeqqata Kommunia"
+        },
+        "en_US" : {
+          "shortName" : "Qeqqata Municipality",
+          "longName" : "Qeqqata Municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sermersooq Municipality",
+          "longName" : "Sermersooq Municipality"
+        },
+        "kl_GL" : {
+          "shortName" : "Kommuneqarfik Sermersooq",
+          "longName" : "Kommuneqarfik Sermersooq"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/kl_GL",
+    "id" : "kl_GL"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Greenland",
+      "longName" : "Greenland",
+      "postalCode" : ""
+    },
+    "kl_GL" : {
+      "shortName" : "Kalaallit Nunaat",
+      "longName" : "Kalaallit Nunaat",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Grönland",
+      "longName" : "Grönland",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Greenland",
+      "longName" : "Greenland",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Groenlandia",
+      "longName" : "Groenlandia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Groenland",
+      "longName" : "Groenland",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Groenlandia",
+      "longName" : "Groenlandia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "그린란드",
+      "longName" : "그린란드",
+      "postalCode" : ""
+    }
+  }
 }

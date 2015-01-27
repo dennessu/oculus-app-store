@@ -1,127 +1,167 @@
 {
-	"countryCode": "BJ",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XOF",
-		"id": "XOF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"AK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Atakora",
-					"longName": "Atakora"
-				}
-			}
-		},
-		"AL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Alibori",
-					"longName": "Alibori"
-				}
-			}
-		},
-		"AQ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Atlantique",
-					"longName": "Atlantique"
-				}
-			}
-		},
-		"BO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Borgou",
-					"longName": "Borgou"
-				}
-			}
-		},
-		"CO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Collines",
-					"longName": "Collines"
-				}
-			}
-		},
-		"DO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Donga",
-					"longName": "Donga"
-				}
-			}
-		},
-		"KO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kouffo",
-					"longName": "Kouffo"
-				}
-			}
-		},
-		"LI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Littoral",
-					"longName": "Littoral"
-				}
-			}
-		},
-		"MO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mono",
-					"longName": "Mono"
-				}
-			}
-		},
-		"OU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ouémé",
-					"longName": "Ouémé"
-				}
-			}
-		},
-		"PL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Plateau",
-					"longName": "Plateau"
-				}
-			}
-		},
-		"ZO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zou",
-					"longName": "Zou"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Benin",
-			"longName": "Republic of Benin",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BJ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XOF",
+    "id" : "XOF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "AK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Atakora",
+          "longName" : "Atakora"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Alibori",
+          "longName" : "Alibori"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AQ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Atlantique",
+          "longName" : "Atlantique"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Borgou",
+          "longName" : "Borgou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Collines",
+          "longName" : "Collines"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Donga",
+          "longName" : "Donga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kouffo",
+          "longName" : "Kouffo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Littoral",
+          "longName" : "Littoral"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mono",
+          "longName" : "Mono"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ouémé",
+          "longName" : "Ouémé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Plateau",
+          "longName" : "Plateau"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zou",
+          "longName" : "Zou"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Benin",
+      "longName" : "Republic of Benin",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Benin",
+      "longName" : "Republic of Benin",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Benin",
+      "longName" : "Republic of Benin",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Benín",
+      "longName" : "República de Benín",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Bénin",
+      "longName" : "République du Bénin",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Benin",
+      "longName" : "Repubblica del Benin",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "베냉",
+      "longName" : "Republic of Benin",
+      "postalCode" : ""
+    }
+  }
 }

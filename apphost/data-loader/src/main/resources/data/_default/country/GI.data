@@ -1,29 +1,55 @@
 {
-	"countryCode": "GI",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GIP",
-		"id": "GIP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Gibraltar",
-			"longName": "Gibraltar",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GI",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GIP",
+    "id" : "GIP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Gibraltar",
+      "longName" : "Gibraltar",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Gibraltar",
+      "longName" : "Gibraltar",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Gibraltar",
+      "longName" : "Gibraltar",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Gibraltar",
+      "longName" : "Gibraltar",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Gibraltar",
+      "longName" : "Gibraltar",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Gibilterra",
+      "longName" : "Gibilterra",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "지브롤터",
+      "longName" : "지브롤터",
+      "postalCode" : ""
+    }
+  }
 }

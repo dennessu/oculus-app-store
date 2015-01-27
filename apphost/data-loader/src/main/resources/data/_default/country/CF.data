@@ -1,244 +1,288 @@
 {
-	"countryCode": "CF",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_CF",
-		"id": "fr_CF"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XAF",
-		"id": "XAF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"AC": {
-			"locales": {
-				"fr_CF": {
-					"shortName": "Ouham",
-					"longName": "Ouham"
-				},
-				"en_US": {
-					"shortName": "Ouham",
-					"longName": "Ouham"
-				}
-			}
-		},
-		"BB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bamingui-Bangoran",
-					"longName": "Bamingui-Bangoran"
-				},
-				"fr_CF": {
-					"shortName": "Bamingui-Bangoran",
-					"longName": "Bamingui-Bangoran"
-				}
-			}
-		},
-		"BGF": {
-			"locales": {
-				"fr_CF": {
-					"shortName": "Bangui",
-					"longName": "Bangui"
-				},
-				"en_US": {
-					"shortName": "Bangui",
-					"longName": "Bangui"
-				}
-			}
-		},
-		"BK": {
-			"locales": {
-				"fr_CF": {
-					"shortName": "Basse-Kotto",
-					"longName": "Basse-Kotto"
-				},
-				"en_US": {
-					"shortName": "Basse-Kotto",
-					"longName": "Basse-Kotto"
-				}
-			}
-		},
-		"HK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Haute-Kotto",
-					"longName": "Haute-Kotto"
-				},
-				"fr_CF": {
-					"shortName": "Haute-Kotto",
-					"longName": "Haute-Kotto"
-				}
-			}
-		},
-		"HM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Haut-Mbomou",
-					"longName": "Haut-Mbomou"
-				},
-				"fr_CF": {
-					"shortName": "Haut-Mbomou",
-					"longName": "Haut-Mbomou"
-				}
-			}
-		},
-		"HS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mambéré-Kadéï",
-					"longName": "Mambéré-Kadéï"
-				},
-				"fr_CF": {
-					"shortName": "Mambéré-Kadéï",
-					"longName": "Mambéré-Kadéï"
-				}
-			}
-		},
-		"KB": {
-			"locales": {
-				"fr_CF": {
-					"shortName": "Nana-Grébizi",
-					"longName": "Nana-Grébizi"
-				},
-				"en_US": {
-					"shortName": "Nana-Grébizi",
-					"longName": "Nana-Grébizi"
-				}
-			}
-		},
-		"KG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kémo",
-					"longName": "Kémo"
-				},
-				"fr_CF": {
-					"shortName": "Kémo",
-					"longName": "Kémo"
-				}
-			}
-		},
-		"LB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lobaye",
-					"longName": "Lobaye"
-				},
-				"fr_CF": {
-					"shortName": "Lobaye",
-					"longName": "Lobaye"
-				}
-			}
-		},
-		"MB": {
-			"locales": {
-				"fr_CF": {
-					"shortName": "Mbomou",
-					"longName": "Mbomou"
-				},
-				"en_US": {
-					"shortName": "Mbomou",
-					"longName": "Mbomou"
-				}
-			}
-		},
-		"MP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ombella-M'Poko",
-					"longName": "Ombella-M'Poko"
-				},
-				"fr_CF": {
-					"shortName": "Ombella-M'Poko",
-					"longName": "Ombella-M'Poko"
-				}
-			}
-		},
-		"NM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nana-Mambéré",
-					"longName": "Nana-Mambéré"
-				},
-				"fr_CF": {
-					"shortName": "Nana-Mambéré",
-					"longName": "Nana-Mambéré"
-				}
-			}
-		},
-		"OP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ouham-Pendé",
-					"longName": "Ouham-Pendé"
-				},
-				"fr_CF": {
-					"shortName": "Ouham-Pendé",
-					"longName": "Ouham-Pendé"
-				}
-			}
-		},
-		"SE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sangha-Mbaéré",
-					"longName": "Sangha-Mbaéré"
-				},
-				"fr_CF": {
-					"shortName": "Sangha-Mbaéré",
-					"longName": "Sangha-Mbaéré"
-				}
-			}
-		},
-		"UK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ouaka",
-					"longName": "Ouaka"
-				},
-				"fr_CF": {
-					"shortName": "Ouaka",
-					"longName": "Ouaka"
-				}
-			}
-		},
-		"VK": {
-			"locales": {
-				"fr_CF": {
-					"shortName": "Vakaga",
-					"longName": "Vakaga"
-				},
-				"en_US": {
-					"shortName": "Vakaga",
-					"longName": "Vakaga"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_CF",
-		"id": "fr_CF"
-	},
-    {
-         "href": "/v1/locales/en_US",
-         "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Central African Republic",
-			"longName": "Central African Republic",
-			"postalCode": "Postal Code"
-		},
-		"fr_CF": {
-			"shortName": "République centrafricaine",
-			"longName": "République centrafricaine",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CF",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_CF",
+    "id" : "fr_CF"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XAF",
+    "id" : "XAF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "AC" : {
+      "locales" : {
+        "fr_CF" : {
+          "shortName" : "Ouham",
+          "longName" : "Ouham"
+        },
+        "en_US" : {
+          "shortName" : "Ouham",
+          "longName" : "Ouham"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bamingui-Bangoran",
+          "longName" : "Bamingui-Bangoran"
+        },
+        "fr_CF" : {
+          "shortName" : "Bamingui-Bangoran",
+          "longName" : "Bamingui-Bangoran"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BGF" : {
+      "locales" : {
+        "fr_CF" : {
+          "shortName" : "Bangui",
+          "longName" : "Bangui"
+        },
+        "en_US" : {
+          "shortName" : "Bangui",
+          "longName" : "Bangui"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BK" : {
+      "locales" : {
+        "fr_CF" : {
+          "shortName" : "Basse-Kotto",
+          "longName" : "Basse-Kotto"
+        },
+        "en_US" : {
+          "shortName" : "Basse-Kotto",
+          "longName" : "Basse-Kotto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Haute-Kotto",
+          "longName" : "Haute-Kotto"
+        },
+        "fr_CF" : {
+          "shortName" : "Haute-Kotto",
+          "longName" : "Haute-Kotto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Haut-Mbomou",
+          "longName" : "Haut-Mbomou"
+        },
+        "fr_CF" : {
+          "shortName" : "Haut-Mbomou",
+          "longName" : "Haut-Mbomou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mambéré-Kadéï",
+          "longName" : "Mambéré-Kadéï"
+        },
+        "fr_CF" : {
+          "shortName" : "Mambéré-Kadéï",
+          "longName" : "Mambéré-Kadéï"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KB" : {
+      "locales" : {
+        "fr_CF" : {
+          "shortName" : "Nana-Grébizi",
+          "longName" : "Nana-Grébizi"
+        },
+        "en_US" : {
+          "shortName" : "Nana-Grébizi",
+          "longName" : "Nana-Grébizi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kémo",
+          "longName" : "Kémo"
+        },
+        "fr_CF" : {
+          "shortName" : "Kémo",
+          "longName" : "Kémo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lobaye",
+          "longName" : "Lobaye"
+        },
+        "fr_CF" : {
+          "shortName" : "Lobaye",
+          "longName" : "Lobaye"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MB" : {
+      "locales" : {
+        "fr_CF" : {
+          "shortName" : "Mbomou",
+          "longName" : "Mbomou"
+        },
+        "en_US" : {
+          "shortName" : "Mbomou",
+          "longName" : "Mbomou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ombella-M'Poko",
+          "longName" : "Ombella-M'Poko"
+        },
+        "fr_CF" : {
+          "shortName" : "Ombella-M'Poko",
+          "longName" : "Ombella-M'Poko"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nana-Mambéré",
+          "longName" : "Nana-Mambéré"
+        },
+        "fr_CF" : {
+          "shortName" : "Nana-Mambéré",
+          "longName" : "Nana-Mambéré"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ouham-Pendé",
+          "longName" : "Ouham-Pendé"
+        },
+        "fr_CF" : {
+          "shortName" : "Ouham-Pendé",
+          "longName" : "Ouham-Pendé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sangha-Mbaéré",
+          "longName" : "Sangha-Mbaéré"
+        },
+        "fr_CF" : {
+          "shortName" : "Sangha-Mbaéré",
+          "longName" : "Sangha-Mbaéré"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ouaka",
+          "longName" : "Ouaka"
+        },
+        "fr_CF" : {
+          "shortName" : "Ouaka",
+          "longName" : "Ouaka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VK" : {
+      "locales" : {
+        "fr_CF" : {
+          "shortName" : "Vakaga",
+          "longName" : "Vakaga"
+        },
+        "en_US" : {
+          "shortName" : "Vakaga",
+          "longName" : "Vakaga"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_CF",
+    "id" : "fr_CF"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Central African Republic",
+      "longName" : "Central African Republic",
+      "postalCode" : ""
+    },
+    "fr_CF" : {
+      "shortName" : "République centrafricaine",
+      "longName" : "République centrafricaine",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Zentralafrikanische Republik",
+      "longName" : "Zentralafrikanische Republik",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Central African Republic",
+      "longName" : "Central African Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "República Centroafricana",
+      "longName" : "República Centroafricana",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "République Centre Africaine",
+      "longName" : "République Centre Africaine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Repubblica Centrafricana",
+      "longName" : "Repubblica Centrafricana",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "중앙아프리카공화국",
+      "longName" : "중앙아프리카공화국",
+      "postalCode" : ""
+    }
+  }
 }

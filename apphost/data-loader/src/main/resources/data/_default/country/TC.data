@@ -1,29 +1,55 @@
 {
-	"countryCode": "TC",
-	"defaultLocale": {
-		"href": "/v1/locales/en_TC",
-		"id": "en_TC"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_TC",
-		"id": "en_TC"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Turks and Caicos Islands",
-			"longName": "Turks and Caicos Islands",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TC",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_TC",
+    "id" : "en_TC"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_TC",
+    "id" : "en_TC"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Turks and Caicos Islands",
+      "longName" : "Turks and Caicos Islands",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Turks- und Caicosinseln",
+      "longName" : "Turks- und Caicosinseln",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Turks and Caicos Islands",
+      "longName" : "Turks and Caicos Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Turcas y Caicos",
+      "longName" : "Islas Turcas y Caicos",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles Turks-et-Caicos",
+      "longName" : "Îles Turks-et-Caicos",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole Turks e Caicos",
+      "longName" : "Isole Turks e Caicos",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "터크스 케이커스 제도",
+      "longName" : "터크스 케이커스 제도",
+      "postalCode" : ""
+    }
+  }
 }

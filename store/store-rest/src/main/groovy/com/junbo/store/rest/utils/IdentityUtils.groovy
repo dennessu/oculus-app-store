@@ -24,6 +24,7 @@ import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert
 
 import javax.annotation.Resource
 /**
@@ -153,7 +154,7 @@ class IdentityUtils {
             if (org.springframework.util.CollectionUtils.isEmpty(tosList)) {
                 return Promise.pure([])
             }
-            return Promise.pure(getSupportedTos(tosList, localeId))
+            return Promise.pure(tosList)
         }
     }
 
@@ -201,6 +202,13 @@ class IdentityUtils {
 
     }
 
+    public Tos selectTosForChallenge(List<Tos> tosList, LocaleId localeId) {
+        Assert.notEmpty(tosList)
+        tosList = new ArrayList<Tos>(tosList).sort { Tos t -> return t.minorversion }.reverse()
+        Tos tos = tosList.find {Tos t -> t.coveredLocales != null && t.coveredLocales.contains(localeId)}
+        return tos == null ? tosList.first() : tos
+    }
+
     private LocaleId getLocale(User user, LocaleId localeId, CountryId countryId) {
         if (user != null && user.preferredLocale != null) {
             return user.preferredLocale
@@ -218,46 +226,5 @@ class IdentityUtils {
         }
 
         return new LocaleId(tosDefaultLocale)
-    }
-
-    private List<Tos> getSupportedTos(List<Tos> tosList, LocaleId localeId) {
-        if (org.apache.commons.collections.CollectionUtils.isEmpty(tosList) || localeId == null) {
-            return []
-        }
-
-        Map<String, Boolean> circle = new HashMap<>()
-
-        LocaleId current = localeId
-        LocaleId fallback = null
-        while (true) {
-            com.junbo.identity.spec.v1.model.Locale locale = resourceContainer.localeResource.get(current, new LocaleGetOptions()).get()
-            Boolean visited = circle.get(locale.getId().toString())
-            if (visited) {
-                break
-            }
-            circle.put(locale.getId().toString(), true)
-
-            List<Tos> result = []
-            for (Tos tos : tosList) {
-                if (!CollectionUtils.isEmpty(tos.coveredLocales)) {
-                    if (tos.coveredLocales.any { LocaleId tosLocaleId ->
-                        return tosLocaleId == current
-                    }) {
-                        result << tos
-                    }
-                }
-            }
-            if (!result.isEmpty()) {
-                return result.sort { Tos tos ->  return tos.minorversion }.reverse()
-            }
-
-            fallback = locale.fallbackLocale
-            if (current == fallback || fallback == null) {
-                break
-            }
-            current = fallback
-        }
-
-        return []
     }
 }

@@ -1,140 +1,182 @@
 {
-	"countryCode": "JM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/JMD",
-		"id": "JMD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kingston",
-					"longName": "Kingston"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Andrew",
-					"longName": "Saint Andrew"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Thomas",
-					"longName": "Saint Thomas"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Portland",
-					"longName": "Portland"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Mary",
-					"longName": "Saint Mary"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Ann",
-					"longName": "Saint Ann"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Trelawny",
-					"longName": "Trelawny"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint James",
-					"longName": "Saint James"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hanover",
-					"longName": "Hanover"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Westmoreland",
-					"longName": "Westmoreland"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Elizabeth",
-					"longName": "Saint Elizabeth"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Manchester",
-					"longName": "Manchester"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Clarendon",
-					"longName": "Clarendon"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Catherine",
-					"longName": "Saint Catherine"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Jamaica",
-			"longName": "Jamaica",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "JM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/JMD",
+    "id" : "JMD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kingston",
+          "longName" : "Kingston"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Andrew",
+          "longName" : "Saint Andrew"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Thomas",
+          "longName" : "Saint Thomas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Portland",
+          "longName" : "Portland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Mary",
+          "longName" : "Saint Mary"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Ann",
+          "longName" : "Saint Ann"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Trelawny",
+          "longName" : "Trelawny"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint James",
+          "longName" : "Saint James"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hanover",
+          "longName" : "Hanover"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Westmoreland",
+          "longName" : "Westmoreland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Elizabeth",
+          "longName" : "Saint Elizabeth"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Manchester",
+          "longName" : "Manchester"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Clarendon",
+          "longName" : "Clarendon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Catherine",
+          "longName" : "Saint Catherine"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Jamaica",
+      "longName" : "Jamaica",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Jamaika",
+      "longName" : "Jamaika",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Jamaica",
+      "longName" : "Jamaica",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Jamaica",
+      "longName" : "Jamaica",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Jamaïque",
+      "longName" : "Jamaïque",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Giamaica",
+      "longName" : "Giamaica",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "자메이카",
+      "longName" : "자메이카",
+      "postalCode" : ""
+    }
+  }
 }

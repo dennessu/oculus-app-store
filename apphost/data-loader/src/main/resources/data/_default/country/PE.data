@@ -1,349 +1,402 @@
 {
-	"countryCode": "PE",
-	"defaultLocale": {
-		"href": "/v1/locales/es_PE",
-		"id": "es_PE"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/PEN",
-		"id": "PEN"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AMA": {
-			"locales": {
-				"es_PE": {
-					"shortName": "Amazonas",
-					"longName": "Amazonas"
-				},
-				"en_US": {
-					"shortName": "Amazonas",
-					"longName": "Amazonas"
-				}
-			}
-		},
-		"ANC": {
-			"locales": {
-				"es_PE": {
-					"shortName": "Ancash",
-					"longName": "Ancash"
-				},
-				"en_US": {
-					"shortName": "Ancash",
-					"longName": "Ancash"
-				}
-			}
-		},
-		"APU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Apurímac",
-					"longName": "Apurímac"
-				},
-				"es_PE": {
-					"shortName": "Apurímac",
-					"longName": "Apurímac"
-				}
-			}
-		},
-		"ARE": {
-			"locales": {
-				"es_PE": {
-					"shortName": "Arequipa",
-					"longName": "Arequipa"
-				},
-				"en_US": {
-					"shortName": "Arequipa",
-					"longName": "Arequipa"
-				}
-			}
-		},
-		"AYA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ayacucho",
-					"longName": "Ayacucho"
-				},
-				"es_PE": {
-					"shortName": "Ayacucho",
-					"longName": "Ayacucho"
-				}
-			}
-		},
-		"CAJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cajamarca",
-					"longName": "Cajamarca"
-				},
-				"es_PE": {
-					"shortName": "Cajamarca",
-					"longName": "Cajamarca"
-				}
-			}
-		},
-		"CAL": {
-			"locales": {
-				"en_US": {
-					"shortName": "El Callao",
-					"longName": "El Callao"
-				},
-				"es_PE": {
-					"shortName": "El Callao",
-					"longName": "El Callao"
-				}
-			}
-		},
-		"CUS": {
-			"locales": {
-				"es_PE": {
-					"shortName": "Cusco [Cuzco]",
-					"longName": "Cusco [Cuzco]"
-				},
-				"en_US": {
-					"shortName": "Cusco [Cuzco]",
-					"longName": "Cusco [Cuzco]"
-				}
-			}
-		},
-		"HUC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Huánuco",
-					"longName": "Huánuco"
-				},
-				"es_PE": {
-					"shortName": "Huánuco",
-					"longName": "Huánuco"
-				}
-			}
-		},
-		"HUV": {
-			"locales": {
-				"es_PE": {
-					"shortName": "Huancavelica",
-					"longName": "Huancavelica"
-				},
-				"en_US": {
-					"shortName": "Huancavelica",
-					"longName": "Huancavelica"
-				}
-			}
-		},
-		"ICA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ica",
-					"longName": "Ica"
-				},
-				"es_PE": {
-					"shortName": "Ica",
-					"longName": "Ica"
-				}
-			}
-		},
-		"JUN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Junín",
-					"longName": "Junín"
-				},
-				"es_PE": {
-					"shortName": "Junín",
-					"longName": "Junín"
-				}
-			}
-		},
-		"LAL": {
-			"locales": {
-				"en_US": {
-					"shortName": "La Libertad",
-					"longName": "La Libertad"
-				},
-				"es_PE": {
-					"shortName": "La Libertad",
-					"longName": "La Libertad"
-				}
-			}
-		},
-		"LAM": {
-			"locales": {
-				"es_PE": {
-					"shortName": "Lambayeque",
-					"longName": "Lambayeque"
-				},
-				"en_US": {
-					"shortName": "Lambayeque",
-					"longName": "Lambayeque"
-				}
-			}
-		},
-		"LIM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lima",
-					"longName": "Lima"
-				},
-				"es_PE": {
-					"shortName": "Lima",
-					"longName": "Lima"
-				}
-			}
-		},
-		"LMA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Municipalidad Metropolitana de Lima",
-					"longName": "Municipalidad Metropolitana de Lima"
-				},
-				"es_PE": {
-					"shortName": "Municipalidad Metropolitana de Lima",
-					"longName": "Municipalidad Metropolitana de Lima"
-				}
-			}
-		},
-		"LOR": {
-			"locales": {
-				"es_PE": {
-					"shortName": "Loreto",
-					"longName": "Loreto"
-				},
-				"en_US": {
-					"shortName": "Loreto",
-					"longName": "Loreto"
-				}
-			}
-		},
-		"MDD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Madre de Dios",
-					"longName": "Madre de Dios"
-				},
-				"es_PE": {
-					"shortName": "Madre de Dios",
-					"longName": "Madre de Dios"
-				}
-			}
-		},
-		"MOQ": {
-			"locales": {
-				"es_PE": {
-					"shortName": "Moquegua",
-					"longName": "Moquegua"
-				},
-				"en_US": {
-					"shortName": "Moquegua",
-					"longName": "Moquegua"
-				}
-			}
-		},
-		"PAS": {
-			"locales": {
-				"es_PE": {
-					"shortName": "Pasco",
-					"longName": "Pasco"
-				},
-				"en_US": {
-					"shortName": "Pasco",
-					"longName": "Pasco"
-				}
-			}
-		},
-		"PIU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Piura",
-					"longName": "Piura"
-				},
-				"es_PE": {
-					"shortName": "Piura",
-					"longName": "Piura"
-				}
-			}
-		},
-		"PUN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Puno",
-					"longName": "Puno"
-				},
-				"es_PE": {
-					"shortName": "Puno",
-					"longName": "Puno"
-				}
-			}
-		},
-		"SAM": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Martín",
-					"longName": "San Martín"
-				},
-				"es_PE": {
-					"shortName": "San Martín",
-					"longName": "San Martín"
-				}
-			}
-		},
-		"TAC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tacna",
-					"longName": "Tacna"
-				},
-				"es_PE": {
-					"shortName": "Tacna",
-					"longName": "Tacna"
-				}
-			}
-		},
-		"TUM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tumbes",
-					"longName": "Tumbes"
-				},
-				"es_PE": {
-					"shortName": "Tumbes",
-					"longName": "Tumbes"
-				}
-			}
-		},
-		"UCA": {
-			"locales": {
-				"es_PE": {
-					"shortName": "Ucayali",
-					"longName": "Ucayali"
-				},
-				"en_US": {
-					"shortName": "Ucayali",
-					"longName": "Ucayali"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_PE",
-		"id": "es_PE"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Peru",
-			"longName": "Republic of Peru",
-			"postalCode": "Postal Code"
-		},
-		"es_PE": {
-			"shortName": "Perú",
-			"longName": "República del Perú",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_PE",
+    "id" : "es_PE"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/PEN",
+    "id" : "PEN"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AMA" : {
+      "locales" : {
+        "es_PE" : {
+          "shortName" : "Amazonas",
+          "longName" : "Amazonas"
+        },
+        "en_US" : {
+          "shortName" : "Amazonas",
+          "longName" : "Amazonas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ANC" : {
+      "locales" : {
+        "es_PE" : {
+          "shortName" : "Ancash",
+          "longName" : "Ancash"
+        },
+        "en_US" : {
+          "shortName" : "Ancash",
+          "longName" : "Ancash"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "APU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Apurímac",
+          "longName" : "Apurímac"
+        },
+        "es_PE" : {
+          "shortName" : "Apurímac",
+          "longName" : "Apurímac"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ARE" : {
+      "locales" : {
+        "es_PE" : {
+          "shortName" : "Arequipa",
+          "longName" : "Arequipa"
+        },
+        "en_US" : {
+          "shortName" : "Arequipa",
+          "longName" : "Arequipa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AYA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ayacucho",
+          "longName" : "Ayacucho"
+        },
+        "es_PE" : {
+          "shortName" : "Ayacucho",
+          "longName" : "Ayacucho"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cajamarca",
+          "longName" : "Cajamarca"
+        },
+        "es_PE" : {
+          "shortName" : "Cajamarca",
+          "longName" : "Cajamarca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CAL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "El Callao",
+          "longName" : "El Callao"
+        },
+        "es_PE" : {
+          "shortName" : "El Callao",
+          "longName" : "El Callao"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CUS" : {
+      "locales" : {
+        "es_PE" : {
+          "shortName" : "Cusco [Cuzco]",
+          "longName" : "Cusco [Cuzco]"
+        },
+        "en_US" : {
+          "shortName" : "Cusco [Cuzco]",
+          "longName" : "Cusco [Cuzco]"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HUC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Huánuco",
+          "longName" : "Huánuco"
+        },
+        "es_PE" : {
+          "shortName" : "Huánuco",
+          "longName" : "Huánuco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HUV" : {
+      "locales" : {
+        "es_PE" : {
+          "shortName" : "Huancavelica",
+          "longName" : "Huancavelica"
+        },
+        "en_US" : {
+          "shortName" : "Huancavelica",
+          "longName" : "Huancavelica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ICA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ica",
+          "longName" : "Ica"
+        },
+        "es_PE" : {
+          "shortName" : "Ica",
+          "longName" : "Ica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JUN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Junín",
+          "longName" : "Junín"
+        },
+        "es_PE" : {
+          "shortName" : "Junín",
+          "longName" : "Junín"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LAL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "La Libertad",
+          "longName" : "La Libertad"
+        },
+        "es_PE" : {
+          "shortName" : "La Libertad",
+          "longName" : "La Libertad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LAM" : {
+      "locales" : {
+        "es_PE" : {
+          "shortName" : "Lambayeque",
+          "longName" : "Lambayeque"
+        },
+        "en_US" : {
+          "shortName" : "Lambayeque",
+          "longName" : "Lambayeque"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LIM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lima",
+          "longName" : "Lima"
+        },
+        "es_PE" : {
+          "shortName" : "Lima",
+          "longName" : "Lima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LMA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Municipalidad Metropolitana de Lima",
+          "longName" : "Municipalidad Metropolitana de Lima"
+        },
+        "es_PE" : {
+          "shortName" : "Municipalidad Metropolitana de Lima",
+          "longName" : "Municipalidad Metropolitana de Lima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LOR" : {
+      "locales" : {
+        "es_PE" : {
+          "shortName" : "Loreto",
+          "longName" : "Loreto"
+        },
+        "en_US" : {
+          "shortName" : "Loreto",
+          "longName" : "Loreto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MDD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Madre de Dios",
+          "longName" : "Madre de Dios"
+        },
+        "es_PE" : {
+          "shortName" : "Madre de Dios",
+          "longName" : "Madre de Dios"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MOQ" : {
+      "locales" : {
+        "es_PE" : {
+          "shortName" : "Moquegua",
+          "longName" : "Moquegua"
+        },
+        "en_US" : {
+          "shortName" : "Moquegua",
+          "longName" : "Moquegua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PAS" : {
+      "locales" : {
+        "es_PE" : {
+          "shortName" : "Pasco",
+          "longName" : "Pasco"
+        },
+        "en_US" : {
+          "shortName" : "Pasco",
+          "longName" : "Pasco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PIU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Piura",
+          "longName" : "Piura"
+        },
+        "es_PE" : {
+          "shortName" : "Piura",
+          "longName" : "Piura"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PUN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Puno",
+          "longName" : "Puno"
+        },
+        "es_PE" : {
+          "shortName" : "Puno",
+          "longName" : "Puno"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Martín",
+          "longName" : "San Martín"
+        },
+        "es_PE" : {
+          "shortName" : "San Martín",
+          "longName" : "San Martín"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tacna",
+          "longName" : "Tacna"
+        },
+        "es_PE" : {
+          "shortName" : "Tacna",
+          "longName" : "Tacna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TUM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tumbes",
+          "longName" : "Tumbes"
+        },
+        "es_PE" : {
+          "shortName" : "Tumbes",
+          "longName" : "Tumbes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UCA" : {
+      "locales" : {
+        "es_PE" : {
+          "shortName" : "Ucayali",
+          "longName" : "Ucayali"
+        },
+        "en_US" : {
+          "shortName" : "Ucayali",
+          "longName" : "Ucayali"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_PE",
+    "id" : "es_PE"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Peru",
+      "longName" : "Republic of Peru",
+      "postalCode" : ""
+    },
+    "es_PE" : {
+      "shortName" : "Perú",
+      "longName" : "República del Perú",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Peru",
+      "longName" : "Republik Peru",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Peru",
+      "longName" : "Republic of Peru",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Perú",
+      "longName" : "República de Perú",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Pérou",
+      "longName" : "République du Pérou",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Perù",
+      "longName" : "Repubblica del Perù",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "페루",
+      "longName" : "Republic of Peru",
+      "postalCode" : ""
+    }
+  }
 }

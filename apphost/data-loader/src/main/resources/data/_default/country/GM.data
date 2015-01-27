@@ -1,76 +1,110 @@
 {
-	"countryCode": "GM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GMD",
-		"id": "GMD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"B": {
-			"locales": {
-				"en_US": {
-					"shortName": "Banjul",
-					"longName": "Banjul"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lower River",
-					"longName": "Lower River"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"en_US": {
-					"shortName": "MacCarthy Island",
-					"longName": "MacCarthy Island"
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"en_US": {
-					"shortName": "North Bank",
-					"longName": "North Bank"
-				}
-			}
-		},
-		"U": {
-			"locales": {
-				"en_US": {
-					"shortName": "Upper River",
-					"longName": "Upper River"
-				}
-			}
-		},
-		"W": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western",
-					"longName": "Western"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "The Gambia",
-			"longName": "Republic of the Gambia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GMD",
+    "id" : "GMD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "B" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Banjul",
+          "longName" : "Banjul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lower River",
+          "longName" : "Lower River"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MacCarthy Island",
+          "longName" : "MacCarthy Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North Bank",
+          "longName" : "North Bank"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "U" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Upper River",
+          "longName" : "Upper River"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "W" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western",
+          "longName" : "Western"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "The Gambia",
+      "longName" : "Republic of the Gambia",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Gambia",
+      "longName" : "Republik Gambia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "The Gambia",
+      "longName" : "Republic of the Gambia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Gambia",
+      "longName" : "República de Gambia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Gambie",
+      "longName" : "République de Gambie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Gambia",
+      "longName" : "Repubblica del Gambia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "감비아",
+      "longName" : "Republic of the Gambia",
+      "postalCode" : ""
+    }
+  }
 }

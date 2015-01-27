@@ -1,29 +1,55 @@
 {
-	"countryCode": "VG",
-	"defaultLocale": {
-		"href": "/v1/locales/en_VG",
-		"id": "en_VG"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_VG",
-		"id": "en_VG"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Virgin Islands",
-			"longName": "British Virgin Islands",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "VG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_VG",
+    "id" : "en_VG"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_VG",
+    "id" : "en_VG"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Virgin Islands",
+      "longName" : "British Virgin Islands",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Jungferninseln",
+      "longName" : "Britische Jungferninseln",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Virgin Islands",
+      "longName" : "British Virgin Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Vírgenes",
+      "longName" : "Islas Vírgenes Británicas",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles Vierges",
+      "longName" : "Îles vierges britanniques",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole Vergini",
+      "longName" : "Isole Vergini britanniche",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "Virgin Islands",
+      "longName" : "영국령 버진 제도",
+      "postalCode" : ""
+    }
+  }
 }

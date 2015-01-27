@@ -1,280 +1,322 @@
 {
-	"countryCode": "IT",
-	"defaultLocale": {
-		"href": "/v1/locales/it_IT",
-		"id": "it_IT"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"21": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Piemonte",
-					"longName": "Piemonte"
-				},
-				"en_US": {
-					"shortName": "Piedmont ",
-					"longName": "Piedmont "
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"en_US": {
-					"shortName": "Valled'Aosta, Valléed'Aoste ",
-					"longName": "Valled'Aosta, Valléed'Aoste "
-				},
-				"it_IT": {
-					"shortName": "Valled'Aosta,Valléed'Aoste",
-					"longName": "Valled'Aosta,Valléed'Aoste"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lombardy ",
-					"longName": "Lombardy "
-				},
-				"it_IT": {
-					"shortName": "Lombardia",
-					"longName": "Lombardia"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Trentino-AltoAdige,Trentino-Südtirol",
-					"longName": "Trentino-AltoAdige,Trentino-Südtirol"
-				},
-				"en_US": {
-					"shortName": "AltoAdige Trentino, Trentino-Alto Adige ",
-					"longName": "AltoAdige Trentino, Trentino-Alto Adige "
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Veneto",
-					"longName": "Veneto"
-				},
-				"en_US": {
-					"shortName": "Veneto",
-					"longName": "Veneto"
-				}
-			}
-		},
-		"36": {
-			"locales": {
-				"en_US": {
-					"shortName": "Friuli-VeneziaGiulia ",
-					"longName": "Friuli-VeneziaGiulia "
-				},
-				"it_IT": {
-					"shortName": "Friuli-VeneziaGiulia",
-					"longName": "Friuli-VeneziaGiulia"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Liguria",
-					"longName": "Liguria"
-				},
-				"en_US": {
-					"shortName": "Liguria ",
-					"longName": "Liguria "
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Emilia-Romagna",
-					"longName": "Emilia-Romagna"
-				},
-				"en_US": {
-					"shortName": "Emilia-Romagna ",
-					"longName": "Emilia-Romagna "
-				}
-			}
-		},
-		"52": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Toscana",
-					"longName": "Toscana"
-				},
-				"en_US": {
-					"shortName": "Tuscany ",
-					"longName": "Tuscany "
-				}
-			}
-		},
-		"55": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Umbria",
-					"longName": "Umbria"
-				},
-				"en_US": {
-					"shortName": "Umbria ",
-					"longName": "Umbria "
-				}
-			}
-		},
-		"57": {
-			"locales": {
-				"en_US": {
-					"shortName": "brands ",
-					"longName": "brands "
-				},
-				"it_IT": {
-					"shortName": "Marche",
-					"longName": "Marche"
-				}
-			}
-		},
-		"62": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Lazio",
-					"longName": "Lazio"
-				},
-				"en_US": {
-					"shortName": "Lazio ",
-					"longName": "Lazio "
-				}
-			}
-		},
-		"65": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Abruzzo",
-					"longName": "Abruzzo"
-				},
-				"en_US": {
-					"shortName": "Abruzzo ",
-					"longName": "Abruzzo "
-				}
-			}
-		},
-		"67": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Molise",
-					"longName": "Molise"
-				},
-				"en_US": {
-					"shortName": "Molise ",
-					"longName": "Molise "
-				}
-			}
-		},
-		"72": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Campania",
-					"longName": "Campania"
-				},
-				"en_US": {
-					"shortName": "Campania ",
-					"longName": "Campania "
-				}
-			}
-		},
-		"75": {
-			"locales": {
-				"en_US": {
-					"shortName": "Puglia ",
-					"longName": "Puglia "
-				},
-				"it_IT": {
-					"shortName": "Puglia",
-					"longName": "Puglia"
-				}
-			}
-		},
-		"77": {
-			"locales": {
-				"en_US": {
-					"shortName": "Basilicata ",
-					"longName": "Basilicata "
-				},
-				"it_IT": {
-					"shortName": "Basilicata",
-					"longName": "Basilicata"
-				}
-			}
-		},
-		"78": {
-			"locales": {
-				"en_US": {
-					"shortName": "Calabria ",
-					"longName": "Calabria "
-				},
-				"it_IT": {
-					"shortName": "Calabria",
-					"longName": "Calabria"
-				}
-			}
-		},
-		"82": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sicily ",
-					"longName": "Sicily "
-				},
-				"it_IT": {
-					"shortName": "Sicilia",
-					"longName": "Sicilia"
-				}
-			}
-		},
-		"88": {
-			"locales": {
-				"it_IT": {
-					"shortName": "Sardegna",
-					"longName": "Sardegna"
-				},
-				"en_US": {
-					"shortName": "Sardinia ",
-					"longName": "Sardinia "
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/it_IT",
-		"id": "it_IT"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Italy",
-			"longName": "Italian Republic",
-			"postalCode": "Postal Code"
-		},
-		"it_IT": {
-			"shortName": "Italia",
-			"longName": "Repubblica italiana",
-			"postalCode": "Codice Postale"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "IT",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/it_IT",
+    "id" : "it_IT"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "21" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Piemonte",
+          "longName" : "Piemonte"
+        },
+        "en_US" : {
+          "shortName" : "Piedmont ",
+          "longName" : "Piedmont "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Valled'Aosta, Valléed'Aoste ",
+          "longName" : "Valled'Aosta, Valléed'Aoste "
+        },
+        "it_IT" : {
+          "shortName" : "Valled'Aosta,Valléed'Aoste",
+          "longName" : "Valled'Aosta,Valléed'Aoste"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lombardy ",
+          "longName" : "Lombardy "
+        },
+        "it_IT" : {
+          "shortName" : "Lombardia",
+          "longName" : "Lombardia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Trentino-AltoAdige,Trentino-Südtirol",
+          "longName" : "Trentino-AltoAdige,Trentino-Südtirol"
+        },
+        "en_US" : {
+          "shortName" : "AltoAdige Trentino, Trentino-Alto Adige ",
+          "longName" : "AltoAdige Trentino, Trentino-Alto Adige "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Veneto",
+          "longName" : "Veneto"
+        },
+        "en_US" : {
+          "shortName" : "Veneto",
+          "longName" : "Veneto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "36" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Friuli-VeneziaGiulia ",
+          "longName" : "Friuli-VeneziaGiulia "
+        },
+        "it_IT" : {
+          "shortName" : "Friuli-VeneziaGiulia",
+          "longName" : "Friuli-VeneziaGiulia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Liguria",
+          "longName" : "Liguria"
+        },
+        "en_US" : {
+          "shortName" : "Liguria ",
+          "longName" : "Liguria "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Emilia-Romagna",
+          "longName" : "Emilia-Romagna"
+        },
+        "en_US" : {
+          "shortName" : "Emilia-Romagna ",
+          "longName" : "Emilia-Romagna "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "52" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Toscana",
+          "longName" : "Toscana"
+        },
+        "en_US" : {
+          "shortName" : "Tuscany ",
+          "longName" : "Tuscany "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "55" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Umbria",
+          "longName" : "Umbria"
+        },
+        "en_US" : {
+          "shortName" : "Umbria ",
+          "longName" : "Umbria "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "57" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "brands ",
+          "longName" : "brands "
+        },
+        "it_IT" : {
+          "shortName" : "Marche",
+          "longName" : "Marche"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "62" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Lazio",
+          "longName" : "Lazio"
+        },
+        "en_US" : {
+          "shortName" : "Lazio ",
+          "longName" : "Lazio "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "65" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Abruzzo",
+          "longName" : "Abruzzo"
+        },
+        "en_US" : {
+          "shortName" : "Abruzzo ",
+          "longName" : "Abruzzo "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "67" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Molise",
+          "longName" : "Molise"
+        },
+        "en_US" : {
+          "shortName" : "Molise ",
+          "longName" : "Molise "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "72" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Campania",
+          "longName" : "Campania"
+        },
+        "en_US" : {
+          "shortName" : "Campania ",
+          "longName" : "Campania "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "75" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Puglia ",
+          "longName" : "Puglia "
+        },
+        "it_IT" : {
+          "shortName" : "Puglia",
+          "longName" : "Puglia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "77" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Basilicata ",
+          "longName" : "Basilicata "
+        },
+        "it_IT" : {
+          "shortName" : "Basilicata",
+          "longName" : "Basilicata"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "78" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Calabria ",
+          "longName" : "Calabria "
+        },
+        "it_IT" : {
+          "shortName" : "Calabria",
+          "longName" : "Calabria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "82" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sicily ",
+          "longName" : "Sicily "
+        },
+        "it_IT" : {
+          "shortName" : "Sicilia",
+          "longName" : "Sicilia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "88" : {
+      "locales" : {
+        "it_IT" : {
+          "shortName" : "Sardegna",
+          "longName" : "Sardegna"
+        },
+        "en_US" : {
+          "shortName" : "Sardinia ",
+          "longName" : "Sardinia "
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/it_IT",
+    "id" : "it_IT"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Italy",
+      "longName" : "Italian Republic",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Italia",
+      "longName" : "Repubblica italiana",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Italien",
+      "longName" : "Italian Republic",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Italy",
+      "longName" : "Italian Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Italia",
+      "longName" : "República Italiana",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Italie",
+      "longName" : "République italienne",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "이탈리아",
+      "longName" : "Italian Republic",
+      "postalCode" : ""
+    }
+  }
 }

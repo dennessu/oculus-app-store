@@ -1,38 +1,58 @@
 {
-	"countryCode": "RE",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_FR",
-		"id": "fr_FR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_FR",
-		"id": "fr_FR"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Réunion",
-			"longName": "Réunion",
-			"postalCode": "Postal Code"
-		},
-		"fr_FR": {
-			"shortName": "La Réunion",
-			"longName": "La Réunion",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "RE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_FR",
+    "id" : "fr_FR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_FR",
+    "id" : "fr_FR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Réunion",
+      "longName" : "Réunion",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "La Réunion",
+      "longName" : "La Réunion",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Réunion",
+      "longName" : "Réunion",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Réunion",
+      "longName" : "Réunion",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Reunión",
+      "longName" : "Reunión",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole Réunion",
+      "longName" : "Isole Réunion",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "레위니옹",
+      "longName" : "레위니옹",
+      "postalCode" : ""
+    }
+  }
 }

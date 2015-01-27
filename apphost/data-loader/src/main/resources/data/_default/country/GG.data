@@ -1,38 +1,63 @@
 {
-	"countryCode": "GG",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GBP",
-		"id": "GBP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	{
-		"href": "/v1/locales/fr_GG",
-		"id": "fr_GG"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Guernsey",
-			"longName": "Bailiwick of Guernsey",
-			"postalCode": "Postal Code"
-		},
-		"fr_GG": {
-			"shortName": "Guernesey",
-			"longName": "Bailliage de Guernesey",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GBP",
+    "id" : "GBP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/fr_GG",
+    "id" : "fr_GG"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Guernsey",
+      "longName" : "Bailiwick of Guernsey",
+      "postalCode" : ""
+    },
+    "fr_GG" : {
+      "shortName" : "Guernesey",
+      "longName" : "Bailliage de Guernesey",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Guernsey",
+      "longName" : "Vogtei Guernsey",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Guernsey",
+      "longName" : "Bailiwick of Guernsey",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Guernesey",
+      "longName" : "Bailía de Guernesey",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Guernesey",
+      "longName" : "Bailliage de Guernesey",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Guernsey",
+      "longName" : "Baliato di Guernsey",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "건지",
+      "longName" : "Bailiwick of Guernsey",
+      "postalCode" : ""
+    }
+  }
 }

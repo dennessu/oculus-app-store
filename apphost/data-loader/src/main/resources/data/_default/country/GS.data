@@ -1,29 +1,55 @@
 {
-	"countryCode": "GS",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GBP",
-		"id": "GBP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "South Georgia and the South Sandwich Islands",
-			"longName": "South Georgia and the South Sandwich Islands",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GS",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GBP",
+    "id" : "GBP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "South Georgia and the South Sandwich Islands",
+      "longName" : "South Georgia and the South Sandwich Islands",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Südgeorgien und die Südlichen Sandwichinseln",
+      "longName" : "Südgeorgien und die Südlichen Sandwichinseln",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "South Georgia and the South Sandwich Islands",
+      "longName" : "South Georgia and the South Sandwich Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Georgia del Sur y Sandwich del Sur",
+      "longName" : "Georgia del Sur e Islas Sandwich del Sur",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Géorgie du Sud et Îles Sandwich du Sud",
+      "longName" : "Géorgie du Sud et Îles Sandwich du Sud",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Georgia del Sud e isole Sandwich meridionali",
+      "longName" : "Georgia del Sud e isole Sandwich meridionali",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "사우스조지아 사우스샌드위치 제도",
+      "longName" : "사우스조지아 사우스샌드위치 제도",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,232 +1,275 @@
 {
-	"countryCode": "MY",
-	"defaultLocale": {
-		"href": "/v1/locales/en_SG",
-		"id": "en_SG"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MYR",
-		"id": "MYR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/MDA",
-		"id": "MDA"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Johor state",
-					"longName": "Johor state"
-				},
-                "en_US": {
-					"shortName": "Johor state",
-					"longName": "Johor state"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Kedah state",
-					"longName": "Kedah state"
-				},
-				"en_US": {
-					"shortName": "Kedah state",
-					"longName": "Kedah state"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Kelantan state",
-					"longName": "Kelantan state"
-				},
-				"en_US": {
-					"shortName": "Kelantan state",
-					"longName": "Kelantan state"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Melaka state",
-					"longName": "Melaka state"
-				},
-				"en_US": {
-					"shortName": "Melaka state",
-					"longName": "Melaka state"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Negeri Sembilan state",
-					"longName": "Negeri Sembilan state"
-				},
-				"en_US": {
-					"shortName": "Negeri Sembilan state",
-					"longName": "Negeri Sembilan state"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Pahang state",
-					"longName": "Pahang state"
-				},
-				"en_US": {
-					"shortName": "Pahang state",
-					"longName": "Pahang state"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Pulau Pinang state",
-					"longName": "Pulau Pinang state"
-				},
-                "en_US": {
-					"shortName": "Pulau Pinang state",
-					"longName": "Pulau Pinang state"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Perak state",
-					"longName": "Perak state"
-				},
-				"en_US": {
-					"shortName": "Perak state",
-					"longName": "Perak state"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Perlis state",
-					"longName": "Perlis state"
-				},
-				"en_US": {
-					"shortName": "Perlis state",
-					"longName": "Perlis state"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Selangor state",
-					"longName": "Selangor state"
-				},
-				"en_US": {
-					"shortName": "Selangor state",
-					"longName": "Selangor state"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Terengganu state",
-					"longName": "Terengganu state"
-				},
-				"en_US": {
-					"shortName": "Terengganu state",
-					"longName": "Terengganu state"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Sabah state",
-					"longName": "Sabah state"
-				},
-				"en_US": {
-					"shortName": "Sabah state",
-					"longName": "Sabah state"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Sarawak state",
-					"longName": "Sarawak state"
-				},
-				"en_US": {
-					"shortName": "Sarawak state",
-					"longName": "Sarawak state"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Wilayah Persekutuan Kuala Lumpur federal territory",
-					"longName": "Wilayah Persekutuan Kuala Lumpur federal territory"
-				},
-				"en_US": {
-					"shortName": "Wilayah Persekutuan Kuala Lumpur federal territory",
-					"longName": "Wilayah Persekutuan Kuala Lumpur federal territory"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Wilayah Persekutuan Labuan federal territory",
-					"longName": "Wilayah Persekutuan Labuan federal territory"
-				},
-				"en_US": {
-					"shortName": "Wilayah Persekutuan Labuan federal territory",
-					"longName": "Wilayah Persekutuan Labuan federal territory"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Wilayah Persekutuan Putrajaya federal territory",
-					"longName": "Wilayah Persekutuan Putrajaya federal territory"
-				},
-                "en_US": {
-					"shortName": "Wilayah Persekutuan Putrajaya federal territory",
-					"longName": "Wilayah Persekutuan Putrajaya federal territory"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_SG",
-		"id": "en_SG"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Malaysia",
-			"longName": "Malaysia",
-			"postalCode": "Postal Code"
-		},
-		"en_SG": {
-			"shortName": "Malaysia",
-			"longName": "Malaysia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MY",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_SG",
+    "id" : "en_SG"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MYR",
+    "id" : "MYR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/MDA",
+    "id" : "MDA"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Johor state",
+          "longName" : "Johor state"
+        },
+        "en_US" : {
+          "shortName" : "Johor state",
+          "longName" : "Johor state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Kedah state",
+          "longName" : "Kedah state"
+        },
+        "en_US" : {
+          "shortName" : "Kedah state",
+          "longName" : "Kedah state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Kelantan state",
+          "longName" : "Kelantan state"
+        },
+        "en_US" : {
+          "shortName" : "Kelantan state",
+          "longName" : "Kelantan state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Melaka state",
+          "longName" : "Melaka state"
+        },
+        "en_US" : {
+          "shortName" : "Melaka state",
+          "longName" : "Melaka state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Negeri Sembilan state",
+          "longName" : "Negeri Sembilan state"
+        },
+        "en_US" : {
+          "shortName" : "Negeri Sembilan state",
+          "longName" : "Negeri Sembilan state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Pahang state",
+          "longName" : "Pahang state"
+        },
+        "en_US" : {
+          "shortName" : "Pahang state",
+          "longName" : "Pahang state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Pulau Pinang state",
+          "longName" : "Pulau Pinang state"
+        },
+        "en_US" : {
+          "shortName" : "Pulau Pinang state",
+          "longName" : "Pulau Pinang state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Perak state",
+          "longName" : "Perak state"
+        },
+        "en_US" : {
+          "shortName" : "Perak state",
+          "longName" : "Perak state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Perlis state",
+          "longName" : "Perlis state"
+        },
+        "en_US" : {
+          "shortName" : "Perlis state",
+          "longName" : "Perlis state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Selangor state",
+          "longName" : "Selangor state"
+        },
+        "en_US" : {
+          "shortName" : "Selangor state",
+          "longName" : "Selangor state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Terengganu state",
+          "longName" : "Terengganu state"
+        },
+        "en_US" : {
+          "shortName" : "Terengganu state",
+          "longName" : "Terengganu state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Sabah state",
+          "longName" : "Sabah state"
+        },
+        "en_US" : {
+          "shortName" : "Sabah state",
+          "longName" : "Sabah state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Sarawak state",
+          "longName" : "Sarawak state"
+        },
+        "en_US" : {
+          "shortName" : "Sarawak state",
+          "longName" : "Sarawak state"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Wilayah Persekutuan Kuala Lumpur federal territory",
+          "longName" : "Wilayah Persekutuan Kuala Lumpur federal territory"
+        },
+        "en_US" : {
+          "shortName" : "Wilayah Persekutuan Kuala Lumpur federal territory",
+          "longName" : "Wilayah Persekutuan Kuala Lumpur federal territory"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Wilayah Persekutuan Labuan federal territory",
+          "longName" : "Wilayah Persekutuan Labuan federal territory"
+        },
+        "en_US" : {
+          "shortName" : "Wilayah Persekutuan Labuan federal territory",
+          "longName" : "Wilayah Persekutuan Labuan federal territory"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Wilayah Persekutuan Putrajaya federal territory",
+          "longName" : "Wilayah Persekutuan Putrajaya federal territory"
+        },
+        "en_US" : {
+          "shortName" : "Wilayah Persekutuan Putrajaya federal territory",
+          "longName" : "Wilayah Persekutuan Putrajaya federal territory"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_SG",
+    "id" : "en_SG"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Malaysia",
+      "longName" : "Malaysia",
+      "postalCode" : ""
+    },
+    "en_SG" : {
+      "shortName" : "Malaysia",
+      "longName" : "Malaysia",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Malaysia",
+      "longName" : "Malaysia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Malaysia",
+      "longName" : "Malaysia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Malasia",
+      "longName" : "Malasia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Malaisie",
+      "longName" : "Malaisie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Malesia",
+      "longName" : "Malesia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "말레이시아",
+      "longName" : "말레이시아",
+      "postalCode" : ""
+    }
+  }
 }

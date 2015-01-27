@@ -1,183 +1,230 @@
 {
-	"countryCode": "CI",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XOF",
-		"id": "XOF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lagunes",
-					"longName": "Lagunes"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Haut-Sassandra",
-					"longName": "Haut-Sassandra"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Savanes",
-					"longName": "Savanes"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vallée du Bandama",
-					"longName": "Vallée du Bandama"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moyen-Comoé",
-					"longName": "Moyen-Comoé"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "18 Montagnes",
-					"longName": "18 Montagnes"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lacs",
-					"longName": "Lacs"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zanzan",
-					"longName": "Zanzan"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bas-Sassandra",
-					"longName": "Bas-Sassandra"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Denguélé",
-					"longName": "Denguélé"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nzi-Comoé",
-					"longName": "Nzi-Comoé"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Marahoué",
-					"longName": "Marahoué"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sud-Comoé",
-					"longName": "Sud-Comoé"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Worodougou",
-					"longName": "Worodougou"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sud-Bandama",
-					"longName": "Sud-Bandama"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Agnébi",
-					"longName": "Agnébi"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bafing",
-					"longName": "Bafing"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Fromager",
-					"longName": "Fromager"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moyen-Cavally",
-					"longName": "Moyen-Cavally"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Ivory Coast (Cote D'Ivoire)",
-			"longName": "Republic of Ivory Coast",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CI",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XOF",
+    "id" : "XOF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lagunes",
+          "longName" : "Lagunes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Haut-Sassandra",
+          "longName" : "Haut-Sassandra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Savanes",
+          "longName" : "Savanes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vallée du Bandama",
+          "longName" : "Vallée du Bandama"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moyen-Comoé",
+          "longName" : "Moyen-Comoé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "18 Montagnes",
+          "longName" : "18 Montagnes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lacs",
+          "longName" : "Lacs"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zanzan",
+          "longName" : "Zanzan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bas-Sassandra",
+          "longName" : "Bas-Sassandra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Denguélé",
+          "longName" : "Denguélé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nzi-Comoé",
+          "longName" : "Nzi-Comoé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Marahoué",
+          "longName" : "Marahoué"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sud-Comoé",
+          "longName" : "Sud-Comoé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Worodougou",
+          "longName" : "Worodougou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sud-Bandama",
+          "longName" : "Sud-Bandama"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Agnébi",
+          "longName" : "Agnébi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bafing",
+          "longName" : "Bafing"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Fromager",
+          "longName" : "Fromager"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moyen-Cavally",
+          "longName" : "Moyen-Cavally"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Ivory Coast (Cote D'Ivoire)",
+      "longName" : "Republic of Ivory Coast",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Ivory Coast (Cote D'Ivoire)",
+      "longName" : "Republic of Ivory Coast",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Ivory Coast (Cote D'Ivoire)",
+      "longName" : "Republic of Ivory Coast",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Costa de Marfil",
+      "longName" : "República de Costa de Marfil",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Côte d’Ivoire",
+      "longName" : "République de la Côte d’Ivoire",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Costa d'Avorio (Cote D'Ivoire)",
+      "longName" : "Repubblica della Costa d'Avorio",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "Ivory Coast (Cote D'Ivoire)",
+      "longName" : "Republic of Ivory Coast",
+      "postalCode" : ""
+    }
+  }
 }

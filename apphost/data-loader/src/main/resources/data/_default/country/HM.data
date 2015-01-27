@@ -1,29 +1,55 @@
 {
-	"countryCode": "HM",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AUD",
-		"id": "AUD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Heard Island and McDonald Islands",
-			"longName": "Heard Island and McDonald Islands",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "HM",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AUD",
+    "id" : "AUD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Heard Island and McDonald Islands",
+      "longName" : "Heard Island and McDonald Islands",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Heard Island und McDonald Islands",
+      "longName" : "Heard Island und McDonald Islands",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Heard Island and McDonald Islands",
+      "longName" : "Heard Island and McDonald Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Heard y McDonald",
+      "longName" : "Territorio de las Islas Heard y McDonald",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Île Heard et îles McDonald",
+      "longName" : "Île Heard et îles McDonald",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isola Heard e McDonald",
+      "longName" : "Isole Heard e McDonald",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "허드 섬 및 맥도널드 제도",
+      "longName" : "허드 섬 및 맥도널드 제도",
+      "postalCode" : ""
+    }
+  }
 }

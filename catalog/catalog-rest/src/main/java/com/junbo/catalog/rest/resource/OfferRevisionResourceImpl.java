@@ -159,6 +159,9 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
             }});
         }
 
+        if (isAdmin()) {
+            return Promise.pure(revision);
+        }
         boolean isDeveloper = isDeveloper();
         if (!Status.APPROVED.is(revision.getStatus()) && !Status.OBSOLETE.is(revision.getStatus()) && !isDeveloper) {
             throw AppCommonErrors.INSTANCE.resourceNotFound("offer-revision", revisionId).exception();

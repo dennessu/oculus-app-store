@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.UserAttribute;
 import com.junbo.identity.spec.v1.option.list.UserAttributeListOptions;
 import com.junbo.identity.spec.v1.option.model.UserAttributeGetOptions;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -43,11 +44,13 @@ public interface UserAttributeResource {
     @ApiOperation("Get an user attribute")
     @GET
     @Path("/{userAttributeId}")
+    @AuthorizationNotRequired
     Promise<UserAttribute> get(
             @PathParam("userAttributeId") UserAttributeId userAttributeId, @BeanParam UserAttributeGetOptions getOptions);
 
     @ApiOperation("Search user attribute info")
     @GET
+    @AuthorizationNotRequired
     Promise<Results<UserAttribute>> list(@BeanParam UserAttributeListOptions listOptions);
 
     @ApiOperation("Delete user attribute info")

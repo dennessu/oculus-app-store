@@ -1,300 +1,362 @@
 {
-	"countryCode": "AF",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AFN",
-		"id": "AFN"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"BAL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Balkh",
-					"longName": "Balkh"
-				}
-			}
-		},
-		"BAM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bāmyān",
-					"longName": "Bāmyān"
-				}
-			}
-		},
-		"BDG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bādghīs",
-					"longName": "Bādghīs"
-				}
-			}
-		},
-		"BDS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Badakhshān",
-					"longName": "Badakhshān"
-				}
-			}
-		},
-		"BGL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Baghlān",
-					"longName": "Baghlān"
-				}
-			}
-		},
-		"DAY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dāykundī",
-					"longName": "Dāykundī"
-				}
-			}
-		},
-		"FRA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Farāh",
-					"longName": "Farāh"
-				}
-			}
-		},
-		"FYB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Fāryāb",
-					"longName": "Fāryāb"
-				}
-			}
-		},
-		"GHA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ghaznī",
-					"longName": "Ghaznī"
-				}
-			}
-		},
-		"GHO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ghōr",
-					"longName": "Ghōr"
-				}
-			}
-		},
-		"HEL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Helmand",
-					"longName": "Helmand"
-				}
-			}
-		},
-		"HER": {
-			"locales": {
-				"en_US": {
-					"shortName": "Herāt",
-					"longName": "Herāt"
-				}
-			}
-		},
-		"JOW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jowzjān",
-					"longName": "Jowzjān"
-				}
-			}
-		},
-		"KAB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kābul",
-					"longName": "Kābul"
-				}
-			}
-		},
-		"KAN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kandahār",
-					"longName": "Kandahār"
-				}
-			}
-		},
-		"KAP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kāpīsā",
-					"longName": "Kāpīsā"
-				}
-			}
-		},
-		"KDZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kunduz",
-					"longName": "Kunduz"
-				}
-			}
-		},
-		"KHO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khōst",
-					"longName": "Khōst"
-				}
-			}
-		},
-		"KNR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kunar",
-					"longName": "Kunar"
-				}
-			}
-		},
-		"LAG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Laghmān",
-					"longName": "Laghmān"
-				}
-			}
-		},
-		"LOG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lōgar",
-					"longName": "Lōgar"
-				}
-			}
-		},
-		"NAN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nangarhār",
-					"longName": "Nangarhār"
-				}
-			}
-		},
-		"NIM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nīmrōz",
-					"longName": "Nīmrōz"
-				}
-			}
-		},
-		"NUR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nūristān",
-					"longName": "Nūristān"
-				}
-			}
-		},
-		"PAN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Panjshayr",
-					"longName": "Panjshayr"
-				}
-			}
-		},
-		"PAR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Parwān",
-					"longName": "Parwān"
-				}
-			}
-		},
-		"PIA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Paktiyā",
-					"longName": "Paktiyā"
-				}
-			}
-		},
-		"PKA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Paktīkā",
-					"longName": "Paktīkā"
-				}
-			}
-		},
-		"SAM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Samangān",
-					"longName": "Samangān"
-				}
-			}
-		},
-		"SAR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sar-e Pul",
-					"longName": "Sar-e Pul"
-				}
-			}
-		},
-		"TAK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Takhār",
-					"longName": "Takhār"
-				}
-			}
-		},
-		"URU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Uruzgān",
-					"longName": "Uruzgān"
-				}
-			}
-		},
-		"WAR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Wardak",
-					"longName": "Wardak"
-				}
-			}
-		},
-		"ZAB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zābul",
-					"longName": "Zābul"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Afghanistan",
-			"longName": "Islamic Republic of Afghanistan",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AF",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AFN",
+    "id" : "AFN"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "BAL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Balkh",
+          "longName" : "Balkh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BAM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bāmyān",
+          "longName" : "Bāmyān"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BDG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bādghīs",
+          "longName" : "Bādghīs"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BDS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Badakhshān",
+          "longName" : "Badakhshān"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BGL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Baghlān",
+          "longName" : "Baghlān"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DAY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dāykundī",
+          "longName" : "Dāykundī"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FRA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Farāh",
+          "longName" : "Farāh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FYB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Fāryāb",
+          "longName" : "Fāryāb"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GHA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ghaznī",
+          "longName" : "Ghaznī"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GHO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ghōr",
+          "longName" : "Ghōr"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HEL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Helmand",
+          "longName" : "Helmand"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HER" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Herāt",
+          "longName" : "Herāt"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JOW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jowzjān",
+          "longName" : "Jowzjān"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KAB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kābul",
+          "longName" : "Kābul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KAN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kandahār",
+          "longName" : "Kandahār"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KAP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kāpīsā",
+          "longName" : "Kāpīsā"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KDZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kunduz",
+          "longName" : "Kunduz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KHO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khōst",
+          "longName" : "Khōst"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KNR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kunar",
+          "longName" : "Kunar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LAG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Laghmān",
+          "longName" : "Laghmān"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LOG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lōgar",
+          "longName" : "Lōgar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NAN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nangarhār",
+          "longName" : "Nangarhār"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NIM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nīmrōz",
+          "longName" : "Nīmrōz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NUR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nūristān",
+          "longName" : "Nūristān"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PAN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Panjshayr",
+          "longName" : "Panjshayr"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PAR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Parwān",
+          "longName" : "Parwān"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PIA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Paktiyā",
+          "longName" : "Paktiyā"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PKA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Paktīkā",
+          "longName" : "Paktīkā"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Samangān",
+          "longName" : "Samangān"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sar-e Pul",
+          "longName" : "Sar-e Pul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Takhār",
+          "longName" : "Takhār"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "URU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Uruzgān",
+          "longName" : "Uruzgān"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WAR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Wardak",
+          "longName" : "Wardak"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZAB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zābul",
+          "longName" : "Zābul"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Afghanistan",
+      "longName" : "Islamic Republic of Afghanistan",
+      "postalCode" : "ZIP Code"
+    },
+    "de_DE" : {
+      "shortName" : "Afghanistan",
+      "longName" : "Islamische Republik Afghanistan",
+      "postalCode" : "Postleitzahl"
+    },
+    "en_GB" : {
+      "shortName" : "Afghanistan",
+      "longName" : "Islamic Republic of Afghanistan",
+      "postalCode" : "Postcode"
+    },
+    "es_ES" : {
+      "shortName" : "Afganistán",
+      "longName" : "República Islámica de Afganistán",
+      "postalCode" : "Código postal"
+    },
+    "fr_FR" : {
+      "shortName" : "Afghanistan",
+      "longName" : "République islamique d’Afghanistan",
+      "postalCode" : "Code postal"
+    },
+    "it_IT" : {
+      "shortName" : "Afghanistan",
+      "longName" : "Repubblica Islamica dell'Afghanistan",
+      "postalCode" : "CAP"
+    },
+    "ko_KR" : {
+      "shortName" : "아프가니스탄",
+      "longName" : "Islamic Republic of Afghanistan",
+      "postalCode" : "우편번호"
+    }
+  }
 }

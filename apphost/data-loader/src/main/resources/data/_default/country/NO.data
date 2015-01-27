@@ -1,292 +1,340 @@
 {
-	"countryCode": "NO",
-	"defaultLocale": {
-		"href": "/v1/locales/no_NO",
-		"id": "no_NO"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/NOK",
-		"id": "NOK"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"no_NO": {
-					"shortName": "Østfold",
-					"longName": "Østfold"
-				},
-				"en_US": {
-					"shortName": "Østfold",
-					"longName": "Østfold"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Akershus",
-					"longName": "Akershus"
-				},
-				"no_NO": {
-					"shortName": "Akershus",
-					"longName": "Akershus"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"no_NO": {
-					"shortName": "Oslo",
-					"longName": "Oslo"
-				},
-				"en_US": {
-					"shortName": "Oslo",
-					"longName": "Oslo"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hedmark",
-					"longName": "Hedmark"
-				},
-				"no_NO": {
-					"shortName": "Hedmark",
-					"longName": "Hedmark"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"no_NO": {
-					"shortName": "Oppland",
-					"longName": "Oppland"
-				},
-				"en_US": {
-					"shortName": "Oppland",
-					"longName": "Oppland"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Buskerud",
-					"longName": "Buskerud"
-				},
-				"no_NO": {
-					"shortName": "Buskerud",
-					"longName": "Buskerud"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"no_NO": {
-					"shortName": "Vestfold",
-					"longName": "Vestfold"
-				},
-				"en_US": {
-					"shortName": "Vestfold",
-					"longName": "Vestfold"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Telemark",
-					"longName": "Telemark"
-				},
-				"no_NO": {
-					"shortName": "Telemark",
-					"longName": "Telemark"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aust-Agder",
-					"longName": "Aust-Agder"
-				},
-				"no_NO": {
-					"shortName": "Aust-Agder",
-					"longName": "Aust-Agder"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vest-Agder",
-					"longName": "Vest-Agder"
-				},
-				"no_NO": {
-					"shortName": "Vest-Agder",
-					"longName": "Vest-Agder"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rogaland",
-					"longName": "Rogaland"
-				},
-				"no_NO": {
-					"shortName": "Rogaland",
-					"longName": "Rogaland"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"no_NO": {
-					"shortName": "Hordaland",
-					"longName": "Hordaland"
-				},
-				"en_US": {
-					"shortName": "Hordaland",
-					"longName": "Hordaland"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sogn og Fjordane",
-					"longName": "Sogn og Fjordane"
-				},
-				"no_NO": {
-					"shortName": "Sogn og Fjordane",
-					"longName": "Sogn og Fjordane"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"no_NO": {
-					"shortName": "Møre og Romsdal",
-					"longName": "Møre og Romsdal"
-				},
-				"en_US": {
-					"shortName": "Møre og Romsdal",
-					"longName": "Møre og Romsdal"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"no_NO": {
-					"shortName": "Sør-Trøndelag",
-					"longName": "Sør-Trøndelag"
-				},
-				"en_US": {
-					"shortName": "Sør-Trøndelag",
-					"longName": "Sør-Trøndelag"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nord-Trøndelag",
-					"longName": "Nord-Trøndelag"
-				},
-				"no_NO": {
-					"shortName": "Nord-Trøndelag",
-					"longName": "Nord-Trøndelag"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nordland",
-					"longName": "Nordland"
-				},
-				"no_NO": {
-					"shortName": "Nordland",
-					"longName": "Nordland"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"en_US": {
-					"shortName": "Troms",
-					"longName": "Troms"
-				},
-				"no_NO": {
-					"shortName": "Troms",
-					"longName": "Troms"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Finnmark",
-					"longName": "Finnmark"
-				},
-				"no_NO": {
-					"shortName": "Finnmark",
-					"longName": "Finnmark"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"en_US": {
-					"shortName": "Svalbard",
-					"longName": "Svalbard"
-				},
-				"no_NO": {
-					"shortName": "Svalbard",
-					"longName": "Svalbard"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"no_NO": {
-					"shortName": "Jan Mayen",
-					"longName": "Jan Mayen"
-				},
-				"en_US": {
-					"shortName": "Jan Mayen",
-					"longName": "Jan Mayen"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/no_NO",
-		"id": "no_NO"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Norway",
-			"longName": "Kingdom of Norway",
-			"postalCode": "Postal Code"
-		},
-		"no_NO": {
-			"shortName": "Norge",
-			"longName": "Kongeriket Norge",
-			"postalCode": "Postnummer"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/no_NO",
+    "id" : "no_NO"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/NOK",
+    "id" : "NOK"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "no_NO" : {
+          "shortName" : "Østfold",
+          "longName" : "Østfold"
+        },
+        "en_US" : {
+          "shortName" : "Østfold",
+          "longName" : "Østfold"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Akershus",
+          "longName" : "Akershus"
+        },
+        "no_NO" : {
+          "shortName" : "Akershus",
+          "longName" : "Akershus"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "no_NO" : {
+          "shortName" : "Oslo",
+          "longName" : "Oslo"
+        },
+        "en_US" : {
+          "shortName" : "Oslo",
+          "longName" : "Oslo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hedmark",
+          "longName" : "Hedmark"
+        },
+        "no_NO" : {
+          "shortName" : "Hedmark",
+          "longName" : "Hedmark"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "no_NO" : {
+          "shortName" : "Oppland",
+          "longName" : "Oppland"
+        },
+        "en_US" : {
+          "shortName" : "Oppland",
+          "longName" : "Oppland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Buskerud",
+          "longName" : "Buskerud"
+        },
+        "no_NO" : {
+          "shortName" : "Buskerud",
+          "longName" : "Buskerud"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "no_NO" : {
+          "shortName" : "Vestfold",
+          "longName" : "Vestfold"
+        },
+        "en_US" : {
+          "shortName" : "Vestfold",
+          "longName" : "Vestfold"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Telemark",
+          "longName" : "Telemark"
+        },
+        "no_NO" : {
+          "shortName" : "Telemark",
+          "longName" : "Telemark"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aust-Agder",
+          "longName" : "Aust-Agder"
+        },
+        "no_NO" : {
+          "shortName" : "Aust-Agder",
+          "longName" : "Aust-Agder"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vest-Agder",
+          "longName" : "Vest-Agder"
+        },
+        "no_NO" : {
+          "shortName" : "Vest-Agder",
+          "longName" : "Vest-Agder"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rogaland",
+          "longName" : "Rogaland"
+        },
+        "no_NO" : {
+          "shortName" : "Rogaland",
+          "longName" : "Rogaland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "no_NO" : {
+          "shortName" : "Hordaland",
+          "longName" : "Hordaland"
+        },
+        "en_US" : {
+          "shortName" : "Hordaland",
+          "longName" : "Hordaland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sogn og Fjordane",
+          "longName" : "Sogn og Fjordane"
+        },
+        "no_NO" : {
+          "shortName" : "Sogn og Fjordane",
+          "longName" : "Sogn og Fjordane"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "no_NO" : {
+          "shortName" : "Møre og Romsdal",
+          "longName" : "Møre og Romsdal"
+        },
+        "en_US" : {
+          "shortName" : "Møre og Romsdal",
+          "longName" : "Møre og Romsdal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "no_NO" : {
+          "shortName" : "Sør-Trøndelag",
+          "longName" : "Sør-Trøndelag"
+        },
+        "en_US" : {
+          "shortName" : "Sør-Trøndelag",
+          "longName" : "Sør-Trøndelag"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nord-Trøndelag",
+          "longName" : "Nord-Trøndelag"
+        },
+        "no_NO" : {
+          "shortName" : "Nord-Trøndelag",
+          "longName" : "Nord-Trøndelag"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nordland",
+          "longName" : "Nordland"
+        },
+        "no_NO" : {
+          "shortName" : "Nordland",
+          "longName" : "Nordland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Troms",
+          "longName" : "Troms"
+        },
+        "no_NO" : {
+          "shortName" : "Troms",
+          "longName" : "Troms"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Finnmark",
+          "longName" : "Finnmark"
+        },
+        "no_NO" : {
+          "shortName" : "Finnmark",
+          "longName" : "Finnmark"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Svalbard",
+          "longName" : "Svalbard"
+        },
+        "no_NO" : {
+          "shortName" : "Svalbard",
+          "longName" : "Svalbard"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "no_NO" : {
+          "shortName" : "Jan Mayen",
+          "longName" : "Jan Mayen"
+        },
+        "en_US" : {
+          "shortName" : "Jan Mayen",
+          "longName" : "Jan Mayen"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/no_NO",
+    "id" : "no_NO"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Norway",
+      "longName" : "Kingdom of Norway",
+      "postalCode" : ""
+    },
+    "no_NO" : {
+      "shortName" : "Norge",
+      "longName" : "Kongeriket Norge",
+      "postalCode" : "Postnummer"
+    },
+    "de_DE" : {
+      "shortName" : "Norwegen",
+      "longName" : "Kingdom of Norway",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Norway",
+      "longName" : "Kingdom of Norway",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Noruega",
+      "longName" : "Reino de Noruega",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Norvège",
+      "longName" : "Royaume de Norvège",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Norvegia",
+      "longName" : "Regno di Norvegia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "노르웨이",
+      "longName" : "Kingdom of Norway",
+      "postalCode" : ""
+    }
+  }
 }

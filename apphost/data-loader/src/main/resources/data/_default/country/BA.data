@@ -1,193 +1,233 @@
 {
-	"countryCode": "BA",
-	"defaultLocale": {
-		"href": "/v1/locales/sr_BA",
-		"id": "sr_BA"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BAM",
-		"id": "BAM"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"sr_BA": {
-					"shortName": "Unsko-sanski kanton",
-					"longName": "Unsko-sanski kanton"
-				},
-				"en_US": {
-					"shortName": "Una-Sana Canton",
-					"longName": "Una-Sana Canton"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Posavina Canton",
-					"longName": "Posavina Canton"
-				},
-				"sr_BA": {
-					"shortName": "Posavski kanton",
-					"longName": "Posavski kanton"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tuzla Canton",
-					"longName": "Tuzla Canton"
-				},
-				"sr_BA": {
-					"shortName": "Tuzlanski kanton",
-					"longName": "Tuzlanski kanton"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"sr_BA": {
-					"shortName": "Zeničko-dobojski kanton",
-					"longName": "Zeničko-dobojski kanton"
-				},
-				"en_US": {
-					"shortName": "Zenica-Doboj Canton",
-					"longName": "Zenica-Doboj Canton"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"sr_BA": {
-					"shortName": "Bosansko-podrinjski kanton Goražde",
-					"longName": "Bosansko-podrinjski kanton Goražde"
-				},
-				"en_US": {
-					"shortName": "Bosnia-Podrinje Canton Goražde",
-					"longName": "Bosnia-Podrinje Canton Goražde"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"sr_BA": {
-					"shortName": "Srednjobosanski kanton",
-					"longName": "Srednjobosanski kanton"
-				},
-				"en_US": {
-					"shortName": "Central Bosnia Canton",
-					"longName": "Central Bosnia Canton"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"sr_BA": {
-					"shortName": "Hercegovačko-neretvanski kanton",
-					"longName": "Hercegovačko-neretvanski kanton"
-				},
-				"en_US": {
-					"shortName": "Herzegovina-Neretva Canton",
-					"longName": "Herzegovina-Neretva Canton"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"sr_BA": {
-					"shortName": "Zapadnohercegovački kanton",
-					"longName": "Zapadnohercegovački kanton"
-				},
-				"en_US": {
-					"shortName": "West Herzegovina Canton",
-					"longName": "West Herzegovina Canton"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"sr_BA": {
-					"shortName": "Kanton Sarajevo",
-					"longName": "Kanton Sarajevo"
-				},
-				"en_US": {
-					"shortName": "Sarajevo Canton",
-					"longName": "Sarajevo Canton"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Canton 10",
-					"longName": "Canton 10"
-				},
-				"sr_BA": {
-					"shortName": "Kanton 10",
-					"longName": "Kanton 10"
-				}
-			}
-		},
-		"BIH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Federation of Bosnia and Herzegovina",
-					"longName": "Federation of Bosnia and Herzegovina"
-				},
-				"sr_BA": {
-					"shortName": "Federacija Bosne i Hercegovine",
-					"longName": "Federacija Bosne i Hercegovine"
-				}
-			}
-		},
-		"BRC": {
-			"locales": {
-				"sr_BA": {
-					"shortName": "Brčko Distrikt",
-					"longName": "Brčko Distrikt"
-				},
-				"en_US": {
-					"shortName": "Brčko District",
-					"longName": "Brčko District"
-				}
-			}
-		},
-		"SRP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Republika Srpska",
-					"longName": "Republika Srpska"
-				},
-				"sr_BA": {
-					"shortName": "Republika Srpska",
-					"longName": "Republika Srpska"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-        "href": "/v1/locales/sr_BA",
-        "id": "sr_BA"
+  "futureExpansion" : { },
+  "countryCode" : "BA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/sr_BA",
+    "id" : "sr_BA"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BAM",
+    "id" : "BAM"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "sr_BA" : {
+          "shortName" : "Unsko-sanski kanton",
+          "longName" : "Unsko-sanski kanton"
+        },
+        "en_US" : {
+          "shortName" : "Una-Sana Canton",
+          "longName" : "Una-Sana Canton"
+        }
+      },
+      "localeAccuracy" : null
     },
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Bosnia",
-			"longName": "Bosnia and Herzegovina",
-			"postalCode": "Postal Code"
-		},
-		"sr_BA": {
-			"shortName": "Bosna",
-			"longName": "Bosna i Hercegovina",
-			"postalCode": "Поштански број"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Posavina Canton",
+          "longName" : "Posavina Canton"
+        },
+        "sr_BA" : {
+          "shortName" : "Posavski kanton",
+          "longName" : "Posavski kanton"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tuzla Canton",
+          "longName" : "Tuzla Canton"
+        },
+        "sr_BA" : {
+          "shortName" : "Tuzlanski kanton",
+          "longName" : "Tuzlanski kanton"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "sr_BA" : {
+          "shortName" : "Zeničko-dobojski kanton",
+          "longName" : "Zeničko-dobojski kanton"
+        },
+        "en_US" : {
+          "shortName" : "Zenica-Doboj Canton",
+          "longName" : "Zenica-Doboj Canton"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "sr_BA" : {
+          "shortName" : "Bosansko-podrinjski kanton Goražde",
+          "longName" : "Bosansko-podrinjski kanton Goražde"
+        },
+        "en_US" : {
+          "shortName" : "Bosnia-Podrinje Canton Goražde",
+          "longName" : "Bosnia-Podrinje Canton Goražde"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "sr_BA" : {
+          "shortName" : "Srednjobosanski kanton",
+          "longName" : "Srednjobosanski kanton"
+        },
+        "en_US" : {
+          "shortName" : "Central Bosnia Canton",
+          "longName" : "Central Bosnia Canton"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "sr_BA" : {
+          "shortName" : "Hercegovačko-neretvanski kanton",
+          "longName" : "Hercegovačko-neretvanski kanton"
+        },
+        "en_US" : {
+          "shortName" : "Herzegovina-Neretva Canton",
+          "longName" : "Herzegovina-Neretva Canton"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "sr_BA" : {
+          "shortName" : "Zapadnohercegovački kanton",
+          "longName" : "Zapadnohercegovački kanton"
+        },
+        "en_US" : {
+          "shortName" : "West Herzegovina Canton",
+          "longName" : "West Herzegovina Canton"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "sr_BA" : {
+          "shortName" : "Kanton Sarajevo",
+          "longName" : "Kanton Sarajevo"
+        },
+        "en_US" : {
+          "shortName" : "Sarajevo Canton",
+          "longName" : "Sarajevo Canton"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Canton 10",
+          "longName" : "Canton 10"
+        },
+        "sr_BA" : {
+          "shortName" : "Kanton 10",
+          "longName" : "Kanton 10"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BIH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Federation of Bosnia and Herzegovina",
+          "longName" : "Federation of Bosnia and Herzegovina"
+        },
+        "sr_BA" : {
+          "shortName" : "Federacija Bosne i Hercegovine",
+          "longName" : "Federacija Bosne i Hercegovine"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BRC" : {
+      "locales" : {
+        "sr_BA" : {
+          "shortName" : "Brčko Distrikt",
+          "longName" : "Brčko Distrikt"
+        },
+        "en_US" : {
+          "shortName" : "Brčko District",
+          "longName" : "Brčko District"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SRP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Republika Srpska",
+          "longName" : "Republika Srpska"
+        },
+        "sr_BA" : {
+          "shortName" : "Republika Srpska",
+          "longName" : "Republika Srpska"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/sr_BA",
+    "id" : "sr_BA"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Bosnia",
+      "longName" : "Bosnia and Herzegovina",
+      "postalCode" : ""
+    },
+    "sr_BA" : {
+      "shortName" : "Bosna",
+      "longName" : "Bosna i Hercegovina",
+      "postalCode" : "Поштански број"
+    },
+    "de_DE" : {
+      "shortName" : "Bosnien",
+      "longName" : "Bosnien und Herzegowina",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Bosnia",
+      "longName" : "Bosnia and Herzegovina",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Bosnia y Herzegovina",
+      "longName" : "Bosnia y Herzegovina",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Bosnie",
+      "longName" : "Bosnie-Herzégovine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Bosnia",
+      "longName" : "Bosnia ed Erzegovina",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "Bosnia",
+      "longName" : "보스니아 헤르체고비나",
+      "postalCode" : ""
+    }
+  }
 }

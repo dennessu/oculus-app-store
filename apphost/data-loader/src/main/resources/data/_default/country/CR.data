@@ -1,121 +1,155 @@
 {
-	"countryCode": "CR",
-	"defaultLocale": {
-		"href": "/v1/locales/es_CR",
-		"id": "es_CR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/CRC",
-		"id": "CRC"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"A": {
-			"locales": {
-				"es_CR": {
-					"shortName": "Alajuela",
-					"longName": "Alajuela"
-				},
-				"en_US": {
-					"shortName": "Alajuela",
-					"longName": "Alajuela"
-				}
-			}
-		},
-		"C": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cartago",
-					"longName": "Cartago"
-				},
-				"es_CR": {
-					"shortName": "Cartago",
-					"longName": "Cartago"
-				}
-			}
-		},
-		"G": {
-			"locales": {
-				"es_CR": {
-					"shortName": "Guanacaste",
-					"longName": "Guanacaste"
-				},
-				"en_US": {
-					"shortName": "Guanacaste",
-					"longName": "Guanacaste"
-				}
-			}
-		},
-		"H": {
-			"locales": {
-				"en_US": {
-					"shortName": "Heredia",
-					"longName": "Heredia"
-				},
-				"es_CR": {
-					"shortName": "Heredia",
-					"longName": "Heredia"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"en_US": {
-					"shortName": "Limón",
-					"longName": "Limón"
-				},
-				"es_CR": {
-					"shortName": "Limón",
-					"longName": "Limón"
-				}
-			}
-		},
-		"P": {
-			"locales": {
-				"en_US": {
-					"shortName": "Puntarenas",
-					"longName": "Puntarenas"
-				},
-				"es_CR": {
-					"shortName": "Puntarenas",
-					"longName": "Puntarenas"
-				}
-			}
-		},
-		"SJ": {
-			"locales": {
-				"es_CR": {
-					"shortName": "San José",
-					"longName": "San José"
-				},
-				"en_US": {
-					"shortName": "San José",
-					"longName": "San José"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_CR",
-		"id": "es_CR"
-	},
-    {
-         "href": "/v1/locales/en_US",
-         "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Costa Rica",
-			"longName": "Republic of Costa Rica",
-			"postalCode": "Postal Code"
-		},
-		"es_CR": {
-			"shortName": "Costa Rica",
-			"longName": "República de Costa Rica",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_CR",
+    "id" : "es_CR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/CRC",
+    "id" : "CRC"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "A" : {
+      "locales" : {
+        "es_CR" : {
+          "shortName" : "Alajuela",
+          "longName" : "Alajuela"
+        },
+        "en_US" : {
+          "shortName" : "Alajuela",
+          "longName" : "Alajuela"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "C" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cartago",
+          "longName" : "Cartago"
+        },
+        "es_CR" : {
+          "shortName" : "Cartago",
+          "longName" : "Cartago"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "G" : {
+      "locales" : {
+        "es_CR" : {
+          "shortName" : "Guanacaste",
+          "longName" : "Guanacaste"
+        },
+        "en_US" : {
+          "shortName" : "Guanacaste",
+          "longName" : "Guanacaste"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "H" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Heredia",
+          "longName" : "Heredia"
+        },
+        "es_CR" : {
+          "shortName" : "Heredia",
+          "longName" : "Heredia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Limón",
+          "longName" : "Limón"
+        },
+        "es_CR" : {
+          "shortName" : "Limón",
+          "longName" : "Limón"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "P" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Puntarenas",
+          "longName" : "Puntarenas"
+        },
+        "es_CR" : {
+          "shortName" : "Puntarenas",
+          "longName" : "Puntarenas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SJ" : {
+      "locales" : {
+        "es_CR" : {
+          "shortName" : "San José",
+          "longName" : "San José"
+        },
+        "en_US" : {
+          "shortName" : "San José",
+          "longName" : "San José"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_CR",
+    "id" : "es_CR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Costa Rica",
+      "longName" : "Republic of Costa Rica",
+      "postalCode" : ""
+    },
+    "es_CR" : {
+      "shortName" : "Costa Rica",
+      "longName" : "República de Costa Rica",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Costa Rica",
+      "longName" : "Republik Costa Rica",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Costa Rica",
+      "longName" : "Republic of Costa Rica",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Costa Rica",
+      "longName" : "República de Costa Rica",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Costa Rica",
+      "longName" : "République de Costa Rica",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Costa Rica",
+      "longName" : "Repubblica di Costa Rica",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "코스타리카",
+      "longName" : "Republic of Costa Rica",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,37 +1,58 @@
 {
-	"countryCode": "GF",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_FR",
-		"id": "fr_FR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_FR",
-		"id": "fr_FR"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "French Guiana",
-			"longName": "French Guiana",
-			"postalCode": "Postal Code"
-		},
-		"fr_FR": {
-			"shortName": "Guyane française",
-			"longName": "Guyane française",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GF",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_FR",
+    "id" : "fr_FR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_FR",
+    "id" : "fr_FR"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "French Guiana",
+      "longName" : "French Guiana",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Guyane française",
+      "longName" : "Guyane française",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Französisch-Guayana",
+      "longName" : "Französisch-Guayana",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "French Guiana",
+      "longName" : "French Guiana",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Guayana Francesa",
+      "longName" : "Guayana Francesa",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Guyana Francese",
+      "longName" : "Guyana Francese",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "프랑스령 기아나",
+      "longName" : "프랑스령 기아나",
+      "postalCode" : ""
+    }
+  }
 }

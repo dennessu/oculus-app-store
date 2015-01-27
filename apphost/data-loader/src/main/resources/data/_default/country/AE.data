@@ -1,121 +1,155 @@
 {
-	"countryCode": "AE",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_AE",
-		"id": "ar_AE"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AED",
-		"id": "AED"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "AJ",
-					"longName": "Ajman"
-				},
-				"ar_AE": {
-					"shortName": "إمارة عجمانّ",
-					"longName": "إمارة عجمانّ"
-				}
-			}
-		},
-		"AZ": {
-			"locales": {
-				"ar_AE": {
-					"shortName": "أبوظبي",
-					"longName": "أبوظبي"
-				},
-				"en_US": {
-					"shortName": "AZ",
-					"longName": "Abu Dhabi"
-				}
-			}
-		},
-		"DU": {
-			"locales": {
-				"ar_AE": {
-					"shortName": "دبي",
-					"longName": "دبي"
-				},
-				"en_US": {
-					"shortName": "DU",
-					"longName": "Dubai"
-				}
-			}
-		},
-		"FU": {
-			"locales": {
-				"en_US": {
-					"shortName": "FU",
-					"longName": "Al Fujairah"
-				},
-				"ar_AE": {
-					"shortName": "الفجيرة",
-					"longName": "الفجيرة"
-				}
-			}
-		},
-		"RK": {
-			"locales": {
-				"en_US": {
-					"shortName": "RK",
-					"longName": "Ras al-Khaimah"
-				},
-				"ar_AE": {
-					"shortName": "إمارة رأس الخيمة",
-					"longName": "إمارة رأس الخيمة"
-				}
-			}
-		},
-		"SH": {
-			"locales": {
-				"en_US": {
-					"shortName": "SH",
-					"longName": "Sharjah"
-				},
-				"ar_AE": {
-					"shortName": "إمارة الشارقةّ",
-					"longName": "إمارة الشارقةّ"
-				}
-			}
-		},
-		"UQ": {
-			"locales": {
-				"ar_AE": {
-					"shortName": "إمارة أمّ القيوين",
-					"longName": "إمارة أمّ القيوين"
-				},
-				"en_US": {
-					"shortName": "UQ",
-					"longName": "Umm al-Quwain"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_AE",
-		"id": "ar_AE"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "UAE",
-			"longName": "United Arab Emirates",
-			"postalCode": "Postal Code"
-		},
-		"ar_AE": {
-			"shortName": "دولة الإمارات العربية المتحدة",
-			"longName": "دولة الإمارات العربية المتحدة",
-            "postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "AE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_AE",
+    "id" : "ar_AE"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AED",
+    "id" : "AED"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "AJ",
+          "longName" : "Ajman"
+        },
+        "ar_AE" : {
+          "shortName" : "إمارة عجمانّ",
+          "longName" : "إمارة عجمانّ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AZ" : {
+      "locales" : {
+        "ar_AE" : {
+          "shortName" : "أبوظبي",
+          "longName" : "أبوظبي"
+        },
+        "en_US" : {
+          "shortName" : "AZ",
+          "longName" : "Abu Dhabi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DU" : {
+      "locales" : {
+        "ar_AE" : {
+          "shortName" : "دبي",
+          "longName" : "دبي"
+        },
+        "en_US" : {
+          "shortName" : "DU",
+          "longName" : "Dubai"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "FU",
+          "longName" : "Al Fujairah"
+        },
+        "ar_AE" : {
+          "shortName" : "الفجيرة",
+          "longName" : "الفجيرة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "RK",
+          "longName" : "Ras al-Khaimah"
+        },
+        "ar_AE" : {
+          "shortName" : "إمارة رأس الخيمة",
+          "longName" : "إمارة رأس الخيمة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SH",
+          "longName" : "Sharjah"
+        },
+        "ar_AE" : {
+          "shortName" : "إمارة الشارقةّ",
+          "longName" : "إمارة الشارقةّ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UQ" : {
+      "locales" : {
+        "ar_AE" : {
+          "shortName" : "إمارة أمّ القيوين",
+          "longName" : "إمارة أمّ القيوين"
+        },
+        "en_US" : {
+          "shortName" : "UQ",
+          "longName" : "Umm al-Quwain"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_AE",
+    "id" : "ar_AE"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "UAE",
+      "longName" : "United Arab Emirates",
+      "postalCode" : "Postal Code"
+    },
+    "ar_AE" : {
+      "shortName" : "دولة الإمارات العربية المتحدة",
+      "longName" : "دولة الإمارات العربية المتحدة",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "VAE",
+      "longName" : "Vereinigte Arabische Emirate",
+      "postalCode" : "Postleitzahl"
+    },
+    "en_GB" : {
+      "shortName" : "UAE",
+      "longName" : "United Arab Emirates",
+      "postalCode" : "Postcode"
+    },
+    "es_ES" : {
+      "shortName" : "Emiratos Árabes Unidos",
+      "longName" : "Emiratos Árabes Unidos",
+      "postalCode" : "Código postal"
+    },
+    "fr_FR" : {
+      "shortName" : "EAU",
+      "longName" : "Émirats arabes unis",
+      "postalCode" : "Code postal"
+    },
+    "it_IT" : {
+      "shortName" : "EAU",
+      "longName" : "Emirati Arabi Uniti",
+      "postalCode" : "Codice postale"
+    },
+    "ko_KR" : {
+      "shortName" : "UAE",
+      "longName" : "아랍에미리트",
+      "postalCode" : "우편번호"
+    }
+  }
 }

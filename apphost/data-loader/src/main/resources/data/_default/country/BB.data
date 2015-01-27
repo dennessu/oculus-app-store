@@ -1,116 +1,155 @@
 {
-	"countryCode": "BB",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BBD",
-		"id": "BBD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Christ Church",
-					"longName": "Christ Church"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Andrew",
-					"longName": "Saint Andrew"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint George",
-					"longName": "Saint George"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint James",
-					"longName": "Saint James"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint James",
-					"longName": "Saint James"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Joseph",
-					"longName": "Saint Joseph"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Lucy",
-					"longName": "Saint Lucy"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Michael",
-					"longName": "Saint Michael"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Peter",
-					"longName": "Saint Peter"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Philip",
-					"longName": "Saint Philip"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Thomas",
-					"longName": "Saint Thomas"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Barbados",
-			"longName": "Barbados",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BB",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BBD",
+    "id" : "BBD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Christ Church",
+          "longName" : "Christ Church"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Andrew",
+          "longName" : "Saint Andrew"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint George",
+          "longName" : "Saint George"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint James",
+          "longName" : "Saint James"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint James",
+          "longName" : "Saint James"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Joseph",
+          "longName" : "Saint Joseph"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Lucy",
+          "longName" : "Saint Lucy"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Michael",
+          "longName" : "Saint Michael"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Peter",
+          "longName" : "Saint Peter"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Philip",
+          "longName" : "Saint Philip"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Thomas",
+          "longName" : "Saint Thomas"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Barbados",
+      "longName" : "Barbados",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Barbados",
+      "longName" : "Barbados",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Barbados",
+      "longName" : "Barbados",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Barbados",
+      "longName" : "Barbados",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Barbade",
+      "longName" : "Barbade",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Barbados",
+      "longName" : "Barbados",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "바베이도스",
+      "longName" : "바베이도스",
+      "postalCode" : ""
+    }
+  }
 }

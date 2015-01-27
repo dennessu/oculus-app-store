@@ -1,124 +1,158 @@
 {
-	"countryCode": "BY",
-	"defaultLocale": {
-		"href": "/v1/locales/be_BY",
-		"id": "be_BY"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BYR",
-		"id": "BYR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/RGRS",
-		"id": "RGRS"
-	}],
-	"subCountries": {
-		"BR": {
-			"locales": {
-				"be_BY": {
-					"shortName": "Брэ́сцкая во́бласць",
-					"longName": "Брэ́сцкая во́бласць"
-				},
-				"en_US": {
-					"shortName": "Brest Region",
-					"longName": "Brest Region"
-				}
-			}
-		},
-		"HM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Minsk",
-					"longName": "Minsk"
-				},
-				"be_BY": {
-					"shortName": "Мінск",
-					"longName": "Мінск"
-				}
-			}
-		},
-		"HO": {
-			"locales": {
-				"be_BY": {
-					"shortName": "Гомельская вобласць",
-					"longName": "Гомельская вобласць"
-				},
-				"en_US": {
-					"shortName": "Gomel Region",
-					"longName": "Gomel Region"
-				}
-			}
-		},
-		"HR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Grodno Region",
-					"longName": "Grodno Region"
-				},
-				"be_BY": {
-					"shortName": "Гродзенская вобласць",
-					"longName": "Гродзенская вобласць"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mogilev Region",
-					"longName": "Mogilev Region"
-				},
-				"be_BY": {
-					"shortName": "Магілёўская вобласць",
-					"longName": "Магілёўская вобласць"
-				}
-			}
-		},
-		"MI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Minsk Region",
-					"longName": "Minsk Region"
-				},
-				"be_BY": {
-					"shortName": "Мінская вобласць",
-					"longName": "Мінская вобласць"
-				}
-			}
-		},
-		"VI": {
-			"locales": {
-				"be_BY": {
-					"shortName": "Віцебская вобласць",
-					"longName": "Віцебская вобласць"
-				},
-				"en_US": {
-					"shortName": "Vitebsk Region",
-					"longName": "Vitebsk Region"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/be_BY",
-		"id": "be_BY"
-	},
-    {
-         "href": "/v1/locales/en_US",
-         "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Belarus",
-			"longName": "Republic of Belarus",
-			"postalCode": "Postal Code"
-		},
-		"be_BY": {
-			"shortName": "Белару́сь",
-			"longName": "Рэспубліка Беларусь",
-			"postalCode": "паштовы індэкс"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BY",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/be_BY",
+    "id" : "be_BY"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BYR",
+    "id" : "BYR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/RGRS",
+    "id" : "RGRS"
+  } ],
+  "subCountries" : {
+    "BR" : {
+      "locales" : {
+        "be_BY" : {
+          "shortName" : "Брэ́сцкая во́бласць",
+          "longName" : "Брэ́сцкая во́бласць"
+        },
+        "en_US" : {
+          "shortName" : "Brest Region",
+          "longName" : "Brest Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Minsk",
+          "longName" : "Minsk"
+        },
+        "be_BY" : {
+          "shortName" : "Мінск",
+          "longName" : "Мінск"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HO" : {
+      "locales" : {
+        "be_BY" : {
+          "shortName" : "Гомельская вобласць",
+          "longName" : "Гомельская вобласць"
+        },
+        "en_US" : {
+          "shortName" : "Gomel Region",
+          "longName" : "Gomel Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Grodno Region",
+          "longName" : "Grodno Region"
+        },
+        "be_BY" : {
+          "shortName" : "Гродзенская вобласць",
+          "longName" : "Гродзенская вобласць"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mogilev Region",
+          "longName" : "Mogilev Region"
+        },
+        "be_BY" : {
+          "shortName" : "Магілёўская вобласць",
+          "longName" : "Магілёўская вобласць"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Minsk Region",
+          "longName" : "Minsk Region"
+        },
+        "be_BY" : {
+          "shortName" : "Мінская вобласць",
+          "longName" : "Мінская вобласць"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VI" : {
+      "locales" : {
+        "be_BY" : {
+          "shortName" : "Віцебская вобласць",
+          "longName" : "Віцебская вобласць"
+        },
+        "en_US" : {
+          "shortName" : "Vitebsk Region",
+          "longName" : "Vitebsk Region"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/be_BY",
+    "id" : "be_BY"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Belarus",
+      "longName" : "Republic of Belarus",
+      "postalCode" : ""
+    },
+    "be_BY" : {
+      "shortName" : "Белару́сь",
+      "longName" : "Рэспубліка Беларусь",
+      "postalCode" : "паштовы індэкс"
+    },
+    "de_DE" : {
+      "shortName" : "Weißrussland",
+      "longName" : "Republic of Belarus",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Belarus",
+      "longName" : "Republic of Belarus",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Bielorrusia",
+      "longName" : "República de Bielorrusia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Biélorussie",
+      "longName" : "République de Biélorussie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Bielorussia",
+      "longName" : "Repubblica di Bielorussia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "벨라루스",
+      "longName" : "Republic of Belarus",
+      "postalCode" : ""
+    }
+  }
 }

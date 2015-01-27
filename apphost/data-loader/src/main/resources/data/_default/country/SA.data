@@ -1,193 +1,233 @@
 {
-	"countryCode": "SA",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_SA",
-		"id": "ar_SA"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/SAR",
-		"id": "SAR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"ar_SA": {
-					"shortName": "الرياض",
-					"longName": "الرياض"
-				},
-				"en_US": {
-					"shortName": "Riyadh",
-					"longName": "Riyadh"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"ar_SA": {
-					"shortName": "مكة المكرمة",
-					"longName": "مكة المكرمة"
-				},
-				"en_US": {
-					"shortName": "Makkah",
-					"longName": "Makkah"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"ar_SA": {
-					"shortName": "المدينة المنورة",
-					"longName": "المدينة المنورة"
-				},
-				"en_US": {
-					"shortName": "Madinah",
-					"longName": "Madinah"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"ar_SA": {
-					"shortName": "الشرقية",
-					"longName": "الشرقية"
-				},
-				"en_US": {
-					"shortName": "Eastern",
-					"longName": "Eastern"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"ar_SA": {
-					"shortName": "القصيم",
-					"longName": "القصيم"
-				},
-				"en_US": {
-					"shortName": "Al-Qsim",
-					"longName": "Al-Qsim"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"ar_SA": {
-					"shortName": "حائل",
-					"longName": "حائل"
-				},
-				"en_US": {
-					"shortName": "Ha'il",
-					"longName": "Ha'il"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tabuk",
-					"longName": "Tabuk"
-				},
-				"ar_SA": {
-					"shortName": "تبوك",
-					"longName": "تبوك"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern Borders",
-					"longName": "Northern Borders"
-				},
-				"ar_SA": {
-					"shortName": "الحدود الشمالية",
-					"longName": "الحدود الشمالية"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jazan",
-					"longName": "Jazan"
-				},
-				"ar_SA": {
-					"shortName": "جازان",
-					"longName": "جازان"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Najran",
-					"longName": "Najran"
-				},
-				"ar_SA": {
-					"shortName": "نجران",
-					"longName": "نجران"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al-Bahah",
-					"longName": "Al-Bahah"
-				},
-				"ar_SA": {
-					"shortName": "الباحة",
-					"longName": "الباحة"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al-Jawf",
-					"longName": "Al-Jawf"
-				},
-				"ar_SA": {
-					"shortName": "الجوف",
-					"longName": "الجوف"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"ar_SA": {
-					"shortName": "عسير",
-					"longName": "عسير"
-				},
-				"en_US": {
-					"shortName": "Asir",
-					"longName": "Asir"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_SA",
-		"id": "ar_SA"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Saudi Arabia",
-			"longName": "Kingdom of Saudi Arabia",
-			"postalCode": "Postal Code"
-		},
-		"ar_SA": {
-			"shortName": "العربية السعودية",
-			"longName": "المملكة العربية السعودية",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_SA",
+    "id" : "ar_SA"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/SAR",
+    "id" : "SAR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "ar_SA" : {
+          "shortName" : "الرياض",
+          "longName" : "الرياض"
+        },
+        "en_US" : {
+          "shortName" : "Riyadh",
+          "longName" : "Riyadh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "ar_SA" : {
+          "shortName" : "مكة المكرمة",
+          "longName" : "مكة المكرمة"
+        },
+        "en_US" : {
+          "shortName" : "Makkah",
+          "longName" : "Makkah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "ar_SA" : {
+          "shortName" : "المدينة المنورة",
+          "longName" : "المدينة المنورة"
+        },
+        "en_US" : {
+          "shortName" : "Madinah",
+          "longName" : "Madinah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "ar_SA" : {
+          "shortName" : "الشرقية",
+          "longName" : "الشرقية"
+        },
+        "en_US" : {
+          "shortName" : "Eastern",
+          "longName" : "Eastern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "ar_SA" : {
+          "shortName" : "القصيم",
+          "longName" : "القصيم"
+        },
+        "en_US" : {
+          "shortName" : "Al-Qsim",
+          "longName" : "Al-Qsim"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "ar_SA" : {
+          "shortName" : "حائل",
+          "longName" : "حائل"
+        },
+        "en_US" : {
+          "shortName" : "Ha'il",
+          "longName" : "Ha'il"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tabuk",
+          "longName" : "Tabuk"
+        },
+        "ar_SA" : {
+          "shortName" : "تبوك",
+          "longName" : "تبوك"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern Borders",
+          "longName" : "Northern Borders"
+        },
+        "ar_SA" : {
+          "shortName" : "الحدود الشمالية",
+          "longName" : "الحدود الشمالية"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jazan",
+          "longName" : "Jazan"
+        },
+        "ar_SA" : {
+          "shortName" : "جازان",
+          "longName" : "جازان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Najran",
+          "longName" : "Najran"
+        },
+        "ar_SA" : {
+          "shortName" : "نجران",
+          "longName" : "نجران"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al-Bahah",
+          "longName" : "Al-Bahah"
+        },
+        "ar_SA" : {
+          "shortName" : "الباحة",
+          "longName" : "الباحة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al-Jawf",
+          "longName" : "Al-Jawf"
+        },
+        "ar_SA" : {
+          "shortName" : "الجوف",
+          "longName" : "الجوف"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "ar_SA" : {
+          "shortName" : "عسير",
+          "longName" : "عسير"
+        },
+        "en_US" : {
+          "shortName" : "Asir",
+          "longName" : "Asir"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_SA",
+    "id" : "ar_SA"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Saudi Arabia",
+      "longName" : "Kingdom of Saudi Arabia",
+      "postalCode" : ""
+    },
+    "ar_SA" : {
+      "shortName" : "العربية السعودية",
+      "longName" : "المملكة العربية السعودية",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Saudi Arabien",
+      "longName" : "Kingdom of Saudi Arabia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Saudi Arabia",
+      "longName" : "Kingdom of Saudi Arabia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Arabia Saudí",
+      "longName" : "Reino de Arabia Saudí",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Arabie Saoudite",
+      "longName" : "Royaume d’Arabie Saoudite",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Arabia Saudita",
+      "longName" : "Regno dell'Arabia Saudita",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "사우디아라비아",
+      "longName" : "Kingdom of Saudi Arabia",
+      "postalCode" : ""
+    }
+  }
 }

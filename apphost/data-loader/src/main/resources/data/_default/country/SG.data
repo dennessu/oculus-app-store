@@ -1,100 +1,132 @@
 {
-	"countryCode": "SG",
-	"defaultLocale": {
-		"href": "/v1/locales/en_SG",
-		"id": "en_SG"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/SGD",
-		"id": "SGD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/MDA",
-		"id": "MDA"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Central Singapore",
-					"longName": "Central Singapore"
-				},
-                "en_US": {
-					"shortName": "Central Singapore",
-					"longName": "Central Singapore"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_SG": {
-					"shortName": "North East",
-					"longName": "North East"
-				},
-				"en_US": {
-					"shortName": "North East",
-					"longName": "North East"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_SG": {
-					"shortName": "North West",
-					"longName": "North West"
-				},
-				"en_US": {
-					"shortName": "North West",
-					"longName": "North West"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_SG": {
-					"shortName": "South East",
-					"longName": "South East"
-				},
-				"en_US": {
-					"shortName": "South East",
-					"longName": "South East"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_SG": {
-					"shortName": "South West",
-					"longName": "South West"
-				},
-				"en_US": {
-					"shortName": "South West",
-					"longName": "South West"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_SG",
-		"id": "en_SG"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Singapore",
-			"longName": "Republic of Singapore",
-			"postalCode": "Postal Code"
-		},
-		"en_SG": {
-			"shortName": "Singapore",
-			"longName": "Republic of Singapore",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_SG",
+    "id" : "en_SG"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/SGD",
+    "id" : "SGD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/MDA",
+    "id" : "MDA"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Central Singapore",
+          "longName" : "Central Singapore"
+        },
+        "en_US" : {
+          "shortName" : "Central Singapore",
+          "longName" : "Central Singapore"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "North East",
+          "longName" : "North East"
+        },
+        "en_US" : {
+          "shortName" : "North East",
+          "longName" : "North East"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "North West",
+          "longName" : "North West"
+        },
+        "en_US" : {
+          "shortName" : "North West",
+          "longName" : "North West"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "South East",
+          "longName" : "South East"
+        },
+        "en_US" : {
+          "shortName" : "South East",
+          "longName" : "South East"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "South West",
+          "longName" : "South West"
+        },
+        "en_US" : {
+          "shortName" : "South West",
+          "longName" : "South West"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_SG",
+    "id" : "en_SG"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Singapore",
+      "longName" : "Republic of Singapore",
+      "postalCode" : ""
+    },
+    "en_SG" : {
+      "shortName" : "Singapore",
+      "longName" : "Republic of Singapore",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Singapur",
+      "longName" : "Republic of Singapore",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Singapore",
+      "longName" : "Republic of Singapore",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Singapur",
+      "longName" : "República de Singapur",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Singapour",
+      "longName" : "République de Singapour",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Singapore",
+      "longName" : "Repubblica di Singapore",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "싱가포르",
+      "longName" : "Republic of Singapore",
+      "postalCode" : ""
+    }
+  }
 }

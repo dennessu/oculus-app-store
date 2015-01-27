@@ -1,256 +1,301 @@
 {
-	"countryCode": "NL",
-	"defaultLocale": {
-		"href": "/v1/locales/nl_NL",
-		"id": "nl_NL"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"AW": {
-			"locales": {
-				"nl_NL": {
-					"shortName": "AW",
-					"longName": " Aruba"
-				},
-				"en_US": {
-					"shortName": "AW",
-					"longName": "Aruba "
-				}
-			}
-		},
-		"BQ1": {
-			"locales": {
-				"en_US": {
-					"shortName": "BQ1",
-					"longName": "Bonaire "
-				},
-				"nl_NL": {
-					"shortName": "BQ1",
-					"longName": " Bonaire"
-				}
-			}
-		},
-		"BQ2": {
-			"locales": {
-				"en_US": {
-					"shortName": "BQ2",
-					"longName": "Saba "
-				},
-				"nl_NL": {
-					"shortName": "BQ2",
-					"longName": " Saba"
-				}
-			}
-		},
-		"BQ3": {
-			"locales": {
-				"nl_NL": {
-					"shortName": "BQ3",
-					"longName": " Sint Eustatius"
-				},
-				"en_US": {
-					"shortName": "BQ3",
-					"longName": "Sint Eustatius"
-				}
-			}
-		},
-		"CW": {
-			"locales": {
-				"nl_NL": {
-					"shortName": "CW",
-					"longName": " Curaçao"
-				},
-				"en_US": {
-					"shortName": "CW",
-					"longName": "Curacao "
-				}
-			}
-		},
-		"DR": {
-			"locales": {
-				"nl_NL": {
-					"shortName": "DR",
-					"longName": " Drenthe"
-				},
-				"en_US": {
-					"shortName": "DR",
-					"longName": "Drenthe "
-				}
-			}
-		},
-		"FL": {
-			"locales": {
-				"nl_NL": {
-					"shortName": "FL",
-					"longName": " Flevoland"
-				},
-				"en_US": {
-					"shortName": "FL",
-					"longName": "Flevoland "
-				}
-			}
-		},
-		"FR": {
-			"locales": {
-				"en_US": {
-					"shortName": "FR",
-					"longName": "Fryslân "
-				},
-				"nl_NL": {
-					"shortName": "FR",
-					"longName": " Fryslân"
-				}
-			}
-		},
-		"GE": {
-			"locales": {
-				"nl_NL": {
-					"shortName": "GE",
-					"longName": " Gelderland"
-				},
-				"en_US": {
-					"shortName": "GE",
-					"longName": "Gelderland "
-				}
-			}
-		},
-		"GR": {
-			"locales": {
-				"nl_NL": {
-					"shortName": "GR",
-					"longName": " Groningen"
-				},
-				"en_US": {
-					"shortName": "GR",
-					"longName": "Groningen "
-				}
-			}
-		},
-		"LI": {
-			"locales": {
-				"nl_NL": {
-					"shortName": "LI",
-					"longName": " Limburg"
-				},
-				"en_US": {
-					"shortName": "LI",
-					"longName": "Limburg "
-				}
-			}
-		},
-		"NB": {
-			"locales": {
-				"nl_NL": {
-					"shortName": "NB",
-					"longName": " Noord-Brabant"
-				},
-				"en_US": {
-					"shortName": "NB",
-					"longName": "Noord-Brabant "
-				}
-			}
-		},
-		"NH": {
-			"locales": {
-				"en_US": {
-					"shortName": "NH",
-					"longName": "Noord-Holland "
-				},
-				"nl_NL": {
-					"shortName": "NH",
-					"longName": " Noord-Holland"
-				}
-			}
-		},
-		"OV": {
-			"locales": {
-				"en_US": {
-					"shortName": "OV",
-					"longName": "Overijssel "
-				},
-				"nl_NL": {
-					"shortName": "OV",
-					"longName": " Overijssel"
-				}
-			}
-		},
-		"SX": {
-			"locales": {
-				"en_US": {
-					"shortName": "SX",
-					"longName": "Sint Maarten "
-				},
-				"nl_NL": {
-					"shortName": "SX",
-					"longName": " Sint Maarten"
-				}
-			}
-		},
-		"UT": {
-			"locales": {
-				"en_US": {
-					"shortName": "UT",
-					"longName": "Utrecht "
-				},
-				"nl_NL": {
-					"shortName": "UT",
-					"longName": " Utrecht"
-				}
-			}
-		},
-		"ZE": {
-			"locales": {
-				"nl_NL": {
-					"shortName": "ZE",
-					"longName": " Zeeland"
-				},
-				"en_US": {
-					"shortName": "ZE",
-					"longName": "Zealand "
-				}
-			}
-		},
-		"ZH": {
-			"locales": {
-				"en_US": {
-					"shortName": "ZH",
-					"longName": "South Holland "
-				},
-				"nl_NL": {
-					"shortName": "ZH",
-					"longName": " Zuid-Holland"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/nl_NL",
-		"id": "nl_NL"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Netherlands",
-			"longName": "Netherlands",
-			"postalCode": "Postal Code"
-		},
-		"nl_NL": {
-			"shortName": "Nederland",
-			"longName": "Nederland",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NL",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/nl_NL",
+    "id" : "nl_NL"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "AW" : {
+      "locales" : {
+        "nl_NL" : {
+          "shortName" : "AW",
+          "longName" : " Aruba"
+        },
+        "en_US" : {
+          "shortName" : "AW",
+          "longName" : "Aruba "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BQ1" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BQ1",
+          "longName" : "Bonaire "
+        },
+        "nl_NL" : {
+          "shortName" : "BQ1",
+          "longName" : " Bonaire"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BQ2" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BQ2",
+          "longName" : "Saba "
+        },
+        "nl_NL" : {
+          "shortName" : "BQ2",
+          "longName" : " Saba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BQ3" : {
+      "locales" : {
+        "nl_NL" : {
+          "shortName" : "BQ3",
+          "longName" : " Sint Eustatius"
+        },
+        "en_US" : {
+          "shortName" : "BQ3",
+          "longName" : "Sint Eustatius"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CW" : {
+      "locales" : {
+        "nl_NL" : {
+          "shortName" : "CW",
+          "longName" : " Curaçao"
+        },
+        "en_US" : {
+          "shortName" : "CW",
+          "longName" : "Curacao "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DR" : {
+      "locales" : {
+        "nl_NL" : {
+          "shortName" : "DR",
+          "longName" : " Drenthe"
+        },
+        "en_US" : {
+          "shortName" : "DR",
+          "longName" : "Drenthe "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FL" : {
+      "locales" : {
+        "nl_NL" : {
+          "shortName" : "FL",
+          "longName" : " Flevoland"
+        },
+        "en_US" : {
+          "shortName" : "FL",
+          "longName" : "Flevoland "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "FR",
+          "longName" : "Fryslân "
+        },
+        "nl_NL" : {
+          "shortName" : "FR",
+          "longName" : " Fryslân"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GE" : {
+      "locales" : {
+        "nl_NL" : {
+          "shortName" : "GE",
+          "longName" : " Gelderland"
+        },
+        "en_US" : {
+          "shortName" : "GE",
+          "longName" : "Gelderland "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GR" : {
+      "locales" : {
+        "nl_NL" : {
+          "shortName" : "GR",
+          "longName" : " Groningen"
+        },
+        "en_US" : {
+          "shortName" : "GR",
+          "longName" : "Groningen "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LI" : {
+      "locales" : {
+        "nl_NL" : {
+          "shortName" : "LI",
+          "longName" : " Limburg"
+        },
+        "en_US" : {
+          "shortName" : "LI",
+          "longName" : "Limburg "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NB" : {
+      "locales" : {
+        "nl_NL" : {
+          "shortName" : "NB",
+          "longName" : " Noord-Brabant"
+        },
+        "en_US" : {
+          "shortName" : "NB",
+          "longName" : "Noord-Brabant "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NH",
+          "longName" : "Noord-Holland "
+        },
+        "nl_NL" : {
+          "shortName" : "NH",
+          "longName" : " Noord-Holland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "OV",
+          "longName" : "Overijssel "
+        },
+        "nl_NL" : {
+          "shortName" : "OV",
+          "longName" : " Overijssel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SX",
+          "longName" : "Sint Maarten "
+        },
+        "nl_NL" : {
+          "shortName" : "SX",
+          "longName" : " Sint Maarten"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "UT",
+          "longName" : "Utrecht "
+        },
+        "nl_NL" : {
+          "shortName" : "UT",
+          "longName" : " Utrecht"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZE" : {
+      "locales" : {
+        "nl_NL" : {
+          "shortName" : "ZE",
+          "longName" : " Zeeland"
+        },
+        "en_US" : {
+          "shortName" : "ZE",
+          "longName" : "Zealand "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ZH",
+          "longName" : "South Holland "
+        },
+        "nl_NL" : {
+          "shortName" : "ZH",
+          "longName" : " Zuid-Holland"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/nl_NL",
+    "id" : "nl_NL"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Netherlands",
+      "longName" : "Netherlands",
+      "postalCode" : ""
+    },
+    "nl_NL" : {
+      "shortName" : "Nederland",
+      "longName" : "Nederland",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Niederlande",
+      "longName" : "Niederlande",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Netherlands",
+      "longName" : "Netherlands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Países Bajos",
+      "longName" : "Países Bajos",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Pays-Bas",
+      "longName" : "Pays-Bas",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Paesi Bassi",
+      "longName" : "Paesi Bassi",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "네덜란드",
+      "longName" : "네덜란드",
+      "postalCode" : ""
+    }
+  }
 }

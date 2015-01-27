@@ -1,709 +1,820 @@
 {
-	"countryCode": "MK",
-	"defaultLocale": {
-		"href": "/v1/locales/mk_MK",
-		"id": "mk_MK"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MKD",
-		"id": "MKD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aerodrom",
-					"longName": "Aerodrom"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aračinovo",
-					"longName": "Aračinovo"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Berovo",
-					"longName": "Berovo"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bitola",
-					"longName": "Bitola"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bogdanci",
-					"longName": "Bogdanci"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bogovinje",
-					"longName": "Bogovinje"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bosilovo",
-					"longName": "Bosilovo"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Brvenica",
-					"longName": "Brvenica"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Butel",
-					"longName": "Butel"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Valandovo",
-					"longName": "Valandovo"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vasilevo",
-					"longName": "Vasilevo"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vevčani",
-					"longName": "Vevčani"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Veles",
-					"longName": "Veles"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vinica",
-					"longName": "Vinica"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vraneštica",
-					"longName": "Vraneštica"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vrapčište",
-					"longName": "Vrapčište"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gazi Baba",
-					"longName": "Gazi Baba"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gevgelija",
-					"longName": "Gevgelija"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gostivar",
-					"longName": "Gostivar"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gradsko",
-					"longName": "Gradsko"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"en_US": {
-					"shortName": "Debar",
-					"longName": "Debar"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "Debarca",
-					"longName": "Debarca"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"en_US": {
-					"shortName": "Delčevo",
-					"longName": "Delčevo"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"en_US": {
-					"shortName": "Demir Kapija",
-					"longName": "Demir Kapija"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"en_US": {
-					"shortName": "Demir Hisar",
-					"longName": "Demir Hisar"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dojran",
-					"longName": "Dojran"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dolneni",
-					"longName": "Dolneni"
-				}
-			}
-		},
-		"28": {
-			"locales": {
-				"en_US": {
-					"shortName": "Drugovo",
-					"longName": "Drugovo"
-				}
-			}
-		},
-		"29": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gjorče Petrov",
-					"longName": "Gjorče Petrov"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"en_US": {
-					"shortName": "Želino",
-					"longName": "Želino"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zajas",
-					"longName": "Zajas"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zelenikovo",
-					"longName": "Zelenikovo"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zrnovci",
-					"longName": "Zrnovci"
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ilinden",
-					"longName": "Ilinden"
-				}
-			}
-		},
-		"35": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jegunovce",
-					"longName": "Jegunovce"
-				}
-			}
-		},
-		"36": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kavadarci",
-					"longName": "Kavadarci"
-				}
-			}
-		},
-		"37": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karbinci",
-					"longName": "Karbinci"
-				}
-			}
-		},
-		"38": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karpoš",
-					"longName": "Karpoš"
-				}
-			}
-		},
-		"39": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kisela Voda",
-					"longName": "Kisela Voda"
-				}
-			}
-		},
-		"40": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kičevo",
-					"longName": "Kičevo"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"en_US": {
-					"shortName": "Konče",
-					"longName": "Konče"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kočani",
-					"longName": "Kočani"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kratovo",
-					"longName": "Kratovo"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kriva Palanka",
-					"longName": "Kriva Palanka"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"en_US": {
-					"shortName": "Krivogaštani",
-					"longName": "Krivogaštani"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kruševo",
-					"longName": "Kruševo"
-				}
-			}
-		},
-		"47": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kumanovo",
-					"longName": "Kumanovo"
-				}
-			}
-		},
-		"48": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lipkovo",
-					"longName": "Lipkovo"
-				}
-			}
-		},
-		"49": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lozovo",
-					"longName": "Lozovo"
-				}
-			}
-		},
-		"50": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mavrovo i Rostuša",
-					"longName": "Mavrovo i Rostuša"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"en_US": {
-					"shortName": "Makedonska Kamenica",
-					"longName": "Makedonska Kamenica"
-				}
-			}
-		},
-		"52": {
-			"locales": {
-				"en_US": {
-					"shortName": "Makedonski Brod",
-					"longName": "Makedonski Brod"
-				}
-			}
-		},
-		"53": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mogila",
-					"longName": "Mogila"
-				}
-			}
-		},
-		"54": {
-			"locales": {
-				"en_US": {
-					"shortName": "Negotino",
-					"longName": "Negotino"
-				}
-			}
-		},
-		"55": {
-			"locales": {
-				"en_US": {
-					"shortName": "Novaci",
-					"longName": "Novaci"
-				}
-			}
-		},
-		"56": {
-			"locales": {
-				"en_US": {
-					"shortName": "Novo Selo",
-					"longName": "Novo Selo"
-				}
-			}
-		},
-		"57": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oslomej",
-					"longName": "Oslomej"
-				}
-			}
-		},
-		"58": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ohrid",
-					"longName": "Ohrid"
-				}
-			}
-		},
-		"59": {
-			"locales": {
-				"en_US": {
-					"shortName": "Petrovec",
-					"longName": "Petrovec"
-				}
-			}
-		},
-		"60": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pehčevo",
-					"longName": "Pehčevo"
-				}
-			}
-		},
-		"61": {
-			"locales": {
-				"en_US": {
-					"shortName": "Plasnica",
-					"longName": "Plasnica"
-				}
-			}
-		},
-		"62": {
-			"locales": {
-				"en_US": {
-					"shortName": "Prilep",
-					"longName": "Prilep"
-				}
-			}
-		},
-		"63": {
-			"locales": {
-				"en_US": {
-					"shortName": "Probištip",
-					"longName": "Probištip"
-				}
-			}
-		},
-		"64": {
-			"locales": {
-				"en_US": {
-					"shortName": "Radoviš",
-					"longName": "Radoviš"
-				}
-			}
-		},
-		"65": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rankovce",
-					"longName": "Rankovce"
-				}
-			}
-		},
-		"66": {
-			"locales": {
-				"en_US": {
-					"shortName": "Resen",
-					"longName": "Resen"
-				}
-			}
-		},
-		"67": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rosoman",
-					"longName": "Rosoman"
-				}
-			}
-		},
-		"68": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saraj",
-					"longName": "Saraj"
-				}
-			}
-		},
-		"69": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sveti Nikole",
-					"longName": "Sveti Nikole"
-				}
-			}
-		},
-		"70": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sopište",
-					"longName": "Sopište"
-				}
-			}
-		},
-		"71": {
-			"locales": {
-				"en_US": {
-					"shortName": "Staro Nagoričane",
-					"longName": "Staro Nagoričane"
-				}
-			}
-		},
-		"72": {
-			"locales": {
-				"en_US": {
-					"shortName": "Struga",
-					"longName": "Struga"
-				}
-			}
-		},
-		"73": {
-			"locales": {
-				"en_US": {
-					"shortName": "Strumica",
-					"longName": "Strumica"
-				}
-			}
-		},
-		"74": {
-			"locales": {
-				"en_US": {
-					"shortName": "Studeničani",
-					"longName": "Studeničani"
-				}
-			}
-		},
-		"75": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tearce",
-					"longName": "Tearce"
-				}
-			}
-		},
-		"76": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tetovo",
-					"longName": "Tetovo"
-				}
-			}
-		},
-		"77": {
-			"locales": {
-				"en_US": {
-					"shortName": "Centar",
-					"longName": "Centar"
-				}
-			}
-		},
-		"78": {
-			"locales": {
-				"en_US": {
-					"shortName": "Centar Župa",
-					"longName": "Centar Župa"
-				}
-			}
-		},
-		"79": {
-			"locales": {
-				"en_US": {
-					"shortName": "Čair",
-					"longName": "Čair"
-				}
-			}
-		},
-		"80": {
-			"locales": {
-				"en_US": {
-					"shortName": "Čaška",
-					"longName": "Čaška"
-				}
-			}
-		},
-		"81": {
-			"locales": {
-				"en_US": {
-					"shortName": "Češinovo-Obleševo",
-					"longName": "Češinovo-Obleševo"
-				}
-			}
-		},
-		"82": {
-			"locales": {
-				"en_US": {
-					"shortName": "Čučer Sandevo",
-					"longName": "Čučer Sandevo"
-				}
-			}
-		},
-		"83": {
-			"locales": {
-				"en_US": {
-					"shortName": "Štip",
-					"longName": "Štip"
-				}
-			}
-		},
-		"84": {
-			"locales": {
-				"en_US": {
-					"shortName": "Šuto Orizari",
-					"longName": "Šuto Orizari"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/mk_MK",
-		"id": "mk_MK"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Macedonia",
-			"longName": "Republic of Macedonia",
-			"postalCode": "Postal Code"
-		},
-		"mk_MK": {
-			"shortName": "Македонија",
-			"longName": "Република Македонија",
-			"postalCode": "поштенски број"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MK",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/mk_MK",
+    "id" : "mk_MK"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MKD",
+    "id" : "MKD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aerodrom",
+          "longName" : "Aerodrom"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aračinovo",
+          "longName" : "Aračinovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Berovo",
+          "longName" : "Berovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bitola",
+          "longName" : "Bitola"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bogdanci",
+          "longName" : "Bogdanci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bogovinje",
+          "longName" : "Bogovinje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bosilovo",
+          "longName" : "Bosilovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Brvenica",
+          "longName" : "Brvenica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Butel",
+          "longName" : "Butel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Valandovo",
+          "longName" : "Valandovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vasilevo",
+          "longName" : "Vasilevo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vevčani",
+          "longName" : "Vevčani"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Veles",
+          "longName" : "Veles"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vinica",
+          "longName" : "Vinica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vraneštica",
+          "longName" : "Vraneštica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vrapčište",
+          "longName" : "Vrapčište"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gazi Baba",
+          "longName" : "Gazi Baba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gevgelija",
+          "longName" : "Gevgelija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gostivar",
+          "longName" : "Gostivar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gradsko",
+          "longName" : "Gradsko"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Debar",
+          "longName" : "Debar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Debarca",
+          "longName" : "Debarca"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Delčevo",
+          "longName" : "Delčevo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Demir Kapija",
+          "longName" : "Demir Kapija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Demir Hisar",
+          "longName" : "Demir Hisar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dojran",
+          "longName" : "Dojran"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dolneni",
+          "longName" : "Dolneni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "28" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Drugovo",
+          "longName" : "Drugovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "29" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gjorče Petrov",
+          "longName" : "Gjorče Petrov"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Želino",
+          "longName" : "Želino"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zajas",
+          "longName" : "Zajas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zelenikovo",
+          "longName" : "Zelenikovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zrnovci",
+          "longName" : "Zrnovci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ilinden",
+          "longName" : "Ilinden"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "35" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jegunovce",
+          "longName" : "Jegunovce"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "36" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kavadarci",
+          "longName" : "Kavadarci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "37" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karbinci",
+          "longName" : "Karbinci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "38" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karpoš",
+          "longName" : "Karpoš"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "39" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kisela Voda",
+          "longName" : "Kisela Voda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "40" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kičevo",
+          "longName" : "Kičevo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Konče",
+          "longName" : "Konče"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kočani",
+          "longName" : "Kočani"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kratovo",
+          "longName" : "Kratovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kriva Palanka",
+          "longName" : "Kriva Palanka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Krivogaštani",
+          "longName" : "Krivogaštani"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kruševo",
+          "longName" : "Kruševo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "47" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kumanovo",
+          "longName" : "Kumanovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "48" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lipkovo",
+          "longName" : "Lipkovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "49" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lozovo",
+          "longName" : "Lozovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "50" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mavrovo i Rostuša",
+          "longName" : "Mavrovo i Rostuša"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Makedonska Kamenica",
+          "longName" : "Makedonska Kamenica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "52" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Makedonski Brod",
+          "longName" : "Makedonski Brod"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "53" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mogila",
+          "longName" : "Mogila"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "54" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Negotino",
+          "longName" : "Negotino"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "55" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Novaci",
+          "longName" : "Novaci"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "56" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Novo Selo",
+          "longName" : "Novo Selo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "57" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oslomej",
+          "longName" : "Oslomej"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "58" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ohrid",
+          "longName" : "Ohrid"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "59" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Petrovec",
+          "longName" : "Petrovec"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "60" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pehčevo",
+          "longName" : "Pehčevo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "61" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Plasnica",
+          "longName" : "Plasnica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "62" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Prilep",
+          "longName" : "Prilep"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "63" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Probištip",
+          "longName" : "Probištip"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "64" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Radoviš",
+          "longName" : "Radoviš"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "65" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rankovce",
+          "longName" : "Rankovce"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "66" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Resen",
+          "longName" : "Resen"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "67" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rosoman",
+          "longName" : "Rosoman"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "68" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saraj",
+          "longName" : "Saraj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "69" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sveti Nikole",
+          "longName" : "Sveti Nikole"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "70" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sopište",
+          "longName" : "Sopište"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "71" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Staro Nagoričane",
+          "longName" : "Staro Nagoričane"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "72" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Struga",
+          "longName" : "Struga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "73" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Strumica",
+          "longName" : "Strumica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "74" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Studeničani",
+          "longName" : "Studeničani"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "75" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tearce",
+          "longName" : "Tearce"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "76" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tetovo",
+          "longName" : "Tetovo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "77" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Centar",
+          "longName" : "Centar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "78" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Centar Župa",
+          "longName" : "Centar Župa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "79" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Čair",
+          "longName" : "Čair"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "80" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Čaška",
+          "longName" : "Čaška"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "81" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Češinovo-Obleševo",
+          "longName" : "Češinovo-Obleševo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "82" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Čučer Sandevo",
+          "longName" : "Čučer Sandevo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "83" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Štip",
+          "longName" : "Štip"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "84" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Šuto Orizari",
+          "longName" : "Šuto Orizari"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/mk_MK",
+    "id" : "mk_MK"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Macedonia",
+      "longName" : "Republic of Macedonia",
+      "postalCode" : ""
+    },
+    "mk_MK" : {
+      "shortName" : "Македонија",
+      "longName" : "Република Македонија",
+      "postalCode" : "поштенски број"
+    },
+    "de_DE" : {
+      "shortName" : "Mazedonien",
+      "longName" : "Republic of Macedonia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Macedonia",
+      "longName" : "Republic of Macedonia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Macedonia",
+      "longName" : "Antigua República Yugoslava de Macedonia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Macédoine",
+      "longName" : "République de Macédoine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Macedonia",
+      "longName" : "Repubblica di Macedonia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "마케도니아",
+      "longName" : "Republic of Macedonia",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,167 +1,212 @@
 {
-	"countryCode": "BI",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BIF",
-		"id": "BIF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"BB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bubanza",
-					"longName": "Bubanza"
-				}
-			}
-		},
-		"BL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bujumbura Rural",
-					"longName": "Bujumbura Rural"
-				}
-			}
-		},
-		"BM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bujumbura Mairie",
-					"longName": "Bujumbura Mairie"
-				}
-			}
-		},
-		"BR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bururi",
-					"longName": "Bururi"
-				}
-			}
-		},
-		"CA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cankuzo",
-					"longName": "Cankuzo"
-				}
-			}
-		},
-		"CI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cibitoke",
-					"longName": "Cibitoke"
-				}
-			}
-		},
-		"GI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gitega",
-					"longName": "Gitega"
-				}
-			}
-		},
-		"KI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kirundo",
-					"longName": "Kirundo"
-				}
-			}
-		},
-		"KR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karuzi",
-					"longName": "Karuzi"
-				}
-			}
-		},
-		"KY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kayanza",
-					"longName": "Kayanza"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Makamba",
-					"longName": "Makamba"
-				}
-			}
-		},
-		"MU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Muramvya",
-					"longName": "Muramvya"
-				}
-			}
-		},
-		"MW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mwaro",
-					"longName": "Mwaro"
-				}
-			}
-		},
-		"MY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Muyinga",
-					"longName": "Muyinga"
-				}
-			}
-		},
-		"NG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ngozi",
-					"longName": "Ngozi"
-				}
-			}
-		},
-		"RT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rutana",
-					"longName": "Rutana"
-				}
-			}
-		},
-		"RY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ruyigi",
-					"longName": "Ruyigi"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Burundi",
-			"longName": "Republic of Burundi",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BI",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BIF",
+    "id" : "BIF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "BB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bubanza",
+          "longName" : "Bubanza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bujumbura Rural",
+          "longName" : "Bujumbura Rural"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bujumbura Mairie",
+          "longName" : "Bujumbura Mairie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bururi",
+          "longName" : "Bururi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cankuzo",
+          "longName" : "Cankuzo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cibitoke",
+          "longName" : "Cibitoke"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gitega",
+          "longName" : "Gitega"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kirundo",
+          "longName" : "Kirundo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karuzi",
+          "longName" : "Karuzi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kayanza",
+          "longName" : "Kayanza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Makamba",
+          "longName" : "Makamba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Muramvya",
+          "longName" : "Muramvya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mwaro",
+          "longName" : "Mwaro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Muyinga",
+          "longName" : "Muyinga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ngozi",
+          "longName" : "Ngozi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rutana",
+          "longName" : "Rutana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ruyigi",
+          "longName" : "Ruyigi"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Burundi",
+      "longName" : "Republic of Burundi",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Burundi",
+      "longName" : "Republic of Burundi",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Burundi",
+      "longName" : "Republic of Burundi",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Burundi",
+      "longName" : "República de Burundi",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Burundi",
+      "longName" : "République du Burundi",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Burundi",
+      "longName" : "Repubblica del Burundi",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "부룬디",
+      "longName" : "Republic of Burundi",
+      "postalCode" : ""
+    }
+  }
 }

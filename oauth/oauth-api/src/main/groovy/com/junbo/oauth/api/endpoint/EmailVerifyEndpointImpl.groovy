@@ -36,6 +36,7 @@ import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.model.ViewModel
 import com.junbo.oauth.spec.param.OAuthParameters
+import com.junbo.oauth.core.util.UriUtil
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
@@ -129,8 +130,8 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             parts = locale.split('-')
         }
 
-        String failedUri = this.failedRedirectUri.replaceFirst('/locale', '/' + locale)
-        String successUri = this.successRedirectUri.replaceFirst('/locale', '/' + locale)
+        String failedUri = UriUtil.replaceLocale(this.failedRedirectUri, locale);
+        String successUri = UriUtil.replaceLocale(this.successRedirectUri, locale);
 
         failedUri = failedUri.replaceFirst('/country', '/' + parts[1])
         successUri = successUri.replaceFirst('/country', '/' + parts[1])

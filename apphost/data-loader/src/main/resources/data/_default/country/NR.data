@@ -1,145 +1,187 @@
 {
-	"countryCode": "NR",
-	"defaultLocale": {
-		"href": "/v1/locales/en_NR",
-		"id": "en_NR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AUD",
-		"id": "AUD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aiwo",
-					"longName": "Aiwo"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Anabar",
-					"longName": "Anabar"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Anetan",
-					"longName": "Anetan"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Anibare",
-					"longName": "Anibare"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Baiti",
-					"longName": "Baiti"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Boe",
-					"longName": "Boe"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Buada",
-					"longName": "Buada"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Denigomodu",
-					"longName": "Denigomodu"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ewa",
-					"longName": "Ewa"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ijuw",
-					"longName": "Ijuw"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Meneng",
-					"longName": "Meneng"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nibok",
-					"longName": "Nibok"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Uaboe",
-					"longName": "Uaboe"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yaren",
-					"longName": "Yaren"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_NR",
-		"id": "en_NR"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Nauru",
-			"longName": "Republic of Nauru",
-			"postalCode": "Postal Code"
-		},
-		"na_NR": {
-			"shortName": "Naoero",
-			"longName": "Ripublik",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_NR",
+    "id" : "en_NR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AUD",
+    "id" : "AUD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aiwo",
+          "longName" : "Aiwo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Anabar",
+          "longName" : "Anabar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Anetan",
+          "longName" : "Anetan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Anibare",
+          "longName" : "Anibare"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Baiti",
+          "longName" : "Baiti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Boe",
+          "longName" : "Boe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Buada",
+          "longName" : "Buada"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Denigomodu",
+          "longName" : "Denigomodu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ewa",
+          "longName" : "Ewa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ijuw",
+          "longName" : "Ijuw"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Meneng",
+          "longName" : "Meneng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nibok",
+          "longName" : "Nibok"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Uaboe",
+          "longName" : "Uaboe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yaren",
+          "longName" : "Yaren"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_NR",
+    "id" : "en_NR"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Nauru",
+      "longName" : "Republic of Nauru",
+      "postalCode" : ""
+    },
+    "na_NR" : {
+      "shortName" : "Naoero",
+      "longName" : "Ripublik",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Nauru",
+      "longName" : "Republic of Nauru",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Nauru",
+      "longName" : "Republic of Nauru",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Nauru",
+      "longName" : "República de Nauru",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Nauru",
+      "longName" : "République de Nauru",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Nauru",
+      "longName" : "Repubblica di Nauru",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "나우루",
+      "longName" : "Republic of Nauru",
+      "postalCode" : ""
+    }
+  }
 }

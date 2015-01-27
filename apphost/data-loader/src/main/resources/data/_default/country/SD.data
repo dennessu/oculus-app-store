@@ -1,241 +1,285 @@
 {
-	"countryCode": "SD",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_SD",
-		"id": "ar_SD"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/SDG",
-		"id": "SDG"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"DC": {
-			"locales": {
-				"ar_SD": {
-					"shortName": "Zalingei",
-					"longName": "Zalingei"
-				},
-				"en_US": {
-					"shortName": "Central Darfur",
-					"longName": "Central Darfur"
-				}
-			}
-		},
-		"DE": {
-			"locales": {
-				"en_US": {
-					"shortName": "East Darfur",
-					"longName": "East Darfur"
-				},
-				"ar_SD": {
-					"shortName": "Sharq Dārfūr",
-					"longName": "Sharq Dārfūr"
-				}
-			}
-		},
-		"DN": {
-			"locales": {
-				"ar_SD": {
-					"shortName": "Shamāl Dārfūr",
-					"longName": "Shamāl Dārfūr"
-				},
-				"en_US": {
-					"shortName": "North Darfur",
-					"longName": "North Darfur"
-				}
-			}
-		},
-		"DS": {
-			"locales": {
-				"ar_SD": {
-					"shortName": "Janūb Dārfūr",
-					"longName": "Janūb Dārfūr"
-				},
-				"en_US": {
-					"shortName": "South Darfur",
-					"longName": "South Darfur"
-				}
-			}
-		},
-		"DW": {
-			"locales": {
-				"en_US": {
-					"shortName": "West Darfur",
-					"longName": "West Darfur"
-				},
-				"ar_SD": {
-					"shortName": "Gharb Dārfūr",
-					"longName": "Gharb Dārfūr"
-				}
-			}
-		},
-		"GD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gedaref",
-					"longName": "Gedaref"
-				},
-				"ar_SD": {
-					"shortName": "Al Qaḑārif",
-					"longName": "Al Qaḑārif"
-				}
-			}
-		},
-		"GZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gezira",
-					"longName": "Gezira"
-				},
-				"ar_SD": {
-					"shortName": "Al Jazīrah",
-					"longName": "Al Jazīrah"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"ar_SD": {
-					"shortName": "Kassalā",
-					"longName": "Kassalā"
-				},
-				"en_US": {
-					"shortName": "Kassala",
-					"longName": "Kassala"
-				}
-			}
-		},
-		"KH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khartoum",
-					"longName": "Khartoum"
-				},
-				"ar_SD": {
-					"shortName": "Al Kharţūm",
-					"longName": "Al Kharţūm"
-				}
-			}
-		},
-		"KN": {
-			"locales": {
-				"en_US": {
-					"shortName": "North Kordofan",
-					"longName": "North Kordofan"
-				},
-				"ar_SD": {
-					"shortName": "Shamāl Kurdufān",
-					"longName": "Shamāl Kurdufān"
-				}
-			}
-		},
-		"KS": {
-			"locales": {
-				"ar_SD": {
-					"shortName": "Janūb Kurdufān",
-					"longName": "Janūb Kurdufān"
-				},
-				"en_US": {
-					"shortName": "South Kordofan",
-					"longName": "South Kordofan"
-				}
-			}
-		},
-		"NB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Blue Nile",
-					"longName": "Blue Nile"
-				},
-				"ar_SD": {
-					"shortName": "An Nīl al Azraq",
-					"longName": "An Nīl al Azraq"
-				}
-			}
-		},
-		"NO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern",
-					"longName": "Northern"
-				},
-				"ar_SD": {
-					"shortName": "Ash Shamālīyah",
-					"longName": "Ash Shamālīyah"
-				}
-			}
-		},
-		"NR": {
-			"locales": {
-				"en_US": {
-					"shortName": "River Nile",
-					"longName": "River Nile"
-				},
-				"ar_SD": {
-					"shortName": "An Nīl",
-					"longName": "An Nīl"
-				}
-			}
-		},
-		"NW": {
-			"locales": {
-				"en_US": {
-					"shortName": "White Nile",
-					"longName": "White Nile"
-				},
-				"ar_SD": {
-					"shortName": "An Nīl al Abyaḑ",
-					"longName": "An Nīl al Abyaḑ"
-				}
-			}
-		},
-		"RS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Red Sea",
-					"longName": "Red Sea"
-				},
-				"ar_SD": {
-					"shortName": "Al Baḩr al Aḩmar",
-					"longName": "Al Baḩr al Aḩmar"
-				}
-			}
-		},
-		"SI": {
-			"locales": {
-				"ar_SD": {
-					"shortName": "Sinnār",
-					"longName": "Sinnār"
-				},
-				"en_US": {
-					"shortName": "Sennar",
-					"longName": "Sennar"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_SD",
-		"id": "ar_SD"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Sudan",
-			"longName": "Republic of the Sudan",
-			"postalCode": "Postal Code"
-		},
-		"ar_SD": {
-			"shortName": "السودان",
-			"longName": "جمهورية السودان",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SD",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_SD",
+    "id" : "ar_SD"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/SDG",
+    "id" : "SDG"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "DC" : {
+      "locales" : {
+        "ar_SD" : {
+          "shortName" : "Zalingei",
+          "longName" : "Zalingei"
+        },
+        "en_US" : {
+          "shortName" : "Central Darfur",
+          "longName" : "Central Darfur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "East Darfur",
+          "longName" : "East Darfur"
+        },
+        "ar_SD" : {
+          "shortName" : "Sharq Dārfūr",
+          "longName" : "Sharq Dārfūr"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DN" : {
+      "locales" : {
+        "ar_SD" : {
+          "shortName" : "Shamāl Dārfūr",
+          "longName" : "Shamāl Dārfūr"
+        },
+        "en_US" : {
+          "shortName" : "North Darfur",
+          "longName" : "North Darfur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DS" : {
+      "locales" : {
+        "ar_SD" : {
+          "shortName" : "Janūb Dārfūr",
+          "longName" : "Janūb Dārfūr"
+        },
+        "en_US" : {
+          "shortName" : "South Darfur",
+          "longName" : "South Darfur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "West Darfur",
+          "longName" : "West Darfur"
+        },
+        "ar_SD" : {
+          "shortName" : "Gharb Dārfūr",
+          "longName" : "Gharb Dārfūr"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gedaref",
+          "longName" : "Gedaref"
+        },
+        "ar_SD" : {
+          "shortName" : "Al Qaḑārif",
+          "longName" : "Al Qaḑārif"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gezira",
+          "longName" : "Gezira"
+        },
+        "ar_SD" : {
+          "shortName" : "Al Jazīrah",
+          "longName" : "Al Jazīrah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "ar_SD" : {
+          "shortName" : "Kassalā",
+          "longName" : "Kassalā"
+        },
+        "en_US" : {
+          "shortName" : "Kassala",
+          "longName" : "Kassala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khartoum",
+          "longName" : "Khartoum"
+        },
+        "ar_SD" : {
+          "shortName" : "Al Kharţūm",
+          "longName" : "Al Kharţūm"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North Kordofan",
+          "longName" : "North Kordofan"
+        },
+        "ar_SD" : {
+          "shortName" : "Shamāl Kurdufān",
+          "longName" : "Shamāl Kurdufān"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KS" : {
+      "locales" : {
+        "ar_SD" : {
+          "shortName" : "Janūb Kurdufān",
+          "longName" : "Janūb Kurdufān"
+        },
+        "en_US" : {
+          "shortName" : "South Kordofan",
+          "longName" : "South Kordofan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Blue Nile",
+          "longName" : "Blue Nile"
+        },
+        "ar_SD" : {
+          "shortName" : "An Nīl al Azraq",
+          "longName" : "An Nīl al Azraq"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern",
+          "longName" : "Northern"
+        },
+        "ar_SD" : {
+          "shortName" : "Ash Shamālīyah",
+          "longName" : "Ash Shamālīyah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "River Nile",
+          "longName" : "River Nile"
+        },
+        "ar_SD" : {
+          "shortName" : "An Nīl",
+          "longName" : "An Nīl"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "White Nile",
+          "longName" : "White Nile"
+        },
+        "ar_SD" : {
+          "shortName" : "An Nīl al Abyaḑ",
+          "longName" : "An Nīl al Abyaḑ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Red Sea",
+          "longName" : "Red Sea"
+        },
+        "ar_SD" : {
+          "shortName" : "Al Baḩr al Aḩmar",
+          "longName" : "Al Baḩr al Aḩmar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SI" : {
+      "locales" : {
+        "ar_SD" : {
+          "shortName" : "Sinnār",
+          "longName" : "Sinnār"
+        },
+        "en_US" : {
+          "shortName" : "Sennar",
+          "longName" : "Sennar"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_SD",
+    "id" : "ar_SD"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Sudan",
+      "longName" : "Republic of the Sudan",
+      "postalCode" : ""
+    },
+    "ar_SD" : {
+      "shortName" : "السودان",
+      "longName" : "جمهورية السودان",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Sudan",
+      "longName" : "Republic of the Sudan",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Sudan",
+      "longName" : "Republic of the Sudan",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Sudán",
+      "longName" : "República de Sudán",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Soudan",
+      "longName" : "République du Soudan",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Sudan",
+      "longName" : "Repubblica del Sudan",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "수단",
+      "longName" : "Republic of the Sudan",
+      "postalCode" : ""
+    }
+  }
 }

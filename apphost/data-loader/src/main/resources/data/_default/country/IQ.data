@@ -1,253 +1,298 @@
 {
-	"countryCode": "IQ",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_IQ",
-		"id": "ar_IQ"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/IQD",
-		"id": "IQD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AN": {
-			"locales": {
-				"ar_IQ": {
-					"shortName": "الأنبار‎",
-					"longName": "الأنبار‎"
-				},
-				"en_US": {
-					"shortName": "Al Anbar",
-					"longName": "Al Anbar"
-				}
-			}
-		},
-		"AR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Arbil",
-					"longName": "Arbil"
-				},
-				"ar_IQ": {
-					"shortName": "أربيل‎",
-					"longName": "أربيل‎"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"ar_IQ": {
-					"shortName": "البصرة",
-					"longName": "البصرة"
-				},
-				"en_US": {
-					"shortName": "Basra",
-					"longName": "Basra"
-				}
-			}
-		},
-		"BB": {
-			"locales": {
-				"ar_IQ": {
-					"shortName": "بابل",
-					"longName": "بابل"
-				},
-				"en_US": {
-					"shortName": "Babil",
-					"longName": "Babil"
-				}
-			}
-		},
-		"BG": {
-			"locales": {
-				"ar_IQ": {
-					"shortName": "محافظة بغداد‎",
-					"longName": "محافظة بغداد‎"
-				},
-				"en_US": {
-					"shortName": "Baghdad",
-					"longName": "Baghdad"
-				}
-			}
-		},
-		"DA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dohuk",
-					"longName": "Dohuk"
-				},
-				"ar_IQ": {
-					"shortName": "دهوك",
-					"longName": "دهوك"
-				}
-			}
-		},
-		"DI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Diyala",
-					"longName": "Diyala"
-				},
-				"ar_IQ": {
-					"shortName": "ديالى",
-					"longName": "ديالى"
-				}
-			}
-		},
-		"DQ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dhi Qar",
-					"longName": "Dhi Qar"
-				},
-				"ar_IQ": {
-					"shortName": "ذي قار",
-					"longName": "ذي قار"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karbala",
-					"longName": "Karbala"
-				},
-				"ar_IQ": {
-					"shortName": "كربلاء",
-					"longName": "كربلاء"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maysan",
-					"longName": "Maysan"
-				},
-				"ar_IQ": {
-					"shortName": "ميسان",
-					"longName": "ميسان"
-				}
-			}
-		},
-		"MU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Muthanna",
-					"longName": "Muthanna"
-				},
-				"ar_IQ": {
-					"shortName": "المثنى",
-					"longName": "المثنى"
-				}
-			}
-		},
-		"NA": {
-			"locales": {
-				"ar_IQ": {
-					"shortName": "النجف‎",
-					"longName": "النجف‎"
-				},
-				"en_US": {
-					"shortName": "Najaf",
-					"longName": "Najaf"
-				}
-			}
-		},
-		"NI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nineveh",
-					"longName": "Nineveh"
-				},
-				"ar_IQ": {
-					"shortName": "نینوى‎",
-					"longName": "نینوى‎"
-				}
-			}
-		},
-		"QA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al-Qadisiyah",
-					"longName": "Al-Qadisiyah"
-				},
-				"ar_IQ": {
-					"shortName": "القادسية",
-					"longName": "القادسية"
-				}
-			}
-		},
-		"SD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saladin",
-					"longName": "Saladin"
-				},
-				"ar_IQ": {
-					"shortName": "صلاح الدين",
-					"longName": "صلاح الدين"
-				}
-			}
-		},
-		"SU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sulaymaniyah",
-					"longName": "Sulaymaniyah"
-				},
-				"ar_IQ": {
-					"shortName": "السليمانية",
-					"longName": "السليمانية"
-				}
-			}
-		},
-		"TS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kirkuk",
-					"longName": "Kirkuk"
-				},
-				"ar_IQ": {
-					"shortName": "كركوك‎",
-					"longName": "كركوك‎"
-				}
-			}
-		},
-		"WA": {
-			"locales": {
-				"ar_IQ": {
-					"shortName": "واسط",
-					"longName": "واسط"
-				},
-				"en_US": {
-					"shortName": "Wasit",
-					"longName": "Wasit"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_IQ",
-		"id": "ar_IQ"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Iraq",
-			"longName": "Republic of Iraq",
-			"postalCode": "Postal Code"
-		},
-		"ar_IQ": {
-			"shortName": "العراق",
-			"longName": "جمهورية العـراق",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "IQ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_IQ",
+    "id" : "ar_IQ"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/IQD",
+    "id" : "IQD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AN" : {
+      "locales" : {
+        "ar_IQ" : {
+          "shortName" : "الأنبار‎",
+          "longName" : "الأنبار‎"
+        },
+        "en_US" : {
+          "shortName" : "Al Anbar",
+          "longName" : "Al Anbar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Arbil",
+          "longName" : "Arbil"
+        },
+        "ar_IQ" : {
+          "shortName" : "أربيل‎",
+          "longName" : "أربيل‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "ar_IQ" : {
+          "shortName" : "البصرة",
+          "longName" : "البصرة"
+        },
+        "en_US" : {
+          "shortName" : "Basra",
+          "longName" : "Basra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BB" : {
+      "locales" : {
+        "ar_IQ" : {
+          "shortName" : "بابل",
+          "longName" : "بابل"
+        },
+        "en_US" : {
+          "shortName" : "Babil",
+          "longName" : "Babil"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BG" : {
+      "locales" : {
+        "ar_IQ" : {
+          "shortName" : "محافظة بغداد‎",
+          "longName" : "محافظة بغداد‎"
+        },
+        "en_US" : {
+          "shortName" : "Baghdad",
+          "longName" : "Baghdad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dohuk",
+          "longName" : "Dohuk"
+        },
+        "ar_IQ" : {
+          "shortName" : "دهوك",
+          "longName" : "دهوك"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Diyala",
+          "longName" : "Diyala"
+        },
+        "ar_IQ" : {
+          "shortName" : "ديالى",
+          "longName" : "ديالى"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DQ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dhi Qar",
+          "longName" : "Dhi Qar"
+        },
+        "ar_IQ" : {
+          "shortName" : "ذي قار",
+          "longName" : "ذي قار"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karbala",
+          "longName" : "Karbala"
+        },
+        "ar_IQ" : {
+          "shortName" : "كربلاء",
+          "longName" : "كربلاء"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maysan",
+          "longName" : "Maysan"
+        },
+        "ar_IQ" : {
+          "shortName" : "ميسان",
+          "longName" : "ميسان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Muthanna",
+          "longName" : "Muthanna"
+        },
+        "ar_IQ" : {
+          "shortName" : "المثنى",
+          "longName" : "المثنى"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NA" : {
+      "locales" : {
+        "ar_IQ" : {
+          "shortName" : "النجف‎",
+          "longName" : "النجف‎"
+        },
+        "en_US" : {
+          "shortName" : "Najaf",
+          "longName" : "Najaf"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nineveh",
+          "longName" : "Nineveh"
+        },
+        "ar_IQ" : {
+          "shortName" : "نینوى‎",
+          "longName" : "نینوى‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al-Qadisiyah",
+          "longName" : "Al-Qadisiyah"
+        },
+        "ar_IQ" : {
+          "shortName" : "القادسية",
+          "longName" : "القادسية"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saladin",
+          "longName" : "Saladin"
+        },
+        "ar_IQ" : {
+          "shortName" : "صلاح الدين",
+          "longName" : "صلاح الدين"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sulaymaniyah",
+          "longName" : "Sulaymaniyah"
+        },
+        "ar_IQ" : {
+          "shortName" : "السليمانية",
+          "longName" : "السليمانية"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kirkuk",
+          "longName" : "Kirkuk"
+        },
+        "ar_IQ" : {
+          "shortName" : "كركوك‎",
+          "longName" : "كركوك‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WA" : {
+      "locales" : {
+        "ar_IQ" : {
+          "shortName" : "واسط",
+          "longName" : "واسط"
+        },
+        "en_US" : {
+          "shortName" : "Wasit",
+          "longName" : "Wasit"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_IQ",
+    "id" : "ar_IQ"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Iraq",
+      "longName" : "Republic of Iraq",
+      "postalCode" : ""
+    },
+    "ar_IQ" : {
+      "shortName" : "العراق",
+      "longName" : "جمهورية العـراق",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Irak",
+      "longName" : "Republic of Iraq",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Iraq",
+      "longName" : "Republic of Iraq",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Irak",
+      "longName" : "República de Irak",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Irak",
+      "longName" : "République d’Iraq",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Iraq",
+      "longName" : "Repubblica dell'Iraq",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "이라크",
+      "longName" : "Republic of Iraq",
+      "postalCode" : ""
+    }
+  }
 }

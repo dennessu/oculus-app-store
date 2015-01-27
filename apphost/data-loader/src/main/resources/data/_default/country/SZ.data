@@ -1,63 +1,95 @@
 {
-	"countryCode": "SZ",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ZAR",
-		"id": "ZAR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"HH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hhohho",
-					"longName": "Hhohho"
-				}
-			}
-		},
-		"LU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lubombo",
-					"longName": "Lubombo"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Manzini",
-					"longName": "Manzini"
-				}
-			}
-		},
-		"SH": {
-			"locales": {
-				"en_US": {
-					"shortName": " Shiselweni ",
-					"longName": " Shiselweni "
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Swaziland",
-			"longName": "Kingdom of Swaziland",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SZ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ZAR",
+    "id" : "ZAR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "HH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hhohho",
+          "longName" : "Hhohho"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lubombo",
+          "longName" : "Lubombo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Manzini",
+          "longName" : "Manzini"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : " Shiselweni ",
+          "longName" : " Shiselweni "
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Swaziland",
+      "longName" : "Kingdom of Swaziland",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Swasiland",
+      "longName" : "Kingdom of Swaziland",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Swaziland",
+      "longName" : "Kingdom of Swaziland",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Swazilandia",
+      "longName" : "Reino de Suazilandia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Swaziland",
+      "longName" : "Royaume du Swaziland",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Swaziland",
+      "longName" : "Regno dello Swaziland",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "스와질란드",
+      "longName" : "Kingdom of Swaziland",
+      "postalCode" : ""
+    }
+  }
 }

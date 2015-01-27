@@ -1,265 +1,311 @@
 {
-	"countryCode": "UY",
-	"defaultLocale": {
-		"href": "/v1/locales/es_UY",
-		"id": "es_UY"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/UYU",
-		"id": "UYU"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AR": {
-			"locales": {
-				"es_UY": {
-					"shortName": "Artigas",
-					"longName": "Artigas"
-				},
-				"en_US": {
-					"shortName": "Artigas",
-					"longName": "Artigas"
-				}
-			}
-		},
-		"CA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Canelones",
-					"longName": "Canelones"
-				},
-				"es_UY": {
-					"shortName": "Canelones",
-					"longName": "Canelones"
-				}
-			}
-		},
-		"CL": {
-			"locales": {
-				"es_UY": {
-					"shortName": "Cerro Largo",
-					"longName": "Cerro Largo"
-				},
-				"en_US": {
-					"shortName": "Cerro Largo",
-					"longName": "Cerro Largo"
-				}
-			}
-		},
-		"CO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Colonia",
-					"longName": "Colonia"
-				},
-				"es_UY": {
-					"shortName": "Colonia",
-					"longName": "Colonia"
-				}
-			}
-		},
-		"DU": {
-			"locales": {
-				"es_UY": {
-					"shortName": "Durazno",
-					"longName": "Durazno"
-				},
-				"en_US": {
-					"shortName": "Durazno",
-					"longName": "Durazno"
-				}
-			}
-		},
-		"FD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Florida",
-					"longName": "Florida"
-				},
-				"es_UY": {
-					"shortName": "Florida",
-					"longName": "Florida"
-				}
-			}
-		},
-		"FS": {
-			"locales": {
-				"es_UY": {
-					"shortName": "Flores",
-					"longName": "Flores"
-				},
-				"en_US": {
-					"shortName": "Flores",
-					"longName": "Flores"
-				}
-			}
-		},
-		"LA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lavalleja",
-					"longName": "Lavalleja"
-				},
-				"es_UY": {
-					"shortName": "Lavalleja",
-					"longName": "Lavalleja"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maldonado",
-					"longName": "Maldonado"
-				},
-				"es_UY": {
-					"shortName": "Maldonado",
-					"longName": "Maldonado"
-				}
-			}
-		},
-		"MO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Montevideo",
-					"longName": "Montevideo"
-				},
-				"es_UY": {
-					"shortName": "Montevideo",
-					"longName": "Montevideo"
-				}
-			}
-		},
-		"PA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Paysandú",
-					"longName": "Paysandú"
-				},
-				"es_UY": {
-					"shortName": "Paysandú",
-					"longName": "Paysandú"
-				}
-			}
-		},
-		"RN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Río Negro",
-					"longName": "Río Negro"
-				},
-				"es_UY": {
-					"shortName": "Río Negro",
-					"longName": "Río Negro"
-				}
-			}
-		},
-		"RO": {
-			"locales": {
-				"es_UY": {
-					"shortName": "Rocha",
-					"longName": "Rocha"
-				},
-				"en_US": {
-					"shortName": "Rocha",
-					"longName": "Rocha"
-				}
-			}
-		},
-		"RV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rivera",
-					"longName": "Rivera"
-				},
-				"es_UY": {
-					"shortName": "Rivera",
-					"longName": "Rivera"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Salto",
-					"longName": "Salto"
-				},
-				"es_UY": {
-					"shortName": "Salto",
-					"longName": "Salto"
-				}
-			}
-		},
-		"SJ": {
-			"locales": {
-				"en_US": {
-					"shortName": "San José",
-					"longName": "San José"
-				},
-				"es_UY": {
-					"shortName": "San José",
-					"longName": "San José"
-				}
-			}
-		},
-		"SO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Soriano",
-					"longName": "Soriano"
-				},
-				"es_UY": {
-					"shortName": "Soriano",
-					"longName": "Soriano"
-				}
-			}
-		},
-		"TA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tacuarembó",
-					"longName": "Tacuarembó"
-				},
-				"es_UY": {
-					"shortName": "Tacuarembó",
-					"longName": "Tacuarembó"
-				}
-			}
-		},
-		"TT": {
-			"locales": {
-				"es_UY": {
-					"shortName": "Treinta y Tres",
-					"longName": "Treinta y Tres"
-				},
-				"en_US": {
-					"shortName": "Treinta y Tres",
-					"longName": "Treinta y Tres"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_UY",
-		"id": "es_UY"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Uruguay",
-			"longName": "Oriental Republic of Uruguay",
-			"postalCode": "Postal Code"
-		},
-		"es_UY": {
-			"shortName": "Uruguay",
-			"longName": "República Oriental del Uruguay",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "UY",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_UY",
+    "id" : "es_UY"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/UYU",
+    "id" : "UYU"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AR" : {
+      "locales" : {
+        "es_UY" : {
+          "shortName" : "Artigas",
+          "longName" : "Artigas"
+        },
+        "en_US" : {
+          "shortName" : "Artigas",
+          "longName" : "Artigas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Canelones",
+          "longName" : "Canelones"
+        },
+        "es_UY" : {
+          "shortName" : "Canelones",
+          "longName" : "Canelones"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CL" : {
+      "locales" : {
+        "es_UY" : {
+          "shortName" : "Cerro Largo",
+          "longName" : "Cerro Largo"
+        },
+        "en_US" : {
+          "shortName" : "Cerro Largo",
+          "longName" : "Cerro Largo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Colonia",
+          "longName" : "Colonia"
+        },
+        "es_UY" : {
+          "shortName" : "Colonia",
+          "longName" : "Colonia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DU" : {
+      "locales" : {
+        "es_UY" : {
+          "shortName" : "Durazno",
+          "longName" : "Durazno"
+        },
+        "en_US" : {
+          "shortName" : "Durazno",
+          "longName" : "Durazno"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Florida",
+          "longName" : "Florida"
+        },
+        "es_UY" : {
+          "shortName" : "Florida",
+          "longName" : "Florida"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FS" : {
+      "locales" : {
+        "es_UY" : {
+          "shortName" : "Flores",
+          "longName" : "Flores"
+        },
+        "en_US" : {
+          "shortName" : "Flores",
+          "longName" : "Flores"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lavalleja",
+          "longName" : "Lavalleja"
+        },
+        "es_UY" : {
+          "shortName" : "Lavalleja",
+          "longName" : "Lavalleja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maldonado",
+          "longName" : "Maldonado"
+        },
+        "es_UY" : {
+          "shortName" : "Maldonado",
+          "longName" : "Maldonado"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Montevideo",
+          "longName" : "Montevideo"
+        },
+        "es_UY" : {
+          "shortName" : "Montevideo",
+          "longName" : "Montevideo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Paysandú",
+          "longName" : "Paysandú"
+        },
+        "es_UY" : {
+          "shortName" : "Paysandú",
+          "longName" : "Paysandú"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Río Negro",
+          "longName" : "Río Negro"
+        },
+        "es_UY" : {
+          "shortName" : "Río Negro",
+          "longName" : "Río Negro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RO" : {
+      "locales" : {
+        "es_UY" : {
+          "shortName" : "Rocha",
+          "longName" : "Rocha"
+        },
+        "en_US" : {
+          "shortName" : "Rocha",
+          "longName" : "Rocha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rivera",
+          "longName" : "Rivera"
+        },
+        "es_UY" : {
+          "shortName" : "Rivera",
+          "longName" : "Rivera"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Salto",
+          "longName" : "Salto"
+        },
+        "es_UY" : {
+          "shortName" : "Salto",
+          "longName" : "Salto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SJ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San José",
+          "longName" : "San José"
+        },
+        "es_UY" : {
+          "shortName" : "San José",
+          "longName" : "San José"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Soriano",
+          "longName" : "Soriano"
+        },
+        "es_UY" : {
+          "shortName" : "Soriano",
+          "longName" : "Soriano"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tacuarembó",
+          "longName" : "Tacuarembó"
+        },
+        "es_UY" : {
+          "shortName" : "Tacuarembó",
+          "longName" : "Tacuarembó"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TT" : {
+      "locales" : {
+        "es_UY" : {
+          "shortName" : "Treinta y Tres",
+          "longName" : "Treinta y Tres"
+        },
+        "en_US" : {
+          "shortName" : "Treinta y Tres",
+          "longName" : "Treinta y Tres"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_UY",
+    "id" : "es_UY"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Uruguay",
+      "longName" : "Oriental Republic of Uruguay",
+      "postalCode" : ""
+    },
+    "es_UY" : {
+      "shortName" : "Uruguay",
+      "longName" : "República Oriental del Uruguay",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Uruguay",
+      "longName" : "Oriental Republic of Uruguay",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Uruguay",
+      "longName" : "Oriental Republic of Uruguay",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Uruguay",
+      "longName" : "República Oriental del Uruguay",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Uruguay",
+      "longName" : "République orientale d’Uruguay",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Uruguay",
+      "longName" : "Repubblica Orientale di Uruguay",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "우루과이",
+      "longName" : "Oriental Republic of Uruguay",
+      "postalCode" : ""
+    }
+  }
 }

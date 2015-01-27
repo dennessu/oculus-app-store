@@ -1,29 +1,55 @@
 {
-	"countryCode": "SJ",
-	"defaultLocale": {
-		"href": "/v1/locales/no_SJ",
-		"id": "no_SJ"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/NOK",
-		"id": "NOK"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/no_SJ",
-		"id": "no_SJ"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Svalbard and Jan Mayen",
-			"longName": "Svalbard and Jan Mayen",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SJ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/no_SJ",
+    "id" : "no_SJ"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/NOK",
+    "id" : "NOK"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/no_SJ",
+    "id" : "no_SJ"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Svalbard and Jan Mayen",
+      "longName" : "Svalbard and Jan Mayen",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Spitzbergen und Jan Mayen",
+      "longName" : "Spitzbergen und Jan Mayen",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Svalbard and Jan Mayen",
+      "longName" : "Svalbard and Jan Mayen",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Svalbard y Jan Mayen",
+      "longName" : "Svalbard y Jan Mayen",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Svalbard et Jan Mayen",
+      "longName" : "Svalbard et Jan Mayen",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Svalbard e Jan Mayen",
+      "longName" : "Svalbard e Jan Mayen",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "스발바르 및 얀마웬",
+      "longName" : "스발바르 및 얀마웬",
+      "postalCode" : ""
+    }
+  }
 }

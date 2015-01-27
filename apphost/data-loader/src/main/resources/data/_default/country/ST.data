@@ -1,49 +1,79 @@
 {
-	"countryCode": "ST",
-	"defaultLocale": {
-		"href": "/v1/locales/pt_ST",
-		"id": "pt_ST"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/STD",
-		"id": "STD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"P": {
-			"locales": {
-				"en_US": {
-					"shortName": "Príncipe",
-					"longName": "Príncipe"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"en_US": {
-					"shortName": "São Tomé",
-					"longName": "São Tomé"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/pt_ST",
-		"id": "pt_ST"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "São Tomé and Príncipe",
-			"longName": "Democratic Republic ofnSão Tomé and Príncipe",
-			"postalCode": "Postal Code"
-		},
-		"pt_ST": {
-			"shortName": "São Tomé e Príncipe",
-			"longName": "República Democrática de São Tomé e Príncipe",
-			"postalCode": "código postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "ST",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/pt_ST",
+    "id" : "pt_ST"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/STD",
+    "id" : "STD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "P" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Príncipe",
+          "longName" : "Príncipe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "São Tomé",
+          "longName" : "São Tomé"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/pt_ST",
+    "id" : "pt_ST"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "São Tomé and Príncipe",
+      "longName" : "Democratic Republic ofnSão Tomé and Príncipe",
+      "postalCode" : ""
+    },
+    "pt_ST" : {
+      "shortName" : "São Tomé e Príncipe",
+      "longName" : "República Democrática de São Tomé e Príncipe",
+      "postalCode" : "código postal"
+    },
+    "de_DE" : {
+      "shortName" : "São Tomé and Príncipe",
+      "longName" : "Democratic Republic ofnSão Tomé and Príncipe",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "São Tomé and Príncipe",
+      "longName" : "Democratic Republic ofnSão Tomé and Príncipe",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Santo Tomé y Príncipe",
+      "longName" : "República Democrática de Santo Tomé y Príncipe",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "São Tomé-et-Príncipe",
+      "longName" : "République démocratique de São Tomé-et-Príncipe",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "São Tomé e Príncipe",
+      "longName" : "Repubblica Democratica di São Tomé e Príncipe",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "São Tomé and Príncipe",
+      "longName" : "Democratic Republic ofnSão Tomé and Príncipe",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,119 +1,158 @@
 {
-	"countryCode": "ET",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ETB",
-		"id": "ETB"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"AA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Addis Ababa",
-					"longName": "Addis Ababa"
-				}
-			}
-		},
-		"AF": {
-			"locales": {
-				"en_US": {
-					"shortName": "Afar",
-					"longName": "Afar"
-				}
-			}
-		},
-		"AM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Amara",
-					"longName": "Amara"
-				}
-			}
-		},
-		"BE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Benshangul-Gumaz",
-					"longName": "Benshangul-Gumaz"
-				}
-			}
-		},
-		"DD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dire Dawa",
-					"longName": "Dire Dawa"
-				}
-			}
-		},
-		"GA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gambela Peoples'",
-					"longName": "Gambela Peoples'"
-				}
-			}
-		},
-		"HA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Harari People",
-					"longName": "Harari People"
-				}
-			}
-		},
-		"OR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oromia",
-					"longName": "Oromia"
-				}
-			}
-		},
-		"SN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern Nations, Nationalities and Peoples'",
-					"longName": "Southern Nations, Nationalities and Peoples'"
-				}
-			}
-		},
-		"SO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Somali",
-					"longName": "Somali"
-				}
-			}
-		},
-		"TI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tigrai",
-					"longName": "Tigrai"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Ethiopia",
-			"longName": "Federal Democratic Republic of Ethiopia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "ET",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ETB",
+    "id" : "ETB"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "AA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Addis Ababa",
+          "longName" : "Addis Ababa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Afar",
+          "longName" : "Afar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Amara",
+          "longName" : "Amara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Benshangul-Gumaz",
+          "longName" : "Benshangul-Gumaz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dire Dawa",
+          "longName" : "Dire Dawa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gambela Peoples'",
+          "longName" : "Gambela Peoples'"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Harari People",
+          "longName" : "Harari People"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oromia",
+          "longName" : "Oromia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern Nations, Nationalities and Peoples'",
+          "longName" : "Southern Nations, Nationalities and Peoples'"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Somali",
+          "longName" : "Somali"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tigrai",
+          "longName" : "Tigrai"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Ethiopia",
+      "longName" : "Federal Democratic Republic of Ethiopia",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Äthiopien",
+      "longName" : "Demokratische Bundesrepublik Äthiopien",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Ethiopia",
+      "longName" : "Federal Democratic Republic of Ethiopia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Etiopía",
+      "longName" : "República Democrática Federal de Etiopía",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Éthiopie",
+      "longName" : "République démocratique fédérale d’Éthiopie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Etiopia",
+      "longName" : "Repubblica Federale Democratica d'Etiopia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "에티오피아",
+      "longName" : "Federal Democratic Republic of Ethiopia",
+      "postalCode" : ""
+    }
+  }
 }

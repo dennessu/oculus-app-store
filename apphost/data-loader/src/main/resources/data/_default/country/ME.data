@@ -1,196 +1,245 @@
 {
-	"countryCode": "ME",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Andrijevica",
-					"longName": "Andrijevica"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bar",
-					"longName": "Bar"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Berane",
-					"longName": "Berane"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bijelo Polje",
-					"longName": "Bijelo Polje"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Budva",
-					"longName": "Budva"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cetinje",
-					"longName": "Cetinje"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Danilovgrad",
-					"longName": "Danilovgrad"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Herceg-Novi",
-					"longName": "Herceg-Novi"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kolašin",
-					"longName": "Kolašin"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kotor",
-					"longName": "Kotor"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mojkovac",
-					"longName": "Mojkovac"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nikšić",
-					"longName": "Nikšić"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Plav",
-					"longName": "Plav"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pljevlja",
-					"longName": "Pljevlja"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Plužine",
-					"longName": "Plužine"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Podgorica",
-					"longName": "Podgorica"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rožaje",
-					"longName": "Rožaje"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Šavnik",
-					"longName": "Šavnik"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tivat",
-					"longName": "Tivat"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ulcinj",
-					"longName": "Ulcinj"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"en_US": {
-					"shortName": "Žabljak",
-					"longName": "Žabljak"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Montenegro",
-			"longName": "Montenegro",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "ME",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Andrijevica",
+          "longName" : "Andrijevica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bar",
+          "longName" : "Bar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Berane",
+          "longName" : "Berane"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bijelo Polje",
+          "longName" : "Bijelo Polje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Budva",
+          "longName" : "Budva"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cetinje",
+          "longName" : "Cetinje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Danilovgrad",
+          "longName" : "Danilovgrad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Herceg-Novi",
+          "longName" : "Herceg-Novi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kolašin",
+          "longName" : "Kolašin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kotor",
+          "longName" : "Kotor"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mojkovac",
+          "longName" : "Mojkovac"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nikšić",
+          "longName" : "Nikšić"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Plav",
+          "longName" : "Plav"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pljevlja",
+          "longName" : "Pljevlja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Plužine",
+          "longName" : "Plužine"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Podgorica",
+          "longName" : "Podgorica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rožaje",
+          "longName" : "Rožaje"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Šavnik",
+          "longName" : "Šavnik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tivat",
+          "longName" : "Tivat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ulcinj",
+          "longName" : "Ulcinj"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Žabljak",
+          "longName" : "Žabljak"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Montenegro",
+      "longName" : "Montenegro",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Montenegro",
+      "longName" : "Montenegro",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Montenegro",
+      "longName" : "Montenegro",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Montenegro",
+      "longName" : "Montenegro",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Monténégro",
+      "longName" : "Monténégro",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Montenegro",
+      "longName" : "Montenegro",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "몬테네그로",
+      "longName" : "몬테네그로",
+      "postalCode" : ""
+    }
+  }
 }

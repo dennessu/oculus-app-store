@@ -51,7 +51,37 @@
 		"en_US": {
 			"shortName": "Brunei",
 			"longName": "Nation of Brunei, the Abode of Peace",
-			"postalCode": "Postal Code"
+			"postalCode": ""
+		},
+		"de_DE" : {
+		  "shortName" : "Brunei",
+		  "longName" : "Nation of Brunei, the Abode of Peace",
+		  "postalCode" : ""
+		},
+		"en_GB" : {
+		  "shortName" : "Brunei",
+		  "longName" : "Nation of Brunei, the Abode of Peace",
+		  "postalCode" : ""
+		},
+		"es_ES" : {
+		  "shortName" : "Brunéi",
+		  "longName" : "Estado de Brunéi Darusalam",
+		  "postalCode" : ""
+		},
+		"fr_FR" : {
+		  "shortName" : "Brunei",
+		  "longName" : "Sultanat de Brunei",
+		  "postalCode" : ""
+		},
+		"it_IT" : {
+		  "shortName" : "Brunei",
+		  "longName" : "Stato del Brunei, Dimora della Pace",
+		  "postalCode" : ""
+		},
+		"ko_KR" : {
+		  "shortName" : "브루나이",
+		  "longName" : "Nation of Brunei, the Abode of Peace",
+		  "postalCode" : ""
 		}
 	},
 	"futureExpansion": {

@@ -1,34 +1,60 @@
 {
-	"countryCode": "CX",
-	"defaultLocale": {
-		"href": "/v1/locales/en_AU",
-		"id": "en_AU"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AUD",
-		"id": "AUD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_AU",
-		"id": "en_AU"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Christmas Island",
-			"longName": "Territory of Christmas Island",
-			"postalCode": "Postal Code"
-		},
-		"en_AU": {
-			"shortName": "Christmas Island",
-			"longName": "Territory of Christmas Island",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CX",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_AU",
+    "id" : "en_AU"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AUD",
+    "id" : "AUD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_AU",
+    "id" : "en_AU"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Christmas Island",
+      "longName" : "Territory of Christmas Island",
+      "postalCode" : ""
+    },
+    "en_AU" : {
+      "shortName" : "Christmas Island",
+      "longName" : "Territory of Christmas Island",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Weihnachtsinsel",
+      "longName" : "Territory of Christmas Island",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Christmas Island",
+      "longName" : "Territory of Christmas Island",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Isla Christmas",
+      "longName" : "Territorio de la Isla Christmas",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles Christmas",
+      "longName" : "Territoire de l’île Christmas",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isola di Natale",
+      "longName" : "Territorio dell'Isola del Natale",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "크리스마스 섬",
+      "longName" : "Territory of Christmas Island",
+      "postalCode" : ""
+    }
+  }
 }

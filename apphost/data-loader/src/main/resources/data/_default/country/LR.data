@@ -1,151 +1,194 @@
 {
-	"countryCode": "LR",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/LRD",
-		"id": "LRD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"BG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bong",
-					"longName": "Bong"
-				}
-			}
-		},
-		"BM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bomi",
-					"longName": "Bomi"
-				}
-			}
-		},
-		"CM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Grand Cape Mount",
-					"longName": "Grand Cape Mount"
-				}
-			}
-		},
-		"GB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Grand Bassa",
-					"longName": "Grand Bassa"
-				}
-			}
-		},
-		"GG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Grand Gedeh",
-					"longName": "Grand Gedeh"
-				}
-			}
-		},
-		"GK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Grand Kru",
-					"longName": "Grand Kru"
-				}
-			}
-		},
-		"GP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gbarpolu",
-					"longName": "Gbarpolu"
-				}
-			}
-		},
-		"LO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lofa",
-					"longName": "Lofa"
-				}
-			}
-		},
-		"MG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Margibi",
-					"longName": "Margibi"
-				}
-			}
-		},
-		"MO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Montserrado",
-					"longName": "Montserrado"
-				}
-			}
-		},
-		"MY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maryland",
-					"longName": "Maryland"
-				}
-			}
-		},
-		"NI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nimba",
-					"longName": "Nimba"
-				}
-			}
-		},
-		"RG": {
-			"locales": {
-				"en_US": {
-					"shortName": "River Gee",
-					"longName": "River Gee"
-				}
-			}
-		},
-		"RI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rivercess",
-					"longName": "Rivercess"
-				}
-			}
-		},
-		"SI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sinoe",
-					"longName": "Sinoe"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Liberia",
-			"longName": "Republic of Liberia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "LR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/LRD",
+    "id" : "LRD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "BG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bong",
+          "longName" : "Bong"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bomi",
+          "longName" : "Bomi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Grand Cape Mount",
+          "longName" : "Grand Cape Mount"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Grand Bassa",
+          "longName" : "Grand Bassa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Grand Gedeh",
+          "longName" : "Grand Gedeh"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Grand Kru",
+          "longName" : "Grand Kru"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gbarpolu",
+          "longName" : "Gbarpolu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lofa",
+          "longName" : "Lofa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Margibi",
+          "longName" : "Margibi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Montserrado",
+          "longName" : "Montserrado"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maryland",
+          "longName" : "Maryland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nimba",
+          "longName" : "Nimba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "River Gee",
+          "longName" : "River Gee"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rivercess",
+          "longName" : "Rivercess"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sinoe",
+          "longName" : "Sinoe"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Liberia",
+      "longName" : "Republic of Liberia",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Liberia",
+      "longName" : "Republic of Liberia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Liberia",
+      "longName" : "Republic of Liberia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Liberia",
+      "longName" : "República de Liberia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Libéria",
+      "longName" : "République du Liberia",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Liberia",
+      "longName" : "Repubblica di Liberia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "라이베리아",
+      "longName" : "Republic of Liberia",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,733 +1,818 @@
 {
-	"countryCode": "BF",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_BF",
-		"id": "fr_BF"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XOF",
-		"id": "XOF"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Boucle du Mouhoun",
-					"longName": "Boucle du Mouhoun"
-				},
-				"en_US": {
-					"shortName": "Boucle du Mouhoun",
-					"longName": "Boucle du Mouhoun"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Cascades",
-					"longName": "Cascades"
-				},
-				"en_US": {
-					"shortName": "Cascades",
-					"longName": "Cascades"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Centre",
-					"longName": "Centre"
-				},
-				"en_US": {
-					"shortName": "Centre",
-					"longName": "Centre"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Centre-Est",
-					"longName": "Centre-Est"
-				},
-				"fr_BF": {
-					"shortName": "Centre-Est",
-					"longName": "Centre-Est"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Centre-Nord",
-					"longName": "Centre-Nord"
-				},
-				"fr_BF": {
-					"shortName": "Centre-Nord",
-					"longName": "Centre-Nord"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Centre-Ouest",
-					"longName": "Centre-Ouest"
-				},
-				"en_US": {
-					"shortName": "Centre-Ouest",
-					"longName": "Centre-Ouest"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Centre-Sud",
-					"longName": "Centre-Sud"
-				},
-				"en_US": {
-					"shortName": "Centre-Sud",
-					"longName": "Centre-Sud"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "EST",
-					"longName": "EST"
-				},
-				"fr_BF": {
-					"shortName": "EST",
-					"longName": "EST"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hauts-Bassins",
-					"longName": "Hauts-Bassins"
-				},
-				"fr_BF": {
-					"shortName": "Hauts-Bassins",
-					"longName": "Hauts-Bassins"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nord",
-					"longName": "Nord"
-				},
-				"fr_BF": {
-					"shortName": "Nord",
-					"longName": "Nord"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Plateau-Central",
-					"longName": "Plateau-Central"
-				},
-				"fr_BF": {
-					"shortName": "Plateau-Central",
-					"longName": "Plateau-Central"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Sahel",
-					"longName": "Sahel"
-				},
-				"en_US": {
-					"shortName": "Sahel",
-					"longName": "Sahel"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Sud-Ouest",
-					"longName": "Sud-Ouest"
-				},
-				"en_US": {
-					"shortName": "Sud-Ouest",
-					"longName": "Sud-Ouest"
-				}
-			}
-		},
-		"BAL": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Balé",
-					"longName": "Balé"
-				},
-				"en_US": {
-					"shortName": "Balé",
-					"longName": "Balé"
-				}
-			}
-		},
-		"BAM": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Bam",
-					"longName": "Bam"
-				},
-				"en_US": {
-					"shortName": "Bam",
-					"longName": "Bam"
-				}
-			}
-		},
-		"BAN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Banwa",
-					"longName": "Banwa"
-				},
-				"fr_BF": {
-					"shortName": "Banwa",
-					"longName": "Banwa"
-				}
-			}
-		},
-		"BAZ": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Bazèga",
-					"longName": "Bazèga"
-				},
-				"en_US": {
-					"shortName": "Bazèga",
-					"longName": "Bazèga"
-				}
-			}
-		},
-		"BGR": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Bougouriba",
-					"longName": "Bougouriba"
-				},
-				"en_US": {
-					"shortName": "Bougouriba",
-					"longName": "Bougouriba"
-				}
-			}
-		},
-		"BLG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Boulgou",
-					"longName": "Boulgou"
-				},
-				"fr_BF": {
-					"shortName": "Boulgou",
-					"longName": "Boulgou"
-				}
-			}
-		},
-		"BLK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Boulkiemdé",
-					"longName": "Boulkiemdé"
-				},
-				"fr_BF": {
-					"shortName": "Boulkiemdé",
-					"longName": "Boulkiemdé"
-				}
-			}
-		},
-		"COM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Comoé",
-					"longName": "Comoé"
-				},
-				"fr_BF": {
-					"shortName": "Comoé",
-					"longName": "Comoé"
-				}
-			}
-		},
-		"GAN": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Ganzourgou",
-					"longName": "Ganzourgou"
-				},
-				"en_US": {
-					"shortName": "Ganzourgou",
-					"longName": "Ganzourgou"
-				}
-			}
-		},
-		"GNA": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Gnagna",
-					"longName": "Gnagna"
-				},
-				"en_US": {
-					"shortName": "Gnagna",
-					"longName": "Gnagna"
-				}
-			}
-		},
-		"GOU": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Gourma",
-					"longName": "Gourma"
-				},
-				"en_US": {
-					"shortName": "Gourma",
-					"longName": "Gourma"
-				}
-			}
-		},
-		"HOU": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Houet",
-					"longName": "Houet"
-				},
-				"en_US": {
-					"shortName": "Houet",
-					"longName": "Houet"
-				}
-			}
-		},
-		"IOB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ioba",
-					"longName": "Ioba"
-				},
-				"fr_BF": {
-					"shortName": "Ioba",
-					"longName": "Ioba"
-				}
-			}
-		},
-		"KAD": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Kadiogo",
-					"longName": "Kadiogo"
-				},
-				"en_US": {
-					"shortName": "Kadiogo",
-					"longName": "Kadiogo"
-				}
-			}
-		},
-		"KEN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kénédougou",
-					"longName": "Kénédougou"
-				},
-				"fr_BF": {
-					"shortName": "Kénédougou",
-					"longName": "Kénédougou"
-				}
-			}
-		},
-		"KMD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Komondjari",
-					"longName": "Komondjari"
-				},
-				"fr_BF": {
-					"shortName": "Komondjari",
-					"longName": "Komondjari"
-				}
-			}
-		},
-		"KMP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kompienga",
-					"longName": "Kompienga"
-				},
-				"fr_BF": {
-					"shortName": "Kompienga",
-					"longName": "Kompienga"
-				}
-			}
-		},
-		"KOP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Koulpélogo",
-					"longName": "Koulpélogo"
-				},
-				"fr_BF": {
-					"shortName": "Koulpélogo",
-					"longName": "Koulpélogo"
-				}
-			}
-		},
-		"KOS": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Kossi",
-					"longName": "Kossi"
-				},
-				"en_US": {
-					"shortName": "Kossi",
-					"longName": "Kossi"
-				}
-			}
-		},
-		"KOT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kouritenga",
-					"longName": "Kouritenga"
-				},
-				"fr_BF": {
-					"shortName": "Kouritenga",
-					"longName": "Kouritenga"
-				}
-			}
-		},
-		"KOW": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Kourwéogo",
-					"longName": "Kourwéogo"
-				},
-				"en_US": {
-					"shortName": "Kourwéogo",
-					"longName": "Kourwéogo"
-				}
-			}
-		},
-		"LER": {
-			"locales": {
-				"en_US": {
-					"shortName": "Léraba",
-					"longName": "Léraba"
-				},
-				"fr_BF": {
-					"shortName": "Léraba",
-					"longName": "Léraba"
-				}
-			}
-		},
-		"LOR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Loroum",
-					"longName": "Loroum"
-				},
-				"fr_BF": {
-					"shortName": "Loroum",
-					"longName": "Loroum"
-				}
-			}
-		},
-		"MOU": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Mouhoun",
-					"longName": "Mouhoun"
-				},
-				"en_US": {
-					"shortName": "Mouhoun",
-					"longName": "Mouhoun"
-				}
-			}
-		},
-		"NAM": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Namentenga",
-					"longName": "Namentenga"
-				},
-				"en_US": {
-					"shortName": "Namentenga",
-					"longName": "Namentenga"
-				}
-			}
-		},
-		"NAO": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Nahouri",
-					"longName": "Nahouri"
-				},
-				"en_US": {
-					"shortName": "Nahouri",
-					"longName": "Nahouri"
-				}
-			}
-		},
-		"NAY": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Nayala",
-					"longName": "Nayala"
-				},
-				"en_US": {
-					"shortName": "Nayala",
-					"longName": "Nayala"
-				}
-			}
-		},
-		"NOU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Noumbiel",
-					"longName": "Noumbiel"
-				},
-				"fr_BF": {
-					"shortName": "Noumbiel",
-					"longName": "Noumbiel"
-				}
-			}
-		},
-		"OUB": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Oubritenga",
-					"longName": "Oubritenga"
-				},
-				"en_US": {
-					"shortName": "Oubritenga",
-					"longName": "Oubritenga"
-				}
-			}
-		},
-		"OUD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oudalan",
-					"longName": "Oudalan"
-				},
-				"fr_BF": {
-					"shortName": "Oudalan",
-					"longName": "Oudalan"
-				}
-			}
-		},
-		"PAS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Passoré",
-					"longName": "Passoré"
-				},
-				"fr_BF": {
-					"shortName": "Passoré",
-					"longName": "Passoré"
-				}
-			}
-		},
-		"PON": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Poni",
-					"longName": "Poni"
-				},
-				"en_US": {
-					"shortName": "Poni",
-					"longName": "Poni"
-				}
-			}
-		},
-		"SEN": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Séno",
-					"longName": "Séno"
-				},
-				"en_US": {
-					"shortName": "Séno",
-					"longName": "Séno"
-				}
-			}
-		},
-		"SIS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sissili",
-					"longName": "Sissili"
-				},
-				"fr_BF": {
-					"shortName": "Sissili",
-					"longName": "Sissili"
-				}
-			}
-		},
-		"SMT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sanmatenga",
-					"longName": "Sanmatenga"
-				},
-				"fr_BF": {
-					"shortName": "Sanmatenga",
-					"longName": "Sanmatenga"
-				}
-			}
-		},
-		"SNG": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Sanguié",
-					"longName": "Sanguié"
-				},
-				"en_US": {
-					"shortName": "Sanguié",
-					"longName": "Sanguié"
-				}
-			}
-		},
-		"SOM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Soum",
-					"longName": "Soum"
-				},
-				"fr_BF": {
-					"shortName": "Soum",
-					"longName": "Soum"
-				}
-			}
-		},
-		"SOR": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Sourou",
-					"longName": "Sourou"
-				},
-				"en_US": {
-					"shortName": "Sourou",
-					"longName": "Sourou"
-				}
-			}
-		},
-		"TAP": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Tapoa",
-					"longName": "Tapoa"
-				},
-				"en_US": {
-					"shortName": "Tapoa",
-					"longName": "Tapoa"
-				}
-			}
-		},
-		"TUI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tui",
-					"longName": "Tui"
-				},
-				"fr_BF": {
-					"shortName": "Tui",
-					"longName": "Tui"
-				}
-			}
-		},
-		"YAG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yagha",
-					"longName": "Yagha"
-				},
-				"fr_BF": {
-					"shortName": "Yagha",
-					"longName": "Yagha"
-				}
-			}
-		},
-		"YAT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yatenga",
-					"longName": "Yatenga"
-				},
-				"fr_BF": {
-					"shortName": "Yatenga",
-					"longName": "Yatenga"
-				}
-			}
-		},
-		"ZIR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ziro",
-					"longName": "Ziro"
-				},
-				"fr_BF": {
-					"shortName": "Ziro",
-					"longName": "Ziro"
-				}
-			}
-		},
-		"ZON": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zondoma",
-					"longName": "Zondoma"
-				},
-				"fr_BF": {
-					"shortName": "Zondoma",
-					"longName": "Zondoma"
-				}
-			}
-		},
-		"ZOU": {
-			"locales": {
-				"fr_BF": {
-					"shortName": "Zoundwéogo",
-					"longName": "Zoundwéogo"
-				},
-				"en_US": {
-					"shortName": "Zoundwéogo",
-					"longName": "Zoundwéogo"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_BF",
-		"id": "fr_BF"
-	},
-	{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Burkina",
-			"longName": "Burkina Faso",
-			"postalCode": "Postal Code"
-		},
-		"fr_BF": {
-			"shortName": "Burkina",
-			"longName": "Burkina Faso",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BF",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_BF",
+    "id" : "fr_BF"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XOF",
+    "id" : "XOF"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Boucle du Mouhoun",
+          "longName" : "Boucle du Mouhoun"
+        },
+        "en_US" : {
+          "shortName" : "Boucle du Mouhoun",
+          "longName" : "Boucle du Mouhoun"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Cascades",
+          "longName" : "Cascades"
+        },
+        "en_US" : {
+          "shortName" : "Cascades",
+          "longName" : "Cascades"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Centre",
+          "longName" : "Centre"
+        },
+        "en_US" : {
+          "shortName" : "Centre",
+          "longName" : "Centre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Centre-Est",
+          "longName" : "Centre-Est"
+        },
+        "fr_BF" : {
+          "shortName" : "Centre-Est",
+          "longName" : "Centre-Est"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Centre-Nord",
+          "longName" : "Centre-Nord"
+        },
+        "fr_BF" : {
+          "shortName" : "Centre-Nord",
+          "longName" : "Centre-Nord"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Centre-Ouest",
+          "longName" : "Centre-Ouest"
+        },
+        "en_US" : {
+          "shortName" : "Centre-Ouest",
+          "longName" : "Centre-Ouest"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Centre-Sud",
+          "longName" : "Centre-Sud"
+        },
+        "en_US" : {
+          "shortName" : "Centre-Sud",
+          "longName" : "Centre-Sud"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "EST",
+          "longName" : "EST"
+        },
+        "fr_BF" : {
+          "shortName" : "EST",
+          "longName" : "EST"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hauts-Bassins",
+          "longName" : "Hauts-Bassins"
+        },
+        "fr_BF" : {
+          "shortName" : "Hauts-Bassins",
+          "longName" : "Hauts-Bassins"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nord",
+          "longName" : "Nord"
+        },
+        "fr_BF" : {
+          "shortName" : "Nord",
+          "longName" : "Nord"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Plateau-Central",
+          "longName" : "Plateau-Central"
+        },
+        "fr_BF" : {
+          "shortName" : "Plateau-Central",
+          "longName" : "Plateau-Central"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Sahel",
+          "longName" : "Sahel"
+        },
+        "en_US" : {
+          "shortName" : "Sahel",
+          "longName" : "Sahel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Sud-Ouest",
+          "longName" : "Sud-Ouest"
+        },
+        "en_US" : {
+          "shortName" : "Sud-Ouest",
+          "longName" : "Sud-Ouest"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BAL" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Balé",
+          "longName" : "Balé"
+        },
+        "en_US" : {
+          "shortName" : "Balé",
+          "longName" : "Balé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BAM" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Bam",
+          "longName" : "Bam"
+        },
+        "en_US" : {
+          "shortName" : "Bam",
+          "longName" : "Bam"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BAN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Banwa",
+          "longName" : "Banwa"
+        },
+        "fr_BF" : {
+          "shortName" : "Banwa",
+          "longName" : "Banwa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BAZ" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Bazèga",
+          "longName" : "Bazèga"
+        },
+        "en_US" : {
+          "shortName" : "Bazèga",
+          "longName" : "Bazèga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BGR" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Bougouriba",
+          "longName" : "Bougouriba"
+        },
+        "en_US" : {
+          "shortName" : "Bougouriba",
+          "longName" : "Bougouriba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BLG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Boulgou",
+          "longName" : "Boulgou"
+        },
+        "fr_BF" : {
+          "shortName" : "Boulgou",
+          "longName" : "Boulgou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BLK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Boulkiemdé",
+          "longName" : "Boulkiemdé"
+        },
+        "fr_BF" : {
+          "shortName" : "Boulkiemdé",
+          "longName" : "Boulkiemdé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "COM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Comoé",
+          "longName" : "Comoé"
+        },
+        "fr_BF" : {
+          "shortName" : "Comoé",
+          "longName" : "Comoé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GAN" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Ganzourgou",
+          "longName" : "Ganzourgou"
+        },
+        "en_US" : {
+          "shortName" : "Ganzourgou",
+          "longName" : "Ganzourgou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GNA" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Gnagna",
+          "longName" : "Gnagna"
+        },
+        "en_US" : {
+          "shortName" : "Gnagna",
+          "longName" : "Gnagna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GOU" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Gourma",
+          "longName" : "Gourma"
+        },
+        "en_US" : {
+          "shortName" : "Gourma",
+          "longName" : "Gourma"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HOU" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Houet",
+          "longName" : "Houet"
+        },
+        "en_US" : {
+          "shortName" : "Houet",
+          "longName" : "Houet"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IOB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ioba",
+          "longName" : "Ioba"
+        },
+        "fr_BF" : {
+          "shortName" : "Ioba",
+          "longName" : "Ioba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KAD" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Kadiogo",
+          "longName" : "Kadiogo"
+        },
+        "en_US" : {
+          "shortName" : "Kadiogo",
+          "longName" : "Kadiogo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KEN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kénédougou",
+          "longName" : "Kénédougou"
+        },
+        "fr_BF" : {
+          "shortName" : "Kénédougou",
+          "longName" : "Kénédougou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KMD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Komondjari",
+          "longName" : "Komondjari"
+        },
+        "fr_BF" : {
+          "shortName" : "Komondjari",
+          "longName" : "Komondjari"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KMP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kompienga",
+          "longName" : "Kompienga"
+        },
+        "fr_BF" : {
+          "shortName" : "Kompienga",
+          "longName" : "Kompienga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KOP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Koulpélogo",
+          "longName" : "Koulpélogo"
+        },
+        "fr_BF" : {
+          "shortName" : "Koulpélogo",
+          "longName" : "Koulpélogo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KOS" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Kossi",
+          "longName" : "Kossi"
+        },
+        "en_US" : {
+          "shortName" : "Kossi",
+          "longName" : "Kossi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KOT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kouritenga",
+          "longName" : "Kouritenga"
+        },
+        "fr_BF" : {
+          "shortName" : "Kouritenga",
+          "longName" : "Kouritenga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KOW" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Kourwéogo",
+          "longName" : "Kourwéogo"
+        },
+        "en_US" : {
+          "shortName" : "Kourwéogo",
+          "longName" : "Kourwéogo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LER" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Léraba",
+          "longName" : "Léraba"
+        },
+        "fr_BF" : {
+          "shortName" : "Léraba",
+          "longName" : "Léraba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LOR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Loroum",
+          "longName" : "Loroum"
+        },
+        "fr_BF" : {
+          "shortName" : "Loroum",
+          "longName" : "Loroum"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MOU" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Mouhoun",
+          "longName" : "Mouhoun"
+        },
+        "en_US" : {
+          "shortName" : "Mouhoun",
+          "longName" : "Mouhoun"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NAM" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Namentenga",
+          "longName" : "Namentenga"
+        },
+        "en_US" : {
+          "shortName" : "Namentenga",
+          "longName" : "Namentenga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NAO" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Nahouri",
+          "longName" : "Nahouri"
+        },
+        "en_US" : {
+          "shortName" : "Nahouri",
+          "longName" : "Nahouri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NAY" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Nayala",
+          "longName" : "Nayala"
+        },
+        "en_US" : {
+          "shortName" : "Nayala",
+          "longName" : "Nayala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NOU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Noumbiel",
+          "longName" : "Noumbiel"
+        },
+        "fr_BF" : {
+          "shortName" : "Noumbiel",
+          "longName" : "Noumbiel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OUB" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Oubritenga",
+          "longName" : "Oubritenga"
+        },
+        "en_US" : {
+          "shortName" : "Oubritenga",
+          "longName" : "Oubritenga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "OUD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oudalan",
+          "longName" : "Oudalan"
+        },
+        "fr_BF" : {
+          "shortName" : "Oudalan",
+          "longName" : "Oudalan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PAS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Passoré",
+          "longName" : "Passoré"
+        },
+        "fr_BF" : {
+          "shortName" : "Passoré",
+          "longName" : "Passoré"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PON" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Poni",
+          "longName" : "Poni"
+        },
+        "en_US" : {
+          "shortName" : "Poni",
+          "longName" : "Poni"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SEN" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Séno",
+          "longName" : "Séno"
+        },
+        "en_US" : {
+          "shortName" : "Séno",
+          "longName" : "Séno"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SIS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sissili",
+          "longName" : "Sissili"
+        },
+        "fr_BF" : {
+          "shortName" : "Sissili",
+          "longName" : "Sissili"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SMT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sanmatenga",
+          "longName" : "Sanmatenga"
+        },
+        "fr_BF" : {
+          "shortName" : "Sanmatenga",
+          "longName" : "Sanmatenga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SNG" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Sanguié",
+          "longName" : "Sanguié"
+        },
+        "en_US" : {
+          "shortName" : "Sanguié",
+          "longName" : "Sanguié"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SOM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Soum",
+          "longName" : "Soum"
+        },
+        "fr_BF" : {
+          "shortName" : "Soum",
+          "longName" : "Soum"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SOR" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Sourou",
+          "longName" : "Sourou"
+        },
+        "en_US" : {
+          "shortName" : "Sourou",
+          "longName" : "Sourou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAP" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Tapoa",
+          "longName" : "Tapoa"
+        },
+        "en_US" : {
+          "shortName" : "Tapoa",
+          "longName" : "Tapoa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TUI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tui",
+          "longName" : "Tui"
+        },
+        "fr_BF" : {
+          "shortName" : "Tui",
+          "longName" : "Tui"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YAG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yagha",
+          "longName" : "Yagha"
+        },
+        "fr_BF" : {
+          "shortName" : "Yagha",
+          "longName" : "Yagha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YAT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yatenga",
+          "longName" : "Yatenga"
+        },
+        "fr_BF" : {
+          "shortName" : "Yatenga",
+          "longName" : "Yatenga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZIR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ziro",
+          "longName" : "Ziro"
+        },
+        "fr_BF" : {
+          "shortName" : "Ziro",
+          "longName" : "Ziro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZON" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zondoma",
+          "longName" : "Zondoma"
+        },
+        "fr_BF" : {
+          "shortName" : "Zondoma",
+          "longName" : "Zondoma"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZOU" : {
+      "locales" : {
+        "fr_BF" : {
+          "shortName" : "Zoundwéogo",
+          "longName" : "Zoundwéogo"
+        },
+        "en_US" : {
+          "shortName" : "Zoundwéogo",
+          "longName" : "Zoundwéogo"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_BF",
+    "id" : "fr_BF"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Burkina",
+      "longName" : "Burkina Faso",
+      "postalCode" : ""
+    },
+    "fr_BF" : {
+      "shortName" : "Burkina",
+      "longName" : "Burkina Faso",
+      "postalCode" : "code postal"
+    },
+    "de_DE" : {
+      "shortName" : "Burkina",
+      "longName" : "Burkina Faso",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Burkina",
+      "longName" : "Burkina Faso",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Burkina Faso",
+      "longName" : "Burkina Faso",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Burkina",
+      "longName" : "Burkina Faso",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Burkina",
+      "longName" : "Burkina Faso",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "Burkina",
+      "longName" : "부르키나파소",
+      "postalCode" : ""
+    }
+  }
 }

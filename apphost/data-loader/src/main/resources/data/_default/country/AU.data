@@ -1,136 +1,171 @@
 {
-	"countryCode": "AU",
-	"defaultLocale": {
-		"href": "/v1/locales/en_AU",
-		"id": "en_AU"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AUD",
-		"id": "AUD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/COB",
-		"id": "COB"
-	}],
-	"subCountries": {
-		"ACT": {
-			"locales": {
-				"en_US": {
-					"shortName": "ACT",
-					"longName": "Australian Capital Territory"
-				},
-				"en_AU": {
-					"shortName": "ACT",
-					"longName": "Australian Capital Territory"
-				}
-			}
-		},
-		"NSW": {
-			"locales": {
-				"en_US": {
-					"shortName": "NSW",
-					"longName": "New South Wales"
-				},
-				"en_AU": {
-					"shortName": "NSW",
-					"longName": "New South Wales"
-				}
-			}
-		},
-		"NT": {
-			"locales": {
-				"en_US": {
-					"shortName": "NT",
-					"longName": "Northern Territory"
-				},
-				"en_AU": {
-					"shortName": "NT",
-					"longName": "Northern Territory"
-				}
-			}
-		},
-		"QLD": {
-			"locales": {
-				"en_US": {
-					"shortName": "QLD",
-					"longName": "Queensland"
-				},
-				"en_AU": {
-					"shortName": "QLD",
-					"longName": "Queensland"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "SA",
-					"longName": "South Australia"
-				},
-				"en_AU": {
-					"shortName": "SA",
-					"longName": "South Australia"
-				}
-			}
-		},
-		"TAS": {
-			"locales": {
-				"en_US": {
-					"shortName": "TAS",
-					"longName": "Tasmania"
-				},
-				"en_AU": {
-					"shortName": "TAS",
-					"longName": "Tasmania"
-				}
-			}
-		},
-		"VIC": {
-			"locales": {
-				"en_US": {
-					"shortName": "VIC",
-					"longName": "Victoria"
-				},
-				"en_AU": {
-					"shortName": "VIC",
-					"longName": "Victoria"
-				}
-			}
-		},
-		"WA": {
-			"locales": {
-				"en_US": {
-					"shortName": "WA",
-					"longName": "Western Australia"
-				},
-				"en_AU": {
-					"shortName": "WA",
-					"longName": "Western Australia"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-        "href": "/v1/locales/en_AU",
-        "id": "en_AU"
+  "futureExpansion" : { },
+  "countryCode" : "AU",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_AU",
+    "id" : "en_AU"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AUD",
+    "id" : "AUD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/COB",
+    "id" : "COB"
+  } ],
+  "subCountries" : {
+    "ACT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "ACT",
+          "longName" : "Australian Capital Territory"
+        },
+        "en_AU" : {
+          "shortName" : "ACT",
+          "longName" : "Australian Capital Territory"
+        }
+      },
+      "localeAccuracy" : null
     },
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Australia",
-			"longName": "Commonwealth of Australia",
-			"postalCode": "Postal Code"
-		},
-		"en_AU": {
-			"shortName": "Australia",
-			"longName": "Commonwealth of Australia",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+    "NSW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NSW",
+          "longName" : "New South Wales"
+        },
+        "en_AU" : {
+          "shortName" : "NSW",
+          "longName" : "New South Wales"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "NT",
+          "longName" : "Northern Territory"
+        },
+        "en_AU" : {
+          "shortName" : "NT",
+          "longName" : "Northern Territory"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QLD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "QLD",
+          "longName" : "Queensland"
+        },
+        "en_AU" : {
+          "shortName" : "QLD",
+          "longName" : "Queensland"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "SA",
+          "longName" : "South Australia"
+        },
+        "en_AU" : {
+          "shortName" : "SA",
+          "longName" : "South Australia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TAS",
+          "longName" : "Tasmania"
+        },
+        "en_AU" : {
+          "shortName" : "TAS",
+          "longName" : "Tasmania"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VIC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "VIC",
+          "longName" : "Victoria"
+        },
+        "en_AU" : {
+          "shortName" : "VIC",
+          "longName" : "Victoria"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "WA",
+          "longName" : "Western Australia"
+        },
+        "en_AU" : {
+          "shortName" : "WA",
+          "longName" : "Western Australia"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_AU",
+    "id" : "en_AU"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Australia",
+      "longName" : "Commonwealth of Australia",
+      "postalCode" : ""
+    },
+    "en_AU" : {
+      "shortName" : "Australia",
+      "longName" : "Commonwealth of Australia",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Australien",
+      "longName" : "Commonwealth of Australia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Australia",
+      "longName" : "Commonwealth of Australia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Australia",
+      "longName" : "Commonwealth de Australia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Australie",
+      "longName" : "Commonwealth d’Australie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Australia",
+      "longName" : "Commonwealth dell'Australia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "호주",
+      "longName" : "Commonwealth of Australia",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,421 +1,480 @@
 {
-	"countryCode": "DO",
-	"defaultLocale": {
-		"href": "/v1/locales/es_DO",
-		"id": "es_DO"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/DOP",
-		"id": "DOP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Distrito Nacional",
-					"longName": "Distrito Nacional"
-				},
-				"en_US": {
-					"shortName": "Distrito Nacional",
-					"longName": "Distrito Nacional"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Azua",
-					"longName": "Azua"
-				},
-				"en_US": {
-					"shortName": "Azua",
-					"longName": "Azua"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Bahoruco",
-					"longName": "Bahoruco"
-				},
-				"en_US": {
-					"shortName": "Bahoruco",
-					"longName": "Bahoruco"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Barahona",
-					"longName": "Barahona"
-				},
-				"es_DO": {
-					"shortName": "Barahona",
-					"longName": "Barahona"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Dajabón",
-					"longName": "Dajabón"
-				},
-				"en_US": {
-					"shortName": "Dajabón",
-					"longName": "Dajabón"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Duarte",
-					"longName": "Duarte"
-				},
-				"en_US": {
-					"shortName": "Duarte",
-					"longName": "Duarte"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"es_DO": {
-					"shortName": "La Estrelleta",
-					"longName": "La Estrelleta"
-				},
-				"en_US": {
-					"shortName": "La Estrelleta",
-					"longName": "La Estrelleta"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "El Seybo",
-					"longName": "El Seybo"
-				},
-				"es_DO": {
-					"shortName": "El Seybo",
-					"longName": "El Seybo"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Espaillat",
-					"longName": "Espaillat"
-				},
-				"es_DO": {
-					"shortName": "Espaillat",
-					"longName": "Espaillat"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Independencia",
-					"longName": "Independencia"
-				},
-				"en_US": {
-					"shortName": "Independencia",
-					"longName": "Independencia"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"es_DO": {
-					"shortName": "La Altagracia",
-					"longName": "La Altagracia"
-				},
-				"en_US": {
-					"shortName": "La Altagracia",
-					"longName": "La Altagracia"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "La Romana",
-					"longName": "La Romana"
-				},
-				"es_DO": {
-					"shortName": "La Romana",
-					"longName": "La Romana"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "La Vega",
-					"longName": "La Vega"
-				},
-				"es_DO": {
-					"shortName": "La Vega",
-					"longName": "La Vega"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "María Trinidad Sánchez",
-					"longName": "María Trinidad Sánchez"
-				},
-				"es_DO": {
-					"shortName": "María Trinidad Sánchez",
-					"longName": "María Trinidad Sánchez"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Monte Cristi",
-					"longName": "Monte Cristi"
-				},
-				"es_DO": {
-					"shortName": "Monte Cristi",
-					"longName": "Monte Cristi"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pedernales",
-					"longName": "Pedernales"
-				},
-				"es_DO": {
-					"shortName": "Pedernales",
-					"longName": "Pedernales"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Peravia",
-					"longName": "Peravia"
-				},
-				"es_DO": {
-					"shortName": "Peravia",
-					"longName": "Peravia"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Puerto Plata",
-					"longName": "Puerto Plata"
-				},
-				"en_US": {
-					"shortName": "Puerto Plata",
-					"longName": "Puerto Plata"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"en_US": {
-					"shortName": "Salcedo",
-					"longName": "Salcedo"
-				},
-				"es_DO": {
-					"shortName": "Salcedo",
-					"longName": "Salcedo"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Samaná",
-					"longName": "Samaná"
-				},
-				"en_US": {
-					"shortName": "Samaná",
-					"longName": "Samaná"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Cristóbal",
-					"longName": "San Cristóbal"
-				},
-				"es_DO": {
-					"shortName": "San Cristóbal",
-					"longName": "San Cristóbal"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Juan",
-					"longName": "San Juan"
-				},
-				"es_DO": {
-					"shortName": "San Juan",
-					"longName": "San Juan"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"es_DO": {
-					"shortName": "San Pedro de Macorís",
-					"longName": "San Pedro de Macorís"
-				},
-				"en_US": {
-					"shortName": "San Pedro de Macorís",
-					"longName": "San Pedro de Macorís"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sánchez Ramírez",
-					"longName": "Sánchez Ramírez"
-				},
-				"es_DO": {
-					"shortName": "Sánchez Ramírez",
-					"longName": "Sánchez Ramírez"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Santiago",
-					"longName": "Santiago"
-				},
-				"en_US": {
-					"shortName": "Santiago",
-					"longName": "Santiago"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Santiago Rodríguez",
-					"longName": "Santiago Rodríguez"
-				},
-				"en_US": {
-					"shortName": "Santiago Rodríguez",
-					"longName": "Santiago Rodríguez"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"en_US": {
-					"shortName": "Valverde",
-					"longName": "Valverde"
-				},
-				"es_DO": {
-					"shortName": "Valverde",
-					"longName": "Valverde"
-				}
-			}
-		},
-		"28": {
-			"locales": {
-				"en_US": {
-					"shortName": "Monseñor Nouel",
-					"longName": "Monseñor Nouel"
-				},
-				"es_DO": {
-					"shortName": "Monseñor Nouel",
-					"longName": "Monseñor Nouel"
-				}
-			}
-		},
-		"29": {
-			"locales": {
-				"en_US": {
-					"shortName": "Monte Plata",
-					"longName": "Monte Plata"
-				},
-				"es_DO": {
-					"shortName": "Monte Plata",
-					"longName": "Monte Plata"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hato Mayor",
-					"longName": "Hato Mayor"
-				},
-				"es_DO": {
-					"shortName": "Hato Mayor",
-					"longName": "Hato Mayor"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"en_US": {
-					"shortName": "San José de Ocoa",
-					"longName": "San José de Ocoa"
-				},
-				"es_DO": {
-					"shortName": "San José de Ocoa",
-					"longName": "San José de Ocoa"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"es_DO": {
-					"shortName": "Santo Domingo",
-					"longName": "Santo Domingo"
-				},
-				"en_US": {
-					"shortName": "Santo Domingo",
-					"longName": "Santo Domingo"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_DO",
-		"id": "es_DO"
-	},
-	{
-       	"href": "/v1/locales/en_US",
-       	"id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Dominican Republic",
-			"longName": "Dominican Republic",
-			"postalCode": "Postal Code"
-		},
-		"es_Do": {
-			"shortName": "República Dominicana",
-			"longName": "República Dominicana",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "DO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_DO",
+    "id" : "es_DO"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/DOP",
+    "id" : "DOP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Distrito Nacional",
+          "longName" : "Distrito Nacional"
+        },
+        "en_US" : {
+          "shortName" : "Distrito Nacional",
+          "longName" : "Distrito Nacional"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Azua",
+          "longName" : "Azua"
+        },
+        "en_US" : {
+          "shortName" : "Azua",
+          "longName" : "Azua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Bahoruco",
+          "longName" : "Bahoruco"
+        },
+        "en_US" : {
+          "shortName" : "Bahoruco",
+          "longName" : "Bahoruco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Barahona",
+          "longName" : "Barahona"
+        },
+        "es_DO" : {
+          "shortName" : "Barahona",
+          "longName" : "Barahona"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Dajabón",
+          "longName" : "Dajabón"
+        },
+        "en_US" : {
+          "shortName" : "Dajabón",
+          "longName" : "Dajabón"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Duarte",
+          "longName" : "Duarte"
+        },
+        "en_US" : {
+          "shortName" : "Duarte",
+          "longName" : "Duarte"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "La Estrelleta",
+          "longName" : "La Estrelleta"
+        },
+        "en_US" : {
+          "shortName" : "La Estrelleta",
+          "longName" : "La Estrelleta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "El Seybo",
+          "longName" : "El Seybo"
+        },
+        "es_DO" : {
+          "shortName" : "El Seybo",
+          "longName" : "El Seybo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Espaillat",
+          "longName" : "Espaillat"
+        },
+        "es_DO" : {
+          "shortName" : "Espaillat",
+          "longName" : "Espaillat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Independencia",
+          "longName" : "Independencia"
+        },
+        "en_US" : {
+          "shortName" : "Independencia",
+          "longName" : "Independencia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "La Altagracia",
+          "longName" : "La Altagracia"
+        },
+        "en_US" : {
+          "shortName" : "La Altagracia",
+          "longName" : "La Altagracia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "La Romana",
+          "longName" : "La Romana"
+        },
+        "es_DO" : {
+          "shortName" : "La Romana",
+          "longName" : "La Romana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "La Vega",
+          "longName" : "La Vega"
+        },
+        "es_DO" : {
+          "shortName" : "La Vega",
+          "longName" : "La Vega"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "María Trinidad Sánchez",
+          "longName" : "María Trinidad Sánchez"
+        },
+        "es_DO" : {
+          "shortName" : "María Trinidad Sánchez",
+          "longName" : "María Trinidad Sánchez"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Monte Cristi",
+          "longName" : "Monte Cristi"
+        },
+        "es_DO" : {
+          "shortName" : "Monte Cristi",
+          "longName" : "Monte Cristi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pedernales",
+          "longName" : "Pedernales"
+        },
+        "es_DO" : {
+          "shortName" : "Pedernales",
+          "longName" : "Pedernales"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Peravia",
+          "longName" : "Peravia"
+        },
+        "es_DO" : {
+          "shortName" : "Peravia",
+          "longName" : "Peravia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Puerto Plata",
+          "longName" : "Puerto Plata"
+        },
+        "en_US" : {
+          "shortName" : "Puerto Plata",
+          "longName" : "Puerto Plata"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Salcedo",
+          "longName" : "Salcedo"
+        },
+        "es_DO" : {
+          "shortName" : "Salcedo",
+          "longName" : "Salcedo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Samaná",
+          "longName" : "Samaná"
+        },
+        "en_US" : {
+          "shortName" : "Samaná",
+          "longName" : "Samaná"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Cristóbal",
+          "longName" : "San Cristóbal"
+        },
+        "es_DO" : {
+          "shortName" : "San Cristóbal",
+          "longName" : "San Cristóbal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Juan",
+          "longName" : "San Juan"
+        },
+        "es_DO" : {
+          "shortName" : "San Juan",
+          "longName" : "San Juan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "San Pedro de Macorís",
+          "longName" : "San Pedro de Macorís"
+        },
+        "en_US" : {
+          "shortName" : "San Pedro de Macorís",
+          "longName" : "San Pedro de Macorís"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sánchez Ramírez",
+          "longName" : "Sánchez Ramírez"
+        },
+        "es_DO" : {
+          "shortName" : "Sánchez Ramírez",
+          "longName" : "Sánchez Ramírez"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Santiago",
+          "longName" : "Santiago"
+        },
+        "en_US" : {
+          "shortName" : "Santiago",
+          "longName" : "Santiago"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Santiago Rodríguez",
+          "longName" : "Santiago Rodríguez"
+        },
+        "en_US" : {
+          "shortName" : "Santiago Rodríguez",
+          "longName" : "Santiago Rodríguez"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Valverde",
+          "longName" : "Valverde"
+        },
+        "es_DO" : {
+          "shortName" : "Valverde",
+          "longName" : "Valverde"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "28" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Monseñor Nouel",
+          "longName" : "Monseñor Nouel"
+        },
+        "es_DO" : {
+          "shortName" : "Monseñor Nouel",
+          "longName" : "Monseñor Nouel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "29" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Monte Plata",
+          "longName" : "Monte Plata"
+        },
+        "es_DO" : {
+          "shortName" : "Monte Plata",
+          "longName" : "Monte Plata"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hato Mayor",
+          "longName" : "Hato Mayor"
+        },
+        "es_DO" : {
+          "shortName" : "Hato Mayor",
+          "longName" : "Hato Mayor"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San José de Ocoa",
+          "longName" : "San José de Ocoa"
+        },
+        "es_DO" : {
+          "shortName" : "San José de Ocoa",
+          "longName" : "San José de Ocoa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "es_DO" : {
+          "shortName" : "Santo Domingo",
+          "longName" : "Santo Domingo"
+        },
+        "en_US" : {
+          "shortName" : "Santo Domingo",
+          "longName" : "Santo Domingo"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_DO",
+    "id" : "es_DO"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Dominican Republic",
+      "longName" : "Dominican Republic",
+      "postalCode" : ""
+    },
+    "es_Do" : {
+      "shortName" : "República Dominicana",
+      "longName" : "República Dominicana",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Dominikanische Republik",
+      "longName" : "Dominikanische Republik",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Dominican Republic",
+      "longName" : "Dominican Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "República Dominicana",
+      "longName" : "República Dominicana",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "République Dominicaine",
+      "longName" : "République Dominicaine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Repubblica Dominicana",
+      "longName" : "Repubblica Dominicana",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "도미니카 공화국",
+      "longName" : "도미니카 공화국",
+      "postalCode" : ""
+    }
+  }
 }

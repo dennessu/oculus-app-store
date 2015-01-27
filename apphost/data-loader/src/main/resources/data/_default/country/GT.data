@@ -1,301 +1,350 @@
 {
-	"countryCode": "GT",
-	"defaultLocale": {
-		"href": "/v1/locales/es_GT",
-		"id": "es_GT"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/GTQ",
-		"id": "GTQ"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AV": {
-			"locales": {
-				"es_GT": {
-					"shortName": "Alta Verapaz",
-					"longName": "Alta Verapaz"
-				},
-				"en_US": {
-					"shortName": "Alta Verapaz",
-					"longName": "Alta Verapaz"
-				}
-			}
-		},
-		"BV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Baja Verapaz",
-					"longName": "Baja Verapaz"
-				},
-				"es_GT": {
-					"shortName": "Baja Verapaz",
-					"longName": "Baja Verapaz"
-				}
-			}
-		},
-		"CM": {
-			"locales": {
-				"es_GT": {
-					"shortName": "Chimaltenango",
-					"longName": "Chimaltenango"
-				},
-				"en_US": {
-					"shortName": "Chimaltenango",
-					"longName": "Chimaltenango"
-				}
-			}
-		},
-		"CQ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chiquimula",
-					"longName": "Chiquimula"
-				},
-				"es_GT": {
-					"shortName": "Chiquimula",
-					"longName": "Chiquimula"
-				}
-			}
-		},
-		"ES": {
-			"locales": {
-				"es_GT": {
-					"shortName": "Escuintla",
-					"longName": "Escuintla"
-				},
-				"en_US": {
-					"shortName": "Escuintla",
-					"longName": "Escuintla"
-				}
-			}
-		},
-		"GU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Guatemala",
-					"longName": "Guatemala"
-				},
-				"es_GT": {
-					"shortName": "Guatemala",
-					"longName": "Guatemala"
-				}
-			}
-		},
-		"HU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Huehuetenango",
-					"longName": "Huehuetenango"
-				},
-				"es_GT": {
-					"shortName": "Huehuetenango",
-					"longName": "Huehuetenango"
-				}
-			}
-		},
-		"IZ": {
-			"locales": {
-				"es_GT": {
-					"shortName": "Izabal",
-					"longName": "Izabal"
-				},
-				"en_US": {
-					"shortName": "Izabal",
-					"longName": "Izabal"
-				}
-			}
-		},
-		"JA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jalapa",
-					"longName": "Jalapa"
-				},
-				"es_GT": {
-					"shortName": "Jalapa",
-					"longName": "Jalapa"
-				}
-			}
-		},
-		"JU": {
-			"locales": {
-				"es_GT": {
-					"shortName": "Jutiapa",
-					"longName": "Jutiapa"
-				},
-				"en_US": {
-					"shortName": "Jutiapa",
-					"longName": "Jutiapa"
-				}
-			}
-		},
-		"PE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Petén",
-					"longName": "Petén"
-				},
-				"es_GT": {
-					"shortName": "Petén",
-					"longName": "Petén"
-				}
-			}
-		},
-		"PR": {
-			"locales": {
-				"en_US": {
-					"shortName": "El Progreso",
-					"longName": "El Progreso"
-				},
-				"es_GT": {
-					"shortName": "El Progreso",
-					"longName": "El Progreso"
-				}
-			}
-		},
-		"QC": {
-			"locales": {
-				"es_GT": {
-					"shortName": "Quiché",
-					"longName": "Quiché"
-				},
-				"en_US": {
-					"shortName": "Quiché",
-					"longName": "Quiché"
-				}
-			}
-		},
-		"QZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Quetzaltenango",
-					"longName": "Quetzaltenango"
-				},
-				"es_GT": {
-					"shortName": "Quetzaltenango",
-					"longName": "Quetzaltenango"
-				}
-			}
-		},
-		"RE": {
-			"locales": {
-				"es_GT": {
-					"shortName": "Retalhuleu",
-					"longName": "Retalhuleu"
-				},
-				"en_US": {
-					"shortName": "Retalhuleu",
-					"longName": "Retalhuleu"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"es_GT": {
-					"shortName": "Sacatepéquez",
-					"longName": "Sacatepéquez"
-				},
-				"en_US": {
-					"shortName": "Sacatepéquez",
-					"longName": "Sacatepéquez"
-				}
-			}
-		},
-		"SM": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Marcos",
-					"longName": "San Marcos"
-				},
-				"es_GT": {
-					"shortName": "San Marcos",
-					"longName": "San Marcos"
-				}
-			}
-		},
-		"SO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sololá",
-					"longName": "Sololá"
-				},
-				"es_GT": {
-					"shortName": "Sololá",
-					"longName": "Sololá"
-				}
-			}
-		},
-		"SR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Santa Rosa",
-					"longName": "Santa Rosa"
-				},
-				"es_GT": {
-					"shortName": "Santa Rosa",
-					"longName": "Santa Rosa"
-				}
-			}
-		},
-		"SU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Suchitepéquez",
-					"longName": "Suchitepéquez"
-				},
-				"es_GT": {
-					"shortName": "Suchitepéquez",
-					"longName": "Suchitepéquez"
-				}
-			}
-		},
-		"TO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Totonicapán",
-					"longName": "Totonicapán"
-				},
-				"es_GT": {
-					"shortName": "Totonicapán",
-					"longName": "Totonicapán"
-				}
-			}
-		},
-		"ZA": {
-			"locales": {
-				"es_GT": {
-					"shortName": "Zacapa",
-					"longName": "Zacapa"
-				},
-				"en_US": {
-					"shortName": "Zacapa",
-					"longName": "Zacapa"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_GT",
-		"id": "es_GT"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Guatemala",
-			"longName": "Republic of Guatemala",
-			"postalCode": "Postal Code"
-		},
-		"es_GT": {
-			"shortName": "Guatemala",
-			"longName": "República de Guatemala",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "GT",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_GT",
+    "id" : "es_GT"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/GTQ",
+    "id" : "GTQ"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AV" : {
+      "locales" : {
+        "es_GT" : {
+          "shortName" : "Alta Verapaz",
+          "longName" : "Alta Verapaz"
+        },
+        "en_US" : {
+          "shortName" : "Alta Verapaz",
+          "longName" : "Alta Verapaz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Baja Verapaz",
+          "longName" : "Baja Verapaz"
+        },
+        "es_GT" : {
+          "shortName" : "Baja Verapaz",
+          "longName" : "Baja Verapaz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CM" : {
+      "locales" : {
+        "es_GT" : {
+          "shortName" : "Chimaltenango",
+          "longName" : "Chimaltenango"
+        },
+        "en_US" : {
+          "shortName" : "Chimaltenango",
+          "longName" : "Chimaltenango"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CQ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chiquimula",
+          "longName" : "Chiquimula"
+        },
+        "es_GT" : {
+          "shortName" : "Chiquimula",
+          "longName" : "Chiquimula"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ES" : {
+      "locales" : {
+        "es_GT" : {
+          "shortName" : "Escuintla",
+          "longName" : "Escuintla"
+        },
+        "en_US" : {
+          "shortName" : "Escuintla",
+          "longName" : "Escuintla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Guatemala",
+          "longName" : "Guatemala"
+        },
+        "es_GT" : {
+          "shortName" : "Guatemala",
+          "longName" : "Guatemala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Huehuetenango",
+          "longName" : "Huehuetenango"
+        },
+        "es_GT" : {
+          "shortName" : "Huehuetenango",
+          "longName" : "Huehuetenango"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IZ" : {
+      "locales" : {
+        "es_GT" : {
+          "shortName" : "Izabal",
+          "longName" : "Izabal"
+        },
+        "en_US" : {
+          "shortName" : "Izabal",
+          "longName" : "Izabal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jalapa",
+          "longName" : "Jalapa"
+        },
+        "es_GT" : {
+          "shortName" : "Jalapa",
+          "longName" : "Jalapa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JU" : {
+      "locales" : {
+        "es_GT" : {
+          "shortName" : "Jutiapa",
+          "longName" : "Jutiapa"
+        },
+        "en_US" : {
+          "shortName" : "Jutiapa",
+          "longName" : "Jutiapa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Petén",
+          "longName" : "Petén"
+        },
+        "es_GT" : {
+          "shortName" : "Petén",
+          "longName" : "Petén"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "El Progreso",
+          "longName" : "El Progreso"
+        },
+        "es_GT" : {
+          "shortName" : "El Progreso",
+          "longName" : "El Progreso"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QC" : {
+      "locales" : {
+        "es_GT" : {
+          "shortName" : "Quiché",
+          "longName" : "Quiché"
+        },
+        "en_US" : {
+          "shortName" : "Quiché",
+          "longName" : "Quiché"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Quetzaltenango",
+          "longName" : "Quetzaltenango"
+        },
+        "es_GT" : {
+          "shortName" : "Quetzaltenango",
+          "longName" : "Quetzaltenango"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RE" : {
+      "locales" : {
+        "es_GT" : {
+          "shortName" : "Retalhuleu",
+          "longName" : "Retalhuleu"
+        },
+        "en_US" : {
+          "shortName" : "Retalhuleu",
+          "longName" : "Retalhuleu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "es_GT" : {
+          "shortName" : "Sacatepéquez",
+          "longName" : "Sacatepéquez"
+        },
+        "en_US" : {
+          "shortName" : "Sacatepéquez",
+          "longName" : "Sacatepéquez"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Marcos",
+          "longName" : "San Marcos"
+        },
+        "es_GT" : {
+          "shortName" : "San Marcos",
+          "longName" : "San Marcos"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sololá",
+          "longName" : "Sololá"
+        },
+        "es_GT" : {
+          "shortName" : "Sololá",
+          "longName" : "Sololá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Santa Rosa",
+          "longName" : "Santa Rosa"
+        },
+        "es_GT" : {
+          "shortName" : "Santa Rosa",
+          "longName" : "Santa Rosa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Suchitepéquez",
+          "longName" : "Suchitepéquez"
+        },
+        "es_GT" : {
+          "shortName" : "Suchitepéquez",
+          "longName" : "Suchitepéquez"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Totonicapán",
+          "longName" : "Totonicapán"
+        },
+        "es_GT" : {
+          "shortName" : "Totonicapán",
+          "longName" : "Totonicapán"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZA" : {
+      "locales" : {
+        "es_GT" : {
+          "shortName" : "Zacapa",
+          "longName" : "Zacapa"
+        },
+        "en_US" : {
+          "shortName" : "Zacapa",
+          "longName" : "Zacapa"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_GT",
+    "id" : "es_GT"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Guatemala",
+      "longName" : "Republic of Guatemala",
+      "postalCode" : ""
+    },
+    "es_GT" : {
+      "shortName" : "Guatemala",
+      "longName" : "República de Guatemala",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Guatemala",
+      "longName" : "Republic of Guatemala",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Guatemala",
+      "longName" : "Republic of Guatemala",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Guatemala",
+      "longName" : "República de Guatemala",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Guatemala",
+      "longName" : "République du Guatemala",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Guatemala",
+      "longName" : "Repubblica del Guatemala",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "과테말라",
+      "longName" : "Republic of Guatemala",
+      "postalCode" : ""
+    }
+  }
 }

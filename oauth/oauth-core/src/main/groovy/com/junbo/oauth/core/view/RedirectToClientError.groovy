@@ -11,6 +11,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.util.OAuthInfoUtil
+import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -76,7 +77,7 @@ class RedirectToClientError implements Action {
                 realUrl = realUrl.replaceFirst('/country', '/' + contextWrapper.viewCountry)
             }
             if (contextWrapper.viewLocale != null) {
-                realUrl = realUrl.replaceFirst('/locale', '/' + contextWrapper.viewLocale)
+                realUrl = UriUtil.replaceLocale(realUrl, contextWrapper.viewLocale);
             }
 
             uriBuilder = UriComponentsBuilder.fromHttpUrl(realUrl)

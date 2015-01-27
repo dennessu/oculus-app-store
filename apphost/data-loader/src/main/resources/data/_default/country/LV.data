@@ -1,1465 +1,1611 @@
 {
-	"countryCode": "LV",
-	"defaultLocale": {
-		"href": "/v1/locales/lv_LV",
-		"id": "lv_LV"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"001": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Aglonas novads",
-					"longName": "Aglonas novads"
-				},
-				"en_US": {
-					"shortName": "Aglona municipality",
-					"longName": "Aglona municipality"
-				}
-			}
-		},
-		"002": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Aizkraukles novads",
-					"longName": "Aizkraukles novads"
-				},
-				"en_US": {
-					"shortName": "Aizkraukle municipality",
-					"longName": "Aizkraukle municipality"
-				}
-			}
-		},
-		"003": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Aizputes novads",
-					"longName": "Aizputes novads"
-				},
-				"en_US": {
-					"shortName": "Aizpute municipality",
-					"longName": "Aizpute municipality"
-				}
-			}
-		},
-		"004": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aknīste municipality",
-					"longName": "Aknīste municipality"
-				},
-				"he_IL": {
-					"shortName": "Aknīstes novads",
-					"longName": "Aknīstes novads"
-				}
-			}
-		},
-		"005": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Alojas novads",
-					"longName": "Alojas novads"
-				},
-				"en_US": {
-					"shortName": "Aloja municipality",
-					"longName": "Aloja municipality"
-				}
-			}
-		},
-		"006": {
-			"locales": {
-				"en_US": {
-					"shortName": "Alsunga municipality",
-					"longName": "Alsunga municipality"
-				},
-				"he_IL": {
-					"shortName": "Alsungas novads",
-					"longName": "Alsungas novads"
-				}
-			}
-		},
-		"007": {
-			"locales": {
-				"en_US": {
-					"shortName": "Alūksne municipality",
-					"longName": "Alūksne municipality"
-				},
-				"he_IL": {
-					"shortName": "Alūksnes novads",
-					"longName": "Alūksnes novads"
-				}
-			}
-		},
-		"008": {
-			"locales": {
-				"en_US": {
-					"shortName": "Amata municipality",
-					"longName": "Amata municipality"
-				},
-				"he_IL": {
-					"shortName": "Amatas novads",
-					"longName": "Amatas novads"
-				}
-			}
-		},
-		"009": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ape municipality",
-					"longName": "Ape municipality"
-				},
-				"he_IL": {
-					"shortName": "Apes novads",
-					"longName": "Apes novads"
-				}
-			}
-		},
-		"010": {
-			"locales": {
-				"en_US": {
-					"shortName": "Auce municipality",
-					"longName": "Auce municipality"
-				},
-				"he_IL": {
-					"shortName": "Auces novads",
-					"longName": "Auces novads"
-				}
-			}
-		},
-		"011": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Ādažu novads",
-					"longName": "Ādažu novads"
-				},
-				"en_US": {
-					"shortName": "Ādaži municipality",
-					"longName": "Ādaži municipality"
-				}
-			}
-		},
-		"012": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Babītes novads",
-					"longName": "Babītes novads"
-				},
-				"en_US": {
-					"shortName": "Babīte municipality",
-					"longName": "Babīte municipality"
-				}
-			}
-		},
-		"013": {
-			"locales": {
-				"en_US": {
-					"shortName": "Baldone municipality",
-					"longName": "Baldone municipality"
-				},
-				"he_IL": {
-					"shortName": "Baldones novads",
-					"longName": "Baldones novads"
-				}
-			}
-		},
-		"014": {
-			"locales": {
-				"en_US": {
-					"shortName": "Baltinava municipality",
-					"longName": "Baltinava municipality"
-				},
-				"he_IL": {
-					"shortName": "Baltinavas novads",
-					"longName": "Baltinavas novads"
-				}
-			}
-		},
-		"015": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Balvu novads",
-					"longName": "Balvu novads"
-				},
-				"en_US": {
-					"shortName": "Balvi municipality",
-					"longName": "Balvi municipality"
-				}
-			}
-		},
-		"016": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Bauskas novads",
-					"longName": "Bauskas novads"
-				},
-				"en_US": {
-					"shortName": "Bauska municipality",
-					"longName": "Bauska municipality"
-				}
-			}
-		},
-		"017": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Beverīnas novads",
-					"longName": "Beverīnas novads"
-				},
-				"en_US": {
-					"shortName": "Beverīna municipality",
-					"longName": "Beverīna municipality"
-				}
-			}
-		},
-		"018": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Brocēnu novads",
-					"longName": "Brocēnu novads"
-				},
-				"en_US": {
-					"shortName": "Brocēni municipality",
-					"longName": "Brocēni municipality"
-				}
-			}
-		},
-		"019": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Burtnieku novads",
-					"longName": "Burtnieku novads"
-				},
-				"en_US": {
-					"shortName": "Burtnieki municipality",
-					"longName": "Burtnieki municipality"
-				}
-			}
-		},
-		"020": {
-			"locales": {
-				"en_US": {
-					"shortName": "Carnikava municipality",
-					"longName": "Carnikava municipality"
-				},
-				"he_IL": {
-					"shortName": "Carnikavas novads",
-					"longName": "Carnikavas novads"
-				}
-			}
-		},
-		"021": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cesvaine municipality",
-					"longName": "Cesvaine municipality"
-				},
-				"he_IL": {
-					"shortName": "Cesvaines novads",
-					"longName": "Cesvaines novads"
-				}
-			}
-		},
-		"022": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Cēsu novads",
-					"longName": "Cēsu novads"
-				},
-				"en_US": {
-					"shortName": "Cēsis municipality",
-					"longName": "Cēsis municipality"
-				}
-			}
-		},
-		"023": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cibla municipality",
-					"longName": "Cibla municipality"
-				},
-				"he_IL": {
-					"shortName": "Ciblas novads",
-					"longName": "Ciblas novads"
-				}
-			}
-		},
-		"024": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dagda municipality",
-					"longName": "Dagda municipality"
-				},
-				"he_IL": {
-					"shortName": "Dagdas novads",
-					"longName": "Dagdas novads"
-				}
-			}
-		},
-		"025": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Daugavpils novads",
-					"longName": "Daugavpils novads"
-				},
-				"en_US": {
-					"shortName": "Daugavpils municipality",
-					"longName": "Daugavpils municipality"
-				}
-			}
-		},
-		"026": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dobele municipality",
-					"longName": "Dobele municipality"
-				},
-				"he_IL": {
-					"shortName": "Dobeles novads",
-					"longName": "Dobeles novads"
-				}
-			}
-		},
-		"027": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Dundagas novads",
-					"longName": "Dundagas novads"
-				},
-				"en_US": {
-					"shortName": "Dundaga municipality",
-					"longName": "Dundaga municipality"
-				}
-			}
-		},
-		"028": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Durbes novads",
-					"longName": "Durbes novads"
-				},
-				"en_US": {
-					"shortName": "Durbe municipality",
-					"longName": "Durbe municipality"
-				}
-			}
-		},
-		"029": {
-			"locales": {
-				"en_US": {
-					"shortName": "Engure municipality",
-					"longName": "Engure municipality"
-				},
-				"he_IL": {
-					"shortName": "Engures novads",
-					"longName": "Engures novads"
-				}
-			}
-		},
-		"030": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ērgļi municipality",
-					"longName": "Ērgļi municipality"
-				},
-				"he_IL": {
-					"shortName": "Ērgļu novads",
-					"longName": "Ērgļu novads"
-				}
-			}
-		},
-		"031": {
-			"locales": {
-				"en_US": {
-					"shortName": "Garkalne municipality",
-					"longName": "Garkalne municipality"
-				},
-				"he_IL": {
-					"shortName": "Garkalnes novads",
-					"longName": "Garkalnes novads"
-				}
-			}
-		},
-		"032": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Grobiņas novads",
-					"longName": "Grobiņas novads"
-				},
-				"en_US": {
-					"shortName": "Grobiņa municipality",
-					"longName": "Grobiņa municipality"
-				}
-			}
-		},
-		"033": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Gulbenes novads",
-					"longName": "Gulbenes novads"
-				},
-				"en_US": {
-					"shortName": "Gulbene municipality",
-					"longName": "Gulbene municipality"
-				}
-			}
-		},
-		"034": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Iecavas novads",
-					"longName": "Iecavas novads"
-				},
-				"en_US": {
-					"shortName": "Iecava municipality",
-					"longName": "Iecava municipality"
-				}
-			}
-		},
-		"035": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Ikšķiles novads",
-					"longName": "Ikšķiles novads"
-				},
-				"en_US": {
-					"shortName": "Ikšķile municipality",
-					"longName": "Ikšķile municipality"
-				}
-			}
-		},
-		"036": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Ilūkstes novads",
-					"longName": "Ilūkstes novads"
-				},
-				"en_US": {
-					"shortName": "Ilūkste municipality",
-					"longName": "Ilūkste municipality"
-				}
-			}
-		},
-		"037": {
-			"locales": {
-				"en_US": {
-					"shortName": "Inčukalns municipality",
-					"longName": "Inčukalns municipality"
-				},
-				"he_IL": {
-					"shortName": "Inčukalna novads",
-					"longName": "Inčukalna novads"
-				}
-			}
-		},
-		"038": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Jaunjelgavas novads",
-					"longName": "Jaunjelgavas novads"
-				},
-				"en_US": {
-					"shortName": "Jaunjelgava municipality",
-					"longName": "Jaunjelgava municipality"
-				}
-			}
-		},
-		"039": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Jaunpiebalgas novads",
-					"longName": "Jaunpiebalgas novads"
-				},
-				"en_US": {
-					"shortName": "Jaunpiebalga municipality",
-					"longName": "Jaunpiebalga municipality"
-				}
-			}
-		},
-		"040": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Jaunpils novads",
-					"longName": "Jaunpils novads"
-				},
-				"en_US": {
-					"shortName": "Jaunpils municipality",
-					"longName": "Jaunpils municipality"
-				}
-			}
-		},
-		"041": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jelgava municipality",
-					"longName": "Jelgava municipality"
-				},
-				"he_IL": {
-					"shortName": "Jelgavas novads",
-					"longName": "Jelgavas novads"
-				}
-			}
-		},
-		"042": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Jēkabpils novads",
-					"longName": "Jēkabpils novads"
-				},
-				"en_US": {
-					"shortName": "Jēkabpils municipality",
-					"longName": "Jēkabpils municipality"
-				}
-			}
-		},
-		"043": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kandava municipality",
-					"longName": "Kandava municipality"
-				},
-				"he_IL": {
-					"shortName": "Kandavas novads",
-					"longName": "Kandavas novads"
-				}
-			}
-		},
-		"044": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kārsava municipality",
-					"longName": "Kārsava municipality"
-				},
-				"he_IL": {
-					"shortName": "Kārsavas novads",
-					"longName": "Kārsavas novads"
-				}
-			}
-		},
-		"045": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kocēni municipality",
-					"longName": "Kocēni municipality"
-				},
-				"he_IL": {
-					"shortName": "Kocēnu novads",
-					"longName": "Kocēnu novads"
-				}
-			}
-		},
-		"046": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Kokneses novads",
-					"longName": "Kokneses novads"
-				},
-				"en_US": {
-					"shortName": "Koknese municipality",
-					"longName": "Koknese municipality"
-				}
-			}
-		},
-		"047": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Krāslavas novads",
-					"longName": "Krāslavas novads"
-				},
-				"en_US": {
-					"shortName": "Krāslava municipality",
-					"longName": "Krāslava municipality"
-				}
-			}
-		},
-		"048": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Krimuldas novads",
-					"longName": "Krimuldas novads"
-				},
-				"en_US": {
-					"shortName": "Krimulda municipality",
-					"longName": "Krimulda municipality"
-				}
-			}
-		},
-		"049": {
-			"locales": {
-				"en_US": {
-					"shortName": "Krustpils municipality",
-					"longName": "Krustpils municipality"
-				},
-				"he_IL": {
-					"shortName": "Krustpils novads",
-					"longName": "Krustpils novads"
-				}
-			}
-		},
-		"050": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Kuldīgas novads",
-					"longName": "Kuldīgas novads"
-				},
-				"en_US": {
-					"shortName": "Kuldīga municipality",
-					"longName": "Kuldīga municipality"
-				}
-			}
-		},
-		"051": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ķegums municipality",
-					"longName": "Ķegums municipality"
-				},
-				"he_IL": {
-					"shortName": "Ķeguma novads",
-					"longName": "Ķeguma novads"
-				}
-			}
-		},
-		"052": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ķekava municipality",
-					"longName": "Ķekava municipality"
-				},
-				"he_IL": {
-					"shortName": "Ķekavas novads",
-					"longName": "Ķekavas novads"
-				}
-			}
-		},
-		"053": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Lielvārdes novads",
-					"longName": "Lielvārdes novads"
-				},
-				"en_US": {
-					"shortName": "Lielvārde municipality",
-					"longName": "Lielvārde municipality"
-				}
-			}
-		},
-		"054": {
-			"locales": {
-				"en_US": {
-					"shortName": "Limbaži municipality",
-					"longName": "Limbaži municipality"
-				},
-				"he_IL": {
-					"shortName": "Limbažu novads",
-					"longName": "Limbažu novads"
-				}
-			}
-		},
-		"055": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Līgatnes novads",
-					"longName": "Līgatnes novads"
-				},
-				"en_US": {
-					"shortName": "Līgatne municipality",
-					"longName": "Līgatne municipality"
-				}
-			}
-		},
-		"056": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Līvānu novads",
-					"longName": "Līvānu novads"
-				},
-				"en_US": {
-					"shortName": "Līvāni municipality",
-					"longName": "Līvāni municipality"
-				}
-			}
-		},
-		"057": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Lubānas novads",
-					"longName": "Lubānas novads"
-				},
-				"en_US": {
-					"shortName": "Lubāna municipality",
-					"longName": "Lubāna municipality"
-				}
-			}
-		},
-		"058": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Ludzas novads",
-					"longName": "Ludzas novads"
-				},
-				"en_US": {
-					"shortName": "Ludza municipality",
-					"longName": "Ludza municipality"
-				}
-			}
-		},
-		"059": {
-			"locales": {
-				"en_US": {
-					"shortName": "Madona municipality",
-					"longName": "Madona municipality"
-				},
-				"he_IL": {
-					"shortName": "Madonas novads",
-					"longName": "Madonas novads"
-				}
-			}
-		},
-		"060": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mazsalaca municipality",
-					"longName": "Mazsalaca municipality"
-				},
-				"he_IL": {
-					"shortName": "Mazsalacas novads",
-					"longName": "Mazsalacas novads"
-				}
-			}
-		},
-		"061": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Mālpils novads",
-					"longName": "Mālpils novads"
-				},
-				"en_US": {
-					"shortName": "Mālpils municipality",
-					"longName": "Mālpils municipality"
-				}
-			}
-		},
-		"062": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mārupe municipality",
-					"longName": "Mārupe municipality"
-				},
-				"he_IL": {
-					"shortName": "Mārupes novads",
-					"longName": "Mārupes novads"
-				}
-			}
-		},
-		"063": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Mērsraga novads",
-					"longName": "Mērsraga novads"
-				},
-				"en_US": {
-					"shortName": "Mērsrags municipality",
-					"longName": "Mērsrags municipality"
-				}
-			}
-		},
-		"064": {
-			"locales": {
-				"en_US": {
-					"shortName": "Naukšēni municipality",
-					"longName": "Naukšēni municipality"
-				},
-				"he_IL": {
-					"shortName": "Naukšēnu novads",
-					"longName": "Naukšēnu novads"
-				}
-			}
-		},
-		"065": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Neretas novads",
-					"longName": "Neretas novads"
-				},
-				"en_US": {
-					"shortName": "Nereta municipality",
-					"longName": "Nereta municipality"
-				}
-			}
-		},
-		"066": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Nīcas novads",
-					"longName": "Nīcas novads"
-				},
-				"en_US": {
-					"shortName": "Nīca municipality",
-					"longName": "Nīca municipality"
-				}
-			}
-		},
-		"067": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Ogres novads",
-					"longName": "Ogres novads"
-				},
-				"en_US": {
-					"shortName": "Ogre municipality",
-					"longName": "Ogre municipality"
-				}
-			}
-		},
-		"068": {
-			"locales": {
-				"en_US": {
-					"shortName": "Olaine municipality",
-					"longName": "Olaine municipality"
-				},
-				"he_IL": {
-					"shortName": "Olaines novads",
-					"longName": "Olaines novads"
-				}
-			}
-		},
-		"069": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Ozolnieku novads",
-					"longName": "Ozolnieku novads"
-				},
-				"en_US": {
-					"shortName": "Ozolnieki municipality",
-					"longName": "Ozolnieki municipality"
-				}
-			}
-		},
-		"070": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pārgauja municipality",
-					"longName": "Pārgauja municipality"
-				},
-				"he_IL": {
-					"shortName": "Pārgaujas novads",
-					"longName": "Pārgaujas novads"
-				}
-			}
-		},
-		"071": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Pāvilostas novads",
-					"longName": "Pāvilostas novads"
-				},
-				"en_US": {
-					"shortName": "Pāvilosta municipality",
-					"longName": "Pāvilosta municipality"
-				}
-			}
-		},
-		"072": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pļaviņas municipality",
-					"longName": "Pļaviņas municipality"
-				},
-				"he_IL": {
-					"shortName": "Pļaviņu novads",
-					"longName": "Pļaviņu novads"
-				}
-			}
-		},
-		"073": {
-			"locales": {
-				"en_US": {
-					"shortName": "Preiļi municipality",
-					"longName": "Preiļi municipality"
-				},
-				"he_IL": {
-					"shortName": "Preiļu novads",
-					"longName": "Preiļu novads"
-				}
-			}
-		},
-		"074": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Priekules novads",
-					"longName": "Priekules novads"
-				},
-				"en_US": {
-					"shortName": "Priekule municipality",
-					"longName": "Priekule municipality"
-				}
-			}
-		},
-		"075": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Priekuļu novads",
-					"longName": "Priekuļu novads"
-				},
-				"en_US": {
-					"shortName": "Priekuļi municipality",
-					"longName": "Priekuļi municipality"
-				}
-			}
-		},
-		"076": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rauna municipality",
-					"longName": "Rauna municipality"
-				},
-				"he_IL": {
-					"shortName": "Raunas novads",
-					"longName": "Raunas novads"
-				}
-			}
-		},
-		"077": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Rēzeknes novads",
-					"longName": "Rēzeknes novads"
-				},
-				"en_US": {
-					"shortName": "Rēzekne municipality",
-					"longName": "Rēzekne municipality"
-				}
-			}
-		},
-		"078": {
-			"locales": {
-				"en_US": {
-					"shortName": "Riebiņi municipality",
-					"longName": "Riebiņi municipality"
-				},
-				"he_IL": {
-					"shortName": "Riebiņu novads",
-					"longName": "Riebiņu novads"
-				}
-			}
-		},
-		"079": {
-			"locales": {
-				"en_US": {
-					"shortName": "Roja municipality",
-					"longName": "Roja municipality"
-				},
-				"he_IL": {
-					"shortName": "Rojas novads",
-					"longName": "Rojas novads"
-				}
-			}
-		},
-		"080": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Ropažu novads",
-					"longName": "Ropažu novads"
-				},
-				"en_US": {
-					"shortName": "Ropaži municipality",
-					"longName": "Ropaži municipality"
-				}
-			}
-		},
-		"081": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rucava municipality",
-					"longName": "Rucava municipality"
-				},
-				"he_IL": {
-					"shortName": "Rucavas novads",
-					"longName": "Rucavas novads"
-				}
-			}
-		},
-		"082": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Rugāju novads",
-					"longName": "Rugāju novads"
-				},
-				"en_US": {
-					"shortName": "Rugāji municipality",
-					"longName": "Rugāji municipality"
-				}
-			}
-		},
-		"083": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Rundāles novads",
-					"longName": "Rundāles novads"
-				},
-				"en_US": {
-					"shortName": "Rundāle municipality",
-					"longName": "Rundāle municipality"
-				}
-			}
-		},
-		"084": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rūjiena municipality",
-					"longName": "Rūjiena municipality"
-				},
-				"he_IL": {
-					"shortName": "Rūjienas novads",
-					"longName": "Rūjienas novads"
-				}
-			}
-		},
-		"085": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sala municipality",
-					"longName": "Sala municipality"
-				},
-				"he_IL": {
-					"shortName": "Salas novads",
-					"longName": "Salas novads"
-				}
-			}
-		},
-		"086": {
-			"locales": {
-				"en_US": {
-					"shortName": "Salacgrīva municipality",
-					"longName": "Salacgrīva municipality"
-				},
-				"he_IL": {
-					"shortName": "Salacgrīvas novads",
-					"longName": "Salacgrīvas novads"
-				}
-			}
-		},
-		"087": {
-			"locales": {
-				"en_US": {
-					"shortName": "Salaspils municipality",
-					"longName": "Salaspils municipality"
-				},
-				"he_IL": {
-					"shortName": "Salaspils novads",
-					"longName": "Salaspils novads"
-				}
-			}
-		},
-		"088": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saldus municipality",
-					"longName": "Saldus municipality"
-				},
-				"he_IL": {
-					"shortName": "Saldus novads",
-					"longName": "Saldus novads"
-				}
-			}
-		},
-		"089": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Saulkrastu novads",
-					"longName": "Saulkrastu novads"
-				},
-				"en_US": {
-					"shortName": "Saulkrasti municipality",
-					"longName": "Saulkrasti municipality"
-				}
-			}
-		},
-		"090": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Sējas novads",
-					"longName": "Sējas novads"
-				},
-				"en_US": {
-					"shortName": "Sēja municipality",
-					"longName": "Sēja municipality"
-				}
-			}
-		},
-		"091": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Siguldas novads",
-					"longName": "Siguldas novads"
-				},
-				"en_US": {
-					"shortName": "Sigulda municipality",
-					"longName": "Sigulda municipality"
-				}
-			}
-		},
-		"092": {
-			"locales": {
-				"en_US": {
-					"shortName": "Skrīveri municipality",
-					"longName": "Skrīveri municipality"
-				},
-				"he_IL": {
-					"shortName": "Skrīveru novads",
-					"longName": "Skrīveru novads"
-				}
-			}
-		},
-		"093": {
-			"locales": {
-				"en_US": {
-					"shortName": "Skrunda municipality",
-					"longName": "Skrunda municipality"
-				},
-				"he_IL": {
-					"shortName": "Skrundas novads",
-					"longName": "Skrundas novads"
-				}
-			}
-		},
-		"094": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Smiltenes novads",
-					"longName": "Smiltenes novads"
-				},
-				"en_US": {
-					"shortName": "Smiltene municipality",
-					"longName": "Smiltene municipality"
-				}
-			}
-		},
-		"095": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Stopiņu novads",
-					"longName": "Stopiņu novads"
-				},
-				"en_US": {
-					"shortName": "Stopiņi municipality",
-					"longName": "Stopiņi municipality"
-				}
-			}
-		},
-		"096": {
-			"locales": {
-				"en_US": {
-					"shortName": "Strenči municipality",
-					"longName": "Strenči municipality"
-				},
-				"he_IL": {
-					"shortName": "Strenču novads",
-					"longName": "Strenču novads"
-				}
-			}
-		},
-		"097": {
-			"locales": {
-				"en_US": {
-					"shortName": "Talsi municipality",
-					"longName": "Talsi municipality"
-				},
-				"he_IL": {
-					"shortName": "Talsu novads",
-					"longName": "Talsu novads"
-				}
-			}
-		},
-		"098": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Tērvetes novads",
-					"longName": "Tērvetes novads"
-				},
-				"en_US": {
-					"shortName": "Tērvete municipality",
-					"longName": "Tērvete municipality"
-				}
-			}
-		},
-		"099": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Tukuma novads",
-					"longName": "Tukuma novads"
-				},
-				"en_US": {
-					"shortName": "Tukums municipality",
-					"longName": "Tukums municipality"
-				}
-			}
-		},
-		"100": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Vaiņodes novads",
-					"longName": "Vaiņodes novads"
-				},
-				"en_US": {
-					"shortName": "Vaiņode municipality",
-					"longName": "Vaiņode municipality"
-				}
-			}
-		},
-		"101": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Valkas novads",
-					"longName": "Valkas novads"
-				},
-				"en_US": {
-					"shortName": "Valka municipality",
-					"longName": "Valka municipality"
-				}
-			}
-		},
-		"102": {
-			"locales": {
-				"en_US": {
-					"shortName": "Varakļāni municipality",
-					"longName": "Varakļāni municipality"
-				},
-				"he_IL": {
-					"shortName": "Varakļānu novads",
-					"longName": "Varakļānu novads"
-				}
-			}
-		},
-		"103": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Vārkavas novads",
-					"longName": "Vārkavas novads"
-				},
-				"en_US": {
-					"shortName": "Vārkava municipality",
-					"longName": "Vārkava municipality"
-				}
-			}
-		},
-		"104": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vecpiebalga municipality",
-					"longName": "Vecpiebalga municipality"
-				},
-				"he_IL": {
-					"shortName": "Vecpiebalgas novads",
-					"longName": "Vecpiebalgas novads"
-				}
-			}
-		},
-		"105": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vecumnieki municipality",
-					"longName": "Vecumnieki municipality"
-				},
-				"he_IL": {
-					"shortName": "Vecumnieku novads",
-					"longName": "Vecumnieku novads"
-				}
-			}
-		},
-		"106": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Ventspils novads",
-					"longName": "Ventspils novads"
-				},
-				"en_US": {
-					"shortName": "Ventspils municipality",
-					"longName": "Ventspils municipality"
-				}
-			}
-		},
-		"107": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Viesītes novads",
-					"longName": "Viesītes novads"
-				},
-				"en_US": {
-					"shortName": "Viesīte municipality",
-					"longName": "Viesīte municipality"
-				}
-			}
-		},
-		"108": {
-			"locales": {
-				"en_US": {
-					"shortName": "Viļaka municipality",
-					"longName": "Viļaka municipality"
-				},
-				"he_IL": {
-					"shortName": "Viļakas novads",
-					"longName": "Viļakas novads"
-				}
-			}
-		},
-		"109": {
-			"locales": {
-				"en_US": {
-					"shortName": "Viļāni municipality",
-					"longName": "Viļāni municipality"
-				},
-				"he_IL": {
-					"shortName": "Viļānu novads",
-					"longName": "Viļānu novads"
-				}
-			}
-		},
-		"110": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Zilupes novads",
-					"longName": "Zilupes novads"
-				},
-				"en_US": {
-					"shortName": "Zilupe municipality",
-					"longName": "Zilupe municipality"
-				}
-			}
-		},
-		"DGV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Daugavpils",
-					"longName": "Daugavpils"
-				},
-				"he_IL": {
-					"shortName": "Daugavpils",
-					"longName": "Daugavpils"
-				}
-			}
-		},
-		"JEL": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Jelgava",
-					"longName": "Jelgava"
-				},
-				"en_US": {
-					"shortName": "Jelgava",
-					"longName": "Jelgava"
-				}
-			}
-		},
-		"JKB": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Jēkabpils",
-					"longName": "Jēkabpils"
-				},
-				"en_US": {
-					"shortName": "Jēkabpils",
-					"longName": "Jēkabpils"
-				}
-			}
-		},
-		"JUR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jūrmala",
-					"longName": "Jūrmala"
-				},
-				"he_IL": {
-					"shortName": "Jūrmala",
-					"longName": "Jūrmala"
-				}
-			}
-		},
-		"LPX": {
-			"locales": {
-				"en_US": {
-					"shortName": "Liepāja",
-					"longName": "Liepāja"
-				},
-				"he_IL": {
-					"shortName": "Liepāja",
-					"longName": "Liepāja"
-				}
-			}
-		},
-		"REZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rēzekne",
-					"longName": "Rēzekne"
-				},
-				"he_IL": {
-					"shortName": "Rēzekne",
-					"longName": "Rēzekne"
-				}
-			}
-		},
-		"RIX": {
-			"locales": {
-				"en_US": {
-					"shortName": "Riga !Rīga",
-					"longName": "Riga !Rīga"
-				},
-				"he_IL": {
-					"shortName": "Riga !Rīga",
-					"longName": "Riga !Rīga"
-				}
-			}
-		},
-		"VEN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ventspils",
-					"longName": "Ventspils"
-				},
-				"he_IL": {
-					"shortName": "Ventspils",
-					"longName": "Ventspils"
-				}
-			}
-		},
-		"VMR": {
-			"locales": {
-				"he_IL": {
-					"shortName": "Valmiera",
-					"longName": "Valmiera"
-				},
-				"en_US": {
-					"shortName": "Valmiera",
-					"longName": "Valmiera"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/lv_LV",
-		"id": "lv_LV"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Latvia",
-			"longName": "Republic of Latvia",
-			"postalCode": "Postal Code"
-		},
-		"lv_LV": {
-			"shortName": "Latvija",
-			"longName": "Latvijas Republika",
-			"postalCode": "pasta indekss"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "LV",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/lv_LV",
+    "id" : "lv_LV"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "001" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Aglonas novads",
+          "longName" : "Aglonas novads"
+        },
+        "en_US" : {
+          "shortName" : "Aglona municipality",
+          "longName" : "Aglona municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "002" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Aizkraukles novads",
+          "longName" : "Aizkraukles novads"
+        },
+        "en_US" : {
+          "shortName" : "Aizkraukle municipality",
+          "longName" : "Aizkraukle municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "003" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Aizputes novads",
+          "longName" : "Aizputes novads"
+        },
+        "en_US" : {
+          "shortName" : "Aizpute municipality",
+          "longName" : "Aizpute municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "004" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aknīste municipality",
+          "longName" : "Aknīste municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Aknīstes novads",
+          "longName" : "Aknīstes novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "005" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Alojas novads",
+          "longName" : "Alojas novads"
+        },
+        "en_US" : {
+          "shortName" : "Aloja municipality",
+          "longName" : "Aloja municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "006" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Alsunga municipality",
+          "longName" : "Alsunga municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Alsungas novads",
+          "longName" : "Alsungas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "007" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Alūksne municipality",
+          "longName" : "Alūksne municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Alūksnes novads",
+          "longName" : "Alūksnes novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "008" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Amata municipality",
+          "longName" : "Amata municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Amatas novads",
+          "longName" : "Amatas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "009" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ape municipality",
+          "longName" : "Ape municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Apes novads",
+          "longName" : "Apes novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "010" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Auce municipality",
+          "longName" : "Auce municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Auces novads",
+          "longName" : "Auces novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "011" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Ādažu novads",
+          "longName" : "Ādažu novads"
+        },
+        "en_US" : {
+          "shortName" : "Ādaži municipality",
+          "longName" : "Ādaži municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "012" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Babītes novads",
+          "longName" : "Babītes novads"
+        },
+        "en_US" : {
+          "shortName" : "Babīte municipality",
+          "longName" : "Babīte municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "013" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Baldone municipality",
+          "longName" : "Baldone municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Baldones novads",
+          "longName" : "Baldones novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "014" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Baltinava municipality",
+          "longName" : "Baltinava municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Baltinavas novads",
+          "longName" : "Baltinavas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "015" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Balvu novads",
+          "longName" : "Balvu novads"
+        },
+        "en_US" : {
+          "shortName" : "Balvi municipality",
+          "longName" : "Balvi municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "016" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Bauskas novads",
+          "longName" : "Bauskas novads"
+        },
+        "en_US" : {
+          "shortName" : "Bauska municipality",
+          "longName" : "Bauska municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "017" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Beverīnas novads",
+          "longName" : "Beverīnas novads"
+        },
+        "en_US" : {
+          "shortName" : "Beverīna municipality",
+          "longName" : "Beverīna municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "018" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Brocēnu novads",
+          "longName" : "Brocēnu novads"
+        },
+        "en_US" : {
+          "shortName" : "Brocēni municipality",
+          "longName" : "Brocēni municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "019" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Burtnieku novads",
+          "longName" : "Burtnieku novads"
+        },
+        "en_US" : {
+          "shortName" : "Burtnieki municipality",
+          "longName" : "Burtnieki municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "020" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Carnikava municipality",
+          "longName" : "Carnikava municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Carnikavas novads",
+          "longName" : "Carnikavas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "021" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cesvaine municipality",
+          "longName" : "Cesvaine municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Cesvaines novads",
+          "longName" : "Cesvaines novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "022" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Cēsu novads",
+          "longName" : "Cēsu novads"
+        },
+        "en_US" : {
+          "shortName" : "Cēsis municipality",
+          "longName" : "Cēsis municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "023" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cibla municipality",
+          "longName" : "Cibla municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Ciblas novads",
+          "longName" : "Ciblas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "024" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dagda municipality",
+          "longName" : "Dagda municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Dagdas novads",
+          "longName" : "Dagdas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "025" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Daugavpils novads",
+          "longName" : "Daugavpils novads"
+        },
+        "en_US" : {
+          "shortName" : "Daugavpils municipality",
+          "longName" : "Daugavpils municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "026" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dobele municipality",
+          "longName" : "Dobele municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Dobeles novads",
+          "longName" : "Dobeles novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "027" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Dundagas novads",
+          "longName" : "Dundagas novads"
+        },
+        "en_US" : {
+          "shortName" : "Dundaga municipality",
+          "longName" : "Dundaga municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "028" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Durbes novads",
+          "longName" : "Durbes novads"
+        },
+        "en_US" : {
+          "shortName" : "Durbe municipality",
+          "longName" : "Durbe municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "029" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Engure municipality",
+          "longName" : "Engure municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Engures novads",
+          "longName" : "Engures novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "030" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ērgļi municipality",
+          "longName" : "Ērgļi municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Ērgļu novads",
+          "longName" : "Ērgļu novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "031" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Garkalne municipality",
+          "longName" : "Garkalne municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Garkalnes novads",
+          "longName" : "Garkalnes novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "032" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Grobiņas novads",
+          "longName" : "Grobiņas novads"
+        },
+        "en_US" : {
+          "shortName" : "Grobiņa municipality",
+          "longName" : "Grobiņa municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "033" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Gulbenes novads",
+          "longName" : "Gulbenes novads"
+        },
+        "en_US" : {
+          "shortName" : "Gulbene municipality",
+          "longName" : "Gulbene municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "034" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Iecavas novads",
+          "longName" : "Iecavas novads"
+        },
+        "en_US" : {
+          "shortName" : "Iecava municipality",
+          "longName" : "Iecava municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "035" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Ikšķiles novads",
+          "longName" : "Ikšķiles novads"
+        },
+        "en_US" : {
+          "shortName" : "Ikšķile municipality",
+          "longName" : "Ikšķile municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "036" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Ilūkstes novads",
+          "longName" : "Ilūkstes novads"
+        },
+        "en_US" : {
+          "shortName" : "Ilūkste municipality",
+          "longName" : "Ilūkste municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "037" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Inčukalns municipality",
+          "longName" : "Inčukalns municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Inčukalna novads",
+          "longName" : "Inčukalna novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "038" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Jaunjelgavas novads",
+          "longName" : "Jaunjelgavas novads"
+        },
+        "en_US" : {
+          "shortName" : "Jaunjelgava municipality",
+          "longName" : "Jaunjelgava municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "039" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Jaunpiebalgas novads",
+          "longName" : "Jaunpiebalgas novads"
+        },
+        "en_US" : {
+          "shortName" : "Jaunpiebalga municipality",
+          "longName" : "Jaunpiebalga municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "040" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Jaunpils novads",
+          "longName" : "Jaunpils novads"
+        },
+        "en_US" : {
+          "shortName" : "Jaunpils municipality",
+          "longName" : "Jaunpils municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "041" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jelgava municipality",
+          "longName" : "Jelgava municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Jelgavas novads",
+          "longName" : "Jelgavas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "042" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Jēkabpils novads",
+          "longName" : "Jēkabpils novads"
+        },
+        "en_US" : {
+          "shortName" : "Jēkabpils municipality",
+          "longName" : "Jēkabpils municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "043" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kandava municipality",
+          "longName" : "Kandava municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Kandavas novads",
+          "longName" : "Kandavas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "044" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kārsava municipality",
+          "longName" : "Kārsava municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Kārsavas novads",
+          "longName" : "Kārsavas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "045" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kocēni municipality",
+          "longName" : "Kocēni municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Kocēnu novads",
+          "longName" : "Kocēnu novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "046" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Kokneses novads",
+          "longName" : "Kokneses novads"
+        },
+        "en_US" : {
+          "shortName" : "Koknese municipality",
+          "longName" : "Koknese municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "047" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Krāslavas novads",
+          "longName" : "Krāslavas novads"
+        },
+        "en_US" : {
+          "shortName" : "Krāslava municipality",
+          "longName" : "Krāslava municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "048" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Krimuldas novads",
+          "longName" : "Krimuldas novads"
+        },
+        "en_US" : {
+          "shortName" : "Krimulda municipality",
+          "longName" : "Krimulda municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "049" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Krustpils municipality",
+          "longName" : "Krustpils municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Krustpils novads",
+          "longName" : "Krustpils novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "050" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Kuldīgas novads",
+          "longName" : "Kuldīgas novads"
+        },
+        "en_US" : {
+          "shortName" : "Kuldīga municipality",
+          "longName" : "Kuldīga municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "051" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ķegums municipality",
+          "longName" : "Ķegums municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Ķeguma novads",
+          "longName" : "Ķeguma novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "052" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ķekava municipality",
+          "longName" : "Ķekava municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Ķekavas novads",
+          "longName" : "Ķekavas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "053" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Lielvārdes novads",
+          "longName" : "Lielvārdes novads"
+        },
+        "en_US" : {
+          "shortName" : "Lielvārde municipality",
+          "longName" : "Lielvārde municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "054" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Limbaži municipality",
+          "longName" : "Limbaži municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Limbažu novads",
+          "longName" : "Limbažu novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "055" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Līgatnes novads",
+          "longName" : "Līgatnes novads"
+        },
+        "en_US" : {
+          "shortName" : "Līgatne municipality",
+          "longName" : "Līgatne municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "056" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Līvānu novads",
+          "longName" : "Līvānu novads"
+        },
+        "en_US" : {
+          "shortName" : "Līvāni municipality",
+          "longName" : "Līvāni municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "057" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Lubānas novads",
+          "longName" : "Lubānas novads"
+        },
+        "en_US" : {
+          "shortName" : "Lubāna municipality",
+          "longName" : "Lubāna municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "058" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Ludzas novads",
+          "longName" : "Ludzas novads"
+        },
+        "en_US" : {
+          "shortName" : "Ludza municipality",
+          "longName" : "Ludza municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "059" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Madona municipality",
+          "longName" : "Madona municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Madonas novads",
+          "longName" : "Madonas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "060" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mazsalaca municipality",
+          "longName" : "Mazsalaca municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Mazsalacas novads",
+          "longName" : "Mazsalacas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "061" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Mālpils novads",
+          "longName" : "Mālpils novads"
+        },
+        "en_US" : {
+          "shortName" : "Mālpils municipality",
+          "longName" : "Mālpils municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "062" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mārupe municipality",
+          "longName" : "Mārupe municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Mārupes novads",
+          "longName" : "Mārupes novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "063" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Mērsraga novads",
+          "longName" : "Mērsraga novads"
+        },
+        "en_US" : {
+          "shortName" : "Mērsrags municipality",
+          "longName" : "Mērsrags municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "064" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Naukšēni municipality",
+          "longName" : "Naukšēni municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Naukšēnu novads",
+          "longName" : "Naukšēnu novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "065" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Neretas novads",
+          "longName" : "Neretas novads"
+        },
+        "en_US" : {
+          "shortName" : "Nereta municipality",
+          "longName" : "Nereta municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "066" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Nīcas novads",
+          "longName" : "Nīcas novads"
+        },
+        "en_US" : {
+          "shortName" : "Nīca municipality",
+          "longName" : "Nīca municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "067" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Ogres novads",
+          "longName" : "Ogres novads"
+        },
+        "en_US" : {
+          "shortName" : "Ogre municipality",
+          "longName" : "Ogre municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "068" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Olaine municipality",
+          "longName" : "Olaine municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Olaines novads",
+          "longName" : "Olaines novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "069" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Ozolnieku novads",
+          "longName" : "Ozolnieku novads"
+        },
+        "en_US" : {
+          "shortName" : "Ozolnieki municipality",
+          "longName" : "Ozolnieki municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "070" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pārgauja municipality",
+          "longName" : "Pārgauja municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Pārgaujas novads",
+          "longName" : "Pārgaujas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "071" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Pāvilostas novads",
+          "longName" : "Pāvilostas novads"
+        },
+        "en_US" : {
+          "shortName" : "Pāvilosta municipality",
+          "longName" : "Pāvilosta municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "072" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pļaviņas municipality",
+          "longName" : "Pļaviņas municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Pļaviņu novads",
+          "longName" : "Pļaviņu novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "073" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Preiļi municipality",
+          "longName" : "Preiļi municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Preiļu novads",
+          "longName" : "Preiļu novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "074" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Priekules novads",
+          "longName" : "Priekules novads"
+        },
+        "en_US" : {
+          "shortName" : "Priekule municipality",
+          "longName" : "Priekule municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "075" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Priekuļu novads",
+          "longName" : "Priekuļu novads"
+        },
+        "en_US" : {
+          "shortName" : "Priekuļi municipality",
+          "longName" : "Priekuļi municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "076" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rauna municipality",
+          "longName" : "Rauna municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Raunas novads",
+          "longName" : "Raunas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "077" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Rēzeknes novads",
+          "longName" : "Rēzeknes novads"
+        },
+        "en_US" : {
+          "shortName" : "Rēzekne municipality",
+          "longName" : "Rēzekne municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "078" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Riebiņi municipality",
+          "longName" : "Riebiņi municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Riebiņu novads",
+          "longName" : "Riebiņu novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "079" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Roja municipality",
+          "longName" : "Roja municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Rojas novads",
+          "longName" : "Rojas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "080" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Ropažu novads",
+          "longName" : "Ropažu novads"
+        },
+        "en_US" : {
+          "shortName" : "Ropaži municipality",
+          "longName" : "Ropaži municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "081" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rucava municipality",
+          "longName" : "Rucava municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Rucavas novads",
+          "longName" : "Rucavas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "082" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Rugāju novads",
+          "longName" : "Rugāju novads"
+        },
+        "en_US" : {
+          "shortName" : "Rugāji municipality",
+          "longName" : "Rugāji municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "083" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Rundāles novads",
+          "longName" : "Rundāles novads"
+        },
+        "en_US" : {
+          "shortName" : "Rundāle municipality",
+          "longName" : "Rundāle municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "084" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rūjiena municipality",
+          "longName" : "Rūjiena municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Rūjienas novads",
+          "longName" : "Rūjienas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "085" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sala municipality",
+          "longName" : "Sala municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Salas novads",
+          "longName" : "Salas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "086" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Salacgrīva municipality",
+          "longName" : "Salacgrīva municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Salacgrīvas novads",
+          "longName" : "Salacgrīvas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "087" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Salaspils municipality",
+          "longName" : "Salaspils municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Salaspils novads",
+          "longName" : "Salaspils novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "088" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saldus municipality",
+          "longName" : "Saldus municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Saldus novads",
+          "longName" : "Saldus novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "089" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Saulkrastu novads",
+          "longName" : "Saulkrastu novads"
+        },
+        "en_US" : {
+          "shortName" : "Saulkrasti municipality",
+          "longName" : "Saulkrasti municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "090" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Sējas novads",
+          "longName" : "Sējas novads"
+        },
+        "en_US" : {
+          "shortName" : "Sēja municipality",
+          "longName" : "Sēja municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "091" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Siguldas novads",
+          "longName" : "Siguldas novads"
+        },
+        "en_US" : {
+          "shortName" : "Sigulda municipality",
+          "longName" : "Sigulda municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "092" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Skrīveri municipality",
+          "longName" : "Skrīveri municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Skrīveru novads",
+          "longName" : "Skrīveru novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "093" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Skrunda municipality",
+          "longName" : "Skrunda municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Skrundas novads",
+          "longName" : "Skrundas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "094" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Smiltenes novads",
+          "longName" : "Smiltenes novads"
+        },
+        "en_US" : {
+          "shortName" : "Smiltene municipality",
+          "longName" : "Smiltene municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "095" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Stopiņu novads",
+          "longName" : "Stopiņu novads"
+        },
+        "en_US" : {
+          "shortName" : "Stopiņi municipality",
+          "longName" : "Stopiņi municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "096" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Strenči municipality",
+          "longName" : "Strenči municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Strenču novads",
+          "longName" : "Strenču novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "097" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Talsi municipality",
+          "longName" : "Talsi municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Talsu novads",
+          "longName" : "Talsu novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "098" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Tērvetes novads",
+          "longName" : "Tērvetes novads"
+        },
+        "en_US" : {
+          "shortName" : "Tērvete municipality",
+          "longName" : "Tērvete municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "099" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Tukuma novads",
+          "longName" : "Tukuma novads"
+        },
+        "en_US" : {
+          "shortName" : "Tukums municipality",
+          "longName" : "Tukums municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "100" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Vaiņodes novads",
+          "longName" : "Vaiņodes novads"
+        },
+        "en_US" : {
+          "shortName" : "Vaiņode municipality",
+          "longName" : "Vaiņode municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "101" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Valkas novads",
+          "longName" : "Valkas novads"
+        },
+        "en_US" : {
+          "shortName" : "Valka municipality",
+          "longName" : "Valka municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "102" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Varakļāni municipality",
+          "longName" : "Varakļāni municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Varakļānu novads",
+          "longName" : "Varakļānu novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "103" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Vārkavas novads",
+          "longName" : "Vārkavas novads"
+        },
+        "en_US" : {
+          "shortName" : "Vārkava municipality",
+          "longName" : "Vārkava municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "104" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vecpiebalga municipality",
+          "longName" : "Vecpiebalga municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Vecpiebalgas novads",
+          "longName" : "Vecpiebalgas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "105" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vecumnieki municipality",
+          "longName" : "Vecumnieki municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Vecumnieku novads",
+          "longName" : "Vecumnieku novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "106" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Ventspils novads",
+          "longName" : "Ventspils novads"
+        },
+        "en_US" : {
+          "shortName" : "Ventspils municipality",
+          "longName" : "Ventspils municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "107" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Viesītes novads",
+          "longName" : "Viesītes novads"
+        },
+        "en_US" : {
+          "shortName" : "Viesīte municipality",
+          "longName" : "Viesīte municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "108" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Viļaka municipality",
+          "longName" : "Viļaka municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Viļakas novads",
+          "longName" : "Viļakas novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "109" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Viļāni municipality",
+          "longName" : "Viļāni municipality"
+        },
+        "he_IL" : {
+          "shortName" : "Viļānu novads",
+          "longName" : "Viļānu novads"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "110" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Zilupes novads",
+          "longName" : "Zilupes novads"
+        },
+        "en_US" : {
+          "shortName" : "Zilupe municipality",
+          "longName" : "Zilupe municipality"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DGV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Daugavpils",
+          "longName" : "Daugavpils"
+        },
+        "he_IL" : {
+          "shortName" : "Daugavpils",
+          "longName" : "Daugavpils"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JEL" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Jelgava",
+          "longName" : "Jelgava"
+        },
+        "en_US" : {
+          "shortName" : "Jelgava",
+          "longName" : "Jelgava"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JKB" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Jēkabpils",
+          "longName" : "Jēkabpils"
+        },
+        "en_US" : {
+          "shortName" : "Jēkabpils",
+          "longName" : "Jēkabpils"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JUR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jūrmala",
+          "longName" : "Jūrmala"
+        },
+        "he_IL" : {
+          "shortName" : "Jūrmala",
+          "longName" : "Jūrmala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LPX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Liepāja",
+          "longName" : "Liepāja"
+        },
+        "he_IL" : {
+          "shortName" : "Liepāja",
+          "longName" : "Liepāja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "REZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rēzekne",
+          "longName" : "Rēzekne"
+        },
+        "he_IL" : {
+          "shortName" : "Rēzekne",
+          "longName" : "Rēzekne"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RIX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Riga !Rīga",
+          "longName" : "Riga !Rīga"
+        },
+        "he_IL" : {
+          "shortName" : "Riga !Rīga",
+          "longName" : "Riga !Rīga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VEN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ventspils",
+          "longName" : "Ventspils"
+        },
+        "he_IL" : {
+          "shortName" : "Ventspils",
+          "longName" : "Ventspils"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VMR" : {
+      "locales" : {
+        "he_IL" : {
+          "shortName" : "Valmiera",
+          "longName" : "Valmiera"
+        },
+        "en_US" : {
+          "shortName" : "Valmiera",
+          "longName" : "Valmiera"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/lv_LV",
+    "id" : "lv_LV"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Latvia",
+      "longName" : "Republic of Latvia",
+      "postalCode" : ""
+    },
+    "lv_LV" : {
+      "shortName" : "Latvija",
+      "longName" : "Latvijas Republika",
+      "postalCode" : "pasta indekss"
+    },
+    "de_DE" : {
+      "shortName" : "Lettland",
+      "longName" : "Republik Lettland",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Latvia",
+      "longName" : "Republic of Latvia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Letonia",
+      "longName" : "República de Letonia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Lettonie",
+      "longName" : "République de Lettonie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Lettonia",
+      "longName" : "Repubblica di Lettonia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "라트비아",
+      "longName" : "Republic of Latvia",
+      "postalCode" : ""
+    }
+  }
 }

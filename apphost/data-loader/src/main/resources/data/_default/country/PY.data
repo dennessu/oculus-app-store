@@ -1,253 +1,298 @@
 {
-	"countryCode": "PY",
-	"defaultLocale": {
-		"href": "/v1/locales/es_PY",
-		"id": "es_PY"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/PYG",
-		"id": "PYG"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"1": {
-			"locales": {
-				"es_PY": {
-					"shortName": "Concepción",
-					"longName": "Concepción"
-				},
-				"en_US": {
-					"shortName": "Concepción",
-					"longName": "Concepción"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"es_PY": {
-					"shortName": "Alto Paraná",
-					"longName": "Alto Paraná"
-				},
-				"en_US": {
-					"shortName": "Alto Paraná",
-					"longName": "Alto Paraná"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"es_PY": {
-					"shortName": "Central",
-					"longName": "Central"
-				},
-				"en_US": {
-					"shortName": "Central",
-					"longName": "Central"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ñeembucú",
-					"longName": "Ñeembucú"
-				},
-				"es_PY": {
-					"shortName": "Ñeembucú",
-					"longName": "Ñeembucú"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Amambay",
-					"longName": "Amambay"
-				},
-				"es_PY": {
-					"shortName": "Amambay",
-					"longName": "Amambay"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"es_PY": {
-					"shortName": "Canindeyú",
-					"longName": "Canindeyú"
-				},
-				"en_US": {
-					"shortName": "Canindeyú",
-					"longName": "Canindeyú"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Presidente Hayes",
-					"longName": "Presidente Hayes"
-				},
-				"es_PY": {
-					"shortName": "Presidente Hayes",
-					"longName": "Presidente Hayes"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Alto Paraguay",
-					"longName": "Alto Paraguay"
-				},
-				"es_PY": {
-					"shortName": "Alto Paraguay",
-					"longName": "Alto Paraguay"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"es_PY": {
-					"shortName": "Boquerón",
-					"longName": "Boquerón"
-				},
-				"en_US": {
-					"shortName": "Boquerón",
-					"longName": "Boquerón"
-				}
-			}
-		},
-		"2": {
-			"locales": {
-				"es_PY": {
-					"shortName": "San Pedro",
-					"longName": "San Pedro"
-				},
-				"en_US": {
-					"shortName": "San Pedro",
-					"longName": "San Pedro"
-				}
-			}
-		},
-		"3": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cordillera",
-					"longName": "Cordillera"
-				},
-				"es_PY": {
-					"shortName": "Cordillera",
-					"longName": "Cordillera"
-				}
-			}
-		},
-		"4": {
-			"locales": {
-				"en_US": {
-					"shortName": "Guairá",
-					"longName": "Guairá"
-				},
-				"es_PY": {
-					"shortName": "Guairá",
-					"longName": "Guairá"
-				}
-			}
-		},
-		"5": {
-			"locales": {
-				"es_PY": {
-					"shortName": "Caaguazú",
-					"longName": "Caaguazú"
-				},
-				"en_US": {
-					"shortName": "Caaguazú",
-					"longName": "Caaguazú"
-				}
-			}
-		},
-		"6": {
-			"locales": {
-				"en_US": {
-					"shortName": "Caazapá",
-					"longName": "Caazapá"
-				},
-				"es_PY": {
-					"shortName": "Caazapá",
-					"longName": "Caazapá"
-				}
-			}
-		},
-		"7": {
-			"locales": {
-				"es_PY": {
-					"shortName": "Itapúa",
-					"longName": "Itapúa"
-				},
-				"en_US": {
-					"shortName": "Itapúa",
-					"longName": "Itapúa"
-				}
-			}
-		},
-		"8": {
-			"locales": {
-				"es_PY": {
-					"shortName": "Misiones",
-					"longName": "Misiones"
-				},
-				"en_US": {
-					"shortName": "Misiones",
-					"longName": "Misiones"
-				}
-			}
-		},
-		"9": {
-			"locales": {
-				"en_US": {
-					"shortName": "Paraguarí",
-					"longName": "Paraguarí"
-				},
-				"es_PY": {
-					"shortName": "Paraguarí",
-					"longName": "Paraguarí"
-				}
-			}
-		},
-		"ASU": {
-			"locales": {
-				"es_PY": {
-					"shortName": "Asunción",
-					"longName": "Asunción"
-				},
-				"en_US": {
-					"shortName": "Asunción",
-					"longName": "Asunción"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_PY",
-		"id": "es_PY"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Paraguay",
-			"longName": "Republic of Paraguay",
-			"postalCode": "Postal Code"
-		},
-		"es_PY": {
-			"shortName": "Paraguay",
-			"longName": "República del Paraguay",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PY",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_PY",
+    "id" : "es_PY"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/PYG",
+    "id" : "PYG"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "1" : {
+      "locales" : {
+        "es_PY" : {
+          "shortName" : "Concepción",
+          "longName" : "Concepción"
+        },
+        "en_US" : {
+          "shortName" : "Concepción",
+          "longName" : "Concepción"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "es_PY" : {
+          "shortName" : "Alto Paraná",
+          "longName" : "Alto Paraná"
+        },
+        "en_US" : {
+          "shortName" : "Alto Paraná",
+          "longName" : "Alto Paraná"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "es_PY" : {
+          "shortName" : "Central",
+          "longName" : "Central"
+        },
+        "en_US" : {
+          "shortName" : "Central",
+          "longName" : "Central"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ñeembucú",
+          "longName" : "Ñeembucú"
+        },
+        "es_PY" : {
+          "shortName" : "Ñeembucú",
+          "longName" : "Ñeembucú"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Amambay",
+          "longName" : "Amambay"
+        },
+        "es_PY" : {
+          "shortName" : "Amambay",
+          "longName" : "Amambay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "es_PY" : {
+          "shortName" : "Canindeyú",
+          "longName" : "Canindeyú"
+        },
+        "en_US" : {
+          "shortName" : "Canindeyú",
+          "longName" : "Canindeyú"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Presidente Hayes",
+          "longName" : "Presidente Hayes"
+        },
+        "es_PY" : {
+          "shortName" : "Presidente Hayes",
+          "longName" : "Presidente Hayes"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Alto Paraguay",
+          "longName" : "Alto Paraguay"
+        },
+        "es_PY" : {
+          "shortName" : "Alto Paraguay",
+          "longName" : "Alto Paraguay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "es_PY" : {
+          "shortName" : "Boquerón",
+          "longName" : "Boquerón"
+        },
+        "en_US" : {
+          "shortName" : "Boquerón",
+          "longName" : "Boquerón"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "2" : {
+      "locales" : {
+        "es_PY" : {
+          "shortName" : "San Pedro",
+          "longName" : "San Pedro"
+        },
+        "en_US" : {
+          "shortName" : "San Pedro",
+          "longName" : "San Pedro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "3" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cordillera",
+          "longName" : "Cordillera"
+        },
+        "es_PY" : {
+          "shortName" : "Cordillera",
+          "longName" : "Cordillera"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "4" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Guairá",
+          "longName" : "Guairá"
+        },
+        "es_PY" : {
+          "shortName" : "Guairá",
+          "longName" : "Guairá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "5" : {
+      "locales" : {
+        "es_PY" : {
+          "shortName" : "Caaguazú",
+          "longName" : "Caaguazú"
+        },
+        "en_US" : {
+          "shortName" : "Caaguazú",
+          "longName" : "Caaguazú"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "6" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Caazapá",
+          "longName" : "Caazapá"
+        },
+        "es_PY" : {
+          "shortName" : "Caazapá",
+          "longName" : "Caazapá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "7" : {
+      "locales" : {
+        "es_PY" : {
+          "shortName" : "Itapúa",
+          "longName" : "Itapúa"
+        },
+        "en_US" : {
+          "shortName" : "Itapúa",
+          "longName" : "Itapúa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "8" : {
+      "locales" : {
+        "es_PY" : {
+          "shortName" : "Misiones",
+          "longName" : "Misiones"
+        },
+        "en_US" : {
+          "shortName" : "Misiones",
+          "longName" : "Misiones"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "9" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Paraguarí",
+          "longName" : "Paraguarí"
+        },
+        "es_PY" : {
+          "shortName" : "Paraguarí",
+          "longName" : "Paraguarí"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ASU" : {
+      "locales" : {
+        "es_PY" : {
+          "shortName" : "Asunción",
+          "longName" : "Asunción"
+        },
+        "en_US" : {
+          "shortName" : "Asunción",
+          "longName" : "Asunción"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_PY",
+    "id" : "es_PY"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Paraguay",
+      "longName" : "Republic of Paraguay",
+      "postalCode" : ""
+    },
+    "es_PY" : {
+      "shortName" : "Paraguay",
+      "longName" : "República del Paraguay",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Paraguay",
+      "longName" : "Republic of Paraguay",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Paraguay",
+      "longName" : "Republic of Paraguay",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Paraguay",
+      "longName" : "República del Paraguay",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Paraguay",
+      "longName" : "République du Paraguay",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Paraguay",
+      "longName" : "Repubblica del Paraguay",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "파라과이",
+      "longName" : "Republic of Paraguay",
+      "postalCode" : ""
+    }
+  }
 }

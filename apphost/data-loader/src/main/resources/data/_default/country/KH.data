@@ -1,328 +1,379 @@
 {
-	"countryCode": "KH",
-	"defaultLocale": {
-		"href": "/v1/locales/km_KH",
-		"id": "km_KH"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/KHR",
-		"id": "KHR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/MDA",
-		"id": "MDA"
-	}],
-	"subCountries": {
-		"1": {
-			"locales": {
-				"km_KH": {
-					"shortName": "ខេត្តបន្ទាយមានជ័យ",
-					"longName": "ខេត្តបន្ទាយមានជ័យ"
-				},
-				"en_US": {
-					"shortName": "Banteay Mean Chey",
-					"longName": "Banteay Mean Chey"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kracheh",
-					"longName": "Kracheh"
-				},
-				"km_KH": {
-					"shortName": "ក្រចេះ",
-					"longName": "ក្រចេះ"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"km_KH": {
-					"shortName": "មណ្ឌលគិរី",
-					"longName": "មណ្ឌលគិរី"
-				},
-				"en_US": {
-					"shortName": "Mondol Kiri",
-					"longName": "Mondol Kiri"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Phnom Penh",
-					"longName": "Phnom Penh"
-				},
-				"km_KH": {
-					"shortName": "ភ្នំពេញ",
-					"longName": "ភ្នំពេញ"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Preah Vihear",
-					"longName": "Preah Vihear"
-				},
-				"km_KH": {
-					"shortName": "ព្រះវិហារ",
-					"longName": "ព្រះវិហារ"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Prey Veaeng",
-					"longName": "Prey Veaeng"
-				},
-				"km_KH": {
-					"shortName": "ខេត្តព្រៃវែង",
-					"longName": "ខេត្តព្រៃវែង"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pousaat",
-					"longName": "Pousaat"
-				},
-				"km_KH": {
-					"shortName": "ខេត្តពោធិ៏សាត់",
-					"longName": "ខេត្តពោធិ៏សាត់"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rotanak Kiri",
-					"longName": "Rotanak Kiri"
-				},
-				"km_KH": {
-					"shortName": "រតនគិរី",
-					"longName": "រតនគិរី"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"km_KH": {
-					"shortName": "សៀមរាប",
-					"longName": "សៀមរាប"
-				},
-				"en_US": {
-					"shortName": "Siem Reab",
-					"longName": "Siem Reab"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"km_KH": {
-					"shortName": "ក្រុងព្រះសីហនុ",
-					"longName": "ក្រុងព្រះសីហនុ"
-				},
-				"en_US": {
-					"shortName": "Krong Preah Sihanouk",
-					"longName": "Krong Preah Sihanouk"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"km_KH": {
-					"shortName": "ស្ទឹងត្រែង",
-					"longName": "ស្ទឹងត្រែង"
-				},
-				"en_US": {
-					"shortName": "Stueng Traeng",
-					"longName": "Stueng Traeng"
-				}
-			}
-		},
-		"2": {
-			"locales": {
-				"en_US": {
-					"shortName": "Baat Dambang",
-					"longName": "Baat Dambang"
-				},
-				"km_KH": {
-					"shortName": "បាត់ដំបង",
-					"longName": "បាត់ដំបង"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"km_KH": {
-					"shortName": "ស្វាយរៀង",
-					"longName": "ស្វាយរៀង"
-				},
-				"en_US": {
-					"shortName": "Svaay Rieng",
-					"longName": "Svaay Rieng"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"km_KH": {
-					"shortName": "ខេត្តតាកែវ",
-					"longName": "ខេត្តតាកែវ"
-				},
-				"en_US": {
-					"shortName": "Taakaev",
-					"longName": "Taakaev"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "Otdar Mean Chey",
-					"longName": "Otdar Mean Chey"
-				},
-				"km_KH": {
-					"shortName": "ឧត្ដរមានជ័យ",
-					"longName": "ឧត្ដរមានជ័យ"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"km_KH": {
-					"shortName": "កែប",
-					"longName": "កែប"
-				},
-				"en_US": {
-					"shortName": "Krong Kaeb",
-					"longName": "Krong Kaeb"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"km_KH": {
-					"shortName": "ប៉ៃលិន",
-					"longName": "ប៉ៃលិន"
-				},
-				"en_US": {
-					"shortName": "Krong Pailin",
-					"longName": "Krong Pailin"
-				}
-			}
-		},
-		"3": {
-			"locales": {
-				"km_KH": {
-					"shortName": "ខេត្តកំពង់ចាម",
-					"longName": "ខេត្តកំពង់ចាម"
-				},
-				"en_US": {
-					"shortName": "Kampong Chaam",
-					"longName": "Kampong Chaam"
-				}
-			}
-		},
-		"4": {
-			"locales": {
-				"km_KH": {
-					"shortName": "ខេត្តកំពង់ឆ្នាំង",
-					"longName": "ខេត្តកំពង់ឆ្នាំង"
-				},
-				"en_US": {
-					"shortName": "Kampong Chhnang",
-					"longName": "Kampong Chhnang"
-				}
-			}
-		},
-		"5": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kampong Spueu",
-					"longName": "Kampong Spueu"
-				},
-				"km_KH": {
-					"shortName": "ខេត្តកំពង់ស្ពឺ",
-					"longName": "ខេត្តកំពង់ស្ពឺ"
-				}
-			}
-		},
-		"6": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kampong Thum",
-					"longName": "Kampong Thum"
-				},
-				"km_KH": {
-					"shortName": "កំពង់ធំ",
-					"longName": "កំពង់ធំ"
-				}
-			}
-		},
-		"7": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kampot",
-					"longName": "Kampot"
-				},
-				"km_KH": {
-					"shortName": "ខេត្តកំពត",
-					"longName": "ខេត្តកំពត"
-				}
-			}
-		},
-		"8": {
-			"locales": {
-				"km_KH": {
-					"shortName": "កណ្ដាល",
-					"longName": "កណ្ដាល"
-				},
-				"en_US": {
-					"shortName": "Kandaal",
-					"longName": "Kandaal"
-				}
-			}
-		},
-		"9": {
-			"locales": {
-				"km_KH": {
-					"shortName": "ខេត្តកោះកុង",
-					"longName": "ខេត្តកោះកុង"
-				},
-				"en_US": {
-					"shortName": "Kaoh Kong",
-					"longName": "Kaoh Kong"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/km_KH",
-		"id": "km_KH"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Cambodia",
-			"longName": "Kingdom of Cambodia",
-			"postalCode": "Postal Code"
-		},
-		"km_KH": {
-			"shortName": "កម្ពុជា",
-			"longName": "ព្រះរាជាណាចក្រកម្ពុជា",
-			"postalCode": "ប្រៃសណីយ៍កូដ"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "KH",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/km_KH",
+    "id" : "km_KH"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/KHR",
+    "id" : "KHR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/MDA",
+    "id" : "MDA"
+  } ],
+  "subCountries" : {
+    "1" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "ខេត្តបន្ទាយមានជ័យ",
+          "longName" : "ខេត្តបន្ទាយមានជ័យ"
+        },
+        "en_US" : {
+          "shortName" : "Banteay Mean Chey",
+          "longName" : "Banteay Mean Chey"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kracheh",
+          "longName" : "Kracheh"
+        },
+        "km_KH" : {
+          "shortName" : "ក្រចេះ",
+          "longName" : "ក្រចេះ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "មណ្ឌលគិរី",
+          "longName" : "មណ្ឌលគិរី"
+        },
+        "en_US" : {
+          "shortName" : "Mondol Kiri",
+          "longName" : "Mondol Kiri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Phnom Penh",
+          "longName" : "Phnom Penh"
+        },
+        "km_KH" : {
+          "shortName" : "ភ្នំពេញ",
+          "longName" : "ភ្នំពេញ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Preah Vihear",
+          "longName" : "Preah Vihear"
+        },
+        "km_KH" : {
+          "shortName" : "ព្រះវិហារ",
+          "longName" : "ព្រះវិហារ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Prey Veaeng",
+          "longName" : "Prey Veaeng"
+        },
+        "km_KH" : {
+          "shortName" : "ខេត្តព្រៃវែង",
+          "longName" : "ខេត្តព្រៃវែង"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pousaat",
+          "longName" : "Pousaat"
+        },
+        "km_KH" : {
+          "shortName" : "ខេត្តពោធិ៏សាត់",
+          "longName" : "ខេត្តពោធិ៏សាត់"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rotanak Kiri",
+          "longName" : "Rotanak Kiri"
+        },
+        "km_KH" : {
+          "shortName" : "រតនគិរី",
+          "longName" : "រតនគិរី"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "សៀមរាប",
+          "longName" : "សៀមរាប"
+        },
+        "en_US" : {
+          "shortName" : "Siem Reab",
+          "longName" : "Siem Reab"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "ក្រុងព្រះសីហនុ",
+          "longName" : "ក្រុងព្រះសីហនុ"
+        },
+        "en_US" : {
+          "shortName" : "Krong Preah Sihanouk",
+          "longName" : "Krong Preah Sihanouk"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "ស្ទឹងត្រែង",
+          "longName" : "ស្ទឹងត្រែង"
+        },
+        "en_US" : {
+          "shortName" : "Stueng Traeng",
+          "longName" : "Stueng Traeng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "2" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Baat Dambang",
+          "longName" : "Baat Dambang"
+        },
+        "km_KH" : {
+          "shortName" : "បាត់ដំបង",
+          "longName" : "បាត់ដំបង"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "ស្វាយរៀង",
+          "longName" : "ស្វាយរៀង"
+        },
+        "en_US" : {
+          "shortName" : "Svaay Rieng",
+          "longName" : "Svaay Rieng"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "ខេត្តតាកែវ",
+          "longName" : "ខេត្តតាកែវ"
+        },
+        "en_US" : {
+          "shortName" : "Taakaev",
+          "longName" : "Taakaev"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Otdar Mean Chey",
+          "longName" : "Otdar Mean Chey"
+        },
+        "km_KH" : {
+          "shortName" : "ឧត្ដរមានជ័យ",
+          "longName" : "ឧត្ដរមានជ័យ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "កែប",
+          "longName" : "កែប"
+        },
+        "en_US" : {
+          "shortName" : "Krong Kaeb",
+          "longName" : "Krong Kaeb"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "ប៉ៃលិន",
+          "longName" : "ប៉ៃលិន"
+        },
+        "en_US" : {
+          "shortName" : "Krong Pailin",
+          "longName" : "Krong Pailin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "3" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "ខេត្តកំពង់ចាម",
+          "longName" : "ខេត្តកំពង់ចាម"
+        },
+        "en_US" : {
+          "shortName" : "Kampong Chaam",
+          "longName" : "Kampong Chaam"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "4" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "ខេត្តកំពង់ឆ្នាំង",
+          "longName" : "ខេត្តកំពង់ឆ្នាំង"
+        },
+        "en_US" : {
+          "shortName" : "Kampong Chhnang",
+          "longName" : "Kampong Chhnang"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "5" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kampong Spueu",
+          "longName" : "Kampong Spueu"
+        },
+        "km_KH" : {
+          "shortName" : "ខេត្តកំពង់ស្ពឺ",
+          "longName" : "ខេត្តកំពង់ស្ពឺ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "6" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kampong Thum",
+          "longName" : "Kampong Thum"
+        },
+        "km_KH" : {
+          "shortName" : "កំពង់ធំ",
+          "longName" : "កំពង់ធំ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "7" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kampot",
+          "longName" : "Kampot"
+        },
+        "km_KH" : {
+          "shortName" : "ខេត្តកំពត",
+          "longName" : "ខេត្តកំពត"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "8" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "កណ្ដាល",
+          "longName" : "កណ្ដាល"
+        },
+        "en_US" : {
+          "shortName" : "Kandaal",
+          "longName" : "Kandaal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "9" : {
+      "locales" : {
+        "km_KH" : {
+          "shortName" : "ខេត្តកោះកុង",
+          "longName" : "ខេត្តកោះកុង"
+        },
+        "en_US" : {
+          "shortName" : "Kaoh Kong",
+          "longName" : "Kaoh Kong"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/km_KH",
+    "id" : "km_KH"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Cambodia",
+      "longName" : "Kingdom of Cambodia",
+      "postalCode" : ""
+    },
+    "km_KH" : {
+      "shortName" : "កម្ពុជា",
+      "longName" : "ព្រះរាជាណាចក្រកម្ពុជា",
+      "postalCode" : "ប្រៃសណីយ៍កូដ"
+    },
+    "de_DE" : {
+      "shortName" : "Kambodscha",
+      "longName" : "Kingdom of Cambodia",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Cambodia",
+      "longName" : "Kingdom of Cambodia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Camboya",
+      "longName" : "Reino de Camboya",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Cambodge",
+      "longName" : "Royaume du Cambodge",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Cambogia",
+      "longName" : "Regno di Cambogia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "캄보디아",
+      "longName" : "Kingdom of Cambodia",
+      "postalCode" : ""
+    }
+  }
 }

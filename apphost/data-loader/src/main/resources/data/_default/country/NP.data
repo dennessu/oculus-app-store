@@ -1,205 +1,246 @@
 {
-	"countryCode": "NP",
-	"defaultLocale": {
-		"href": "/v1/locales/ne_NP",
-		"id": "ne_NP"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/NPR",
-		"id": "NPR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"BA": {
-			"locales": {
-				"ne_NP": {
-					"shortName": "बागमती",
-					"longName": "बागमती"
-				},
-				"en_US": {
-					"shortName": "Bagmati",
-					"longName": "Bagmati"
-				}
-			}
-		},
-		"BH": {
-			"locales": {
-				"ne_NP": {
-					"shortName": "भेरी",
-					"longName": "भेरी"
-				},
-				"en_US": {
-					"shortName": "Bheri",
-					"longName": "Bheri"
-				}
-			}
-		},
-		"DH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dhawalagiri",
-					"longName": "Dhawalagiri"
-				},
-				"ne_NP": {
-					"shortName": "धौलागिरी",
-					"longName": "धौलागिरी"
-				}
-			}
-		},
-		"GA": {
-			"locales": {
-				"ne_NP": {
-					"shortName": "गण्डकी",
-					"longName": "गण्डकी"
-				},
-				"en_US": {
-					"shortName": "Gandaki",
-					"longName": "Gandaki"
-				}
-			}
-		},
-		"JA": {
-			"locales": {
-				"ne_NP": {
-					"shortName": "जनकपुर",
-					"longName": "जनकपुर"
-				},
-				"en_US": {
-					"shortName": "Janakpur",
-					"longName": "Janakpur"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karnali",
-					"longName": "Karnali"
-				},
-				"ne_NP": {
-					"shortName": "कर्णाली",
-					"longName": "कर्णाली"
-				}
-			}
-		},
-		"KO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kosi [Koshi]",
-					"longName": "Kosi [Koshi]"
-				},
-				"ne_NP": {
-					"shortName": "कोशी",
-					"longName": "कोशी"
-				}
-			}
-		},
-		"LU": {
-			"locales": {
-				"ne_NP": {
-					"shortName": "लुम्बिनी अञ्चल",
-					"longName": "लुम्बिनी अञ्चल"
-				},
-				"en_US": {
-					"shortName": "Lumbini",
-					"longName": "Lumbini"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mahakali",
-					"longName": "Mahakali"
-				},
-				"ne_NP": {
-					"shortName": "महाकाली",
-					"longName": "महाकाली"
-				}
-			}
-		},
-		"ME": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mechi",
-					"longName": "Mechi"
-				},
-				"ne_NP": {
-					"shortName": "मेची अञ्चल",
-					"longName": "मेची अञ्चल"
-				}
-			}
-		},
-		"NA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Narayani",
-					"longName": "Narayani"
-				},
-				"ne_NP": {
-					"shortName": "नारायणी अञ्चल",
-					"longName": "नारायणी अञ्चल"
-				}
-			}
-		},
-		"RA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rapti",
-					"longName": "Rapti"
-				},
-				"ne_NP": {
-					"shortName": "राप्ती अञ्चल",
-					"longName": "राप्ती अञ्चल"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sagarmatha",
-					"longName": "Sagarmatha"
-				},
-				"ne_NP": {
-					"shortName": "सगरमाथा अञ्चल",
-					"longName": "सगरमाथा अञ्चल"
-				}
-			}
-		},
-		"SE": {
-			"locales": {
-				"ne_NP": {
-					"shortName": "सेती अञ्चल",
-					"longName": "सेती अञ्चल"
-				},
-				"en_US": {
-					"shortName": "Seti",
-					"longName": "Seti"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ne_NP",
-		"id": "ne_NP"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Nepal",
-			"longName": "Federal Democratic Republic of Nepa",
-			"postalCode": "Postal Code"
-		},
-		"ne_NP": {
-			"shortName": "नेपाल",
-			"longName": "सङ्घीय लोकतान्त्रिक गणतन्त्र नेपाल",
-			"postalCode": "पिन कोड"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NP",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ne_NP",
+    "id" : "ne_NP"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/NPR",
+    "id" : "NPR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "BA" : {
+      "locales" : {
+        "ne_NP" : {
+          "shortName" : "बागमती",
+          "longName" : "बागमती"
+        },
+        "en_US" : {
+          "shortName" : "Bagmati",
+          "longName" : "Bagmati"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BH" : {
+      "locales" : {
+        "ne_NP" : {
+          "shortName" : "भेरी",
+          "longName" : "भेरी"
+        },
+        "en_US" : {
+          "shortName" : "Bheri",
+          "longName" : "Bheri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dhawalagiri",
+          "longName" : "Dhawalagiri"
+        },
+        "ne_NP" : {
+          "shortName" : "धौलागिरी",
+          "longName" : "धौलागिरी"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GA" : {
+      "locales" : {
+        "ne_NP" : {
+          "shortName" : "गण्डकी",
+          "longName" : "गण्डकी"
+        },
+        "en_US" : {
+          "shortName" : "Gandaki",
+          "longName" : "Gandaki"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JA" : {
+      "locales" : {
+        "ne_NP" : {
+          "shortName" : "जनकपुर",
+          "longName" : "जनकपुर"
+        },
+        "en_US" : {
+          "shortName" : "Janakpur",
+          "longName" : "Janakpur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karnali",
+          "longName" : "Karnali"
+        },
+        "ne_NP" : {
+          "shortName" : "कर्णाली",
+          "longName" : "कर्णाली"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kosi [Koshi]",
+          "longName" : "Kosi [Koshi]"
+        },
+        "ne_NP" : {
+          "shortName" : "कोशी",
+          "longName" : "कोशी"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LU" : {
+      "locales" : {
+        "ne_NP" : {
+          "shortName" : "लुम्बिनी अञ्चल",
+          "longName" : "लुम्बिनी अञ्चल"
+        },
+        "en_US" : {
+          "shortName" : "Lumbini",
+          "longName" : "Lumbini"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mahakali",
+          "longName" : "Mahakali"
+        },
+        "ne_NP" : {
+          "shortName" : "महाकाली",
+          "longName" : "महाकाली"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ME" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mechi",
+          "longName" : "Mechi"
+        },
+        "ne_NP" : {
+          "shortName" : "मेची अञ्चल",
+          "longName" : "मेची अञ्चल"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Narayani",
+          "longName" : "Narayani"
+        },
+        "ne_NP" : {
+          "shortName" : "नारायणी अञ्चल",
+          "longName" : "नारायणी अञ्चल"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rapti",
+          "longName" : "Rapti"
+        },
+        "ne_NP" : {
+          "shortName" : "राप्ती अञ्चल",
+          "longName" : "राप्ती अञ्चल"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sagarmatha",
+          "longName" : "Sagarmatha"
+        },
+        "ne_NP" : {
+          "shortName" : "सगरमाथा अञ्चल",
+          "longName" : "सगरमाथा अञ्चल"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SE" : {
+      "locales" : {
+        "ne_NP" : {
+          "shortName" : "सेती अञ्चल",
+          "longName" : "सेती अञ्चल"
+        },
+        "en_US" : {
+          "shortName" : "Seti",
+          "longName" : "Seti"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ne_NP",
+    "id" : "ne_NP"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Nepal",
+      "longName" : "Federal Democratic Republic of Nepa",
+      "postalCode" : ""
+    },
+    "ne_NP" : {
+      "shortName" : "नेपाल",
+      "longName" : "सङ्घीय लोकतान्त्रिक गणतन्त्र नेपाल",
+      "postalCode" : "पिन कोड"
+    },
+    "de_DE" : {
+      "shortName" : "Nepal",
+      "longName" : "Demokratische Bundesrepublik Nepal",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Nepal",
+      "longName" : "Federal Democratic Republic of Nepa",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Nepal",
+      "longName" : "República Democrática Federal de Nepal",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Népal",
+      "longName" : "République démocratique fédérale du Népal",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Nepal",
+      "longName" : "Repubblica federale democratica del Nepal",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "네팔",
+      "longName" : "Federal Democratic Republic of Nepa",
+      "postalCode" : ""
+    }
+  }
 }

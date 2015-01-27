@@ -1,460 +1,517 @@
 {
-	"countryCode": "FR",
-	"defaultLocale": {
-		"href": "/v1/locales/fr_FR",
-		"id": "fr_FR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"A": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "A",
-					"longName": "Alsace "
-				},
-				"en_US": {
-					"shortName": "A",
-					"longName": "Alsace"
-				}
-			}
-		},
-		"B": {
-			"locales": {
-				"en_US": {
-					"shortName": "B",
-					"longName": "Aquitaine"
-				},
-				"fr_FR": {
-					"shortName": "B",
-					"longName": "Aquitaine "
-				}
-			}
-		},
-		"BL": {
-			"locales": {
-				"en_US": {
-					"shortName": "BL",
-					"longName": "Saint-Barthélemy"
-				},
-				"fr_FR": {
-					"shortName": "BL",
-					"longName": "Saint-Barthélemy "
-				}
-			}
-		},
-		"C": {
-			"locales": {
-				"en_US": {
-					"shortName": "C",
-					"longName": "Auvergne"
-				},
-				"fr_FR": {
-					"shortName": "C",
-					"longName": "Auvergne "
-				}
-			}
-		},
-		"CP": {
-			"locales": {
-				"en_US": {
-					"shortName": "CP",
-					"longName": "Clipperton"
-				},
-				"fr_FR": {
-					"shortName": "CP",
-					"longName": "Clipperton "
-				}
-			}
-		},
-		"D": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "D",
-					"longName": "Burgundy "
-				},
-				"en_US": {
-					"shortName": "D",
-					"longName": "Bourgogne"
-				}
-			}
-		},
-		"E": {
-			"locales": {
-				"en_US": {
-					"shortName": "E",
-					"longName": "Bretagne"
-				},
-				"fr_FR": {
-					"shortName": "E",
-					"longName": "Brittany "
-				}
-			}
-		},
-		"F": {
-			"locales": {
-				"en_US": {
-					"shortName": "F",
-					"longName": "Centre"
-				},
-				"fr_FR": {
-					"shortName": "F",
-					"longName": "center "
-				}
-			}
-		},
-		"G": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "G",
-					"longName": "Champagne-Ardenne "
-				},
-				"en_US": {
-					"shortName": "G",
-					"longName": "Champagne-Ardenne"
-				}
-			}
-		},
-		"GF": {
-			"locales": {
-				"en_US": {
-					"shortName": "GF",
-					"longName": "Guyane (française)"
-				},
-				"fr_FR": {
-					"shortName": "GF",
-					"longName": "Guiana (French) "
-				}
-			}
-		},
-		"GP": {
-			"locales": {
-				"en_US": {
-					"shortName": "GP",
-					"longName": "Guadeloupe"
-				},
-				"fr_FR": {
-					"shortName": "GP",
-					"longName": "Guadeloupe "
-				}
-			}
-		},
-		"H": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "H",
-					"longName": "Corsica "
-				},
-				"en_US": {
-					"shortName": "H",
-					"longName": "Corse"
-				}
-			}
-		},
-		"I": {
-			"locales": {
-				"en_US": {
-					"shortName": "I",
-					"longName": "Franche-Comté"
-				},
-				"fr_FR": {
-					"shortName": "I",
-					"longName": "Franche-Comté "
-				}
-			}
-		},
-		"J": {
-			"locales": {
-				"en_US": {
-					"shortName": "J",
-					"longName": "Ile-de-France"
-				},
-				"fr_FR": {
-					"shortName": "J",
-					"longName": "Ile-de-France "
-				}
-			}
-		},
-		"K": {
-			"locales": {
-				"en_US": {
-					"shortName": "K",
-					"longName": "Languedoc-Roussillon"
-				},
-				"fr_FR": {
-					"shortName": "K",
-					"longName": "Languedoc-Roussillon "
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "L",
-					"longName": "Limousin "
-				},
-				"en_US": {
-					"shortName": "L",
-					"longName": "Limousin"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "M",
-					"longName": "Lorraine "
-				},
-				"en_US": {
-					"shortName": "M",
-					"longName": "Lorraine"
-				}
-			}
-		},
-		"MF": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "MF",
-					"longName": "Saint-Martin "
-				},
-				"en_US": {
-					"shortName": "MF",
-					"longName": "Saint-Martin"
-				}
-			}
-		},
-		"MQ": {
-			"locales": {
-				"en_US": {
-					"shortName": "MQ",
-					"longName": "Martinique"
-				},
-				"fr_FR": {
-					"shortName": "MQ",
-					"longName": "Martinique "
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"en_US": {
-					"shortName": "N",
-					"longName": "Midi-Pyrénées"
-				},
-				"fr_FR": {
-					"shortName": "N",
-					"longName": "Midi-Pyrenees "
-				}
-			}
-		},
-		"NC": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "NC",
-					"longName": "New Caledonia "
-				},
-				"en_US": {
-					"shortName": "NC",
-					"longName": "Nouvelle-Calédonie"
-				}
-			}
-		},
-		"O": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "O",
-					"longName": "Nord-Pas-de-Calais "
-				},
-				"en_US": {
-					"shortName": "O",
-					"longName": "Nord-Pas-de-Calais"
-				}
-			}
-		},
-		"P": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "P",
-					"longName": "Basse-Normandie "
-				},
-				"en_US": {
-					"shortName": "P",
-					"longName": "Basse-Normandie"
-				}
-			}
-		},
-		"PF": {
-			"locales": {
-				"en_US": {
-					"shortName": "PF",
-					"longName": "Polynésie française"
-				},
-				"fr_FR": {
-					"shortName": "PF",
-					"longName": "French Polynesia "
-				}
-			}
-		},
-		"PM": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "PM",
-					"longName": "Saint Pierre and Miquelon "
-				},
-				"en_US": {
-					"shortName": "PM",
-					"longName": "Saint-Pierre-et-Miquelon"
-				}
-			}
-		},
-		"Q": {
-			"locales": {
-				"en_US": {
-					"shortName": "Q",
-					"longName": "Haute-Normandie"
-				},
-				"fr_FR": {
-					"shortName": "Q",
-					"longName": "Haute-Normandie "
-				}
-			}
-		},
-		"R": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "R",
-					"longName": "Pays de la Loire "
-				},
-				"en_US": {
-					"shortName": "R",
-					"longName": "Pays de la Loire"
-				}
-			}
-		},
-		"RE": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "RE",
-					"longName": "Meeting "
-				},
-				"en_US": {
-					"shortName": "RE",
-					"longName": "La Réunion"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"en_US": {
-					"shortName": "S",
-					"longName": "Picardie"
-				},
-				"fr_FR": {
-					"shortName": "S",
-					"longName": "Picardie "
-				}
-			}
-		},
-		"T": {
-			"locales": {
-				"en_US": {
-					"shortName": "T",
-					"longName": "Poitou-Charentes"
-				},
-				"fr_FR": {
-					"shortName": "T",
-					"longName": "Poitou-Charentes "
-				}
-			}
-		},
-		"TF": {
-			"locales": {
-				"en_US": {
-					"shortName": "TF",
-					"longName": "Terres australes françaises"
-				},
-				"fr_FR": {
-					"shortName": "TF",
-					"longName": "French Southern Territories "
-				}
-			}
-		},
-		"U": {
-			"locales": {
-				"en_US": {
-					"shortName": "U",
-					"longName": "Provence-Alpes-Côte d'Azur"
-				},
-				"fr_FR": {
-					"shortName": "U",
-					"longName": "Provence-Alpes-Côte d'Azur "
-				}
-			}
-		},
-		"V": {
-			"locales": {
-				"en_US": {
-					"shortName": "V",
-					"longName": "Rhône-Alpes"
-				},
-				"fr_FR": {
-					"shortName": "V",
-					"longName": "Rhône-Alpes "
-				}
-			}
-		},
-		"WF": {
-			"locales": {
-				"fr_FR": {
-					"shortName": "WF",
-					"longName": "Wallis and Futuna"
-				},
-				"en_US": {
-					"shortName": "WF",
-					"longName": "Wallis-et-Futuna"
-				}
-			}
-		},
-		"YT": {
-			"locales": {
-				"en_US": {
-					"shortName": "YT",
-					"longName": "Mayotte"
-				},
-				"fr_FR": {
-					"shortName": "YT",
-					"longName": "Mayotte "
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/fr_FR",
-		"id": "fr_FR"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "France",
-			"longName": "French Republic",
-			"postalCode": "Postal Code"
-		},
-		"fr_FR": {
-			"shortName": "La France",
-			"longName": "République française",
-			"postalCode": "code postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "FR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/fr_FR",
+    "id" : "fr_FR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "A" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "A",
+          "longName" : "Alsace "
+        },
+        "en_US" : {
+          "shortName" : "A",
+          "longName" : "Alsace"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "B" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "B",
+          "longName" : "Aquitaine"
+        },
+        "fr_FR" : {
+          "shortName" : "B",
+          "longName" : "Aquitaine "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "BL",
+          "longName" : "Saint-Barthélemy"
+        },
+        "fr_FR" : {
+          "shortName" : "BL",
+          "longName" : "Saint-Barthélemy "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "C" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "C",
+          "longName" : "Auvergne"
+        },
+        "fr_FR" : {
+          "shortName" : "C",
+          "longName" : "Auvergne "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "CP",
+          "longName" : "Clipperton"
+        },
+        "fr_FR" : {
+          "shortName" : "CP",
+          "longName" : "Clipperton "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "D" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "D",
+          "longName" : "Burgundy "
+        },
+        "en_US" : {
+          "shortName" : "D",
+          "longName" : "Bourgogne"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "E" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "E",
+          "longName" : "Bretagne"
+        },
+        "fr_FR" : {
+          "shortName" : "E",
+          "longName" : "Brittany "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "F" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "F",
+          "longName" : "Centre"
+        },
+        "fr_FR" : {
+          "shortName" : "F",
+          "longName" : "center "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "G" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "G",
+          "longName" : "Champagne-Ardenne "
+        },
+        "en_US" : {
+          "shortName" : "G",
+          "longName" : "Champagne-Ardenne"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "GF",
+          "longName" : "Guyane (française)"
+        },
+        "fr_FR" : {
+          "shortName" : "GF",
+          "longName" : "Guiana (French) "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "GP",
+          "longName" : "Guadeloupe"
+        },
+        "fr_FR" : {
+          "shortName" : "GP",
+          "longName" : "Guadeloupe "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "H" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "H",
+          "longName" : "Corsica "
+        },
+        "en_US" : {
+          "shortName" : "H",
+          "longName" : "Corse"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "I" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "I",
+          "longName" : "Franche-Comté"
+        },
+        "fr_FR" : {
+          "shortName" : "I",
+          "longName" : "Franche-Comté "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "J" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "J",
+          "longName" : "Ile-de-France"
+        },
+        "fr_FR" : {
+          "shortName" : "J",
+          "longName" : "Ile-de-France "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "K" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "K",
+          "longName" : "Languedoc-Roussillon"
+        },
+        "fr_FR" : {
+          "shortName" : "K",
+          "longName" : "Languedoc-Roussillon "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "L",
+          "longName" : "Limousin "
+        },
+        "en_US" : {
+          "shortName" : "L",
+          "longName" : "Limousin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "M",
+          "longName" : "Lorraine "
+        },
+        "en_US" : {
+          "shortName" : "M",
+          "longName" : "Lorraine"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MF" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "MF",
+          "longName" : "Saint-Martin "
+        },
+        "en_US" : {
+          "shortName" : "MF",
+          "longName" : "Saint-Martin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MQ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "MQ",
+          "longName" : "Martinique"
+        },
+        "fr_FR" : {
+          "shortName" : "MQ",
+          "longName" : "Martinique "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "N",
+          "longName" : "Midi-Pyrénées"
+        },
+        "fr_FR" : {
+          "shortName" : "N",
+          "longName" : "Midi-Pyrenees "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NC" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "NC",
+          "longName" : "New Caledonia "
+        },
+        "en_US" : {
+          "shortName" : "NC",
+          "longName" : "Nouvelle-Calédonie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "O" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "O",
+          "longName" : "Nord-Pas-de-Calais "
+        },
+        "en_US" : {
+          "shortName" : "O",
+          "longName" : "Nord-Pas-de-Calais"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "P" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "P",
+          "longName" : "Basse-Normandie "
+        },
+        "en_US" : {
+          "shortName" : "P",
+          "longName" : "Basse-Normandie"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "PF",
+          "longName" : "Polynésie française"
+        },
+        "fr_FR" : {
+          "shortName" : "PF",
+          "longName" : "French Polynesia "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PM" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "PM",
+          "longName" : "Saint Pierre and Miquelon "
+        },
+        "en_US" : {
+          "shortName" : "PM",
+          "longName" : "Saint-Pierre-et-Miquelon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Q" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Q",
+          "longName" : "Haute-Normandie"
+        },
+        "fr_FR" : {
+          "shortName" : "Q",
+          "longName" : "Haute-Normandie "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "R" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "R",
+          "longName" : "Pays de la Loire "
+        },
+        "en_US" : {
+          "shortName" : "R",
+          "longName" : "Pays de la Loire"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RE" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "RE",
+          "longName" : "Meeting "
+        },
+        "en_US" : {
+          "shortName" : "RE",
+          "longName" : "La Réunion"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "S",
+          "longName" : "Picardie"
+        },
+        "fr_FR" : {
+          "shortName" : "S",
+          "longName" : "Picardie "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "T" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "T",
+          "longName" : "Poitou-Charentes"
+        },
+        "fr_FR" : {
+          "shortName" : "T",
+          "longName" : "Poitou-Charentes "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "TF",
+          "longName" : "Terres australes françaises"
+        },
+        "fr_FR" : {
+          "shortName" : "TF",
+          "longName" : "French Southern Territories "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "U" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "U",
+          "longName" : "Provence-Alpes-Côte d'Azur"
+        },
+        "fr_FR" : {
+          "shortName" : "U",
+          "longName" : "Provence-Alpes-Côte d'Azur "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "V" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "V",
+          "longName" : "Rhône-Alpes"
+        },
+        "fr_FR" : {
+          "shortName" : "V",
+          "longName" : "Rhône-Alpes "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WF" : {
+      "locales" : {
+        "fr_FR" : {
+          "shortName" : "WF",
+          "longName" : "Wallis and Futuna"
+        },
+        "en_US" : {
+          "shortName" : "WF",
+          "longName" : "Wallis-et-Futuna"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "YT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "YT",
+          "longName" : "Mayotte"
+        },
+        "fr_FR" : {
+          "shortName" : "YT",
+          "longName" : "Mayotte "
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/fr_FR",
+    "id" : "fr_FR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "France",
+      "longName" : "French Republic",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "France",
+      "longName" : "République française",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Frankreich",
+      "longName" : "Französische Republik",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "France",
+      "longName" : "French Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Francia",
+      "longName" : "República Francesa",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Francia",
+      "longName" : "Repubblica francese",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "프랑스",
+      "longName" : "French Republic",
+      "postalCode" : ""
+    }
+  }
 }

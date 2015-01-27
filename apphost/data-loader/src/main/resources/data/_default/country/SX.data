@@ -1,33 +1,58 @@
 {
-	"countryCode": "SX",
-	"defaultLocale": {
-		"href": "/v1/locales/en_SX",
-		"id": "en_SX"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ANG",
-		"id": "ANG"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_SX",
-		"id": "en_SX"
-	},
-	{
-		"href": "/v1/locales/nl_SX",
-		"id": "nl_SX"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Sint Maarten",
-			"longName": "Sint Maarten",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SX",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_SX",
+    "id" : "en_SX"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ANG",
+    "id" : "ANG"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_SX",
+    "id" : "en_SX"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/nl_SX",
+    "id" : "nl_SX"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Sint Maarten",
+      "longName" : "Sint Maarten",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Sint Maarten",
+      "longName" : "Sint Maarten",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Sint Maarten",
+      "longName" : "Sint Maarten",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "San Martín",
+      "longName" : "San Martín",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Saint-Martin",
+      "longName" : "Saint-Martin",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Sint Maarten",
+      "longName" : "Sint Maarten",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "신트마르텐",
+      "longName" : "신트마르텐",
+      "postalCode" : ""
+    }
+  }
 }

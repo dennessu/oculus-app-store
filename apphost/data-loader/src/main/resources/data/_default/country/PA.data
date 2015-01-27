@@ -1,181 +1,220 @@
 {
-	"countryCode": "PA",
-	"defaultLocale": {
-		"href": "/v1/locales/es_PA",
-		"id": "es_PA"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/PAB",
-		"id": "PAB"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"1": {
-			"locales": {
-				"es_PA": {
-					"shortName": "Bocas del Toro",
-					"longName": "Bocas del Toro"
-				},
-				"en_US": {
-					"shortName": "Bocas del Toro",
-					"longName": "Bocas del Toro"
-				}
-			}
-		},
-		"2": {
-			"locales": {
-				"es_PA": {
-					"shortName": "Coclé",
-					"longName": "Coclé"
-				},
-				"en_US": {
-					"shortName": "Coclé",
-					"longName": "Coclé"
-				}
-			}
-		},
-		"3": {
-			"locales": {
-				"es_PA": {
-					"shortName": "Colón",
-					"longName": "Colón"
-				},
-				"en_US": {
-					"shortName": "Colón",
-					"longName": "Colón"
-				}
-			}
-		},
-		"4": {
-			"locales": {
-				"es_PA": {
-					"shortName": "Chiriquí",
-					"longName": "Chiriquí"
-				},
-				"en_US": {
-					"shortName": "Chiriquí",
-					"longName": "Chiriquí"
-				}
-			}
-		},
-		"5": {
-			"locales": {
-				"es_PA": {
-					"shortName": "Darién",
-					"longName": "Darién"
-				},
-				"en_US": {
-					"shortName": "Darién",
-					"longName": "Darién"
-				}
-			}
-		},
-		"6": {
-			"locales": {
-				"en_US": {
-					"shortName": "Herrera",
-					"longName": "Herrera"
-				},
-				"es_PA": {
-					"shortName": "Herrera",
-					"longName": "Herrera"
-				}
-			}
-		},
-		"7": {
-			"locales": {
-				"en_US": {
-					"shortName": "Los Santos",
-					"longName": "Los Santos"
-				},
-				"es_PA": {
-					"shortName": "Los Santos",
-					"longName": "Los Santos"
-				}
-			}
-		},
-		"8": {
-			"locales": {
-				"en_US": {
-					"shortName": "Panamá",
-					"longName": "Panamá"
-				},
-				"es_PA": {
-					"shortName": "Panamá",
-					"longName": "Panamá"
-				}
-			}
-		},
-		"9": {
-			"locales": {
-				"en_US": {
-					"shortName": "Veraguas",
-					"longName": "Veraguas"
-				},
-				"es_PA": {
-					"shortName": "Veraguas",
-					"longName": "Veraguas"
-				}
-			}
-		},
-		"EM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Emberá",
-					"longName": "Emberá"
-				},
-				"es_PA": {
-					"shortName": "Emberá",
-					"longName": "Emberá"
-				}
-			}
-		},
-		"KY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kuna Yala",
-					"longName": "Kuna Yala"
-				},
-				"es_PA": {
-					"shortName": "Kuna Yala",
-					"longName": "Kuna Yala"
-				}
-			}
-		},
-		"NB": {
-			"locales": {
-				"es_PA": {
-					"shortName": "Ngäbe-Buglé",
-					"longName": "Ngäbe-Buglé"
-				},
-				"en_US": {
-					"shortName": "Ngäbe-Buglé",
-					"longName": "Ngäbe-Buglé"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_PA",
-		"id": "es_PA"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Panama",
-			"longName": "Republic of Panama",
-			"postalCode": "Postal Code"
-		},
-		"es_PA": {
-			"shortName": "Panamá",
-			"longName": "República de Panamá",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_PA",
+    "id" : "es_PA"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/PAB",
+    "id" : "PAB"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "1" : {
+      "locales" : {
+        "es_PA" : {
+          "shortName" : "Bocas del Toro",
+          "longName" : "Bocas del Toro"
+        },
+        "en_US" : {
+          "shortName" : "Bocas del Toro",
+          "longName" : "Bocas del Toro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "2" : {
+      "locales" : {
+        "es_PA" : {
+          "shortName" : "Coclé",
+          "longName" : "Coclé"
+        },
+        "en_US" : {
+          "shortName" : "Coclé",
+          "longName" : "Coclé"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "3" : {
+      "locales" : {
+        "es_PA" : {
+          "shortName" : "Colón",
+          "longName" : "Colón"
+        },
+        "en_US" : {
+          "shortName" : "Colón",
+          "longName" : "Colón"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "4" : {
+      "locales" : {
+        "es_PA" : {
+          "shortName" : "Chiriquí",
+          "longName" : "Chiriquí"
+        },
+        "en_US" : {
+          "shortName" : "Chiriquí",
+          "longName" : "Chiriquí"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "5" : {
+      "locales" : {
+        "es_PA" : {
+          "shortName" : "Darién",
+          "longName" : "Darién"
+        },
+        "en_US" : {
+          "shortName" : "Darién",
+          "longName" : "Darién"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "6" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Herrera",
+          "longName" : "Herrera"
+        },
+        "es_PA" : {
+          "shortName" : "Herrera",
+          "longName" : "Herrera"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "7" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Los Santos",
+          "longName" : "Los Santos"
+        },
+        "es_PA" : {
+          "shortName" : "Los Santos",
+          "longName" : "Los Santos"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "8" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Panamá",
+          "longName" : "Panamá"
+        },
+        "es_PA" : {
+          "shortName" : "Panamá",
+          "longName" : "Panamá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "9" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Veraguas",
+          "longName" : "Veraguas"
+        },
+        "es_PA" : {
+          "shortName" : "Veraguas",
+          "longName" : "Veraguas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Emberá",
+          "longName" : "Emberá"
+        },
+        "es_PA" : {
+          "shortName" : "Emberá",
+          "longName" : "Emberá"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kuna Yala",
+          "longName" : "Kuna Yala"
+        },
+        "es_PA" : {
+          "shortName" : "Kuna Yala",
+          "longName" : "Kuna Yala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NB" : {
+      "locales" : {
+        "es_PA" : {
+          "shortName" : "Ngäbe-Buglé",
+          "longName" : "Ngäbe-Buglé"
+        },
+        "en_US" : {
+          "shortName" : "Ngäbe-Buglé",
+          "longName" : "Ngäbe-Buglé"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_PA",
+    "id" : "es_PA"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Panama",
+      "longName" : "Republic of Panama",
+      "postalCode" : ""
+    },
+    "es_PA" : {
+      "shortName" : "Panamá",
+      "longName" : "República de Panamá",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Panama",
+      "longName" : "Republic of Panama",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Panama",
+      "longName" : "Republic of Panama",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Panamá",
+      "longName" : "República de Panamá",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Panama",
+      "longName" : "République du Panama",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Panamá",
+      "longName" : "Repubblica di Panamá",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "파나마",
+      "longName" : "Republic of Panama",
+      "postalCode" : ""
+    }
+  }
 }

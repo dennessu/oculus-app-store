@@ -1,244 +1,288 @@
 {
-	"countryCode": "PH",
-	"defaultLocale": {
-		"href": "/v1/locales/en_SG",
-		"id": "en_SG"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/PHP",
-		"id": "PHP"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/MDA",
-		"id": "MDA"
-	}],
-	"subCountries": {
-		"00": {
-			"locales": {
-				"en_SG": {
-					"shortName": "National Capital Region",
-					"longName": "National Capital Region"
-				},
-				"en_US": {
-					"shortName": "National Capital Region",
-					"longName": "National Capital Region"
-				}
-			}
-		},
-		"01": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Ilocos",
-					"longName": "Ilocos"
-				},
-				"en_US": {
-					"shortName": "Ilocos",
-					"longName": "Ilocos"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Cagayan Valley",
-					"longName": "Cagayan Valley"
-				},
-				"en_US": {
-					"shortName": "Cagayan Valley",
-					"longName": "Cagayan Valley"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Central Luzon",
-					"longName": "Central Luzon"
-				},
-				"en_US": {
-					"shortName": "Central Luzon",
-					"longName": "Central Luzon"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Bicol",
-					"longName": "Bicol"
-				},
-				"en_US": {
-					"shortName": "Bicol",
-					"longName": "Bicol"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Western Visayas",
-					"longName": "Western Visayas"
-				},
-				"en_US": {
-					"shortName": "Western Visayas",
-					"longName": "Western Visayas"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Central Visayas",
-					"longName": "Central Visayas"
-				},
-				"en_US": {
-					"shortName": "Central Visayas",
-					"longName": "Central Visayas"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Eastern Visayas",
-					"longName": "Eastern Visayas"
-				},
-				"en_US": {
-					"shortName": "Eastern Visayas",
-					"longName": "Eastern Visayas"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Zamboanga Peninsula",
-					"longName": "Zamboanga Peninsula"
-				},
-				"en_US": {
-					"shortName": "Zamboanga Peninsula",
-					"longName": "Zamboanga Peninsula"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Northern Mindanao",
-					"longName": "Northern Mindanao"
-				},
-				"en_US": {
-					"shortName": "Northern Mindanao",
-					"longName": "Northern Mindanao"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Davao",
-					"longName": "Davao"
-				},
-				"en_US": {
-					"shortName": "Davao",
-					"longName": "Davao"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Soccsksargen",
-					"longName": "Soccsksargen"
-				},
-				"en_US": {
-					"shortName": "Soccsksargen",
-					"longName": "Soccsksargen"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Caraga",
-					"longName": "Caraga"
-				},
-				"en_US": {
-					"shortName": "Caraga",
-					"longName": "Caraga"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Autonomous Region in Muslim Mindanao",
-					"longName": "Autonomous Region in Muslim Mindanao"
-				},
-				"en_US": {
-					"shortName": "Autonomous Region in Muslim Mindanao",
-					"longName": "Autonomous Region in Muslim Mindanao"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Cordillera Administrative Region",
-					"longName": "Cordillera Administrative Region"
-				},
-				"en_US": {
-					"shortName": "Cordillera Administrative Region",
-					"longName": "Cordillera Administrative Region"
-				}
-			}
-		},
-		"40": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Calabarzon",
-					"longName": "Calabarzon"
-				},
-				"en_US": {
-					"shortName": "Calabarzon",
-					"longName": "Calabarzon"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"en_SG": {
-					"shortName": "Mimaropa",
-					"longName": "Mimaropa"
-				},
-				"en_US": {
-					"shortName": "Mimaropa",
-					"longName": "Mimaropa"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_SG",
-		"id": "en_SG"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Philippines",
-			"longName": "Republic of the Philippines",
-			"postalCode": "Postal Code"
-		},
-		"en_SG": {
-			"shortName": "Philippines",
-			"longName": "Republic of the Philippines",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PH",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_SG",
+    "id" : "en_SG"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/PHP",
+    "id" : "PHP"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/MDA",
+    "id" : "MDA"
+  } ],
+  "subCountries" : {
+    "00" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "National Capital Region",
+          "longName" : "National Capital Region"
+        },
+        "en_US" : {
+          "shortName" : "National Capital Region",
+          "longName" : "National Capital Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "01" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Ilocos",
+          "longName" : "Ilocos"
+        },
+        "en_US" : {
+          "shortName" : "Ilocos",
+          "longName" : "Ilocos"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Cagayan Valley",
+          "longName" : "Cagayan Valley"
+        },
+        "en_US" : {
+          "shortName" : "Cagayan Valley",
+          "longName" : "Cagayan Valley"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Central Luzon",
+          "longName" : "Central Luzon"
+        },
+        "en_US" : {
+          "shortName" : "Central Luzon",
+          "longName" : "Central Luzon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Bicol",
+          "longName" : "Bicol"
+        },
+        "en_US" : {
+          "shortName" : "Bicol",
+          "longName" : "Bicol"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Western Visayas",
+          "longName" : "Western Visayas"
+        },
+        "en_US" : {
+          "shortName" : "Western Visayas",
+          "longName" : "Western Visayas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Central Visayas",
+          "longName" : "Central Visayas"
+        },
+        "en_US" : {
+          "shortName" : "Central Visayas",
+          "longName" : "Central Visayas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Eastern Visayas",
+          "longName" : "Eastern Visayas"
+        },
+        "en_US" : {
+          "shortName" : "Eastern Visayas",
+          "longName" : "Eastern Visayas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Zamboanga Peninsula",
+          "longName" : "Zamboanga Peninsula"
+        },
+        "en_US" : {
+          "shortName" : "Zamboanga Peninsula",
+          "longName" : "Zamboanga Peninsula"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Northern Mindanao",
+          "longName" : "Northern Mindanao"
+        },
+        "en_US" : {
+          "shortName" : "Northern Mindanao",
+          "longName" : "Northern Mindanao"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Davao",
+          "longName" : "Davao"
+        },
+        "en_US" : {
+          "shortName" : "Davao",
+          "longName" : "Davao"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Soccsksargen",
+          "longName" : "Soccsksargen"
+        },
+        "en_US" : {
+          "shortName" : "Soccsksargen",
+          "longName" : "Soccsksargen"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Caraga",
+          "longName" : "Caraga"
+        },
+        "en_US" : {
+          "shortName" : "Caraga",
+          "longName" : "Caraga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Autonomous Region in Muslim Mindanao",
+          "longName" : "Autonomous Region in Muslim Mindanao"
+        },
+        "en_US" : {
+          "shortName" : "Autonomous Region in Muslim Mindanao",
+          "longName" : "Autonomous Region in Muslim Mindanao"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Cordillera Administrative Region",
+          "longName" : "Cordillera Administrative Region"
+        },
+        "en_US" : {
+          "shortName" : "Cordillera Administrative Region",
+          "longName" : "Cordillera Administrative Region"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "40" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Calabarzon",
+          "longName" : "Calabarzon"
+        },
+        "en_US" : {
+          "shortName" : "Calabarzon",
+          "longName" : "Calabarzon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "en_SG" : {
+          "shortName" : "Mimaropa",
+          "longName" : "Mimaropa"
+        },
+        "en_US" : {
+          "shortName" : "Mimaropa",
+          "longName" : "Mimaropa"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_SG",
+    "id" : "en_SG"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Philippines",
+      "longName" : "Republic of the Philippines",
+      "postalCode" : ""
+    },
+    "en_SG" : {
+      "shortName" : "Philippines",
+      "longName" : "Republic of the Philippines",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Philippinen",
+      "longName" : "Republic of the Philippines",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Philippines",
+      "longName" : "Republic of the Philippines",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Filipinas",
+      "longName" : "República de Filipinas",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Philippines",
+      "longName" : "République des Philippines",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Filippine",
+      "longName" : "Repubblica delle Filippine",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "필리핀",
+      "longName" : "Republic of the Philippines",
+      "postalCode" : ""
+    }
+  }
 }

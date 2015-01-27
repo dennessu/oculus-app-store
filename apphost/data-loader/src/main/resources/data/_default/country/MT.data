@@ -1,853 +1,948 @@
 {
-	"countryCode": "MT",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Attard",
-					"longName": "Attard"
-				},
-				"en_US": {
-					"shortName": "Attard",
-					"longName": "Attard"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Balzan",
-					"longName": "Balzan"
-				},
-				"en_US": {
-					"shortName": "Balzan",
-					"longName": "Balzan"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Birgu",
-					"longName": "Birgu"
-				},
-				"en_US": {
-					"shortName": "Birgu",
-					"longName": "Birgu"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Birkirkara",
-					"longName": "Birkirkara"
-				},
-				"mt_MT": {
-					"shortName": "Birkirkara",
-					"longName": "Birkirkara"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Birżebbuġa",
-					"longName": "Birżebbuġa"
-				},
-				"en_US": {
-					"shortName": "Birżebbuġa",
-					"longName": "Birżebbuġa"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bormla",
-					"longName": "Bormla"
-				},
-				"mt_MT": {
-					"shortName": "Bormla",
-					"longName": "Bormla"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dingli",
-					"longName": "Dingli"
-				},
-				"mt_MT": {
-					"shortName": "Dingli",
-					"longName": "Dingli"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Fgura",
-					"longName": "Fgura"
-				},
-				"mt_MT": {
-					"shortName": "Fgura",
-					"longName": "Fgura"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"en_US": {
-					"shortName": "Floriana",
-					"longName": "Floriana"
-				},
-				"mt_MT": {
-					"shortName": "Floriana",
-					"longName": "Floriana"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Fontana",
-					"longName": "Fontana"
-				},
-				"mt_MT": {
-					"shortName": "Fontana",
-					"longName": "Fontana"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gudja",
-					"longName": "Gudja"
-				},
-				"mt_MT": {
-					"shortName": "Gudja",
-					"longName": "Gudja"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gżira",
-					"longName": "Gżira"
-				},
-				"mt_MT": {
-					"shortName": "Gżira",
-					"longName": "Gżira"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Għajnsielem",
-					"longName": "Għajnsielem"
-				},
-				"en_US": {
-					"shortName": "Għajnsielem",
-					"longName": "Għajnsielem"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Għarb",
-					"longName": "Għarb"
-				},
-				"mt_MT": {
-					"shortName": "Għarb",
-					"longName": "Għarb"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Għargħur",
-					"longName": "Għargħur"
-				},
-				"mt_MT": {
-					"shortName": "Għargħur",
-					"longName": "Għargħur"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Għasri",
-					"longName": "Għasri"
-				},
-				"mt_MT": {
-					"shortName": "Għasri",
-					"longName": "Għasri"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Għaxaq",
-					"longName": "Għaxaq"
-				},
-				"en_US": {
-					"shortName": "Għaxaq",
-					"longName": "Għaxaq"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ħamrun",
-					"longName": "Ħamrun"
-				},
-				"mt_MT": {
-					"shortName": "Ħamrun",
-					"longName": "Ħamrun"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Iklin",
-					"longName": "Iklin"
-				},
-				"en_US": {
-					"shortName": "Iklin",
-					"longName": "Iklin"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Isla",
-					"longName": "Isla"
-				},
-				"mt_MT": {
-					"shortName": "Isla",
-					"longName": "Isla"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kalkara",
-					"longName": "Kalkara"
-				},
-				"mt_MT": {
-					"shortName": "Kalkara",
-					"longName": "Kalkara"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Kerċem",
-					"longName": "Kerċem"
-				},
-				"en_US": {
-					"shortName": "Kerċem",
-					"longName": "Kerċem"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Kirkop",
-					"longName": "Kirkop"
-				},
-				"en_US": {
-					"shortName": "Kirkop",
-					"longName": "Kirkop"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lija",
-					"longName": "Lija"
-				},
-				"mt_MT": {
-					"shortName": "Lija",
-					"longName": "Lija"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"en_US": {
-					"shortName": "Luqa",
-					"longName": "Luqa"
-				},
-				"mt_MT": {
-					"shortName": "Luqa",
-					"longName": "Luqa"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"en_US": {
-					"shortName": "Marsa",
-					"longName": "Marsa"
-				},
-				"mt_MT": {
-					"shortName": "Marsa",
-					"longName": "Marsa"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Marsaskala",
-					"longName": "Marsaskala"
-				},
-				"en_US": {
-					"shortName": "Marsaskala",
-					"longName": "Marsaskala"
-				}
-			}
-		},
-		"28": {
-			"locales": {
-				"en_US": {
-					"shortName": "Marsaxlokk",
-					"longName": "Marsaxlokk"
-				},
-				"mt_MT": {
-					"shortName": "Marsaxlokk",
-					"longName": "Marsaxlokk"
-				}
-			}
-		},
-		"29": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Mdina",
-					"longName": "Mdina"
-				},
-				"en_US": {
-					"shortName": "Mdina",
-					"longName": "Mdina"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Mellieħa",
-					"longName": "Mellieħa"
-				},
-				"en_US": {
-					"shortName": "Mellieħa",
-					"longName": "Mellieħa"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mġarr",
-					"longName": "Mġarr"
-				},
-				"mt_MT": {
-					"shortName": "Mġarr",
-					"longName": "Mġarr"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mosta",
-					"longName": "Mosta"
-				},
-				"mt_MT": {
-					"shortName": "Mosta",
-					"longName": "Mosta"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mqabba",
-					"longName": "Mqabba"
-				},
-				"mt_MT": {
-					"shortName": "Mqabba",
-					"longName": "Mqabba"
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"en_US": {
-					"shortName": "Msida",
-					"longName": "Msida"
-				},
-				"mt_MT": {
-					"shortName": "Msida",
-					"longName": "Msida"
-				}
-			}
-		},
-		"35": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Mtarfa",
-					"longName": "Mtarfa"
-				},
-				"en_US": {
-					"shortName": "Mtarfa",
-					"longName": "Mtarfa"
-				}
-			}
-		},
-		"36": {
-			"locales": {
-				"en_US": {
-					"shortName": "Munxar",
-					"longName": "Munxar"
-				},
-				"mt_MT": {
-					"shortName": "Munxar",
-					"longName": "Munxar"
-				}
-			}
-		},
-		"37": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Nadur",
-					"longName": "Nadur"
-				},
-				"en_US": {
-					"shortName": "Nadur",
-					"longName": "Nadur"
-				}
-			}
-		},
-		"38": {
-			"locales": {
-				"en_US": {
-					"shortName": "Naxxar",
-					"longName": "Naxxar"
-				},
-				"mt_MT": {
-					"shortName": "Naxxar",
-					"longName": "Naxxar"
-				}
-			}
-		},
-		"39": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Paola",
-					"longName": "Paola"
-				},
-				"en_US": {
-					"shortName": "Paola",
-					"longName": "Paola"
-				}
-			}
-		},
-		"40": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Pembroke",
-					"longName": "Pembroke"
-				},
-				"en_US": {
-					"shortName": "Pembroke",
-					"longName": "Pembroke"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Pietà",
-					"longName": "Pietà"
-				},
-				"en_US": {
-					"shortName": "Pietà",
-					"longName": "Pietà"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qala",
-					"longName": "Qala"
-				},
-				"mt_MT": {
-					"shortName": "Qala",
-					"longName": "Qala"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qormi",
-					"longName": "Qormi"
-				},
-				"mt_MT": {
-					"shortName": "Qormi",
-					"longName": "Qormi"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Qrendi",
-					"longName": "Qrendi"
-				},
-				"en_US": {
-					"shortName": "Qrendi",
-					"longName": "Qrendi"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rabat Gozo",
-					"longName": "Rabat Gozo"
-				},
-				"mt_MT": {
-					"shortName": "Rabat Għawdex",
-					"longName": "Rabat Għawdex"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rabat Malta",
-					"longName": "Rabat Malta"
-				},
-				"mt_MT": {
-					"shortName": "Rabat Malta",
-					"longName": "Rabat Malta"
-				}
-			}
-		},
-		"47": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Safi",
-					"longName": "Safi"
-				},
-				"en_US": {
-					"shortName": "Safi",
-					"longName": "Safi"
-				}
-			}
-		},
-		"48": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "San Ġiljan",
-					"longName": "San Ġiljan"
-				},
-				"en_US": {
-					"shortName": "Saint Julian's",
-					"longName": "Saint Julian's"
-				}
-			}
-		},
-		"49": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "San Ġwann",
-					"longName": "San Ġwann"
-				},
-				"en_US": {
-					"shortName": "Saint John",
-					"longName": "Saint John"
-				}
-			}
-		},
-		"50": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "San Lawrenz",
-					"longName": "San Lawrenz"
-				},
-				"en_US": {
-					"shortName": "Saint Lawrence",
-					"longName": "Saint Lawrence"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Paul's Bay",
-					"longName": "Saint Paul's Bay"
-				},
-				"mt_MT": {
-					"shortName": "San Pawl il-Baħar",
-					"longName": "San Pawl il-Baħar"
-				}
-			}
-		},
-		"52": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Sannat",
-					"longName": "Sannat"
-				},
-				"en_US": {
-					"shortName": "Sannat",
-					"longName": "Sannat"
-				}
-			}
-		},
-		"53": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint Lucia's",
-					"longName": "Saint Lucia's"
-				},
-				"mt_MT": {
-					"shortName": "Santa Luċija",
-					"longName": "Santa Luċija"
-				}
-			}
-		},
-		"54": {
-			"locales": {
-				"en_US": {
-					"shortName": "Santa Venera",
-					"longName": "Santa Venera"
-				},
-				"mt_MT": {
-					"shortName": "Santa Venera",
-					"longName": "Santa Venera"
-				}
-			}
-		},
-		"55": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Siġġiewi",
-					"longName": "Siġġiewi"
-				},
-				"en_US": {
-					"shortName": "Siġġiewi",
-					"longName": "Siġġiewi"
-				}
-			}
-		},
-		"56": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Sliema",
-					"longName": "Sliema"
-				},
-				"en_US": {
-					"shortName": "Sliema",
-					"longName": "Sliema"
-				}
-			}
-		},
-		"57": {
-			"locales": {
-				"en_US": {
-					"shortName": "Swieqi",
-					"longName": "Swieqi"
-				},
-				"mt_MT": {
-					"shortName": "Swieqi",
-					"longName": "Swieqi"
-				}
-			}
-		},
-		"58": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ta' Xbiex",
-					"longName": "Ta' Xbiex"
-				},
-				"mt_MT": {
-					"shortName": "Ta' Xbiex",
-					"longName": "Ta' Xbiex"
-				}
-			}
-		},
-		"59": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Tarxien",
-					"longName": "Tarxien"
-				},
-				"en_US": {
-					"shortName": "Tarxien",
-					"longName": "Tarxien"
-				}
-			}
-		},
-		"60": {
-			"locales": {
-				"en_US": {
-					"shortName": "Valletta",
-					"longName": "Valletta"
-				},
-				"mt_MT": {
-					"shortName": "Valletta",
-					"longName": "Valletta"
-				}
-			}
-		},
-		"61": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Xagħra",
-					"longName": "Xagħra"
-				},
-				"en_US": {
-					"shortName": "Xagħra",
-					"longName": "Xagħra"
-				}
-			}
-		},
-		"62": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Xewkija",
-					"longName": "Xewkija"
-				},
-				"en_US": {
-					"shortName": "Xewkija",
-					"longName": "Xewkija"
-				}
-			}
-		},
-		"63": {
-			"locales": {
-				"en_US": {
-					"shortName": "Xgħajra",
-					"longName": "Xgħajra"
-				},
-				"mt_MT": {
-					"shortName": "Xgħajra",
-					"longName": "Xgħajra"
-				}
-			}
-		},
-		"64": {
-			"locales": {
-				"en_US": {
-					"shortName": "Żabbar",
-					"longName": "Żabbar"
-				},
-				"mt_MT": {
-					"shortName": "Żabbar",
-					"longName": "Żabbar"
-				}
-			}
-		},
-		"65": {
-			"locales": {
-				"en_US": {
-					"shortName": "Żebbuġ Gozo",
-					"longName": "Żebbuġ Gozo"
-				},
-				"mt_MT": {
-					"shortName": "Żebbuġ Għawdex",
-					"longName": "Żebbuġ Għawdex"
-				}
-			}
-		},
-		"66": {
-			"locales": {
-				"en_US": {
-					"shortName": "Żebbuġ Malta",
-					"longName": "Żebbuġ Malta"
-				},
-				"mt_MT": {
-					"shortName": "Żebbuġ Malta",
-					"longName": "Żebbuġ Malta"
-				}
-			}
-		},
-		"67": {
-			"locales": {
-				"en_US": {
-					"shortName": "Żejtun",
-					"longName": "Żejtun"
-				},
-				"mt_MT": {
-					"shortName": "Żejtun",
-					"longName": "Żejtun"
-				}
-			}
-		},
-		"68": {
-			"locales": {
-				"mt_MT": {
-					"shortName": "Żurrieq",
-					"longName": "Żurrieq"
-				},
-				"en_US": {
-					"shortName": "Żurrieq",
-					"longName": "Żurrieq"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	{
-		"href": "/v1/locales/mt_MT",
-		"id": "mt_MT"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Malta",
-			"longName": "Republic of Malta",
-			"postalCode": "Postal Code"
-		},
-		"mt_MT": {
-			"shortName": "ta' Malta",
-			"longName": "Repubblika ta' Malta",
-			"postalCode": "Kodiċi postali"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MT",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Attard",
+          "longName" : "Attard"
+        },
+        "en_US" : {
+          "shortName" : "Attard",
+          "longName" : "Attard"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Balzan",
+          "longName" : "Balzan"
+        },
+        "en_US" : {
+          "shortName" : "Balzan",
+          "longName" : "Balzan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Birgu",
+          "longName" : "Birgu"
+        },
+        "en_US" : {
+          "shortName" : "Birgu",
+          "longName" : "Birgu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Birkirkara",
+          "longName" : "Birkirkara"
+        },
+        "mt_MT" : {
+          "shortName" : "Birkirkara",
+          "longName" : "Birkirkara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Birżebbuġa",
+          "longName" : "Birżebbuġa"
+        },
+        "en_US" : {
+          "shortName" : "Birżebbuġa",
+          "longName" : "Birżebbuġa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bormla",
+          "longName" : "Bormla"
+        },
+        "mt_MT" : {
+          "shortName" : "Bormla",
+          "longName" : "Bormla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dingli",
+          "longName" : "Dingli"
+        },
+        "mt_MT" : {
+          "shortName" : "Dingli",
+          "longName" : "Dingli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Fgura",
+          "longName" : "Fgura"
+        },
+        "mt_MT" : {
+          "shortName" : "Fgura",
+          "longName" : "Fgura"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Floriana",
+          "longName" : "Floriana"
+        },
+        "mt_MT" : {
+          "shortName" : "Floriana",
+          "longName" : "Floriana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Fontana",
+          "longName" : "Fontana"
+        },
+        "mt_MT" : {
+          "shortName" : "Fontana",
+          "longName" : "Fontana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gudja",
+          "longName" : "Gudja"
+        },
+        "mt_MT" : {
+          "shortName" : "Gudja",
+          "longName" : "Gudja"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gżira",
+          "longName" : "Gżira"
+        },
+        "mt_MT" : {
+          "shortName" : "Gżira",
+          "longName" : "Gżira"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Għajnsielem",
+          "longName" : "Għajnsielem"
+        },
+        "en_US" : {
+          "shortName" : "Għajnsielem",
+          "longName" : "Għajnsielem"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Għarb",
+          "longName" : "Għarb"
+        },
+        "mt_MT" : {
+          "shortName" : "Għarb",
+          "longName" : "Għarb"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Għargħur",
+          "longName" : "Għargħur"
+        },
+        "mt_MT" : {
+          "shortName" : "Għargħur",
+          "longName" : "Għargħur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Għasri",
+          "longName" : "Għasri"
+        },
+        "mt_MT" : {
+          "shortName" : "Għasri",
+          "longName" : "Għasri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Għaxaq",
+          "longName" : "Għaxaq"
+        },
+        "en_US" : {
+          "shortName" : "Għaxaq",
+          "longName" : "Għaxaq"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ħamrun",
+          "longName" : "Ħamrun"
+        },
+        "mt_MT" : {
+          "shortName" : "Ħamrun",
+          "longName" : "Ħamrun"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Iklin",
+          "longName" : "Iklin"
+        },
+        "en_US" : {
+          "shortName" : "Iklin",
+          "longName" : "Iklin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Isla",
+          "longName" : "Isla"
+        },
+        "mt_MT" : {
+          "shortName" : "Isla",
+          "longName" : "Isla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kalkara",
+          "longName" : "Kalkara"
+        },
+        "mt_MT" : {
+          "shortName" : "Kalkara",
+          "longName" : "Kalkara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Kerċem",
+          "longName" : "Kerċem"
+        },
+        "en_US" : {
+          "shortName" : "Kerċem",
+          "longName" : "Kerċem"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Kirkop",
+          "longName" : "Kirkop"
+        },
+        "en_US" : {
+          "shortName" : "Kirkop",
+          "longName" : "Kirkop"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lija",
+          "longName" : "Lija"
+        },
+        "mt_MT" : {
+          "shortName" : "Lija",
+          "longName" : "Lija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Luqa",
+          "longName" : "Luqa"
+        },
+        "mt_MT" : {
+          "shortName" : "Luqa",
+          "longName" : "Luqa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Marsa",
+          "longName" : "Marsa"
+        },
+        "mt_MT" : {
+          "shortName" : "Marsa",
+          "longName" : "Marsa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Marsaskala",
+          "longName" : "Marsaskala"
+        },
+        "en_US" : {
+          "shortName" : "Marsaskala",
+          "longName" : "Marsaskala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "28" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Marsaxlokk",
+          "longName" : "Marsaxlokk"
+        },
+        "mt_MT" : {
+          "shortName" : "Marsaxlokk",
+          "longName" : "Marsaxlokk"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "29" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Mdina",
+          "longName" : "Mdina"
+        },
+        "en_US" : {
+          "shortName" : "Mdina",
+          "longName" : "Mdina"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Mellieħa",
+          "longName" : "Mellieħa"
+        },
+        "en_US" : {
+          "shortName" : "Mellieħa",
+          "longName" : "Mellieħa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mġarr",
+          "longName" : "Mġarr"
+        },
+        "mt_MT" : {
+          "shortName" : "Mġarr",
+          "longName" : "Mġarr"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mosta",
+          "longName" : "Mosta"
+        },
+        "mt_MT" : {
+          "shortName" : "Mosta",
+          "longName" : "Mosta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mqabba",
+          "longName" : "Mqabba"
+        },
+        "mt_MT" : {
+          "shortName" : "Mqabba",
+          "longName" : "Mqabba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Msida",
+          "longName" : "Msida"
+        },
+        "mt_MT" : {
+          "shortName" : "Msida",
+          "longName" : "Msida"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "35" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Mtarfa",
+          "longName" : "Mtarfa"
+        },
+        "en_US" : {
+          "shortName" : "Mtarfa",
+          "longName" : "Mtarfa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "36" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Munxar",
+          "longName" : "Munxar"
+        },
+        "mt_MT" : {
+          "shortName" : "Munxar",
+          "longName" : "Munxar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "37" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Nadur",
+          "longName" : "Nadur"
+        },
+        "en_US" : {
+          "shortName" : "Nadur",
+          "longName" : "Nadur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "38" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Naxxar",
+          "longName" : "Naxxar"
+        },
+        "mt_MT" : {
+          "shortName" : "Naxxar",
+          "longName" : "Naxxar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "39" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Paola",
+          "longName" : "Paola"
+        },
+        "en_US" : {
+          "shortName" : "Paola",
+          "longName" : "Paola"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "40" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Pembroke",
+          "longName" : "Pembroke"
+        },
+        "en_US" : {
+          "shortName" : "Pembroke",
+          "longName" : "Pembroke"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Pietà",
+          "longName" : "Pietà"
+        },
+        "en_US" : {
+          "shortName" : "Pietà",
+          "longName" : "Pietà"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qala",
+          "longName" : "Qala"
+        },
+        "mt_MT" : {
+          "shortName" : "Qala",
+          "longName" : "Qala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qormi",
+          "longName" : "Qormi"
+        },
+        "mt_MT" : {
+          "shortName" : "Qormi",
+          "longName" : "Qormi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Qrendi",
+          "longName" : "Qrendi"
+        },
+        "en_US" : {
+          "shortName" : "Qrendi",
+          "longName" : "Qrendi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rabat Gozo",
+          "longName" : "Rabat Gozo"
+        },
+        "mt_MT" : {
+          "shortName" : "Rabat Għawdex",
+          "longName" : "Rabat Għawdex"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rabat Malta",
+          "longName" : "Rabat Malta"
+        },
+        "mt_MT" : {
+          "shortName" : "Rabat Malta",
+          "longName" : "Rabat Malta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "47" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Safi",
+          "longName" : "Safi"
+        },
+        "en_US" : {
+          "shortName" : "Safi",
+          "longName" : "Safi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "48" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "San Ġiljan",
+          "longName" : "San Ġiljan"
+        },
+        "en_US" : {
+          "shortName" : "Saint Julian's",
+          "longName" : "Saint Julian's"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "49" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "San Ġwann",
+          "longName" : "San Ġwann"
+        },
+        "en_US" : {
+          "shortName" : "Saint John",
+          "longName" : "Saint John"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "50" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "San Lawrenz",
+          "longName" : "San Lawrenz"
+        },
+        "en_US" : {
+          "shortName" : "Saint Lawrence",
+          "longName" : "Saint Lawrence"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Paul's Bay",
+          "longName" : "Saint Paul's Bay"
+        },
+        "mt_MT" : {
+          "shortName" : "San Pawl il-Baħar",
+          "longName" : "San Pawl il-Baħar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "52" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Sannat",
+          "longName" : "Sannat"
+        },
+        "en_US" : {
+          "shortName" : "Sannat",
+          "longName" : "Sannat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "53" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint Lucia's",
+          "longName" : "Saint Lucia's"
+        },
+        "mt_MT" : {
+          "shortName" : "Santa Luċija",
+          "longName" : "Santa Luċija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "54" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Santa Venera",
+          "longName" : "Santa Venera"
+        },
+        "mt_MT" : {
+          "shortName" : "Santa Venera",
+          "longName" : "Santa Venera"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "55" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Siġġiewi",
+          "longName" : "Siġġiewi"
+        },
+        "en_US" : {
+          "shortName" : "Siġġiewi",
+          "longName" : "Siġġiewi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "56" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Sliema",
+          "longName" : "Sliema"
+        },
+        "en_US" : {
+          "shortName" : "Sliema",
+          "longName" : "Sliema"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "57" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Swieqi",
+          "longName" : "Swieqi"
+        },
+        "mt_MT" : {
+          "shortName" : "Swieqi",
+          "longName" : "Swieqi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "58" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ta' Xbiex",
+          "longName" : "Ta' Xbiex"
+        },
+        "mt_MT" : {
+          "shortName" : "Ta' Xbiex",
+          "longName" : "Ta' Xbiex"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "59" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Tarxien",
+          "longName" : "Tarxien"
+        },
+        "en_US" : {
+          "shortName" : "Tarxien",
+          "longName" : "Tarxien"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "60" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Valletta",
+          "longName" : "Valletta"
+        },
+        "mt_MT" : {
+          "shortName" : "Valletta",
+          "longName" : "Valletta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "61" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Xagħra",
+          "longName" : "Xagħra"
+        },
+        "en_US" : {
+          "shortName" : "Xagħra",
+          "longName" : "Xagħra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "62" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Xewkija",
+          "longName" : "Xewkija"
+        },
+        "en_US" : {
+          "shortName" : "Xewkija",
+          "longName" : "Xewkija"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "63" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Xgħajra",
+          "longName" : "Xgħajra"
+        },
+        "mt_MT" : {
+          "shortName" : "Xgħajra",
+          "longName" : "Xgħajra"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "64" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Żabbar",
+          "longName" : "Żabbar"
+        },
+        "mt_MT" : {
+          "shortName" : "Żabbar",
+          "longName" : "Żabbar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "65" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Żebbuġ Gozo",
+          "longName" : "Żebbuġ Gozo"
+        },
+        "mt_MT" : {
+          "shortName" : "Żebbuġ Għawdex",
+          "longName" : "Żebbuġ Għawdex"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "66" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Żebbuġ Malta",
+          "longName" : "Żebbuġ Malta"
+        },
+        "mt_MT" : {
+          "shortName" : "Żebbuġ Malta",
+          "longName" : "Żebbuġ Malta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "67" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Żejtun",
+          "longName" : "Żejtun"
+        },
+        "mt_MT" : {
+          "shortName" : "Żejtun",
+          "longName" : "Żejtun"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "68" : {
+      "locales" : {
+        "mt_MT" : {
+          "shortName" : "Żurrieq",
+          "longName" : "Żurrieq"
+        },
+        "en_US" : {
+          "shortName" : "Żurrieq",
+          "longName" : "Żurrieq"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/mt_MT",
+    "id" : "mt_MT"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Malta",
+      "longName" : "Republic of Malta",
+      "postalCode" : ""
+    },
+    "mt_MT" : {
+      "shortName" : "ta' Malta",
+      "longName" : "Repubblika ta' Malta",
+      "postalCode" : "Kodiċi postali"
+    },
+    "de_DE" : {
+      "shortName" : "Malta",
+      "longName" : "Republic of Malta",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Malta",
+      "longName" : "Republic of Malta",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Malta",
+      "longName" : "República de Malta",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Malte",
+      "longName" : "République de Malte",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Malta",
+      "longName" : "Repubblica di Malta",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "몰타",
+      "longName" : "Republic of Malta",
+      "postalCode" : ""
+    }
+  }
 }

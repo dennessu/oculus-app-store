@@ -1,86 +1,120 @@
 {
-	"countryCode": "VU",
-	"defaultLocale": {
-		"href": "/v1/locales/en_VU",
-		"id": "en_VU"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/VUV",
-		"id": "VUV"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"MAP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Malampa",
-					"longName": "Malampa"
-				}
-			}
-		},
-		"PAM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pénama",
-					"longName": "Pénama"
-				}
-			}
-		},
-		"SAM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sanma",
-					"longName": "Sanma"
-				}
-			}
-		},
-		"SEE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shéfa",
-					"longName": "Shéfa"
-				}
-			}
-		},
-		"TAE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Taféa",
-					"longName": "Taféa"
-				}
-			}
-		},
-		"TOB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Torba",
-					"longName": "Torba"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_VU",
-		"id": "en_VU"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Vanuatu",
-			"longName": "Republic of Vanuatu",
-			"postalCode": "Postal Code"
-		},
-		"fr_VU": {
-			"shortName": "Vanuatu",
-			"longName": "République de Vanuatu",
-			"postalCode": "code postal"
-		},
-		"bi_VU": {
-			"shortName": "Vanuatu",
-			"longName": "République de Vanuatu",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "VU",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_VU",
+    "id" : "en_VU"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/VUV",
+    "id" : "VUV"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "MAP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Malampa",
+          "longName" : "Malampa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PAM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pénama",
+          "longName" : "Pénama"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SAM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sanma",
+          "longName" : "Sanma"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SEE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shéfa",
+          "longName" : "Shéfa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TAE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Taféa",
+          "longName" : "Taféa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TOB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Torba",
+          "longName" : "Torba"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_VU",
+    "id" : "en_VU"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Vanuatu",
+      "longName" : "Republic of Vanuatu",
+      "postalCode" : ""
+    },
+    "fr_VU" : {
+      "shortName" : "Vanuatu",
+      "longName" : "République de Vanuatu",
+      "postalCode" : "code postal"
+    },
+    "bi_VU" : {
+      "shortName" : "Vanuatu",
+      "longName" : "République de Vanuatu",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Vanuatu",
+      "longName" : "Republic of Vanuatu",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Vanuatu",
+      "longName" : "Republic of Vanuatu",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Vanuatu",
+      "longName" : "República de Vanuatu",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Vanuatu",
+      "longName" : "République de Vanuatu",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Vanuatu",
+      "longName" : "Repubblica di Vanuatu",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "바누아투",
+      "longName" : "Republic of Vanuatu",
+      "postalCode" : ""
+    }
+  }
 }

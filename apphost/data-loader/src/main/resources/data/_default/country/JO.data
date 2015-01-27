@@ -1,181 +1,220 @@
 {
-	"countryCode": "JO",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_JO",
-		"id": "ar_JO"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/JOD",
-		"id": "JOD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AJ": {
-			"locales": {
-				"ar_JO": {
-					"shortName": "محافظة عجلون",
-					"longName": "محافظة عجلون"
-				},
-				"en_US": {
-					"shortName": "Ajloun Governorate ",
-					"longName": "Ajloun Governorate "
-				}
-			}
-		},
-		"AM": {
-			"locales": {
-				"ar_JO": {
-					"shortName": "محافظة العاصمة",
-					"longName": "محافظة العاصمة"
-				},
-				"en_US": {
-					"shortName": "Amman Governorate",
-					"longName": "Amman Governorate"
-				}
-			}
-		},
-		"AQ": {
-			"locales": {
-				"ar_JO": {
-					"shortName": "محافظة العقبة",
-					"longName": "محافظة العقبة"
-				},
-				"en_US": {
-					"shortName": "Aqaba Governorate",
-					"longName": "Aqaba Governorate"
-				}
-			}
-		},
-		"AT": {
-			"locales": {
-				"ar_JO": {
-					"shortName": "محافظة الطفيلة",
-					"longName": "محافظة الطفيلة"
-				},
-				"en_US": {
-					"shortName": "Tafilah Governorate",
-					"longName": "Tafilah Governorate"
-				}
-			}
-		},
-		"AZ": {
-			"locales": {
-				"ar_JO": {
-					"shortName": "محافظة الزرقاء",
-					"longName": "محافظة الزرقاء"
-				},
-				"en_US": {
-					"shortName": "Zarqa Governorate",
-					"longName": "Zarqa Governorate"
-				}
-			}
-		},
-		"BA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Balqa Governorate",
-					"longName": "Balqa Governorate"
-				},
-				"ar_JO": {
-					"shortName": "محافظة البلقاء",
-					"longName": "محافظة البلقاء"
-				}
-			}
-		},
-		"IR": {
-			"locales": {
-				"en_US": {
-					"shortName": "Irbid Governorate",
-					"longName": "Irbid Governorate"
-				},
-				"ar_JO": {
-					"shortName": "محافظة إربد",
-					"longName": "محافظة إربد"
-				}
-			}
-		},
-		"JA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jerash Governorate",
-					"longName": "Jerash Governorate"
-				},
-				"ar_JO": {
-					"shortName": "محافظة جرش",
-					"longName": "محافظة جرش"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karak Governorate",
-					"longName": "Karak Governorate"
-				},
-				"ar_JO": {
-					"shortName": "محافظة الكرك",
-					"longName": "محافظة الكرك"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mafraq Governorate",
-					"longName": "Mafraq Governorate"
-				},
-				"ar_JO": {
-					"shortName": "محافظة المفرق",
-					"longName": "محافظة المفرق"
-				}
-			}
-		},
-		"MD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Madaba Governorate",
-					"longName": "Madaba Governorate"
-				},
-				"ar_JO": {
-					"shortName": "محافظة مادبا",
-					"longName": "محافظة مادبا"
-				}
-			}
-		},
-		"MN": {
-			"locales": {
-				"ar_JO": {
-					"shortName": "محافظة معان",
-					"longName": "محافظة معان"
-				},
-				"en_US": {
-					"shortName": "Ma'an Governorate",
-					"longName": "Ma'an Governorate"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_JO",
-		"id": "ar_JO"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Jordan",
-			"longName": "Hashemite Kingdom of Jordan",
-			"postalCode": "Postal Code"
-		},
-		"ar_JO": {
-			"shortName": "الأردن",
-			"longName": "المملكة الأردنية الهاشمية",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "JO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_JO",
+    "id" : "ar_JO"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/JOD",
+    "id" : "JOD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AJ" : {
+      "locales" : {
+        "ar_JO" : {
+          "shortName" : "محافظة عجلون",
+          "longName" : "محافظة عجلون"
+        },
+        "en_US" : {
+          "shortName" : "Ajloun Governorate ",
+          "longName" : "Ajloun Governorate "
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AM" : {
+      "locales" : {
+        "ar_JO" : {
+          "shortName" : "محافظة العاصمة",
+          "longName" : "محافظة العاصمة"
+        },
+        "en_US" : {
+          "shortName" : "Amman Governorate",
+          "longName" : "Amman Governorate"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AQ" : {
+      "locales" : {
+        "ar_JO" : {
+          "shortName" : "محافظة العقبة",
+          "longName" : "محافظة العقبة"
+        },
+        "en_US" : {
+          "shortName" : "Aqaba Governorate",
+          "longName" : "Aqaba Governorate"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AT" : {
+      "locales" : {
+        "ar_JO" : {
+          "shortName" : "محافظة الطفيلة",
+          "longName" : "محافظة الطفيلة"
+        },
+        "en_US" : {
+          "shortName" : "Tafilah Governorate",
+          "longName" : "Tafilah Governorate"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AZ" : {
+      "locales" : {
+        "ar_JO" : {
+          "shortName" : "محافظة الزرقاء",
+          "longName" : "محافظة الزرقاء"
+        },
+        "en_US" : {
+          "shortName" : "Zarqa Governorate",
+          "longName" : "Zarqa Governorate"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Balqa Governorate",
+          "longName" : "Balqa Governorate"
+        },
+        "ar_JO" : {
+          "shortName" : "محافظة البلقاء",
+          "longName" : "محافظة البلقاء"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IR" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Irbid Governorate",
+          "longName" : "Irbid Governorate"
+        },
+        "ar_JO" : {
+          "shortName" : "محافظة إربد",
+          "longName" : "محافظة إربد"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jerash Governorate",
+          "longName" : "Jerash Governorate"
+        },
+        "ar_JO" : {
+          "shortName" : "محافظة جرش",
+          "longName" : "محافظة جرش"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karak Governorate",
+          "longName" : "Karak Governorate"
+        },
+        "ar_JO" : {
+          "shortName" : "محافظة الكرك",
+          "longName" : "محافظة الكرك"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mafraq Governorate",
+          "longName" : "Mafraq Governorate"
+        },
+        "ar_JO" : {
+          "shortName" : "محافظة المفرق",
+          "longName" : "محافظة المفرق"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Madaba Governorate",
+          "longName" : "Madaba Governorate"
+        },
+        "ar_JO" : {
+          "shortName" : "محافظة مادبا",
+          "longName" : "محافظة مادبا"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MN" : {
+      "locales" : {
+        "ar_JO" : {
+          "shortName" : "محافظة معان",
+          "longName" : "محافظة معان"
+        },
+        "en_US" : {
+          "shortName" : "Ma'an Governorate",
+          "longName" : "Ma'an Governorate"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_JO",
+    "id" : "ar_JO"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Jordan",
+      "longName" : "Hashemite Kingdom of Jordan",
+      "postalCode" : ""
+    },
+    "ar_JO" : {
+      "shortName" : "الأردن",
+      "longName" : "المملكة الأردنية الهاشمية",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Jordanien",
+      "longName" : "Haschemitisches Königreich Jordanien",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Jordan",
+      "longName" : "Hashemite Kingdom of Jordan",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Jordania",
+      "longName" : "Reino Hachemita de Jordania",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Jordanie",
+      "longName" : "Royaume hachémite de Jordanie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Giordania",
+      "longName" : "Regno Hascemita di Giordania",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "요르단",
+      "longName" : "Hashemite Kingdom of Jordan",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,301 +1,350 @@
 {
-	"countryCode": "MN",
-	"defaultLocale": {
-		"href": "/v1/locales/mn_MN",
-		"id": "mn_MN"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MNT",
-		"id": "MNT"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"035": {
-			"locales": {
-				"en_US": {
-					"shortName": "Orhon",
-					"longName": "Orhon"
-				},
-				"mn_MN": {
-					"shortName": "Орхон",
-					"longName": "Орхон"
-				}
-			}
-		},
-		"037": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Дархан-Уул",
-					"longName": "Дархан-Уул"
-				},
-				"en_US": {
-					"shortName": "Darhan uul",
-					"longName": "Darhan uul"
-				}
-			}
-		},
-		"039": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Хэнтий",
-					"longName": "Хэнтий"
-				},
-				"en_US": {
-					"shortName": "Khentii",
-					"longName": "Khentii"
-				}
-			}
-		},
-		"041": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Хөвсгөл",
-					"longName": "Хөвсгөл"
-				},
-				"en_US": {
-					"shortName": "Khövsgöl",
-					"longName": "Khövsgöl"
-				}
-			}
-		},
-		"043": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Ховд",
-					"longName": "Ховд"
-				},
-				"en_US": {
-					"shortName": "Khovd",
-					"longName": "Khovd"
-				}
-			}
-		},
-		"046": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Увс",
-					"longName": "Увс"
-				},
-				"en_US": {
-					"shortName": "Uvs",
-					"longName": "Uvs"
-				}
-			}
-		},
-		"047": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Төв",
-					"longName": "Төв"
-				},
-				"en_US": {
-					"shortName": "Töv",
-					"longName": "Töv"
-				}
-			}
-		},
-		"049": {
-			"locales": {
-				"en_US": {
-					"shortName": "Selenge",
-					"longName": "Selenge"
-				},
-				"mn_MN": {
-					"shortName": "Сэлэнгэ",
-					"longName": "Сэлэнгэ"
-				}
-			}
-		},
-		"051": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sükhbaatar",
-					"longName": "Sükhbaatar"
-				},
-				"mn_MN": {
-					"shortName": "Сүхбаатар",
-					"longName": "Сүхбаатар"
-				}
-			}
-		},
-		"053": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ömnögovi",
-					"longName": "Ömnögovi"
-				},
-				"mn_MN": {
-					"shortName": "Өмнөговь",
-					"longName": "Өмнөговь"
-				}
-			}
-		},
-		"055": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Өвөрхангай",
-					"longName": "Өвөрхангай"
-				},
-				"en_US": {
-					"shortName": "Övörkhangai",
-					"longName": "Övörkhangai"
-				}
-			}
-		},
-		"057": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Завхан",
-					"longName": "Завхан"
-				},
-				"en_US": {
-					"shortName": "Zavkhan",
-					"longName": "Zavkhan"
-				}
-			}
-		},
-		"059": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dundgovi",
-					"longName": "Dundgovi"
-				},
-				"mn_MN": {
-					"shortName": "Дундговь",
-					"longName": "Дундговь"
-				}
-			}
-		},
-		"061": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Дорнод",
-					"longName": "Дорнод"
-				},
-				"en_US": {
-					"shortName": "Dornod",
-					"longName": "Dornod"
-				}
-			}
-		},
-		"063": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dornogovi",
-					"longName": "Dornogovi"
-				},
-				"mn_MN": {
-					"shortName": "Дорноговь",
-					"longName": "Дорноговь"
-				}
-			}
-		},
-		"064": {
-			"locales": {
-				"en_US": {
-					"shortName": "Govisümber",
-					"longName": "Govisümber"
-				},
-				"mn_MN": {
-					"shortName": "Говьсүмбэр",
-					"longName": "Говьсүмбэр"
-				}
-			}
-		},
-		"065": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Говь-Алтай",
-					"longName": "Говь-Алтай"
-				},
-				"en_US": {
-					"shortName": "Govi-Altai",
-					"longName": "Govi-Altai"
-				}
-			}
-		},
-		"067": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Булган",
-					"longName": "Булган"
-				},
-				"en_US": {
-					"shortName": "Bulgan",
-					"longName": "Bulgan"
-				}
-			}
-		},
-		"069": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bayankhongor",
-					"longName": "Bayankhongor"
-				},
-				"mn_MN": {
-					"shortName": "Баянхонгор",
-					"longName": "Баянхонгор"
-				}
-			}
-		},
-		"071": {
-			"locales": {
-				"mn_MN": {
-					"shortName": "Баян-Өлгий",
-					"longName": "Баян-Өлгий"
-				},
-				"en_US": {
-					"shortName": "Bayan-Ölgii",
-					"longName": "Bayan-Ölgii"
-				}
-			}
-		},
-		"073": {
-			"locales": {
-				"en_US": {
-					"shortName": "Arkhangai",
-					"longName": "Arkhangai"
-				},
-				"mn_MN": {
-					"shortName": "Архангай",
-					"longName": "Архангай"
-				}
-			}
-		},
-		"1": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ulaanbaatar",
-					"longName": "Ulaanbaatar"
-				},
-				"mn_MN": {
-					"shortName": "Улаанбаатар",
-					"longName": "Улаанбаатар"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/mn_MN",
-		"id": "mn_MN"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Mongolia",
-			"longName": "Mongolia",
-			"postalCode": "Postal Code"
-		},
-		"mn_MN": {
-			"shortName": "Монгол улс",
-			"longName": "Монгол улс",
-			"postalCode": "Шуудангийн тухай хууль"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MN",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/mn_MN",
+    "id" : "mn_MN"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MNT",
+    "id" : "MNT"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "035" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Orhon",
+          "longName" : "Orhon"
+        },
+        "mn_MN" : {
+          "shortName" : "Орхон",
+          "longName" : "Орхон"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "037" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Дархан-Уул",
+          "longName" : "Дархан-Уул"
+        },
+        "en_US" : {
+          "shortName" : "Darhan uul",
+          "longName" : "Darhan uul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "039" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Хэнтий",
+          "longName" : "Хэнтий"
+        },
+        "en_US" : {
+          "shortName" : "Khentii",
+          "longName" : "Khentii"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "041" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Хөвсгөл",
+          "longName" : "Хөвсгөл"
+        },
+        "en_US" : {
+          "shortName" : "Khövsgöl",
+          "longName" : "Khövsgöl"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "043" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Ховд",
+          "longName" : "Ховд"
+        },
+        "en_US" : {
+          "shortName" : "Khovd",
+          "longName" : "Khovd"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "046" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Увс",
+          "longName" : "Увс"
+        },
+        "en_US" : {
+          "shortName" : "Uvs",
+          "longName" : "Uvs"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "047" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Төв",
+          "longName" : "Төв"
+        },
+        "en_US" : {
+          "shortName" : "Töv",
+          "longName" : "Töv"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "049" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Selenge",
+          "longName" : "Selenge"
+        },
+        "mn_MN" : {
+          "shortName" : "Сэлэнгэ",
+          "longName" : "Сэлэнгэ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "051" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sükhbaatar",
+          "longName" : "Sükhbaatar"
+        },
+        "mn_MN" : {
+          "shortName" : "Сүхбаатар",
+          "longName" : "Сүхбаатар"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "053" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ömnögovi",
+          "longName" : "Ömnögovi"
+        },
+        "mn_MN" : {
+          "shortName" : "Өмнөговь",
+          "longName" : "Өмнөговь"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "055" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Өвөрхангай",
+          "longName" : "Өвөрхангай"
+        },
+        "en_US" : {
+          "shortName" : "Övörkhangai",
+          "longName" : "Övörkhangai"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "057" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Завхан",
+          "longName" : "Завхан"
+        },
+        "en_US" : {
+          "shortName" : "Zavkhan",
+          "longName" : "Zavkhan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "059" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dundgovi",
+          "longName" : "Dundgovi"
+        },
+        "mn_MN" : {
+          "shortName" : "Дундговь",
+          "longName" : "Дундговь"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "061" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Дорнод",
+          "longName" : "Дорнод"
+        },
+        "en_US" : {
+          "shortName" : "Dornod",
+          "longName" : "Dornod"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "063" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dornogovi",
+          "longName" : "Dornogovi"
+        },
+        "mn_MN" : {
+          "shortName" : "Дорноговь",
+          "longName" : "Дорноговь"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "064" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Govisümber",
+          "longName" : "Govisümber"
+        },
+        "mn_MN" : {
+          "shortName" : "Говьсүмбэр",
+          "longName" : "Говьсүмбэр"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "065" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Говь-Алтай",
+          "longName" : "Говь-Алтай"
+        },
+        "en_US" : {
+          "shortName" : "Govi-Altai",
+          "longName" : "Govi-Altai"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "067" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Булган",
+          "longName" : "Булган"
+        },
+        "en_US" : {
+          "shortName" : "Bulgan",
+          "longName" : "Bulgan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "069" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bayankhongor",
+          "longName" : "Bayankhongor"
+        },
+        "mn_MN" : {
+          "shortName" : "Баянхонгор",
+          "longName" : "Баянхонгор"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "071" : {
+      "locales" : {
+        "mn_MN" : {
+          "shortName" : "Баян-Өлгий",
+          "longName" : "Баян-Өлгий"
+        },
+        "en_US" : {
+          "shortName" : "Bayan-Ölgii",
+          "longName" : "Bayan-Ölgii"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "073" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Arkhangai",
+          "longName" : "Arkhangai"
+        },
+        "mn_MN" : {
+          "shortName" : "Архангай",
+          "longName" : "Архангай"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "1" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ulaanbaatar",
+          "longName" : "Ulaanbaatar"
+        },
+        "mn_MN" : {
+          "shortName" : "Улаанбаатар",
+          "longName" : "Улаанбаатар"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/mn_MN",
+    "id" : "mn_MN"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Mongolia",
+      "longName" : "Mongolia",
+      "postalCode" : ""
+    },
+    "mn_MN" : {
+      "shortName" : "Монгол улс",
+      "longName" : "Монгол улс",
+      "postalCode" : "Шуудангийн тухай хууль"
+    },
+    "de_DE" : {
+      "shortName" : "Mongolei",
+      "longName" : "Mongolei",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Mongolia",
+      "longName" : "Mongolia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Mongolia",
+      "longName" : "Mongolia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Mongolie",
+      "longName" : "Mongolie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Mongolia",
+      "longName" : "Mongolia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "몽골",
+      "longName" : "몽골",
+      "postalCode" : ""
+    }
+  }
 }

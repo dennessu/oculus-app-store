@@ -1,71 +1,104 @@
 {
-	"countryCode": "TG",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XOF",
-		"id": "XOF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"C": {
-			"locales": {
-				"en_US": {
-					"shortName": " Centre",
-					"longName": " Centre"
-				}
-			}
-		},
-		"K": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kara",
-					"longName": "Kara"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maritime",
-					"longName": "Maritime"
-				}
-			}
-		},
-		"P": {
-			"locales": {
-				"en_US": {
-					"shortName": "Plateaux",
-					"longName": "Plateaux"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"en_US": {
-					"shortName": " Savannes",
-					"longName": " Savannes"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Togo",
-			"longName": "Togolese Republic",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XOF",
+    "id" : "XOF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "C" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : " Centre",
+          "longName" : " Centre"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "K" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kara",
+          "longName" : "Kara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maritime",
+          "longName" : "Maritime"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "P" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Plateaux",
+          "longName" : "Plateaux"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : " Savannes",
+          "longName" : " Savannes"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Togo",
+      "longName" : "Togolese Republic",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Togo",
+      "longName" : "Togolese Republic",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Togo",
+      "longName" : "Togolese Republic",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Togo",
+      "longName" : "República Togolesa",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Togo",
+      "longName" : "République togolaise",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Togo",
+      "longName" : "Repubblica Togolese",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "토고",
+      "longName" : "Togolese Republic",
+      "postalCode" : ""
+    }
+  }
 }

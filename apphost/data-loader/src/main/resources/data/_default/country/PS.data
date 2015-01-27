@@ -1,156 +1,200 @@
 {
-	"countryCode": "PS",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ILS",
-		"id": "ILS"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"BTH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bethlehem",
-					"longName": "Bethlehem"
-				}
-			}
-		},
-		"DEB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Deir El Balah",
-					"longName": "Deir El Balah"
-				}
-			}
-		},
-		"GZA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gaza",
-					"longName": "Gaza"
-				}
-			}
-		},
-		"HBN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hebron",
-					"longName": "Hebron"
-				}
-			}
-		},
-		"JEM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jerusalem",
-					"longName": "Jerusalem"
-				}
-			}
-		},
-		"JEN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jenin",
-					"longName": "Jenin"
-				}
-			}
-		},
-		"JRH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jericho – Al Aghwar",
-					"longName": "Jericho – Al Aghwar"
-				}
-			}
-		},
-		"KYS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Khan Yunis",
-					"longName": "Khan Yunis"
-				}
-			}
-		},
-		"NBS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nablus",
-					"longName": "Nablus"
-				}
-			}
-		},
-		"NGZ": {
-			"locales": {
-				"en_US": {
-					"shortName": "North Gaza",
-					"longName": "North Gaza"
-				}
-			}
-		},
-		"QQA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Qalqilya",
-					"longName": "Qalqilya"
-				}
-			}
-		},
-		"RBH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ramallah",
-					"longName": "Ramallah"
-				}
-			}
-		},
-		"RFH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rafah",
-					"longName": "Rafah"
-				}
-			}
-		},
-		"SLT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Salfit",
-					"longName": "Salfit"
-				}
-			}
-		},
-		"TBS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tubas",
-					"longName": "Tubas"
-				}
-			}
-		},
-		"TKM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tulkarm",
-					"longName": "Tulkarm"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Palestine",
-			"longName": "Palestine",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PS",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ILS",
+    "id" : "ILS"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "BTH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bethlehem",
+          "longName" : "Bethlehem"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DEB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Deir El Balah",
+          "longName" : "Deir El Balah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GZA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gaza",
+          "longName" : "Gaza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HBN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hebron",
+          "longName" : "Hebron"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JEM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jerusalem",
+          "longName" : "Jerusalem"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JEN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jenin",
+          "longName" : "Jenin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "JRH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jericho – Al Aghwar",
+          "longName" : "Jericho – Al Aghwar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KYS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Khan Yunis",
+          "longName" : "Khan Yunis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NBS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nablus",
+          "longName" : "Nablus"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NGZ" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North Gaza",
+          "longName" : "North Gaza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "QQA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Qalqilya",
+          "longName" : "Qalqilya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RBH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ramallah",
+          "longName" : "Ramallah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RFH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rafah",
+          "longName" : "Rafah"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SLT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Salfit",
+          "longName" : "Salfit"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TBS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tubas",
+          "longName" : "Tubas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TKM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tulkarm",
+          "longName" : "Tulkarm"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Palestine",
+      "longName" : "Palestine",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Palästina",
+      "longName" : "Palästina",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Palestine",
+      "longName" : "Palestine",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Palestina",
+      "longName" : "Palestina",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Palestine",
+      "longName" : "Palestine",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Palestina",
+      "longName" : "Palestina",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "팔레스타인",
+      "longName" : "팔레스타인",
+      "postalCode" : ""
+    }
+  }
 }

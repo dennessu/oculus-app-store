@@ -1,76 +1,110 @@
 {
-	"countryCode": "ER",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/ERN",
-		"id": "ERN"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Anseba",
-					"longName": "Anseba"
-				}
-			}
-		},
-		"DK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Southern Red Sea",
-					"longName": "Southern Red Sea"
-				}
-			}
-		},
-		"DU": {
-			"locales": {
-				"en_US": {
-					"shortName": "Debub",
-					"longName": "Debub"
-				}
-			}
-		},
-		"GB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gash-Barka",
-					"longName": "Gash-Barka"
-				}
-			}
-		},
-		"MA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maekel",
-					"longName": "Maekel"
-				}
-			}
-		},
-		"SK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Northern Red Sea",
-					"longName": "Northern Red Sea"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Eritrea",
-			"longName": "State of Eritrea",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "ER",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/ERN",
+    "id" : "ERN"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Anseba",
+          "longName" : "Anseba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Southern Red Sea",
+          "longName" : "Southern Red Sea"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DU" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Debub",
+          "longName" : "Debub"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gash-Barka",
+          "longName" : "Gash-Barka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maekel",
+          "longName" : "Maekel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Northern Red Sea",
+          "longName" : "Northern Red Sea"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Eritrea",
+      "longName" : "State of Eritrea",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Eritrea",
+      "longName" : "State of Eritrea",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Eritrea",
+      "longName" : "State of Eritrea",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Eritrea",
+      "longName" : "Estado de Eritrea",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Érythrée",
+      "longName" : "État d’Érythrée",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Eritrea",
+      "longName" : "Stato di Eritrea",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "에리트레아",
+      "longName" : "State of Eritrea",
+      "postalCode" : ""
+    }
+  }
 }

@@ -43,12 +43,42 @@
 		"en_US": {
 			"shortName": "Saint Helena",
 			"longName": "Saint Helena, Ascension and Tristan da Cunha",
-			"postalCode": "Postal Code"
+			"postalCode": ""
 		},
 		"en_SH": {
 			"shortName": "Saint Helena",
 			"longName": "Saint Helena, Ascension and Tristan da Cunha",
-			"postalCode": "Postal Code"
+			"postalCode": ""
+		},
+		"de_DE" : {
+		  "shortName" : "St. Helena",
+		  "longName" : "Saint Helena, Ascension and Tristan da Cunha",
+		  "postalCode" : ""
+		},
+		"en_GB" : {
+		  "shortName" : "Saint Helena",
+		  "longName" : "Saint Helena, Ascension and Tristan da Cunha",
+		  "postalCode" : ""
+		},
+		"es_ES" : {
+		  "shortName" : "Santa Elena, Ascensión y Tristán da Cunha",
+		  "longName" : "Santa Elena, Ascensión y Tristán de Acuña",
+		  "postalCode" : ""
+		},
+		"fr_FR" : {
+		  "shortName" : "Sainte-Hélène",
+		  "longName" : "Saint-Hélène, Ascension et Tristan da Cunha",
+		  "postalCode" : ""
+		},
+		"it_IT" : {
+		  "shortName" : "Sant'Elena",
+		  "longName" : "Sant'Elena, Ascensione e Tristan da Cunha",
+		  "postalCode" : ""
+		},
+		"ko_KR" : {
+		  "shortName" : "세인트 헬레나",
+		  "longName" : "Saint Helena, Ascension and Tristan da Cunha",
+		  "postalCode" : ""
 		}
 	},
 	"futureExpansion": {

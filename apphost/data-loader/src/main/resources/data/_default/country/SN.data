@@ -1,143 +1,185 @@
 {
-	"countryCode": "SN",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XOF",
-		"id": "XOF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"DB": {
-			"locales": {
-				"en_US": {
-					"shortName": "Diourbel",
-					"longName": "Diourbel"
-				}
-			}
-		},
-		"DK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Dakar",
-					"longName": "Dakar"
-				}
-			}
-		},
-		"FK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Fatick",
-					"longName": "Fatick"
-				}
-			}
-		},
-		"KA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kaffrine",
-					"longName": "Kaffrine"
-				}
-			}
-		},
-		"KD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kolda",
-					"longName": "Kolda"
-				}
-			}
-		},
-		"KE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kédougou",
-					"longName": "Kédougou"
-				}
-			}
-		},
-		"KL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kaolack",
-					"longName": "Kaolack"
-				}
-			}
-		},
-		"LG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Louga",
-					"longName": "Louga"
-				}
-			}
-		},
-		"MT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Matam",
-					"longName": "Matam"
-				}
-			}
-		},
-		"SE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sédhiou",
-					"longName": "Sédhiou"
-				}
-			}
-		},
-		"SL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saint-Louis",
-					"longName": "Saint-Louis"
-				}
-			}
-		},
-		"TC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tambacounda",
-					"longName": "Tambacounda"
-				}
-			}
-		},
-		"TH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Thiès",
-					"longName": "Thiès"
-				}
-			}
-		},
-		"ZG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ziguinchor",
-					"longName": "Ziguinchor"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Senegal",
-			"longName": "Republic of Senegal",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SN",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XOF",
+    "id" : "XOF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "DB" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Diourbel",
+          "longName" : "Diourbel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Dakar",
+          "longName" : "Dakar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Fatick",
+          "longName" : "Fatick"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kaffrine",
+          "longName" : "Kaffrine"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kolda",
+          "longName" : "Kolda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kédougou",
+          "longName" : "Kédougou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kaolack",
+          "longName" : "Kaolack"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Louga",
+          "longName" : "Louga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Matam",
+          "longName" : "Matam"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sédhiou",
+          "longName" : "Sédhiou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saint-Louis",
+          "longName" : "Saint-Louis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tambacounda",
+          "longName" : "Tambacounda"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Thiès",
+          "longName" : "Thiès"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ziguinchor",
+          "longName" : "Ziguinchor"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Senegal",
+      "longName" : "Republic of Senegal",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Senegal",
+      "longName" : "Republik Senegal",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Senegal",
+      "longName" : "Republic of Senegal",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Senegal",
+      "longName" : "República de Senegal",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Sénégal",
+      "longName" : "République du Sénégal",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Senegal",
+      "longName" : "Repubblica del Senegal",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "세네갈",
+      "longName" : "Republic of Senegal",
+      "postalCode" : ""
+    }
+  }
 }

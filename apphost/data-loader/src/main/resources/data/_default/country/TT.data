@@ -1,156 +1,200 @@
 {
-	"countryCode": "TT",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/TTD",
-		"id": "TTD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"ARI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Arima",
-					"longName": "Arima"
-				}
-			}
-		},
-		"CHA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chaguanas",
-					"longName": "Chaguanas"
-				}
-			}
-		},
-		"CTT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Couva-Tabaquite-Talparo",
-					"longName": "Couva-Tabaquite-Talparo"
-				}
-			}
-		},
-		"DMN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Diego Martin",
-					"longName": "Diego Martin"
-				}
-			}
-		},
-		"ETO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eastern Tobago",
-					"longName": "Eastern Tobago"
-				}
-			}
-		},
-		"PED": {
-			"locales": {
-				"en_US": {
-					"shortName": "Penal-Debe",
-					"longName": "Penal-Debe"
-				}
-			}
-		},
-		"POS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Port of Spain",
-					"longName": "Port of Spain"
-				}
-			}
-		},
-		"PRT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Princes Town",
-					"longName": "Princes Town"
-				}
-			}
-		},
-		"PTF": {
-			"locales": {
-				"en_US": {
-					"shortName": "Point Fortin",
-					"longName": "Point Fortin"
-				}
-			}
-		},
-		"RCM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rio Claro-Mayaro",
-					"longName": "Rio Claro-Mayaro"
-				}
-			}
-		},
-		"SFO": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Fernando",
-					"longName": "San Fernando"
-				}
-			}
-		},
-		"SGE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sangre Grande",
-					"longName": "Sangre Grande"
-				}
-			}
-		},
-		"SIP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Siparia",
-					"longName": "Siparia"
-				}
-			}
-		},
-		"SJL": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Juan-Laventille",
-					"longName": "San Juan-Laventille"
-				}
-			}
-		},
-		"TUP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tunapuna-Piarco",
-					"longName": "Tunapuna-Piarco"
-				}
-			}
-		},
-		"WTO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Western Tobago",
-					"longName": "Western Tobago"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Trinidad and Tobago",
-			"longName": "Republic of Trinidad and Tobago",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TT",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/TTD",
+    "id" : "TTD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "ARI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Arima",
+          "longName" : "Arima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CHA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chaguanas",
+          "longName" : "Chaguanas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CTT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Couva-Tabaquite-Talparo",
+          "longName" : "Couva-Tabaquite-Talparo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "DMN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Diego Martin",
+          "longName" : "Diego Martin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ETO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eastern Tobago",
+          "longName" : "Eastern Tobago"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PED" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Penal-Debe",
+          "longName" : "Penal-Debe"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "POS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Port of Spain",
+          "longName" : "Port of Spain"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PRT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Princes Town",
+          "longName" : "Princes Town"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PTF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Point Fortin",
+          "longName" : "Point Fortin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RCM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rio Claro-Mayaro",
+          "longName" : "Rio Claro-Mayaro"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SFO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Fernando",
+          "longName" : "San Fernando"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SGE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sangre Grande",
+          "longName" : "Sangre Grande"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SIP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Siparia",
+          "longName" : "Siparia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SJL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Juan-Laventille",
+          "longName" : "San Juan-Laventille"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "TUP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tunapuna-Piarco",
+          "longName" : "Tunapuna-Piarco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WTO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Western Tobago",
+          "longName" : "Western Tobago"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Trinidad and Tobago",
+      "longName" : "Republic of Trinidad and Tobago",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Trinidad und Tobago",
+      "longName" : "Republic of Trinidad and Tobago",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Trinidad and Tobago",
+      "longName" : "Republic of Trinidad and Tobago",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Trinidad y Tobago",
+      "longName" : "República de Trinidad y Tobago",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Trinité-et-Tobago",
+      "longName" : "République de Trinité-et-Tobago",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Trinidad e Tobago",
+      "longName" : "Repubblica di Trinidad e Tobago",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "트리니다드토바고",
+      "longName" : "Republic of Trinidad and Tobago",
+      "postalCode" : ""
+    }
+  }
 }

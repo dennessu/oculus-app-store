@@ -1,217 +1,259 @@
 {
-	"countryCode": "EE",
-	"defaultLocale": {
-		"href": "/v1/locales/et_EE",
-		"id": "et_EE"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/EUR",
-		"id": "EUR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"37": {
-			"locales": {
-				"et_EE": {
-					"shortName": "Harju maakond",
-					"longName": "Harju maakond"
-				},
-				"en_US": {
-					"shortName": "Harjumaa",
-					"longName": "Harjumaa"
-				}
-			}
-		},
-		"39": {
-			"locales": {
-				"et_EE": {
-					"shortName": "Hiiu maakond",
-					"longName": "Hiiu maakond"
-				},
-				"en_US": {
-					"shortName": "Hiiumaa",
-					"longName": "Hiiumaa"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"et_EE": {
-					"shortName": "Ida-Viru maakond",
-					"longName": "Ida-Viru maakond"
-				},
-				"en_US": {
-					"shortName": "Ida-Virumaa",
-					"longName": "Ida-Virumaa"
-				}
-			}
-		},
-		"49": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jõgevamaa",
-					"longName": "Jõgevamaa"
-				},
-				"et_EE": {
-					"shortName": "Jõgeva maakond",
-					"longName": "Jõgeva maakond"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"et_EE": {
-					"shortName": "Järva maakond",
-					"longName": "Järva maakond"
-				},
-				"en_US": {
-					"shortName": "Järvamaa",
-					"longName": "Järvamaa"
-				}
-			}
-		},
-		"57": {
-			"locales": {
-				"en_US": {
-					"shortName": "Läänemaa",
-					"longName": "Läänemaa"
-				},
-				"et_EE": {
-					"shortName": "Lääne maakond",
-					"longName": "Lääne maakond"
-				}
-			}
-		},
-		"59": {
-			"locales": {
-				"et_EE": {
-					"shortName": "Lääne-Viru maakond",
-					"longName": "Lääne-Viru maakond"
-				},
-				"en_US": {
-					"shortName": "Lääne-Virumaa",
-					"longName": "Lääne-Virumaa"
-				}
-			}
-		},
-		"65": {
-			"locales": {
-				"en_US": {
-					"shortName": "Põlvamaa",
-					"longName": "Põlvamaa"
-				},
-				"et_EE": {
-					"shortName": "Põlva maakond",
-					"longName": "Põlva maakond"
-				}
-			}
-		},
-		"67": {
-			"locales": {
-				"et_EE": {
-					"shortName": "Pärnu County",
-					"longName": "Pärnu County"
-				},
-				"en_US": {
-					"shortName": "Pärnumaa",
-					"longName": "Pärnumaa"
-				}
-			}
-		},
-		"70": {
-			"locales": {
-				"en_US": {
-					"shortName": "Raplamaa",
-					"longName": "Raplamaa"
-				},
-				"et_EE": {
-					"shortName": "Rapla maakond",
-					"longName": "Rapla maakond"
-				}
-			}
-		},
-		"74": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saaremaa",
-					"longName": "Saaremaa"
-				},
-				"et_EE": {
-					"shortName": "Saare maakond",
-					"longName": "Saare maakond"
-				}
-			}
-		},
-		"78": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tartumaa",
-					"longName": "Tartumaa"
-				},
-				"et_EE": {
-					"shortName": "Tartu maakond",
-					"longName": "Tartu maakond"
-				}
-			}
-		},
-		"82": {
-			"locales": {
-				"en_US": {
-					"shortName": "Valgamaa",
-					"longName": "Valgamaa"
-				},
-				"et_EE": {
-					"shortName": "Valga maakond",
-					"longName": "Valga maakond"
-				}
-			}
-		},
-		"84": {
-			"locales": {
-				"en_US": {
-					"shortName": "Viljandimaa",
-					"longName": "Viljandimaa"
-				},
-				"et_EE": {
-					"shortName": "Viljandi maakond",
-					"longName": "Viljandi maakond"
-				}
-			}
-		},
-		"86": {
-			"locales": {
-				"et_EE": {
-					"shortName": "Võru maakond",
-					"longName": "Võru maakond"
-				},
-				"en_US": {
-					"shortName": "Võrumaa",
-					"longName": "Võrumaa"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/et_EE",
-		"id": "et_EE"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Estonia",
-			"longName": "Republic of Estonia",
-			"postalCode": "Postal Code"
-		},
-		"et_EE": {
-			"shortName": "Eesti",
-			"longName": "Eesti Vabariik",
-			"postalCode": "Postiindeks"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "EE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/et_EE",
+    "id" : "et_EE"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/EUR",
+    "id" : "EUR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "37" : {
+      "locales" : {
+        "et_EE" : {
+          "shortName" : "Harju maakond",
+          "longName" : "Harju maakond"
+        },
+        "en_US" : {
+          "shortName" : "Harjumaa",
+          "longName" : "Harjumaa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "39" : {
+      "locales" : {
+        "et_EE" : {
+          "shortName" : "Hiiu maakond",
+          "longName" : "Hiiu maakond"
+        },
+        "en_US" : {
+          "shortName" : "Hiiumaa",
+          "longName" : "Hiiumaa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "et_EE" : {
+          "shortName" : "Ida-Viru maakond",
+          "longName" : "Ida-Viru maakond"
+        },
+        "en_US" : {
+          "shortName" : "Ida-Virumaa",
+          "longName" : "Ida-Virumaa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "49" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jõgevamaa",
+          "longName" : "Jõgevamaa"
+        },
+        "et_EE" : {
+          "shortName" : "Jõgeva maakond",
+          "longName" : "Jõgeva maakond"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "et_EE" : {
+          "shortName" : "Järva maakond",
+          "longName" : "Järva maakond"
+        },
+        "en_US" : {
+          "shortName" : "Järvamaa",
+          "longName" : "Järvamaa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "57" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Läänemaa",
+          "longName" : "Läänemaa"
+        },
+        "et_EE" : {
+          "shortName" : "Lääne maakond",
+          "longName" : "Lääne maakond"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "59" : {
+      "locales" : {
+        "et_EE" : {
+          "shortName" : "Lääne-Viru maakond",
+          "longName" : "Lääne-Viru maakond"
+        },
+        "en_US" : {
+          "shortName" : "Lääne-Virumaa",
+          "longName" : "Lääne-Virumaa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "65" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Põlvamaa",
+          "longName" : "Põlvamaa"
+        },
+        "et_EE" : {
+          "shortName" : "Põlva maakond",
+          "longName" : "Põlva maakond"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "67" : {
+      "locales" : {
+        "et_EE" : {
+          "shortName" : "Pärnu County",
+          "longName" : "Pärnu County"
+        },
+        "en_US" : {
+          "shortName" : "Pärnumaa",
+          "longName" : "Pärnumaa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "70" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Raplamaa",
+          "longName" : "Raplamaa"
+        },
+        "et_EE" : {
+          "shortName" : "Rapla maakond",
+          "longName" : "Rapla maakond"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "74" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saaremaa",
+          "longName" : "Saaremaa"
+        },
+        "et_EE" : {
+          "shortName" : "Saare maakond",
+          "longName" : "Saare maakond"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "78" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tartumaa",
+          "longName" : "Tartumaa"
+        },
+        "et_EE" : {
+          "shortName" : "Tartu maakond",
+          "longName" : "Tartu maakond"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "82" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Valgamaa",
+          "longName" : "Valgamaa"
+        },
+        "et_EE" : {
+          "shortName" : "Valga maakond",
+          "longName" : "Valga maakond"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "84" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Viljandimaa",
+          "longName" : "Viljandimaa"
+        },
+        "et_EE" : {
+          "shortName" : "Viljandi maakond",
+          "longName" : "Viljandi maakond"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "86" : {
+      "locales" : {
+        "et_EE" : {
+          "shortName" : "Võru maakond",
+          "longName" : "Võru maakond"
+        },
+        "en_US" : {
+          "shortName" : "Võrumaa",
+          "longName" : "Võrumaa"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/et_EE",
+    "id" : "et_EE"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Estonia",
+      "longName" : "Republic of Estonia",
+      "postalCode" : ""
+    },
+    "et_EE" : {
+      "shortName" : "Eesti",
+      "longName" : "Eesti Vabariik",
+      "postalCode" : "Postiindeks"
+    },
+    "de_DE" : {
+      "shortName" : "Estland",
+      "longName" : "Republik Estland",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Estonia",
+      "longName" : "Republic of Estonia",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Estonia",
+      "longName" : "República de Estonia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Estonie",
+      "longName" : "République d’Estonie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Estonia",
+      "longName" : "Repubblica d'Estonia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "에스토니아",
+      "longName" : "Republic of Estonia",
+      "postalCode" : ""
+    }
+  }
 }

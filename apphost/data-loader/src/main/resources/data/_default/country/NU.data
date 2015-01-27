@@ -1,34 +1,60 @@
 {
-	"countryCode": "NU",
-	"defaultLocale": {
-		"href": "/v1/locales/en_NU",
-		"id": "en_NU"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/NZD",
-		"id": "NZD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_NU",
-		"id": "en_NU"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Niue",
-			"longName": "Niue",
-			"postalCode": "Postal Code"
-		},
-		"niu_NU": {
-			"shortName": "Niuē",
-			"longName": "Niuē",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "NU",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_NU",
+    "id" : "en_NU"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/NZD",
+    "id" : "NZD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_NU",
+    "id" : "en_NU"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Niue",
+      "longName" : "Niue",
+      "postalCode" : ""
+    },
+    "niu_NU" : {
+      "shortName" : "Niuē",
+      "longName" : "Niuē",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Niue",
+      "longName" : "Niue",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Niue",
+      "longName" : "Niue",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Niue",
+      "longName" : "Niue",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Niue",
+      "longName" : "Niue",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Niue",
+      "longName" : "Niue",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "니우에",
+      "longName" : "니우에",
+      "postalCode" : ""
+    }
+  }
 }

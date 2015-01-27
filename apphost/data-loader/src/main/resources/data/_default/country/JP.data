@@ -1,604 +1,678 @@
 {
-	"countryCode": "JP",
-	"defaultLocale": {
-		"href": "/v1/locales/ja_JP",
-		"id": "ja_JP"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/JPY",
-		"id": "JPY"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/CERO",
-		"id": "CERO"
-	}],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "北海道",
-					"longName": "北海道"
-				},
-				"en_US": {
-					"shortName": "Hokkaido",
-					"longName": "Hokkaido"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Aomori",
-					"longName": "Aomori"
-				},
-				"ja_JP": {
-					"shortName": "青森県",
-					"longName": "青森県"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "岩手県",
-					"longName": "岩手県"
-				},
-				"en_US": {
-					"shortName": "Iwate",
-					"longName": "Iwate"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Miyagi",
-					"longName": "Miyagi"
-				},
-				"ja_JP": {
-					"shortName": "宮城県",
-					"longName": "宮城県"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "秋田県",
-					"longName": "秋田県"
-				},
-				"en_US": {
-					"shortName": "Akita",
-					"longName": "Akita"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "山形県",
-					"longName": "山形県"
-				},
-				"en_US": {
-					"shortName": "Yamagata",
-					"longName": "Yamagata"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "福島県",
-					"longName": "福島県"
-				},
-				"en_US": {
-					"shortName": "Fukushima",
-					"longName": "Fukushima"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ibaraki",
-					"longName": "Ibaraki"
-				},
-				"ja_JP": {
-					"shortName": "茨城県",
-					"longName": "茨城県"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "栃木県",
-					"longName": "栃木県"
-				},
-				"en_US": {
-					"shortName": "Tochigi",
-					"longName": "Tochigi"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gunma",
-					"longName": "Gunma"
-				},
-				"ja_JP": {
-					"shortName": "群馬県",
-					"longName": "群馬県"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Saitama",
-					"longName": "Saitama"
-				},
-				"ja_JP": {
-					"shortName": "埼玉県",
-					"longName": "埼玉県"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "千葉県",
-					"longName": "千葉県"
-				},
-				"en_US": {
-					"shortName": "Chiba",
-					"longName": "Chiba"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tokyo",
-					"longName": "Tokyo"
-				},
-				"ja_JP": {
-					"shortName": "東京都",
-					"longName": "東京都"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kanagawa",
-					"longName": "Kanagawa"
-				},
-				"ja_JP": {
-					"shortName": "神奈川県",
-					"longName": "神奈川県"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "新潟県",
-					"longName": "新潟県"
-				},
-				"en_US": {
-					"shortName": "Niigata",
-					"longName": "Niigata"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "富山県",
-					"longName": "富山県"
-				},
-				"en_US": {
-					"shortName": "Toyama",
-					"longName": "Toyama"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ishikawa",
-					"longName": "Ishikawa"
-				},
-				"ja_JP": {
-					"shortName": "石川県",
-					"longName": "石川県"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"en_US": {
-					"shortName": "Fukui",
-					"longName": "Fukui"
-				},
-				"ja_JP": {
-					"shortName": "石川県",
-					"longName": "石川県"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yamanashi",
-					"longName": "Yamanashi"
-				},
-				"ja_JP": {
-					"shortName": "山梨県",
-					"longName": "山梨県"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nagano",
-					"longName": "Nagano"
-				},
-				"ja_JP": {
-					"shortName": "長野県",
-					"longName": "長野県"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gifu",
-					"longName": "Gifu"
-				},
-				"ja_JP": {
-					"shortName": "岐阜県",
-					"longName": "岐阜県"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shizuoka",
-					"longName": "Shizuoka"
-				},
-				"ja_JP": {
-					"shortName": "静岡県",
-					"longName": "静岡県"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "愛知県",
-					"longName": "愛知県"
-				},
-				"en_US": {
-					"shortName": "Aichi",
-					"longName": "Aichi"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mie",
-					"longName": "Mie"
-				},
-				"ja_JP": {
-					"shortName": "三重県",
-					"longName": "三重県"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shiga",
-					"longName": "Shiga"
-				},
-				"ja_JP": {
-					"shortName": "滋賀県",
-					"longName": "滋賀県"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "京都府",
-					"longName": "京都府"
-				},
-				"en_US": {
-					"shortName": "Kyoto",
-					"longName": "Kyoto"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "大阪府",
-					"longName": "大阪府"
-				},
-				"en_US": {
-					"shortName": "Osaka",
-					"longName": "Osaka"
-				}
-			}
-		},
-		"28": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "兵庫県",
-					"longName": "兵庫県"
-				},
-				"en_US": {
-					"shortName": "Hyogo",
-					"longName": "Hyogo"
-				}
-			}
-		},
-		"29": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "奈良県",
-					"longName": "奈良県"
-				},
-				"en_US": {
-					"shortName": "Nara",
-					"longName": "Nara"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"en_US": {
-					"shortName": "Wakayama",
-					"longName": "Wakayama"
-				},
-				"ja_JP": {
-					"shortName": "和歌山県",
-					"longName": "和歌山県"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "鳥取県",
-					"longName": "鳥取県"
-				},
-				"en_US": {
-					"shortName": "Tottori",
-					"longName": "Tottori"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"en_US": {
-					"shortName": "Shimane",
-					"longName": "Shimane"
-				},
-				"ja_JP": {
-					"shortName": "鳥取県",
-					"longName": "鳥取県"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"en_US": {
-					"shortName": "Okayama",
-					"longName": "Okayama"
-				},
-				"ja_JP": {
-					"shortName": "岡山県",
-					"longName": "岡山県"
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "広島県",
-					"longName": "広島県"
-				},
-				"en_US": {
-					"shortName": "Hiroshima",
-					"longName": "Hiroshima"
-				}
-			}
-		},
-		"35": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "山口県",
-					"longName": "山口県"
-				},
-				"en_US": {
-					"shortName": "Yamaguchi",
-					"longName": "Yamaguchi"
-				}
-			}
-		},
-		"36": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tokushima",
-					"longName": "Tokushima"
-				},
-				"ja_JP": {
-					"shortName": "徳島県",
-					"longName": "徳島県"
-				}
-			}
-		},
-		"37": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kagawa",
-					"longName": "Kagawa"
-				},
-				"ja_JP": {
-					"shortName": "香川県",
-					"longName": "香川県"
-				}
-			}
-		},
-		"38": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "愛媛県",
-					"longName": "愛媛県"
-				},
-				"en_US": {
-					"shortName": "Ehime",
-					"longName": "Ehime"
-				}
-			}
-		},
-		"39": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kochi",
-					"longName": "Kochi"
-				},
-				"ja_JP": {
-					"shortName": "高知県",
-					"longName": "高知県"
-				}
-			}
-		},
-		"40": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "福岡県",
-					"longName": "福岡県"
-				},
-				"en_US": {
-					"shortName": "Fukuoka",
-					"longName": "Fukuoka"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "佐賀県",
-					"longName": "佐賀県"
-				},
-				"en_US": {
-					"shortName": "Saga",
-					"longName": "Saga"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nagasaki",
-					"longName": "Nagasaki"
-				},
-				"ja_JP": {
-					"shortName": "長崎県",
-					"longName": "長崎県"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kumamoto",
-					"longName": "Kumamoto"
-				},
-				"ja_JP": {
-					"shortName": "熊本県",
-					"longName": "熊本県"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"en_US": {
-					"shortName": "Oita",
-					"longName": "Oita"
-				},
-				"ja_JP": {
-					"shortName": "大分県",
-					"longName": "大分県"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"en_US": {
-					"shortName": "Miyazaki",
-					"longName": "Miyazaki"
-				},
-				"ja_JP": {
-					"shortName": "宮崎県",
-					"longName": "宮崎県"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kagoshima",
-					"longName": "Kagoshima"
-				},
-				"ja_JP": {
-					"shortName": "鹿児島県",
-					"longName": "鹿児島県"
-				}
-			}
-		},
-		"47": {
-			"locales": {
-				"ja_JP": {
-					"shortName": "沖縄県",
-					"longName": "沖縄県"
-				},
-				"en_US": {
-					"shortName": "Okinawa",
-					"longName": "Okinawa"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ja_JP",
-		"id": "ja_JP"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Japan",
-			"longName": "Japan",
-			"postalCode": "Postal Code"
-		},
-		"ja_JP": {
-			"shortName": "日本国",
-			"longName": "日本国",
-			"postalCode": "郵便番号"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "JP",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ja_JP",
+    "id" : "ja_JP"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/JPY",
+    "id" : "JPY"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/CERO",
+    "id" : "CERO"
+  } ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "北海道",
+          "longName" : "北海道"
+        },
+        "en_US" : {
+          "shortName" : "Hokkaido",
+          "longName" : "Hokkaido"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Aomori",
+          "longName" : "Aomori"
+        },
+        "ja_JP" : {
+          "shortName" : "青森県",
+          "longName" : "青森県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "岩手県",
+          "longName" : "岩手県"
+        },
+        "en_US" : {
+          "shortName" : "Iwate",
+          "longName" : "Iwate"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Miyagi",
+          "longName" : "Miyagi"
+        },
+        "ja_JP" : {
+          "shortName" : "宮城県",
+          "longName" : "宮城県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "秋田県",
+          "longName" : "秋田県"
+        },
+        "en_US" : {
+          "shortName" : "Akita",
+          "longName" : "Akita"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "山形県",
+          "longName" : "山形県"
+        },
+        "en_US" : {
+          "shortName" : "Yamagata",
+          "longName" : "Yamagata"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "福島県",
+          "longName" : "福島県"
+        },
+        "en_US" : {
+          "shortName" : "Fukushima",
+          "longName" : "Fukushima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ibaraki",
+          "longName" : "Ibaraki"
+        },
+        "ja_JP" : {
+          "shortName" : "茨城県",
+          "longName" : "茨城県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "栃木県",
+          "longName" : "栃木県"
+        },
+        "en_US" : {
+          "shortName" : "Tochigi",
+          "longName" : "Tochigi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gunma",
+          "longName" : "Gunma"
+        },
+        "ja_JP" : {
+          "shortName" : "群馬県",
+          "longName" : "群馬県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Saitama",
+          "longName" : "Saitama"
+        },
+        "ja_JP" : {
+          "shortName" : "埼玉県",
+          "longName" : "埼玉県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "千葉県",
+          "longName" : "千葉県"
+        },
+        "en_US" : {
+          "shortName" : "Chiba",
+          "longName" : "Chiba"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tokyo",
+          "longName" : "Tokyo"
+        },
+        "ja_JP" : {
+          "shortName" : "東京都",
+          "longName" : "東京都"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kanagawa",
+          "longName" : "Kanagawa"
+        },
+        "ja_JP" : {
+          "shortName" : "神奈川県",
+          "longName" : "神奈川県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "新潟県",
+          "longName" : "新潟県"
+        },
+        "en_US" : {
+          "shortName" : "Niigata",
+          "longName" : "Niigata"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "富山県",
+          "longName" : "富山県"
+        },
+        "en_US" : {
+          "shortName" : "Toyama",
+          "longName" : "Toyama"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ishikawa",
+          "longName" : "Ishikawa"
+        },
+        "ja_JP" : {
+          "shortName" : "石川県",
+          "longName" : "石川県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Fukui",
+          "longName" : "Fukui"
+        },
+        "ja_JP" : {
+          "shortName" : "石川県",
+          "longName" : "石川県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yamanashi",
+          "longName" : "Yamanashi"
+        },
+        "ja_JP" : {
+          "shortName" : "山梨県",
+          "longName" : "山梨県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nagano",
+          "longName" : "Nagano"
+        },
+        "ja_JP" : {
+          "shortName" : "長野県",
+          "longName" : "長野県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gifu",
+          "longName" : "Gifu"
+        },
+        "ja_JP" : {
+          "shortName" : "岐阜県",
+          "longName" : "岐阜県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shizuoka",
+          "longName" : "Shizuoka"
+        },
+        "ja_JP" : {
+          "shortName" : "静岡県",
+          "longName" : "静岡県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "愛知県",
+          "longName" : "愛知県"
+        },
+        "en_US" : {
+          "shortName" : "Aichi",
+          "longName" : "Aichi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mie",
+          "longName" : "Mie"
+        },
+        "ja_JP" : {
+          "shortName" : "三重県",
+          "longName" : "三重県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shiga",
+          "longName" : "Shiga"
+        },
+        "ja_JP" : {
+          "shortName" : "滋賀県",
+          "longName" : "滋賀県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "京都府",
+          "longName" : "京都府"
+        },
+        "en_US" : {
+          "shortName" : "Kyoto",
+          "longName" : "Kyoto"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "大阪府",
+          "longName" : "大阪府"
+        },
+        "en_US" : {
+          "shortName" : "Osaka",
+          "longName" : "Osaka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "28" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "兵庫県",
+          "longName" : "兵庫県"
+        },
+        "en_US" : {
+          "shortName" : "Hyogo",
+          "longName" : "Hyogo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "29" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "奈良県",
+          "longName" : "奈良県"
+        },
+        "en_US" : {
+          "shortName" : "Nara",
+          "longName" : "Nara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Wakayama",
+          "longName" : "Wakayama"
+        },
+        "ja_JP" : {
+          "shortName" : "和歌山県",
+          "longName" : "和歌山県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "鳥取県",
+          "longName" : "鳥取県"
+        },
+        "en_US" : {
+          "shortName" : "Tottori",
+          "longName" : "Tottori"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Shimane",
+          "longName" : "Shimane"
+        },
+        "ja_JP" : {
+          "shortName" : "鳥取県",
+          "longName" : "鳥取県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Okayama",
+          "longName" : "Okayama"
+        },
+        "ja_JP" : {
+          "shortName" : "岡山県",
+          "longName" : "岡山県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "広島県",
+          "longName" : "広島県"
+        },
+        "en_US" : {
+          "shortName" : "Hiroshima",
+          "longName" : "Hiroshima"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "35" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "山口県",
+          "longName" : "山口県"
+        },
+        "en_US" : {
+          "shortName" : "Yamaguchi",
+          "longName" : "Yamaguchi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "36" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tokushima",
+          "longName" : "Tokushima"
+        },
+        "ja_JP" : {
+          "shortName" : "徳島県",
+          "longName" : "徳島県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "37" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kagawa",
+          "longName" : "Kagawa"
+        },
+        "ja_JP" : {
+          "shortName" : "香川県",
+          "longName" : "香川県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "38" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "愛媛県",
+          "longName" : "愛媛県"
+        },
+        "en_US" : {
+          "shortName" : "Ehime",
+          "longName" : "Ehime"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "39" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kochi",
+          "longName" : "Kochi"
+        },
+        "ja_JP" : {
+          "shortName" : "高知県",
+          "longName" : "高知県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "40" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "福岡県",
+          "longName" : "福岡県"
+        },
+        "en_US" : {
+          "shortName" : "Fukuoka",
+          "longName" : "Fukuoka"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "佐賀県",
+          "longName" : "佐賀県"
+        },
+        "en_US" : {
+          "shortName" : "Saga",
+          "longName" : "Saga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nagasaki",
+          "longName" : "Nagasaki"
+        },
+        "ja_JP" : {
+          "shortName" : "長崎県",
+          "longName" : "長崎県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kumamoto",
+          "longName" : "Kumamoto"
+        },
+        "ja_JP" : {
+          "shortName" : "熊本県",
+          "longName" : "熊本県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Oita",
+          "longName" : "Oita"
+        },
+        "ja_JP" : {
+          "shortName" : "大分県",
+          "longName" : "大分県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Miyazaki",
+          "longName" : "Miyazaki"
+        },
+        "ja_JP" : {
+          "shortName" : "宮崎県",
+          "longName" : "宮崎県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kagoshima",
+          "longName" : "Kagoshima"
+        },
+        "ja_JP" : {
+          "shortName" : "鹿児島県",
+          "longName" : "鹿児島県"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "47" : {
+      "locales" : {
+        "ja_JP" : {
+          "shortName" : "沖縄県",
+          "longName" : "沖縄県"
+        },
+        "en_US" : {
+          "shortName" : "Okinawa",
+          "longName" : "Okinawa"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ja_JP",
+    "id" : "ja_JP"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Japan",
+      "longName" : "Japan",
+      "postalCode" : ""
+    },
+    "ja_JP" : {
+      "shortName" : "日本国",
+      "longName" : "日本国",
+      "postalCode" : "郵便番号"
+    },
+    "de_DE" : {
+      "shortName" : "Japan",
+      "longName" : "Japan",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Japan",
+      "longName" : "Japan",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Japón",
+      "longName" : "Japón",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Japon",
+      "longName" : "Japon",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Giappone",
+      "longName" : "Giappone",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "일본",
+      "longName" : "일본",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,73 +1,106 @@
 {
-	"countryCode": "TO",
-	"defaultLocale": {
-		"href": "/v1/locales/en_TO",
-		"id": "en_TO"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/TOP",
-		"id": "TOP"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eua",
-					"longName": "Eua"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ha'apai",
-					"longName": "Ha'apai"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"en_US": {
-					"shortName": "Niuas",
-					"longName": "Niuas"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tongatapu",
-					"longName": "Tongatapu"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vava'u",
-					"longName": "Vava'u"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_TO",
-		"id": "en_TO"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Tonga",
-			"longName": "Kingdom of Tonga",
-			"postalCode": "Postal Code"
-		},
-		"to_TO": {
-			"shortName": "Tonga",
-			"longName": "Puleʻanga Fakatuʻi ʻo Tonga",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TO",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_TO",
+    "id" : "en_TO"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/TOP",
+    "id" : "TOP"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eua",
+          "longName" : "Eua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ha'apai",
+          "longName" : "Ha'apai"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Niuas",
+          "longName" : "Niuas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tongatapu",
+          "longName" : "Tongatapu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vava'u",
+          "longName" : "Vava'u"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_TO",
+    "id" : "en_TO"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Tonga",
+      "longName" : "Kingdom of Tonga",
+      "postalCode" : ""
+    },
+    "to_TO" : {
+      "shortName" : "Tonga",
+      "longName" : "Puleʻanga Fakatuʻi ʻo Tonga",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Tonga",
+      "longName" : "Kingdom of Tonga",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Tonga",
+      "longName" : "Kingdom of Tonga",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Tonga",
+      "longName" : "Reino de Tonga",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Tonga",
+      "longName" : "Royaume de Tonga",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Tonga",
+      "longName" : "Regno di Tonga",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "통가",
+      "longName" : "Kingdom of Tonga",
+      "postalCode" : ""
+    }
+  }
 }

@@ -1,97 +1,129 @@
 {
-	"countryCode": "BH",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_BH",
-		"id": "ar_BH"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BHD",
-		"id": "BHD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"13": {
-			"locales": {
-				"ar_BH": {
-					"shortName": "محافظة العاصمة‎",
-					"longName": "محافظة العاصمة‎"
-				},
-				"en_US": {
-					"shortName": "Capital",
-					"longName": "Capital"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"ar_BH": {
-					"shortName": "المحافظة الجنوبية‎",
-					"longName": "المحافظة الجنوبية‎"
-				},
-				"en_US": {
-					"shortName": "Southern",
-					"longName": "Southern"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Muharraq",
-					"longName": "Muharraq"
-				},
-				"ar_BH": {
-					"shortName": "محافظة المحرق",
-					"longName": "محافظة المحرق"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central",
-					"longName": "Central"
-				},
-				"ar_BH": {
-					"shortName": "المحافظة الوسطى",
-					"longName": "المحافظة الوسطى"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"ar_BH": {
-					"shortName": "المحافظة الشمالية",
-					"longName": "المحافظة الشمالية"
-				},
-				"en_US": {
-					"shortName": "Northern",
-					"longName": "Northern"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_BH",
-		"id": "ar_BH"
-	},
-    {
-         "href": "/v1/locales/en_US",
-         "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Bahrain",
-			"longName": "Kingdom of Bahrain",
-			"postalCode": "Postal Code"
-		},
-		"ar_BH": {
-			"shortName": "‏البحرين",
-			"longName": "مملكة البحرين",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BH",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_BH",
+    "id" : "ar_BH"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BHD",
+    "id" : "BHD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "13" : {
+      "locales" : {
+        "ar_BH" : {
+          "shortName" : "محافظة العاصمة‎",
+          "longName" : "محافظة العاصمة‎"
+        },
+        "en_US" : {
+          "shortName" : "Capital",
+          "longName" : "Capital"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "ar_BH" : {
+          "shortName" : "المحافظة الجنوبية‎",
+          "longName" : "المحافظة الجنوبية‎"
+        },
+        "en_US" : {
+          "shortName" : "Southern",
+          "longName" : "Southern"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Muharraq",
+          "longName" : "Muharraq"
+        },
+        "ar_BH" : {
+          "shortName" : "محافظة المحرق",
+          "longName" : "محافظة المحرق"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central",
+          "longName" : "Central"
+        },
+        "ar_BH" : {
+          "shortName" : "المحافظة الوسطى",
+          "longName" : "المحافظة الوسطى"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "ar_BH" : {
+          "shortName" : "المحافظة الشمالية",
+          "longName" : "المحافظة الشمالية"
+        },
+        "en_US" : {
+          "shortName" : "Northern",
+          "longName" : "Northern"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_BH",
+    "id" : "ar_BH"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Bahrain",
+      "longName" : "Kingdom of Bahrain",
+      "postalCode" : ""
+    },
+    "ar_BH" : {
+      "shortName" : "‏البحرين",
+      "longName" : "مملكة البحرين",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Bahrain",
+      "longName" : "Kingdom of Bahrain",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Bahrain",
+      "longName" : "Kingdom of Bahrain",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Baréin",
+      "longName" : "Reino de Baréin",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Bahreïn",
+      "longName" : "Royaume de Bahreïn",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Bahrein",
+      "longName" : "Regno del Bahrein",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "바레인",
+      "longName" : "Kingdom of Bahrain",
+      "postalCode" : ""
+    }
+  }
 }

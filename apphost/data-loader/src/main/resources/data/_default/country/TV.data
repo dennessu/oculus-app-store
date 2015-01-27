@@ -1,92 +1,128 @@
 {
-	"countryCode": "TV",
-	"defaultLocale": {
-		"href": "/v1/locales/en_TV",
-		"id": "en_TV"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AUD",
-		"id": "AUD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"FUN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Funafuti",
-					"longName": "Funafuti"
-				}
-			}
-		},
-		"NIT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Niutao",
-					"longName": "Niutao"
-				}
-			}
-		},
-		"NKF": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nukufetau",
-					"longName": "Nukufetau"
-				}
-			}
-		},
-		"NKL": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nukulaelae",
-					"longName": "Nukulaelae"
-				}
-			}
-		},
-		"NMA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nanumea",
-					"longName": "Nanumea"
-				}
-			}
-		},
-		"NMG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nanumanga",
-					"longName": "Nanumanga"
-				}
-			}
-		},
-		"NUI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nui",
-					"longName": "Nui"
-				}
-			}
-		},
-		"VAI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vaitupu",
-					"longName": "Vaitupu"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_TV",
-		"id": "en_TV"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Tuvalu",
-			"longName": "Tuvalu",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TV",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_TV",
+    "id" : "en_TV"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AUD",
+    "id" : "AUD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "FUN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Funafuti",
+          "longName" : "Funafuti"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NIT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Niutao",
+          "longName" : "Niutao"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NKF" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nukufetau",
+          "longName" : "Nukufetau"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NKL" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nukulaelae",
+          "longName" : "Nukulaelae"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NMA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nanumea",
+          "longName" : "Nanumea"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NMG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nanumanga",
+          "longName" : "Nanumanga"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NUI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nui",
+          "longName" : "Nui"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "VAI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vaitupu",
+          "longName" : "Vaitupu"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_TV",
+    "id" : "en_TV"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Tuvalu",
+      "longName" : "Tuvalu",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Tuvalu",
+      "longName" : "Tuvalu",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Tuvalu",
+      "longName" : "Tuvalu",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Tuvalu",
+      "longName" : "Tuvalu",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Tuvalu",
+      "longName" : "Tuvalu",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Tuvalu",
+      "longName" : "Tuvalu",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "투발루",
+      "longName" : "투발루",
+      "postalCode" : ""
+    }
+  }
 }

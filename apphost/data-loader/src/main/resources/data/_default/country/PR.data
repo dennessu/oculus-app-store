@@ -1,38 +1,63 @@
 {
-	"countryCode": "PR",
-	"defaultLocale": {
-		"href": "/v1/locales/es_PR",
-		"id": "es_PR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_PR",
-		"id": "es_PR"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Puerto Rico",
-			"longName": "Commonwealth of Puerto Rico",
-			"postalCode": "Postal Code"
-		},
-		"es_PR": {
-			"shortName": "Puerto Rico",
-			"longName": "Estado Libre Asociado de Puerto Rico",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "PR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_PR",
+    "id" : "es_PR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_PR",
+    "id" : "es_PR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Puerto Rico",
+      "longName" : "Commonwealth of Puerto Rico",
+      "postalCode" : ""
+    },
+    "es_PR" : {
+      "shortName" : "Puerto Rico",
+      "longName" : "Estado Libre Asociado de Puerto Rico",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "Puerto Rico",
+      "longName" : "Freistaat Puerto Rico",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Puerto Rico",
+      "longName" : "Commonwealth of Puerto Rico",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Puerto Rico",
+      "longName" : "Commonwealth de Puerto Rico",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Porto Rico",
+      "longName" : "Commonwealth de Porto Rico",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Porto Rico",
+      "longName" : "Commonwealth di Porto Rico",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "푸에르토리코",
+      "longName" : "Commonwealth of Puerto Rico",
+      "postalCode" : ""
+    }
+  }
 }

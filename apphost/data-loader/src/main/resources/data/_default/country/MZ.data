@@ -1,119 +1,158 @@
 {
-	"countryCode": "MZ",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/MZN",
-		"id": "MZN"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"A": {
-			"locales": {
-				"en_US": {
-					"shortName": "Niassa",
-					"longName": "Niassa"
-				}
-			}
-		},
-		"B": {
-			"locales": {
-				"en_US": {
-					"shortName": "Manica",
-					"longName": "Manica"
-				}
-			}
-		},
-		"G": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gaza",
-					"longName": "Gaza"
-				}
-			}
-		},
-		"I": {
-			"locales": {
-				"en_US": {
-					"shortName": "Inhambane",
-					"longName": "Inhambane"
-				}
-			}
-		},
-		"L": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maputo Province",
-					"longName": "Maputo Province"
-				}
-			}
-		},
-		"MPM": {
-			"locales": {
-				"en_US": {
-					"shortName": "Maputo",
-					"longName": "Maputo"
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nampula",
-					"longName": "Nampula"
-				}
-			}
-		},
-		"P": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cabo Delgado",
-					"longName": "Cabo Delgado"
-				}
-			}
-		},
-		"Q": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zambézia",
-					"longName": "Zambézia"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sofala",
-					"longName": "Sofala"
-				}
-			}
-		},
-		"T": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tete",
-					"longName": "Tete"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Mozambique",
-			"longName": "Republic of Mozambique",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "MZ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/MZN",
+    "id" : "MZN"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "A" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Niassa",
+          "longName" : "Niassa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "B" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Manica",
+          "longName" : "Manica"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "G" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gaza",
+          "longName" : "Gaza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "I" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Inhambane",
+          "longName" : "Inhambane"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "L" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maputo Province",
+          "longName" : "Maputo Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MPM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Maputo",
+          "longName" : "Maputo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nampula",
+          "longName" : "Nampula"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "P" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cabo Delgado",
+          "longName" : "Cabo Delgado"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Q" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zambézia",
+          "longName" : "Zambézia"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sofala",
+          "longName" : "Sofala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "T" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tete",
+          "longName" : "Tete"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Mozambique",
+      "longName" : "Republic of Mozambique",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Mosambik",
+      "longName" : "Republic of Mozambique",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Mozambique",
+      "longName" : "Republic of Mozambique",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Mozambique",
+      "longName" : "República de Mozambique",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Mozambique",
+      "longName" : "République du Mozambique",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Mozambico",
+      "longName" : "Repubblica del Mozambico",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "모잠비크",
+      "longName" : "Republic of Mozambique",
+      "postalCode" : ""
+    }
+  }
 }

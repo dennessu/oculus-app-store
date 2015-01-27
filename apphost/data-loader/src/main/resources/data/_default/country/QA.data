@@ -1,121 +1,155 @@
 {
-	"countryCode": "QA",
-	"defaultLocale": {
-		"href": "/v1/locales/ar_QA",
-		"id": "ar_QA"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/QAR",
-		"id": "QAR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"DA": {
-			"locales": {
-				"ar_QA": {
-					"shortName": "الدوحة",
-					"longName": "الدوحة"
-				},
-				"en_US": {
-					"shortName": "Doha",
-					"longName": "Doha"
-				}
-			}
-		},
-		"KH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Khor",
-					"longName": "Al Khor"
-				},
-				"ar_QA": {
-					"shortName": "الخور‎",
-					"longName": "الخور‎"
-				}
-			}
-		},
-		"MS": {
-			"locales": {
-				"ar_QA": {
-					"shortName": "الشمال",
-					"longName": "الشمال"
-				},
-				"en_US": {
-					"shortName": "Ash Shamal",
-					"longName": "Ash Shamal"
-				}
-			}
-		},
-		"RA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Rayyan",
-					"longName": "Al Rayyan"
-				},
-				"ar_QA": {
-					"shortName": "الريان",
-					"longName": "الريان"
-				}
-			}
-		},
-		"US": {
-			"locales": {
-				"en_US": {
-					"shortName": "Umm Salal",
-					"longName": "Umm Salal"
-				},
-				"ar_QA": {
-					"shortName": "أم صلال",
-					"longName": "أم صلال"
-				}
-			}
-		},
-		"WA": {
-			"locales": {
-				"en_US": {
-					"shortName": "Al Wakrah",
-					"longName": "Al Wakrah"
-				},
-				"ar_QA": {
-					"shortName": "الوكرة",
-					"longName": "الوكرة"
-				}
-			}
-		},
-		"ZA": {
-			"locales": {
-				"ar_QA": {
-					"shortName": "Al Daayen",
-					"longName": "Al Daayen"
-				},
-				"en_US": {
-					"shortName": "Al Daayen",
-					"longName": "Al Daayen"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/ar_QA",
-		"id": "ar_QA"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Qatar",
-			"longName": "State of Qatar",
-			"postalCode": "Postal Code"
-		},
-		"ar_QA": {
-			"shortName": "قطر",
-			"longName": "دولة قطر‎",
-			"postalCode": "الرمز البريدي"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "QA",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ar_QA",
+    "id" : "ar_QA"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/QAR",
+    "id" : "QAR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "DA" : {
+      "locales" : {
+        "ar_QA" : {
+          "shortName" : "الدوحة",
+          "longName" : "الدوحة"
+        },
+        "en_US" : {
+          "shortName" : "Doha",
+          "longName" : "Doha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Khor",
+          "longName" : "Al Khor"
+        },
+        "ar_QA" : {
+          "shortName" : "الخور‎",
+          "longName" : "الخور‎"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MS" : {
+      "locales" : {
+        "ar_QA" : {
+          "shortName" : "الشمال",
+          "longName" : "الشمال"
+        },
+        "en_US" : {
+          "shortName" : "Ash Shamal",
+          "longName" : "Ash Shamal"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Rayyan",
+          "longName" : "Al Rayyan"
+        },
+        "ar_QA" : {
+          "shortName" : "الريان",
+          "longName" : "الريان"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "US" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Umm Salal",
+          "longName" : "Umm Salal"
+        },
+        "ar_QA" : {
+          "shortName" : "أم صلال",
+          "longName" : "أم صلال"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Al Wakrah",
+          "longName" : "Al Wakrah"
+        },
+        "ar_QA" : {
+          "shortName" : "الوكرة",
+          "longName" : "الوكرة"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "ZA" : {
+      "locales" : {
+        "ar_QA" : {
+          "shortName" : "Al Daayen",
+          "longName" : "Al Daayen"
+        },
+        "en_US" : {
+          "shortName" : "Al Daayen",
+          "longName" : "Al Daayen"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/ar_QA",
+    "id" : "ar_QA"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Qatar",
+      "longName" : "State of Qatar",
+      "postalCode" : ""
+    },
+    "ar_QA" : {
+      "shortName" : "قطر",
+      "longName" : "دولة قطر‎",
+      "postalCode" : "الرمز البريدي"
+    },
+    "de_DE" : {
+      "shortName" : "Katar",
+      "longName" : "State of Qatar",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Qatar",
+      "longName" : "State of Qatar",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Qatar",
+      "longName" : "Estado de Qatar",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Qatar",
+      "longName" : "État du Qatar",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Qatar",
+      "longName" : "Stato del Qatar",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "카타르",
+      "longName" : "State of Qatar",
+      "postalCode" : ""
+    }
+  }
 }

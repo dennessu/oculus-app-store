@@ -1,119 +1,158 @@
 {
-	"countryCode": "CG",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/XAF",
-		"id": "XAF"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/FPB",
-		"id": "FPB"
-	}],
-	"subCountries": {
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bouenza",
-					"longName": "Bouenza"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"en_US": {
-					"shortName": "Pool",
-					"longName": "Pool"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sangha",
-					"longName": "Sangha"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"en_US": {
-					"shortName": "Plateaux",
-					"longName": "Plateaux"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cuvette-Ouest",
-					"longName": "Cuvette-Ouest"
-				}
-			}
-		},
-		"2": {
-			"locales": {
-				"en_US": {
-					"shortName": "Lékoumou",
-					"longName": "Lékoumou"
-				}
-			}
-		},
-		"5": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kouilou",
-					"longName": "Kouilou"
-				}
-			}
-		},
-		"7": {
-			"locales": {
-				"en_US": {
-					"shortName": "Likouala",
-					"longName": "Likouala"
-				}
-			}
-		},
-		"8": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cuvette",
-					"longName": "Cuvette"
-				}
-			}
-		},
-		"9": {
-			"locales": {
-				"en_US": {
-					"shortName": "Niari",
-					"longName": "Niari"
-				}
-			}
-		},
-		"BZV": {
-			"locales": {
-				"en_US": {
-					"shortName": "Brazzaville",
-					"longName": "Brazzaville"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Congo",
-			"longName": "Republic of the Congo",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CG",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/XAF",
+    "id" : "XAF"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/FPB",
+    "id" : "FPB"
+  } ],
+  "subCountries" : {
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bouenza",
+          "longName" : "Bouenza"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Pool",
+          "longName" : "Pool"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sangha",
+          "longName" : "Sangha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Plateaux",
+          "longName" : "Plateaux"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cuvette-Ouest",
+          "longName" : "Cuvette-Ouest"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "2" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Lékoumou",
+          "longName" : "Lékoumou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "5" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kouilou",
+          "longName" : "Kouilou"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "7" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Likouala",
+          "longName" : "Likouala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "8" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cuvette",
+          "longName" : "Cuvette"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "9" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Niari",
+          "longName" : "Niari"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BZV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Brazzaville",
+          "longName" : "Brazzaville"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Congo",
+      "longName" : "Republic of the Congo",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Kongo",
+      "longName" : "Republik Kongo",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Congo",
+      "longName" : "Republic of the Congo",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Congo",
+      "longName" : "República del Congo",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Congo",
+      "longName" : "République du Congo",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Congo",
+      "longName" : "Repubblica del Congo",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "콩고",
+      "longName" : "콩고 공화국",
+      "postalCode" : ""
+    }
+  }
 }

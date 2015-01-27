@@ -1516,6 +1516,8 @@
                 <value>id</value>
                 <value>userId</value>
                 <value>userAttributeDefinitionId</value>
+                <value>name</value>
+                <value>value</value>
                 <value>isActive</value>
                 <value>isSuspended</value>
                 <value>grantTime</value>
@@ -1536,6 +1538,8 @@
             <list>
                 <value>userId</value>
                 <value>userAttributeDefinitionId</value>
+                <value>name</value>
+                <value>value</value>
                 <value>grantTime</value>
                 <value>expirationTime</value>
                 <value>useCount</value>
@@ -1554,6 +1558,8 @@
                 <value>grantTime</value>
                 <value>expirationTime</value>
                 <value>useCount</value>
+                <value>name</value>
+                <value>value</value>
                 <value>isActive</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
@@ -1571,6 +1577,8 @@
                 <value>id</value>
                 <value>type</value>
                 <value>description</value>
+                <value>organizationId</value>
+                <value>items</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
@@ -1586,6 +1594,8 @@
             <list>
                 <value>type</value>
                 <value>description</value>
+                <value>organizationId</value>
+                <value>items</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
                 <value>createdBy</value>
@@ -1598,6 +1608,8 @@
             <list>
                 <value>type</value>
                 <value>description</value>
+                <value>organizationId</value>
+                <value>items</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
                 <value>createdBy</value>

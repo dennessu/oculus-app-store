@@ -683,5 +683,7 @@
                 <value>ACHIEVEMENT</value>
             </list>
         </property>
+        <property name="organizationService" ref="organizationService" />
+        <property name="itemResource" ref="identityItemResource" />
     </bean>
 </beans>

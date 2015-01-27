@@ -1,205 +1,246 @@
 {
-	"countryCode": "SV",
-	"defaultLocale": {
-		"href": "/v1/locales/es_SV",
-		"id": "es_SV"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/USD",
-		"id": "USD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AH": {
-			"locales": {
-				"es_SV": {
-					"shortName": "Ahuachapán",
-					"longName": "Ahuachapán"
-				},
-				"en_US": {
-					"shortName": "Ahuachapán",
-					"longName": "Ahuachapán"
-				}
-			}
-		},
-		"CA": {
-			"locales": {
-				"es_SV": {
-					"shortName": "Cabañas",
-					"longName": "Cabañas"
-				},
-				"en_US": {
-					"shortName": "Cabañas",
-					"longName": "Cabañas"
-				}
-			}
-		},
-		"CH": {
-			"locales": {
-				"en_US": {
-					"shortName": "Chalatenango",
-					"longName": "Chalatenango"
-				},
-				"es_SV": {
-					"shortName": "Chalatenango",
-					"longName": "Chalatenango"
-				}
-			}
-		},
-		"CU": {
-			"locales": {
-				"es_SV": {
-					"shortName": "Cuscatlán",
-					"longName": "Cuscatlán"
-				},
-				"en_US": {
-					"shortName": "Cuscatlán",
-					"longName": "Cuscatlán"
-				}
-			}
-		},
-		"LI": {
-			"locales": {
-				"es_SV": {
-					"shortName": "La Libertad",
-					"longName": "La Libertad"
-				},
-				"en_US": {
-					"shortName": "La Libertad",
-					"longName": "La Libertad"
-				}
-			}
-		},
-		"MO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Morazán",
-					"longName": "Morazán"
-				},
-				"es_SV": {
-					"shortName": "Morazán",
-					"longName": "Morazán"
-				}
-			}
-		},
-		"PA": {
-			"locales": {
-				"en_US": {
-					"shortName": "La Paz",
-					"longName": "La Paz"
-				},
-				"es_SV": {
-					"shortName": "La Paz",
-					"longName": "La Paz"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"es_SV": {
-					"shortName": "Santa Ana",
-					"longName": "Santa Ana"
-				},
-				"en_US": {
-					"shortName": "Santa Ana",
-					"longName": "Santa Ana"
-				}
-			}
-		},
-		"SM": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Miguel",
-					"longName": "San Miguel"
-				},
-				"es_SV": {
-					"shortName": "San Miguel",
-					"longName": "San Miguel"
-				}
-			}
-		},
-		"SO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sonsonate",
-					"longName": "Sonsonate"
-				},
-				"es_SV": {
-					"shortName": "Sonsonate",
-					"longName": "Sonsonate"
-				}
-			}
-		},
-		"SS": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Salvador",
-					"longName": "San Salvador"
-				},
-				"es_SV": {
-					"shortName": "San Salvador",
-					"longName": "San Salvador"
-				}
-			}
-		},
-		"SV": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Vicente",
-					"longName": "San Vicente"
-				},
-				"es_SV": {
-					"shortName": "San Vicente",
-					"longName": "San Vicente"
-				}
-			}
-		},
-		"UN": {
-			"locales": {
-				"en_US": {
-					"shortName": "La Unión",
-					"longName": "La Unión"
-				},
-				"es_SV": {
-					"shortName": "La Unión",
-					"longName": "La Unión"
-				}
-			}
-		},
-		"US": {
-			"locales": {
-				"es_SV": {
-					"shortName": "Usulután",
-					"longName": "Usulután"
-				},
-				"en_US": {
-					"shortName": "Usulután",
-					"longName": "Usulután"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/es_SV",
-		"id": "es_SV"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "El Salvador",
-			"longName": "Republic of El Salvador",
-			"postalCode": "Postal Code"
-		},
-		"es_SV": {
-			"shortName": "El Salvador",
-			"longName": "República de El Salvador",
-			"postalCode": "Código Postal"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SV",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/es_SV",
+    "id" : "es_SV"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/USD",
+    "id" : "USD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AH" : {
+      "locales" : {
+        "es_SV" : {
+          "shortName" : "Ahuachapán",
+          "longName" : "Ahuachapán"
+        },
+        "en_US" : {
+          "shortName" : "Ahuachapán",
+          "longName" : "Ahuachapán"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CA" : {
+      "locales" : {
+        "es_SV" : {
+          "shortName" : "Cabañas",
+          "longName" : "Cabañas"
+        },
+        "en_US" : {
+          "shortName" : "Cabañas",
+          "longName" : "Cabañas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CH" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Chalatenango",
+          "longName" : "Chalatenango"
+        },
+        "es_SV" : {
+          "shortName" : "Chalatenango",
+          "longName" : "Chalatenango"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CU" : {
+      "locales" : {
+        "es_SV" : {
+          "shortName" : "Cuscatlán",
+          "longName" : "Cuscatlán"
+        },
+        "en_US" : {
+          "shortName" : "Cuscatlán",
+          "longName" : "Cuscatlán"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LI" : {
+      "locales" : {
+        "es_SV" : {
+          "shortName" : "La Libertad",
+          "longName" : "La Libertad"
+        },
+        "en_US" : {
+          "shortName" : "La Libertad",
+          "longName" : "La Libertad"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Morazán",
+          "longName" : "Morazán"
+        },
+        "es_SV" : {
+          "shortName" : "Morazán",
+          "longName" : "Morazán"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "PA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "La Paz",
+          "longName" : "La Paz"
+        },
+        "es_SV" : {
+          "shortName" : "La Paz",
+          "longName" : "La Paz"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "es_SV" : {
+          "shortName" : "Santa Ana",
+          "longName" : "Santa Ana"
+        },
+        "en_US" : {
+          "shortName" : "Santa Ana",
+          "longName" : "Santa Ana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SM" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Miguel",
+          "longName" : "San Miguel"
+        },
+        "es_SV" : {
+          "shortName" : "San Miguel",
+          "longName" : "San Miguel"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sonsonate",
+          "longName" : "Sonsonate"
+        },
+        "es_SV" : {
+          "shortName" : "Sonsonate",
+          "longName" : "Sonsonate"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Salvador",
+          "longName" : "San Salvador"
+        },
+        "es_SV" : {
+          "shortName" : "San Salvador",
+          "longName" : "San Salvador"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SV" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Vicente",
+          "longName" : "San Vicente"
+        },
+        "es_SV" : {
+          "shortName" : "San Vicente",
+          "longName" : "San Vicente"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "UN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "La Unión",
+          "longName" : "La Unión"
+        },
+        "es_SV" : {
+          "shortName" : "La Unión",
+          "longName" : "La Unión"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "US" : {
+      "locales" : {
+        "es_SV" : {
+          "shortName" : "Usulután",
+          "longName" : "Usulután"
+        },
+        "en_US" : {
+          "shortName" : "Usulután",
+          "longName" : "Usulután"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/es_SV",
+    "id" : "es_SV"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "El Salvador",
+      "longName" : "Republic of El Salvador",
+      "postalCode" : ""
+    },
+    "es_SV" : {
+      "shortName" : "El Salvador",
+      "longName" : "República de El Salvador",
+      "postalCode" : "Código Postal"
+    },
+    "de_DE" : {
+      "shortName" : "El Salvador",
+      "longName" : "Republic of El Salvador",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "El Salvador",
+      "longName" : "Republic of El Salvador",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "El Salvador",
+      "longName" : "República de El Salvador",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "El Salvador",
+      "longName" : "République du Salvador",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "El Salvador",
+      "longName" : "Repubblica di El Salvador",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "엘살바도르",
+      "longName" : "Republic of El Salvador",
+      "postalCode" : ""
+    }
+  }
 }

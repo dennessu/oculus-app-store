@@ -1,292 +1,340 @@
 {
-	"countryCode": "SE",
-	"defaultLocale": {
-		"href": "/v1/locales/sv_SE",
-		"id": "sv_SE"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/SEK",
-		"id": "SEK"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/PEGI",
-		"id": "PEGI"
-	}],
-	"subCountries": {
-		"AB": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Stockholms län",
-					"longName": "Stockholms län"
-				},
-				"en_US": {
-					"shortName": "Stockholm County",
-					"longName": "Stockholm County"
-				}
-			}
-		},
-		"AC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Västerbotten County",
-					"longName": "Västerbotten County"
-				},
-				"sv_SE": {
-					"shortName": "Västerbottens län",
-					"longName": "Västerbottens län"
-				}
-			}
-		},
-		"BD": {
-			"locales": {
-				"en_US": {
-					"shortName": "Norrbotten County",
-					"longName": "Norrbotten County"
-				},
-				"sv_SE": {
-					"shortName": "Norrbottens län",
-					"longName": "Norrbottens län"
-				}
-			}
-		},
-		"C": {
-			"locales": {
-				"en_US": {
-					"shortName": "Uppsala County",
-					"longName": "Uppsala County"
-				},
-				"sv_SE": {
-					"shortName": "Uppsala län",
-					"longName": "Uppsala län"
-				}
-			}
-		},
-		"D": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Södermanlands län",
-					"longName": "Södermanlands län"
-				},
-				"en_US": {
-					"shortName": "Södermanland County",
-					"longName": "Södermanland County"
-				}
-			}
-		},
-		"E": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Östergötlands län",
-					"longName": "Östergötlands län"
-				},
-				"en_US": {
-					"shortName": "Östergötland County",
-					"longName": "Östergötland County"
-				}
-			}
-		},
-		"F": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Jönköpings län",
-					"longName": "Jönköpings län"
-				},
-				"en_US": {
-					"shortName": "Jönköping County",
-					"longName": "Jönköping County"
-				}
-			}
-		},
-		"G": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Kronobergs län",
-					"longName": "Kronobergs län"
-				},
-				"en_US": {
-					"shortName": "Kronoberg County",
-					"longName": "Kronoberg County"
-				}
-			}
-		},
-		"H": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Kalmar län",
-					"longName": "Kalmar län"
-				},
-				"en_US": {
-					"shortName": "Kalmar County",
-					"longName": "Kalmar County"
-				}
-			}
-		},
-		"I": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Gotlands län",
-					"longName": "Gotlands län"
-				},
-				"en_US": {
-					"shortName": "Gotland County",
-					"longName": "Gotland County"
-				}
-			}
-		},
-		"K": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Blekinge län",
-					"longName": "Blekinge län"
-				},
-				"en_US": {
-					"shortName": "Blekinge County",
-					"longName": "Blekinge County"
-				}
-			}
-		},
-		"M": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Skåne län",
-					"longName": "Skåne län"
-				},
-				"en_US": {
-					"shortName": "Skåne County",
-					"longName": "Skåne County"
-				}
-			}
-		},
-		"N": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Hallands län",
-					"longName": "Hallands län"
-				},
-				"en_US": {
-					"shortName": "Halland County",
-					"longName": "Halland County"
-				}
-			}
-		},
-		"O": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Västra Götalands län",
-					"longName": "Västra Götalands län"
-				},
-				"en_US": {
-					"shortName": "Västra Götaland County",
-					"longName": "Västra Götaland County"
-				}
-			}
-		},
-		"S": {
-			"locales": {
-				"en_US": {
-					"shortName": "Värmland County",
-					"longName": "Värmland County"
-				},
-				"sv_SE": {
-					"shortName": "Värmlands län",
-					"longName": "Värmlands län"
-				}
-			}
-		},
-		"T": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Örebro län",
-					"longName": "Örebro län"
-				},
-				"en_US": {
-					"shortName": "Örebro County",
-					"longName": "Örebro County"
-				}
-			}
-		},
-		"U": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Västmanlands län",
-					"longName": "Västmanlands län"
-				},
-				"en_US": {
-					"shortName": "Västmanland County",
-					"longName": "Västmanland County"
-				}
-			}
-		},
-		"W": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Dalarnas län",
-					"longName": "Dalarnas län"
-				},
-				"en_US": {
-					"shortName": "Dalarna County",
-					"longName": "Dalarna County"
-				}
-			}
-		},
-		"X": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Gävleborgs län",
-					"longName": "Gävleborgs län"
-				},
-				"en_US": {
-					"shortName": "Gävleborg County",
-					"longName": "Gävleborg County"
-				}
-			}
-		},
-		"Y": {
-			"locales": {
-				"en_US": {
-					"shortName": "Västernorrland ",
-					"longName": "Västernorrland "
-				},
-				"sv_SE": {
-					"shortName": "Västernorrlands län",
-					"longName": "Västernorrlands län"
-				}
-			}
-		},
-		"Z": {
-			"locales": {
-				"sv_SE": {
-					"shortName": "Jämtlands län",
-					"longName": "Jämtlands län"
-				},
-				"en_US": {
-					"shortName": "Jämtland County",
-					"longName": "Jämtland County"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/sv_SE",
-		"id": "sv_SE"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Sweden",
-			"longName": "Kingdom of Sweden",
-			"postalCode": "Postal Code"
-		},
-		"sv_SE": {
-			"shortName": "Sverige",
-			"longName": "Konungariket Sverige",
-			"postalCode": "postnummer"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "SE",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/sv_SE",
+    "id" : "sv_SE"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/SEK",
+    "id" : "SEK"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/PEGI",
+    "id" : "PEGI"
+  } ],
+  "subCountries" : {
+    "AB" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Stockholms län",
+          "longName" : "Stockholms län"
+        },
+        "en_US" : {
+          "shortName" : "Stockholm County",
+          "longName" : "Stockholm County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "AC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Västerbotten County",
+          "longName" : "Västerbotten County"
+        },
+        "sv_SE" : {
+          "shortName" : "Västerbottens län",
+          "longName" : "Västerbottens län"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BD" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Norrbotten County",
+          "longName" : "Norrbotten County"
+        },
+        "sv_SE" : {
+          "shortName" : "Norrbottens län",
+          "longName" : "Norrbottens län"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "C" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Uppsala County",
+          "longName" : "Uppsala County"
+        },
+        "sv_SE" : {
+          "shortName" : "Uppsala län",
+          "longName" : "Uppsala län"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "D" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Södermanlands län",
+          "longName" : "Södermanlands län"
+        },
+        "en_US" : {
+          "shortName" : "Södermanland County",
+          "longName" : "Södermanland County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "E" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Östergötlands län",
+          "longName" : "Östergötlands län"
+        },
+        "en_US" : {
+          "shortName" : "Östergötland County",
+          "longName" : "Östergötland County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "F" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Jönköpings län",
+          "longName" : "Jönköpings län"
+        },
+        "en_US" : {
+          "shortName" : "Jönköping County",
+          "longName" : "Jönköping County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "G" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Kronobergs län",
+          "longName" : "Kronobergs län"
+        },
+        "en_US" : {
+          "shortName" : "Kronoberg County",
+          "longName" : "Kronoberg County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "H" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Kalmar län",
+          "longName" : "Kalmar län"
+        },
+        "en_US" : {
+          "shortName" : "Kalmar County",
+          "longName" : "Kalmar County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "I" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Gotlands län",
+          "longName" : "Gotlands län"
+        },
+        "en_US" : {
+          "shortName" : "Gotland County",
+          "longName" : "Gotland County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "K" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Blekinge län",
+          "longName" : "Blekinge län"
+        },
+        "en_US" : {
+          "shortName" : "Blekinge County",
+          "longName" : "Blekinge County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "M" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Skåne län",
+          "longName" : "Skåne län"
+        },
+        "en_US" : {
+          "shortName" : "Skåne County",
+          "longName" : "Skåne County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "N" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Hallands län",
+          "longName" : "Hallands län"
+        },
+        "en_US" : {
+          "shortName" : "Halland County",
+          "longName" : "Halland County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "O" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Västra Götalands län",
+          "longName" : "Västra Götalands län"
+        },
+        "en_US" : {
+          "shortName" : "Västra Götaland County",
+          "longName" : "Västra Götaland County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "S" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Värmland County",
+          "longName" : "Värmland County"
+        },
+        "sv_SE" : {
+          "shortName" : "Värmlands län",
+          "longName" : "Värmlands län"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "T" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Örebro län",
+          "longName" : "Örebro län"
+        },
+        "en_US" : {
+          "shortName" : "Örebro County",
+          "longName" : "Örebro County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "U" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Västmanlands län",
+          "longName" : "Västmanlands län"
+        },
+        "en_US" : {
+          "shortName" : "Västmanland County",
+          "longName" : "Västmanland County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "W" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Dalarnas län",
+          "longName" : "Dalarnas län"
+        },
+        "en_US" : {
+          "shortName" : "Dalarna County",
+          "longName" : "Dalarna County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "X" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Gävleborgs län",
+          "longName" : "Gävleborgs län"
+        },
+        "en_US" : {
+          "shortName" : "Gävleborg County",
+          "longName" : "Gävleborg County"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Y" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Västernorrland ",
+          "longName" : "Västernorrland "
+        },
+        "sv_SE" : {
+          "shortName" : "Västernorrlands län",
+          "longName" : "Västernorrlands län"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "Z" : {
+      "locales" : {
+        "sv_SE" : {
+          "shortName" : "Jämtlands län",
+          "longName" : "Jämtlands län"
+        },
+        "en_US" : {
+          "shortName" : "Jämtland County",
+          "longName" : "Jämtland County"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/sv_SE",
+    "id" : "sv_SE"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Sweden",
+      "longName" : "Kingdom of Sweden",
+      "postalCode" : ""
+    },
+    "sv_SE" : {
+      "shortName" : "Sverige",
+      "longName" : "Konungariket Sverige",
+      "postalCode" : "postnummer"
+    },
+    "de_DE" : {
+      "shortName" : "Schweden",
+      "longName" : "Königreich Schweden",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Sweden",
+      "longName" : "Kingdom of Sweden",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Suecia",
+      "longName" : "Reino de Suecia",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Suède",
+      "longName" : "Royaume de Suède",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Svezia",
+      "longName" : "Regno di Svezia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "스웨덴",
+      "longName" : "Kingdom of Sweden",
+      "postalCode" : ""
+    }
+  }
 }

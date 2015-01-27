@@ -323,9 +323,10 @@ class HealthService {
             trySnifferGet = {
                 return pingCloudantRepo.get(ping.getId()).then { Ping ping2 ->
                     if (ping2 != null) {
-                        if (System.currentTimeMillis() - now > cloudantSnifferTimeout) {
+                        long elapsed = System.currentTimeMillis() - now
+                        if (elapsed > cloudantSnifferTimeout) {
                             result.put("result", "WARN");
-                            result.put("message", "Sniffer failed to delete entity from cache.");
+                            result.put("message", "Latency until Sniffer received DB change is now " + elapsed + "ms. Expected <= " + cloudantSnifferTimeout + "ms");
                             return Promise.pure();
                         }
                         return Promise.delayed(cloudantSnifferInterval, TimeUnit.MILLISECONDS).then(trySnifferGet)

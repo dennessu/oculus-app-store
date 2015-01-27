@@ -1,1009 +1,1117 @@
 {
-	"countryCode": "TR",
-	"defaultLocale": {
-		"href": "/v1/locales/tr_TR",
-		"id": "tr_TR"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/TRY",
-		"id": "TRY"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"01": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Adana",
-					"longName": "Adana"
-				},
-				"en_US": {
-					"shortName": "Adana",
-					"longName": "Adana"
-				}
-			}
-		},
-		"02": {
-			"locales": {
-				"en_US": {
-					"shortName": "Adıyaman",
-					"longName": "Adıyaman"
-				},
-				"tr_TR": {
-					"shortName": "Adıyaman",
-					"longName": "Adıyaman"
-				}
-			}
-		},
-		"03": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Afyonkarahisar",
-					"longName": "Afyonkarahisar"
-				},
-				"en_US": {
-					"shortName": "Afyonkarahisar",
-					"longName": "Afyonkarahisar"
-				}
-			}
-		},
-		"04": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ağrı",
-					"longName": "Ağrı"
-				},
-				"tr_TR": {
-					"shortName": "Ağrı",
-					"longName": "Ağrı"
-				}
-			}
-		},
-		"05": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Amasya",
-					"longName": "Amasya"
-				},
-				"en_US": {
-					"shortName": "Amasya",
-					"longName": "Amasya"
-				}
-			}
-		},
-		"06": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Ankara",
-					"longName": "Ankara"
-				},
-				"en_US": {
-					"shortName": "Ankara",
-					"longName": "Ankara"
-				}
-			}
-		},
-		"07": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Antalya",
-					"longName": "Antalya"
-				},
-				"en_US": {
-					"shortName": "Antalya",
-					"longName": "Antalya"
-				}
-			}
-		},
-		"08": {
-			"locales": {
-				"en_US": {
-					"shortName": "Artvin",
-					"longName": "Artvin"
-				},
-				"tr_TR": {
-					"shortName": "Artvin",
-					"longName": "Artvin"
-				}
-			}
-		},
-		"09": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Aydın",
-					"longName": "Aydın"
-				},
-				"en_US": {
-					"shortName": "Aydın",
-					"longName": "Aydın"
-				}
-			}
-		},
-		"10": {
-			"locales": {
-				"en_US": {
-					"shortName": "Balıkesir",
-					"longName": "Balıkesir"
-				},
-				"tr_TR": {
-					"shortName": "Balıkesir",
-					"longName": "Balıkesir"
-				}
-			}
-		},
-		"11": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bilecik",
-					"longName": "Bilecik"
-				},
-				"tr_TR": {
-					"shortName": "Bilecik",
-					"longName": "Bilecik"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Bingöl",
-					"longName": "Bingöl"
-				},
-				"en_US": {
-					"shortName": "Bingöl",
-					"longName": "Bingöl"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bitlis",
-					"longName": "Bitlis"
-				},
-				"tr_TR": {
-					"shortName": "Bitlis",
-					"longName": "Bitlis"
-				}
-			}
-		},
-		"14": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Bolu",
-					"longName": "Bolu"
-				},
-				"en_US": {
-					"shortName": "Bolu",
-					"longName": "Bolu"
-				}
-			}
-		},
-		"15": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Burdur",
-					"longName": "Burdur"
-				},
-				"en_US": {
-					"shortName": "Burdur",
-					"longName": "Burdur"
-				}
-			}
-		},
-		"16": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Bursa",
-					"longName": "Bursa"
-				},
-				"en_US": {
-					"shortName": "Bursa",
-					"longName": "Bursa"
-				}
-			}
-		},
-		"17": {
-			"locales": {
-				"en_US": {
-					"shortName": "Çanakkale",
-					"longName": "Çanakkale"
-				},
-				"tr_TR": {
-					"shortName": "Çanakkale",
-					"longName": "Çanakkale"
-				}
-			}
-		},
-		"18": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Çankırı",
-					"longName": "Çankırı"
-				},
-				"en_US": {
-					"shortName": "Çankırı",
-					"longName": "Çankırı"
-				}
-			}
-		},
-		"19": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Çorum",
-					"longName": "Çorum"
-				},
-				"en_US": {
-					"shortName": "Çorum",
-					"longName": "Çorum"
-				}
-			}
-		},
-		"20": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Denizli",
-					"longName": "Denizli"
-				},
-				"en_US": {
-					"shortName": "Denizli",
-					"longName": "Denizli"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Diyarbakır",
-					"longName": "Diyarbakır"
-				},
-				"en_US": {
-					"shortName": "Diyarbakır",
-					"longName": "Diyarbakır"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Edirne",
-					"longName": "Edirne"
-				},
-				"en_US": {
-					"shortName": "Edirne",
-					"longName": "Edirne"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Elazığ",
-					"longName": "Elazığ"
-				},
-				"en_US": {
-					"shortName": "Elazığ",
-					"longName": "Elazığ"
-				}
-			}
-		},
-		"24": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Erzincan",
-					"longName": "Erzincan"
-				},
-				"en_US": {
-					"shortName": "Erzincan",
-					"longName": "Erzincan"
-				}
-			}
-		},
-		"25": {
-			"locales": {
-				"en_US": {
-					"shortName": "Erzurum",
-					"longName": "Erzurum"
-				},
-				"tr_TR": {
-					"shortName": "Erzurum",
-					"longName": "Erzurum"
-				}
-			}
-		},
-		"26": {
-			"locales": {
-				"en_US": {
-					"shortName": "Eskişehir",
-					"longName": "Eskişehir"
-				},
-				"tr_TR": {
-					"shortName": "Eskişehir",
-					"longName": "Eskişehir"
-				}
-			}
-		},
-		"27": {
-			"locales": {
-				"en_US": {
-					"shortName": "Gaziantep",
-					"longName": "Gaziantep"
-				},
-				"tr_TR": {
-					"shortName": "Gaziantep",
-					"longName": "Gaziantep"
-				}
-			}
-		},
-		"28": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Giresun",
-					"longName": "Giresun"
-				},
-				"en_US": {
-					"shortName": "Giresun",
-					"longName": "Giresun"
-				}
-			}
-		},
-		"29": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Gümüşhane",
-					"longName": "Gümüşhane"
-				},
-				"en_US": {
-					"shortName": "Gümüşhane",
-					"longName": "Gümüşhane"
-				}
-			}
-		},
-		"30": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hakkâri",
-					"longName": "Hakkâri"
-				},
-				"tr_TR": {
-					"shortName": "Hakkâri",
-					"longName": "Hakkâri"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hatay",
-					"longName": "Hatay"
-				},
-				"tr_TR": {
-					"shortName": "Hatay",
-					"longName": "Hatay"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"en_US": {
-					"shortName": "Isparta",
-					"longName": "Isparta"
-				},
-				"tr_TR": {
-					"shortName": "Isparta",
-					"longName": "Isparta"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Mersin",
-					"longName": "Mersin"
-				},
-				"en_US": {
-					"shortName": "Mersin",
-					"longName": "Mersin"
-				}
-			}
-		},
-		"34": {
-			"locales": {
-				"en_US": {
-					"shortName": "İstanbul",
-					"longName": "İstanbul"
-				},
-				"tr_TR": {
-					"shortName": "İstanbul",
-					"longName": "İstanbul"
-				}
-			}
-		},
-		"35": {
-			"locales": {
-				"en_US": {
-					"shortName": "İzmir",
-					"longName": "İzmir"
-				},
-				"tr_TR": {
-					"shortName": "İzmir",
-					"longName": "İzmir"
-				}
-			}
-		},
-		"36": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Kars",
-					"longName": "Kars"
-				},
-				"en_US": {
-					"shortName": "Kars",
-					"longName": "Kars"
-				}
-			}
-		},
-		"37": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Kastamonu",
-					"longName": "Kastamonu"
-				},
-				"en_US": {
-					"shortName": "Kastamonu",
-					"longName": "Kastamonu"
-				}
-			}
-		},
-		"38": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Kayseri",
-					"longName": "Kayseri"
-				},
-				"en_US": {
-					"shortName": "Kayseri",
-					"longName": "Kayseri"
-				}
-			}
-		},
-		"39": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kırklareli",
-					"longName": "Kırklareli"
-				},
-				"tr_TR": {
-					"shortName": "Kırklareli",
-					"longName": "Kırklareli"
-				}
-			}
-		},
-		"40": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kırşehir",
-					"longName": "Kırşehir"
-				},
-				"tr_TR": {
-					"shortName": "Kırşehir",
-					"longName": "Kırşehir"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kocaeli",
-					"longName": "Kocaeli"
-				},
-				"tr_TR": {
-					"shortName": "Kocaeli",
-					"longName": "Kocaeli"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Konya",
-					"longName": "Konya"
-				},
-				"en_US": {
-					"shortName": "Konya",
-					"longName": "Konya"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kütahya",
-					"longName": "Kütahya"
-				},
-				"tr_TR": {
-					"shortName": "Kütahya",
-					"longName": "Kütahya"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"en_US": {
-					"shortName": "Malatya",
-					"longName": "Malatya"
-				},
-				"tr_TR": {
-					"shortName": "Malatya",
-					"longName": "Malatya"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Manisa",
-					"longName": "Manisa"
-				},
-				"en_US": {
-					"shortName": "Manisa",
-					"longName": "Manisa"
-				}
-			}
-		},
-		"46": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kahramanmaraş",
-					"longName": "Kahramanmaraş"
-				},
-				"tr_TR": {
-					"shortName": "Kahramanmaraş",
-					"longName": "Kahramanmaraş"
-				}
-			}
-		},
-		"47": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mardin",
-					"longName": "Mardin"
-				},
-				"tr_TR": {
-					"shortName": "Mardin",
-					"longName": "Mardin"
-				}
-			}
-		},
-		"48": {
-			"locales": {
-				"en_US": {
-					"shortName": "Muğla",
-					"longName": "Muğla"
-				},
-				"tr_TR": {
-					"shortName": "Muğla",
-					"longName": "Muğla"
-				}
-			}
-		},
-		"49": {
-			"locales": {
-				"en_US": {
-					"shortName": "Muş",
-					"longName": "Muş"
-				},
-				"tr_TR": {
-					"shortName": "Muş",
-					"longName": "Muş"
-				}
-			}
-		},
-		"50": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Nevşehir",
-					"longName": "Nevşehir"
-				},
-				"en_US": {
-					"shortName": "Nevşehir",
-					"longName": "Nevşehir"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Niğde",
-					"longName": "Niğde"
-				},
-				"en_US": {
-					"shortName": "Niğde",
-					"longName": "Niğde"
-				}
-			}
-		},
-		"52": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Ordu",
-					"longName": "Ordu"
-				},
-				"en_US": {
-					"shortName": "Ordu",
-					"longName": "Ordu"
-				}
-			}
-		},
-		"53": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Rize",
-					"longName": "Rize"
-				},
-				"en_US": {
-					"shortName": "Rize",
-					"longName": "Rize"
-				}
-			}
-		},
-		"54": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Sakarya",
-					"longName": "Sakarya"
-				},
-				"en_US": {
-					"shortName": "Sakarya",
-					"longName": "Sakarya"
-				}
-			}
-		},
-		"55": {
-			"locales": {
-				"en_US": {
-					"shortName": "Samsun",
-					"longName": "Samsun"
-				},
-				"tr_TR": {
-					"shortName": "Samsun",
-					"longName": "Samsun"
-				}
-			}
-		},
-		"56": {
-			"locales": {
-				"en_US": {
-					"shortName": "Siirt",
-					"longName": "Siirt"
-				},
-				"tr_TR": {
-					"shortName": "Siirt",
-					"longName": "Siirt"
-				}
-			}
-		},
-		"57": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Sinop",
-					"longName": "Sinop"
-				},
-				"en_US": {
-					"shortName": "Sinop",
-					"longName": "Sinop"
-				}
-			}
-		},
-		"58": {
-			"locales": {
-				"en_US": {
-					"shortName": "Sivas",
-					"longName": "Sivas"
-				},
-				"tr_TR": {
-					"shortName": "Sivas",
-					"longName": "Sivas"
-				}
-			}
-		},
-		"59": {
-			"locales": {
-				"en_US": {
-					"shortName": "Tekirdağ",
-					"longName": "Tekirdağ"
-				},
-				"tr_TR": {
-					"shortName": "Tekirdağ",
-					"longName": "Tekirdağ"
-				}
-			}
-		},
-		"60": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Tokat",
-					"longName": "Tokat"
-				},
-				"en_US": {
-					"shortName": "Tokat",
-					"longName": "Tokat"
-				}
-			}
-		},
-		"61": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Trabzon",
-					"longName": "Trabzon"
-				},
-				"en_US": {
-					"shortName": "Trabzon",
-					"longName": "Trabzon"
-				}
-			}
-		},
-		"62": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Tunceli",
-					"longName": "Tunceli"
-				},
-				"en_US": {
-					"shortName": "Tunceli",
-					"longName": "Tunceli"
-				}
-			}
-		},
-		"63": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Şanlıurfa",
-					"longName": "Şanlıurfa"
-				},
-				"en_US": {
-					"shortName": "Şanlıurfa",
-					"longName": "Şanlıurfa"
-				}
-			}
-		},
-		"64": {
-			"locales": {
-				"en_US": {
-					"shortName": "Uşak",
-					"longName": "Uşak"
-				},
-				"tr_TR": {
-					"shortName": "Uşak",
-					"longName": "Uşak"
-				}
-			}
-		},
-		"65": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Van",
-					"longName": "Van"
-				},
-				"en_US": {
-					"shortName": "Van",
-					"longName": "Van"
-				}
-			}
-		},
-		"66": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yozgat",
-					"longName": "Yozgat"
-				},
-				"tr_TR": {
-					"shortName": "Yozgat",
-					"longName": "Yozgat"
-				}
-			}
-		},
-		"67": {
-			"locales": {
-				"en_US": {
-					"shortName": "Zonguldak",
-					"longName": "Zonguldak"
-				},
-				"tr_TR": {
-					"shortName": "Zonguldak",
-					"longName": "Zonguldak"
-				}
-			}
-		},
-		"68": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Aksaray",
-					"longName": "Aksaray"
-				},
-				"en_US": {
-					"shortName": "Aksaray",
-					"longName": "Aksaray"
-				}
-			}
-		},
-		"69": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Bayburt",
-					"longName": "Bayburt"
-				},
-				"en_US": {
-					"shortName": "Bayburt",
-					"longName": "Bayburt"
-				}
-			}
-		},
-		"70": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karaman",
-					"longName": "Karaman"
-				},
-				"tr_TR": {
-					"shortName": "Karaman",
-					"longName": "Karaman"
-				}
-			}
-		},
-		"71": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kırıkkale",
-					"longName": "Kırıkkale"
-				},
-				"tr_TR": {
-					"shortName": "Kırıkkale",
-					"longName": "Kırıkkale"
-				}
-			}
-		},
-		"72": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Batman",
-					"longName": "Batman"
-				},
-				"en_US": {
-					"shortName": "Batman",
-					"longName": "Batman"
-				}
-			}
-		},
-		"73": {
-			"locales": {
-				"en_US": {
-					"shortName": "Şırnak",
-					"longName": "Şırnak"
-				},
-				"tr_TR": {
-					"shortName": "Şırnak",
-					"longName": "Şırnak"
-				}
-			}
-		},
-		"74": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Bartın",
-					"longName": "Bartın"
-				},
-				"en_US": {
-					"shortName": "Bartın",
-					"longName": "Bartın"
-				}
-			}
-		},
-		"75": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Ardahan",
-					"longName": "Ardahan"
-				},
-				"en_US": {
-					"shortName": "Ardahan",
-					"longName": "Ardahan"
-				}
-			}
-		},
-		"76": {
-			"locales": {
-				"en_US": {
-					"shortName": "Iğdır",
-					"longName": "Iğdır"
-				},
-				"tr_TR": {
-					"shortName": "Iğdır",
-					"longName": "Iğdır"
-				}
-			}
-		},
-		"77": {
-			"locales": {
-				"en_US": {
-					"shortName": "Yalova",
-					"longName": "Yalova"
-				},
-				"tr_TR": {
-					"shortName": "Yalova",
-					"longName": "Yalova"
-				}
-			}
-		},
-		"78": {
-			"locales": {
-				"en_US": {
-					"shortName": "Karabük",
-					"longName": "Karabük"
-				},
-				"tr_TR": {
-					"shortName": "Karabük",
-					"longName": "Karabük"
-				}
-			}
-		},
-		"79": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kilis",
-					"longName": "Kilis"
-				},
-				"tr_TR": {
-					"shortName": "Kilis",
-					"longName": "Kilis"
-				}
-			}
-		},
-		"80": {
-			"locales": {
-				"en_US": {
-					"shortName": "Osmaniye",
-					"longName": "Osmaniye"
-				},
-				"tr_TR": {
-					"shortName": "Osmaniye",
-					"longName": "Osmaniye"
-				}
-			}
-		},
-		"81": {
-			"locales": {
-				"tr_TR": {
-					"shortName": "Düzce",
-					"longName": "Düzce"
-				},
-				"en_US": {
-					"shortName": "Düzce",
-					"longName": "Düzce"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/tr_TR",
-		"id": "tr_TR"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Turkey",
-			"longName": "Republic of Turkey",
-			"postalCode": "Postal Code"
-		},
-		"tr_TR": {
-			"shortName": "Türkiye",
-			"longName": "Türkiye Cumhuriyeti",
-			"postalCode": "Posta Kodu"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TR",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/tr_TR",
+    "id" : "tr_TR"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/TRY",
+    "id" : "TRY"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "01" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Adana",
+          "longName" : "Adana"
+        },
+        "en_US" : {
+          "shortName" : "Adana",
+          "longName" : "Adana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "02" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Adıyaman",
+          "longName" : "Adıyaman"
+        },
+        "tr_TR" : {
+          "shortName" : "Adıyaman",
+          "longName" : "Adıyaman"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "03" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Afyonkarahisar",
+          "longName" : "Afyonkarahisar"
+        },
+        "en_US" : {
+          "shortName" : "Afyonkarahisar",
+          "longName" : "Afyonkarahisar"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "04" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ağrı",
+          "longName" : "Ağrı"
+        },
+        "tr_TR" : {
+          "shortName" : "Ağrı",
+          "longName" : "Ağrı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "05" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Amasya",
+          "longName" : "Amasya"
+        },
+        "en_US" : {
+          "shortName" : "Amasya",
+          "longName" : "Amasya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "06" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Ankara",
+          "longName" : "Ankara"
+        },
+        "en_US" : {
+          "shortName" : "Ankara",
+          "longName" : "Ankara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "07" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Antalya",
+          "longName" : "Antalya"
+        },
+        "en_US" : {
+          "shortName" : "Antalya",
+          "longName" : "Antalya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "08" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Artvin",
+          "longName" : "Artvin"
+        },
+        "tr_TR" : {
+          "shortName" : "Artvin",
+          "longName" : "Artvin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "09" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Aydın",
+          "longName" : "Aydın"
+        },
+        "en_US" : {
+          "shortName" : "Aydın",
+          "longName" : "Aydın"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "10" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Balıkesir",
+          "longName" : "Balıkesir"
+        },
+        "tr_TR" : {
+          "shortName" : "Balıkesir",
+          "longName" : "Balıkesir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "11" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bilecik",
+          "longName" : "Bilecik"
+        },
+        "tr_TR" : {
+          "shortName" : "Bilecik",
+          "longName" : "Bilecik"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Bingöl",
+          "longName" : "Bingöl"
+        },
+        "en_US" : {
+          "shortName" : "Bingöl",
+          "longName" : "Bingöl"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bitlis",
+          "longName" : "Bitlis"
+        },
+        "tr_TR" : {
+          "shortName" : "Bitlis",
+          "longName" : "Bitlis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "14" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Bolu",
+          "longName" : "Bolu"
+        },
+        "en_US" : {
+          "shortName" : "Bolu",
+          "longName" : "Bolu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "15" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Burdur",
+          "longName" : "Burdur"
+        },
+        "en_US" : {
+          "shortName" : "Burdur",
+          "longName" : "Burdur"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "16" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Bursa",
+          "longName" : "Bursa"
+        },
+        "en_US" : {
+          "shortName" : "Bursa",
+          "longName" : "Bursa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "17" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Çanakkale",
+          "longName" : "Çanakkale"
+        },
+        "tr_TR" : {
+          "shortName" : "Çanakkale",
+          "longName" : "Çanakkale"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "18" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Çankırı",
+          "longName" : "Çankırı"
+        },
+        "en_US" : {
+          "shortName" : "Çankırı",
+          "longName" : "Çankırı"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "19" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Çorum",
+          "longName" : "Çorum"
+        },
+        "en_US" : {
+          "shortName" : "Çorum",
+          "longName" : "Çorum"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "20" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Denizli",
+          "longName" : "Denizli"
+        },
+        "en_US" : {
+          "shortName" : "Denizli",
+          "longName" : "Denizli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Diyarbakır",
+          "longName" : "Diyarbakır"
+        },
+        "en_US" : {
+          "shortName" : "Diyarbakır",
+          "longName" : "Diyarbakır"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Edirne",
+          "longName" : "Edirne"
+        },
+        "en_US" : {
+          "shortName" : "Edirne",
+          "longName" : "Edirne"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Elazığ",
+          "longName" : "Elazığ"
+        },
+        "en_US" : {
+          "shortName" : "Elazığ",
+          "longName" : "Elazığ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "24" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Erzincan",
+          "longName" : "Erzincan"
+        },
+        "en_US" : {
+          "shortName" : "Erzincan",
+          "longName" : "Erzincan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "25" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Erzurum",
+          "longName" : "Erzurum"
+        },
+        "tr_TR" : {
+          "shortName" : "Erzurum",
+          "longName" : "Erzurum"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "26" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Eskişehir",
+          "longName" : "Eskişehir"
+        },
+        "tr_TR" : {
+          "shortName" : "Eskişehir",
+          "longName" : "Eskişehir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "27" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Gaziantep",
+          "longName" : "Gaziantep"
+        },
+        "tr_TR" : {
+          "shortName" : "Gaziantep",
+          "longName" : "Gaziantep"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "28" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Giresun",
+          "longName" : "Giresun"
+        },
+        "en_US" : {
+          "shortName" : "Giresun",
+          "longName" : "Giresun"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "29" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Gümüşhane",
+          "longName" : "Gümüşhane"
+        },
+        "en_US" : {
+          "shortName" : "Gümüşhane",
+          "longName" : "Gümüşhane"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "30" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hakkâri",
+          "longName" : "Hakkâri"
+        },
+        "tr_TR" : {
+          "shortName" : "Hakkâri",
+          "longName" : "Hakkâri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hatay",
+          "longName" : "Hatay"
+        },
+        "tr_TR" : {
+          "shortName" : "Hatay",
+          "longName" : "Hatay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Isparta",
+          "longName" : "Isparta"
+        },
+        "tr_TR" : {
+          "shortName" : "Isparta",
+          "longName" : "Isparta"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Mersin",
+          "longName" : "Mersin"
+        },
+        "en_US" : {
+          "shortName" : "Mersin",
+          "longName" : "Mersin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "34" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "İstanbul",
+          "longName" : "İstanbul"
+        },
+        "tr_TR" : {
+          "shortName" : "İstanbul",
+          "longName" : "İstanbul"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "35" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "İzmir",
+          "longName" : "İzmir"
+        },
+        "tr_TR" : {
+          "shortName" : "İzmir",
+          "longName" : "İzmir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "36" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Kars",
+          "longName" : "Kars"
+        },
+        "en_US" : {
+          "shortName" : "Kars",
+          "longName" : "Kars"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "37" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Kastamonu",
+          "longName" : "Kastamonu"
+        },
+        "en_US" : {
+          "shortName" : "Kastamonu",
+          "longName" : "Kastamonu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "38" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Kayseri",
+          "longName" : "Kayseri"
+        },
+        "en_US" : {
+          "shortName" : "Kayseri",
+          "longName" : "Kayseri"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "39" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kırklareli",
+          "longName" : "Kırklareli"
+        },
+        "tr_TR" : {
+          "shortName" : "Kırklareli",
+          "longName" : "Kırklareli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "40" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kırşehir",
+          "longName" : "Kırşehir"
+        },
+        "tr_TR" : {
+          "shortName" : "Kırşehir",
+          "longName" : "Kırşehir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kocaeli",
+          "longName" : "Kocaeli"
+        },
+        "tr_TR" : {
+          "shortName" : "Kocaeli",
+          "longName" : "Kocaeli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Konya",
+          "longName" : "Konya"
+        },
+        "en_US" : {
+          "shortName" : "Konya",
+          "longName" : "Konya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kütahya",
+          "longName" : "Kütahya"
+        },
+        "tr_TR" : {
+          "shortName" : "Kütahya",
+          "longName" : "Kütahya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Malatya",
+          "longName" : "Malatya"
+        },
+        "tr_TR" : {
+          "shortName" : "Malatya",
+          "longName" : "Malatya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Manisa",
+          "longName" : "Manisa"
+        },
+        "en_US" : {
+          "shortName" : "Manisa",
+          "longName" : "Manisa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "46" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kahramanmaraş",
+          "longName" : "Kahramanmaraş"
+        },
+        "tr_TR" : {
+          "shortName" : "Kahramanmaraş",
+          "longName" : "Kahramanmaraş"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "47" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mardin",
+          "longName" : "Mardin"
+        },
+        "tr_TR" : {
+          "shortName" : "Mardin",
+          "longName" : "Mardin"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "48" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Muğla",
+          "longName" : "Muğla"
+        },
+        "tr_TR" : {
+          "shortName" : "Muğla",
+          "longName" : "Muğla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "49" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Muş",
+          "longName" : "Muş"
+        },
+        "tr_TR" : {
+          "shortName" : "Muş",
+          "longName" : "Muş"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "50" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Nevşehir",
+          "longName" : "Nevşehir"
+        },
+        "en_US" : {
+          "shortName" : "Nevşehir",
+          "longName" : "Nevşehir"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Niğde",
+          "longName" : "Niğde"
+        },
+        "en_US" : {
+          "shortName" : "Niğde",
+          "longName" : "Niğde"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "52" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Ordu",
+          "longName" : "Ordu"
+        },
+        "en_US" : {
+          "shortName" : "Ordu",
+          "longName" : "Ordu"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "53" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Rize",
+          "longName" : "Rize"
+        },
+        "en_US" : {
+          "shortName" : "Rize",
+          "longName" : "Rize"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "54" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Sakarya",
+          "longName" : "Sakarya"
+        },
+        "en_US" : {
+          "shortName" : "Sakarya",
+          "longName" : "Sakarya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "55" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Samsun",
+          "longName" : "Samsun"
+        },
+        "tr_TR" : {
+          "shortName" : "Samsun",
+          "longName" : "Samsun"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "56" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Siirt",
+          "longName" : "Siirt"
+        },
+        "tr_TR" : {
+          "shortName" : "Siirt",
+          "longName" : "Siirt"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "57" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Sinop",
+          "longName" : "Sinop"
+        },
+        "en_US" : {
+          "shortName" : "Sinop",
+          "longName" : "Sinop"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "58" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Sivas",
+          "longName" : "Sivas"
+        },
+        "tr_TR" : {
+          "shortName" : "Sivas",
+          "longName" : "Sivas"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "59" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Tekirdağ",
+          "longName" : "Tekirdağ"
+        },
+        "tr_TR" : {
+          "shortName" : "Tekirdağ",
+          "longName" : "Tekirdağ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "60" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Tokat",
+          "longName" : "Tokat"
+        },
+        "en_US" : {
+          "shortName" : "Tokat",
+          "longName" : "Tokat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "61" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Trabzon",
+          "longName" : "Trabzon"
+        },
+        "en_US" : {
+          "shortName" : "Trabzon",
+          "longName" : "Trabzon"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "62" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Tunceli",
+          "longName" : "Tunceli"
+        },
+        "en_US" : {
+          "shortName" : "Tunceli",
+          "longName" : "Tunceli"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "63" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Şanlıurfa",
+          "longName" : "Şanlıurfa"
+        },
+        "en_US" : {
+          "shortName" : "Şanlıurfa",
+          "longName" : "Şanlıurfa"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "64" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Uşak",
+          "longName" : "Uşak"
+        },
+        "tr_TR" : {
+          "shortName" : "Uşak",
+          "longName" : "Uşak"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "65" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Van",
+          "longName" : "Van"
+        },
+        "en_US" : {
+          "shortName" : "Van",
+          "longName" : "Van"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "66" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yozgat",
+          "longName" : "Yozgat"
+        },
+        "tr_TR" : {
+          "shortName" : "Yozgat",
+          "longName" : "Yozgat"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "67" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Zonguldak",
+          "longName" : "Zonguldak"
+        },
+        "tr_TR" : {
+          "shortName" : "Zonguldak",
+          "longName" : "Zonguldak"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "68" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Aksaray",
+          "longName" : "Aksaray"
+        },
+        "en_US" : {
+          "shortName" : "Aksaray",
+          "longName" : "Aksaray"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "69" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Bayburt",
+          "longName" : "Bayburt"
+        },
+        "en_US" : {
+          "shortName" : "Bayburt",
+          "longName" : "Bayburt"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "70" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karaman",
+          "longName" : "Karaman"
+        },
+        "tr_TR" : {
+          "shortName" : "Karaman",
+          "longName" : "Karaman"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "71" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kırıkkale",
+          "longName" : "Kırıkkale"
+        },
+        "tr_TR" : {
+          "shortName" : "Kırıkkale",
+          "longName" : "Kırıkkale"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "72" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Batman",
+          "longName" : "Batman"
+        },
+        "en_US" : {
+          "shortName" : "Batman",
+          "longName" : "Batman"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "73" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Şırnak",
+          "longName" : "Şırnak"
+        },
+        "tr_TR" : {
+          "shortName" : "Şırnak",
+          "longName" : "Şırnak"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "74" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Bartın",
+          "longName" : "Bartın"
+        },
+        "en_US" : {
+          "shortName" : "Bartın",
+          "longName" : "Bartın"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "75" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Ardahan",
+          "longName" : "Ardahan"
+        },
+        "en_US" : {
+          "shortName" : "Ardahan",
+          "longName" : "Ardahan"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "76" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Iğdır",
+          "longName" : "Iğdır"
+        },
+        "tr_TR" : {
+          "shortName" : "Iğdır",
+          "longName" : "Iğdır"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "77" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Yalova",
+          "longName" : "Yalova"
+        },
+        "tr_TR" : {
+          "shortName" : "Yalova",
+          "longName" : "Yalova"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "78" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Karabük",
+          "longName" : "Karabük"
+        },
+        "tr_TR" : {
+          "shortName" : "Karabük",
+          "longName" : "Karabük"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "79" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kilis",
+          "longName" : "Kilis"
+        },
+        "tr_TR" : {
+          "shortName" : "Kilis",
+          "longName" : "Kilis"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "80" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Osmaniye",
+          "longName" : "Osmaniye"
+        },
+        "tr_TR" : {
+          "shortName" : "Osmaniye",
+          "longName" : "Osmaniye"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "81" : {
+      "locales" : {
+        "tr_TR" : {
+          "shortName" : "Düzce",
+          "longName" : "Düzce"
+        },
+        "en_US" : {
+          "shortName" : "Düzce",
+          "longName" : "Düzce"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/tr_TR",
+    "id" : "tr_TR"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Turkey",
+      "longName" : "Republic of Turkey",
+      "postalCode" : ""
+    },
+    "tr_TR" : {
+      "shortName" : "Türkiye",
+      "longName" : "Türkiye Cumhuriyeti",
+      "postalCode" : "Posta Kodu"
+    },
+    "de_DE" : {
+      "shortName" : "Türkei",
+      "longName" : "Republic of Turkey",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Turkey",
+      "longName" : "Republic of Turkey",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Turquía",
+      "longName" : "República de Turquía",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Turquie",
+      "longName" : "République de Turquie",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Turchia",
+      "longName" : "Repubblica di Turchia",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "터키",
+      "longName" : "Republic of Turkey",
+      "postalCode" : ""
+    }
+  }
 }

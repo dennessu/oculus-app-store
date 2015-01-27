@@ -1,29 +1,55 @@
 {
-	"countryCode": "TK",
-	"defaultLocale": {
-		"href": "/v1/locales/en_TK",
-		"id": "en_TK"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/NZD",
-		"id": "NZD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_TK",
-		"id": "en_TK"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Tokelau",
-			"longName": "Tokelau",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TK",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_TK",
+    "id" : "en_TK"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/NZD",
+    "id" : "NZD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_TK",
+    "id" : "en_TK"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Tokelau",
+      "longName" : "Tokelau",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Tokelau",
+      "longName" : "Tokelau",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Tokelau",
+      "longName" : "Tokelau",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Tokelau",
+      "longName" : "Tokelau",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Tokelau",
+      "longName" : "Tokelau",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Tokelau",
+      "longName" : "Tokelau",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "토켈라우",
+      "longName" : "토켈라우",
+      "postalCode" : ""
+    }
+  }
 }

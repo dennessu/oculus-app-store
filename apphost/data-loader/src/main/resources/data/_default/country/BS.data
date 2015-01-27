@@ -1,276 +1,335 @@
 {
-	"countryCode": "BS",
-	"defaultLocale": {
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/BSD",
-		"id": "BSD"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"AK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Acklins",
-					"longName": "Acklins"
-				}
-			}
-		},
-		"BI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Bimini",
-					"longName": "Bimini"
-				}
-			}
-		},
-		"BP": {
-			"locales": {
-				"en_US": {
-					"shortName": "Black Point",
-					"longName": "Black Point"
-				}
-			}
-		},
-		"BY": {
-			"locales": {
-				"en_US": {
-					"shortName": "Berry Islands",
-					"longName": "Berry Islands"
-				}
-			}
-		},
-		"CE": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central Eleuthera",
-					"longName": "Central Eleuthera"
-				}
-			}
-		},
-		"CI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Cat Island",
-					"longName": "Cat Island"
-				}
-			}
-		},
-		"CK": {
-			"locales": {
-				"en_US": {
-					"shortName": "Crooked Island and Long Cay",
-					"longName": "Crooked Island and Long Cay"
-				}
-			}
-		},
-		"CO": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central Abaco",
-					"longName": "Central Abaco"
-				}
-			}
-		},
-		"CS": {
-			"locales": {
-				"en_US": {
-					"shortName": "Central Andros",
-					"longName": "Central Andros"
-				}
-			}
-		},
-		"EG": {
-			"locales": {
-				"en_US": {
-					"shortName": "East Grand Bahama",
-					"longName": "East Grand Bahama"
-				}
-			}
-		},
-		"EX": {
-			"locales": {
-				"en_US": {
-					"shortName": "Exuma",
-					"longName": "Exuma"
-				}
-			}
-		},
-		"FP": {
-			"locales": {
-				"en_US": {
-					"shortName": "City of Freeport",
-					"longName": "City of Freeport"
-				}
-			}
-		},
-		"GC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Grand Cay",
-					"longName": "Grand Cay"
-				}
-			}
-		},
-		"HI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Harbour Island",
-					"longName": "Harbour Island"
-				}
-			}
-		},
-		"HT": {
-			"locales": {
-				"en_US": {
-					"shortName": "Hope Town",
-					"longName": "Hope Town"
-				}
-			}
-		},
-		"IN": {
-			"locales": {
-				"en_US": {
-					"shortName": "Inagua",
-					"longName": "Inagua"
-				}
-			}
-		},
-		"LI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Long Island",
-					"longName": "Long Island"
-				}
-			}
-		},
-		"MC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mangrove Cay",
-					"longName": "Mangrove Cay"
-				}
-			}
-		},
-		"MG": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mayaguana",
-					"longName": "Mayaguana"
-				}
-			}
-		},
-		"MI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moores Island",
-					"longName": "Moores Island"
-				}
-			}
-		},
-		"NE": {
-			"locales": {
-				"en_US": {
-					"shortName": "North Eleuthera",
-					"longName": "North Eleuthera"
-				}
-			}
-		},
-		"NO": {
-			"locales": {
-				"en_US": {
-					"shortName": "North Abaco",
-					"longName": "North Abaco"
-				}
-			}
-		},
-		"NS": {
-			"locales": {
-				"en_US": {
-					"shortName": "North Andros",
-					"longName": "North Andros"
-				}
-			}
-		},
-		"RC": {
-			"locales": {
-				"en_US": {
-					"shortName": "Rum Cay",
-					"longName": "Rum Cay"
-				}
-			}
-		},
-		"RI": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ragged Island",
-					"longName": "Ragged Island"
-				}
-			}
-		},
-		"SA": {
-			"locales": {
-				"en_US": {
-					"shortName": "South Andros",
-					"longName": "South Andros"
-				}
-			}
-		},
-		"SE": {
-			"locales": {
-				"en_US": {
-					"shortName": "South Eleuthera",
-					"longName": "South Eleuthera"
-				}
-			}
-		},
-		"SO": {
-			"locales": {
-				"en_US": {
-					"shortName": "South Abaco",
-					"longName": "South Abaco"
-				}
-			}
-		},
-		"SS": {
-			"locales": {
-				"en_US": {
-					"shortName": "San Salvador",
-					"longName": "San Salvador"
-				}
-			}
-		},
-		"SW": {
-			"locales": {
-				"en_US": {
-					"shortName": "Spanish Wells",
-					"longName": "Spanish Wells"
-				}
-			}
-		},
-		"WG": {
-			"locales": {
-				"en_US": {
-					"shortName": "West Grand Bahama",
-					"longName": "West Grand Bahama"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "The Bahamas",
-			"longName": "Commonwealth of the Bahamas",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "BS",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/BSD",
+    "id" : "BSD"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "AK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Acklins",
+          "longName" : "Acklins"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Bimini",
+          "longName" : "Bimini"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Black Point",
+          "longName" : "Black Point"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "BY" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Berry Islands",
+          "longName" : "Berry Islands"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central Eleuthera",
+          "longName" : "Central Eleuthera"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Cat Island",
+          "longName" : "Cat Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CK" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Crooked Island and Long Cay",
+          "longName" : "Crooked Island and Long Cay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central Abaco",
+          "longName" : "Central Abaco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "CS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Central Andros",
+          "longName" : "Central Andros"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "East Grand Bahama",
+          "longName" : "East Grand Bahama"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "EX" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Exuma",
+          "longName" : "Exuma"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "FP" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "City of Freeport",
+          "longName" : "City of Freeport"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "GC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Grand Cay",
+          "longName" : "Grand Cay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Harbour Island",
+          "longName" : "Harbour Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "HT" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Hope Town",
+          "longName" : "Hope Town"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "IN" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Inagua",
+          "longName" : "Inagua"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "LI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Long Island",
+          "longName" : "Long Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mangrove Cay",
+          "longName" : "Mangrove Cay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mayaguana",
+          "longName" : "Mayaguana"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "MI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moores Island",
+          "longName" : "Moores Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North Eleuthera",
+          "longName" : "North Eleuthera"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North Abaco",
+          "longName" : "North Abaco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "NS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "North Andros",
+          "longName" : "North Andros"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RC" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Rum Cay",
+          "longName" : "Rum Cay"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "RI" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ragged Island",
+          "longName" : "Ragged Island"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SA" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South Andros",
+          "longName" : "South Andros"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SE" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South Eleuthera",
+          "longName" : "South Eleuthera"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SO" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "South Abaco",
+          "longName" : "South Abaco"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SS" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "San Salvador",
+          "longName" : "San Salvador"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SW" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Spanish Wells",
+          "longName" : "Spanish Wells"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "WG" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "West Grand Bahama",
+          "longName" : "West Grand Bahama"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "The Bahamas",
+      "longName" : "Commonwealth of the Bahamas",
+      "postalCode" : ""
+    },
+    "de_DE" : {
+      "shortName" : "Die Bahamas",
+      "longName" : "Commonwealth of the Bahamas",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "The Bahamas",
+      "longName" : "Commonwealth of the Bahamas",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Bahamas",
+      "longName" : "Commonwealth de las Bahamas",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Bahamas",
+      "longName" : "Commonwealth des Bahamas",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Bahamas",
+      "longName" : "Commonwealth delle Bahamas",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "바하마",
+      "longName" : "Commonwealth of the Bahamas",
+      "postalCode" : ""
+    }
+  }
 }

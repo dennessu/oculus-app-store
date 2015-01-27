@@ -1,41 +1,66 @@
 {
-	"countryCode": "CC",
-	"defaultLocale": {
-		"href": "/v1/locales/en_AU",
-		"id": "en_AU"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/AUD",
-		"id": "AUD"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/COB",
-		"id": "COB"
-	}],
-	"subCountries": {
-		
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/en_AU",
-		"id": "en_AU"
-	},
-	{
-		"href": "/v1/locales/en_US",
-		"id": "en_US"
-	}],
-	"locales": {
-		"en_US": {
-			"shortName": "Cocos (Keeling) Islands",
-			"longName": "Territory of the Cocos (Keeling) Islands",
-			"postalCode": "Postal Code"
-		},
-		"en_AU": {
-			"shortName": "Cocos (Keeling) Islands",
-			"longName": "Territory of the Cocos (Keeling) Islands",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "CC",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/en_AU",
+    "id" : "en_AU"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/AUD",
+    "id" : "AUD"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/COB",
+    "id" : "COB"
+  } ],
+  "subCountries" : { },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/en_AU",
+    "id" : "en_AU"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Cocos (Keeling) Islands",
+      "longName" : "Territory of the Cocos (Keeling) Islands",
+      "postalCode" : ""
+    },
+    "en_AU" : {
+      "shortName" : "Cocos (Keeling) Islands",
+      "longName" : "Territory of the Cocos (Keeling) Islands",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Kokosinseln",
+      "longName" : "Territory of the Cocos (Keeling) Islands",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Cocos (Keeling) Islands",
+      "longName" : "Territory of the Cocos (Keeling) Islands",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Islas Cocos (Keeling)",
+      "longName" : "Territorio de las Islas Cocos",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Îles Cocos (Keeling)",
+      "longName" : "Territoire des îles Cocos (Keeling)",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Isole Cocos e Keeling",
+      "longName" : "Territorio delle Isole Cocos (Keeling)",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "코코스 제도",
+      "longName" : "Territory of the Cocos (Keeling) Islands",
+      "postalCode" : ""
+    }
+  }
 }

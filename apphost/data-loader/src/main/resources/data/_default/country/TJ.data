@@ -1,92 +1,121 @@
 {
-	"countryCode": "TJ",
-	"defaultLocale": {
-		"href": "/v1/locales/ru_RU",
-		"id": "ru_RU"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/TJS",
-		"id": "TJS"
-	},
-	"ratingBoards": [{
-		"href": "/v1/age-rating-boards/RGRS",
-		"id": "RGRS"
-	}],
-	"subCountries": {
-		"GB": {
-			"locales": {
-				"tg_TJ": {
-					"shortName": "Вилояти Мухтори Кӯҳистони Бадахшон",
-					"longName": "Вилояти Мухтори Кӯҳистони Бадахшон"
-				},
-				"ru_RU": {
-					"shortName": "Горно-Бадахшанская автономная область",
-					"longName": "Горно-Бадахшанская автономная область"
-				},
-				"en_US": {
-					"shortName": "Gorno-Badakhshan Autonomous Province",
-					"longName": "Gorno-Badakhshan Autonomous Province"
-				}
-			}
-		},
-		"KT": {
-			"locales": {
-				"tg_TJ": {
-					"shortName": "Хатлон",
-					"longName": "Хатлон"
-				},
-				"ru_RU": {
-					"shortName": "Хатлонской",
-					"longName": "Хатлонской"
-				},
-				"en_US": {
-					"shortName": "Khatlon Province",
-					"longName": "Khatlon Province"
-				}
-			}
-		},
-		"SU": {
-			"locales": {
-				"tg_TJ": {
-					"shortName": "Вилояти Суғд",
-					"longName": "Вилояти Суғд"
-				},
-				"ru_RU": {
-					"shortName": "Согдийская",
-					"longName": "Согдийская"
-				},
-				"en_US": {
-					"shortName": "Sughd Province",
-					"longName": "Sughd Province"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/tg_TJ",
-		"id": "tg_TJ"
-	},
-	{
-		"href": "/v1/locales/ru_RU",
-		"id": "ru_RU"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Tajikistan",
-			"longName": "Republic of Tajikistan",
-			"postalCode": "Postal Code"
-		},
-		"ru_RU": {
-			"shortName": "Таджикистан",
-			"longName": "Респу́блика Таджикистан",
-			"postalCode": "Почтовый индекс"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "TJ",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/ru_RU",
+    "id" : "ru_RU"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/TJS",
+    "id" : "TJS"
+  },
+  "ratingBoards" : [ {
+    "href" : "https://api.oculus.com/v1/age-rating-boards/RGRS",
+    "id" : "RGRS"
+  } ],
+  "subCountries" : {
+    "GB" : {
+      "locales" : {
+        "tg_TJ" : {
+          "shortName" : "Вилояти Мухтори Кӯҳистони Бадахшон",
+          "longName" : "Вилояти Мухтори Кӯҳистони Бадахшон"
+        },
+        "ru_RU" : {
+          "shortName" : "Горно-Бадахшанская автономная область",
+          "longName" : "Горно-Бадахшанская автономная область"
+        },
+        "en_US" : {
+          "shortName" : "Gorno-Badakhshan Autonomous Province",
+          "longName" : "Gorno-Badakhshan Autonomous Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "KT" : {
+      "locales" : {
+        "tg_TJ" : {
+          "shortName" : "Хатлон",
+          "longName" : "Хатлон"
+        },
+        "ru_RU" : {
+          "shortName" : "Хатлонской",
+          "longName" : "Хатлонской"
+        },
+        "en_US" : {
+          "shortName" : "Khatlon Province",
+          "longName" : "Khatlon Province"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "SU" : {
+      "locales" : {
+        "tg_TJ" : {
+          "shortName" : "Вилояти Суғд",
+          "longName" : "Вилояти Суғд"
+        },
+        "ru_RU" : {
+          "shortName" : "Согдийская",
+          "longName" : "Согдийская"
+        },
+        "en_US" : {
+          "shortName" : "Sughd Province",
+          "longName" : "Sughd Province"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/tg_TJ",
+    "id" : "tg_TJ"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/ru_RU",
+    "id" : "ru_RU"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Tajikistan",
+      "longName" : "Republic of Tajikistan",
+      "postalCode" : ""
+    },
+    "ru_RU" : {
+      "shortName" : "Таджикистан",
+      "longName" : "Респу́блика Таджикистан",
+      "postalCode" : "Почтовый индекс"
+    },
+    "de_DE" : {
+      "shortName" : "Tadschikistan",
+      "longName" : "Tadschikistan",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Tajikistan",
+      "longName" : "Republic of Tajikistan",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Tayikistán",
+      "longName" : "República de Tayikistán",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Tadjikistan",
+      "longName" : "République du Tadjikistan",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Tagikistan",
+      "longName" : "Repubblica del Tagikistan",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "타지키스탄",
+      "longName" : "Republic of Tajikistan",
+      "postalCode" : ""
+    }
+  }
 }

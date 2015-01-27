@@ -33,6 +33,7 @@
 
     <bean id="countryDataHandler" class="com.junbo.data.handler.CountryDataHandler" parent="baseDataHandler">
         <property name="countryResource" ref="defaultCountryResource"/>
+        <property name="countryOverride" value="${apphost.country.override}" />
     </bean>
 
     <bean id="currencyDataHandler" class="com.junbo.data.handler.CurrencyDataHandler" parent="baseDataHandler">
@@ -41,6 +42,7 @@
 
     <bean id="localeDataHandler" class="com.junbo.data.handler.LocaleDataHandler" parent="baseDataHandler">
         <property name="localeResource" ref="defaultLocaleResource"/>
+        <property name="localeOverride" value="${apphost.locale.override}" />
     </bean>
 
     <bean id="piTypeDataHandler" class="com.junbo.data.handler.PITypeDataHandler" parent="baseDataHandler">

@@ -1,337 +1,389 @@
 {
-	"countryCode": "LK",
-	"defaultLocale": {
-		"href": "/v1/locales/si_LK",
-		"id": "si_LK"
-	},
-	"defaultCurrency": {
-		"href": "/v1/currencies/LKR",
-		"id": "LKR"
-	},
-	"ratingBoards": [],
-	"subCountries": {
-		"11": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Kŏḷamba",
-					"longName": "Kŏḷamba"
-				},
-				"en_US": {
-					"shortName": "Colombo",
-					"longName": "Colombo"
-				}
-			}
-		},
-		"12": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Gampaha",
-					"longName": "Gampaha"
-				},
-				"en_US": {
-					"shortName": "Gampaha",
-					"longName": "Gampaha"
-				}
-			}
-		},
-		"13": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Kaḷutara",
-					"longName": "Kaḷutara"
-				},
-				"en_US": {
-					"shortName": "Kandy",
-					"longName": "Kandy"
-				}
-			}
-		},
-		"21": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Mahanuvara",
-					"longName": "Mahanuvara"
-				},
-				"en_US": {
-					"shortName": "Matale",
-					"longName": "Matale"
-				}
-			}
-		},
-		"22": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kalutara",
-					"longName": "Kalutara"
-				},
-				"si_LK": {
-					"shortName": "Mātale",
-					"longName": "Mātale"
-				}
-			}
-		},
-		"23": {
-			"locales": {
-				"en_US": {
-					"shortName": "Nuwara Eliya",
-					"longName": "Nuwara Eliya"
-				},
-				"si_LK": {
-					"shortName": "Nuvara Ĕliya",
-					"longName": "Nuvara Ĕliya"
-				}
-			}
-		},
-		"31": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Gālla",
-					"longName": "Gālla"
-				},
-				"en_US": {
-					"shortName": "Galle",
-					"longName": "Galle"
-				}
-			}
-		},
-		"32": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Mātara",
-					"longName": "Mātara"
-				},
-				"en_US": {
-					"shortName": "Matara",
-					"longName": "Matara"
-				}
-			}
-		},
-		"33": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Hambantŏṭa",
-					"longName": "Hambantŏṭa"
-				},
-				"en_US": {
-					"shortName": "Hambantota",
-					"longName": "Hambantota"
-				}
-			}
-		},
-		"41": {
-			"locales": {
-				"en_US": {
-					"shortName": "Jaffna",
-					"longName": "Jaffna"
-				},
-				"si_LK": {
-					"shortName": "Yāpanaya",
-					"longName": "Yāpanaya"
-				}
-			}
-		},
-		"42": {
-			"locales": {
-				"en_US": {
-					"shortName": "Kilinochchi",
-					"longName": "Kilinochchi"
-				},
-				"si_LK": {
-					"shortName": "Kilinŏchchi",
-					"longName": "Kilinŏchchi"
-				}
-			}
-		},
-		"43": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mannar",
-					"longName": "Mannar"
-				},
-				"si_LK": {
-					"shortName": "Mannārama",
-					"longName": "Mannārama"
-				}
-			}
-		},
-		"44": {
-			"locales": {
-				"en_US": {
-					"shortName": "Vavuniya",
-					"longName": "Vavuniya"
-				},
-				"si_LK": {
-					"shortName": "Vavuniyāva",
-					"longName": "Vavuniyāva"
-				}
-			}
-		},
-		"45": {
-			"locales": {
-				"en_US": {
-					"shortName": "Mullaitivu",
-					"longName": "Mullaitivu"
-				},
-				"si_LK": {
-					"shortName": "Mulativ",
-					"longName": "Mulativ"
-				}
-			}
-		},
-		"51": {
-			"locales": {
-				"en_US": {
-					"shortName": "Batticaloa",
-					"longName": "Batticaloa"
-				},
-				"si_LK": {
-					"shortName": "Maḍakalapuva",
-					"longName": "Maḍakalapuva"
-				}
-			}
-		},
-		"52": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Ampāra",
-					"longName": "Ampāra"
-				},
-				"en_US": {
-					"shortName": "Ampara",
-					"longName": "Ampara"
-				}
-			}
-		},
-		"53": {
-			"locales": {
-				"en_US": {
-					"shortName": "Trincomalee",
-					"longName": "Trincomalee"
-				},
-				"si_LK": {
-					"shortName": "Trikuṇāmalaya",
-					"longName": "Trikuṇāmalaya"
-				}
-			}
-		},
-		"61": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Kuruṇægala",
-					"longName": "Kuruṇægala"
-				},
-				"en_US": {
-					"shortName": "Kurunegala",
-					"longName": "Kurunegala"
-				}
-			}
-		},
-		"62": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Puttalama",
-					"longName": "Puttalama"
-				},
-				"en_US": {
-					"shortName": "Puttalam",
-					"longName": "Puttalam"
-				}
-			}
-		},
-		"71": {
-			"locales": {
-				"en_US": {
-					"shortName": "Anuradhapura",
-					"longName": "Anuradhapura"
-				},
-				"si_LK": {
-					"shortName": "Anurādhapura",
-					"longName": "Anurādhapura"
-				}
-			}
-		},
-		"72": {
-			"locales": {
-				"en_US": {
-					"shortName": "Polonnaruwa",
-					"longName": "Polonnaruwa"
-				},
-				"si_LK": {
-					"shortName": "Pŏḷŏnnaruva",
-					"longName": "Pŏḷŏnnaruva"
-				}
-			}
-		},
-		"81": {
-			"locales": {
-				"en_US": {
-					"shortName": "Badulla",
-					"longName": "Badulla"
-				},
-				"si_LK": {
-					"shortName": "Badulla",
-					"longName": "Badulla"
-				}
-			}
-		},
-		"82": {
-			"locales": {
-				"en_US": {
-					"shortName": "Moneragala",
-					"longName": "Moneragala"
-				},
-				"si_LK": {
-					"shortName": "Mŏṇarāgala",
-					"longName": "Mŏṇarāgala"
-				}
-			}
-		},
-		"91": {
-			"locales": {
-				"en_US": {
-					"shortName": "Ratnapura",
-					"longName": "Ratnapura"
-				},
-				"si_LK": {
-					"shortName": "Ratnapura",
-					"longName": "Ratnapura"
-				}
-			}
-		},
-		"92": {
-			"locales": {
-				"si_LK": {
-					"shortName": "Kægalla",
-					"longName": "Kægalla"
-				},
-				"en_US": {
-					"shortName": "Kegalle",
-					"longName": "Kegalle"
-				}
-			}
-		}
-	},
-	"supportedLocales": [{
-		"href": "/v1/locales/si_LK",
-		"id": "si_LK"
-	},
-    {
-        "href": "/v1/locales/en_US",
-        "id": "en_US"
-    }],
-	"locales": {
-		"en_US": {
-			"shortName": "Sri Lanka",
-			"longName": "Democratic Socialist Republic of Sri Lanka",
-			"postalCode": "Postal Code"
-		},
-		"si_LK": {
-			"shortName": "ශ්‍රී ලංකාව",
-			"longName": "ශ්‍රී ලංකා ප්‍රජාතාන්ත්‍රික සමාජවාදී ජනරජය",
-			"postalCode": "Postal Code"
-		}
-	},
-	"futureExpansion": {
-		
-	}
+  "futureExpansion" : { },
+  "countryCode" : "LK",
+  "defaultLocale" : {
+    "href" : "https://api.oculus.com/v1/locales/si_LK",
+    "id" : "si_LK"
+  },
+  "defaultCurrency" : {
+    "href" : "https://api.oculus.com/v1/currencies/LKR",
+    "id" : "LKR"
+  },
+  "ratingBoards" : [ ],
+  "subCountries" : {
+    "11" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Kŏḷamba",
+          "longName" : "Kŏḷamba"
+        },
+        "en_US" : {
+          "shortName" : "Colombo",
+          "longName" : "Colombo"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "12" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Gampaha",
+          "longName" : "Gampaha"
+        },
+        "en_US" : {
+          "shortName" : "Gampaha",
+          "longName" : "Gampaha"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "13" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Kaḷutara",
+          "longName" : "Kaḷutara"
+        },
+        "en_US" : {
+          "shortName" : "Kandy",
+          "longName" : "Kandy"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "21" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Mahanuvara",
+          "longName" : "Mahanuvara"
+        },
+        "en_US" : {
+          "shortName" : "Matale",
+          "longName" : "Matale"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "22" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kalutara",
+          "longName" : "Kalutara"
+        },
+        "si_LK" : {
+          "shortName" : "Mātale",
+          "longName" : "Mātale"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "23" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Nuwara Eliya",
+          "longName" : "Nuwara Eliya"
+        },
+        "si_LK" : {
+          "shortName" : "Nuvara Ĕliya",
+          "longName" : "Nuvara Ĕliya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "31" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Gālla",
+          "longName" : "Gālla"
+        },
+        "en_US" : {
+          "shortName" : "Galle",
+          "longName" : "Galle"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "32" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Mātara",
+          "longName" : "Mātara"
+        },
+        "en_US" : {
+          "shortName" : "Matara",
+          "longName" : "Matara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "33" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Hambantŏṭa",
+          "longName" : "Hambantŏṭa"
+        },
+        "en_US" : {
+          "shortName" : "Hambantota",
+          "longName" : "Hambantota"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "41" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Jaffna",
+          "longName" : "Jaffna"
+        },
+        "si_LK" : {
+          "shortName" : "Yāpanaya",
+          "longName" : "Yāpanaya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "42" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Kilinochchi",
+          "longName" : "Kilinochchi"
+        },
+        "si_LK" : {
+          "shortName" : "Kilinŏchchi",
+          "longName" : "Kilinŏchchi"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "43" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mannar",
+          "longName" : "Mannar"
+        },
+        "si_LK" : {
+          "shortName" : "Mannārama",
+          "longName" : "Mannārama"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "44" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Vavuniya",
+          "longName" : "Vavuniya"
+        },
+        "si_LK" : {
+          "shortName" : "Vavuniyāva",
+          "longName" : "Vavuniyāva"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "45" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Mullaitivu",
+          "longName" : "Mullaitivu"
+        },
+        "si_LK" : {
+          "shortName" : "Mulativ",
+          "longName" : "Mulativ"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "51" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Batticaloa",
+          "longName" : "Batticaloa"
+        },
+        "si_LK" : {
+          "shortName" : "Maḍakalapuva",
+          "longName" : "Maḍakalapuva"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "52" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Ampāra",
+          "longName" : "Ampāra"
+        },
+        "en_US" : {
+          "shortName" : "Ampara",
+          "longName" : "Ampara"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "53" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Trincomalee",
+          "longName" : "Trincomalee"
+        },
+        "si_LK" : {
+          "shortName" : "Trikuṇāmalaya",
+          "longName" : "Trikuṇāmalaya"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "61" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Kuruṇægala",
+          "longName" : "Kuruṇægala"
+        },
+        "en_US" : {
+          "shortName" : "Kurunegala",
+          "longName" : "Kurunegala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "62" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Puttalama",
+          "longName" : "Puttalama"
+        },
+        "en_US" : {
+          "shortName" : "Puttalam",
+          "longName" : "Puttalam"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "71" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Anuradhapura",
+          "longName" : "Anuradhapura"
+        },
+        "si_LK" : {
+          "shortName" : "Anurādhapura",
+          "longName" : "Anurādhapura"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "72" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Polonnaruwa",
+          "longName" : "Polonnaruwa"
+        },
+        "si_LK" : {
+          "shortName" : "Pŏḷŏnnaruva",
+          "longName" : "Pŏḷŏnnaruva"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "81" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Badulla",
+          "longName" : "Badulla"
+        },
+        "si_LK" : {
+          "shortName" : "Badulla",
+          "longName" : "Badulla"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "82" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Moneragala",
+          "longName" : "Moneragala"
+        },
+        "si_LK" : {
+          "shortName" : "Mŏṇarāgala",
+          "longName" : "Mŏṇarāgala"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "91" : {
+      "locales" : {
+        "en_US" : {
+          "shortName" : "Ratnapura",
+          "longName" : "Ratnapura"
+        },
+        "si_LK" : {
+          "shortName" : "Ratnapura",
+          "longName" : "Ratnapura"
+        }
+      },
+      "localeAccuracy" : null
+    },
+    "92" : {
+      "locales" : {
+        "si_LK" : {
+          "shortName" : "Kægalla",
+          "longName" : "Kægalla"
+        },
+        "en_US" : {
+          "shortName" : "Kegalle",
+          "longName" : "Kegalle"
+        }
+      },
+      "localeAccuracy" : null
+    }
+  },
+  "supportedLocales" : [ {
+    "href" : "https://api.oculus.com/v1/locales/si_LK",
+    "id" : "si_LK"
+  }, {
+    "href" : "https://api.oculus.com/v1/locales/en_US",
+    "id" : "en_US"
+  } ],
+  "locales" : {
+    "en_US" : {
+      "shortName" : "Sri Lanka",
+      "longName" : "Democratic Socialist Republic of Sri Lanka",
+      "postalCode" : ""
+    },
+    "si_LK" : {
+      "shortName" : "ශ්‍රී ලංකාව",
+      "longName" : "ශ්‍රී ලංකා ප්‍රජාතාන්ත්‍රික සමාජවාදී ජනරජය",
+      "postalCode" : "Postal Code"
+    },
+    "de_DE" : {
+      "shortName" : "Sri Lanka",
+      "longName" : "Democratic Socialist Republic of Sri Lanka",
+      "postalCode" : ""
+    },
+    "en_GB" : {
+      "shortName" : "Sri Lanka",
+      "longName" : "Democratic Socialist Republic of Sri Lanka",
+      "postalCode" : ""
+    },
+    "es_ES" : {
+      "shortName" : "Sri Lanka",
+      "longName" : "República Democrática Socialista de Sri Lanka",
+      "postalCode" : ""
+    },
+    "fr_FR" : {
+      "shortName" : "Sri Lanka",
+      "longName" : "République socialiste démocratique du Sri Lanka",
+      "postalCode" : ""
+    },
+    "it_IT" : {
+      "shortName" : "Sri Lanka",
+      "longName" : "Repubblica Democratica Socialista dello Sri Lanka",
+      "postalCode" : ""
+    },
+    "ko_KR" : {
+      "shortName" : "스리랑카",
+      "longName" : "Democratic Socialist Republic of Sri Lanka",
+      "postalCode" : ""
+    }
+  }
 }
