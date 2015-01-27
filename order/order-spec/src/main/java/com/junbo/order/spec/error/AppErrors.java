@@ -82,7 +82,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "118", message = "Balance Not Found.")
     AppError balanceNotFound();
 
-    @ErrorDef(httpStatusCode = 412, code = "119", message = "Billing Charge Failed.")
+    @ErrorDef(httpStatusCode = 412, code = "119", message = "Billing Charge Declined.")
     AppError billingChargeFailed();
 
     @ErrorDef(httpStatusCode = 412, code = "120", message = "Billing Insufficient Fund.")
@@ -189,6 +189,9 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "151", message = "Offer Not Purchasable", reason = "Order contains offers that not purchasable.")
     AppError offerNotPurchasable();
+
+    @ErrorDef(httpStatusCode = 412, code = "152", message = "Order is already in settlement process. Get order to see the latest order status")
+    AppError orderAlreadyInSettleProcess();
 
     @ErrorDef(httpStatusCode = 412, code = "300", message = "Subledgers not found by payout Id.", reason = "Subledgers not found by payout Id:{0}")
     AppError subledgerNotFoundByPayoutId(PayoutId payoutId);

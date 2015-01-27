@@ -661,4 +661,14 @@ class CoreUtils {
         }
         return 'digital'
     }
+
+    static Boolean isSafeForImmediateSettle(Order order) {
+        if (CollectionUtils.isEmpty(order.billingHistories)) {
+            return true
+        }
+
+        return !order.billingHistories.any { BillingHistory billingHistory ->
+            billingHistory.success
+        }
+    }
 }

@@ -144,4 +144,8 @@
         <property name="builder" ref="mockOrderServiceContextBuilder"/>
     </bean>
 
+    <bean id="mockPreImmediateSettleAction" class="com.junbo.order.core.impl.orderaction.PreImmediateSettleAction">
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
+    </bean>
+
 </beans>

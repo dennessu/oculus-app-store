@@ -54,4 +54,8 @@ public interface OrderInternalService {
     Promise<Order> validateDuplicatePurchase(Order order, Offer offer, int quantity);
 
     Promise<Order> reverseFulfillment(Order order);
+
+    void markErrorStatus(Order order);
+
+    void markTentative(Order order);
 }

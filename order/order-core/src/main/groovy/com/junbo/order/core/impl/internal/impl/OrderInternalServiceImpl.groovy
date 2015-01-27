@@ -339,12 +339,47 @@ class OrderInternalServiceImpl implements OrderInternalService {
         if (latest == null) {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
-
-        if (!latest?.tentative) {
-            LOGGER.info("name=Already_Tentative")
+        if (!latest.tentative) {
+            LOGGER.error("name=Already_Non_Tentative. orderId: " + order.getId().value)
+            throw AppErrors.INSTANCE.orderAlreadyInSettleProcess().exception()
         } else {
             order.tentative = false
-            orderRepository.updateOrder(order, true, false, null)
+            latest.tentative = false
+            orderRepository.updateOrder(latest, true, false, null)
+        }
+    }
+
+    @Override
+    @Transactional
+    void markErrorStatus(Order order) {
+        LOGGER.info('name=internal.markErrorStatus')
+        def latest = orderRepository.getOrder(order.getId().value)
+        if (latest == null) {
+            throw AppErrors.INSTANCE.orderNotFound().exception()
+        }
+        if (latest.status == OrderStatus.ERROR.name()) {
+            LOGGER.info("name=Already_In_Error_Status. orderId: " + order.getId().value)
+        } else {
+            order.status = OrderStatus.ERROR.name()
+            latest.status = OrderStatus.ERROR.name()
+            orderRepository.updateOrder(latest, true, false, null)
+        }
+    }
+
+    @Override
+    @Transactional
+    void markTentative(Order order) {
+        LOGGER.info('name=internal.markTentative')
+        def latest = orderRepository.getOrder(order.getId().value)
+        if (latest == null) {
+            throw AppErrors.INSTANCE.orderNotFound().exception()
+        }
+        if (latest.tentative) {
+            LOGGER.error("name=Already_Tentative. orderId: " + order.getId().value)
+        } else {
+            order.tentative = true
+            latest.tentative = true
+            orderRepository.updateOrder(latest, true, false, null)
         }
     }
 

@@ -8,7 +8,6 @@ import com.junbo.common.id.OrderId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import java.util.concurrent.ConcurrentHashMap
@@ -35,6 +34,12 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
             balance.taxAmount += bi.taxAmount
         }
         balanceMap[balance.getId()] = balance
+        if (balance.cancelRedirectUrl == 'exception') {
+            throw new Exception('mock exception')
+        }
+        if (balance.cancelRedirectUrl == 'decline') {
+            balance.status = BalanceStatus.FAILED
+        }
         return Promise.pure(balance)
     }
 

@@ -429,15 +429,21 @@ class CoreBuilder {
 
     static ActionResult buildActionResultForOrderEventAwareAction(OrderActionContext context,
                                                                   EventStatus eventStatus) {
+        return buildActionResultForOrderEventAwareAction(context, eventStatus, 'success')
+    }
+
+    static ActionResult buildActionResultForOrderEventAwareAction(OrderActionContext context,
+                                                                  EventStatus eventStatus, String actionResultStr) {
         def orderActionResult = new OrderActionResult()
         orderActionResult.orderActionContext = context
         orderActionResult.returnedEventStatus = eventStatus
 
         def data = [:]
         data.put(ActionUtils.DATA_ORDER_ACTION_RESULT, (Object) orderActionResult)
-        def actionResult = new ActionResult('success', data)
+        def actionResult = new ActionResult(actionResultStr, data)
         return actionResult
     }
+
 
     static Date buildDate(String date) {
         if (date.contains('/')) {

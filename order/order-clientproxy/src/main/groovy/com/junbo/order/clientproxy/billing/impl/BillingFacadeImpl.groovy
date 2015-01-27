@@ -33,17 +33,19 @@ class BillingFacadeImpl implements BillingFacade {
 
     @Override
     Promise<Balance> createBalance(Balance balance, Boolean isAsyncCharge) {
-        balance.isAsyncCharge = isAsyncCharge
-        return balanceResource.postBalance(balance).recover { Throwable ex ->
-            LOGGER.error('name=BillingFacadeImpl_Create_Balance_Error', ex)
-            throw convertError(ex).exception()
-        }.then { Balance b ->
-            if (b == null) {
-                LOGGER.error('name=BillingFacadeImpl_Create_Balance_Null')
-                throw AppErrors.INSTANCE.billingResultInvalid('Create balance response is null').exception()
+        return Promise.pure().then {
+            balance.isAsyncCharge = isAsyncCharge
+            return balanceResource.postBalance(balance).recover { Throwable ex ->
+                LOGGER.error('name=BillingFacadeImpl_Create_Balance_Error', ex)
+                throw convertError(ex).exception()
+            }.then { Balance b ->
+                if (b == null) {
+                    LOGGER.error('name=BillingFacadeImpl_Create_Balance_Null')
+                    throw AppErrors.INSTANCE.billingResultInvalid('Create balance response is null').exception()
+                }
+                LOGGER.info('name=BillingFacadeImpl_Create_Balance_Success')
+                return Promise.pure(b)
             }
-            LOGGER.info('name=BillingFacadeImpl_Create_Balance_Success')
-            return Promise.pure(b)
         }
     }
 

@@ -6,17 +6,15 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
+import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.order.OrderServiceContext
-import com.junbo.order.core.impl.order.OrderServiceImpl
-import com.junbo.order.rest.resource.OrderResourceImpl
+import com.junbo.order.spec.model.BillingHistory
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.enums.BillingAction
 import com.junbo.order.spec.model.enums.FulfillmentEventType
 import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.spec.resource.OrderResource
-import groovy.transform.CompileStatic
-import org.springframework.aop.framework.Advised
-import org.springframework.aop.support.AopUtils
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -24,7 +22,6 @@ import javax.annotation.Resource
 /**
  * Created by chriszhu on 7/3/14.
  */
-@CompileStatic
 class OrderE2ETest extends BaseTest {
 
     @Resource(name = 'defaultOrderResource')
@@ -33,18 +30,20 @@ class OrderE2ETest extends BaseTest {
     OrderService orderServiceImpl
     @Resource(name = 'mockCsrLogResource')
     CsrLogResource csrLogResource
+    @Resource(name = 'orderTransactionHelper')
+    TransactionHelper transactionHelper
 
     @BeforeMethod
     void setUp() {
         //orderServiceImpl.facadeContainer.billingFacade = EasyMock.createMock(BillingFacade.class)
         //orderServiceImpl.facadeContainer.ratingFacade = EasyMock.createMock(RatingFacade.class)
-        getTargetObject(orderResource, OrderResourceImpl).orderService = orderServiceImpl
-        getTargetObject(orderResource, OrderResourceImpl).csrLogResource = csrLogResource
+        orderResource.orderService = orderServiceImpl
+        orderResource.csrLogResource = csrLogResource
     }
 
     @Test(enabled = true)
     Order testPostTentativeOrder() {
-        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_RATE_ORDER')
@@ -66,7 +65,7 @@ class OrderE2ETest extends BaseTest {
 
     @Test(enabled = true)
     void testPostFreeOrder() {
-        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_FREE_ORDER')
@@ -94,7 +93,7 @@ class OrderE2ETest extends BaseTest {
     @Test(enabled = true)
     Order testPutTentativeOrder() {
         def tentativeOrder = testPostTentativeOrder()
-        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_IMMEDIATE_SETTLE')
@@ -116,7 +115,7 @@ class OrderE2ETest extends BaseTest {
 
     @Test(enabled = true)
     void testPutTentativeFreeOrder() {
-        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_RATE_ORDER')
@@ -136,7 +135,7 @@ class OrderE2ETest extends BaseTest {
         assert orderGet.status == OrderStatus.OPEN.name()
         assert orderGet.tentative
 
-        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_FREE_SETTLE')
@@ -159,7 +158,7 @@ class OrderE2ETest extends BaseTest {
     @Test(enabled = true)
     void testRefundOrder() {
         def order = testPutTentativeOrder()
-        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_REFUND_ORDER')
@@ -182,8 +181,87 @@ class OrderE2ETest extends BaseTest {
     }
 
     @Test(enabled = true)
+    void testBillingException() {
+        Order tentativeOrder
+        transactionHelper.executeInNewTransaction {
+            tentativeOrder = testPostTentativeOrder()
+            orderServiceImpl.flowSelector = new FlowSelector() {
+                @Override
+                Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                    return Promise.pure('MOCK_IMMEDIATE_SETTLE')
+                }
+            }
+            tentativeOrder.tentative = false
+            JunboHttpContext.data = new JunboHttpContext.JunboHttpContextData(
+                    requestIpAddress: '127.0.0.1'
+            )
+            tentativeOrder.payments[0].cancelRedirectUrl = 'exception'
+        }
+        transactionHelper.executeInNewTransaction {
+            try {
+                orderResource.updateOrderByOrderId(tentativeOrder.getId(), tentativeOrder).get()
+            } catch (ex) {
+                assert ex != null
+            }
+        }
+        transactionHelper.executeInNewTransaction {
+            def orderGet = orderResource.getOrderByOrderId(tentativeOrder.getId()).get()
+            assert orderGet.status == OrderStatus.ERROR.name()
+            assert !orderGet.tentative
+            orderGet.payments[0].cancelRedirectUrl = 'aaa'
+            try {
+                orderResource.updateOrderByOrderId(tentativeOrder.getId(), orderGet).get()
+            } catch (ex) {}
+            orderGet = orderResource.getOrderByOrderId(tentativeOrder.getId()).get()
+            assert orderGet.status == OrderStatus.ERROR.name()
+            assert !orderGet.tentative
+        }
+    }
+
+    @Test(enabled = true)
+    void testBillingDecline() {
+        Order tentativeOrder
+        transactionHelper.executeInNewTransaction {
+            tentativeOrder = testPostTentativeOrder()
+            orderServiceImpl.flowSelector = new FlowSelector() {
+                @Override
+                Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
+                    return Promise.pure('MOCK_IMMEDIATE_SETTLE')
+                }
+            }
+            tentativeOrder.tentative = false
+            JunboHttpContext.data = new JunboHttpContext.JunboHttpContextData(
+                    requestIpAddress: '127.0.0.1'
+            )
+            tentativeOrder.payments[0].cancelRedirectUrl = 'decline'
+        }
+        transactionHelper.executeInNewTransaction {
+            try {
+                orderResource.updateOrderByOrderId(tentativeOrder.getId(), tentativeOrder).get()
+            } catch (ex) {
+                assert ex != null
+            }
+        }
+        transactionHelper.executeInNewTransaction {
+            def orderGet = orderResource.getOrderByOrderId(tentativeOrder.getId()).get()
+            assert orderGet.status == OrderStatus.OPEN.name()
+            assert orderGet.tentative
+            assert orderGet.billingHistories.any { BillingHistory bh ->
+                bh.billingEvent == BillingAction.CHARGE.name() && !bh.success
+            }
+            orderGet.payments[0].cancelRedirectUrl = 'aaa'
+            def orderComp = orderResource.updateOrderByOrderId(tentativeOrder.getId(), orderGet).get()
+            orderGet = orderResource.getOrderByOrderId(tentativeOrder.getId()).get()
+            assert orderGet.status == OrderStatus.COMPLETED.name()
+            assert !orderGet.tentative
+            assert orderComp.status == OrderStatus.COMPLETED.name()
+            assert !orderComp.tentative
+        }
+    }
+
+    @Test(enabled = true)
     void testPostTooManyItems() {
-        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_FREE_ORDER')
@@ -212,7 +290,7 @@ class OrderE2ETest extends BaseTest {
 
     @Test(enabled = true)
     void testPostTooManyOffers() {
-        getTargetObject(orderServiceImpl, OrderServiceImpl).flowSelector = new FlowSelector() {
+        orderServiceImpl.flowSelector = new FlowSelector() {
             @Override
             Promise<String> select(OrderServiceContext expOrder, OrderServiceOperation operation) {
                 return Promise.pure('MOCK_FREE_ORDER')
@@ -238,14 +316,5 @@ class OrderE2ETest extends BaseTest {
             return
         }
         assert false
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T getTargetObject(Object proxy, Class<T> targetClass) throws Exception {
-        if (AopUtils.isJdkDynamicProxy(proxy)) {
-            return (T) proxy.asType(Advised).getTargetSource().getTarget();
-        } else {
-            return (T) proxy; // expected to be cglib proxy then, which is simply a specialized class
-        }
     }
 }
