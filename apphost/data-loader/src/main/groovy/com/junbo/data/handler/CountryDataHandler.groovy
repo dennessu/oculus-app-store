@@ -16,10 +16,16 @@ import org.springframework.core.io.Resource
 @CompileStatic
 class CountryDataHandler extends BaseDataHandler {
     private CountryResource countryResource
+    private boolean countryOverride
 
     @Required
     void setCountryResource(CountryResource countryResource) {
         this.countryResource = countryResource
+    }
+
+    @Required
+    void setCountryOverride(boolean countryOverride) {
+        this.countryOverride = countryOverride
     }
 
     @Override
@@ -45,7 +51,22 @@ class CountryDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            logger.debug("$country.countryCode already exists, skipped!")
+            if (countryOverride) {
+                logger.debug("Update the existed country $country.countryCode.")
+                try {
+                    country.createdTime = existing.createdTime
+                    country.updatedTime = existing.updatedTime
+                    country.adminInfo = existing.adminInfo
+                    country.rev = existing.rev
+                    country.id = existing.getId()
+
+                    countryResource.put(new CountryId(country.countryCode), country).get()
+                } catch (Exception e) {
+                    logger.error("Error updating country $country.countryCode.", e)
+                }
+            } else {
+                logger.debug("$country.countryCode already exists, skipped!")
+            }
         } else {
             logger.debug('Create new country with this content')
             try {

@@ -19,9 +19,16 @@ import org.springframework.util.StringUtils
 class LocaleDataHandler extends BaseDataHandler {
     private LocaleResource localeResource
 
+    private boolean localeOverride
+
     @Required
     void setLocaleResource(LocaleResource localeResource) {
         this.localeResource = localeResource
+    }
+
+    @Required
+    void setLocaleOverride(boolean localeOverride) {
+        this.localeOverride = localeOverride
     }
 
     @Override
@@ -101,7 +108,22 @@ class LocaleDataHandler extends BaseDataHandler {
         }
 
         if (existing != null) {
-            logger.debug("$locale.localeCode already exists, skipped!")
+            if (localeOverride) {
+                logger.debug("Update the existed locale $locale.localeName.")
+                try {
+                    locale.createdTime = existing.createdTime
+                    locale.updatedTime = existing.updatedTime
+                    locale.adminInfo = existing.adminInfo
+                    locale.rev = existing.rev
+                    locale.id = existing.getId()
+
+                    localeResource.put(new LocaleId(locale.localeCode), locale).get()
+                } catch (Exception e) {
+                    logger.error("Error creating locale $locale.localeName", e)
+                }
+            } else {
+                logger.debug("$locale.localeCode already exists, skipped!")
+            }
         } else {
             logger.debug('Create new locale with this content')
             try {
