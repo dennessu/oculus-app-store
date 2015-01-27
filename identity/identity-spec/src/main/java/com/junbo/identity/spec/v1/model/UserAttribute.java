@@ -31,6 +31,12 @@ public class UserAttribute extends PropertyAssignedAwareResourceMeta<UserAttribu
     @JsonProperty("attributeDefinition")
     private UserAttributeDefinitionId userAttributeDefinitionId;
 
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable] Name of the user attribute")
+    private String name;
+
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable] Value of the user attribute")
+    private String value;
+
     @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] True if/only if the user-attribute is active; " +
             "false when the user attribute is out of date, useCount is 0, or someone manually set isSuspended to true,")
     @CloudantIgnore
@@ -58,6 +64,24 @@ public class UserAttribute extends PropertyAssignedAwareResourceMeta<UserAttribu
         this.userAttributeDefinitionId = userAttributeDefinitionId;
         support.setPropertyAssigned("attributeDefinition");
         support.setPropertyAssigned("userAttributeDefinitionId");
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        support.setPropertyAssigned("name");
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+        support.setPropertyAssigned("value");
     }
 
     public void setIsActive(Boolean isActive) {
